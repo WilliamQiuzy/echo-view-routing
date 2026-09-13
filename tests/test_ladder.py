@@ -29,7 +29,7 @@ def world():
     ids = [f"v{i}" for i in range(60)]; labels = [i % C for i in range(60)]; n = [40] * 60
     feats = {(v, var): synth(v, l, 40, rng, var) for v, l in zip(ids, labels) for var in ("orig", "gamma090")}
     loader = lambda v, var: feats[(v, var)]
-    natives = [NativeCine(v, l, feats[(v, "orig")].prob) for v, l in zip(ids, labels)]
+    natives = [NativeCine(v, l, feats[(v, "orig")].prob, feats[(v, "orig")].feat) for v, l in zip(ids, labels)]
     pool = Pool.from_index(ids, labels, n)
     val = [render(r, loader) for r in make_pair_recipes(pool, 3, np.random.default_rng(1), min_len=10, max_len=20)]
     test = [render(r, loader) for r in make_pair_recipes(pool, 3, np.random.default_rng(2), min_len=10, max_len=20)]
