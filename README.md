@@ -35,8 +35,8 @@ EV9V (`bgx666/EV9V`, CC-BY-4.0): 5,138 cines, nine raw view codes, official pati
 | B1 | probability moving average + hysteresis | implemented |
 | B2 | sticky HMM, Viterbi over posteriors | implemented |
 | B3 | JS divergence between left/right windows + persistent label change | implemented |
-| B4 | MS-TCN on frozen features | implemented (compact re-implementation) |
-| B6 | STFM official code (EV9V authors) via subprocess adapter | run (adaptation: 15-epoch cap) |
+| B4 | official MS-TCN (yabufarha/ms-tcn, pinned) on frozen features | run under the authors' recipe |
+| B6 | official STFM (bgx666/stfm, pinned) via subprocess adapter | authors' recipe; multi-seed comparison to the paper in progress |
 | P0–P2 | proposed TCN + semantic boundary head | not started |
 
 Everything downstream of feature extraction runs on CPU from the feature cache.
@@ -52,12 +52,12 @@ validation split at a 5% contamination target and frozen. Full table and figure:
 | B1 smoothing | 0.949 | 0.968 | 2.4 | 0.918 | 0.000 · 0.017 | 0.017 · 0.017 | 0.999 | 0.014 |
 | B2 HMM | 0.946 | 0.967 | 2.4 | 0.906 | 0.000 · 0.000 | 0.000 · 0.000 | 0.996 | 0.009 |
 | B3 JS divergence | 0.946 | 0.963 | 3.6 | 0.913 | 0.000 · 0.017 | 0.000 · 0.000 | 0.989 | 0.010 |
-| B4 MS-TCN | 0.568 | 0.915 | 0.7 | 0.779 | 0.000 · 0.017 | 0.067 · 0.117 | 0.020 | 0.000 |
+| B4 MS-TCN (official code) | 0.956 | 0.977 | 1.0 | 0.992 | 0.000 · 0.017 | 0.000 · 0.000 | 1.000 | 0.008 |
 
 B-file (per-file mean probability): cine accuracy 0.975; at the 5% target coverage 0.998 with achieved risk 0.019.
-**B4 and B6 are pipeline checks, not valid baselines yet.** B4 is our compact MS-TCN re-implementation trained on an unbalanced
-600-stream bank; B6 is the official STFM code cut to 15 of the authors' 100 epochs (test acc 0.939, macro-F1 0.904 on its nine-code task).
-Both must be rerun under the authors' protocols (official code, full recipe, matched against published numbers) before being cited. See `docs/EXPERIMENT_LEDGER.md`.
+B4 is the official MS-TCN code under the authors' constants (see `docs/REPRODUCTION.md`), trained on 1,500 class-balanced
+4–8-fragment streams. B6 (official STFM, authors' recipe, seed 666): test acc 93.36 / macro-F1 89.49 on its nine-code task vs the paper's
+94.07 ± 0.66 / 90.30 ± 1.03; seeds 100/200/300 pending. Secondary 4–8-fragment test bank (boundary F1@0.5 s): see the ledger.
 
 ## Quickstart
 
