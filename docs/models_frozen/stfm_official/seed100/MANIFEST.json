@@ -1,0 +1,29 @@
+{
+ "name": "stfm_official",
+ "version": "seed100",
+ "frozen_at": "2026-09-13T19:28:33.422610+00:00",
+ "files": [
+  {
+   "file": "model.ckpt",
+   "bytes": 177160635,
+   "sha256": "2d2adc6218d01a2b6d498a28e80a4d4f56170bc84a8e902cca38d5d2d61f2068",
+   "source": "/home/william/echo-view-routing/checkpoints/20260913-173656-b6_stfm-35e544d2-s0/resnet18/reedl_loss/model.ckpt"
+  },
+  {
+   "file": "log.txt",
+   "bytes": 47018,
+   "sha256": "b07dd0f329c30f2f142592bcf31ff86e05968aa75af6ce93b75c063351d46f9b",
+   "source": "/home/william/echo-view-routing/checkpoints/20260913-173656-b6_stfm-35e544d2-s0/resnet18/reedl_loss/log.txt"
+  }
+ ],
+ "provenance": {
+  "code": "github.com/bgx666/stfm",
+  "commit": "532f60b2733a3442dcccb59099e00eba07bf293d",
+  "run": "20260913-173656-b6_stfm-35e544d2-s0",
+  "seed": "100",
+  "recipe": "README command: resnet18, batch 64, 100-ep cap, patience 20, num_workers 8",
+  "task": "9-class video-level (authors)"
+ },
+ "notes": "test (best ckpt): Accuracy: [0.939189] Macro F1: [0.901386] ; paper Table 5 ResNet-18: acc 94.07+-0.66, F1 90.30+-1.03",
+ "rule": "immutable: never edit, retrain into, or delete this directory; create a new version instead"
+}
