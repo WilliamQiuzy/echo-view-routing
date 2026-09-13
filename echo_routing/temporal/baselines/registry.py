@@ -23,6 +23,7 @@ METHOD_DESCRIPTIONS = {
     "b3": "JS divergence between left/right windows + persistent label change",
     "b4": "official MS-TCN (yabufarha/ms-tcn, pinned) on frozen features",
     "b4_reimpl": "our compact MS-TCN re-implementation (reference only, never reported)",
+    "b5": "official ASFormer (ChinaYi/ASFormer, pinned) on frozen features",
     "b6": "STFM official video classifier (adapter)",
 }
 
@@ -59,7 +60,14 @@ def _b4_reimpl(prob, feat, cfg, stream_id=None):
     return mstcn_decoder(cfg)(prob, feat, cfg)
 
 
-DECODERS: dict[str, Decoder] = {"b0": _b0, "b1": _b1, "b2": _b2, "b3": _b3, "b4": _b4, "b4_reimpl": _b4_reimpl}
+def _b5(prob, feat, cfg, stream_id=None):
+    """Official ASFormer predictions (cache/asformer_official/<tag>/<stream_id>.npz from scripts/run_asformer_official.py)."""
+    from echo_routing.temporal.baselines.b4_mstcn_official import lookup_prob  # same on-disk contract
+    p = lookup_prob({"mstcn_official": {"pred_dir": (cfg.get("asformer_official") or {}).get("pred_dir")}}, stream_id)
+    return p.argmax(1), p
+
+
+DECODERS: dict[str, Decoder] = {"b0": _b0, "b1": _b1, "b2": _b2, "b3": _b3, "b4": _b4, "b4_reimpl": _b4_reimpl, "b5": _b5}
 
 
 def register(method: str, fn: Decoder) -> None:
