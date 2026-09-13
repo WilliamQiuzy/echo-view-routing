@@ -44,39 +44,57 @@ class Pool:
         return pool
 
 
-def _draw(rng: np.random.Generator, items: list[tuple[str, int]], used: set[str], min_len: int):
-    cands = [(v, n) for v, n in items if v not in used and n >= min_len]
-    if not cands:
-        return None
-    v, n = cands[rng.integers(len(cands))]
-    used.add(v)
-    return v, n
-
-
 def _fragment(rng, video_id: str, n: int, label: int, variant: str, min_len: int, max_len: int) -> Fragment:
     length = int(rng.integers(min_len, min(max_len, n) + 1))
     start = int(rng.integers(0, n - length + 1))
     return Fragment(video_id, label, variant, start, start + length)
 
 
+def _pairs_same(chunk: list[tuple[str, int, int]]) -> list[tuple[tuple, tuple]]:
+    by_label: dict[int, list] = {}
+    for item in chunk:
+        by_label.setdefault(item[2], []).append(item)
+    pairs = []
+    for items in by_label.values():
+        pairs.extend(zip(items[0::2], items[1::2]))
+    return pairs
+
+
+def _pairs_diff(chunk: list[tuple[str, int, int]]) -> list[tuple[tuple, tuple]]:
+    """Greedy cross-label pairing: repeatedly pair the two most populous remaining labels."""
+    by_label: dict[int, list] = {}
+    for item in chunk:
+        by_label.setdefault(item[2], []).append(item)
+    pairs = []
+    while True:
+        ranked = sorted((lab for lab in by_label if by_label[lab]), key=lambda l: -len(by_label[l]))
+        if len(ranked) < 2:
+            return pairs
+        a, b = by_label[ranked[0]].pop(), by_label[ranked[1]].pop()
+        pairs.append((a, b))
+
+
 def make_pair_recipes(pool: Pool, n_per_cell: int, rng: np.random.Generator, edit_variant: str = "gamma090",
                       min_len: int = 10, max_len: int = 60, reuse: bool = False) -> list[Recipe]:
-    """Two-fragment recipes for all four cells. Each native cine used at most once unless reuse=True."""
-    labels = sorted(pool.by_label)
-    if len(labels) < 2:
+    """Two-fragment recipes for all four cells, balanced by construction.
+
+    Eligible cines (n >= min_len) are shuffled and dealt round-robin to the four cells so every cell
+    draws from an equally sized, disjoint pool; each native cine is used at most once (reuse=False).
+    With reuse=True the same shuffled pool is offered to every cell (training banks only).
+    """
+    if len(pool.by_label) < 2:
         raise ValueError("need at least two labels to build different-family pairs")
-    used: set[str] = set(); recipes: list[Recipe] = []
-    for cell in CELLS:
+    eligible = [(v, n, lab) for lab, items in pool.by_label.items() for v, n in items if n >= min_len]
+    order = rng.permutation(len(eligible))
+    chunks = [[eligible[i] for i in order[k::4]] for k in range(4)] if not reuse else [[eligible[i] for i in order]] * 4
+    recipes: list[Recipe] = []
+    for cell, chunk in zip(CELLS, chunks):
         same, edited = cell.startswith("same"), cell.endswith("edit")
-        for k in range(n_per_cell):
-            la = labels[rng.integers(len(labels))]
-            lb = la if same else labels[(labels.index(la) + 1 + rng.integers(len(labels) - 1)) % len(labels)]
-            a = _draw(rng, pool.by_label[la], used if not reuse else set(), min_len)
-            b = _draw(rng, pool.by_label[lb], used if not reuse else set(), min_len)
-            if a is None or b is None:
-                break
-            fa = _fragment(rng, a[0], a[1], la, "orig", min_len, max_len)
-            fb = _fragment(rng, b[0], b[1], lb, edit_variant if edited else "orig", min_len, max_len)
+        chunk = [chunk[i] for i in rng.permutation(len(chunk))]
+        pairs = (_pairs_same if same else _pairs_diff)(chunk)[:n_per_cell]
+        for k, ((va, na, la), (vb, nb, lb)) in enumerate(pairs):
+            fa = _fragment(rng, va, na, la, "orig", min_len, max_len)
+            fb = _fragment(rng, vb, nb, lb, edit_variant if edited else "orig", min_len, max_len)
             recipes.append(Recipe(f"{cell}_{k:04d}", cell, (fa, fb)))
     return recipes
 

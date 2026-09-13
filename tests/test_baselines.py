@@ -122,3 +122,11 @@ def test_select_threshold_targets_risk():
     assert select_threshold(scores, wrong, w, target_risk=0.0) == pytest.approx(0.7)
     assert select_threshold(scores, wrong, w, target_risk=0.25) == pytest.approx(0.6)
     assert select_threshold(scores, np.ones(5, bool), w, 0.05) is None
+
+
+def test_select_threshold_is_max_coverage_not_first_violation():
+    # one confident wrong sample at the top must not force an over-conservative threshold
+    scores = np.array([0.99, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4]); wrong = np.array([1, 0, 0, 0, 0, 0, 0], bool); w = np.ones(7)
+    assert select_threshold(scores, wrong, w, target_risk=0.2) == pytest.approx(0.4)  # 1/7 wrong at full coverage
+    assert select_threshold(scores, wrong, w, target_risk=0.0) is None
+    assert select_threshold(np.array([-np.inf, 0.5]), np.array([0, 0], bool), np.ones(2), 0.05) == pytest.approx(0.5)

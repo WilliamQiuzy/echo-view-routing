@@ -41,17 +41,18 @@ def route(prob: np.ndarray, labels: np.ndarray, tau: float, method: str = "p10_a
 
 
 def select_threshold(scores: np.ndarray, wrong: np.ndarray, weights: np.ndarray, target_risk: float) -> float | None:
-    """Smallest threshold whose accepted-duration contamination <= target_risk (max coverage).
-    Returns None when no threshold meets the target with non-zero coverage."""
+    """Threshold with the largest coverage whose accepted-duration contamination is <= target_risk on this
+    (validation) set, i.e. the smallest feasible tau over the full risk-coverage curve. Returns None when no
+    threshold meets the target with non-zero accepted duration."""
     scores = np.asarray(scores, float); wrong = np.asarray(wrong, bool); w = np.asarray(weights, float)
+    finite = np.isfinite(scores)
     best = None
-    for tau in np.unique(scores)[::-1]:
+    for tau in np.unique(scores[finite]):  # ascending: first feasible tau has the largest coverage
         acc = scores >= tau
-        if w[acc].sum() <= 0:
+        total = w[acc].sum()
+        if total <= 0:
             continue
-        risk = w[acc & wrong].sum() / w[acc].sum()
-        if risk <= target_risk:
-            best = float(tau)  # lower tau -> more coverage; keep going while feasible
-        else:
+        if w[acc & wrong].sum() / total <= target_risk:
+            best = float(tau)
             break
     return best
