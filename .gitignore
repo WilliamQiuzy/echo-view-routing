@@ -28,13 +28,21 @@ logs/
 demo/samples/*
 !demo/samples/.gitkeep
 !demo/samples/README.md
-# third party clones (server-side); vendored via submodule/pin only
-third_party/stfm/
+# third party clones live on the server only (pinned commits recorded in third_party/README.md);
+# only our patches, adapters and README are tracked
+third_party/*/
+!third_party/patches/
+!third_party/adapters/
+!third_party/README.md
+# server-only environments and binaries
+/envs/
+/bin/
 # notebooks
 .ipynb_checkpoints/
 # os
 .DS_Store
 # server-side credentials (never in git)
 secrets/
-# frozen model weights live on the server only; manifests are copied into docs/models_frozen/
+# frozen model weights live on the server (+ GitHub release backup); manifests are mirrored into docs/models_frozen/
 /models_frozen/
+/models_internal/

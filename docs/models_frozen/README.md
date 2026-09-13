@@ -14,3 +14,15 @@ are mirrored here so the repo records exactly which bytes each reported number c
 `models_frozen/` holds exactly the five baselines and nothing else: `stfm_official`, `mstcn_official`, `asformer_official`, `echoprime_view_classifier`, `echoviewclip_stage1`. Pending: `asformer_official/v1`, `echoviewclip_stage1/v1` (added when their runs finish and are checked).
 
 Our own pipeline components (e.g. the ResNet-18 frame encoder `ckpt_hash 79f4a41af6e3`) are frozen the same way under `models_internal/` (manifests in `docs/models_internal/`).
+
+## Backup
+
+Every frozen directory is also packaged as `<name>_<version>.tar.gz` and attached to the GitHub release
+[`baselines-v1`](https://github.com/WilliamQiuzy/echo-view-routing/releases/tag/baselines-v1), so the reproduced
+weights survive the loss of the server. To restore on a fresh machine:
+
+```bash
+gh release download baselines-v1 --repo WilliamQiuzy/echo-view-routing --dir /tmp/baselines
+for f in /tmp/baselines/*.tar.gz; do tar -xzf "$f" -C /home/william/echo-view-routing/; done   # recreates models_frozen/ and models_internal/
+sha256sum -c <(python -c "import json,glob; [print(f['sha256'], m.rsplit('/',1)[0]+'/'+f['file']) for m in glob.glob('models_frozen/*/*/MANIFEST.json')+glob.glob('models_internal/*/*/MANIFEST.json') for f in json.load(open(m))['files']]")
+```
