@@ -254,7 +254,7 @@ figcaption small{display:block;font-weight:400;color:var(--muted);font-size:12.5
 @media (max-width:760px){.stream{grid-template-columns:1fr}}
 .stream h3{font-size:16px;margin:0 0 6px}
 .stream video{width:100%;aspect-ratio:4/3;background:#000;border-radius:4px;display:block}
-.stream .frags{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11.5px;color:var(--muted);margin-top:8px;display:grid;gap:2px}
+.stream .frags{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11.5px;color:var(--muted);margin-top:8px;display:grid;gap:2px;overflow-wrap:anywhere}
 .rows{display:grid;grid-template-columns:auto auto 1fr;gap:6px 10px;align-items:center;position:relative}
 .rows .lab{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;color:var(--ink-2);white-space:nowrap}
 .rows .lab.truth{color:var(--ink);font-weight:500}
@@ -334,7 +334,7 @@ def build(runs_root: Path, out: Path) -> Path:
 <div class="wrap">
 <header>
   <div class="eyebrow">Capstone · selective temporal routing of echocardiography video · public-data study</div>
-  <h1>Baseline ladder on EV9V</h1>
+  <h1>EV9V routing demo</h1>
   <p class="lede">Watch six routers read the same echocardiography frames, then compare them on the full test split. Can a router tell a real change of echocardiographic view from a same-view recording join or a brightness edit? Seven baselines from the proposal (§7.1), run on the public EV9V dataset with the five-family task (PLAX, PSAX, A4C, A5C, SC4C). Every threshold was chosen on the validation split and frozen before the test split was touched.</p>
   <div class="facts"><span>encoder <b>ResNet-18 · {h}</b></span><span>test <b>{n_native} native cines · {n_streams} constructed streams</b></span><span>routing rate <b>10 Hz</b></span><span>policy <b>5% contamination target, validation-selected</b></span><span>date <b>2026-09-13</b></span></div>
 </header>
