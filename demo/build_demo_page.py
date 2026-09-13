@@ -13,13 +13,13 @@ sys.path.insert(0, str(REPO))
 from echo_routing.evaluate.report import collect_metrics  # noqa: E402
 
 METHODS = {
-    "b_file": ("B-file", "Per-file mean probability; whole-file accept or defer", "Operational comparator: what an archive curator can already do with known file boundaries."),
-    "b0": ("B0", "ResNet-18 frame classifier, per-frame argmax", "The encoder alone. Establishes classification quality and raw flicker with no temporal processing."),
-    "b1": ("B1", "Probability moving average + hysteresis", "Cheapest temporal baseline. A change is accepted only after it persists for 0.5 s."),
-    "b2": ("B2", "Sticky HMM, Viterbi over posteriors", "Tests whether simple state persistence is enough."),
-    "b3": ("B3", "JS divergence of left/right windows + persistent label change", "Parameter-free semantic-change detector; the essential comparator for any learned boundary head."),
-    "b4": ("B4", "MS-TCN on frozen features", "Standard learned temporal-segmentation competitor (compact re-implementation)."),
-    "b6": ("B6", "STFM official code (EV9V authors) via adapter", "Recent echo-specific video classifier, run unmodified at a pinned commit on its own nine-code task."),
+    "b_file": ("File-mean", "Per-file mean probability; whole-file accept or defer", "Operational comparator: what an archive curator can already do with known file boundaries."),
+    "b0": ("Argmax", "ResNet-18 frame classifier, per-frame argmax", "The encoder alone. Establishes classification quality and raw flicker with no temporal processing."),
+    "b1": ("Smoothing", "Probability moving average + hysteresis", "Cheapest temporal baseline. A change is accepted only after it persists for 0.5 s."),
+    "b2": ("HMM", "Sticky HMM, Viterbi over posteriors", "Tests whether simple state persistence is enough."),
+    "b3": ("JS-div", "JS divergence of left/right windows + persistent label change", "Parameter-free semantic-change detector; the essential comparator for any learned boundary head."),
+    "b4": ("MS-TCN", "MS-TCN on frozen features", "Standard learned temporal-segmentation competitor (compact re-implementation)."),
+    "b6": ("STFM", "STFM official code (EV9V authors) via adapter", "Recent echo-specific video classifier, run unmodified at a pinned commit on its own nine-code task."),
 }
 SERIES = ["b0", "b1", "b2", "b3", "b4"]
 CELLS = [("same_none", "same view · no edit", "false_split_rate", "false split"),
@@ -157,7 +157,7 @@ VARIANT_GAMMA_TXT = {"gamma090": "0.90", "gamma110": "1.10"}
 
 
 def legend() -> str:
-    return '<div class="legend">' + "".join(f'<span><i class="sw" style="background:var(--m{i+1})"></i>{METHODS[m][0]} {esc(METHODS[m][1].split(",")[0])}</span>' for i, m in enumerate(SERIES)) + '<span><i class="sw op-key"></i>frozen 5% operating point</span></div>'
+    return '<div class="legend">' + "".join(f'<span><i class="sw" style="background:var(--m{i+1})"></i>{esc(METHODS[m][0])}</span>' for i, m in enumerate(SERIES)) + '<span><i class="sw op-key"></i>frozen 5% operating point</span></div>'
 
 
 def ladder_table(ms: dict[str, dict]) -> str:
@@ -318,11 +318,12 @@ def build(runs_root: Path, out: Path) -> Path:
     ms = {m["method_id"]: m for m in metrics}
     b0 = ms.get("b0", {})
     n_native = g(b0, "native", "test", "cine", "n"); n_streams = g(b0, "constructed", "test_n")
+    pid = {"b_file": "B-file", "b0": "B0", "b1": "B1", "b2": "B2", "b3": "B3", "b4": "B4", "b6": "B6"}
     status = {"b_file": ("run", "ok"), "b0": ("run", "ok"), "b1": ("run", "ok"), "b2": ("run", "ok"), "b3": ("run", "ok"),
               "b4": ("run · training bank not class-balanced", "warn"), "b6": ("run · adaptation, 9-class video task", "warn")}
     methods_html = "".join(
-        f'<div class="method"><span class="id">{k if k != "b_file" else "B-file"}</span><span class="name">{esc(v[1])}</span>'
-        f'<span class="why">{esc(v[2])}</span><span class="status {status[k][1]}">{esc(status[k][0])}</span></div>'
+        f'<div class="method"><span class="id">{esc(v[0])}</span><span class="name">{esc(v[1])}</span>'
+        f'<span class="why">{esc(v[2])}</span><span class="status {status[k][1]}">{esc(status[k][0])} · proposal id {pid[k]}</span></div>'
         for k, v in METHODS.items())
     samples_html = "".join(
         f'<div class="sample"><video src="samples/{fn}" controls loop muted playsinline preload="metadata"></video>'
@@ -347,7 +348,7 @@ def build(runs_root: Path, out: Path) -> Path:
 <section>
   <div><div class="eyebrow">2 · what we compare</div><h2>The seven baselines</h2></div>
   <div class="methods">{methods_html}</div>
-  <p class="muted">The proposed model (P0–P2: small TCN + semantic boundary head) is not started; the ladder exists so that it has something honest to beat.</p>
+  <p class="muted">Names are short forms; the proposal's ladder ids (B-file, B0–B6) are shown on each card. The proposed model (P0–P2: small TCN + semantic boundary head) is not started; the ladder exists so that it has something honest to beat.</p>
 </section>
 
 <section>
@@ -355,7 +356,7 @@ def build(runs_root: Path, out: Path) -> Path:
   <div class="tablewrap">{ladder_table(ms)}</div>
   <p class="muted">Native columns: untouched single-view test cines (cine label = majority of per-sample labels; fragments per minute is a stability proxy, not annotated truth). Constructed columns: two-fragment streams in a 2×2 design; boundary F1 uses one-to-one matching within ±0.25 / 0.5 / 1.0 s. Coverage and achieved risk are measured on test streams at the τ chosen on validation.</p>
   <div>
-    <h3 style="font-size:16px;margin-bottom:6px">B-file comparator (native files, known file boundaries)</h3>
+    <h3 style="font-size:16px;margin-bottom:6px">File-mean comparator (native files, known file boundaries)</h3>
     {bfile_table(ms.get("b_file"))}
   </div>
 </section>
@@ -372,8 +373,8 @@ def build(runs_root: Path, out: Path) -> Path:
 <section>
   <div><div class="eyebrow">5 · how to read it</div><h2>Three sentences for the meeting</h2></div>
   <div class="reads">
-    <div class="read"><b>File-level routing is near ceiling on curated single-view files.</b><p>B-file reaches 97.5% cine accuracy. Temporal routing must earn its keep on mixed inputs, exactly what the proposal's week-2 gate asks.</p></div>
-    <div class="read"><b>The simplest smoothing already solves two-fragment streams.</b><p>B1 lifts boundary F1 from 0.50 to 0.92 with almost no false splits, and B1 ≈ B2 ≈ B3. Any learned method must beat these on harder settings, not here.</p></div>
+    <div class="read"><b>File-level routing is near ceiling on curated single-view files.</b><p>File-mean reaches 97.5% cine accuracy. Temporal routing must earn its keep on mixed inputs, exactly what the proposal's week-2 gate asks.</p></div>
+    <div class="read"><b>The simplest smoothing already solves two-fragment streams.</b><p>Smoothing lifts boundary F1 from 0.50 to 0.92 with almost no false splits, and Smoothing ≈ HMM ≈ JS-div. Any learned method must beat these on harder settings, not here.</p></div>
     <div class="read"><b>The 5% target is not the binding one.</b><p>Near-full acceptance still yields ~1% contamination. The 1% target separates methods (coverage drops to ~0.83) and should be reported alongside.</p></div>
   </div>
 </section>
@@ -390,8 +391,8 @@ def build(runs_root: Path, out: Path) -> Path:
     <li>Constructed streams are feature-space concatenations of saved cines, not probe sweeps; nothing here transfers to natural bedside transitions.</li>
     <li>Streams have two fragments; the 4–8 fragment, 10–45 s banks from the proposal are the next step.</li>
     <li>The encoder overfits after its first epoch (best validation checkpoint = epoch 0); a lower learning-rate run is pending.</li>
-    <li>B4's training bank was not class-balanced, so minority classes are under-predicted; its row is a pipeline result, not a fair comparison yet.</li>
-    <li>B6 (STFM) ran its own nine-code, video-level task with a 15-epoch cap: test accuracy 0.939, macro-F1 0.904. It is an adaptation, not an exact reproduction, and is not comparable to the five-family table.</li>
+    <li>MS-TCN's training bank was not class-balanced, so minority classes are under-predicted; its row is a pipeline result, not a fair comparison yet.</li>
+    <li>STFM ran its own nine-code, video-level task with a 15-epoch cap: test accuracy 0.939, macro-F1 0.904. It is an adaptation, not an exact reproduction, and is not comparable to the five-family table.</li>
     <li>No patient identifiers are available; uncertainty can only be grouped by cine.</li>
   </ul>
 </section>
