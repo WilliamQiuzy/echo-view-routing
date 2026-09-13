@@ -64,8 +64,15 @@ def load_video_features(path: Path) -> VideoFeatures:
 
 
 def write_index(dir_: Path, rows: list[dict]) -> Path:
+    """Upsert rows (keyed by video_id) into the variant index so per-split extraction calls accumulate."""
     path = Path(dir_) / "index.csv"
-    pd.DataFrame(rows).to_csv(path, index=False)
+    new = pd.DataFrame(rows)
+    if path.is_file() and len(new):
+        old = pd.read_csv(path, dtype={"video_id": str})
+        old = old[~old["video_id"].isin(set(new["video_id"]))]
+        new = pd.concat([old, new], ignore_index=True)
+    tmp = path.with_suffix(".csv.tmp")
+    new.to_csv(tmp, index=False); os.replace(tmp, path)
     return path
 
 
