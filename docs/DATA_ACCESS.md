@@ -17,9 +17,9 @@ Agreements and accounts are signed by the project owner, never by an automated a
 
 | Dataset | What to do | What I need from you |
 |---|---|---|
-| EchoNet-Dynamic | https://echonet.github.io/dynamic/index.html#access — register with your Stanford Research Use Agreement (name, institution, email) | the download link Stanford emails you (do not share it further; the agreement forbids it) |
-| EchoNet-LVH | https://echonet.github.io/lvh/index.html#access — same form | download link |
-| EchoNet-Pediatric | https://echonet.github.io/pediatric/index.html#access — same form | download link |
+| EchoNet-Dynamic | access granted; hosted on Redivis (`aimi.echonet_dynamic:66s1:v1_0.echonet:fjdn`) | your Redivis API token (redivis.com → workspace → Settings → API tokens, read scope) placed in `secrets/redivis_token` on the server; then `scripts/download_echonet_redivis.py` |
+| EchoNet-LVH | access granted; Redivis table `aimi.echonet_lvh:cchq:v1_0.echonet_lvh:m0ea` | same token |
+| EchoNet-Pediatric | access granted; Azure Blob SAS URL (valid to 2026-10-13), stored in `secrets/echonet_pediatric_sas.url` on the server | downloading with azcopy into `data/echonet/pediatric/` |
 | MIMIC-IV-Echo v1.0.1 + ECHOVIEW | https://physionet.org: (1) create an account, (2) complete CITI "Data or Specimens Only Research" training, (3) apply for credentialing (reference: your advisor), (4) sign the DUA for `mimic-iv-echo` and `echoview` | your PhysioNet username; the download uses `wget --user <you> --ask-password` on the server, so you type the password in `remote/shell.sh` yourself. The DICOM set is several hundred GB; we start with the ECHOVIEW CSV plus a stratified subset of studies |
 | TMED-2 | the site now says: contact Mike Hughes, mhughes@cs.tufts.edu (Tufts) for access | the link or archive they send |
 | TTE47 | request page is offline; contact THRIVE Centre, info@thrive-centre.com, referencing the EchoFine paper (Medical Image Analysis 2026) | the link or archive they send |
