@@ -42,6 +42,36 @@ def export_layout(root: Path, classes: list[str], train: list, evals: list, stre
     (root / "splits" / "test.split1.bundle").write_text("".join(f"{sid}.txt\n" for sid in evals))
 
 
+def official_metrics_per_bank(repo: Path, ds: str, banks: dict, classes: list[str]) -> dict:
+    """Frame accuracy, edit score and F1@{10,25,50} per bank, computed with the authors' own eval.py functions."""
+    sys.path.insert(0, str(repo))
+    import importlib
+    ev = importlib.import_module("eval")  # official ms-tcn eval.py (patched for py3 only)
+    out = {}
+    for name, b in banks.items():
+        if name == "train":
+            continue
+        overlap = [0.1, 0.25, 0.5]; tp = np.zeros(3); fp = np.zeros(3); fn = np.zeros(3); correct = total = 0; edit = 0.0; n = 0
+        for r in b.recipes:
+            gt = (repo / "data" / ds / "groundTruth" / f"{r.recipe_id}.txt").read_text().split("\n")[:-1]
+            rec_path = repo / "results" / ds / "split_1" / r.recipe_id
+            if not rec_path.is_file():
+                continue
+            rec = rec_path.read_text().split("\n")[1].split()
+            m = min(len(gt), len(rec)); gt, rec = gt[:m], rec[:m]
+            correct += sum(1 for a, p in zip(gt, rec) if a == p); total += m
+            edit += ev.edit_score(rec, gt); n += 1
+            for s_, o in enumerate(overlap):
+                tp1, fp1, fn1 = ev.f_score(rec, gt, o); tp[s_] += tp1; fp[s_] += fp1; fn[s_] += fn1
+        f1 = []
+        for s_ in range(3):
+            prec = tp[s_] / max(tp[s_] + fp[s_], 1e-9); rec_ = tp[s_] / max(tp[s_] + fn[s_], 1e-9)
+            f1.append(float(np.nan_to_num(2 * prec * rec_ / max(prec + rec_, 1e-9)) * 100))
+        out[name] = {"n_streams": n, "frame_acc": 100.0 * correct / max(total, 1), "edit": edit / max(n, 1),
+                     "f1@10": f1[0], "f1@25": f1[1], "f1@50": f1[2]}
+    return out
+
+
 def main() -> None:
     ap = base_parser("Run official MS-TCN on the shared recipe banks")
     ap.add_argument("--ckpt-hash", required=True); ap.add_argument("--skip-train", action="store_true")
@@ -84,9 +114,12 @@ def main() -> None:
     env = dict(os.environ, PYTHONUNBUFFERED="1")
     if not args.skip_train:
         subprocess.run([sys.executable, "main.py", "--action=train", f"--dataset={ds}", "--split=1"], cwd=repo, env=env, check=True)
+    shutil.rmtree(repo / "results" / ds, ignore_errors=True)  # stale predictions from earlier exports
     subprocess.run([sys.executable, "main.py", "--action=predict", f"--dataset={ds}", "--split=1"], cwd=repo, env=env, check=True)
     ev = subprocess.run([sys.executable, "eval.py", f"--dataset={ds}", "--split=1"], cwd=repo, env=env, check=True, capture_output=True, text=True)
-    (run_dir / "official_eval.txt").write_text(ev.stdout); print("official eval.py on all eval streams:\n" + ev.stdout, flush=True)
+    (run_dir / "official_eval_all.txt").write_text(ev.stdout); print("official eval.py on all eval streams:\n" + ev.stdout, flush=True)
+    per_bank = official_metrics_per_bank(repo, ds, banks, classes)
+    (run_dir / "official_eval_per_bank.json").write_text(json.dumps(per_bank, indent=1)); print(json.dumps(per_bank, indent=1), flush=True)
 
     # per-stream softmax through the authors' model class (no code change), for routing metrics
     sys.path.insert(0, str(repo))
