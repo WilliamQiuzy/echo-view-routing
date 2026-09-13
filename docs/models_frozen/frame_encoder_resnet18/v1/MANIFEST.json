@@ -1,0 +1,21 @@
+{
+ "name": "frame_encoder_resnet18",
+ "version": "v1",
+ "frozen_at": "2026-09-13T19:28:37.887136+00:00",
+ "files": [
+  {
+   "file": "best.pt",
+   "bytes": 134267113,
+   "sha256": "79f4a41af6e36e353c86367b1a5c6b923ffe71ee596e6206d616180d183857db",
+   "source": "/home/william/echo-view-routing/checkpoints/20260913-033411-b0_frame_encoder-b072725b-s0/best.pt"
+  }
+ ],
+ "provenance": {
+  "run": "20260913-033411-b0_frame_encoder-b072725b-s0",
+  "ckpt_hash": "79f4a41af6e3",
+  "task": "family5",
+  "recipe": "proposal 9.2: AdamW 3e-4, wd 1e-4, bs 64, early stop; best=epoch 0"
+ },
+ "notes": "val cine macro-F1 0.977; feature cache cache/features/79f4a41af6e3",
+ "rule": "immutable: never edit, retrain into, or delete this directory; create a new version instead"
+}
