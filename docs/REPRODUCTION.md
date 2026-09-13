@@ -8,11 +8,14 @@ model or training logic. Results that do not follow this protocol are labelled *
 | Baseline | Official code | Pinned commit | Status | Deviations from the authors' recipe |
 |---|---|---|---|---|
 | STFM (Gou et al. 2026) | github.com/bgx666/stfm (MIT) | `532f60b` | seed 666 done: test acc 93.36 / macro-F1 89.49 (paper 94.07±0.66 / 90.30±1.03); seeds 100/200/300 **running** | none in code; CLI = README command (`--model_name resnet18 --batch_size 64`), defaults otherwise (100 ep, lr 1e-4, patience 20); `--num_workers 8` (CPU count only) |
-| MS-TCN (Abu Farha & Gall 2019) | github.com/yabufarha/ms-tcn (MIT+CC) | `33ed91c` | official code **training** on the class-balanced train bank (`logs/b4_official.log`) | see §MS-TCN below |
+| MS-TCN (Abu Farha & Gall 2019) | github.com/yabufarha/ms-tcn (MIT+CC) | `33ed91c` | done on EV9V banks (run `20260913-170910` / export `20260913-180443`); GTEA environment check pending (Zenodo data downloading) | see §MS-TCN below |
+| ASFormer (Yi et al. 2021) | github.com/ChinaYi/ASFormer (MIT) | `e1bbe4f` | **training** on the same banks (`logs/b5_asformer.log`) | authors' constants (120 ep, lr 5e-4, 10 layers, 64 maps, bz 1, channel mask 0.3); 2-line patch `third_party/patches/asformer-py3.patch` (NumPy `np.float`, removed deprecated `verbose=` kwarg); the L72 window-mask bug the authors mention is left as released |
+| EchoPrime (Vukadinovic et al. 2026) | github.com/echonet/EchoPrime (MIT) + released weights v1.0.0 | `03874a5` | done: released 11-view ConvNeXt-B classifier on EV9V test, five-family mapping: acc 0.959, macro-F1 0.906 (run `20260913-183600`) | externally pretrained, evaluation only; the paper's own view accuracy is on a private test set, so this is a transfer result, not a reproduction |
+| EchoViewCLIP (Song et al. 2025) | github.com/xmed-lab/EchoViewCLIP (no licence file; no released weights) | `f6a0d86` | environment (py3.10, torch 1.13+cu117, mmcv 1.7.2, apex python-only) being built; stage-1 on EV9V next | only dataset fields changed (`third_party/adapters/echoviewclip/ev9v_stage1.yaml`: 9 classes, EV9V paths); 1 GPU with accumulation 32 instead of 2 GPUs × 16 (same effective batch 128). Paper numbers are on a private 38-view dataset, so no reproduction check is possible; we report their published numbers next to ours on EV9V |
 | ResNet-18 encoder (He et al. 2016) | torchvision `resnet18`, ImageNet weights | torchvision release | done | fine-tuned on EV9V with the proposal §9.2 recipe; not an external claim |
 | File-mean, Smoothing, HMM, JS-divergence | this repo | — | done | rules, no weights; not paper reproductions |
 
-Removed from the ladder: **our compact MS-TCN re-implementation** (`echo_routing/temporal/models/mstcn.py`) — kept
+Removed from the reported set: the control rules (File-mean, Argmax, Smoothing, HMM, JS-divergence) stay in the code as sanity checks only, and **our compact MS-TCN re-implementation** (`echo_routing/temporal/models/mstcn.py`) — kept
 only as unit-tested reference code, never reported.
 
 ## STFM
