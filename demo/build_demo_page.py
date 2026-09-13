@@ -31,7 +31,7 @@ METHODS = {
     "b1": ("Smoothing", "Probability moving average + hysteresis", "Cheapest temporal baseline. A change is accepted only after it persists for 0.5 s."),
     "b2": ("HMM", "Sticky HMM, Viterbi over posteriors", "Tests whether simple state persistence is enough."),
     "b3": ("JS-div", "JS divergence of left/right windows + persistent label change", "Parameter-free semantic-change detector; the essential comparator for any learned boundary head."),
-    "b4": ("MS-TCN", "MS-TCN on frozen features", "Standard learned temporal-segmentation competitor (compact re-implementation)."),
+    "b4": ("MS-TCN", "Official MS-TCN (yabufarha/ms-tcn) on frozen features", "Standard learned temporal-segmentation competitor (compact re-implementation)."),
     "b6": ("STFM", "STFM official code (EV9V authors) via adapter", "Recent echo-specific video classifier, run unmodified at a pinned commit on its own nine-code task."),
 }
 SERIES = ["b0", "b1", "b2", "b3", "b4"]
@@ -337,8 +337,8 @@ def build(runs_root: Path, out: Path) -> Path:
     n_native = g(b0, "native", "test", "cine", "n"); n_streams = g(b0, "constructed", "test_n")
     pid = {"b_file": "B-file", "b0": "B0", "b1": "B1", "b2": "B2", "b3": "B3", "b4": "B4", "b6": "B6"}
     status = {"b_file": ("run", "ok"), "b0": ("run", "ok"), "b1": ("run", "ok"), "b2": ("run", "ok"), "b3": ("run", "ok"),
-              "b4": ("NOT a valid baseline yet — our re-implementation on an unbalanced 600-stream bank; official-code rerun pending", "warn"),
-              "b6": ("NOT a valid baseline yet — official code but only 15 of the authors' 100 epochs; full-recipe rerun in progress", "warn")}
+              "b4": ("official code @33ed91c, authors' constants, 7-line Python-3 patch; trained on 1,500 class-balanced 4–8-fragment streams", "ok"),
+              "b6": ("official code, authors' recipe; seed 666 done (test acc 93.36 / F1 89.49 vs paper 94.07±0.66 / 90.30±1.03); seeds 100/200/300 running", "ok")}
     def links(k):
         parts = []
         for label, target in LINKS[k]:
@@ -417,8 +417,8 @@ def build(runs_root: Path, out: Path) -> Path:
     <li>Constructed streams are feature-space concatenations of saved cines, not probe sweeps; nothing here transfers to natural bedside transitions.</li>
     <li>Streams have two fragments; the 4–8 fragment, 10–45 s banks from the proposal are the next step.</li>
     <li>The encoder overfits after its first epoch (best validation checkpoint = epoch 0); a lower learning-rate run is pending.</li>
-    <li>MS-TCN row: our compact re-implementation (3 stages × 6 layers, not the official 4 × 10), trained on an unbalanced 600-stream bank. It is a pipeline check only and must not be cited as the MS-TCN baseline until the official code is run under a matched protocol.</li>
-    <li>STFM: official code, unmodified, but with 15 of the authors' 100 epochs (test acc 0.939, macro-F1 0.904 on its nine-code task). Not a reproduction until the full recipe is run and matched against the paper's reported numbers; that run is in progress.</li>
+    <li>MS-TCN row: the authors' code and constants (4 stages × 10 layers × 64, batch 1, lr 5e-4, 50 epochs) with a recorded 7-line Python-3 patch; features zero-padded to its 2048-d input. Trained on 1,500 class-balanced 4–8-fragment streams from the train split. Its own eval.py on the test pair bank: frame acc 99.2, edit 99.2, F1@50 98.9.</li>
+    <li>STFM: official code, authors' recipe (100-epoch cap, early stop). Seed 666: test acc 93.36, macro-F1 89.49 on its nine-code task, against the paper's 94.07 ± 0.66 / 90.30 ± 1.03 (Table 5, ResNet-18). Seeds 100/200/300 are running for the mean ± std comparison.</li>
     <li>No patient identifiers are available; uncertainty can only be grouped by cine.</li>
   </ul>
 </section>
