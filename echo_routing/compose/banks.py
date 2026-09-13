@@ -37,6 +37,8 @@ def pair_bank(idx: pd.DataFrame, split: str, cfg: dict) -> Bank:
     rng = np.random.default_rng(int(rc["seed"]) + SPLIT_SEED_OFFSET[split])
     rec = make_pair_recipes(_pool(idx, split), int(rc["n_per_cell"]), rng, edit_variant=rc["edit_variant"],
                             min_len=int(rc["min_len"]), max_len=int(rc["max_len"]), reuse=(split == "train"))
+    # stream ids must be unique across splits (they key cached predictions): prefix with the split
+    rec = [Recipe(f"pairs_{split}_{r.recipe_id}", r.cell, r.fragments) for r in rec]
     return Bank(f"pairs_{split}", split, tuple(rec))
 
 

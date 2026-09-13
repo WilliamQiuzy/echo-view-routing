@@ -115,6 +115,8 @@ def test_banks_are_deterministic_and_disjoint_per_split():
                         "label_index": [i % 5 for i in range(120)], "n_samples": [40] * 120})
     a, b = pair_bank(idx, "test", cfg), pair_bank(idx, "test", cfg)
     assert a.recipes == b.recipes and a.bank_id == "pairs_test"
+    assert all(r.recipe_id.startswith("pairs_test_") for r in a.recipes)
+    v = pair_bank(idx, "validation", cfg); assert not ({r.recipe_id for r in v.recipes} & {r.recipe_id for r in a.recipes})
     m = multi_bank(idx, "validation", cfg); assert len(m.recipes) == 6 and all(r.recipe_id.startswith("multi_validation_") for r in m.recipes)
     n = native_bank(idx, "test"); assert len(n.recipes) == 30 and n.recipes[0].recipe_id == "v90"
     ids = {f.video_id for r in m.recipes for f in r.fragments}; assert ids <= set(idx[idx.split == "validation"].video_id)
