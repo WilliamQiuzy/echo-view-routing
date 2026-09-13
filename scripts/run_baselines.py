@@ -52,7 +52,7 @@ def main() -> None:
             cache[key] = load_video_features(variant_dir(paths.cache_root, args.ckpt_hash, variant) / f"{video_id}.npz")
         return cache[key]
 
-    native = {s: [NativeCine(r.video_id, int(r.label_index), loader(r.video_id, "orig").prob)
+    native = {s: [NativeCine(r.video_id, int(r.label_index), loader(r.video_id, "orig").prob, loader(r.video_id, "orig").feat)
                   for r in idx[idx["split"] == s].itertuples(index=False)] for s in ("validation", "test")}
     num_classes = native["validation"][0].prob.shape[1]
     streams = {}

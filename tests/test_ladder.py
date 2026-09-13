@@ -72,3 +72,19 @@ def test_b_file_and_report(world, tmp_path):
     assert len(bfile_rows([bf, b1])) == 3
     out = write_ladder([bf, b1], tmp_path)
     assert out.is_file() and "b1" in out.read_text() and (tmp_path / "b_file.csv").is_file()
+
+
+def test_b4_decoder_via_registry(world, tmp_path):
+    torch = pytest.importorskip("torch")
+    from echo_routing.temporal.baselines.b4_mstcn import train_mstcn
+    from echo_routing.temporal.baselines.registry import decode_with_prob
+    cfg, natives, val, test = world
+    cfg4 = dict(cfg, mstcn={"stages": 1, "layers": 2, "channels": 8, "lr": 0.01, "epochs": 2, "batch_size": 4, "checkpoint": None})
+    best = train_mstcn(val, test, C, cfg4, tmp_path / "b4", torch.device("cpu"))
+    cfg4["mstcn"]["checkpoint"] = str(best)
+    labels, p = decode_with_prob("b4", test[0].prob, cfg4, test[0].feat)
+    assert labels.shape == (test[0].prob.shape[0],) and p.shape == test[0].prob.shape
+    with pytest.raises(KeyError):
+        decode_with_prob("b4", test[0].prob, cfg, test[0].feat)
+    m = evaluate_method("b4", natives[:5], natives[5:10], val[:4], test[:4], C, cfg4)
+    assert m["method_id"] == "b4"
