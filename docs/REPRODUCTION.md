@@ -7,8 +7,8 @@ model or training logic. Results that do not follow this protocol are labelled *
 
 | Baseline | Official code | Pinned commit | Status | Deviations from the authors' recipe |
 |---|---|---|---|---|
-| STFM (Gou et al. 2026) | github.com/bgx666/stfm (MIT) | `532f60b` | full recipe **running** (`logs/stfm_full.log`, run `20260913-165110`) | none in code; CLI = README command (`--model_name resnet18 --batch_size 64`), defaults otherwise (100 ep, lr 1e-4, patience 20); `--num_workers 8` (CPU count only) |
-| MS-TCN (Abu Farha & Gall 2019) | github.com/yabufarha/ms-tcn (MIT+CC) | `33ed91c` | porting | see §MS-TCN below |
+| STFM (Gou et al. 2026) | github.com/bgx666/stfm (MIT) | `532f60b` | seed 666 done: test acc 93.36 / macro-F1 89.49 (paper 94.07±0.66 / 90.30±1.03); seeds 100/200/300 **running** | none in code; CLI = README command (`--model_name resnet18 --batch_size 64`), defaults otherwise (100 ep, lr 1e-4, patience 20); `--num_workers 8` (CPU count only) |
+| MS-TCN (Abu Farha & Gall 2019) | github.com/yabufarha/ms-tcn (MIT+CC) | `33ed91c` | official code **training** on the class-balanced train bank (`logs/b4_official.log`) | see §MS-TCN below |
 | ResNet-18 encoder (He et al. 2016) | torchvision `resnet18`, ImageNet weights | torchvision release | done | fine-tuned on EV9V with the proposal §9.2 recipe; not an external claim |
 | File-mean, Smoothing, HMM, JS-divergence | this repo | — | done | rules, no weights; not paper reproductions |
 
