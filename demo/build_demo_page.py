@@ -12,6 +12,19 @@ REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO))
 from echo_routing.evaluate.report import collect_metrics  # noqa: E402
 
+REPO = "https://github.com/WilliamQiuzy/echo-view-routing/blob/main/"
+LINKS = {
+    "b_file": [("code", REPO + "echo_routing/temporal/baselines/b_file.py"), ("weights", "uses the Argmax encoder checkpoint")],
+    "b0": [("paper", "https://arxiv.org/abs/1512.03385"), ("code", REPO + "echo_routing/features/encoder.py"),
+           ("ImageNet weights", "https://pytorch.org/vision/stable/models/generated/torchvision.models.resnet18.html"), ("fine-tuned weights", "trained here on EV9V; checkpoint on the training server, not yet published")],
+    "b1": [("code", REPO + "echo_routing/temporal/baselines/b1_smoothing.py"), ("weights", "none; rule on top of the Argmax encoder")],
+    "b2": [("code", REPO + "echo_routing/temporal/baselines/b2_hmm.py"), ("weights", "none; rule on top of the Argmax encoder")],
+    "b3": [("code", REPO + "echo_routing/temporal/baselines/b3_js_divergence.py"), ("weights", "none; rule on top of the Argmax encoder")],
+    "b4": [("paper", "https://arxiv.org/abs/1903.01945"), ("official code", "https://github.com/yabufarha/ms-tcn"), ("our re-implementation", REPO + "echo_routing/temporal/models/mstcn.py"),
+           ("weights", "no public weights used; trained here on EV9V features, checkpoint on the training server")],
+    "b6": [("paper", "https://arxiv.org/abs/2606.17437"), ("official code (MIT)", "https://github.com/bgx666/stfm"), ("adapter", REPO + "scripts/run_stfm.py"),
+           ("weights", "authors have not released weights; trained here from ImageNet init on EV9V"), ("dataset", "https://huggingface.co/datasets/bgx666/EV9V")],
+}
 METHODS = {
     "b_file": ("File-mean", "Per-file mean probability; whole-file accept or defer", "Operational comparator: what an archive curator can already do with known file boundaries."),
     "b0": ("Argmax", "ResNet-18 frame classifier, per-frame argmax", "The encoder alone. Establishes classification quality and raw flicker with no temporal processing."),
@@ -167,7 +180,9 @@ def ladder_table(ms: dict[str, dict]) -> str:
     for m in SERIES:
         if m not in ms: continue
         d = ms[m]; c = g(d, "constructed", "cells", default={}); b = g(d, "constructed", "boundary", default={})
-        rows.append([f'<b>{METHODS[m][0]}</b> <span class="muted">{esc(METHODS[m][1])}</span>',
+        code = next((u for l, u in LINKS[m] if u.startswith("http") and "code" in l or "re-implementation" in l), None)
+        name = f'<a href="{code}" target="_blank" rel="noopener">{esc(METHODS[m][0])}</a>' if code else esc(METHODS[m][0])
+        rows.append([f'<b>{name}</b> <span class="muted">{esc(METHODS[m][1])}</span>',
                      f(g(d, "native", "test", "cine", "macro_f1")), f(g(d, "native", "test", "cine", "balanced_accuracy")), f(g(d, "native", "test", "frame", "accuracy")),
                      f(g(d, "native", "test", "stability", "fragments_per_minute_mean"), 1),
                      f(g(b, "0.25", "f1")), f(g(b, "0.5", "f1")), f(g(b, "1.0", "f1")),
@@ -212,9 +227,10 @@ header .lede{color:var(--ink-2);max-width:72ch}
 section{display:grid;gap:16px}
 .methods{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
 .method{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:14px 16px;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-content:start}
-.method .id{grid-row:span 3;font-family:"IBM Plex Mono",ui-monospace,monospace;font-weight:500;font-size:13px;color:var(--accent-ink);background:var(--chip);border-radius:4px;padding:2px 8px;height:fit-content}
+.method .id{grid-row:span 4;font-family:"IBM Plex Mono",ui-monospace,monospace;font-weight:500;font-size:13px;color:var(--accent-ink);background:var(--chip);border-radius:4px;padding:2px 8px;height:fit-content}
 .method .name{font-weight:600}
 .method .why{color:var(--ink-2);font-size:14px}
+.method .links{font-size:12.5px;color:var(--ink-2);line-height:1.6} .method .links a{color:var(--accent-ink);text-decoration:underline;text-underline-offset:2px} .method .nolink{color:var(--muted)}
 .method .status{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;color:var(--muted)}
 .method .status.ok{color:var(--ok)} .method .status.warn{color:var(--warn)}
 .tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:var(--surface)}
@@ -222,6 +238,7 @@ table{border-collapse:collapse;width:100%;font-size:13.5px;font-variant-numeric:
 th,td{padding:9px 12px;text-align:right;border-bottom:1px solid var(--line-2);white-space:nowrap}
 th{font-family:"IBM Plex Mono",ui-monospace,monospace;font-weight:500;font-size:11.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);background:var(--surface);position:sticky;top:0}
 td:first-child,th:first-child{text-align:left}
+td a{color:var(--accent-ink)}
 tbody tr:last-child td{border-bottom:0}
 td .muted{font-size:12.5px}
 .muted{color:var(--muted)} .num{font-family:"IBM Plex Mono",ui-monospace,monospace;font-weight:500}
@@ -321,9 +338,17 @@ def build(runs_root: Path, out: Path) -> Path:
     pid = {"b_file": "B-file", "b0": "B0", "b1": "B1", "b2": "B2", "b3": "B3", "b4": "B4", "b6": "B6"}
     status = {"b_file": ("run", "ok"), "b0": ("run", "ok"), "b1": ("run", "ok"), "b2": ("run", "ok"), "b3": ("run", "ok"),
               "b4": ("run · training bank not class-balanced", "warn"), "b6": ("run · adaptation, 9-class video task", "warn")}
+    def links(k):
+        parts = []
+        for label, target in LINKS[k]:
+            if target.startswith("http"):
+                parts.append(f'<a href="{target}" target="_blank" rel="noopener">{esc(label)}</a>')
+            else:
+                parts.append(f'<span class="nolink">{esc(label)}: {esc(target)}</span>')
+        return '<span class="links">' + " · ".join(parts) + '</span>'
     methods_html = "".join(
         f'<div class="method"><span class="id">{esc(v[0])}</span><span class="name">{esc(v[1])}</span>'
-        f'<span class="why">{esc(v[2])}</span><span class="status {status[k][1]}">{esc(status[k][0])} · proposal id {pid[k]}</span></div>'
+        f'<span class="why">{esc(v[2])}</span>{links(k)}<span class="status {status[k][1]}">{esc(status[k][0])} · proposal id {pid[k]}</span></div>'
         for k, v in METHODS.items())
     samples_html = "".join(
         f'<div class="sample"><video src="samples/{fn}" controls loop muted playsinline preload="metadata"></video>'
