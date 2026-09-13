@@ -28,6 +28,8 @@ def test_recipes_cover_all_cells_without_reuse(pool):
     used = [f.video_id for r in rec for f in r.fragments]
     assert len(used) == len(set(used))
     for r in rec:
+        assert r.fragments[0].label == lab[r.fragments[0].video_id] and r.fragments[1].label == lab[r.fragments[1].video_id]
+    for r in rec:
         a, b = r.fragments
         assert (a.label == b.label) == r.cell.startswith("same")
         assert (b.variant == "gamma090") == r.cell.endswith("edit")
@@ -65,3 +67,22 @@ def test_render_rejects_out_of_range_fragment(pool):
 def test_pool_needs_two_labels():
     with pytest.raises(ValueError):
         make_pair_recipes(Pool.from_index(["a"], [0], [40]), 1, np.random.default_rng(0))
+
+
+def test_recipes_balanced_across_cells_with_small_classes():
+    ids = [f"v{i}" for i in range(200)]
+    labels = [0] * 120 + [1] * 60 + [2] * 20  # imbalanced like EV9V
+    pool = Pool.from_index(ids, labels, [40] * 200)
+    rec = make_pair_recipes(pool, n_per_cell=100, rng=np.random.default_rng(0), min_len=10, max_len=20)
+    counts = {c: sum(r.cell == c for r in rec) for c in CELLS}
+    assert all(counts[c] >= 15 for c in CELLS), counts  # every cell populated, incl. the last one
+    used = [f.video_id for r in rec for f in r.fragments]
+    assert len(used) == len(set(used))
+    assert all((r.fragments[0].label == r.fragments[1].label) == r.cell.startswith("same") for r in rec)
+
+
+def test_recipes_skip_short_cines_and_allow_reuse():
+    pool = Pool.from_index(["a", "b", "c", "d"], [0, 0, 1, 1], [5, 40, 40, 40])
+    rec = make_pair_recipes(pool, 5, np.random.default_rng(0), min_len=10, max_len=20, reuse=True)
+    assert "a" not in {f.video_id for r in rec for f in r.fragments}
+    assert {r.cell for r in rec} == set(CELLS)
