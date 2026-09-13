@@ -36,7 +36,7 @@ EV9V (`bgx666/EV9V`, CC-BY-4.0): 5,138 cines, nine raw view codes, official pati
 | B2 | sticky HMM, Viterbi over posteriors | implemented |
 | B3 | JS divergence between left/right windows + persistent label change | implemented |
 | B4 | MS-TCN on frozen features | implemented (compact re-implementation) |
-| B6 | STFM official code (EV9V authors) via subprocess adapter | adapter implemented; vendored at pinned commit |
+| B6 | STFM official code (EV9V authors) via subprocess adapter | run (adaptation: 15-epoch cap) |
 | P0–P2 | proposed TCN + semantic boundary head | not started |
 
 Everything downstream of feature extraction runs on CPU from the feature cache.
@@ -55,8 +55,9 @@ validation split at a 5% contamination target and frozen. Full table and figure:
 | B4 MS-TCN | 0.568 | 0.915 | 0.7 | 0.779 | 0.000 · 0.017 | 0.067 · 0.117 | 0.020 | 0.000 |
 
 B-file (per-file mean probability): cine accuracy 0.975; at the 5% target coverage 0.998 with achieved risk 0.019.
-B4 is not yet a fair comparison (minority classes under-represented in its 600-stream training bank). B6 (STFM)
-is run through the adapter; see `docs/EXPERIMENT_LEDGER.md`.
+B4 is not yet a fair comparison (minority classes under-represented in its 600-stream training bank). B6 (official STFM code at
+commit 532f60b, run through the adapter on its own nine-code video-level task, 15-epoch cap): test accuracy 0.939, macro-F1 0.904;
+not directly comparable to the five-family table. See `docs/EXPERIMENT_LEDGER.md`.
 
 ## Quickstart
 
