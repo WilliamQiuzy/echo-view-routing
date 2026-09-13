@@ -1,14 +1,8 @@
 #!/usr/bin/env bash
-# Push the code tree (never data/runs/checkpoints) from the Mac to the server project root.
-# Excluded paths are protected from --delete on the receiver, so server-side data is never removed.
-# third_party/*/ covers every vendored clone (stfm, ms-tcn, ...); only third_party/README.md and patches/ are synced.
+# Push git-tracked files (code, configs, docs, patches) from the Mac to the server project root.
+# Uses `git ls-files` so ONLY tracked paths are ever written; nothing on the server is deleted (server-only
+# directories such as data/, runs/, checkpoints/, cache/, logs/, envs/, bin/, secrets/, third_party/<clones>/ are untouched).
 source "$(dirname "${BASH_SOURCE[0]}")/common.sh"
 rssh "mkdir -p '$ECHO_REMOTE_ROOT'"
-rsync -az --delete \
-  --exclude '.git/' --exclude '.venv/' --exclude '.env' \
-  --exclude 'data/' --exclude 'runs/' --exclude 'checkpoints/' --exclude 'cache/' --exclude 'logs/' \
-  --exclude 'third_party/*/' --exclude 'demo/samples/' \
-  --exclude '__pycache__/' --exclude '*.pyc' --exclude '.pytest_cache/' --exclude '.DS_Store' \
-  --exclude '*.tar' --exclude '*.npz' --exclude '*.pt' --exclude '*.pth' \
-  "$REPO_ROOT/" "$ECHO_SSH_ALIAS:$ECHO_REMOTE_ROOT/"
-echo "synced $REPO_ROOT -> $ECHO_SSH_ALIAS:$ECHO_REMOTE_ROOT"
+git -C "$REPO_ROOT" ls-files -z | rsync -az --from0 --files-from=- "$REPO_ROOT/" "$ECHO_SSH_ALIAS:$ECHO_REMOTE_ROOT/"
+echo "synced tracked files $REPO_ROOT -> $ECHO_SSH_ALIAS:$ECHO_REMOTE_ROOT (no deletions)"
