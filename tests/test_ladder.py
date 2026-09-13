@@ -88,3 +88,21 @@ def test_b4_decoder_via_registry(world, tmp_path):
         decode_with_prob("b4", test[0].prob, cfg, test[0].feat)
     m = evaluate_method("b4", natives[:5], natives[5:10], val[:4], test[:4], C, cfg4)
     assert m["method_id"] == "b4"
+
+
+def test_collect_metrics_merges_newest_per_method(tmp_path):
+    import json, os, time
+    from echo_routing.evaluate.report import collect_metrics
+    r1 = tmp_path / "20260101-000000-baselines-x-s0" / "metrics"; r2 = tmp_path / "20260102-000000-baselines-y-s0" / "metrics"
+    r1.mkdir(parents=True); r2.mkdir(parents=True)
+    (r1 / "b0.json").write_text(json.dumps({"method_id": "b0", "ckpt_hash": "h", "v": 1}))
+    (r1 / "b1.json").write_text(json.dumps({"method_id": "b1", "ckpt_hash": "h", "v": 1}))
+    time.sleep(0.01)
+    (r2 / "b4.json").write_text(json.dumps({"method_id": "b4", "ckpt_hash": "h", "v": 2}))
+    (r2 / "b1.json").write_text(json.dumps({"method_id": "b1", "ckpt_hash": "h", "v": 2}))
+    (r2 / "b0.json").write_text(json.dumps({"method_id": "b0", "ckpt_hash": "other", "v": 9}))
+    os.utime(r2 / "b4.json", None)
+    merged, h = collect_metrics(tmp_path)
+    assert h in ("h", "other")
+    merged, h = collect_metrics(tmp_path, "h")
+    assert [m["method_id"] for m in merged] == ["b0", "b1", "b4"] and merged[1]["v"] == 2 and merged[0]["v"] == 1

@@ -14,7 +14,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO))
 
-from echo_routing.evaluate.report import bfile_rows, ladder_rows, to_markdown  # noqa: E402
+from echo_routing.evaluate.report import bfile_rows, collect_metrics, ladder_rows, to_markdown  # noqa: E402
 
 
 def newest_run(runs_root: Path) -> Path:
@@ -67,11 +67,19 @@ def plot(metrics: list[dict], out: Path) -> Path | None:
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(); ap.add_argument("--run", default=None); ap.add_argument("--no-fig", action="store_true")
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--run", default=None, help="one run dir; default merges all ladder runs sharing the newest ckpt_hash")
+    ap.add_argument("--ckpt-hash", default=None); ap.add_argument("--no-fig", action="store_true")
     a = ap.parse_args()
-    run = Path(a.run) if a.run else newest_run(REPO / "runs")
-    metrics = [json.loads(p.read_text()) for p in sorted((run / "metrics").glob("*.json"))]
-    print(f"# Demo — {run.name}\n")
+    if a.run:
+        run = Path(a.run); metrics = [json.loads(p.read_text()) for p in sorted((run / "metrics").glob("*.json"))]
+        title = run.name
+    else:
+        metrics, h = collect_metrics(REPO / "runs", a.ckpt_hash)
+        if not metrics:
+            raise SystemExit("no ladder metrics under runs/; run remote/pull_results.sh first")
+        run = REPO / "runs" / "_reports"; run.mkdir(exist_ok=True); title = f"merged ladder for encoder {h} ({len(metrics)} methods)"
+    print(f"# Demo — {title}\n")
     print(to_markdown(ladder_rows(metrics), "Temporal routing ladder (test; frozen validation-selected 5% policy)"))
     print(to_markdown(bfile_rows(metrics), "B-file operational comparator (native files)"))
     print(four_cell_table(metrics))

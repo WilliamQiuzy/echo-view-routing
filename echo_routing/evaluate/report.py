@@ -81,3 +81,20 @@ def write_ladder(metrics: Sequence[dict], out_dir: Path, header: str = "") -> Pa
 
 def load_metrics_dir(metrics_dir: Path) -> list[dict]:
     return [json.loads(p.read_text()) for p in sorted(Path(metrics_dir).glob("*.json"))]
+
+
+def collect_metrics(runs_root: Path, ckpt_hash: str | None = None) -> tuple[list[dict], str | None]:
+    """Merge metrics JSONs across all ladder run dirs; newest file per method wins.
+    If ckpt_hash is None, use the hash of the newest metrics file found."""
+    files = sorted(Path(runs_root).glob("*-baselines-*/metrics/*.json"), key=lambda p: p.stat().st_mtime)
+    loaded = [(p, json.loads(p.read_text())) for p in files]
+    if not loaded:
+        return [], None
+    if ckpt_hash is None:
+        ckpt_hash = loaded[-1][1].get("ckpt_hash")
+    by_method: dict[str, dict] = {}
+    for _, m in loaded:
+        if m.get("ckpt_hash") == ckpt_hash:
+            by_method[m["method_id"]] = m  # later (newer) overrides
+    order = ["b_file", "b0", "b1", "b2", "b3", "b4", "b5", "b6", "p0", "p1", "p2"]
+    return [by_method[k] for k in order if k in by_method] + [v for k, v in by_method.items() if k not in order], ckpt_hash
