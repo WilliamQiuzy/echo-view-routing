@@ -75,3 +75,17 @@ def test_extract_video_and_split(tiny_images, tmp_path: Path):
     # second call is a cache hit (no overwrite) and keeps the index consistent
     extract_split(model, dev, rows, "family5_index", tmp_path, "abc", "gamma090", 10.0, 32, batch_size=8, num_workers=0)
     assert read_index(out)["n_samples"].tolist() == [4, 3, 10]
+
+
+def test_corrupt_cache_is_re_extracted(tiny_images, tmp_path: Path):
+    from echo_routing.features.cache import cached_n_samples
+    root, recs = tiny_images
+    model = FrameEncoder(2, pretrained=False).eval(); dev = torch.device("cpu")
+    rows = pd.DataFrame([{"video_id": r.video_id, "split": r.split, "raw_label": "X", "family5_index": r.label_index,
+                          "frames_dir": str(r.frames_dir), "n_frames": r.n_frames, "fps_playback": 30.0} for r in recs])
+    out = variant_dir(tmp_path, "h", "orig"); out.mkdir(parents=True)
+    (out / "va.npz").write_bytes(b"partial")  # simulate a killed write
+    assert cached_n_samples(out / "va.npz") is None and cached_n_samples(out / "nope.npz") is None
+    extract_split(model, dev, rows, "family5_index", tmp_path, "h", "orig", 10.0, 32, batch_size=8, num_workers=0)
+    assert cached_n_samples(out / "va.npz") == 4
+    assert not list(out.glob(".*.tmp.npz"))

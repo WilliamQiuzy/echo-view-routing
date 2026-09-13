@@ -13,7 +13,7 @@ import pandas as pd
 import torch
 from torch.utils.data import DataLoader, Dataset
 
-from echo_routing.features.cache import VideoFeatures, save_video_features, variant_dir, write_index, write_meta
+from echo_routing.features.cache import VideoFeatures, cached_n_samples, save_video_features, variant_dir, write_index, write_meta
 from echo_routing.features.encoder import FrameEncoder
 from echo_routing.features.sampling import stride_indices
 from echo_routing.ingest.frames import list_frame_paths, load_frame
@@ -92,7 +92,8 @@ def extract_split(model: FrameEncoder, device, rows: pd.DataFrame, label_col: st
     model.eval().to(device)
     rows = rows.reset_index(drop=True)
     jobs = [_make_job(i, r.video_id, Path(r.frames_dir), int(r.n_frames), float(r.fps_playback), target_hz)
-            for i, r in enumerate(rows.itertuples(index=False)) if overwrite or not (out / f"{r.video_id}.npz").is_file()]
+            for i, r in enumerate(rows.itertuples(index=False))
+            if overwrite or cached_n_samples(out / f"{r.video_id}.npz") is None]  # unreadable == missing
     fps = float(rows["fps_playback"].iloc[0]) if len(rows) else 30.0
     done = {"n": 0}
 
@@ -105,8 +106,9 @@ def extract_split(model: FrameEncoder, device, rows: pd.DataFrame, label_col: st
         _run(model, device, jobs, image_size, gamma, fps, batch_size, num_workers, on_done)
     index_rows = []
     for r in rows.itertuples(index=False):
-        with np.load(out / f"{r.video_id}.npz") as z:
-            n = int(z["prob"].shape[0])
+        n = cached_n_samples(out / f"{r.video_id}.npz")
+        if n is None:
+            raise RuntimeError(f"cache file unreadable after extraction: {out / r.video_id}.npz")
         index_rows.append({"video_id": r.video_id, "split": r.split, "raw_label": r.raw_label,
                            "label_index": int(getattr(r, label_col)), "n_samples": n, "path": str(out / f"{r.video_id}.npz")})
     write_index(out, index_rows)
