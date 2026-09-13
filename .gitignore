@@ -1,0 +1,36 @@
+# secrets / local env
+.env
+*.pem
+# python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+.mypy_cache/
+.ruff_cache/
+# data & heavy artifacts (server-only)
+data/
+runs/
+checkpoints/
+cache/
+logs/
+*.tar
+*.npz
+*.parquet
+*.pt
+*.pth
+*.ckpt
+# keep tiny demo samples (added explicitly with git add -f)
+demo/samples/*
+!demo/samples/.gitkeep
+!demo/samples/README.md
+# third party clones (server-side); vendored via submodule/pin only
+third_party/stfm/
+# notebooks
+.ipynb_checkpoints/
+# os
+.DS_Store
