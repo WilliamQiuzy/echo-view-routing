@@ -57,6 +57,19 @@ each cine used at most once. There is no published MS-TCN number on EV9V, so acc
 trains to convergence under its own recipe and its own `eval.py` metrics (frame accuracy, edit score, F1@{10,25,50})
 are reported next to ours.
 
+## Environment checks on the authors' own benchmark (GTEA)
+
+MS-TCN and ASFormer have no published echo results, so the code + patch + environment are validated on GTEA (features and
+labels from the authors' Zenodo record 3625992, four official splits), comparing with the papers' four-split averages:
+
+| Model | Paper (GTEA, avg of 4 splits): F1@10 / F1@25 / F1@50 / Edit / Acc | Our run | Status |
+|---|---|---|---|
+| MS-TCN (CVPR 2019, Table: MS-TCN, I3D features) | 85.8 / 83.4 / 69.8 / 79.0 / 76.3 | split 1 (train 50 ep with the pinned code + py3 patch): 83.0 / 80.3 / 63.0 / 75.4 / 76.1; splits 2–4 running | pending 4-split average |
+| ASFormer (BMVC 2021, Table 7) | 90.1 / 88.8 / 79.2 / 84.6 / 79.7 | authors' released GTEA models → predict all 4 splits → their `eval.py --split=0` | pending |
+
+Acceptance: the four-split average within ~1 point of the paper on Edit/Acc and within a few points on F1 (MS-TCN training is
+seeded but GPU non-determinism remains); larger gaps are investigated before the EV9V numbers are reported.
+
 ## Ledger discipline
 
 Every run records commit hashes (ours and the vendored repo), the exact command line, seeds, config hash and the
