@@ -11,6 +11,8 @@ plus {variant}/index.csv (video_id, split, raw_label, label_index, n_samples, pa
 from __future__ import annotations
 
 import json
+import os
+import zipfile
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -39,9 +41,21 @@ def variant_dir(cache_root: Path, ckpt_hash: str, variant: str) -> Path:
 def save_video_features(dir_: Path, vf: VideoFeatures) -> Path:
     dir_ = Path(dir_); dir_.mkdir(parents=True, exist_ok=True)
     path = dir_ / f"{vf.video_id}.npz"
-    np.savez_compressed(path, frame_idx=vf.frame_idx.astype(np.int32), t_sec=vf.t_sec.astype(np.float32),
-                        feat=vf.feat.astype(np.float16), prob=vf.prob.astype(np.float32), logit=vf.logit.astype(np.float32))
+    tmp = dir_ / f".{vf.video_id}.{os.getpid()}.tmp.npz"
+    with tmp.open("wb") as fh:  # write-to-temp + atomic replace: a killed process never leaves a partial file
+        np.savez_compressed(fh, frame_idx=vf.frame_idx.astype(np.int32), t_sec=vf.t_sec.astype(np.float32),
+                            feat=vf.feat.astype(np.float16), prob=vf.prob.astype(np.float32), logit=vf.logit.astype(np.float32))
+    os.replace(tmp, path)
     return path
+
+
+def cached_n_samples(path: Path) -> int | None:
+    """Number of cached samples, or None if the file is missing or unreadable (partial write)."""
+    try:
+        with np.load(Path(path)) as z:
+            return int(z["prob"].shape[0])
+    except (FileNotFoundError, OSError, ValueError, KeyError, zipfile.BadZipFile):
+        return None
 
 
 def load_video_features(path: Path) -> VideoFeatures:
