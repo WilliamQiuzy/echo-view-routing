@@ -41,6 +41,23 @@ EV9V (`bgx666/EV9V`, CC-BY-4.0): 5,138 cines, nine raw view codes, official pati
 
 Everything downstream of feature extraction runs on CPU from the feature cache.
 
+## Current results (2026-09-13, encoder `79f4a41af6e3`, family5 task)
+
+Test split: 800 native cines and 240 balanced constructed two-fragment streams; thresholds selected on the
+validation split at a 5% contamination target and frozen. Full table and figure: `docs/results/2026-09-13_ladder/`.
+
+| method | cine macro-F1 | frame acc | fragments/min | boundary F1@0.5s | false split same/none · same/edit | missed diff/none · diff/edit | coverage@5% | achieved risk |
+|---|---|---|---|---|---|---|---|---|
+| B0 argmax | 0.957 | 0.951 | 23.1 | 0.499 | 0.033 · 0.133 | 0.000 · 0.000 | 0.967 | 0.007 |
+| B1 smoothing | 0.949 | 0.968 | 2.4 | 0.918 | 0.000 · 0.017 | 0.017 · 0.017 | 0.999 | 0.014 |
+| B2 HMM | 0.946 | 0.967 | 2.4 | 0.906 | 0.000 · 0.000 | 0.000 · 0.000 | 0.996 | 0.009 |
+| B3 JS divergence | 0.946 | 0.963 | 3.6 | 0.913 | 0.000 · 0.017 | 0.000 · 0.000 | 0.989 | 0.010 |
+| B4 MS-TCN | 0.568 | 0.915 | 0.7 | 0.779 | 0.000 · 0.017 | 0.067 · 0.117 | 0.020 | 0.000 |
+
+B-file (per-file mean probability): cine accuracy 0.975; at the 5% target coverage 0.998 with achieved risk 0.019.
+B4 is not yet a fair comparison (minority classes under-represented in its 600-stream training bank). B6 (STFM)
+is run through the adapter; see `docs/EXPERIMENT_LEDGER.md`.
+
 ## Quickstart
 
 ```bash
