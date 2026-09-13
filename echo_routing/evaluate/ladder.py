@@ -102,13 +102,20 @@ def select_policy(method: str, val_streams: Sequence[Stream], cfg: dict) -> dict
 
 
 def evaluate_method(method: str, native_val: Sequence[NativeCine], native_test: Sequence[NativeCine],
-                    val_streams: Sequence[Stream], test_streams: Sequence[Stream], num_classes: int, cfg: dict) -> dict:
+                    val_streams: Sequence[Stream], test_streams: Sequence[Stream], num_classes: int, cfg: dict,
+                    test_multi: Sequence[Stream] | None = None) -> dict:
     hz = cfg["sampling"]["target_hz"]
     policy = select_policy(method, val_streams, cfg)
     tau = policy[str(cfg["policy"]["target_risk"])]["tau"]
     test = constructed_metrics(method, test_streams, hz, cfg, tau)
     curve = risk_coverage_points(test["_scores"], test["_wrong"])
+    multi = None
+    if test_multi:
+        mm = constructed_metrics(method, test_multi, hz, cfg, tau)
+        multi = {"test_n": len(test_multi), "cells": mm["cells"], "boundary": mm["boundary"], "routing": mm["routing"],
+                 "note": "secondary setting: 4-8 fragments, cines reused across streams; same frozen tau as the pair bank"}
     return {
+        "constructed_multi": multi,
         "method_id": method, "task_classes": num_classes,
         "policy": {"selected_on": "validation", "target_risk": cfg["policy"]["target_risk"], "by_target": policy,
                    "score": cfg["policy"]["score"], "min_len_samples": cfg["policy"]["min_len"]},
