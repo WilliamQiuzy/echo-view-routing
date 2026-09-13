@@ -40,3 +40,9 @@ policy:
   target_risk: 0.05
   extra_targets: [0.01, 0.10]
   boundary_tolerances_s: [0.25, 0.5, 1.0]
+multi:                        # class-balanced multi-fragment banks (proposal §5.3)
+  n_train: 1500
+  n_eval: 120
+  n_fragments: [4, 8]
+  edit_prob: 0.5
+  p_same_next: 0.35

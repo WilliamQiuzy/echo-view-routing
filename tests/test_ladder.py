@@ -82,12 +82,29 @@ def test_b4_decoder_via_registry(world, tmp_path):
     cfg4 = dict(cfg, mstcn={"stages": 1, "layers": 2, "channels": 8, "lr": 0.01, "epochs": 2, "batch_size": 4, "checkpoint": None})
     best = train_mstcn(val, test, C, cfg4, tmp_path / "b4", torch.device("cpu"))
     cfg4["mstcn"]["checkpoint"] = str(best)
-    labels, p = decode_with_prob("b4", test[0].prob, cfg4, test[0].feat)
+    labels, p = decode_with_prob("b4_reimpl", test[0].prob, cfg4, test[0].feat)
     assert labels.shape == (test[0].prob.shape[0],) and p.shape == test[0].prob.shape
     with pytest.raises(KeyError):
-        decode_with_prob("b4", test[0].prob, cfg, test[0].feat)
-    m = evaluate_method("b4", natives[:5], natives[5:10], val[:4], test[:4], C, cfg4)
-    assert m["method_id"] == "b4"
+        decode_with_prob("b4_reimpl", test[0].prob, cfg, test[0].feat)
+    m = evaluate_method("b4_reimpl", natives[:5], natives[5:10], val[:4], test[:4], C, cfg4)
+    assert m["method_id"] == "b4_reimpl"
+
+
+def test_b4_official_lookup_by_stream_id(world, tmp_path):
+    from echo_routing.errors import CacheMissError
+    from echo_routing.temporal.baselines.registry import decode_with_prob
+    cfg, natives, val, test = world
+    pred_dir = tmp_path / "pred"; pred_dir.mkdir()
+    for s in test[:2]:
+        np.savez(pred_dir / f"{s.recipe.recipe_id}.npz", prob=s.prob)
+    np.savez(pred_dir / f"{natives[0].video_id}.npz", prob=natives[0].prob)
+    cfgo = dict(cfg, mstcn_official={"pred_dir": str(pred_dir)})
+    labels, p = decode_with_prob("b4", test[0].prob, cfgo, test[0].feat, test[0].recipe.recipe_id)
+    assert np.array_equal(p, test[0].prob) and labels.shape == (test[0].prob.shape[0],)
+    with pytest.raises(CacheMissError):
+        decode_with_prob("b4", test[2].prob, cfgo, test[2].feat, test[2].recipe.recipe_id)
+    with pytest.raises(KeyError):
+        decode_with_prob("b4", test[0].prob, cfg, test[0].feat, test[0].recipe.recipe_id)
 
 
 def test_collect_metrics_merges_newest_per_method(tmp_path):

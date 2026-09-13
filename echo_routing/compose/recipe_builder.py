@@ -107,3 +107,32 @@ def recipe_to_dict(r: Recipe) -> dict:
 
 def recipe_from_dict(d: dict) -> Recipe:
     return Recipe(d["recipe_id"], d["cell"], tuple(Fragment(**f) for f in d["fragments"]))
+
+
+def make_multi_recipes(pool: Pool, n_streams: int, rng: np.random.Generator, n_fragments: tuple[int, int] = (4, 8),
+                       edit_variant: str = "gamma090", edit_prob: float = 0.5, min_len: int = 10, max_len: int = 40,
+                       reuse: bool = True, p_same_next: float = 0.35) -> list[Recipe]:
+    """Class-balanced multi-fragment streams (proposal §5.3). Labels are drawn uniformly over classes, not by
+    availability; with probability `p_same_next` the next fragment keeps the current label (a same-view join).
+    Each fragment is independently edited with probability `edit_prob`. A cine never appears twice within one stream;
+    reuse=False additionally uses each cine at most once across the whole bank (only feasible for small banks)."""
+    labels = sorted(pool.by_label)
+    if len(labels) < 2:
+        raise ValueError("need at least two labels")
+    avail = {lab: [(v, n) for v, n in pool.by_label[lab] if n >= min_len] for lab in labels}
+    used: set[str] = set(); recipes: list[Recipe] = []
+    for k in range(n_streams):
+        n_frag = int(rng.integers(n_fragments[0], n_fragments[1] + 1)); frags: list[Fragment] = []; lab = labels[rng.integers(len(labels))]
+        in_stream: set[str] = set()
+        for j in range(n_frag):
+            if j > 0:
+                lab = lab if rng.random() < p_same_next else labels[(labels.index(lab) + 1 + rng.integers(len(labels) - 1)) % len(labels)]
+            cands = [(v, n) for v, n in avail[lab] if v not in in_stream and (reuse or v not in used)]
+            if not cands:
+                break
+            v, n = cands[rng.integers(len(cands))]; used.add(v); in_stream.add(v)
+            variant = edit_variant if rng.random() < edit_prob else "orig"
+            frags.append(_fragment(rng, v, n, lab, variant, min_len, max_len))
+        if len(frags) >= 2:
+            recipes.append(Recipe(f"multi_{k:04d}", "multi", tuple(frags)))
+    return recipes
