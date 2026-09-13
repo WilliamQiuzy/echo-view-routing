@@ -337,7 +337,8 @@ def build(runs_root: Path, out: Path) -> Path:
     n_native = g(b0, "native", "test", "cine", "n"); n_streams = g(b0, "constructed", "test_n")
     pid = {"b_file": "B-file", "b0": "B0", "b1": "B1", "b2": "B2", "b3": "B3", "b4": "B4", "b6": "B6"}
     status = {"b_file": ("run", "ok"), "b0": ("run", "ok"), "b1": ("run", "ok"), "b2": ("run", "ok"), "b3": ("run", "ok"),
-              "b4": ("run · training bank not class-balanced", "warn"), "b6": ("run · adaptation, 9-class video task", "warn")}
+              "b4": ("NOT a valid baseline yet — our re-implementation on an unbalanced 600-stream bank; official-code rerun pending", "warn"),
+              "b6": ("NOT a valid baseline yet — official code but only 15 of the authors' 100 epochs; full-recipe rerun in progress", "warn")}
     def links(k):
         parts = []
         for label, target in LINKS[k]:
@@ -416,8 +417,8 @@ def build(runs_root: Path, out: Path) -> Path:
     <li>Constructed streams are feature-space concatenations of saved cines, not probe sweeps; nothing here transfers to natural bedside transitions.</li>
     <li>Streams have two fragments; the 4–8 fragment, 10–45 s banks from the proposal are the next step.</li>
     <li>The encoder overfits after its first epoch (best validation checkpoint = epoch 0); a lower learning-rate run is pending.</li>
-    <li>MS-TCN's training bank was not class-balanced, so minority classes are under-predicted; its row is a pipeline result, not a fair comparison yet.</li>
-    <li>STFM ran its own nine-code, video-level task with a 15-epoch cap: test accuracy 0.939, macro-F1 0.904. It is an adaptation, not an exact reproduction, and is not comparable to the five-family table.</li>
+    <li>MS-TCN row: our compact re-implementation (3 stages × 6 layers, not the official 4 × 10), trained on an unbalanced 600-stream bank. It is a pipeline check only and must not be cited as the MS-TCN baseline until the official code is run under a matched protocol.</li>
+    <li>STFM: official code, unmodified, but with 15 of the authors' 100 epochs (test acc 0.939, macro-F1 0.904 on its nine-code task). Not a reproduction until the full recipe is run and matched against the paper's reported numbers; that run is in progress.</li>
     <li>No patient identifiers are available; uncertainty can only be grouped by cine.</li>
   </ul>
 </section>
