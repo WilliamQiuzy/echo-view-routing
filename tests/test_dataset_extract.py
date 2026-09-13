@@ -89,3 +89,11 @@ def test_corrupt_cache_is_re_extracted(tiny_images, tmp_path: Path):
     extract_split(model, dev, rows, "family5_index", tmp_path, "h", "orig", 10.0, 32, batch_size=8, num_workers=0)
     assert cached_n_samples(out / "va.npz") == 4
     assert not list(out.glob(".*.tmp.npz"))
+
+
+def test_index_upserts_across_splits(tmp_path: Path):
+    from echo_routing.features.cache import read_index, write_index
+    write_index(tmp_path, [{"video_id": "a", "split": "train", "n_samples": 3}, {"video_id": "b", "split": "train", "n_samples": 4}])
+    write_index(tmp_path, [{"video_id": "c", "split": "validation", "n_samples": 5}, {"video_id": "b", "split": "train", "n_samples": 9}])
+    idx = read_index(tmp_path).set_index("video_id")
+    assert sorted(idx.index) == ["a", "b", "c"] and idx.loc["b", "n_samples"] == 9
