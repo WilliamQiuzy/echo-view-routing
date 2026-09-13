@@ -7,7 +7,7 @@ model or training logic. Results that do not follow this protocol are labelled *
 
 | Baseline | Official code | Pinned commit | Status | Deviations from the authors' recipe |
 |---|---|---|---|---|
-| STFM (Gou et al. 2026) | github.com/bgx666/stfm (MIT) | `532f60b` | seed 666 done: test acc 93.36 / macro-F1 89.49 (paper 94.07±0.66 / 90.30±1.03); seeds 100/200/300 **running** | none in code; CLI = README command (`--model_name resnet18 --batch_size 64`), defaults otherwise (100 ep, lr 1e-4, patience 20); `--num_workers 8` (CPU count only) |
+| STFM (Gou et al. 2026) | github.com/bgx666/stfm (MIT) | `532f60b` | **reproduced**: paper seeds 100/200/300 → test acc 93.77 ± 0.17, macro-F1 89.88 ± 0.29 (paper 94.07 ± 0.66 / 90.30 ± 1.03); seed 666 extra: 93.36 / 89.49 | none in code; CLI = README command (`--model_name resnet18 --batch_size 64`), defaults otherwise (100 ep, lr 1e-4, patience 20); `--num_workers 8` (CPU count only) |
 | MS-TCN (Abu Farha & Gall 2019) | github.com/yabufarha/ms-tcn (MIT+CC) | `33ed91c` | environment verified on GTEA (4-split average matches the paper); done on EV9V banks (run `20260913-170910` / export `20260913-180443`) | see §MS-TCN below |
 | ASFormer (Yi et al. 2021) | github.com/ChinaYi/ASFormer (MIT) | `e1bbe4f` | environment verified on GTEA (released models reproduce Table 7 exactly); **training** on the EV9V banks (`logs/b5_asformer.log`) | authors' constants (120 ep, lr 5e-4, 10 layers, 64 maps, bz 1, channel mask 0.3); 2-line patch `third_party/patches/asformer-py3.patch` (NumPy `np.float`, removed deprecated `verbose=` kwarg); the L72 window-mask bug the authors mention is left as released |
 | EchoPrime (Vukadinovic et al. 2026) | github.com/echonet/EchoPrime (MIT) + released weights v1.0.0 | `03874a5` | done: released 11-view ConvNeXt-B classifier on EV9V test, five-family mapping: acc 0.959, macro-F1 0.906 (run `20260913-183600`) | externally pretrained, evaluation only; the paper's own view accuracy is on a private test set, so this is a transfer result, not a reproduction |
@@ -32,6 +32,7 @@ only as unit-tested reference code, never reported.
   queued after the seed-666 run so the comparison uses the paper's seed set.
 - Acceptance: test accuracy and macro-F1 of the `model.ckpt` selected by their own validation loop, mean ± std over
   seeds 100/200/300, within one std of the Table 5 ResNet-18 row counts as reproduced; a larger gap is reported as such.
+- **Result (2026-09-13):** seeds 100/200/300 give test acc 93.92 / 93.58 / 93.81 (mean 93.77 ± 0.17) and macro-F1 90.14 / 89.57 / 89.92 (mean 89.88 ± 0.29); early stopping ended the runs at epochs 26/28/29. Both means sit within the paper's one-std band (acc 0.30 below, F1 0.42 below the paper mean). Reproduced; checkpoints frozen under `models_frozen/stfm_official/`.
 
 ## MS-TCN
 
