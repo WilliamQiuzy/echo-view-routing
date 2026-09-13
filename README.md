@@ -15,7 +15,7 @@ and distinguish **semantic view changes** (A4C → PLAX) from **nuisance discont
 | `configs/` | `base.yaml`, `labels.yaml` (frozen label ontology), `experiments/*.yaml` |
 | `remote/` | Mac → Nebius helpers: `sync_code.sh`, `run.sh`, `status.sh`, `pull_results.sh`, `kill.sh`, `shell.sh` |
 | `tests/` | pytest; `make test` runs the CPU suite (markers `gpu`/`data` are server-only) |
-| `docs/` | architecture, runbook, label-mapping notes, experiment ledger |
+| `docs/` | architecture, runbook, label-mapping notes, experiment ledger; `docs/proposal/` holds the research proposal (EN) and discussion brief (ZH) |
 | `demo/` | Mac-side demo (`demo_cli.py`) + a few sample videos under `demo/samples/` (gitignored) |
 | `data/ runs/ checkpoints/ cache/ logs/` | server-only, gitignored |
 
