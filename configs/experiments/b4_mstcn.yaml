@@ -1,0 +1,3 @@
+extends: ../base.yaml
+run_name: b4_mstcn
+mstcn: {stages: 3, layers: 6, channels: 64, lr: 0.001, epochs: 40, batch_size: 8, n_train_per_cell: 150}
