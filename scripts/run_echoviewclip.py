@@ -21,13 +21,14 @@ PINNED = "f6a0d86074d7c906ae41546cd5f09f8b94da432a"
 
 def main() -> None:
     ap = base_parser("EchoViewCLIP stage-1 on EV9V"); ap.add_argument("--only-test", action="store_true"); ap.add_argument("--resume", default=None)
+    ap.add_argument("--adapter-config", default="ev9v_stage1.yaml", help="file under third_party/adapters/echoviewclip/")
     args = ap.parse_args(); cfg = load_cfg(args); paths = load_paths()
     repo = paths.repo_root / "third_party" / "EchoViewCLIP"; py = paths.repo_root / "envs" / "echoviewclip" / "bin" / "python"
     head = subprocess.run(["git", "-C", str(repo), "rev-parse", "HEAD"], capture_output=True, text=True, check=True).stdout.strip()
     if head != PINNED:
         raise SystemExit(f"EchoViewCLIP commit {head} != pinned {PINNED}")
-    run_dir = new_run_dir(cfg, "b7_echoviewclip_stage1")
-    cfg_path = paths.repo_root / "third_party" / "adapters" / "echoviewclip" / "ev9v_stage1.yaml"
+    run_dir = new_run_dir(cfg, "b7_echoviewclip_test" if args.only_test else "b7_echoviewclip_stage1")
+    cfg_path = paths.repo_root / "third_party" / "adapters" / "echoviewclip" / args.adapter_config
     cmd = [str(py), "-m", "torch.distributed.launch", "--nproc_per_node=1", "--master_port=29264", "main_1.py", "-cfg", str(cfg_path), "--output", str(run_dir / "output")]
     if args.only_test:
         cmd += ["--only_test"]
