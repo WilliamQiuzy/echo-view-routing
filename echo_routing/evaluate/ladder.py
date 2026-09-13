@@ -41,7 +41,7 @@ def _per_sample_routing(prob: np.ndarray, labels: np.ndarray, truth: np.ndarray,
 def native_metrics(method: str, cines: Sequence[NativeCine], num_classes: int, hz: float, cfg: dict) -> dict:
     frame_true, frame_pred, cine_true, cine_pred, fpm = [], [], [], [], []
     for c in cines:
-        labels, _ = decode_with_prob(method, c.prob, cfg, c.feat)
+        labels, _ = decode_with_prob(method, c.prob, cfg, c.feat, c.video_id)
         frame_true.append(np.full(labels.size, c.label)); frame_pred.append(labels)
         cine_true.append(c.label); cine_pred.append(int(np.bincount(labels, minlength=num_classes).argmax()))
         fpm.append(fragments_per_minute(labels, hz))
@@ -59,7 +59,7 @@ def constructed_metrics(method: str, streams: Sequence[Stream], hz: float, cfg: 
     all_pred, all_true = {t: ([], []) for t in tols}, None
     scores, wrongs, weights = [], [], []
     for s in streams:
-        labels, score_prob = decode_with_prob(method, s.prob, cfg, s.feat)
+        labels, score_prob = decode_with_prob(method, s.prob, cfg, s.feat, s.recipe.recipe_id)
         pred_b = boundaries_from_labels(labels)
         cell = per_cell.setdefault(s.recipe.cell, {"n": 0, "false_splits": 0, "joins": 0, "missed": 0, "sem": 0, "frame_acc": []})
         cell["n"] += 1; cell["frame_acc"].append(float((labels == s.labels).mean()))

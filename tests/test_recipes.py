@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 
 from echo_routing.features.cache import VideoFeatures
-from echo_routing.compose.recipe_builder import CELLS, Pool, make_pair_recipes, recipe_from_dict, recipe_to_dict
+from echo_routing.compose.recipe_builder import CELLS, Pool, make_multi_recipes, make_pair_recipes, recipe_from_dict, recipe_to_dict
 from echo_routing.compose.stream_assembler import render
 from echo_routing.errors import RecipeError
 
@@ -86,3 +86,36 @@ def test_recipes_skip_short_cines_and_allow_reuse():
     rec = make_pair_recipes(pool, 5, np.random.default_rng(0), min_len=10, max_len=20, reuse=True)
     assert "a" not in {f.video_id for r in rec for f in r.fragments}
     assert {r.cell for r in rec} == set(CELLS)
+
+
+def test_multi_recipes_class_balanced_and_bounded():
+    ids = [f"v{i}" for i in range(300)]; labels = [0] * 200 + [1] * 60 + [2] * 30 + [3] * 10
+    pool = Pool.from_index(ids, labels, [40] * 300)
+    rec = make_multi_recipes(pool, 200, np.random.default_rng(0), n_fragments=(4, 8), min_len=10, max_len=20, reuse=True)
+    assert len(rec) == 200 and all(4 <= len(r.fragments) <= 8 for r in rec)
+    counts = np.bincount([f.label for r in rec for f in r.fragments], minlength=4)
+    assert counts.min() > 0.6 * counts.max()  # near-uniform over classes despite 20:1 availability
+    assert any(f.variant == "gamma090" for r in rec for f in r.fragments)
+    lens = [f.end - f.start for r in rec for f in r.fragments]; assert min(lens) >= 10 and max(lens) <= 20
+
+
+def test_multi_recipes_no_reuse_uses_each_cine_once():
+    pool = Pool.from_index([f"v{i}" for i in range(40)], [i % 2 for i in range(40)], [40] * 40)
+    rec = make_multi_recipes(pool, 10, np.random.default_rng(1), n_fragments=(4, 4), reuse=False)
+    used = [f.video_id for r in rec for f in r.fragments]
+    assert len(used) == len(set(used)) and len(rec) == 10
+
+
+def test_banks_are_deterministic_and_disjoint_per_split():
+    import pandas as pd
+    from echo_routing.compose.banks import multi_bank, native_bank, pair_bank
+    from echo_routing.config import load_config
+    cfg = load_config("configs/base.yaml", overrides={"recipes": {"n_per_cell": 5, "min_len": 10, "max_len": 20}, "multi": {"n_eval": 6, "n_train": 8}})
+    idx = pd.DataFrame({"video_id": [f"v{i}" for i in range(120)], "split": ["train"] * 60 + ["validation"] * 30 + ["test"] * 30,
+                        "label_index": [i % 5 for i in range(120)], "n_samples": [40] * 120})
+    a, b = pair_bank(idx, "test", cfg), pair_bank(idx, "test", cfg)
+    assert a.recipes == b.recipes and a.bank_id == "pairs_test"
+    m = multi_bank(idx, "validation", cfg); assert len(m.recipes) == 6 and all(r.recipe_id.startswith("multi_validation_") for r in m.recipes)
+    n = native_bank(idx, "test"); assert len(n.recipes) == 30 and n.recipes[0].recipe_id == "v90"
+    ids = {f.video_id for r in m.recipes for f in r.fragments}; assert ids <= set(idx[idx.split == "validation"].video_id)
+    assert all(len({f.video_id for f in r.fragments}) == len(r.fragments) for r in m.recipes)  # no cine twice within a stream
