@@ -48,7 +48,7 @@ def test_fixed_dataset_deterministic(tiny_images):
 
 
 def test_encoder_checkpoint_roundtrip(tmp_path: Path):
-    m = FrameEncoder(num_classes=2, backbone="resnet18", pretrained=False)
+    m = FrameEncoder(num_classes=2, backbone="resnet18", pretrained=False).eval()
     out = m(torch.zeros(2, 3, 32, 32)); assert out.shape == (2, 2)
     logits, feats = m.forward_with_features(torch.zeros(1, 3, 32, 32)); assert feats.shape == (1, 512)
     p = save_checkpoint(tmp_path / "c.pt", m, {"epoch": 3, "classes": ["a", "b"]})
