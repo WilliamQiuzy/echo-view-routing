@@ -21,8 +21,8 @@ Agreements and accounts are signed by the project owner, never by an automated a
 | EchoNet-LVH | downloaded via Redivis → `data/echonet/lvh/` (68.7 GB zip, extracting) | done |
 | EchoNet-Pediatric | downloaded with azcopy from the Stanford AIMI SAS link → `data/echonet/pediatric/` (7,810 AVI files, 1.5 GB) | done |
 | MIMIC-IV-Echo v1.0.1 + ECHOVIEW | https://physionet.org: (1) create an account, (2) complete CITI "Data or Specimens Only Research" training, (3) apply for credentialing (reference: your advisor), (4) sign the DUA for `mimic-iv-echo` and `echoview` | your PhysioNet username; the download uses `wget --user <you> --ask-password` on the server, so you type the password in `remote/shell.sh` yourself. The DICOM set is several hundred GB; we start with the ECHOVIEW CSV plus a stratified subset of studies |
-| TMED-2 | the site now says: contact Mike Hughes, mhughes@cs.tufts.edu (Tufts) for access | the link or archive they send |
-| TTE47 | request page is offline; contact THRIVE Centre, info@thrive-centre.com, referencing the EchoFine paper (Medical Image Analysis 2026) | the link or archive they send |
+| TMED-2 | **not requested for now** (decision 2026-09-13: only MIMIC-IV-Echo is being applied for); contact would be Mike Hughes, mhughes@cs.tufts.edu | — |
+| TTE47 | **not requested for now** (same decision); contact would be THRIVE Centre, info@thrive-centre.com | — |
 
 ## Not downloaded on purpose
 

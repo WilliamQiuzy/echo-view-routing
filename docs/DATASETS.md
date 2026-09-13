@@ -23,6 +23,7 @@ read from the official pages on 2026-09-13; "unverified" means the page could no
 
 - Tier 1 is the working set. Order of adoption: EV9V (now) → CAMUS (public, next) → EchoNet families (after the
   Stanford agreement) → MIMIC-IV-Echo (after credentialing; gates the natural-transition arm).
+- Access applications: only MIMIC-IV-Echo (+ ECHOVIEW) is being applied for at this stage; TMED-2 and TTE47 are not requested.
 - Tier 2 stays in the plan as a **frame-level appendix** (encoder recognition under source shift). Static images are
   never repeated into pseudo-videos and never enter temporal training, banks, or temporal metrics.
 - Tier 3 (ECHOVIEW) is used only to pick candidate MIMIC recordings for expert review.
