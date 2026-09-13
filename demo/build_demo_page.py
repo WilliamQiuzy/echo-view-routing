@@ -12,17 +12,17 @@ REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO))
 from echo_routing.evaluate.report import collect_metrics  # noqa: E402
 
-REPO = "https://github.com/WilliamQiuzy/echo-view-routing/blob/main/"
+GH = "https://github.com/WilliamQiuzy/echo-view-routing/blob/main/"
 LINKS = {
-    "b_file": [("code", REPO + "echo_routing/temporal/baselines/b_file.py"), ("weights", "uses the Argmax encoder checkpoint")],
-    "b0": [("paper", "https://arxiv.org/abs/1512.03385"), ("code", REPO + "echo_routing/features/encoder.py"),
+    "b_file": [("code", GH + "echo_routing/temporal/baselines/b_file.py"), ("weights", "uses the Argmax encoder checkpoint")],
+    "b0": [("paper", "https://arxiv.org/abs/1512.03385"), ("code", GH + "echo_routing/features/encoder.py"),
            ("ImageNet weights", "https://pytorch.org/vision/stable/models/generated/torchvision.models.resnet18.html"), ("fine-tuned weights", "trained here on EV9V; checkpoint on the training server, not yet published")],
-    "b1": [("code", REPO + "echo_routing/temporal/baselines/b1_smoothing.py"), ("weights", "none; rule on top of the Argmax encoder")],
-    "b2": [("code", REPO + "echo_routing/temporal/baselines/b2_hmm.py"), ("weights", "none; rule on top of the Argmax encoder")],
-    "b3": [("code", REPO + "echo_routing/temporal/baselines/b3_js_divergence.py"), ("weights", "none; rule on top of the Argmax encoder")],
-    "b4": [("paper", "https://arxiv.org/abs/1903.01945"), ("official code", "https://github.com/yabufarha/ms-tcn"), ("our re-implementation", REPO + "echo_routing/temporal/models/mstcn.py"),
+    "b1": [("code", GH + "echo_routing/temporal/baselines/b1_smoothing.py"), ("weights", "none; rule on top of the Argmax encoder")],
+    "b2": [("code", GH + "echo_routing/temporal/baselines/b2_hmm.py"), ("weights", "none; rule on top of the Argmax encoder")],
+    "b3": [("code", GH + "echo_routing/temporal/baselines/b3_js_divergence.py"), ("weights", "none; rule on top of the Argmax encoder")],
+    "b4": [("paper", "https://arxiv.org/abs/1903.01945"), ("official code", "https://github.com/yabufarha/ms-tcn"), ("our re-implementation", GH + "echo_routing/temporal/models/mstcn.py"),
            ("weights", "no public weights used; trained here on EV9V features, checkpoint on the training server")],
-    "b6": [("paper", "https://arxiv.org/abs/2606.17437"), ("official code (MIT)", "https://github.com/bgx666/stfm"), ("adapter", REPO + "scripts/run_stfm.py"),
+    "b6": [("paper", "https://arxiv.org/abs/2606.17437"), ("official code (MIT)", "https://github.com/bgx666/stfm"), ("adapter", GH + "scripts/run_stfm.py"),
            ("weights", "authors have not released weights; trained here from ImageNet init on EV9V"), ("dataset", "https://huggingface.co/datasets/bgx666/EV9V")],
 }
 METHODS = {
