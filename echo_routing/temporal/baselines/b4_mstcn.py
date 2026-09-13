@@ -63,3 +63,25 @@ def evaluate_frame_accuracy(model: MultiStageTCN, streams: Sequence[Stream], dev
     for s in streams:
         pred = predict_prob(model, s.feat, device).argmax(1); correct += int((pred == s.labels).sum()); total += s.labels.size
     return correct / max(total, 1)
+
+
+_MODEL_CACHE: dict[str, tuple[MultiStageTCN, torch.device]] = {}
+
+
+def mstcn_decoder(cfg: dict):
+    """Decoder closure for the registry: uses cfg["mstcn"]["checkpoint"]; MS-TCN posteriors are used for scoring."""
+    ckpt = cfg.get("mstcn", {}).get("checkpoint")
+    if not ckpt:
+        raise KeyError("b4 requires cfg['mstcn']['checkpoint'] (use --set mstcn.checkpoint=<path>)")
+    if ckpt not in _MODEL_CACHE:
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        _MODEL_CACHE[ckpt] = (load_mstcn(Path(ckpt), device), device)
+    model, device = _MODEL_CACHE[ckpt]
+
+    def _decode(prob, feat, cfg):
+        if feat is None:
+            raise ValueError("b4 needs frozen features")
+        p = predict_prob(model, np.asarray(feat, dtype=np.float32), device)
+        return p.argmax(1), p
+
+    return _decode

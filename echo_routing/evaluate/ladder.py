@@ -13,7 +13,7 @@ from echo_routing.evaluate.metrics_routing import coverage_and_risk
 from echo_routing.evaluate.metrics_stability import fragments_per_minute
 from echo_routing.temporal.baselines.b0_frame_argmax import clip_majority
 from echo_routing.temporal.baselines.b_file import file_score
-from echo_routing.temporal.baselines.registry import decode
+from echo_routing.temporal.baselines.registry import decode_with_prob
 from echo_routing.temporal.decode_select import route, select_threshold
 from echo_routing.temporal.segments import boundaries_from_labels
 
@@ -23,6 +23,7 @@ class NativeCine:
     video_id: str
     label: int
     prob: np.ndarray
+    feat: np.ndarray | None = None
 
 
 def _per_sample_routing(prob: np.ndarray, labels: np.ndarray, truth: np.ndarray, cfg: dict) -> tuple[np.ndarray, np.ndarray, list]:
@@ -40,7 +41,7 @@ def _per_sample_routing(prob: np.ndarray, labels: np.ndarray, truth: np.ndarray,
 def native_metrics(method: str, cines: Sequence[NativeCine], num_classes: int, hz: float, cfg: dict) -> dict:
     frame_true, frame_pred, cine_true, cine_pred, fpm = [], [], [], [], []
     for c in cines:
-        labels = decode(method, c.prob, cfg)
+        labels, _ = decode_with_prob(method, c.prob, cfg, c.feat)
         frame_true.append(np.full(labels.size, c.label)); frame_pred.append(labels)
         cine_true.append(c.label); cine_pred.append(int(np.bincount(labels, minlength=num_classes).argmax()))
         fpm.append(fragments_per_minute(labels, hz))
@@ -58,7 +59,7 @@ def constructed_metrics(method: str, streams: Sequence[Stream], hz: float, cfg: 
     all_pred, all_true = {t: ([], []) for t in tols}, None
     scores, wrongs, weights = [], [], []
     for s in streams:
-        labels = decode(method, s.prob, cfg)
+        labels, score_prob = decode_with_prob(method, s.prob, cfg, s.feat)
         pred_b = boundaries_from_labels(labels)
         cell = per_cell.setdefault(s.recipe.cell, {"n": 0, "false_splits": 0, "joins": 0, "missed": 0, "sem": 0, "frame_acc": []})
         cell["n"] += 1; cell["frame_acc"].append(float((labels == s.labels).mean()))
@@ -70,7 +71,7 @@ def constructed_metrics(method: str, streams: Sequence[Stream], hz: float, cfg: 
         cell["missed"] += sum(1 for b in s.semantic_boundaries if not np.any(np.abs(pred_b - b) <= tol_samples))
         for t in tols:
             all_pred[t][0].append(pred_b / hz + 1000.0 * len(all_pred[t][0])); all_pred[t][1].append(s.semantic_boundaries / hz + 1000.0 * len(all_pred[t][1]))
-        sc, wr, _ = _per_sample_routing(s.prob, labels, s.labels, cfg)
+        sc, wr, _ = _per_sample_routing(score_prob, labels, s.labels, cfg)
         scores.append(sc); wrongs.append(wr); weights.append(np.ones(sc.size))
     boundary = {}
     for t in tols:
