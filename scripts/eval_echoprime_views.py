@@ -36,7 +36,10 @@ def main() -> None:
     ap.add_argument("--frame", default="first", choices=["first", "middle"])
     args = ap.parse_args(); cfg = load_cfg(args); paths = load_paths()
     repo = paths.repo_root / "third_party" / "EchoPrime"
+    import os
+    cwd = os.getcwd(); os.chdir(repo)  # their utils open assets/*.json relative to the repo root
     sys.path.insert(0, str(repo)); import utils  # noqa: E402  (official EchoPrime utils: COARSE_VIEWS, crop_and_scale)
+    os.chdir(cwd)
     assert list(utils.COARSE_VIEWS) == list(TO_FAMILY), "COARSE_VIEWS order changed"
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     if device.type == "cuda":
