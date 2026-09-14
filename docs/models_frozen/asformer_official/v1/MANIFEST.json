@@ -1,0 +1,42 @@
+{
+ "name": "asformer_official",
+ "version": "v1",
+ "frozen_at": "2026-09-14T06:38:11.385016+00:00",
+ "files": [
+  {
+   "file": "epoch-120.model",
+   "bytes": 4714699,
+   "sha256": "05120712efffde00a33e576d70a3fb1a29f2d7d77185c05f5187f0f98ac9a27c",
+   "source": "/home/william/echo-view-routing/third_party/ASFormer/models_ev9v_79f4a41af6e3/ev9v_79f4a41af6e3/split_1/epoch-120.model"
+  },
+  {
+   "file": "official_eval_per_bank.json",
+   "bytes": 1165,
+   "sha256": "31da2734a7449033e3646da15b2fac6bee6d655284d7296de4e48b09b383c9ca",
+   "source": "/home/william/echo-view-routing/runs/20260913-183307-b5_asformer_official-404264a3-s0/official_eval_per_bank.json"
+  },
+  {
+   "file": "multi_train_79f4a41af6e3.json",
+   "bytes": 1324409,
+   "sha256": "8d974bdd9f3d3b46b06d17502b0c7733885b66984de1d5e5a03f512cb5093b42",
+   "source": "/home/william/echo-view-routing/data/manifests/recipes/multi_train_79f4a41af6e3.json"
+  },
+  {
+   "file": "asformer-py3.patch",
+   "bytes": 947,
+   "sha256": "288340c59a060a52a2b881d3b373092af862d66e20139bd0b36be073c0172c52",
+   "source": "/home/william/echo-view-routing/third_party/patches/asformer-py3.patch"
+  }
+ ],
+ "provenance": {
+  "code": "github.com/ChinaYi/ASFormer",
+  "commit": "e1bbe4f3ed083748f91467c51a63ac2a8b9277ad",
+  "run": "runs/20260913-183307-b5_asformer_official-404264a3-s0",
+  "encoder_ckpt_hash": "79f4a41af6e3",
+  "features": "512-d ResNet-18 zero-padded to 2048",
+  "constants": "120 ep, lr 5e-4, 10 layers, 64 maps, bz 1, channel mask 0.3; L72 window-mask left as released",
+  "gtea_check": "authors released GTEA models reproduce Table 7 exactly (90.1/88.8/79.2, edit 84.6, acc 79.7)"
+ },
+ "notes": "EV9V test (authors eval.py): pairs frame acc 99.33 / edit 99.12 / F1@50 98.48; multi 91.22 / 88.20 / 86.16; native 97.99 / 96.81 / 94.05",
+ "rule": "immutable: never edit, retrain into, or delete this directory; create a new version instead"
+}

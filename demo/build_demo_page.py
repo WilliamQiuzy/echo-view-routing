@@ -22,6 +22,8 @@ LINKS = {
     "b3": [("code", GH + "echo_routing/temporal/baselines/b3_js_divergence.py"), ("weights", "none; rule on top of the Argmax encoder")],
     "b4": [("paper", "https://arxiv.org/abs/1903.01945"), ("official code", "https://github.com/yabufarha/ms-tcn"), ("our re-implementation", GH + "echo_routing/temporal/models/mstcn.py"),
            ("weights", "no public weights used; trained here on EV9V features, checkpoint on the training server")],
+    "b5": [("paper", "https://arxiv.org/abs/2110.08568"), ("official code", "https://github.com/ChinaYi/ASFormer"), ("driver + patch", GH + "scripts/run_asformer_official.py"),
+           ("weights", "none published for echo; trained here with the authors' constants, checkpoint frozen on the server and in the GitHub release")],
     "b6": [("paper", "https://arxiv.org/abs/2606.17437"), ("official code (MIT)", "https://github.com/bgx666/stfm"), ("adapter", GH + "scripts/run_stfm.py"),
            ("weights", "authors have not released weights; trained here from ImageNet init on EV9V"), ("dataset", "https://huggingface.co/datasets/bgx666/EV9V")],
 }
@@ -32,9 +34,10 @@ METHODS = {
     "b2": ("HMM", "Sticky HMM, Viterbi over posteriors", "Tests whether simple state persistence is enough."),
     "b3": ("JS-div", "JS divergence of left/right windows + persistent label change", "Parameter-free semantic-change detector; the essential comparator for any learned boundary head."),
     "b4": ("MS-TCN", "Official MS-TCN (yabufarha/ms-tcn) on frozen features", "Standard learned temporal-segmentation competitor (compact re-implementation)."),
+    "b5": ("ASFormer", "Official ASFormer on frozen features", "Transformer temporal-segmentation competitor, run from the authors' code with their constants."),
     "b6": ("STFM", "STFM official code (EV9V authors) via adapter", "Recent echo-specific video classifier, run unmodified at a pinned commit on its own nine-code task."),
 }
-SERIES = ["b0", "b1", "b2", "b3", "b4"]
+SERIES = ["b0", "b1", "b2", "b3", "b4", "b5"]
 CELLS = [("same_none", "same view · no edit", "false_split_rate", "false split"),
          ("same_edit", "same view · gamma edit", "false_split_rate", "false split"),
          ("diff_none", "different view · no edit", "missed_rate", "missed change"),
@@ -124,7 +127,7 @@ def curve_chart(ms: dict[str, dict]) -> str:
     return "".join(out)
 
 
-ROW_ORDER = ["b_file", "b0", "b1", "b2", "b3", "b4"]
+ROW_ORDER = ["b_file", "b0", "b1", "b2", "b3", "b4", "b5"]
 
 
 def streams_section(streams_json: Path) -> str:
@@ -207,11 +210,11 @@ def bfile_table(bf: dict | None) -> str:
 
 CSS = r"""
 :root{color-scheme:light;--bg:#f6f8f7;--surface:#ffffff;--ink:#17222a;--ink-2:#4e5d66;--muted:#7a8891;--line:#d7dedb;--line-2:#eaeeec;--accent:#0f7c78;--accent-ink:#0b5f5c;
---s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--s4:#eda100;--s5:#e87ba4;--m1:#a9dbd6;--m2:#6fc2bb;--m3:#3aa39c;--m4:#1a7f79;--m5:#0c5652;--chip:#e6f2f1;--ok:#1a7f37;--warn:#b26a00}
+--s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--s4:#eda100;--s5:#e87ba4;--m1:#b9e2de;--m2:#8dcfc8;--m3:#5fb5ad;--m4:#3a9690;--m5:#1f7671;--m6:#0b514d;--chip:#e6f2f1;--ok:#1a7f37;--warn:#b26a00}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#0f1517;--surface:#161e21;--ink:#e6ecea;--ink-2:#b4bfba;--muted:#8b979a;--line:#2a353a;--line-2:#1f292d;--accent:#3fb8b2;--accent-ink:#7fd6d1;
---s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--s5:#d55181;--m1:#c4ece8;--m2:#93d6d0;--m3:#5fbab3;--m4:#379a93;--m5:#1f7871;--chip:#173436;--ok:#4fbf6a;--warn:#e0a33a}}
+--s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--s5:#d55181;--m1:#cdeeeb;--m2:#a3ddd7;--m3:#79c6bf;--m4:#53aca4;--m5:#358f88;--m6:#1f7069;--chip:#173436;--ok:#4fbf6a;--warn:#e0a33a}}
 :root[data-theme="dark"]{color-scheme:dark;--bg:#0f1517;--surface:#161e21;--ink:#e6ecea;--ink-2:#b4bfba;--muted:#8b979a;--line:#2a353a;--line-2:#1f292d;--accent:#3fb8b2;--accent-ink:#7fd6d1;
---s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--s5:#d55181;--m1:#c4ece8;--m2:#93d6d0;--m3:#5fbab3;--m4:#379a93;--m5:#1f7871;--chip:#173436;--ok:#4fbf6a;--warn:#e0a33a}
+--s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--s5:#d55181;--m1:#cdeeeb;--m2:#a3ddd7;--m3:#79c6bf;--m4:#53aca4;--m5:#358f88;--m6:#1f7069;--chip:#173436;--ok:#4fbf6a;--warn:#e0a33a}
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:15px;line-height:1.55;margin:0;padding-block:32px 64px;padding-inline:clamp(16px,4vw,40px)}
 .wrap{max-width:1120px;margin:0 auto;display:grid;gap:44px}
@@ -252,8 +255,8 @@ figcaption small{display:block;font-weight:400;color:var(--muted);font-size:12.5
 .chart .target{stroke:var(--ink-2);stroke-width:1;stroke-dasharray:4 4}
 .chart .bar{stroke:var(--surface);stroke-width:1} .chart .line{fill:none;stroke-width:2;stroke-linejoin:round}
 .chart .op{stroke:var(--surface);stroke-width:2} .chart .hit{fill:transparent;cursor:crosshair}
-.s1{fill:var(--m1);stroke:var(--m1)} .s2{fill:var(--m2);stroke:var(--m2)} .s3{fill:var(--m3);stroke:var(--m3)} .s4{fill:var(--m4);stroke:var(--m4)} .s5{fill:var(--m5);stroke:var(--m5)}
-.chart .line.s1,.chart .line.s2,.chart .line.s3,.chart .line.s4,.chart .line.s5{fill:none}
+.s1{fill:var(--m1);stroke:var(--m1)} .s2{fill:var(--m2);stroke:var(--m2)} .s3{fill:var(--m3);stroke:var(--m3)} .s4{fill:var(--m4);stroke:var(--m4)} .s5{fill:var(--m5);stroke:var(--m5)} .s6{fill:var(--m6);stroke:var(--m6)}
+.chart .line.s1,.chart .line.s2,.chart .line.s3,.chart .line.s4,.chart .line.s5,.chart .line.s6{fill:none}
 .v0{--c:var(--s1)} .v1{--c:var(--s2)} .v2{--c:var(--s3)} .v3{--c:var(--s4)} .v4{--c:var(--s5)}
 .legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px;color:var(--ink-2)}
 .legend span{display:inline-flex;align-items:center;gap:6px}
@@ -335,10 +338,11 @@ def build(runs_root: Path, out: Path) -> Path:
     ms = {m["method_id"]: m for m in metrics}
     b0 = ms.get("b0", {})
     n_native = g(b0, "native", "test", "cine", "n"); n_streams = g(b0, "constructed", "test_n")
-    pid = {"b_file": "B-file", "b0": "B0", "b1": "B1", "b2": "B2", "b3": "B3", "b4": "B4", "b6": "B6"}
+    pid = {"b_file": "B-file", "b0": "B0", "b1": "B1", "b2": "B2", "b3": "B3", "b4": "B4", "b5": "B5", "b6": "B6"}
     status = {"b_file": ("run", "ok"), "b0": ("run", "ok"), "b1": ("run", "ok"), "b2": ("run", "ok"), "b3": ("run", "ok"),
               "b4": ("official code @33ed91c, authors' constants, 7-line Python-3 patch; trained on 1,500 class-balanced 4–8-fragment streams", "ok"),
-              "b6": ("official code, authors' recipe; seed 666 done (test acc 93.36 / F1 89.49 vs paper 94.07±0.66 / 90.30±1.03); seeds 100/200/300 running", "ok")}
+              "b5": ("official code @e1bbe4f, authors' constants (120 ep), 2-line py3 patch; environment reproduces the paper's GTEA table", "ok"),
+              "b6": ("official code, authors' recipe; paper seeds 100/200/300: test acc 93.77±0.17 / F1 89.88±0.29 vs paper 94.07±0.66 / 90.30±1.03 — reproduced", "ok")}
     def links(k):
         parts = []
         for label, target in LINKS[k]:
@@ -418,7 +422,7 @@ def build(runs_root: Path, out: Path) -> Path:
     <li>Streams have two fragments; the 4–8 fragment, 10–45 s banks from the proposal are the next step.</li>
     <li>The encoder overfits after its first epoch (best validation checkpoint = epoch 0); a lower learning-rate run is pending.</li>
     <li>MS-TCN row: the authors' code and constants (4 stages × 10 layers × 64, batch 1, lr 5e-4, 50 epochs) with a recorded 7-line Python-3 patch; features zero-padded to its 2048-d input. Trained on 1,500 class-balanced 4–8-fragment streams from the train split. Its own eval.py on the test pair bank: frame acc 99.2, edit 99.2, F1@50 98.9.</li>
-    <li>STFM: official code, authors' recipe (100-epoch cap, early stop). Seed 666: test acc 93.36, macro-F1 89.49 on its nine-code task, against the paper's 94.07 ± 0.66 / 90.30 ± 1.03 (Table 5, ResNet-18). Seeds 100/200/300 are running for the mean ± std comparison.</li>
+    <li>STFM: official code, authors' recipe. Paper seeds 100/200/300: test acc 93.77 ± 0.17, macro-F1 89.88 ± 0.29 on its nine-code task, within one std of the paper's 94.07 ± 0.66 / 90.30 ± 1.03 (Table 5, ResNet-18). EchoViewCLIP (official code, authors' recipe, EV9V nine-code task): test acc 94.14, macro-F1 0.907.</li>
     <li>No patient identifiers are available; uncertainty can only be grouped by cine.</li>
   </ul>
 </section>
