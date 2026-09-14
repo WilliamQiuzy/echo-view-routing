@@ -53,11 +53,13 @@ validation split at a 5% contamination target and frozen. Full table and figure:
 | B2 HMM | 0.946 | 0.967 | 2.4 | 0.906 | 0.000 · 0.000 | 0.000 · 0.000 | 0.996 | 0.009 |
 | B3 JS divergence | 0.946 | 0.963 | 3.6 | 0.913 | 0.000 · 0.017 | 0.000 · 0.000 | 0.989 | 0.010 |
 | B4 MS-TCN (official code) | 0.956 | 0.977 | 1.0 | 0.992 | 0.000 · 0.017 | 0.000 · 0.000 | 1.000 | 0.008 |
+| B5 ASFormer (official code) | 0.959 | 0.980 | 0.8 | 0.980 | 0.000 · 0.017 | 0.000 · 0.000 | 1.000 | 0.007 |
 
 B-file (per-file mean probability): cine accuracy 0.975; at the 5% target coverage 0.998 with achieved risk 0.019.
 B4 is the official MS-TCN code under the authors' constants (see `docs/REPRODUCTION.md`), trained on 1,500 class-balanced
-4–8-fragment streams. B6 (official STFM, authors' recipe, seed 666): test acc 93.36 / macro-F1 89.49 on its nine-code task vs the paper's
-94.07 ± 0.66 / 90.30 ± 1.03; seeds 100/200/300 pending. Secondary 4–8-fragment test bank (boundary F1@0.5 s): see the ledger.
+4–8-fragment streams. B6 (official STFM, authors' recipe, paper seeds 100/200/300): test acc 93.77 ± 0.17 / macro-F1 89.88 ± 0.29 on its nine-code task vs the
+paper's 94.07 ± 0.66 / 90.30 ± 1.03 (reproduced). EchoViewCLIP (official code, same task): 94.14 / 0.907. EchoPrime released view
+classifier: 0.959 / 0.906 on the five-family task. Frozen checkpoints: `docs/models_frozen/`. Secondary 4–8-fragment test bank (boundary F1@0.5 s): see the ledger.
 
 ## Quickstart
 
