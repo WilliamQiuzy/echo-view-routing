@@ -55,6 +55,7 @@ body{background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",system-ui
 .wrap{max-width:1120px;margin:0 auto;display:grid;gap:28px}
 section{display:grid;gap:12px;scroll-margin-top:16px}
 h2{scroll-margin-top:16px}
+h3{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;font-size:15px;font-weight:600;margin:6px 0 0;color:var(--ink-2)}
 .side{position:fixed;left:12px;top:16px;width:170px;display:grid;gap:4px;font-size:12.5px;padding:10px;background:var(--surface);border:1px solid var(--line);border-radius:6px;z-index:5}
 .side a{color:var(--ink-2);text-decoration:none;padding:2px 4px;border-radius:3px}.side a:hover{background:var(--line-2);color:var(--ink)}
 .side input{width:100%;font:inherit;padding:5px 7px;border:1px solid var(--line);border-radius:4px;background:var(--bg);color:var(--ink);margin-bottom:4px}
@@ -191,29 +192,42 @@ def table_html(metrics: list[dict]) -> str:
 
 
 # Numbers recorded in docs/REPRODUCTION.md and docs/EXPERIMENT_LEDGER.md (2026-09-13/14). Δ = ours − authors, percentage points.
-REPRO = [
-    ("STFM", "retrained on EV9V with the authors' code and recipe, their seeds 100/200/300 (nine-code video task)",
-     [("test accuracy", 93.77, 94.07, "±0.17 vs ±0.66"), ("test macro-F1", 89.88, 90.30, "±0.29 vs ±1.03")], "within the authors' one-std band; reproduced"),
-    ("MS-TCN", "authors' code and constants; environment checked on their GTEA benchmark (4-split average), then trained on EV9V streams",
-     [("GTEA F1@10", 85.8, 85.8, ""), ("GTEA F1@25", 83.2, 83.4, ""), ("GTEA F1@50", 70.3, 69.8, ""), ("GTEA edit", 81.0, 79.0, ""), ("GTEA accuracy", 76.9, 76.3, "")], "no published echo result exists; the EV9V model is ours"),
-    ("ASFormer", "authors' released GTEA models run through our environment and patch, then their code trained on EV9V streams",
-     [("GTEA F1@10", 90.1, 90.1, ""), ("GTEA F1@25", 88.8, 88.8, ""), ("GTEA F1@50", 79.2, 79.2, ""), ("GTEA edit", 84.6, 84.6, ""), ("GTEA accuracy", 79.7, 79.7, "")], "identical to the paper; the EV9V model is ours"),
-    ("EchoViewCLIP", "retrained on EV9V with the authors' code and recipe (nine-code video task); the paper's numbers are on its private 38-view dataset",
-     [("test accuracy", 94.14, 96.8, "different dataset"), ("test macro-F1", 90.7, 95.7, "different dataset")], "not a like-for-like comparison; no released weights to check against"),
-    ("EchoPrime", "authors' released weights, no training; evaluated on EV9V with a five-family mapping; the paper reports a one-vs-rest AUC of 0.997 over 58 views on an internal set",
-     [("EV9V five-family accuracy", 95.9, None, ""), ("EV9V five-family macro-F1", 90.6, None, "")], "no comparable published accuracy"),
-]
+def _d(a, b):
+    return "—" if a is None or b is None else f"{a - b:+.1f}"
 
 
 def repro_html() -> str:
-    head = ["model", "what we did", "metric", "ours", "authors", "Δ (pp)", "verdict"]
-    body = []
-    for name, what, rows, verdict in REPRO:
-        for i, (metric, ours, theirs, note) in enumerate(rows):
-            delta = "—" if theirs is None else f"{ours - theirs:+.1f}"
-            body.append([f"<b>{name}</b>" if i == 0 else "", esc(what) if i == 0 else "", esc(metric) + (f' <span class="mono" style="color:var(--muted)">{esc(note)}</span>' if note else ""),
-                         f"{ours:.1f}" if ours is not None else "—", f"{theirs:.1f}" if theirs is not None else "—", delta, esc(verdict) if i == 0 else ""])
-    return '<h2 id="reproduction">Reproduction check against the authors\' numbers</h2>' + _table(head, body)
+    out = ['<h2 id="reproduction">Reproduction: our trained models vs the authors\' reported numbers</h2>']
+    # STFM: same code, same recipe, same seeds as the paper (EV9V nine-code video task)
+    stfm = [("seed 100", 93.92, 90.14), ("seed 200", 93.58, 89.57), ("seed 300", 93.81, 89.92)]
+    rows = [[f"ours, {n}", f"{a:.2f}", f"{f1:.2f}", "", ""] for n, a, f1 in stfm]
+    rows.append(["<b>ours, mean ± std (seeds 100/200/300)</b>", "<b>93.77 ± 0.17</b>", "<b>89.88 ± 0.29</b>", "", ""])
+    rows.append(["authors, Table 5 ResNet-18, seeds 100/200/300", "94.07 ± 0.66", "90.30 ± 1.03", "", ""])
+    rows.append(["<b>Δ ours − authors</b>", f"<b>{_d(93.77, 94.07)}</b>", f"<b>{_d(89.88, 90.30)}</b>", "within one std of the paper", ""])
+    rows.append(["ours, extra seed 666 (code default)", "93.36", "89.49", "", ""])
+    out.append('<h3>STFM · retrained with the authors\' code and recipe on EV9V (nine-code, video-level test set)</h3>' + _table(["run", "test accuracy", "test macro-F1", "verdict", ""], rows))
+    # MS-TCN: no echo result to compare, so the environment is checked on the authors' GTEA benchmark
+    gtea = [("split 1", 83.0, 80.3, 63.0, 75.4, 76.1), ("split 2", 84.1, 81.2, 65.9, 80.3, 75.5), ("split 3", 89.1, 85.3, 77.7, 84.2, 78.4), ("split 4", 87.0, 86.2, 74.3, 84.2, 77.6)]
+    rows = [[f"ours, {n}", f"{a:.1f}", f"{b:.1f}", f"{c:.1f}", f"{d:.1f}", f"{e:.1f}"] for n, a, b, c, d, e in gtea]
+    rows.append(["<b>ours, 4-split average</b>", "<b>85.8</b>", "<b>83.2</b>", "<b>70.3</b>", "<b>81.0</b>", "<b>76.9</b>"])
+    rows.append(["authors, CVPR 2019 (4-split average)", "85.8", "83.4", "69.8", "79.0", "76.3"])
+    rows.append(["<b>Δ ours − authors</b>", f"<b>{_d(85.8, 85.8)}</b>", f"<b>{_d(83.2, 83.4)}</b>", f"<b>{_d(70.3, 69.8)}</b>", f"<b>{_d(81.0, 79.0)}</b>", f"<b>{_d(76.9, 76.3)}</b>"])
+    out.append('<h3>MS-TCN · authors\' code and constants, trained by us on their GTEA benchmark (environment check; the EV9V model above is ours)</h3>' + _table(["run", "F1@10", "F1@25", "F1@50", "edit", "accuracy"], rows))
+    # ASFormer: released models through our environment
+    rows = [["ours (authors\' released GTEA models, our environment + 2-line patch)", "90.1", "88.8", "79.2", "84.6", "79.7"],
+            ["authors, BMVC 2021 Table 7", "90.1", "88.8", "79.2", "84.6", "79.7"],
+            ["<b>Δ</b>", "<b>+0.0</b>", "<b>+0.0</b>", "<b>+0.0</b>", "<b>+0.0</b>", "<b>+0.0</b>"]]
+    out.append('<h3>ASFormer · authors\' released GTEA models re-evaluated in our environment (the EV9V model above is ours, trained with their code)</h3>' + _table(["run", "F1@10", "F1@25", "F1@50", "edit", "accuracy"], rows))
+    # EchoViewCLIP: retrained on EV9V; paper numbers are on a private 38-view dataset
+    rows = [["ours, EV9V test (nine-code, video-level)", "94.14", "90.7", "best validation accuracy 95.41 (epoch 21 of 30)"],
+            ["authors, MICCAI 2025 Table 1 (private 38-view dataset)", "96.8", "95.7", "different data and label set"],
+            ["<b>Δ (not like-for-like)</b>", f"<b>{_d(94.14, 96.8)}</b>", f"<b>{_d(90.7, 95.7)}</b>", "no released weights exist to check against; on EV9V it sits 0.4 pp above our STFM reproduction (93.77)"]]
+    out.append('<h3>EchoViewCLIP · retrained on EV9V with the authors\' code and recipe</h3>' + _table(["run", "accuracy", "macro-F1", "note"], rows))
+    # EchoPrime: no training
+    rows = [["ours, EV9V test, five-family mapping (released weights, no training)", "95.9", "90.6", "0% of predictions fell outside the five families"],
+            ["authors, Nature 2026 (internal 58-view test set)", "AUC 0.997", "—", "no comparable accuracy reported"]]
+    out.append('<h3>EchoPrime · released weights only</h3>' + _table(["run", "accuracy", "macro-F1", "note"], rows))
+    return "".join(out)
 
 
 def build(out: Path) -> Path:
