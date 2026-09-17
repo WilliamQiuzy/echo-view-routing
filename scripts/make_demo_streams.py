@@ -35,6 +35,7 @@ from echo_routing.temporal.segments import labels_to_segments  # noqa: E402
 
 FPS = 30
 STEP = 3  # frames per 10 Hz sample
+EV_FAMILY = {"PLHLA": "PLAX", "PASA": "PSAX", "PMASA": "PSAX", "PMVLSA": "PSAX", "PPMLSA": "PSAX", "A4C": "A4C", "A5C": "A5C", "SC4C": "SC4C"}
 
 
 def render_mp4(recipe: Recipe, loader, images_root: Path, out: Path) -> float:
@@ -107,25 +108,48 @@ def main() -> None:
     rng = np.random.default_rng(args.seed)
 
     recipes: list[tuple[str, str, Recipe]] = []
-    # 1) one untouched native cine (6-12 s), the longest such in the test split
-    nat = test[(test["n_samples"] >= 60) & (test["n_samples"] <= 120)].sort_values("n_samples").iloc[-1]
-    recipes.append(("native", "Untouched native cine (single view)",
-                    Recipe("native_0000", "native", (Fragment(nat.video_id, int(nat.label_index), "orig", 0, int(nat.n_samples)),))))
-    # 2) one constructed pair per 2x2 cell, fragments 2-4 s
-    pool = Pool.from_index(test["video_id"], test["label_index"], test["n_samples"])
-    for r in make_pair_recipes(pool, 1, rng, edit_variant=cfg["recipes"]["edit_variant"], min_len=20, max_len=40):
-        recipes.append((r.cell, {"same_none": "Same view, two patients, hard join", "same_edit": "Same view, two patients, second half gamma-edited",
-                                 "diff_none": "Different views, hard join", "diff_edit": "Different views, second half gamma-edited"}[r.cell], r))
-    # 3) a four-fragment mixed stream: A4C -> A4C' (edited) -> PLAX -> PSAX
-    want = [("A4C", "orig"), ("A4C", cfg["recipes"]["edit_variant"]), ("PLAX", "orig"), ("PSAX", "orig")]
-    used = {f.video_id for _, _, r in recipes for f in r.fragments}; frags = []
-    for fam, var in want:
-        li = classes.index(fam)
-        cands = test[(test["label_index"] == li) & (test["n_samples"] >= 30) & (~test["video_id"].isin(used))]
-        row = cands.iloc[int(rng.integers(len(cands)))]; used.add(row.video_id)
-        length = int(min(30, row.n_samples)); start = int(rng.integers(0, row.n_samples - length + 1))
-        frags.append(Fragment(row.video_id, li, var, start, start + length))
-    recipes.append(("multi", "Four fragments: A4C → A4C (edited) → PLAX → PSAX", Recipe("multi_0000", "multi", tuple(frags))))
+    used: set[str] = set()
+    fam_of = {c: classes.index(EV_FAMILY[c]) for c in EV_FAMILY}
+
+    def pick(raw_code: str | None = None, family: str | None = None, lo: int = 25, hi: int = 100):
+        """One unused test cine of a raw code (or any code of a family) with lo..hi samples."""
+        cand = test[(test["n_samples"] >= lo) & (test["n_samples"] <= hi) & (~test["video_id"].isin(used))]
+        if raw_code:
+            cand = cand[cand["raw_label"] == raw_code]
+        else:
+            cand = cand[cand["label_index"] == classes.index(family)]
+        if len(cand) == 0:
+            cand = test[(~test["video_id"].isin(used)) & ((test["raw_label"] == raw_code) if raw_code else (test["label_index"] == classes.index(family)))]
+        row = cand.iloc[int(rng.integers(len(cand)))]; used.add(row.video_id)
+        return row
+
+    def frag(row, variant="orig", length=None):
+        n = int(row.n_samples); L = int(min(length or n, n)); start = int(rng.integers(0, n - L + 1)) if L < n else 0
+        return Fragment(row.video_id, int(row.label_index), variant, start, start + L)
+
+    # 1) one untouched native cine per raw view code of the five-family task
+    for code in ["PLHLA", "PASA", "PMASA", "PMVLSA", "PPMLSA", "A4C", "A5C", "SC4C"]:
+        r = pick(raw_code=code, lo=40, hi=110)
+        recipes.append(("native", f"Single view · {EV_FAMILY[code]} ({code})", Recipe(f"native_{code}", "native", (frag(r),))))
+    # 2) same-view joins (two patients), one per family; PLAX and A4C also with a gamma edit on the second half
+    for fam in classes:
+        a, b = pick(family=fam, lo=25, hi=60), pick(family=fam, lo=25, hi=60)
+        recipes.append(("same_none", f"Same view, two patients · {fam}", Recipe(f"same_none_{fam}", "same_none", (frag(a, length=30), frag(b, length=30)))))
+    for fam in ["PLAX", "A4C", "PSAX"]:
+        a, b = pick(family=fam, lo=25, hi=60), pick(family=fam, lo=25, hi=60)
+        recipes.append(("same_edit", f"Same view, second half gamma-edited · {fam}", Recipe(f"same_edit_{fam}", "same_edit", (frag(a, length=30), frag(b, cfg["recipes"]["edit_variant"], length=30)))))
+    # 3) genuine view changes across several pairs, alternating hard join and edited second half
+    for i, (fa, fb) in enumerate([("PLAX", "A4C"), ("A4C", "PSAX"), ("PSAX", "PLAX"), ("A4C", "A5C"), ("A5C", "SC4C"), ("SC4C", "A4C"), ("PLAX", "PSAX"), ("A5C", "A4C")]):
+        a, b = pick(family=fa, lo=25, hi=60), pick(family=fb, lo=25, hi=60); edited = i % 2 == 1
+        recipes.append(("diff_edit" if edited else "diff_none", f"View change · {fa} → {fb}{' (second half gamma-edited)' if edited else ''}",
+                        Recipe(f"diff_{fa}_{fb}", "diff_edit" if edited else "diff_none", (frag(a, length=30), frag(b, cfg["recipes"]["edit_variant"] if edited else "orig", length=30)))))
+    # 4) multi-fragment streams
+    for k, seq in enumerate([["A4C", "A4C", "PLAX", "PSAX"], ["PSAX", "A5C", "A4C", "SC4C", "PLAX"], ["PLAX", "PLAX", "A4C", "A5C", "A4C", "PSAX"]]):
+        frags = []
+        for j, fam in enumerate(seq):
+            r = pick(family=fam, lo=20, hi=60)
+            frags.append(frag(r, cfg["recipes"]["edit_variant"] if (j % 3 == 1) else "orig", length=25))
+        recipes.append(("multi", f"Multi-view stream · {' → '.join(seq)}", Recipe(f"multi_{k:02d}", "multi", tuple(frags))))
 
     streams_out = []
     for kind, title, r in recipes:
