@@ -58,16 +58,19 @@ def main() -> None:
 
     def frame(video_id, fi, gamma):
         key = (video_id, fi, gamma)
-        if key not in img_cache:
-            if video_id not in paths_cache:
-                paths_cache[video_id] = list_frame_paths(frames_root / video_id)
-            p = paths_cache[video_id][min(fi, len(paths_cache[video_id]) - 1)]
-            with Image.open(p) as im:
-                im = im.convert("RGB"); im = apply_gamma(im, gamma) if gamma != 1.0 else im
-                img_cache[key] = tf(im)
-            if len(img_cache) > 6000:
-                img_cache.clear()
-        return img_cache[key]
+        hit = img_cache.get(key)
+        if hit is not None:
+            return hit
+        if video_id not in paths_cache:
+            paths_cache[video_id] = list_frame_paths(frames_root / video_id)
+        p = paths_cache[video_id][min(fi, len(paths_cache[video_id]) - 1)]
+        with Image.open(p) as im:
+            im = im.convert("RGB"); im = apply_gamma(im, gamma) if gamma != 1.0 else im
+            x = tf(im)
+        if len(img_cache) > 6000:
+            img_cache.clear()
+        img_cache[key] = x
+        return x
 
     items = list(plans["streams"].items())[: args.limit] if args.limit else list(plans["streams"].items())
     with torch.no_grad():
