@@ -247,7 +247,7 @@ def build(out: Path) -> Path:
   <span class="navsep"></span><a href="#recognition">Recognition</a><a href="#segmentation">Segmentation</a><a href="#routing">Routing</a><a href="#reproduction">Reproduction</a><a href="#models">Models</a>
 </nav>
 <div class="wrap">
-<header id="top"><h1>Five baselines on EV9V</h1><p>Press play. Each row is one published model reading the same frames. Hatched = deferred. Click a strip to seek.</p>{keys}</header>
+<header id="top"><h1>Five baselines on EV9V</h1><p>Press play. Each row is one published model reading the same frames.</p>{keys}</header>
 {streams_html(streams)}
 <section style="display:grid;gap:12px">{table_html(metrics)}</section>
 <section>{repro_html()}</section>
