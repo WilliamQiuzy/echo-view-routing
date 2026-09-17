@@ -41,37 +41,20 @@ EV9V (`bgx666/EV9V`, CC-BY-4.0): 5,138 cines, nine raw view codes, official pati
 
 Everything downstream of feature extraction runs on CPU from the feature cache.
 
-## Current results (2026-09-13, encoder `79f4a41af6e3`, family5 task)
+## Current results (2026-09-17): five published baselines on the same EV9V test data
 
-Test split: 800 native cines and 240 balanced constructed two-fragment streams; thresholds selected on the
-validation split at a 5% contamination target and frozen. Full table and figure: `docs/results/2026-09-13_ladder/`.
+Full tables: `docs/results/2026-09-17_five_baselines/five_baselines.md`. Test split: 800 untouched clips (five-family task),
+240 two-fragment streams and 120 multi-fragment streams; thresholds chosen on validation at a 5% contamination target and frozen.
 
-| method | cine macro-F1 | frame acc | fragments/min | boundary F1@0.5s | false split same/none · same/edit | missed diff/none · diff/edit | coverage@5% | achieved risk |
+| model | clip macro-F1 | frame acc | fragments/min | boundary F1@0.5 s | false split same/edit | missed diff/none | coverage@5% | achieved risk |
 |---|---|---|---|---|---|---|---|---|
-| B0 argmax | 0.957 | 0.951 | 23.1 | 0.499 | 0.033 · 0.133 | 0.000 · 0.000 | 0.967 | 0.007 |
-| B1 smoothing | 0.949 | 0.968 | 2.4 | 0.918 | 0.000 · 0.017 | 0.017 · 0.017 | 0.999 | 0.014 |
-| B2 HMM | 0.946 | 0.967 | 2.4 | 0.906 | 0.000 · 0.000 | 0.000 · 0.000 | 0.996 | 0.009 |
-| B3 JS divergence | 0.946 | 0.963 | 3.6 | 0.913 | 0.000 · 0.017 | 0.000 · 0.000 | 0.989 | 0.010 |
-| B4 MS-TCN (official code) | 0.956 | 0.977 | 1.0 | 0.992 | 0.000 · 0.017 | 0.000 · 0.000 | 1.000 | 0.008 |
-| B5 ASFormer (official code) | 0.959 | 0.980 | 0.8 | 0.980 | 0.000 · 0.017 | 0.000 · 0.000 | 1.000 | 0.007 |
+| STFM (official, sliding window) | 0.960 | 0.981 | 0.5 | 0.963 | 0.000 | 0.033 | 0.996 | 0.028 |
+| EchoViewCLIP (official, sliding window) | 0.972 | 0.979 | 0.7 | 0.975 | 0.000 | 0.017 | 0.992 | 0.025 |
+| EchoPrime (released weights, per frame) | 0.945 | 0.955 | 19.3 | 0.507 | 0.117 | 0.000 | 0.974 | 0.007 |
+| MS-TCN (official) | 0.956 | 0.977 | 1.0 | 0.992 | 0.017 | 0.000 | 1.000 | 0.008 |
+| ASFormer (official) | 0.959 | 0.980 | 0.8 | 0.980 | 0.017 | 0.000 | 1.000 | 0.007 |
 
-B-file (per-file mean probability): cine accuracy 0.975; at the 5% target coverage 0.998 with achieved risk 0.019.
-B4 is the official MS-TCN code under the authors' constants (see `docs/REPRODUCTION.md`), trained on 1,500 class-balanced
-4–8-fragment streams. B6 (official STFM, authors' recipe, paper seeds 100/200/300): test acc 93.77 ± 0.17 / macro-F1 89.88 ± 0.29 on its nine-code task vs the
-paper's 94.07 ± 0.66 / 90.30 ± 1.03 (reproduced). EchoViewCLIP (official code, same task): 94.14 / 0.907. EchoPrime released view
-classifier: 0.959 / 0.906 on the five-family task. Frozen checkpoints: `docs/models_frozen/`. Secondary 4–8-fragment test bank (boundary F1@0.5 s): see the ledger.
-
-## Quickstart
-
-```bash
-cp .env.example .env            # fill in server alias / paths
-uv venv .venv --python 3.12 && uv pip install --python .venv/bin/python -e ".[dev]"
-make test                        # CPU unit tests
-remote/sync_code.sh              # push code to the server
-remote/run.sh manifest scripts/build_manifest.py
-remote/run.sh train_b0 scripts/train_frame_encoder.py -c configs/experiments/b0_frame_encoder.yaml
-remote/status.sh train_b0
-```
+Reproduction protocol and per-model verification: `docs/REPRODUCTION.md`; frozen checkpoints: `docs/models_frozen/` and GitHub release `baselines-v1`.
 
 ## Compute
 
