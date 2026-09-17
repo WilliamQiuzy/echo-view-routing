@@ -1,0 +1,89 @@
+<title>EV9V Routing Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{color-scheme:light;--bg:#f6f8f7;--surface:#fff;--ink:#17222a;--ink-2:#4e5d66;--muted:#7a8891;--line:#d7dedb;--line-2:#eaeeec;--accent:#0f7c78;--accent-ink:#0b5f5c;
+--s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--s4:#eda100;--s5:#e87ba4}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#0f1517;--surface:#161e21;--ink:#e6ecea;--ink-2:#b4bfba;--muted:#8b979a;--line:#2a353a;--line-2:#1f292d;--accent:#3fb8b2;--accent-ink:#7fd6d1;--s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--s5:#d55181}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#0f1517;--surface:#161e21;--ink:#e6ecea;--ink-2:#b4bfba;--muted:#8b979a;--line:#2a353a;--line-2:#1f292d;--accent:#3fb8b2;--accent-ink:#7fd6d1;--s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--s5:#d55181}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:15px;line-height:1.5;margin:0;padding-block:28px 56px;padding-inline:clamp(16px,4vw,40px)}
+.wrap{max-width:1120px;margin:0 auto;display:grid;gap:28px}
+h1{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;font-size:clamp(26px,4vw,36px);font-weight:600;margin:0;letter-spacing:-.01em;text-wrap:balance}
+h2{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;font-size:20px;font-weight:600;margin:0}
+p{margin:0;color:var(--ink-2);max-width:72ch}
+.mono{font-family:"IBM Plex Mono",ui-monospace,monospace}
+.keys{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--ink-2);align-items:center}
+.sw{width:12px;height:12px;border-radius:2px;display:inline-block;margin-right:6px;vertical-align:-1px}
+.hatch{background:repeating-linear-gradient(45deg,var(--ink-2) 0 3px,transparent 3px 6px)}
+.ln{display:inline-block;width:18px;border-top:2px solid var(--ink);vertical-align:middle;margin-right:6px}.ln.dash{border-top:1.5px dashed var(--muted)}
+.streams{display:grid;gap:14px}
+.stream{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:12px;display:grid;grid-template-columns:minmax(200px,340px) 1fr;gap:12px 18px;align-items:start}
+@media (max-width:720px){.stream{grid-template-columns:1fr}}
+.stream h3{font-size:15px;margin:0 0 6px;font-weight:600}
+.stream video{width:100%;aspect-ratio:4/3;background:#000;border-radius:4px;display:block}
+.frags{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11px;color:var(--muted);margin-top:6px;display:grid;gap:1px;overflow-wrap:anywhere}
+.rows{display:grid;grid-template-columns:auto auto 1fr;gap:6px 10px;align-items:center;position:relative}
+.lab{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;color:var(--ink-2);white-space:nowrap}.lab.truth{color:var(--ink);font-weight:500}
+.badge{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11.5px;min-width:78px;text-align:center;padding:2px 7px;border-radius:4px;background:var(--c,var(--line-2));color:#fff;white-space:nowrap}
+.badge.off{background:transparent;color:var(--muted);border:1px dashed var(--line)}.badge.defer{background:transparent;color:var(--c,var(--muted));border:1.5px dashed var(--c,var(--line))}
+.strip{position:relative;height:22px;background:var(--line-2);border-radius:3px;overflow:hidden;cursor:pointer}
+.seg{position:absolute;top:0;bottom:0;background:var(--c);opacity:.95}.seg.defer{background:repeating-linear-gradient(45deg,var(--c) 0 3px,transparent 3px 7px);opacity:.7}.seg+.seg{border-left:2px solid var(--surface)}
+.v0{--c:var(--s1)}.v1{--c:var(--s2)}.v2{--c:var(--s3)}.v3{--c:var(--s4)}.v4{--c:var(--s5)}
+.overlay{position:absolute;top:0;bottom:0;pointer-events:none}.mark{position:absolute;top:0;bottom:0;width:0;border-left:1.5px dashed var(--muted)}.mark.sem{border-left:2px solid var(--ink)}
+.playhead{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--accent);box-shadow:0 0 0 1px var(--surface)}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:13.5px;font-variant-numeric:tabular-nums}
+th,td{padding:8px 12px;text-align:right;border-bottom:1px solid var(--line-2);white-space:nowrap}
+th{font-family:"IBM Plex Mono",ui-monospace,monospace;font-weight:500;font-size:11.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+td:first-child,th:first-child{text-align:left}tbody tr:last-child td{border-bottom:0}
+td a,.links a{color:var(--accent-ink)}
+.links{font-size:13px;color:var(--ink-2);display:grid;gap:4px}
+footer{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
+</style>
+<div class="wrap">
+<header><h1>Five baselines on real EV9V streams</h1><p>Press play. Each row is one published model reading the same frames; the badge is its current view, the strip its whole timeline. Hatched = deferred. Click a strip to seek.</p><div class="keys"><span><i class="sw" style="background:var(--s1)"></i>PLAX</span><span><i class="sw" style="background:var(--s2)"></i>PSAX</span><span><i class="sw" style="background:var(--s3)"></i>A4C</span><span><i class="sw" style="background:var(--s4)"></i>A5C</span><span><i class="sw" style="background:var(--s5)"></i>SC4C</span><span><i class="sw hatch"></i>deferred</span><span><i class="ln dash"></i>file join</span><span><i class="ln"></i>true view change</span></div></header>
+<div class="streams"><div class="stream" data-dur="11.867">
+  <div><h3>Untouched native cine (single view)</h3><video src="streams/native_0000.mp4" controls loop muted playsinline preload="metadata"></video><div class="frags"><span>0.0–11.9 s · PLAX</span></div></div>
+  <div class="rows"><div class="overlay" style="left:0;width:0"><i class="playhead" style="left:0"></i></div><span class="lab truth">truth</span><span class="badge off" data-row="truth">—</span><div class="strip"><span class="seg v0" style="left:0.00%;width:100.28%"></span></div><span class="lab">MS-TCN</span><span class="badge off" data-row="b4">—</span><div class="strip"><span class="seg v0 defer" style="left:0.00%;width:100.28%"></span></div></div>
+  <script type="application/json" class="rows-data">{"dur": 11.866666666666667, "rows": {"truth": [{"s": 0.0, "e": 11.9, "v": 0, "a": true}], "b4": [{"s": 0.0, "e": 11.9, "v": 0, "a": false}]}}</script>
+</div><div class="stream" data-dur="6.300">
+  <div><h3>Same view, two patients, hard join</h3><video src="streams/same_none_0000.mp4" controls loop muted playsinline preload="metadata"></video><div class="frags"><span>0.0–3.6 s · PLAX</span><span>3.6–6.3 s · PLAX</span></div></div>
+  <div class="rows"><div class="overlay" style="left:0;width:0"><i class="mark" style="left:57.14%"></i><i class="playhead" style="left:0"></i></div><span class="lab truth">truth</span><span class="badge off" data-row="truth">—</span><div class="strip"><span class="seg v0" style="left:0.00%;width:100.00%"></span></div><span class="lab">MS-TCN</span><span class="badge off" data-row="b4">—</span><div class="strip"><span class="seg v0 defer" style="left:0.00%;width:100.00%"></span></div></div>
+  <script type="application/json" class="rows-data">{"dur": 6.3, "rows": {"truth": [{"s": 0.0, "e": 6.3, "v": 0, "a": true}], "b4": [{"s": 0.0, "e": 6.3, "v": 0, "a": false}]}}</script>
+</div><div class="stream" data-dur="6.900">
+  <div><h3>Same view, two patients, second half gamma-edited</h3><video src="streams/same_edit_0000.mp4" controls loop muted playsinline preload="metadata"></video><div class="frags"><span>0.0–3.5 s · A4C</span><span>3.5–6.9 s · A4C · gamma 0.9</span></div></div>
+  <div class="rows"><div class="overlay" style="left:0;width:0"><i class="mark" style="left:50.72%"></i><i class="playhead" style="left:0"></i></div><span class="lab truth">truth</span><span class="badge off" data-row="truth">—</span><div class="strip"><span class="seg v2" style="left:0.00%;width:100.00%"></span></div><span class="lab">MS-TCN</span><span class="badge off" data-row="b4">—</span><div class="strip"><span class="seg v1 defer" style="left:0.00%;width:55.07%"></span><span class="seg v2 defer" style="left:55.07%;width:44.93%"></span></div></div>
+  <script type="application/json" class="rows-data">{"dur": 6.9, "rows": {"truth": [{"s": 0.0, "e": 6.9, "v": 2, "a": true}], "b4": [{"s": 0.0, "e": 3.8, "v": 1, "a": false}, {"s": 3.8, "e": 6.9, "v": 2, "a": false}]}}</script>
+</div><div class="stream" data-dur="4.533">
+  <div><h3>Different views, hard join</h3><video src="streams/diff_none_0000.mp4" controls loop muted playsinline preload="metadata"></video><div class="frags"><span>0.0–2.6 s · PLAX</span><span>2.6–4.6 s · A4C</span></div></div>
+  <div class="rows"><div class="overlay" style="left:0;width:0"><i class="mark sem" style="left:57.35%"></i><i class="playhead" style="left:0"></i></div><span class="lab truth">truth</span><span class="badge off" data-row="truth">—</span><div class="strip"><span class="seg v0" style="left:0.00%;width:57.35%"></span><span class="seg v2" style="left:57.35%;width:44.12%"></span></div><span class="lab">MS-TCN</span><span class="badge off" data-row="b4">—</span><div class="strip"><span class="seg v0 defer" style="left:0.00%;width:55.15%"></span><span class="seg v2 defer" style="left:55.15%;width:46.32%"></span></div></div>
+  <script type="application/json" class="rows-data">{"dur": 4.533333333333333, "rows": {"truth": [{"s": 0.0, "e": 2.6, "v": 0, "a": true}, {"s": 2.6, "e": 4.6, "v": 2, "a": true}], "b4": [{"s": 0.0, "e": 2.5, "v": 0, "a": false}, {"s": 2.5, "e": 4.6, "v": 2, "a": false}]}}</script>
+</div><div class="stream" data-dur="5.800">
+  <div><h3>Different views, second half gamma-edited</h3><video src="streams/diff_edit_0000.mp4" controls loop muted playsinline preload="metadata"></video><div class="frags"><span>0.0–3.8 s · PLAX</span><span>3.8–5.8 s · PSAX · gamma 0.9</span></div></div>
+  <div class="rows"><div class="overlay" style="left:0;width:0"><i class="mark sem" style="left:65.52%"></i><i class="playhead" style="left:0"></i></div><span class="lab truth">truth</span><span class="badge off" data-row="truth">—</span><div class="strip"><span class="seg v0" style="left:0.00%;width:65.52%"></span><span class="seg v1" style="left:65.52%;width:34.48%"></span></div><span class="lab">MS-TCN</span><span class="badge off" data-row="b4">—</span><div class="strip"><span class="seg v0 defer" style="left:0.00%;width:65.52%"></span><span class="seg v1 defer" style="left:65.52%;width:34.48%"></span></div></div>
+  <script type="application/json" class="rows-data">{"dur": 5.8, "rows": {"truth": [{"s": 0.0, "e": 3.8, "v": 0, "a": true}, {"s": 3.8, "e": 5.8, "v": 1, "a": true}], "b4": [{"s": 0.0, "e": 3.8, "v": 0, "a": false}, {"s": 3.8, "e": 5.8, "v": 1, "a": false}]}}</script>
+</div><div class="stream" data-dur="12.000">
+  <div><h3>Four fragments: A4C → A4C (edited) → PLAX → PSAX</h3><video src="streams/multi_0000.mp4" controls loop muted playsinline preload="metadata"></video><div class="frags"><span>0.0–3.0 s · A4C</span><span>3.0–6.0 s · A4C · gamma 0.9</span><span>6.0–9.0 s · PLAX</span><span>9.0–12.0 s · PSAX</span></div></div>
+  <div class="rows"><div class="overlay" style="left:0;width:0"><i class="mark" style="left:25.00%"></i><i class="mark sem" style="left:50.00%"></i><i class="mark sem" style="left:75.00%"></i><i class="playhead" style="left:0"></i></div><span class="lab truth">truth</span><span class="badge off" data-row="truth">—</span><div class="strip"><span class="seg v2" style="left:0.00%;width:50.00%"></span><span class="seg v0" style="left:50.00%;width:25.00%"></span><span class="seg v1" style="left:75.00%;width:25.00%"></span></div><span class="lab">MS-TCN</span><span class="badge off" data-row="b4">—</span><div class="strip"><span class="seg v0 defer" style="left:0.00%;width:0.83%"></span><span class="seg v2 defer" style="left:0.83%;width:42.50%"></span><span class="seg v0 defer" style="left:43.33%;width:32.50%"></span><span class="seg v1 defer" style="left:75.83%;width:24.17%"></span></div></div>
+  <script type="application/json" class="rows-data">{"dur": 12.0, "rows": {"truth": [{"s": 0.0, "e": 6.0, "v": 2, "a": true}, {"s": 6.0, "e": 9.0, "v": 0, "a": true}, {"s": 9.0, "e": 12.0, "v": 1, "a": true}], "b4": [{"s": 0.0, "e": 0.1, "v": 0, "a": false}, {"s": 0.1, "e": 5.2, "v": 2, "a": false}, {"s": 5.2, "e": 9.1, "v": 0, "a": false}, {"s": 9.1, "e": 12.0, "v": 1, "a": false}]}}</script>
+</div></div>
+<section><h2>Test split, frozen validation-selected 5% policy</h2><div class="tablewrap"><table><thead><tr><th>model</th><th>clip macro-F1</th><th>frame acc</th><th>fragments / min</th><th>boundary F1 @0.5 s</th><th>false split (same view)</th><th>missed change</th><th>coverage @5%</th><th>achieved risk</th></tr></thead><tbody><tr><td><b>MS-TCN</b></td><td>0.956</td><td>0.977</td><td>1.0</td><td>0.992</td><td>0.017</td><td>0.000</td><td>1.000</td><td>0.008</td></tr><tr><td><b>ASFormer</b></td><td>0.959</td><td>0.980</td><td>0.8</td><td>0.980</td><td>0.017</td><td>0.000</td><td>1.000</td><td>0.007</td></tr></tbody></table></div></section>
+<div class="links"><span><b>STFM</b> — EV9V authors&#x27; CNN-LSTM view classifier, sliding window · <a href="https://arxiv.org/abs/2606.17437" target="_blank" rel="noopener">paper</a> · <a href="https://github.com/bgx666/stfm" target="_blank" rel="noopener">code</a></span><span><b>EchoViewCLIP</b> — CLIP-based view recognition (MICCAI 2025), retrained on EV9V, sliding window · <a href="https://link.springer.com/chapter/10.1007/978-3-032-05169-1_18" target="_blank" rel="noopener">paper</a> · <a href="https://github.com/xmed-lab/EchoViewCLIP" target="_blank" rel="noopener">code</a></span><span><b>EchoPrime</b> — released 11-view frame classifier, per frame · <a href="https://arxiv.org/abs/2410.09704" target="_blank" rel="noopener">paper</a> · <a href="https://github.com/echonet/EchoPrime" target="_blank" rel="noopener">code + weights</a></span><span><b>MS-TCN</b> — temporal segmentation on frozen frame features · <a href="https://arxiv.org/abs/1903.01945" target="_blank" rel="noopener">paper</a> · <a href="https://github.com/yabufarha/ms-tcn" target="_blank" rel="noopener">code</a></span><span><b>ASFormer</b> — transformer temporal segmentation on frozen frame features · <a href="https://arxiv.org/abs/2110.08568" target="_blank" rel="noopener">paper</a> · <a href="https://github.com/ChinaYi/ASFormer" target="_blank" rel="noopener">code</a></span></div>
+<footer>encoder 79f4a41af6e3 · EV9V (CC-BY-4.0) · <a href="https://github.com/WilliamQiuzy/echo-view-routing">github.com/WilliamQiuzy/echo-view-routing</a></footer>
+</div>
+<script>
+document.querySelectorAll('.stream').forEach(panel=>{
+  const v=panel.querySelector('video'), data=JSON.parse(panel.querySelector('.rows-data').textContent), dur=data.dur;
+  const rows=panel.querySelector('.rows'), overlay=panel.querySelector('.overlay'), head=panel.querySelector('.playhead'), strips=[...panel.querySelectorAll('.strip')];
+  function place(){const r=rows.getBoundingClientRect(), s0=strips[0].getBoundingClientRect(); overlay.style.left=(s0.left-r.left)+'px'; overlay.style.width=s0.width+'px';}
+  const badges={}; panel.querySelectorAll('.badge').forEach(b=>badges[b.dataset.row]=b); const names=["PLAX","PSAX","A4C","A5C","SC4C"];
+  function update(){const t=v.currentTime||0; head.style.left=(t/dur*100)+'%';
+    for(const [row,ivs] of Object.entries(data.rows)){const b=badges[row]; if(!b) continue; const iv=ivs.find(i=>t>=i.s&&t<i.e)||ivs[ivs.length-1];
+      if(!iv){b.textContent='—'; b.className='badge off'; continue;} b.textContent=names[iv.v]+(iv.a?'':' · defer'); b.className='badge v'+iv.v+(iv.a?'':' defer');}}
+  let raf; function loop(){update(); if(!v.paused&&!v.ended) raf=requestAnimationFrame(loop);}
+  v.addEventListener('play',loop); v.addEventListener('timeupdate',update); v.addEventListener('seeked',update);
+  strips.forEach(st=>st.addEventListener('click',e=>{const r=st.getBoundingClientRect(); v.currentTime=Math.max(0,Math.min(dur,(e.clientX-r.left)/r.width*dur)); update();}));
+  window.addEventListener('resize',place); place(); update();
+});
+</script>
