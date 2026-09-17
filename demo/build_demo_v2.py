@@ -48,6 +48,7 @@ CSS = r"""
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:15px;line-height:1.5;margin:0;padding-block:28px 56px;padding-inline:clamp(16px,4vw,40px)}
 .wrap{max-width:1120px;margin:0 auto;display:grid;gap:28px}
+section{display:grid;gap:12px}
 h1{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;font-size:clamp(26px,4vw,36px);font-weight:600;margin:0;letter-spacing:-.01em;text-wrap:balance}
 h2{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;font-size:20px;font-weight:600;margin:0}
 p{margin:0;color:var(--ink-2);max-width:72ch}
@@ -98,9 +99,24 @@ document.querySelectorAll('.stream').forEach(panel=>{
 """
 
 
+KINDS = [("native", "Single view"), ("same_none", "Same view, two recordings joined"), ("same_edit", "Same view, second half brightness-edited"),
+         ("diff_none", "View change"), ("diff_edit", "View change, second half brightness-edited"), ("multi", "Multi-view streams")]
+
+
 def streams_html(d: dict) -> str:
-    panels = []
+    groups = {k: [] for k, _ in KINDS}
     for st in d["streams"]:
+        groups.setdefault(st["kind"], []).append(st)
+    out = []
+    for kind, title in KINDS:
+        if groups.get(kind):
+            out.append(f'<section><h2>{esc(title)}</h2>{_panels(groups[kind])}</section>')
+    return "".join(out)
+
+
+def _panels(streams: list) -> str:
+    panels = []
+    for st in streams:
         dur = st["duration_s"]
         def segs(ivs, truth=False):
             out = []
@@ -127,24 +143,37 @@ def streams_html(d: dict) -> str:
     return '<div class="streams">' + "".join(panels) + "</div>"
 
 
-def table_html(metrics: list[dict]) -> str:
-    by = {m["method_id"]: m for m in metrics}
-    head = ["model", "clip macro-F1", "frame acc", "fragments / min", "boundary F1 @0.5 s", "false split (same view)", "missed change", "coverage @5%", "achieved risk"]
-    body = []
-    for m in ROWS:
-        d = by.get(m)
-        if not d:
-            continue
-        c = g(d, "constructed", "cells", default={})
-        fs = [g(c, k, "false_split_rate") for k in ("same_none", "same_edit")]; ms = [g(c, k, "missed_rate") for k in ("diff_none", "diff_edit")]
-        body.append([f'<b>{BASELINES[m][0]}</b>', f(g(d, "native", "test", "cine", "macro_f1")), f(g(d, "native", "test", "frame", "accuracy")),
-                     f(g(d, "native", "test", "stability", "fragments_per_minute_mean"), 1), f(g(d, "constructed", "boundary", "0.5", "f1")),
-                     f(max(x for x in fs if x is not None) if any(x is not None for x in fs) else None), f(max(x for x in ms if x is not None) if any(x is not None for x in ms) else None),
-                     f(g(d, "constructed", "routing", "coverage")), f(g(d, "constructed", "routing", "risk"))])
-    if not body:
-        return '<p class="mono">no five-baseline metrics pulled yet</p>'
+def _table(head, body):
     return '<div class="tablewrap"><table><thead><tr>' + "".join(f"<th>{esc(h)}</th>" for h in head) + "</tr></thead><tbody>" + \
         "".join("<tr>" + "".join(f"<td>{v}</td>" for v in r) + "</tr>" for r in body) + "</tbody></table></div>"
+
+
+def table_html(metrics: list[dict]) -> str:
+    by = {m["method_id"]: m for m in metrics}
+    rows = [m for m in ROWS if m in by]
+    if not rows:
+        return '<p class="mono">no five-baseline metrics pulled yet</p>'
+    # 1) recognition + stability on the 800 untouched test clips
+    h1 = ["model", "clip acc", "clip macro-F1", "balanced acc", "frame acc", "frame macro-F1", "fragments / min", "share of clips fragmented"]
+    b1 = [[f'<b>{BASELINES[m][0]}</b>', f(g(by[m], "native", "test", "cine", "accuracy")), f(g(by[m], "native", "test", "cine", "macro_f1")),
+           f(g(by[m], "native", "test", "cine", "balanced_accuracy")), f(g(by[m], "native", "test", "frame", "accuracy")), f(g(by[m], "native", "test", "frame", "macro_f1")),
+           f(g(by[m], "native", "test", "stability", "fragments_per_minute_mean"), 1), f(g(by[m], "native", "test", "stability", "share_fragmented"))] for m in rows]
+    # 2) segmentation on the 240 two-fragment test streams (2x2 design) and the 120 multi-fragment streams
+    h2 = ["model", "boundary F1 @0.25 s", "@0.5 s", "@1.0 s", "false split same/none", "same/edit", "missed diff/none", "diff/edit", "multi-fragment boundary F1 @0.5 s"]
+    b2 = []
+    for m in rows:
+        c = g(by[m], "constructed", "cells", default={}); b = g(by[m], "constructed", "boundary", default={})
+        b2.append([f'<b>{BASELINES[m][0]}</b>', f(g(b, "0.25", "f1")), f(g(b, "0.5", "f1")), f(g(b, "1.0", "f1")), f(g(c, "same_none", "false_split_rate")), f(g(c, "same_edit", "false_split_rate")),
+                   f(g(c, "diff_none", "missed_rate")), f(g(c, "diff_edit", "missed_rate")), f(g(by[m], "constructed_multi", "boundary", "0.5", "f1"))])
+    # 3) selective routing at validation-selected thresholds
+    h3 = ["model", "τ @5%", "coverage @5%", "achieved risk", "τ @1%", "val coverage @1%", "multi-fragment coverage", "multi-fragment risk"]
+    b3 = []
+    for m in rows:
+        pol = g(by[m], "policy", "by_target", default={})
+        b3.append([f'<b>{BASELINES[m][0]}</b>', f(g(pol, "0.05", "tau")), f(g(by[m], "constructed", "routing", "coverage")), f(g(by[m], "constructed", "routing", "risk")),
+                   f(g(pol, "0.01", "tau")), f(g(pol, "0.01", "coverage")), f(g(by[m], "constructed_multi", "routing", "coverage")), f(g(by[m], "constructed_multi", "routing", "risk"))])
+    return ('<h2>Recognition on 800 untouched test clips</h2>' + _table(h1, b1) + '<h2>Segmentation on constructed test streams (±tolerance, one-to-one matching)</h2>' + _table(h2, b2) +
+            '<h2>Selective routing (thresholds chosen on validation, frozen)</h2>' + _table(h3, b3))
 
 
 def build(out: Path) -> Path:
@@ -159,9 +188,9 @@ def build(out: Path) -> Path:
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>{CSS}</style>
 <div class="wrap">
-<header><h1>Five baselines on real EV9V streams</h1><p>Press play. Each row is one published model reading the same frames; the badge is its current view, the strip its whole timeline. Hatched = deferred. Click a strip to seek.</p>{keys}</header>
+<header><h1>Five baselines on EV9V</h1><p>Press play. Each row is one published model reading the same frames. Hatched = deferred. Click a strip to seek.</p>{keys}</header>
 {streams_html(streams)}
-<section><h2>Test split, frozen validation-selected 5% policy</h2>{table_html(metrics)}</section>
+<section style="display:grid;gap:12px">{table_html(metrics)}</section>
 {links}
 <footer>encoder {h} · EV9V (CC-BY-4.0) · <a href="https://github.com/WilliamQiuzy/echo-view-routing">github.com/WilliamQiuzy/echo-view-routing</a></footer>
 </div>
