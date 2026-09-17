@@ -14,11 +14,16 @@ from echo_routing.evaluate.report import collect_metrics  # noqa: E402
 
 GH = "https://github.com/WilliamQiuzy/echo-view-routing/blob/main/"
 BASELINES = {  # registry id -> (display name, one-line description, links)
-    "b6": ("STFM", "EV9V authors' CNN-LSTM view classifier, sliding window", [("paper", "https://arxiv.org/abs/2606.17437"), ("code", "https://github.com/bgx666/stfm")]),
-    "b7": ("EchoViewCLIP", "CLIP-based view recognition (MICCAI 2025), retrained on EV9V, sliding window", [("paper", "https://link.springer.com/chapter/10.1007/978-3-032-05169-1_18"), ("code", "https://github.com/xmed-lab/EchoViewCLIP")]),
-    "b8": ("EchoPrime", "released 11-view frame classifier, per frame", [("paper", "https://arxiv.org/abs/2410.09704"), ("code + weights", "https://github.com/echonet/EchoPrime")]),
-    "b4": ("MS-TCN", "temporal segmentation on frozen frame features", [("paper", "https://arxiv.org/abs/1903.01945"), ("code", "https://github.com/yabufarha/ms-tcn")]),
-    "b5": ("ASFormer", "transformer temporal segmentation on frozen frame features", [("paper", "https://arxiv.org/abs/2110.08568"), ("code", "https://github.com/ChinaYi/ASFormer")]),
+    "b6": ("STFM", "EV9V authors' CNN-LSTM view classifier, sliding window", [("paper", "https://arxiv.org/abs/2606.17437"), ("official code", "https://github.com/bgx666/stfm"),
+           ("our driver", GH + "scripts/run_stfm.py"), ("our sliding window", GH + "scripts/run_windowed_stfm.py"), ("frozen checkpoint", GH + "docs/models_frozen/stfm_official/seed100/MANIFEST.json")]),
+    "b7": ("EchoViewCLIP", "CLIP-based view recognition (MICCAI 2025), retrained on EV9V, sliding window", [("paper", "https://link.springer.com/chapter/10.1007/978-3-032-05169-1_18"), ("official code", "https://github.com/xmed-lab/EchoViewCLIP"),
+           ("our driver", GH + "scripts/run_echoviewclip.py"), ("our config", GH + "third_party/adapters/echoviewclip/ev9v_stage1.yaml"), ("our sliding window", GH + "scripts/run_windowed_echoviewclip.py"), ("frozen checkpoint", GH + "docs/models_frozen/echoviewclip_stage1/v1/MANIFEST.json")]),
+    "b8": ("EchoPrime", "released 11-view frame classifier, per frame", [("paper", "https://arxiv.org/abs/2410.09704"), ("official code + weights", "https://github.com/echonet/EchoPrime"),
+           ("our evaluation", GH + "scripts/eval_echoprime_views.py"), ("our per-frame runner", GH + "scripts/run_windowed_echoprime.py"), ("frozen weights", GH + "docs/models_frozen/echoprime_view_classifier/release_v1.0.0/MANIFEST.json")]),
+    "b4": ("MS-TCN", "temporal segmentation on frozen frame features", [("paper", "https://arxiv.org/abs/1903.01945"), ("official code", "https://github.com/yabufarha/ms-tcn"),
+           ("our driver", GH + "scripts/run_mstcn_official.py"), ("our patch (py3)", GH + "third_party/patches/ms-tcn-py3.patch"), ("frozen checkpoint", GH + "docs/models_frozen/mstcn_official/v1/MANIFEST.json")]),
+    "b5": ("ASFormer", "transformer temporal segmentation on frozen frame features", [("paper", "https://arxiv.org/abs/2110.08568"), ("official code", "https://github.com/ChinaYi/ASFormer"),
+           ("our driver", GH + "scripts/run_asformer_official.py"), ("our patch (py3)", GH + "third_party/patches/asformer-py3.patch"), ("frozen checkpoint", GH + "docs/models_frozen/asformer_official/v1/MANIFEST.json")]),
 }
 ROWS = ["b6", "b7", "b8", "b4", "b5"]
 CLASSES = ["PLAX", "PSAX", "A4C", "A5C", "SC4C"]
@@ -48,7 +53,14 @@ CSS = r"""
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:15px;line-height:1.5;margin:0;padding-block:28px 56px;padding-inline:clamp(16px,4vw,40px)}
 .wrap{max-width:1120px;margin:0 auto;display:grid;gap:28px}
-section{display:grid;gap:12px}
+section{display:grid;gap:12px;scroll-margin-top:16px}
+h2{scroll-margin-top:16px}
+.side{position:fixed;left:12px;top:16px;width:170px;display:grid;gap:4px;font-size:12.5px;padding:10px;background:var(--surface);border:1px solid var(--line);border-radius:6px;z-index:5}
+.side a{color:var(--ink-2);text-decoration:none;padding:2px 4px;border-radius:3px}.side a:hover{background:var(--line-2);color:var(--ink)}
+.side input{width:100%;font:inherit;padding:5px 7px;border:1px solid var(--line);border-radius:4px;background:var(--bg);color:var(--ink);margin-bottom:4px}
+.navsep{height:1px;background:var(--line);margin:4px 0}
+@media (max-width:1500px){.side{position:sticky;top:0;width:auto;max-width:1120px;margin:0 auto 16px;display:flex;flex-wrap:wrap;gap:4px 10px;align-items:center}.side input{width:180px;margin:0}.navsep{display:none}}
+.stream.hide{display:none}
 h1{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;font-size:clamp(26px,4vw,36px);font-weight:600;margin:0;letter-spacing:-.01em;text-wrap:balance}
 h2{font-family:"IBM Plex Sans Condensed","IBM Plex Sans",sans-serif;font-size:20px;font-weight:600;margin:0}
 p{margin:0;color:var(--ink-2);max-width:72ch}
@@ -83,6 +95,8 @@ footer{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;color:v
 """
 
 JS = r"""
+const filt=document.getElementById('filter');
+if(filt){filt.addEventListener('input',()=>{const q=filt.value.trim().toLowerCase(); document.querySelectorAll('.stream').forEach(p=>{p.classList.toggle('hide', q && !p.querySelector('h3').textContent.toLowerCase().includes(q));});});}
 document.querySelectorAll('.stream').forEach(panel=>{
   const v=panel.querySelector('video'), data=JSON.parse(panel.querySelector('.rows-data').textContent), dur=data.dur;
   const rows=panel.querySelector('.rows'), overlay=panel.querySelector('.overlay'), head=panel.querySelector('.playhead'), strips=[...panel.querySelectorAll('.strip')];
@@ -110,7 +124,7 @@ def streams_html(d: dict) -> str:
     out = []
     for kind, title in KINDS:
         if groups.get(kind):
-            out.append(f'<section><h2>{esc(title)}</h2>{_panels(groups[kind])}</section>')
+            out.append(f'<section id="{kind}"><h2>{esc(title)}</h2>{_panels(groups[kind])}</section>')
     return "".join(out)
 
 
@@ -172,8 +186,34 @@ def table_html(metrics: list[dict]) -> str:
         pol = g(by[m], "policy", "by_target", default={})
         b3.append([f'<b>{BASELINES[m][0]}</b>', f(g(pol, "0.05", "tau")), f(g(by[m], "constructed", "routing", "coverage")), f(g(by[m], "constructed", "routing", "risk")),
                    f(g(pol, "0.01", "tau")), f(g(pol, "0.01", "coverage")), f(g(by[m], "constructed_multi", "routing", "coverage")), f(g(by[m], "constructed_multi", "routing", "risk"))])
-    return ('<h2>Recognition on 800 untouched test clips</h2>' + _table(h1, b1) + '<h2>Segmentation on constructed test streams (±tolerance, one-to-one matching)</h2>' + _table(h2, b2) +
-            '<h2>Selective routing (thresholds chosen on validation, frozen)</h2>' + _table(h3, b3))
+    return ('<h2 id="recognition">Recognition on 800 untouched test clips</h2>' + _table(h1, b1) + '<h2 id="segmentation">Segmentation on constructed test streams (±tolerance, one-to-one matching)</h2>' + _table(h2, b2) +
+            '<h2 id="routing">Selective routing (thresholds chosen on validation, frozen)</h2>' + _table(h3, b3))
+
+
+# Numbers recorded in docs/REPRODUCTION.md and docs/EXPERIMENT_LEDGER.md (2026-09-13/14). Δ = ours − authors, percentage points.
+REPRO = [
+    ("STFM", "retrained on EV9V with the authors' code and recipe, their seeds 100/200/300 (nine-code video task)",
+     [("test accuracy", 93.77, 94.07, "±0.17 vs ±0.66"), ("test macro-F1", 89.88, 90.30, "±0.29 vs ±1.03")], "within the authors' one-std band; reproduced"),
+    ("MS-TCN", "authors' code and constants; environment checked on their GTEA benchmark (4-split average), then trained on EV9V streams",
+     [("GTEA F1@10", 85.8, 85.8, ""), ("GTEA F1@25", 83.2, 83.4, ""), ("GTEA F1@50", 70.3, 69.8, ""), ("GTEA edit", 81.0, 79.0, ""), ("GTEA accuracy", 76.9, 76.3, "")], "no published echo result exists; the EV9V model is ours"),
+    ("ASFormer", "authors' released GTEA models run through our environment and patch, then their code trained on EV9V streams",
+     [("GTEA F1@10", 90.1, 90.1, ""), ("GTEA F1@25", 88.8, 88.8, ""), ("GTEA F1@50", 79.2, 79.2, ""), ("GTEA edit", 84.6, 84.6, ""), ("GTEA accuracy", 79.7, 79.7, "")], "identical to the paper; the EV9V model is ours"),
+    ("EchoViewCLIP", "retrained on EV9V with the authors' code and recipe (nine-code video task); the paper's numbers are on its private 38-view dataset",
+     [("test accuracy", 94.14, 96.8, "different dataset"), ("test macro-F1", 90.7, 95.7, "different dataset")], "not a like-for-like comparison; no released weights to check against"),
+    ("EchoPrime", "authors' released weights, no training; evaluated on EV9V with a five-family mapping; the paper reports a one-vs-rest AUC of 0.997 over 58 views on an internal set",
+     [("EV9V five-family accuracy", 95.9, None, ""), ("EV9V five-family macro-F1", 90.6, None, "")], "no comparable published accuracy"),
+]
+
+
+def repro_html() -> str:
+    head = ["model", "what we did", "metric", "ours", "authors", "Δ (pp)", "verdict"]
+    body = []
+    for name, what, rows, verdict in REPRO:
+        for i, (metric, ours, theirs, note) in enumerate(rows):
+            delta = "—" if theirs is None else f"{ours - theirs:+.1f}"
+            body.append([f"<b>{name}</b>" if i == 0 else "", esc(what) if i == 0 else "", esc(metric) + (f' <span class="mono" style="color:var(--muted)">{esc(note)}</span>' if note else ""),
+                         f"{ours:.1f}" if ours is not None else "—", f"{theirs:.1f}" if theirs is not None else "—", delta, esc(verdict) if i == 0 else ""])
+    return '<h2 id="reproduction">Reproduction check against the authors\' numbers</h2>' + _table(head, body)
 
 
 def build(out: Path) -> Path:
@@ -187,11 +227,17 @@ def build(out: Path) -> Path:
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>{CSS}</style>
+<nav class="side" aria-label="sections">
+  <input id="filter" type="search" placeholder="filter streams…" aria-label="filter streams">
+  <a href="#native">Single view</a><a href="#same_none">Same view</a><a href="#same_edit">Same view, edited</a><a href="#diff_none">View change</a><a href="#diff_edit">View change, edited</a><a href="#multi">Multi-view</a>
+  <span class="navsep"></span><a href="#recognition">Recognition</a><a href="#segmentation">Segmentation</a><a href="#routing">Routing</a><a href="#reproduction">Reproduction</a><a href="#models">Models</a>
+</nav>
 <div class="wrap">
-<header><h1>Five baselines on EV9V</h1><p>Press play. Each row is one published model reading the same frames. Hatched = deferred. Click a strip to seek.</p>{keys}</header>
+<header id="top"><h1>Five baselines on EV9V</h1><p>Press play. Each row is one published model reading the same frames. Hatched = deferred. Click a strip to seek.</p>{keys}</header>
 {streams_html(streams)}
 <section style="display:grid;gap:12px">{table_html(metrics)}</section>
-{links}
+<section>{repro_html()}</section>
+<section id="models"><h2>Models</h2>{links}</section>
 <footer>encoder {h} · EV9V (CC-BY-4.0) · <a href="https://github.com/WilliamQiuzy/echo-view-routing">github.com/WilliamQiuzy/echo-view-routing</a></footer>
 </div>
 <script>{JS}</script>
