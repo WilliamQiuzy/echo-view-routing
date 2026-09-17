@@ -21,7 +21,7 @@ import numpy as np  # noqa: E402
 from PIL import Image  # noqa: E402
 
 from echo_routing.audit.label_map import load_ontology  # noqa: E402
-from echo_routing.compose.recipe_builder import Fragment, Pool, Recipe, make_pair_recipes  # noqa: E402
+from echo_routing.compose.recipe_builder import Fragment, Pool, Recipe, make_pair_recipes, recipe_to_dict  # noqa: E402
 from echo_routing.compose.stream_assembler import render  # noqa: E402
 from echo_routing.config import load_paths  # noqa: E402
 from echo_routing.evaluate.report import collect_metrics  # noqa: E402
@@ -70,7 +70,7 @@ def decode_all(stream, methods: list[str], taus: dict[str, float | None], cfg: d
             out[m] = {"tau": tau, "intervals": [{"start_s": 0.0, "end_s": stream.prob.shape[0] / hz, "view": int(view), "score": float(score),
                                                 "accepted": bool(tau is not None and score >= tau)}]}
             continue
-        labels, score_prob = decode_with_prob(m, stream.prob, cfg, stream.feat)
+        labels, score_prob = decode_with_prob(m, stream.prob, cfg, stream.feat, stream.recipe.recipe_id)
         ivs = route(score_prob, labels, tau if tau is not None else np.inf, method=pol["score"], min_len=int(pol["min_len"]))
         out[m] = {"tau": tau, "intervals": [{"start_s": iv.start / hz, "end_s": iv.end / hz, "view": int(iv.view), "score": float(iv.score),
                                             "accepted": bool(iv.accepted)} for iv in ivs]}
@@ -81,9 +81,15 @@ def main() -> None:
     ap = base_parser("Render and decode demo streams")
     ap.add_argument("--ckpt-hash", required=True); ap.add_argument("--mstcn-checkpoint", default=None)
     ap.add_argument("--out", default=None); ap.add_argument("--seed", type=int, default=7)
+    ap.add_argument("--methods", default="b_file,b0,b1,b2,b3,b4", help="comma list of registry ids to decode (empty = none)")
+    ap.add_argument("--pred-dirs", default=None, help="key=dir,... for lookup decoders (mstcn_official, asformer_official, stfm_windowed, echoviewclip_windowed, echoprime_windowed)")
+    ap.add_argument("--skip-render", action="store_true", help="reuse existing MP4s")
     args = ap.parse_args(); cfg = load_cfg(args); paths = load_paths(); ont = load_ontology()
     if args.mstcn_checkpoint:
         cfg.setdefault("mstcn", {})["checkpoint"] = args.mstcn_checkpoint
+    for kv in (args.pred_dirs or "").split(","):
+        if kv:
+            k, v = kv.split("=", 1); cfg.setdefault(k, {})["pred_dir"] = v
     hz = float(cfg["sampling"]["target_hz"]); classes = list(ont.classes("family5"))
     out_dir = Path(args.out) if args.out else paths.runs_root / "_demo" / "streams"; out_dir.mkdir(parents=True, exist_ok=True)
     idx = read_index(variant_dir(paths.cache_root, args.ckpt_hash, "orig")); test = idx[idx["split"] == "test"].reset_index(drop=True)
@@ -97,7 +103,7 @@ def main() -> None:
 
     metrics, _ = collect_metrics(paths.runs_root, args.ckpt_hash)
     taus = {m["method_id"]: (m.get("policy", {}).get("by_target", {}).get("0.05", {}) or {}).get("tau") for m in metrics}
-    methods = [m for m in ["b_file", "b0", "b1", "b2", "b3", "b4"] if m in taus and (m != "b4" or args.mstcn_checkpoint)]
+    methods = [m for m in args.methods.split(",") if m]
     rng = np.random.default_rng(args.seed)
 
     recipes: list[tuple[str, str, Recipe]] = []
@@ -125,7 +131,7 @@ def main() -> None:
     for kind, title, r in recipes:
         s = render(r, loader)
         mp4 = out_dir / f"{r.recipe_id}.mp4"
-        dur = render_mp4(r, loader, paths.ev9v_images, mp4)
+        dur = (sum(f.end - f.start for f in r.fragments) / hz) if (args.skip_render and mp4.is_file()) else render_mp4(r, loader, paths.ev9v_images, mp4)
         truth = [{"start_s": sg.start / hz, "end_s": sg.end / hz, "label": int(sg.label)} for sg in labels_to_segments(s.labels)]
         streams_out.append({
             "id": r.recipe_id, "kind": kind, "cell": r.cell, "title": title, "file": mp4.name, "duration_s": dur, "hz": hz,
@@ -138,6 +144,7 @@ def main() -> None:
         for fr in streams_out[-1]["fragments"]:
             fr["start_s"] = t; t += fr["samples"] / hz; fr["end_s"] = t
         print(f"{r.recipe_id}: {dur:.1f}s, {len(r.fragments)} fragments -> {mp4.name}", flush=True)
+    (out_dir / "recipes.json").write_text(json.dumps([recipe_to_dict(r) for _, _, r in recipes], indent=1))
     (out_dir / "streams.json").write_text(json.dumps({"ckpt_hash": args.ckpt_hash, "classes": classes, "methods": methods, "taus": taus,
                                                         "streams": streams_out}, indent=1))
     print(f"wrote {out_dir / 'streams.json'}")

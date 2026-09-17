@@ -24,7 +24,9 @@ METHOD_DESCRIPTIONS = {
     "b4": "official MS-TCN (yabufarha/ms-tcn, pinned) on frozen features",
     "b4_reimpl": "our compact MS-TCN re-implementation (reference only, never reported)",
     "b5": "official ASFormer (ChinaYi/ASFormer, pinned) on frozen features",
-    "b6": "STFM official video classifier (adapter)",
+    "b6": "official STFM (frozen seed100) applied with a sliding window",
+    "b7": "official EchoViewCLIP stage-1 (frozen) applied with a sliding window",
+    "b8": "EchoPrime released view classifier applied per frame",
 }
 
 
@@ -67,7 +69,17 @@ def _b5(prob, feat, cfg, stream_id=None):
     return p.argmax(1), p
 
 
-DECODERS: dict[str, Decoder] = {"b0": _b0, "b1": _b1, "b2": _b2, "b3": _b3, "b4": _b4, "b4_reimpl": _b4_reimpl, "b5": _b5}
+def _lookup_factory(cfg_key: str):
+    def _dec(prob, feat, cfg, stream_id=None):
+        from echo_routing.temporal.baselines.b4_mstcn_official import lookup_prob
+        p = lookup_prob({"mstcn_official": {"pred_dir": (cfg.get(cfg_key) or {}).get("pred_dir")}}, stream_id)
+        return p.argmax(1), p
+    return _dec
+
+
+DECODERS: dict[str, Decoder] = {"b0": _b0, "b1": _b1, "b2": _b2, "b3": _b3, "b4": _b4, "b4_reimpl": _b4_reimpl, "b5": _b5,
+                                "b6": _lookup_factory("stfm_windowed"), "b7": _lookup_factory("echoviewclip_windowed"),
+                                "b8": _lookup_factory("echoprime_windowed")}
 
 
 def register(method: str, fn: Decoder) -> None:
