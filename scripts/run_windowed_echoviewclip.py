@@ -68,6 +68,11 @@ def main():
     for k in ["prompt_learner.token_prefix", "prompt_learner.token_suffix", "prompt_learner.complete_text_embeddings"]:
         sd.pop(k, None)
     print("load:", model.load_state_dict(sd, strict=False))
+    # inference in float32 without apex: the CLIP weights are stored in fp16 and the modules keep a `dtype` attribute
+    model = model.float()
+    for mod in model.modules():
+        if isinstance(getattr(mod, "dtype", None), torch.dtype):
+            mod.dtype = torch.float32
     plans = json.loads(Path(a.plans).read_text()); frames_root = Path(plans["frames_root"]); out = Path(a.out); out.mkdir(parents=True, exist_ok=True)
     pcache = {}; items = list(plans["streams"].items())[: a.limit] if a.limit else list(plans["streams"].items())
     with torch.no_grad():
