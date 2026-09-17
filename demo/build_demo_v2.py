@@ -26,6 +26,13 @@ BASELINES = {  # registry id -> (display name, one-line description, links)
            ("our driver", GH + "scripts/run_asformer_official.py"), ("our patch (py3)", GH + "third_party/patches/asformer-py3.patch"), ("frozen checkpoint", GH + "docs/models_frozen/asformer_official/v1/MANIFEST.json")]),
 }
 ROWS = ["b6", "b7", "b8", "b4", "b5"]
+FIGURES = {  # authors' own architecture figures, reproduced from the papers / official repo with attribution
+    "b6": ("figures/stfm.png", "Figure 3 of Gou et al., arXiv:2606.17437"),
+    "b7": ("figures/echoviewclip.jpg", "Figure 1 from the official repository (Song et al., MICCAI 2025)"),
+    "b8": ("figures/echoprime.png", "Figure 1B of Vukadinovic et al., Nature 650 (2026) / arXiv:2410.09704"),
+    "b4": ("figures/mstcn.png", "Figure 1 of Abu Farha & Gall, CVPR 2019"),
+    "b5": ("figures/asformer.png", "Figure 1 of Yi et al., BMVC 2021"),
+}
 CLASSES = ["PLAX", "PSAX", "A4C", "A5C", "SC4C"]
 
 
@@ -91,7 +98,11 @@ th,td{padding:8px 12px;text-align:right;border-bottom:1px solid var(--line-2);wh
 th{font-family:"IBM Plex Mono",ui-monospace,monospace;font-weight:500;font-size:11.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
 td:first-child,th:first-child{text-align:left}tbody tr:last-child td{border-bottom:0}
 td a,.links a{color:var(--accent-ink)}
-.links{font-size:13px;color:var(--ink-2);display:grid;gap:4px}
+.model{display:grid;gap:8px;padding:12px 0;border-top:1px solid var(--line-2)}
+.mhead{font-size:13.5px;color:var(--ink-2);line-height:1.7}.mhead b{color:var(--ink);font-size:15px}
+figure{margin:0;background:#fff;border:1px solid var(--line);border-radius:6px;padding:10px;display:grid;gap:6px}
+figure img{max-width:100%;height:auto;display:block;margin:0 auto}
+figcaption{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11.5px;color:var(--muted)}
 footer{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
 """
 
@@ -236,7 +247,11 @@ def build(out: Path) -> Path:
     metrics = [m for m in metrics if m["method_id"] in ROWS]
     keys = '<div class="keys">' + "".join(f'<span><i class="sw" style="background:var(--s{i+1})"></i>{c}</span>' for i, c in enumerate(CLASSES)) + \
            '<span><i class="sw hatch"></i>deferred</span><span><i class="ln dash"></i>file join</span><span><i class="ln"></i>true view change</span></div>'
-    links = '<div class="links">' + "".join(f'<span><b>{BASELINES[m][0]}</b> — {esc(BASELINES[m][1])} · ' + " · ".join(f'<a href="{u}" target="_blank" rel="noopener">{esc(l)}</a>' for l, u in BASELINES[m][2]) + "</span>" for m in ROWS) + "</div>"
+    links = "".join(
+        f'<div class="model" id="model-{m}"><div class="mhead"><b>{BASELINES[m][0]}</b> — {esc(BASELINES[m][1])}<br>'
+        + " · ".join(f'<a href="{u}" target="_blank" rel="noopener">{esc(l)}</a>' for l, u in BASELINES[m][2]) + '</div>'
+        + f'<figure><img src="{FIGURES[m][0]}" alt="{BASELINES[m][0]} architecture" loading="lazy"><figcaption>Architecture figure by the authors: {esc(FIGURES[m][1])}</figcaption></figure></div>'
+        for m in ROWS)
     page = f"""<title>EV9V Routing Demo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
