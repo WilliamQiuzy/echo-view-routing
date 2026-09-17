@@ -1,5 +1,7 @@
 # echo-view-routing
 
+**Live demo (GitHub Pages):** https://williamqiuzy.github.io/echo-view-routing/ — five published baselines on 27 real EV9V streams. Rebuild and publish with `demo/publish_pages.sh`.
+
 Selective temporal routing of echocardiography video (Harvard capstone, public-data study).
 Given a recording, output intervals with start/end, view label, accept/defer decision and confidence,
 and distinguish **semantic view changes** (A4C → PLAX) from **nuisance discontinuities**
