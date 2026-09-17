@@ -35,12 +35,16 @@ def main() -> None:
     ap.add_argument("--limit", type=int, default=None, help="max native cines per split (smoke)")
     ap.add_argument("--pred-dir", default=None, help="official MS-TCN predictions dir (enables b4)")
     ap.add_argument("--asformer-pred-dir", default=None, help="official ASFormer predictions dir (enables b5)")
+    ap.add_argument("--pred-dirs", default=None, help="extra prediction dirs as key=dir,... (keys: stfm_windowed, echoviewclip_windowed, echoprime_windowed)")
     args = ap.parse_args()
     cfg = load_cfg(args); paths = load_paths()
     if args.pred_dir:
         cfg.setdefault("mstcn_official", {})["pred_dir"] = args.pred_dir
     if args.asformer_pred_dir:
         cfg.setdefault("asformer_official", {})["pred_dir"] = args.asformer_pred_dir
+    for kv in (args.pred_dirs or "").split(","):
+        if kv:
+            k, v = kv.split("=", 1); cfg.setdefault(k, {})["pred_dir"] = v
     methods = (args.methods or ",".join(cfg["methods"])).split(",")
     run_dir = new_run_dir(cfg, "baselines")
     hz = cfg["sampling"]["target_hz"]
