@@ -22,6 +22,7 @@ for s in d["streams"]:
     shutil.copy(f"{sys.argv[2]}/{s['file']}", f"{sys.argv[3]}/{s['file']}")
 print(len(d["streams"]), "videos copied")
 PY
+mkdir -p "$SITE/figures" && cp "$REPO_ROOT"/demo/figures/* "$SITE/figures/"
 touch "$SITE/.nojekyll"
 WT="$(mktemp -d)"
 git worktree add -q -B gh-pages "$WT" 2>/dev/null || git worktree add -q "$WT" gh-pages
