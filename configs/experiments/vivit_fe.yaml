@@ -1,0 +1,21 @@
+# V2 factorised video ViT (ViViT-FE): shared ViT-S/16 frame encoder -> 2-layer temporal Transformer over 16 frames
+# at 10 Hz (1.6 s, the evaluation window of STFM/EchoViewCLIP) -> clip head, plus an auxiliary per-frame head.
+# Nine-code task (the EV9V benchmark used by STFM and EchoViewCLIP); family5 via the fixed mapping at evaluation.
+extends: ../base.yaml
+run_name: vivit_fe
+task: raw9
+vit:
+  model: vivit_fe
+  n_frames: 16
+  step: 3
+  batch_size: 8
+  lr: 1.0e-4
+  layer_decay: 0.75
+  weight_decay: 0.05
+  warmup_epochs: 1
+  epochs: 30
+  patience: 6
+  num_workers: 4
+  eval_clips_per_video: 3
+  aux_frame_weight: 0.5
+  extra: {drop_path: 0.1, temporal_depth: 2, temporal_heads: 6, dropout: 0.1}

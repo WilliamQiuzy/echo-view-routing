@@ -1,0 +1,17 @@
+# V3 multiscale video Transformer: torchvision MViTv2-S (Kinetics-400 weights), 16 frames at 10 Hz, nine-code task.
+extends: ../base.yaml
+run_name: mvit_k400
+task: raw9
+vit:
+  model: mvit_k400
+  n_frames: 16
+  step: 3
+  batch_size: 8
+  lr: 5.0e-5
+  layer_decay: 1.0
+  weight_decay: 0.05
+  warmup_epochs: 1
+  epochs: 30
+  patience: 6
+  num_workers: 4
+  eval_clips_per_video: 3
