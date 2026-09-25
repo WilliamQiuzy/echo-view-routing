@@ -1,0 +1,8 @@
+# V2c factorised video ViT, centre-supervised transition-aware training: as vivit_fe_mix.yaml, but a mixed clip's target
+# is the view of its centre frame (window position 8 = the sample that inherits the window's probabilities when a
+# stream is routed), a hard label, so the class weights keep their usual meaning.
+extends: vivit_fe.yaml
+run_name: vivit_fe_centre
+vit:
+  mix_prob: 0.5
+  mix_target: centre

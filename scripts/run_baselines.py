@@ -35,7 +35,7 @@ def main() -> None:
     ap.add_argument("--limit", type=int, default=None, help="max native cines per split (smoke)")
     ap.add_argument("--pred-dir", default=None, help="official MS-TCN predictions dir (enables b4)")
     ap.add_argument("--asformer-pred-dir", default=None, help="official ASFormer predictions dir (enables b5)")
-    ap.add_argument("--pred-dirs", default=None, help="extra prediction dirs as key=dir,... (keys: stfm_windowed, echoviewclip_windowed, echoprime_windowed)")
+    ap.add_argument("--pred-dirs", default=None, help="extra prediction dirs as key=dir,... (keys: stfm_windowed, echoviewclip_windowed, echoprime_windowed, or a ViT-family method id)")
     args = ap.parse_args()
     cfg = load_cfg(args); paths = load_paths()
     if args.pred_dir:

@@ -28,12 +28,14 @@ BASELINES = {  # registry id -> (display name, one-line description, links)
 ROWS = ["b6", "b7", "b8", "b4", "b5"]
 FIGURES = {  # authors' own architecture figures, reproduced from the papers / official repo with attribution
     "b6": ("figures/stfm.png", "Figure 3 of Gou et al., arXiv:2606.17437"),
-    "b7": ("figures/echoviewclip.jpg", "Figure 1 from the official repository (Song et al., MICCAI 2025)"),
-    "b8": ("figures/echoprime.png", "Figure 1B of Vukadinovic et al., Nature 650 (2026) / arXiv:2410.09704"),
-    "b4": ("figures/mstcn.png", "Figure 1 of Abu Farha & Gall, CVPR 2019"),
+    "b7": ("figures/echoviewclip.jpg", "Figure 1 in the official repository (Song et al., MICCAI 2025)"),
+    "b8": ("figures/echoprime.png", "Figure 1B–C of Vukadinovic et al., Nature 650 (2026) / arXiv:2410.09704. Our baseline uses only the View Classifier (first block of C), applied per frame; the ViT-family Echo-MViT starts from the video side of the Contrastive Encoder"),
+    "b4": (["figures/mstcn.png", "figures/mstcn_layer.png"], "Figures 1 and 2 of Abu Farha & Gall, CVPR 2019. The left figure shows the whole model. Input x is one feature vector per frame (here ResNet-18 features). Each stage is a stack of dilated temporal convolutions over all frames and refines the class probabilities of the stage below; every stage has its own loss. The right figure shows one grey node, a dilated residual layer. The dilation doubles from layer to layer. The official code uses 4 stages of 10 layers"),
     "b5": ("figures/asformer.png", "Figure 1 of Yi et al., BMVC 2021"),
 }
 CLASSES = ["PLAX", "PSAX", "A4C", "A5C", "SC4C"]
+ROUTING_SENTENCE = ("<b>Routing</b> means sending each part of an echo recording to the analysis made for its view. "
+                    "Parts the model is unsure about are held back for a person to check.")
 
 
 def esc(s):
@@ -101,7 +103,8 @@ td a,.links a{color:var(--accent-ink)}
 .model{display:grid;gap:8px;padding:12px 0;border-top:1px solid var(--line-2)}
 .mhead{font-size:13.5px;color:var(--ink-2);line-height:1.7}.mhead b{color:var(--ink);font-size:15px}
 figure{margin:0;background:#fff;border:1px solid var(--line);border-radius:6px;padding:10px;display:grid;gap:6px}
-figure img{max-width:100%;height:auto;display:block;margin:0 auto}
+figure img{max-width:100%;max-height:560px;width:auto;height:auto;display:block;margin:0 auto}
+.figrow{display:flex;flex-wrap:wrap;gap:12px 36px;align-items:center;justify-content:center}.figrow img{margin:0}.figrow img.aux{max-height:300px}
 figcaption{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11.5px;color:var(--muted)}
 footer{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
 """
@@ -140,7 +143,9 @@ def streams_html(d: dict) -> str:
     return "".join(out)
 
 
-def _panels(streams: list) -> str:
+def _panels(streams: list, rows_ids: list[str] | None = None, names: dict[str, str] | None = None,
+            notes: dict[str, str] | None = None) -> str:
+    rows_ids = rows_ids or ROWS; names = names or {m: BASELINES[m][0] for m in ROWS}; notes = notes or {}
     panels = []
     for st in streams:
         dur = st["duration_s"]
@@ -153,16 +158,16 @@ def _panels(streams: list) -> str:
             return "".join(out)
         rows = [f'<span class="lab truth">truth</span><span class="badge off" data-row="truth">—</span><div class="strip">{segs(st["truth"], True)}</div>']
         data_rows = {"truth": [{"s": t["start_s"], "e": t["end_s"], "v": t["label"], "a": True} for t in st["truth"]]}
-        for m in ROWS:
+        for m in rows_ids:
             if m not in st["methods"]:
                 continue
-            rows.append(f'<span class="lab">{BASELINES[m][0]}</span><span class="badge off" data-row="{m}">—</span><div class="strip">{segs(st["methods"][m]["intervals"])}</div>')
+            rows.append(f'<span class="lab">{names[m]}</span><span class="badge off" data-row="{m}">—</span><div class="strip">{segs(st["methods"][m]["intervals"])}</div>')
             data_rows[m] = [{"s": i["start_s"], "e": i["end_s"], "v": i["view"], "a": i["accepted"]} for i in st["methods"][m]["intervals"]]
         marks = "".join(f'<i class="mark" style="left:{j/dur*100:.2f}%"></i>' for j in st["joins_s"] if j not in st["semantic_s"]) + \
                 "".join(f'<i class="mark sem" style="left:{b/dur*100:.2f}%"></i>' for b in st["semantic_s"])
         frags = "".join(f'<span>{fr["start_s"]:.1f}–{fr["end_s"]:.1f} s · {fr["family"]}{" · gamma 0.9" if fr["variant"] != "orig" else ""}</span>' for fr in st["fragments"])
         panels.append(f'''<div class="stream" data-dur="{dur:.3f}">
-  <div><h3>{esc(st["title"])}</h3><video src="streams/{st["file"]}" controls loop muted playsinline preload="metadata"></video><div class="frags">{frags}</div></div>
+  <div><h3>{esc(st["title"])}</h3>{f'<p class="note">{esc(notes[st["id"]])}</p>' if st["id"] in notes else ""}<video src="streams/{st["file"]}" controls loop muted playsinline preload="metadata"></video><div class="frags">{frags}</div></div>
   <div class="rows"><div class="overlay" style="left:0;width:0">{marks}<i class="playhead" style="left:0"></i></div>{"".join(rows)}</div>
   <script type="application/json" class="rows-data">{json.dumps({"dur": dur, "rows": data_rows})}</script>
 </div>''')
@@ -208,7 +213,7 @@ def _d(a, b):
 
 
 def repro_html() -> str:
-    out = ['<h2 id="reproduction">Reproduction: our trained models vs the authors\' reported numbers</h2>']
+    out = ['<h2 id="reproduction">Reproduction check against the authors\' reported numbers</h2>']
     # STFM: same code, same recipe, same seeds as the paper (EV9V nine-code video task)
     stfm = [("seed 100", 93.92, 90.14), ("seed 200", 93.58, 89.57), ("seed 300", 93.81, 89.92)]
     rows = [[f"ours, {n}", f"{a:.2f}", f"{f1:.2f}", "", ""] for n, a, f1 in stfm]
@@ -241,6 +246,12 @@ def repro_html() -> str:
     return "".join(out)
 
 
+def _imgs(m: str) -> str:
+    srcs = FIGURES[m][0] if isinstance(FIGURES[m][0], list) else [FIGURES[m][0]]
+    return "".join(f'<img src="{src}" alt="{BASELINES[m][0]} architecture, part {i + 1}" loading="lazy"{' class="aux"' if i else ''}>'
+                   for i, src in enumerate(srcs))
+
+
 def build(out: Path) -> Path:
     streams = json.loads((REPO / "runs" / "_demo" / "streams" / "streams.json").read_text())
     metrics, h = collect_metrics(REPO / "runs")
@@ -250,7 +261,7 @@ def build(out: Path) -> Path:
     links = "".join(
         f'<div class="model" id="model-{m}"><div class="mhead"><b>{BASELINES[m][0]}</b> — {esc(BASELINES[m][1])}<br>'
         + " · ".join(f'<a href="{u}" target="_blank" rel="noopener">{esc(l)}</a>' for l, u in BASELINES[m][2]) + '</div>'
-        + f'<figure><img src="{FIGURES[m][0]}" alt="{BASELINES[m][0]} architecture" loading="lazy"><figcaption>Architecture figure by the authors: {esc(FIGURES[m][1])}</figcaption></figure></div>'
+        + f'<figure><div class="figrow">{_imgs(m)}</div><figcaption>Architecture figure by the authors, taken from {esc(FIGURES[m][1])}</figcaption></figure></div>'
         for m in ROWS)
     page = f"""<title>EV9V Routing Demo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -258,11 +269,12 @@ def build(out: Path) -> Path:
 <style>{CSS}</style>
 <nav class="side" aria-label="sections">
   <input id="filter" type="search" placeholder="filter streams…" aria-label="filter streams">
+  <a href="vit.html">Vision Transformers →</a><span class="navsep"></span>
   <a href="#native">Single view</a><a href="#same_none">Same view</a><a href="#same_edit">Same view, edited</a><a href="#diff_none">View change</a><a href="#diff_edit">View change, edited</a><a href="#multi">Multi-view</a>
   <span class="navsep"></span><a href="#recognition">Recognition</a><a href="#segmentation">Segmentation</a><a href="#routing">Routing</a><a href="#reproduction">Reproduction</a><a href="#models">Models</a>
 </nav>
 <div class="wrap">
-<header id="top"><h1>Five baselines on EV9V</h1><p>Press play. Each row is one published model reading the same frames.</p>{keys}</header>
+<header id="top"><h1>Five baselines on EV9V</h1><p>Press play. Each row is one published model reading the same frames. Our Vision-Transformer designs are on a <a href="vit.html">separate page</a>.</p><p>{ROUTING_SENTENCE} In the rows below, held-back parts are hatched.</p>{keys}</header>
 {streams_html(streams)}
 <section style="display:grid;gap:12px">{table_html(metrics)}</section>
 <section>{repro_html()}</section>

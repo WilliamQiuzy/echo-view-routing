@@ -27,7 +27,21 @@ METHOD_DESCRIPTIONS = {
     "b6": "official STFM (frozen seed100) applied with a sliding window",
     "b7": "official EchoViewCLIP stage-1 (frozen) applied with a sliding window",
     "b8": "EchoPrime released view classifier applied per frame",
+    # Vision-Transformer family (echo_routing/vit; predictions written by scripts/predict_vit_streams.py,
+    # scripts/train_vit_router.py and scripts/run_mstcn_official.py on ViT features)
+    "vit_frame": "ViT-S/16 frame classifier (ImageNet-21k init), per frame, no temporal processing",
+    "vivit_fe": "factorised video ViT (ViT-S/16 frame encoder + temporal Transformer) on 1.6 s sliding windows",
+    "vivit_fe_mix": "factorised video ViT trained transition-aware (mixed two-view clips, soft targets), 1.6 s windows",
+    "vivit_fe_centre": "factorised video ViT trained transition-aware with centre-frame targets, 1.6 s windows",
+    "mvit_k400": "MViTv2-S video Transformer (Kinetics-400 init) on 1.6 s sliding windows",
+    "mvit_echoprime": "MViTv2-S video Transformer (EchoPrime echo-video init) on 1.6 s sliding windows",
+    "mvit_echoprime_centre": "EchoPrime-initialised MViTv2-S, centre-supervised transition-aware training, 1.6 s windows",
+    "vit_router": "ViT-Router: local-attention multi-stage temporal Transformer on frozen ViT-S frame features",
+    "mstcn_vitfeat": "official MS-TCN (pinned) on frozen ViT-S frame features (encoder swap of B4)",
 }
+
+VIT_FAMILY = ("vit_frame", "vivit_fe", "vivit_fe_mix", "vivit_fe_centre", "mvit_k400", "mvit_echoprime", "mvit_echoprime_centre", "vit_router",
+              "mstcn_vitfeat")
 
 
 def _b0(prob, feat, cfg, stream_id=None):
@@ -79,7 +93,8 @@ def _lookup_factory(cfg_key: str):
 
 DECODERS: dict[str, Decoder] = {"b0": _b0, "b1": _b1, "b2": _b2, "b3": _b3, "b4": _b4, "b4_reimpl": _b4_reimpl, "b5": _b5,
                                 "b6": _lookup_factory("stfm_windowed"), "b7": _lookup_factory("echoviewclip_windowed"),
-                                "b8": _lookup_factory("echoprime_windowed")}
+                                "b8": _lookup_factory("echoprime_windowed"),
+                                **{m: _lookup_factory(m) for m in VIT_FAMILY}}
 
 
 def register(method: str, fn: Decoder) -> None:
@@ -94,6 +109,8 @@ def decode(method: str, prob: np.ndarray, cfg: dict[str, Any], feat: np.ndarray 
 def decode_with_prob(method: str, prob: np.ndarray, cfg: dict[str, Any], feat: np.ndarray | None = None,
                      stream_id: str | None = None) -> tuple[np.ndarray, np.ndarray]:
     """(labels, probabilities to score segments with). Learned temporal models return their own posteriors."""
+    if method not in DECODERS and "@" in method and method.split("@", 1)[0] in VIT_FAMILY:
+        DECODERS[method] = _lookup_factory(method)   # another run of a ViT-family method, e.g. "vivit_fe@s1"
     if method not in DECODERS:
         raise KeyError(f"unknown decoder {method!r}; available: {sorted(DECODERS)}")
     prob = np.asarray(prob, dtype=float)

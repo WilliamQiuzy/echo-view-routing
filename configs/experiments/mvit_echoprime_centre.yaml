@@ -1,0 +1,8 @@
+# V4c Echo-MViTv2-S, centre-supervised transition-aware training: identical to mvit_echoprime.yaml except that half of
+# the training clips join two independently drawn training cines at a random frame (k in 1..15) and take the view of
+# the clip's centre frame as target (see vivit_fe_centre.yaml).
+extends: mvit_echoprime.yaml
+run_name: mvit_echoprime_centre
+vit:
+  mix_prob: 0.5
+  mix_target: centre

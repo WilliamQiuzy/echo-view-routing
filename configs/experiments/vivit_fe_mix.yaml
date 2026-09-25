@@ -1,0 +1,6 @@
+# V2b factorised video ViT, transition-aware: identical to vivit_fe.yaml except that half of the training clips join
+# two independently drawn training cines at a random frame (k in 1..15) with a soft target = share of frames per view.
+extends: vivit_fe.yaml
+run_name: vivit_fe_mix
+vit:
+  mix_prob: 0.5
