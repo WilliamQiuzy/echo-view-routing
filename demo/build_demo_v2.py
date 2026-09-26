@@ -14,15 +14,16 @@ from echo_routing.evaluate.report import collect_metrics  # noqa: E402
 
 GH = "https://github.com/WilliamQiuzy/echo-view-routing/blob/main/"
 BASELINES = {  # registry id -> (display name, one-line description, links)
-    "b6": ("STFM", "EV9V authors' CNN-LSTM view classifier, sliding window", [("paper", "https://arxiv.org/abs/2606.17437"), ("official code", "https://github.com/bgx666/stfm"),
+    "b6": ("STFM", "The EV9V authors' own view classifier. A CNN reads each frame and an LSTM combines the frames. "
+                   "We run it on a sliding 1.6 s window.", [("paper", "https://arxiv.org/abs/2606.17437"), ("official code", "https://github.com/bgx666/stfm"),
            ("our driver", GH + "scripts/run_stfm.py"), ("our sliding window", GH + "scripts/run_windowed_stfm.py"), ("frozen checkpoint", GH + "docs/models_frozen/stfm_official/seed100/MANIFEST.json")]),
-    "b7": ("EchoViewCLIP", "CLIP-based view recognition (MICCAI 2025), retrained on EV9V, sliding window", [("paper", "https://link.springer.com/chapter/10.1007/978-3-032-05169-1_18"), ("official code", "https://github.com/xmed-lab/EchoViewCLIP"),
+    "b7": ("EchoViewCLIP", "A CLIP-based view classifier (MICCAI 2025). We retrained it on EV9V and run it on a sliding 1.6 s window.", [("paper", "https://link.springer.com/chapter/10.1007/978-3-032-05169-1_18"), ("official code", "https://github.com/xmed-lab/EchoViewCLIP"),
            ("our driver", GH + "scripts/run_echoviewclip.py"), ("our config", GH + "third_party/adapters/echoviewclip/ev9v_stage1.yaml"), ("our sliding window", GH + "scripts/run_windowed_echoviewclip.py"), ("frozen checkpoint", GH + "docs/models_frozen/echoviewclip_stage1/v1/MANIFEST.json")]),
-    "b8": ("EchoPrime", "released 11-view frame classifier, per frame", [("paper", "https://arxiv.org/abs/2410.09704"), ("official code + weights", "https://github.com/echonet/EchoPrime"),
+    "b8": ("EchoPrime", "A released view classifier for 11 views. It labels each frame on its own, with the released weights and no training.", [("paper", "https://arxiv.org/abs/2410.09704"), ("official code + weights", "https://github.com/echonet/EchoPrime"),
            ("our evaluation", GH + "scripts/eval_echoprime_views.py"), ("our per-frame runner", GH + "scripts/run_windowed_echoprime.py"), ("frozen weights", GH + "docs/models_frozen/echoprime_view_classifier/release_v1.0.0/MANIFEST.json")]),
-    "b4": ("MS-TCN", "temporal segmentation on frozen frame features", [("paper", "https://arxiv.org/abs/1903.01945"), ("official code", "https://github.com/yabufarha/ms-tcn"),
+    "b4": ("MS-TCN", "A temporal segmentation model. It reads frozen ResNet-18 features of every frame in the stream.", [("paper", "https://arxiv.org/abs/1903.01945"), ("official code", "https://github.com/yabufarha/ms-tcn"),
            ("our driver", GH + "scripts/run_mstcn_official.py"), ("our patch (py3)", GH + "third_party/patches/ms-tcn-py3.patch"), ("frozen checkpoint", GH + "docs/models_frozen/mstcn_official/v1/MANIFEST.json")]),
-    "b5": ("ASFormer", "transformer temporal segmentation on frozen frame features", [("paper", "https://arxiv.org/abs/2110.08568"), ("official code", "https://github.com/ChinaYi/ASFormer"),
+    "b5": ("ASFormer", "A Transformer for temporal segmentation. It reads the same frozen frame features as MS-TCN.", [("paper", "https://arxiv.org/abs/2110.08568"), ("official code", "https://github.com/ChinaYi/ASFormer"),
            ("our driver", GH + "scripts/run_asformer_official.py"), ("our patch (py3)", GH + "third_party/patches/asformer-py3.patch"), ("frozen checkpoint", GH + "docs/models_frozen/asformer_official/v1/MANIFEST.json")]),
 }
 ROWS = ["b6", "b7", "b8", "b4", "b5"]
@@ -98,7 +99,7 @@ p{margin:0;color:var(--ink-2);max-width:72ch}
 table{border-collapse:collapse;width:100%;font-size:13.5px;font-variant-numeric:tabular-nums}
 th,td{padding:8px 12px;text-align:right;border-bottom:1px solid var(--line-2);white-space:nowrap}
 th{font-family:"IBM Plex Mono",ui-monospace,monospace;font-weight:500;font-size:11.5px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
-td:first-child,th:first-child{text-align:left}tbody tr:last-child td{border-bottom:0}
+td:first-child,th:first-child{text-align:left}tbody tr:last-child td{border-bottom:0}thead th{vertical-align:bottom;line-height:1.4}
 td a,.links a{color:var(--accent-ink)}
 .model{display:grid;gap:8px;padding:12px 0;border-top:1px solid var(--line-2)}
 .mhead{font-size:13.5px;color:var(--ink-2);line-height:1.7}.mhead b{color:var(--ink);font-size:15px}
@@ -165,17 +166,23 @@ def _panels(streams: list, rows_ids: list[str] | None = None, names: dict[str, s
             data_rows[m] = [{"s": i["start_s"], "e": i["end_s"], "v": i["view"], "a": i["accepted"]} for i in st["methods"][m]["intervals"]]
         marks = "".join(f'<i class="mark" style="left:{j/dur*100:.2f}%"></i>' for j in st["joins_s"] if j not in st["semantic_s"]) + \
                 "".join(f'<i class="mark sem" style="left:{b/dur*100:.2f}%"></i>' for b in st["semantic_s"])
-        frags = "".join(f'<span>{fr["start_s"]:.1f}–{fr["end_s"]:.1f} s · {fr["family"]}{" · gamma 0.9" if fr["variant"] != "orig" else ""}</span>' for fr in st["fragments"])
+        frags = "".join(f'<span>{fr["start_s"]:.1f}–{fr["end_s"]:.1f} s · {fr["family"]}{" · brightness edit" if fr["variant"] != "orig" else ""}</span>' for fr in st["fragments"])
+        title = st["title"].replace("gamma-edited", "brightness-edited")
         panels.append(f'''<div class="stream" data-dur="{dur:.3f}">
-  <div><h3>{esc(st["title"])}</h3>{f'<p class="note">{esc(notes[st["id"]])}</p>' if st["id"] in notes else ""}<video src="streams/{st["file"]}" controls loop muted playsinline preload="metadata"></video><div class="frags">{frags}</div></div>
+  <div><h3>{esc(title)}</h3>{f'<p class="note">{esc(notes[st["id"]])}</p>' if st["id"] in notes else ""}<video src="streams/{st["file"]}" controls loop muted playsinline preload="metadata"></video><div class="frags">{frags}</div></div>
   <div class="rows"><div class="overlay" style="left:0;width:0">{marks}<i class="playhead" style="left:0"></i></div>{"".join(rows)}</div>
   <script type="application/json" class="rows-data">{json.dumps({"dur": dur, "rows": data_rows})}</script>
 </div>''')
     return '<div class="streams">' + "".join(panels) + "</div>"
 
 
+def _th(h: str) -> str:
+    """Header cell; a '\n' in the label is the only place it breaks."""
+    return "<th>" + "<br>".join(esc(part) for part in str(h).split("\n")) + "</th>"
+
+
 def _table(head, body):
-    return '<div class="tablewrap"><table><thead><tr>' + "".join(f"<th>{esc(h)}</th>" for h in head) + "</tr></thead><tbody>" + \
+    return '<div class="tablewrap"><table><thead><tr>' + "".join(_th(h) for h in head) + "</tr></thead><tbody>" + \
         "".join("<tr>" + "".join(f"<td>{v}</td>" for v in r) + "</tr>" for r in body) + "</tbody></table></div>"
 
 
@@ -185,26 +192,45 @@ def table_html(metrics: list[dict]) -> str:
     if not rows:
         return '<p class="mono">no five-baseline metrics pulled yet</p>'
     # 1) recognition + stability on the 800 untouched test clips
-    h1 = ["model", "clip acc", "clip macro-F1", "balanced acc", "frame acc", "frame macro-F1", "fragments / min", "share of clips fragmented"]
+    h1 = ["model", "clip\naccuracy", "clip\nmacro-F1", "balanced\naccuracy", "frame\naccuracy", "frame\nmacro-F1", "label flips\nper min",
+          "clips with\na flip"]
     b1 = [[f'<b>{BASELINES[m][0]}</b>', f(g(by[m], "native", "test", "cine", "accuracy")), f(g(by[m], "native", "test", "cine", "macro_f1")),
            f(g(by[m], "native", "test", "cine", "balanced_accuracy")), f(g(by[m], "native", "test", "frame", "accuracy")), f(g(by[m], "native", "test", "frame", "macro_f1")),
            f(g(by[m], "native", "test", "stability", "fragments_per_minute_mean"), 1), f(g(by[m], "native", "test", "stability", "share_fragmented"))] for m in rows]
     # 2) segmentation on the 240 two-fragment test streams (2x2 design) and the 120 multi-fragment streams
-    h2 = ["model", "boundary F1 @0.25 s", "@0.5 s", "@1.0 s", "false split same/none", "same/edit", "missed diff/none", "diff/edit", "multi-fragment boundary F1 @0.5 s"]
+    h2 = ["model", "change F1\n±0.25 s", "change F1\n±0.5 s", "change F1\n±1 s", "false cuts\nsame view", "false cuts\nsame view, edited",
+          "missed\nview change", "missed\nview change, edited", "change F1 ±0.5 s\n4–8 clips"]
     b2 = []
     for m in rows:
         c = g(by[m], "constructed", "cells", default={}); b = g(by[m], "constructed", "boundary", default={})
         b2.append([f'<b>{BASELINES[m][0]}</b>', f(g(b, "0.25", "f1")), f(g(b, "0.5", "f1")), f(g(b, "1.0", "f1")), f(g(c, "same_none", "false_split_rate")), f(g(c, "same_edit", "false_split_rate")),
                    f(g(c, "diff_none", "missed_rate")), f(g(c, "diff_edit", "missed_rate")), f(g(by[m], "constructed_multi", "boundary", "0.5", "f1"))])
     # 3) selective routing at validation-selected thresholds
-    h3 = ["model", "τ @5%", "coverage @5%", "achieved risk", "τ @1%", "val coverage @1%", "multi-fragment coverage", "multi-fragment risk"]
+    h3 = ["model", "threshold\n5% target", "coverage\n5% target", "actual error\n5% target", "threshold\n1% target",
+          "coverage on\nvalidation, 1%", "coverage\n4–8 clips", "actual error\n4–8 clips"]
     b3 = []
     for m in rows:
         pol = g(by[m], "policy", "by_target", default={})
         b3.append([f'<b>{BASELINES[m][0]}</b>', f(g(pol, "0.05", "tau")), f(g(by[m], "constructed", "routing", "coverage")), f(g(by[m], "constructed", "routing", "risk")),
                    f(g(pol, "0.01", "tau")), f(g(pol, "0.01", "coverage")), f(g(by[m], "constructed_multi", "routing", "coverage")), f(g(by[m], "constructed_multi", "routing", "risk"))])
-    return ('<h2 id="recognition">Recognition on 800 untouched test clips</h2>' + _table(h1, b1) + '<h2 id="segmentation">Segmentation on constructed test streams (±tolerance, one-to-one matching)</h2>' + _table(h2, b2) +
-            '<h2 id="routing">Selective routing (thresholds chosen on validation, frozen)</h2>' + _table(h3, b3))
+    intro1 = ("<p>Each of the 800 test clips shows one view. A clip score gives each clip the label most of its frames get. "
+              "A frame score judges every frame on its own. Macro-F1 and balanced accuracy weight every view equally. "
+              "Label flips count how often the label changes inside one clip, per minute, so 0 is best. "
+              "The last column is the share of clips whose label changes at least once. "
+              'All metrics are explained on the <a href="vit.html#benchmarks">Vision-Transformer page</a>.</p>')
+    intro2 = ("<p>EV9V has no continuous recordings with several views, so we join test clips into streams. "
+              "A predicted view change is correct if it lies within the tolerance of a real change. Each real change can be matched only once. "
+              "A false cut is a change predicted within 0.5 s of a join between two clips of the same view. "
+              "A missed change is a real view change with no predicted change within 0.5 s. "
+              "Edited means the second clip had its brightness changed. "
+              "The last column uses the 120 streams of 4 to 8 clips, and the others use the 240 two-clip streams.</p>")
+    intro3 = ("<p>Each predicted segment gets a confidence. It is routed if the confidence clears a threshold, and held back for a person otherwise. "
+              "The threshold is chosen on validation for an error target of 5% or 1% and then kept fixed. "
+              "Coverage is the share of stream time routed automatically. Actual error is the share of routed time with the wrong view. "
+              "The last two columns apply the 5% threshold to the streams of 4 to 8 clips.</p>")
+    return ('<h2 id="recognition">Recognition on the 800 test clips</h2>' + intro1 + _table(h1, b1)
+            + '<h2 id="segmentation">Segmentation on joined test streams</h2>' + intro2 + _table(h2, b2)
+            + '<h2 id="routing">Routing</h2>' + intro3 + _table(h3, b3))
 
 
 # Numbers recorded in docs/REPRODUCTION.md and docs/EXPERIMENT_LEDGER.md (2026-09-13/14). Δ = ours − authors, percentage points.
@@ -213,7 +239,9 @@ def _d(a, b):
 
 
 def repro_html() -> str:
-    out = ['<h2 id="reproduction">Reproduction check against the authors\' reported numbers</h2>']
+    out = ['<h2 id="reproduction">Reproduction check against the authors\' reported numbers</h2>'
+           "<p>We ran each baseline with its authors' code and compared our numbers with theirs. "
+           "Δ is ours minus theirs, in percentage points.</p>"]
     # STFM: same code, same recipe, same seeds as the paper (EV9V nine-code video task)
     stfm = [("seed 100", 93.92, 90.14), ("seed 200", 93.58, 89.57), ("seed 300", 93.81, 89.92)]
     rows = [[f"ours, {n}", f"{a:.2f}", f"{f1:.2f}", "", ""] for n, a, f1 in stfm]
@@ -221,28 +249,37 @@ def repro_html() -> str:
     rows.append(["authors, Table 5 ResNet-18, seeds 100/200/300", "94.07 ± 0.66", "90.30 ± 1.03", "", ""])
     rows.append(["<b>Δ ours − authors</b>", f"<b>{_d(93.77, 94.07)}</b>", f"<b>{_d(89.88, 90.30)}</b>", "within one std of the paper", ""])
     rows.append(["ours, extra seed 666 (code default)", "93.36", "89.49", "", ""])
-    out.append('<h3>STFM · retrained with the authors\' code and recipe on EV9V (nine-code, video-level test set)</h3>' + _table(["run", "test accuracy", "test macro-F1", "verdict", ""], rows))
+    out.append('<h3>STFM, retrained on EV9V with the authors\' code and recipe</h3>'
+               "<p>This is the nine-code test, with one label per clip.</p>" + _table(["run", "test\naccuracy", "test\nmacro-F1", "verdict", ""], rows))
     # MS-TCN: no echo result to compare, so the environment is checked on the authors' GTEA benchmark
     gtea = [("split 1", 83.0, 80.3, 63.0, 75.4, 76.1), ("split 2", 84.1, 81.2, 65.9, 80.3, 75.5), ("split 3", 89.1, 85.3, 77.7, 84.2, 78.4), ("split 4", 87.0, 86.2, 74.3, 84.2, 77.6)]
     rows = [[f"ours, {n}", f"{a:.1f}", f"{b:.1f}", f"{c:.1f}", f"{d:.1f}", f"{e:.1f}"] for n, a, b, c, d, e in gtea]
     rows.append(["<b>ours, 4-split average</b>", "<b>85.8</b>", "<b>83.2</b>", "<b>70.3</b>", "<b>81.0</b>", "<b>76.9</b>"])
     rows.append(["authors, CVPR 2019 (4-split average)", "85.8", "83.4", "69.8", "79.0", "76.3"])
     rows.append(["<b>Δ ours − authors</b>", f"<b>{_d(85.8, 85.8)}</b>", f"<b>{_d(83.2, 83.4)}</b>", f"<b>{_d(70.3, 69.8)}</b>", f"<b>{_d(81.0, 79.0)}</b>", f"<b>{_d(76.9, 76.3)}</b>"])
-    out.append('<h3>MS-TCN · authors\' code and constants, trained by us on their GTEA benchmark (environment check; the EV9V model above is ours)</h3>' + _table(["run", "F1@10", "F1@25", "F1@50", "edit", "accuracy"], rows))
+    gtea_head = ["run", "segment F1\n10% overlap", "segment F1\n25% overlap", "segment F1\n50% overlap", "edit\nscore", "frame\naccuracy"]
+    out.append("<h3>MS-TCN, trained by us on the authors' GTEA benchmark</h3>"
+               "<p>There is no published echo result to compare with, so this checks our environment on the authors' own benchmark. "
+               "GTEA is a video dataset of kitchen actions. The EV9V model above is trained by us with the same code. "
+               "Segment F1 counts a predicted segment as correct when it overlaps a true segment by the given share. "
+               "The edit score compares the predicted order of segments with the true order, so extra segments lower it.</p>"
+               + _table(gtea_head, rows))
     # ASFormer: released models through our environment
     rows = [["ours (authors\' released GTEA models, our environment + 2-line patch)", "90.1", "88.8", "79.2", "84.6", "79.7"],
             ["authors, BMVC 2021 Table 7", "90.1", "88.8", "79.2", "84.6", "79.7"],
             ["<b>Δ</b>", "<b>+0.0</b>", "<b>+0.0</b>", "<b>+0.0</b>", "<b>+0.0</b>", "<b>+0.0</b>"]]
-    out.append('<h3>ASFormer · authors\' released GTEA models re-evaluated in our environment (the EV9V model above is ours, trained with their code)</h3>' + _table(["run", "F1@10", "F1@25", "F1@50", "edit", "accuracy"], rows))
+    out.append("<h3>ASFormer, the authors' released GTEA models run in our environment</h3>"
+               "<p>The EV9V model above is trained by us with their code.</p>" + _table(gtea_head, rows))
     # EchoViewCLIP: retrained on EV9V; paper numbers are on a private 38-view dataset
     rows = [["ours, EV9V test (nine-code, video-level)", "94.14", "90.7", "best validation accuracy 95.41 (epoch 21 of 30)"],
             ["authors, MICCAI 2025 Table 1 (private 38-view dataset)", "96.8", "95.7", "different data and label set"],
-            ["<b>Δ (not like-for-like)</b>", f"<b>{_d(94.14, 96.8)}</b>", f"<b>{_d(90.7, 95.7)}</b>", "no released weights exist to check against; on EV9V it sits 0.4 pp above our STFM reproduction (93.77)"]]
-    out.append('<h3>EchoViewCLIP · retrained on EV9V with the authors\' code and recipe</h3>' + _table(["run", "accuracy", "macro-F1", "note"], rows))
+            ["<b>Δ (not like-for-like)</b>", f"<b>{_d(94.14, 96.8)}</b>", f"<b>{_d(90.7, 95.7)}</b>",
+             "No released weights exist to check against. On EV9V it is 0.4 points above our STFM reproduction (93.77)."]]
+    out.append("<h3>EchoViewCLIP, retrained on EV9V with the authors' code and recipe</h3>" + _table(["run", "accuracy", "macro-F1", "note"], rows))
     # EchoPrime: no training
     rows = [["ours, EV9V test, five-family mapping (released weights, no training)", "95.9", "90.6", "0% of predictions fell outside the five families"],
             ["authors, Nature 2026 (internal 58-view test set)", "AUC 0.997", "—", "no comparable accuracy reported"]]
-    out.append('<h3>EchoPrime · released weights only</h3>' + _table(["run", "accuracy", "macro-F1", "note"], rows))
+    out.append("<h3>EchoPrime, released weights only</h3>" + _table(["run", "accuracy", "macro-F1", "note"], rows))
     return "".join(out)
 
 
@@ -257,9 +294,9 @@ def build(out: Path) -> Path:
     metrics, h = collect_metrics(REPO / "runs")
     metrics = [m for m in metrics if m["method_id"] in ROWS]
     keys = '<div class="keys">' + "".join(f'<span><i class="sw" style="background:var(--s{i+1})"></i>{c}</span>' for i, c in enumerate(CLASSES)) + \
-           '<span><i class="sw hatch"></i>deferred</span><span><i class="ln dash"></i>file join</span><span><i class="ln"></i>true view change</span></div>'
+           '<span><i class="sw hatch"></i>deferred</span><span><i class="ln dash"></i>clip join</span><span><i class="ln"></i>true view change</span></div>'
     links = "".join(
-        f'<div class="model" id="model-{m}"><div class="mhead"><b>{BASELINES[m][0]}</b> — {esc(BASELINES[m][1])}<br>'
+        f'<div class="model" id="model-{m}"><div class="mhead"><b>{BASELINES[m][0]}</b><br>{esc(BASELINES[m][1])}<br>'
         + " · ".join(f'<a href="{u}" target="_blank" rel="noopener">{esc(l)}</a>' for l, u in BASELINES[m][2]) + '</div>'
         + f'<figure><div class="figrow">{_imgs(m)}</div><figcaption>Architecture figure by the authors, taken from {esc(FIGURES[m][1])}</figcaption></figure></div>'
         for m in ROWS)
