@@ -1,5 +1,8 @@
 #!/usr/bin/env python
-"""Run the CPU baseline ladder on cached features: native cines + constructed 2x2 streams; write metrics + ladder."""
+"""Run the CPU baseline ladder on cached features: native cines, constructed 2x2 pair streams and 4-8 fragment streams.
+
+Writes metrics/<method>.json, reports/ladder.{md,csv} and fragments/<method>.<bank>.csv (per-fragment counts that
+scripts/bootstrap_ladder.py resamples). Thresholds are frozen per validation bank (pairs and multi-fragment)."""
 from __future__ import annotations
 
 import json
@@ -10,6 +13,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from scripts._common import base_parser, load_cfg, new_run_dir  # noqa: E402
 
 import numpy as np  # noqa: E402
+import pandas as pd  # noqa: E402
 
 from echo_routing.compose.banks import multi_bank, pair_bank, render_bank, save_bank  # noqa: E402
 from echo_routing.config import load_paths  # noqa: E402
@@ -73,19 +77,23 @@ def main() -> None:
         print(f"{s}: {len(native[s])} native cines, {len(streams[s])} pair streams, {len(multi[s])} multi-fragment streams", flush=True)
 
     mdir = run_dir / "metrics"; mdir.mkdir(exist_ok=True)
+    fdir = run_dir / "fragments"; fdir.mkdir(exist_ok=True)
     results = []
     for m in methods:
         if m == "b_file":
             res = evaluate_b_file(native["validation"], native["test"], num_classes, cfg)
         else:
             res = evaluate_method(m, native["validation"], native["test"], streams["validation"], streams["test"], num_classes, cfg,
-                                  test_multi=multi["test"])
+                                  test_multi=multi["test"], val_multi=multi["validation"])
+            for bank, rows in res.get("_fragments", {}).items():  # per-fragment counts for scripts/bootstrap_ladder.py
+                pd.DataFrame(rows).to_csv(fdir / f"{m}.{bank}.csv", index=False)
         res["ckpt_hash"] = args.ckpt_hash
         (mdir / f"{m}.json").write_text(json.dumps(_strip_private(res), indent=1))
         results.append(res); print(f"done {m}", flush=True)
     header = f"# Baseline ladder\n\nckpt_hash={args.ckpt_hash} · task classes={num_classes} · hz={hz} · " \
              f"native test cines={len(native['test'])} · constructed test streams={len(streams['test'])} · " \
-             f"policy target risk={cfg['policy']['target_risk']} (validation-selected, frozen)"
+             f"multi-fragment test streams={len(multi['test'])} · policy target risk={cfg['policy']['target_risk']} " \
+             f"(frozen; selected on the pair and, separately, the multi-fragment validation bank)"
     out = write_ladder(results, run_dir / "reports", header)
     print(out.read_text()); print(f"run_dir={run_dir}")
 

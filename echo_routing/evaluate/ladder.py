@@ -7,7 +7,7 @@ from typing import Any, Callable, Sequence
 import numpy as np
 
 from echo_routing.compose.stream_assembler import Stream
-from echo_routing.evaluate.metrics_boundary import boundary_f1
+from echo_routing.evaluate.metrics_boundary import boundary_f1, match_boundaries
 from echo_routing.evaluate.metrics_classification import classification_summary
 from echo_routing.evaluate.metrics_routing import coverage_and_risk
 from echo_routing.evaluate.metrics_stability import fragments_per_minute
@@ -16,6 +16,9 @@ from echo_routing.temporal.baselines.b_file import file_score
 from echo_routing.temporal.baselines.registry import decode_with_prob
 from echo_routing.temporal.decode_select import route, select_threshold
 from echo_routing.temporal.segments import boundaries_from_labels
+
+
+STREAM_OFFSET = 10**6  # samples; pooled boundary matching places stream k at k * STREAM_OFFSET
 
 
 @dataclass(frozen=True)
@@ -53,11 +56,36 @@ def native_metrics(method: str, cines: Sequence[NativeCine], num_classes: int, h
     }
 
 
-def constructed_metrics(method: str, streams: Sequence[Stream], hz: float, cfg: dict, tau: float | None) -> dict:
+def _fragment_rows(s: Stream, pred_b: np.ndarray, tol: float, score: np.ndarray, wrong: np.ndarray,
+                   taus: dict[str, float | None]) -> list[dict]:
+    """Per-fragment counts at the primary tolerance, so a bootstrap can resample streams or cines (proposal §7.3).
+    A true change, its one-to-one match, a same-view join and its false split belong to the fragment the join enters;
+    a predicted change belongs to the fragment it falls in; routing counts are accepted / accepted-and-wrong samples."""
+    sem = set(s.semantic_boundaries.tolist())
+    matched = {int(s.semantic_boundaries[j]) for _, j in match_boundaries(pred_b, s.semantic_boundaries, tol)}
+    rows, start = [], 0
+    for i, fr in enumerate(s.recipe.fragments):
+        end = start + (fr.end - fr.start)
+        join, is_sem = i > 0, i > 0 and start in sem
+        near = join and bool(np.any(np.abs(pred_b - start) <= tol))
+        row = {"stream": s.recipe.recipe_id, "cell": s.recipe.cell, "video_id": fr.video_id, "label": int(fr.label),
+               "variant": fr.variant, "n": end - start, "t_true": int(is_sem), "t_matched": int(is_sem and start in matched),
+               "p_pred": int(np.count_nonzero((pred_b >= start) & (pred_b < end))), "same_join": int(join and not is_sem),
+               "false_split": int(join and not is_sem and near), "missed": int(is_sem and not near)}
+        for k, t in taus.items():
+            acc = score[start:end] >= t if t is not None else np.zeros(end - start, bool)
+            row[f"acc|{k}"] = int(acc.sum()); row[f"wrong|{k}"] = int((acc & wrong[start:end]).sum())
+        rows.append(row); start = end
+    return rows
+
+
+def constructed_metrics(method: str, streams: Sequence[Stream], hz: float, cfg: dict, tau: float | None,
+                        taus: dict[str, float | None] | None = None) -> dict:
+    """`taus` (name -> frozen threshold) adds routing at each threshold and per-fragment count rows for resampling."""
     tols = cfg["policy"]["boundary_tolerances_s"]
     per_cell: dict[str, dict] = {}
     all_pred, all_true = {t: ([], []) for t in tols}, None
-    scores, wrongs, weights = [], [], []
+    scores, wrongs, weights, fragments = [], [], [], []
     for s in streams:
         labels, score_prob = decode_with_prob(method, s.prob, cfg, s.feat, s.recipe.recipe_id)
         pred_b = boundaries_from_labels(labels)
@@ -69,15 +97,19 @@ def constructed_metrics(method: str, streams: Sequence[Stream], hz: float, cfg: 
         cell["false_splits"] += sum(1 for j in same_joins if np.any(np.abs(pred_b - j) <= tol_samples))
         cell["sem"] += int(s.semantic_boundaries.size)
         cell["missed"] += sum(1 for b in s.semantic_boundaries if not np.any(np.abs(pred_b - b) <= tol_samples))
-        for t in tols:
-            all_pred[t][0].append(pred_b / hz + 1000.0 * len(all_pred[t][0])); all_pred[t][1].append(s.semantic_boundaries / hz + 1000.0 * len(all_pred[t][1]))
+        for t in tols:  # integer sample positions, one stream per STREAM_OFFSET block: exact distances, no cross-stream matches
+            all_pred[t][0].append(pred_b + STREAM_OFFSET * len(all_pred[t][0]))
+            all_pred[t][1].append(s.semantic_boundaries + STREAM_OFFSET * len(all_pred[t][1]))
         sc, wr, _ = _per_sample_routing(score_prob, labels, s.labels, cfg)
         scores.append(sc); wrongs.append(wr); weights.append(np.ones(sc.size))
+        if taus is not None:
+            fragments.extend(_fragment_rows(s, pred_b, tol_samples, sc, wr, taus))
     boundary = {}
     for t in tols:
-        r = boundary_f1(np.concatenate(all_pred[t][0]), np.concatenate(all_pred[t][1]), t)
-        boundary[str(t)] = {"precision": r.precision, "recall": r.recall, "f1": r.f1, "median_abs_error_s": r.median_abs_error,
-                            "n_true": r.n_true, "n_pred": r.n_pred}
+        r = boundary_f1(np.concatenate(all_pred[t][0]), np.concatenate(all_pred[t][1]), t * hz)
+        boundary[str(t)] = {"precision": r.precision, "recall": r.recall, "f1": r.f1,
+                            "median_abs_error_s": None if r.median_abs_error is None else r.median_abs_error / hz,
+                            "n_true": r.n_true, "n_pred": r.n_pred, "matched": r.matched}
     cells = {k: {"n_streams": v["n"], "same_view_joins": v["joins"], "false_splits": v["false_splits"],
                  "false_split_rate": (v["false_splits"] / v["joins"]) if v["joins"] else None,
                  "semantic_boundaries": v["sem"], "missed": v["missed"],
@@ -87,7 +119,10 @@ def constructed_metrics(method: str, streams: Sequence[Stream], hz: float, cfg: 
     routing = None
     if tau is not None:
         routing = {"tau": tau, **coverage_and_risk(sc >= tau, wr, w)}
-    return {"cells": cells, "boundary": boundary, "routing": routing, "_scores": sc, "_wrong": wr, "_weights": w}
+    routing_by = None if taus is None else {
+        k: ({"tau": t, **coverage_and_risk(sc >= t, wr, w)} if t is not None else {"tau": None}) for k, t in taus.items()}
+    return {"cells": cells, "boundary": boundary, "routing": routing, "routing_by": routing_by,
+            "_scores": sc, "_wrong": wr, "_weights": w, "_fragments": fragments}
 
 
 def select_policy(method: str, val_streams: Sequence[Stream], cfg: dict) -> dict:
@@ -103,18 +138,26 @@ def select_policy(method: str, val_streams: Sequence[Stream], cfg: dict) -> dict
 
 def evaluate_method(method: str, native_val: Sequence[NativeCine], native_test: Sequence[NativeCine],
                     val_streams: Sequence[Stream], test_streams: Sequence[Stream], num_classes: int, cfg: dict,
-                    test_multi: Sequence[Stream] | None = None) -> dict:
+                    test_multi: Sequence[Stream] | None = None, val_multi: Sequence[Stream] | None = None) -> dict:
+    """Thresholds are frozen per validation bank: `policy` from the pair bank (legacy primary), `policy_multi` from the
+    multi-fragment validation bank when given. Test routing is reported under both as routing_by["pair@t" / "multi@t"]."""
     hz = cfg["sampling"]["target_hz"]
     policy = select_policy(method, val_streams, cfg)
     tau = policy[str(cfg["policy"]["target_risk"])]["tau"]
-    test = constructed_metrics(method, test_streams, hz, cfg, tau)
+    policy_multi = select_policy(method, val_multi, cfg) if val_multi else None
+    taus = {f"pair@{t}": v["tau"] for t, v in policy.items()}
+    taus.update({f"multi@{t}": v["tau"] for t, v in (policy_multi or {}).items()})
+    test = constructed_metrics(method, test_streams, hz, cfg, tau, taus=taus)
     curve = risk_coverage_points(test["_scores"], test["_wrong"])
-    multi = None
+    multi, fragments = None, {"pairs_test": test["_fragments"]}
     if test_multi:
-        mm = constructed_metrics(method, test_multi, hz, cfg, tau)
+        mm = constructed_metrics(method, test_multi, hz, cfg, tau, taus=taus)
         multi = {"test_n": len(test_multi), "cells": mm["cells"], "boundary": mm["boundary"], "routing": mm["routing"],
-                 "note": "secondary setting: 4-8 fragments, cines reused across streams; same frozen tau as the pair bank"}
-    return {
+                 "routing_by": mm["routing_by"], "risk_coverage_curve": risk_coverage_points(mm["_scores"], mm["_wrong"]),
+                 "note": "4-8 fragments, cines reused across streams; `routing` uses the pair-bank tau, "
+                         "routing_by adds every target under both validation banks"}
+        fragments["multi_test"] = mm["_fragments"]
+    out = {
         "constructed_multi": multi,
         "method_id": method, "task_classes": num_classes,
         "policy": {"selected_on": "validation", "target_risk": cfg["policy"]["target_risk"], "by_target": policy,
@@ -123,8 +166,12 @@ def evaluate_method(method: str, native_val: Sequence[NativeCine], native_test: 
                    "test": native_metrics(method, native_test, num_classes, hz, cfg)},
         "constructed": {"validation_n": len(val_streams), "test_n": len(test_streams),
                         "cells": test["cells"], "boundary": test["boundary"], "routing": test["routing"],
-                        "risk_coverage_curve": curve},
+                        "routing_by": test["routing_by"], "risk_coverage_curve": curve},
+        "_fragments": fragments,
     }
+    if policy_multi is not None:
+        out["policy_multi"] = {"selected_on": "multi_validation", "validation_n": len(val_multi), "by_target": policy_multi}
+    return out
 
 
 def risk_coverage_points(scores: np.ndarray, wrong: np.ndarray, n_points: int = 25) -> list[dict]:

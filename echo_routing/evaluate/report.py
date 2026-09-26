@@ -41,6 +41,13 @@ def ladder_rows(metrics: Sequence[dict]) -> list[dict]:
             "tau@5%": _g(m, "policy", "by_target", "0.05", "tau"),
             "coverage@5%": _g(m, "constructed", "routing", "coverage"),
             "risk@5%": _g(m, "constructed", "routing", "risk"),
+            # 4-8 fragment streams: pair-bank tau (legacy) vs tau selected on the multi-fragment validation bank
+            "multi_boundaryF1@0.5s": _g(m, "constructed_multi", "boundary", "0.5", "f1"),
+            "multi_risk@5%_pairTau": _g(m, "constructed_multi", "routing_by", "pair@0.05", "risk"),
+            "multi_cov@5%_multiTau": _g(m, "constructed_multi", "routing_by", "multi@0.05", "coverage"),
+            "multi_risk@5%_multiTau": _g(m, "constructed_multi", "routing_by", "multi@0.05", "risk"),
+            "multi_cov@1%_multiTau": _g(m, "constructed_multi", "routing_by", "multi@0.01", "coverage"),
+            "multi_risk@1%_multiTau": _g(m, "constructed_multi", "routing_by", "multi@0.01", "risk"),
         })
     return rows
 
