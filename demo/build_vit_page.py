@@ -215,39 +215,39 @@ def designs_html() -> str:
              + "".join("<tr>" + "".join(f"<td>{base.esc(c)}</td>" for c in r) + "</tr>" for r in glance) + "</tbody></table></div>")
     cards = [
         _card("D1 · Plain ViT", "plain ViT", diag(dg.plain_vit()), [
-            ("Input", "One frame, resized to 224 × 224 with black bars above and below."),
+            ("Input", "The model sees one frame, resized to 224 × 224 with black bars above and below."),
             ("How it works", "The frame is cut into 14 × 14 patches of 16 × 16 pixels. Each patch becomes a token. "
                              "Twelve Transformer blocks let every patch look at every other patch. A class token collects the result. "
                              "A linear layer turns it into scores for the five families."),
-            ("Training", "Trained on the five view families. Weights start from ImageNet-21k. Data, sampling, augmentation, loss and "
+            ("Training", "It is trained on the five view families. Weights start from ImageNet-21k. Data, sampling, augmentation, loss and "
                          "stopping rule are the same as for the ResNet-18 encoder. Only the network and its optimiser settings change."),
             ("Why", "It tests whether a Transformer is a better frame encoder than a CNN. "
                     "A view is defined by where the chambers and valves sit. Attention can relate distant parts of the image from the first layer."),
-            ("Result", "Same frame accuracy as ResNet-18 (0.953 vs 0.951) but lower clip macro-F1 (0.935 vs 0.957). It is weaker on A5C. "
+            ("Result", "It matches ResNet-18 on frame accuracy (0.953 vs 0.951) but has lower clip macro-F1 (0.935 vs 0.957). It is weaker on A5C. "
                        "D4 uses its features."),
         ]),
         _card("D2 · Factorised video ViT", "borrows STFM + EchoViewCLIP", diag(dg.factorised_vit()), [
-            ("Input", "16 frames covering 1.6 s, taken at 10 frames per second."),
+            ("Input", "The model sees 16 frames covering 1.6 s, taken at 10 frames per second."),
             ("How it works", "A shared ViT-S, as in D1, turns each frame into one token. The 16 tokens get a time position. "
                              "A small temporal Transformer (2 layers) reads them and outputs one view for the clip. "
                              "A second head labels each frame on its own. It is used only in training."),
             ("On a stream", "A 1.6 s window slides every 0.5 s. Each moment takes the view of the window centred nearest to it."),
-            ("Training", "Trained on the nine codes. Weights start from ImageNet-21k. "
+            ("Training", "It is trained on the nine codes. Weights start from ImageNet-21k. "
                          "Each epoch takes one random 1.6 s clip per video, balanced over views."),
             ("Why", "Some views differ by motion, not by one frame. A5C shows the outflow tract only while it opens. "
                     "Splitting space and time keeps it cheap, because each frame is encoded once and reused by every window. "
                     "The per-frame head (from STFM) keeps each frame token useful on its own. "
                     "EchoViewCLIP averages frame features. D2 lets them attend to each other."),
-            ("Result", "Nine-code accuracy 0.928 ± 0.002 (3 runs). Good clip labels, but in streams it switched late or missed changes "
+            ("Result", "Its nine-code accuracy is 0.928 ± 0.002 (3 runs). Its clip labels are good, but in streams it switched late or missed changes "
                        "(change F1 0.58 to 0.78). The fix below brings it to 0.975."),
         ]),
         _card("D3 · Multiscale video ViT", "borrows EchoPrime", diag(dg.mvit()), [
-            ("Input", "The same 16 frames as D2."),
+            ("Input", "It sees the same 16 frames as D2."),
             ("How it works", "The clip is cut into small space-time cubes (3 frames × 7 × 7 pixels). Attention runs over space and time together. "
                              "After each of four stages, the tokens are pooled. There are fewer tokens, but each has more channels. "
                              "A class token gives the view."),
-            ("Two starts", "Kinetics-400 (human action videos) or EchoPrime's video encoder (about 12 million echo videos with their reports)."),
-            ("Training", "Trained on the nine codes, with the same clips and windows as D2. The whole network is fine-tuned."),
+            ("Two starts", "The weights come from Kinetics-400 (human action videos) or from EchoPrime's video encoder (about 12 million echo videos with their reports)."),
+            ("Training", "It is trained on the nine codes, with the same clips and windows as D2. The whole network is fine-tuned."),
             ("Why", "Joint space-time attention sees where a structure is and how it moves in one step. "
                     "Comparing the two starts measures what echo pre-training is worth, the idea behind EchoPrime."),
             ("Result", "This is our best nine-code ViT. It reaches 0.935 ± 0.006 from Kinetics and 0.927 ± 0.001 from EchoPrime (2 runs each). "
@@ -255,7 +255,7 @@ def designs_html() -> str:
                        "With the fix, Echo-MViT reaches 0.934 accuracy and change F1 0.938 (3 runs)."),
         ]),
         _card("D4 · ViT-Router", "borrows ASFormer + MS-TCN", diag(dg.router()), [
-            ("Input", "The whole stream, 10 frames per second."),
+            ("Input", "It sees the whole stream at 10 frames per second."),
             ("How it works", "D1 turns each frame into a feature vector, and D1 stays frozen. Stage 1 has six attention blocks. "
                              "Each block looks only at nearby frames. The window doubles from block to block, from 0.5 s to about 13 s. "
                              "A small convolution in each block tells the model which frames are close. "
@@ -268,7 +268,7 @@ def designs_html() -> str:
                     "Local attention suits labels that stay the same for a while (the idea from ASFormer). "
                     "Cleaning up probabilities with a smoothing loss removes short false cuts (the idea from MS-TCN). "
                     "A control runs the official MS-TCN on the same D1 features."),
-            ("Result", "Change F1 0.988 and the lowest routing error (0.003). Its recognition is limited by D1's features. "
+            ("Result", "It reaches change F1 0.988 and the lowest routing error (0.003). Its recognition is limited by D1's features. "
                        "A5C recall is only 0.57."),
         ]),
     ]
@@ -286,7 +286,7 @@ def designs_html() -> str:
            + diag(dg.centre_supervision())
            + _facts([("Tried, failed", "We first used the share of frames as the target (here 7/16 A and 9/16 B). "
                                        "The error flipped, and changes came too early instead of too late."),
-                     ("Result", "Change F1 0.94 to 0.975 after the fix. Echo-MViT keeps its accuracy (0.934 on nine codes).")])
+                     ("Result", "After the fix, change F1 is 0.94 to 0.975. Echo-MViT keeps its accuracy (0.934 on nine codes).")])
            + "</div>")
     return ('<section id="designs"><h2>1 · Designs</h2><p class="lead">We built four Vision-Transformer designs. '
             "They differ in how much time they see. D1 sees one frame, D2 and D3 see a 1.6 s clip, and D4 sees the whole stream. "
@@ -437,14 +437,16 @@ def streams_html(streams: dict) -> str:
 
 def conclusions_html() -> str:
     changes = [
-        ("ViT-S instead of ResNet-18 as the frame encoder", "D1", "clip macro-F1 0.935 vs 0.957; MS-TCN on its features 0.927 vs 0.956", "no"),
-        ("Frame embeddings as the Transformer input", "D2, D4", "cheap, cacheable; lets D4 read a whole stream", "yes"),
-        ("Temporal attention over a 1.6 s clip", "D2, D3", "label flips 25 → 1–2 per min vs D1; nine-code accuracy 0.928–0.935 (STFM 0.938)", "yes"),
-        ("Sliding window with a class-token read-out", "D2, D3", "late or missed changes; change F1 0.58–0.78", "no"),
-        ("Mixed clips, target = share of frames", "D2", "the bias flipped; change F1 0.576", "no"),
-        ("Mixed clips, target = view at the centre", "D2, D3", "change F1 0.94–0.975; Echo-MViT keeps its accuracy", "yes"),
-        ("Echo-specific pre-training (EchoPrime)", "D3", "faster training, lower final accuracy (0.927 vs 0.935)", "no"),
-        ("Local attention over the whole stream", "D4", "change F1 0.988, lowest routing error (0.003)", "yes"),
+        ("ViT-S instead of ResNet-18 as the frame encoder", "D1",
+         "Clip macro-F1 fell from 0.957 to 0.935. MS-TCN on its features fell from 0.956 to 0.927.", "no"),
+        ("Frame embeddings as the Transformer input", "D2, D4", "Each frame is encoded once and cached. This lets D4 read a whole stream.", "yes"),
+        ("Temporal attention over a 1.6 s clip", "D2, D3",
+         "Label flips fell from 25 to 1–2 per minute, compared with D1. Nine-code accuracy is 0.928 to 0.935, close to STFM (0.938).", "yes"),
+        ("A sliding window read out by a class token", "D2, D3", "Changes came late or were missed. Change F1 was 0.58 to 0.78.", "no"),
+        ("Mixed clips, with the share of frames as the target", "D2", "The bias flipped, and change F1 was 0.576.", "no"),
+        ("Mixed clips, with the centre view as the target", "D2, D3", "Change F1 rose to 0.94 to 0.975. Echo-MViT kept its accuracy.", "yes"),
+        ("Echo-specific pre-training (EchoPrime)", "D3", "Training was faster, but the final accuracy was lower (0.927 vs 0.935).", "no"),
+        ("Local attention over the whole stream", "D4", "Change F1 reached 0.988, with the lowest routing error (0.003).", "yes"),
     ]
     cls = {"yes": ("yes", "helped"), "no": ("no", "did not help"), "mixed": ("mixed", "mixed")}
     t = ('<div class="tablewrap"><table class="glance"><thead><tr><th>change</th><th>where</th><th>evidence</th><th>verdict</th></tr></thead><tbody>'
