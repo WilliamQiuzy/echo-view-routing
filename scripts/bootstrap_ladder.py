@@ -22,7 +22,8 @@ from echo_routing.evaluate.bootstrap import count_cols, resample_weights, summar
 
 BANKS = {"pairs_test": "stream", "multi_test": "video_id"}
 SHOW = ["boundary_f1", "false_split_rate", "missed_rate", "risk|pair@0.05",
-        "coverage|multi@0.05", "risk|multi@0.05", "coverage|multi@0.01", "risk|multi@0.01"]
+        "coverage|multi@0.05", "risk|multi@0.05", "coverage|multi@0.01", "risk|multi@0.01",
+        "coverage|p2@0.05", "risk|p2@0.05", "coverage|p2@0.01", "risk|p2@0.01"]
 
 
 def reuse_stats(df: pd.DataFrame) -> dict:
@@ -64,7 +65,8 @@ def main() -> None:
     ap.add_argument("--seed", type=int, default=0)
     args = ap.parse_args()
     run = Path(args.run_dir); fdir = run / "fragments"
-    methods = args.methods.split(",") if args.methods else sorted({p.name.split(".")[0] for p in fdir.glob("*.csv")})
+    # file names are <method>.<bank>.csv and method ids may contain dots (fusions such as "b4+b7~0.5")
+    methods = args.methods.split(",") if args.methods else sorted({p.name.rsplit(".", 2)[0] for p in fdir.glob("*.csv")})
     out = {"run": run.name, "n_boot": args.n_boot, "seed": args.seed, "reference": args.reference, "banks": {}}
     md = [f"# Paired bootstrap · {run.name}", "",
           f"{args.n_boot} draws, seed {args.seed}. Pair streams are resampled by stream (each cine used once); "

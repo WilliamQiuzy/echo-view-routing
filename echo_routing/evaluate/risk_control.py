@@ -67,7 +67,7 @@ def select_threshold_ucb(acc: np.ndarray, wr: np.ndarray, taus: np.ndarray, targ
 
 def select_classwise(scores: np.ndarray, wrong: np.ndarray, pred: np.ndarray, cine: np.ndarray, target: float,
                      rule: str = "point", n_boot: int = 1000, rng: np.random.Generator | None = None,
-                     grid_n: int = 400) -> dict[int, float | None]:
+                     grid_n: int = 400, level: float = 0.95) -> dict[int, float | None]:
     """One threshold per predicted class, each meeting the target within that class (so the total does too)."""
     ids = np.unique(cine)
     weights = None if rule == "point" else resample_weights(ids.size, n_boot, rng or np.random.default_rng(0))
@@ -79,7 +79,7 @@ def select_classwise(scores: np.ndarray, wrong: np.ndarray, pred: np.ndarray, ci
         else:
             taus = threshold_grid(scores[m], grid_n)
             _, acc, wr = cine_counts(scores[m], wrong[m], cine[m], taus, ids)
-            out[int(c)] = select_threshold_ucb(acc, wr, taus, target, weights) if taus.size else None
+            out[int(c)] = select_threshold_ucb(acc, wr, taus, target, weights, level) if taus.size else None
     return out
 
 

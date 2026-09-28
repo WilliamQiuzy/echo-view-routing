@@ -96,9 +96,70 @@ DECODERS: dict[str, Decoder] = {"b0": _b0, "b1": _b1, "b2": _b2, "b3": _b3, "b4"
                                 "b8": _lookup_factory("echoprime_windowed"),
                                 **{m: _lookup_factory(m) for m in VIT_FAMILY}}
 
+# Frame-level stage of each pipeline: routing policy 2 scores a method's segments with these probabilities, i.e. the
+# pipeline's own evidence before temporal smoothing. Methods not listed are their own frame or window stage.
+FRAME_STAGE = {"b1": "b0", "b2": "b0", "b3": "b0", "b4": "b0", "b4_reimpl": "b0", "b5": "b0",
+               "vit_router": "vit_frame", "mstcn_vitfeat": "vit_frame"}
+
 
 def register(method: str, fn: Decoder) -> None:
     DECODERS[method] = fn
+
+
+def parse_fused(method: str) -> tuple[str, str, float] | None:
+    """'SEG+CLS~ALPHA' -> (SEG, CLS, ALPHA); ALPHA defaults to 0.5. None for ordinary method ids."""
+    if "+" not in method:
+        return None
+    body, _, alpha = method.partition("~")
+    seg, cls = body.split("+", 1)
+    return seg, cls, float(alpha) if alpha else 0.5
+
+
+def _fused_factory(seg: str, cls: str, alpha: float) -> Decoder:
+    """Segment-level late fusion: boundaries from `seg`; each of its segments is relabelled with the argmax of the
+    segment mean of (1 - alpha) * seg probabilities + alpha * cls probabilities (equal neighbours then merge).
+    Returns that per-sample mixture as the probabilities to score with."""
+    from echo_routing.temporal.segments import labels_to_segments  # lazy: keeps the import graph flat
+
+    def _dec(prob, feat, cfg, stream_id=None):
+        l_seg, p_seg = decode_with_prob(seg, prob, cfg, feat, stream_id)
+        mix = (1.0 - alpha) * p_seg + alpha * decode_with_prob(cls, prob, cfg, feat, stream_id)[1]
+        labels = l_seg.copy()
+        for s in labels_to_segments(l_seg):
+            labels[s.start:s.end] = int(mix[s.start:s.end].mean(0).argmax())
+        return labels, mix
+    return _dec
+
+
+def _resolve(method: str) -> None:
+    """Register derived ids on first use: another run of a ViT-family method ('vivit_fe@s1') or a fusion ('b4+b7~0.5')."""
+    if method in DECODERS:
+        return
+    if "@" in method and method.split("@", 1)[0] in VIT_FAMILY:
+        DECODERS[method] = _lookup_factory(method)
+    elif (f := parse_fused(method)) is not None:
+        DECODERS[method] = _fused_factory(*f)
+
+
+def evidence_source(method: str) -> str:
+    """Which frame-level stage policy 2 scores `method` with (a fusion names the mixture of its parts' stages)."""
+    if (f := parse_fused(method)) is not None:
+        seg, cls, alpha = f
+        return f"{1.0 - alpha:g}*{evidence_source(seg)} + {alpha:g}*{evidence_source(cls)}"
+    return FRAME_STAGE.get(method.split("@", 1)[0], method)
+
+
+def evidence_prob(method: str, prob: np.ndarray, cfg: dict[str, Any], feat: np.ndarray | None = None,
+                  stream_id: str | None = None, own: np.ndarray | None = None) -> np.ndarray:
+    """Frame-level evidence of `method`'s own pipeline (FRAME_STAGE); a fusion mixes the evidence of its two parts.
+    `own` (the method's decoded probabilities) is returned when the method is its own frame or window stage."""
+    if (f := parse_fused(method)) is not None:
+        seg, cls, alpha = f
+        return (1.0 - alpha) * evidence_prob(seg, prob, cfg, feat, stream_id) + alpha * evidence_prob(cls, prob, cfg, feat, stream_id)
+    src = evidence_source(method)
+    if src == method and own is not None:
+        return np.asarray(own, dtype=float)
+    return decode_with_prob(src, prob, cfg, feat, stream_id)[1]
 
 
 def decode(method: str, prob: np.ndarray, cfg: dict[str, Any], feat: np.ndarray | None = None, stream_id: str | None = None) -> np.ndarray:
@@ -109,8 +170,7 @@ def decode(method: str, prob: np.ndarray, cfg: dict[str, Any], feat: np.ndarray 
 def decode_with_prob(method: str, prob: np.ndarray, cfg: dict[str, Any], feat: np.ndarray | None = None,
                      stream_id: str | None = None) -> tuple[np.ndarray, np.ndarray]:
     """(labels, probabilities to score segments with). Learned temporal models return their own posteriors."""
-    if method not in DECODERS and "@" in method and method.split("@", 1)[0] in VIT_FAMILY:
-        DECODERS[method] = _lookup_factory(method)   # another run of a ViT-family method, e.g. "vivit_fe@s1"
+    _resolve(method)
     if method not in DECODERS:
         raise KeyError(f"unknown decoder {method!r}; available: {sorted(DECODERS)}")
     prob = np.asarray(prob, dtype=float)

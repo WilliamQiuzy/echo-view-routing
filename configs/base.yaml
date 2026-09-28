@@ -40,6 +40,12 @@ policy:
   target_risk: 0.05
   extra_targets: [0.01, 0.10]
   boundary_tolerances_s: [0.25, 0.5, 1.0]
+policy2:                      # second routing policy, selected on the multi-fragment validation bank (defaults in ladder.py)
+  score: mean                 # segment score on the pipeline's own frame-level evidence (registry.FRAME_STAGE)
+  rule: ucb                   # one threshold per predicted class at the `level` upper bound of cine-resampled risk
+  level: 0.95
+  n_boot: 1000
+  seed: 0
 multi:                        # class-balanced multi-fragment banks (proposal §5.3)
   n_train: 1500
   n_eval: 120

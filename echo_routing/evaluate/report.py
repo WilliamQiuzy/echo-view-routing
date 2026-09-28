@@ -48,6 +48,11 @@ def ladder_rows(metrics: Sequence[dict]) -> list[dict]:
             "multi_risk@5%_multiTau": _g(m, "constructed_multi", "routing_by", "multi@0.05", "risk"),
             "multi_cov@1%_multiTau": _g(m, "constructed_multi", "routing_by", "multi@0.01", "coverage"),
             "multi_risk@1%_multiTau": _g(m, "constructed_multi", "routing_by", "multi@0.01", "risk"),
+            # policy 2: own frame-level evidence, per-class upper-bound thresholds from the multi-fragment validation bank
+            "multi_cov@5%_p2": _g(m, "constructed_multi", "routing_by", "p2@0.05", "coverage"),
+            "multi_risk@5%_p2": _g(m, "constructed_multi", "routing_by", "p2@0.05", "risk"),
+            "multi_cov@1%_p2": _g(m, "constructed_multi", "routing_by", "p2@0.01", "coverage"),
+            "multi_risk@1%_p2": _g(m, "constructed_multi", "routing_by", "p2@0.01", "risk"),
         })
     return rows
 
