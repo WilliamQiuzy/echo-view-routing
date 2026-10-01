@@ -1,5 +1,7 @@
 # Routing thresholds calibrated on multi-fragment streams (2026-09-26)
 
+> **Pending recomputation (2026-09-30).** These results were computed on caches that read EV9V frames in name order (0.jpg, 1.jpg, 10.jpg, 100.jpg, …, 2.jpg), which shuffles frames in time within each clip. Every number that depends on the order of frames inside a clip is unreliable, and frame- and clip-level scores also shift because different frames were sampled. Do not cite these numbers until they are recomputed from `cache_v2`. See `docs/results/2026-09-30_frame_order_fix/`.
+
 Ladder run `20260926-190831-baselines-1b027c50-s0`. It uses the same config, feature cache (79f4a41af6e3) and prediction
 directories as the ViT-family run `20260925-130154`. B-file and B1–B3 were added.
 

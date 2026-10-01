@@ -9,6 +9,7 @@ Page text is written as short full sentences (no "term: fragment" lists); table 
 from __future__ import annotations
 
 import json
+import re
 import statistics
 import sys
 from pathlib import Path
@@ -17,6 +18,18 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 import build_demo_v2 as base  # noqa: E402
 import vit_diagrams as dg  # noqa: E402
+
+# Shown until the Transformers are retrained and re-evaluated with frames in true order (see build_demo_v2.PENDING_NOTICE).
+PENDING_NOTICE = (f'<div id="pending" {base.PENDING_BOX}><p><b>These results are being recomputed.</b> '
+                  f"{base.FRAME_ORDER_SENTENCE}</p><p>Our Transformers read frames this way in training and in testing, so "
+                  "every result on this page will change once they are retrained and re-evaluated. The videos are affected "
+                  "too. Please do not cite these numbers until this notice is removed.</p></div>")
+PENDING_SECTIONS = ("results", "per-view", "per-change", "streams", "conclusions")
+
+
+def mark_pending(page: str) -> str:
+    """Insert the pending tag after the heading of each results section."""
+    return re.sub(r'(<section id="(?:' + "|".join(PENDING_SECTIONS) + r')"><h2>.*?</h2>)', lambda m: m.group(1) + base.PENDING_TAG, page)
 
 REPO = HERE.parent
 LADDER = "20260925-130154-baselines-1b027c50-s0"
@@ -482,6 +495,7 @@ def build(out: Path) -> Path:
 {nav}
 <div class="wrap">
 <header id="top"><h1>Vision Transformers on EV9V</h1>
+{PENDING_NOTICE}
 <p class="lead">We built four Transformer designs for echo view routing. We tested them against five published baselines and a plain ResNet-18, on the same data and with the same code.</p>
 <p>{base.ROUTING_SENTENCE}</p>
 <p><b>In short</b>, our Transformers do not recognise views better than CNNs. They do well at finding where the view changes, once they are trained the way they are used.</p></header>
@@ -497,6 +511,7 @@ def build(out: Path) -> Path:
 </div>
 <script>{base.JS}</script>
 """
+    page = mark_pending(page)
     out.write_text(page)
     return out
 

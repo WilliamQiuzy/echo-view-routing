@@ -1,5 +1,7 @@
 # Why A5C clips are misread, and what helps (2026-09-28)
 
+> **Pending recomputation (2026-09-30).** These results were computed on caches that read EV9V frames in name order (0.jpg, 1.jpg, 10.jpg, 100.jpg, …, 2.jpg), which shuffles frames in time within each clip. Every number that depends on the order of frames inside a clip is unreliable, and frame- and clip-level scores also shift because different frames were sampled. Do not cite these numbers until they are recomputed from `cache_v2`. See `docs/results/2026-09-30_frame_order_fix/`. The frame grids show true-order frames, but the probability printed beside each frame came from a different frame. The Doppler-text analysis paired text flags with probabilities from different frames and must be rerun. The visual observation of a late A4C→A5C tilt stands.
+
 Scripts: `scripts/a5c_analysis.py` (evidence, nearest training clips, sessions, frame grids), `scripts/a5c_aggregation.py`
 (aggregation rules), `scripts/a5c_text_cue.py` (Doppler-text cue). Frame grids and the review page stay local in
 `runs/_demo/a5c_analysis/` and `runs/_demo/a5c_audit/`; git ignores both. The visual notes below describe the frames and

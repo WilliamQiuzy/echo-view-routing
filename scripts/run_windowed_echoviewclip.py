@@ -4,13 +4,14 @@
 STANDALONE: runs under envs/echoviewclip (torch 1.13). Uses the authors' model factory and their test preprocessing
 (resize short side 256, centre crop 224, mean/std normalisation). Nine-code softmax mapped to family5 (PMPALA dropped).
   envs/echoviewclip/bin/python scripts/run_windowed_echoviewclip.py --plans data/window_plans/<hash>/plans.json \
-      --ckpt models_frozen/echoviewclip_stage1/v1/best.pth --config third_party/adapters/echoviewclip/ev9v_stage1_test.yaml --out cache/echoviewclip_windowed/<hash>
+      --ckpt models_frozen/echoviewclip_stage1/v1/best.pth --config third_party/adapters/echoviewclip/ev9v_stage1_test.yaml --out cache_v2/echoviewclip_windowed/<hash>
 """
 from __future__ import annotations
 
 import argparse
 import json
 import logging
+import re
 import sys
 from pathlib import Path
 
@@ -33,6 +34,15 @@ def window_centres(n, stride):
 
 def window_samples(centre, n, size):
     start = max(0, min(centre - size // 2, n - size)); return np.arange(start, min(n, start + size), dtype=int)
+
+
+def frame_paths(d: Path) -> list[Path]:
+    """Frames in temporal order, by the last number in the name (same rule as echo_routing.ingest.frames.
+    list_frame_paths; EV9V names are unpadded, so a plain name sort would shuffle frames within a clip)."""
+    def key(p: Path):
+        nums = re.findall(r"\d+", p.stem)
+        return (0, int(nums[-1]), p.name) if nums else (1, 0, p.name)
+    return sorted((p for p in d.iterdir() if p.suffix.lower() in (".jpg", ".jpeg", ".png")), key=key)
 
 
 def apply_gamma(im, gamma):
@@ -87,7 +97,7 @@ def main():
                 for s in samp[sel]:
                     vid, fi, gamma = refs[s]
                     if vid not in pcache:
-                        pcache[vid] = sorted(p for p in (frames_root / vid).iterdir() if p.suffix.lower() in (".jpg", ".jpeg", ".png"))
+                        pcache[vid] = frame_paths(frames_root / vid)
                     with Image.open(pcache[vid][min(fi, len(pcache[vid]) - 1)]) as im:
                         imgs.append(preprocess(apply_gamma(im.convert("RGB"), gamma)))
                 x = torch.stack(imgs).unsqueeze(0).cuda()  # (1, T, C, H, W)

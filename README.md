@@ -45,6 +45,8 @@ Everything downstream of feature extraction runs on CPU from the feature cache.
 
 ## Current results (2026-09-17): five published baselines on the same EV9V test data
 
+> **Pending recomputation (2026-09-30).** The numbers below were computed with EV9V frames read in name order (0.jpg, 1.jpg, 10.jpg, …), which shuffles frames within each clip. They will be replaced after the rerun from `cache_v2`. The core methods (B0–B4) are already recomputed in `docs/results/2026-09-30_frame_order_fix/`; with frames in order, MS-TCN no longer finds view changes clearly better than simple smoothing.
+
 Full tables: `docs/results/2026-09-17_five_baselines/five_baselines.md`. Test split: 800 untouched clips (five-family task),
 240 two-fragment streams and 120 multi-fragment streams; thresholds chosen on validation at a 5% contamination target and frozen.
 

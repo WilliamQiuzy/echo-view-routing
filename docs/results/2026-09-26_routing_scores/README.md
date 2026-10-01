@@ -1,5 +1,7 @@
 # Routing confidence and threshold rules (2026-09-26)
 
+> **Pending recomputation (2026-09-30).** These results were computed on caches that read EV9V frames in name order (0.jpg, 1.jpg, 10.jpg, 100.jpg, …, 2.jpg), which shuffles frames in time within each clip. Every number that depends on the order of frames inside a clip is unreliable, and frame- and clip-level scores also shift because different frames were sampled. Do not cite these numbers until they are recomputed from `cache_v2`. See `docs/results/2026-09-30_frame_order_fix/`.
+
 Run `20260926-193436-routing_scores-1b027c50-s0` (`scripts/routing_scores.py`, tables from
 `scripts/report_routing_scores.py`). It follows `../2026-09-26_multi_calibration/`, which found that on the 4–8
 fragment streams the 5% target fails and most routed error is confidently misread A5C.

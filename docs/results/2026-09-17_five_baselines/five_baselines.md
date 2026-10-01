@@ -1,5 +1,7 @@
 # Five baselines on EV9V (run `20260917-175144-baselines-dc6df608-s0`, encoder 79f4a41af6e3)
 
+> **Pending recomputation (2026-09-30).** These results were computed on caches that read EV9V frames in name order (0.jpg, 1.jpg, 10.jpg, 100.jpg, …, 2.jpg), which shuffles frames in time within each clip. Every number that depends on the order of frames inside a clip is unreliable, and frame- and clip-level scores also shift because different frames were sampled. Do not cite these numbers until they are recomputed from `cache_v2`. See `docs/results/2026-09-30_frame_order_fix/`. The official STFM code sorts frames the same way. EchoViewCLIP trained on MP4 files in true order, but its windowed inference here used the name-sorted frames.
+
 Same test data for every model: 800 untouched test clips (five-family task), 240 two-fragment streams (2×2 design: same/different view × no/gamma edit) and 120 multi-fragment streams. Thresholds chosen on the validation split at a 5% contamination target and frozen. Clip-level classifiers are applied with a 1.6 s sliding window (stride 0.5 s); EchoPrime per frame; MS-TCN and ASFormer on frozen frame features.
 
 ## Recognition (800 test clips)

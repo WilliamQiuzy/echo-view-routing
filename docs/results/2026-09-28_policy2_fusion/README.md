@@ -1,5 +1,7 @@
 # Routing policy 2 in the ladder, segment-level fusion, and the A4C/A5C review (2026-09-28)
 
+> **Pending recomputation (2026-09-30).** These results were computed on caches that read EV9V frames in name order (0.jpg, 1.jpg, 10.jpg, 100.jpg, …, 2.jpg), which shuffles frames in time within each clip. Every number that depends on the order of frames inside a clip is unreliable, and frame- and clip-level scores also shift because different frames were sampled. Do not cite these numbers until they are recomputed from `cache_v2`. See `docs/results/2026-09-30_frame_order_fix/`.
+
 Ladder run `20260928-001145-baselines-1b027c50-s0`: the same config, streams and prediction directories as
 `20260925-130154`. It adds routing policy 2 and four fusion methods, followed by
 `scripts/bootstrap_ladder.py --reference b4` (2,000 draws, cines resampled on the 4–8 fragment streams) and

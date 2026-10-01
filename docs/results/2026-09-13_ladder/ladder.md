@@ -1,5 +1,7 @@
 # Baseline ladder (merged) · encoder 79f4a41af6e3 · methods: b_file, b0, b1, b2, b3, b4
 
+> **Pending recomputation (2026-09-30).** These results were computed on caches that read EV9V frames in name order (0.jpg, 1.jpg, 10.jpg, 100.jpg, …, 2.jpg), which shuffles frames in time within each clip. Every number that depends on the order of frames inside a clip is unreliable, and frame- and clip-level scores also shift because different frames were sampled. Do not cite these numbers. B0–B4 have been recomputed from `cache_v2` (run `20261001-021147-baselines-0dc4de8a-s0`); see `docs/results/2026-09-30_frame_order_fix/`.
+
 ### Temporal routing ladder (test, frozen validation-selected policy)
 
 | method | native_cine_macroF1 | native_cine_balAcc | native_frame_acc | frag_per_min | share_fragmented | boundaryF1@0.5s | falseSplit_same_none | falseSplit_same_edit | missed_diff_none | missed_diff_edit | tau@5% | coverage@5% | risk@5% |

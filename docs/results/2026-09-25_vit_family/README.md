@@ -1,5 +1,7 @@
 # Vision-Transformer family on EV9V (2026-09-25)
 
+> **Pending recomputation (2026-09-30).** These results were computed on caches that read EV9V frames in name order (0.jpg, 1.jpg, 10.jpg, 100.jpg, …, 2.jpg), which shuffles frames in time within each clip. Every number that depends on the order of frames inside a clip is unreliable, and frame- and clip-level scores also shift because different frames were sampled. Do not cite these numbers until they are recomputed from `cache_v2`. See `docs/results/2026-09-30_frame_order_fix/`. The Transformers read frames through the same loader in training and testing, so all of these results change once they are retrained.
+
 Designs and rationale: [DESIGN.md](DESIGN.md). Full tables (all metrics, all rows): [vit_family.md](vit_family.md).
 Every row below comes from one ladder run over the frozen `plans.json` streams, with thresholds chosen on validation;
 the five baseline rows reproduce `2026-09-17_five_baselines` exactly.

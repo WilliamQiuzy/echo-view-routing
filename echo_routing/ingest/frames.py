@@ -1,12 +1,16 @@
 """Frame-level access to EV9V cines: paths, sampling, letterbox preprocessing.
 
-Frames live at Images/{video_id}/frame_000001.jpg (320x240, 30 fps playback).
-Sampling is timestamp-spaced; clip labels propagated to frames are weak supervision.
+EV9V frames live at Images/{video_id}/0.jpg, 1.jpg, ... (320x240, 30 fps playback), without zero padding, so frame
+files are ordered by the number in their name (a plain name sort reads 0, 1, 10, 100, ..., 2, ...; see
+docs/results/2026-09-30_realvideo_round1). Sampling is timestamp-spaced; clip labels propagated to frames are weak
+supervision.
 """
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from pathlib import Path
+
 import numpy as np
 from PIL import Image, ImageOps
 
@@ -15,6 +19,7 @@ from echo_routing.errors import FrameError
 IMAGENET_MEAN = (0.485, 0.456, 0.406)
 IMAGENET_STD = (0.229, 0.224, 0.225)
 FRAME_EXTS = (".jpg", ".jpeg", ".png")
+_NUMBER = re.compile(r"\d+")
 
 
 @dataclass(frozen=True)
@@ -26,8 +31,15 @@ class VideoRecord:
     split: str
 
 
+def _frame_order(p: Path) -> tuple[int, int, str]:
+    """Order by the last number in the file stem; names without a number come last, by name."""
+    nums = _NUMBER.findall(p.stem)
+    return (0, int(nums[-1]), p.name) if nums else (1, 0, p.name)
+
+
 def list_frame_paths(frames_dir: Path) -> list[Path]:
-    paths = sorted(p for p in Path(frames_dir).iterdir() if p.suffix.lower() in FRAME_EXTS)
+    """Frame files in temporal order (numeric, matching the MP4 frame order for padded and unpadded names)."""
+    paths = sorted((p for p in Path(frames_dir).iterdir() if p.suffix.lower() in FRAME_EXTS), key=_frame_order)
     if not paths:
         raise FrameError(f"no frames under {frames_dir}")
     return paths

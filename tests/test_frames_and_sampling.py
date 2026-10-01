@@ -57,3 +57,11 @@ def test_list_frame_paths_sorted_and_errors(tmp_path: Path):
     empty = tmp_path / "empty"; empty.mkdir()
     with pytest.raises(FrameError):
         list_frame_paths(empty)
+
+
+def test_list_frame_paths_is_numeric_for_unpadded_names(tmp_path: Path):
+    """EV9V names frames 0.jpg, 1.jpg, ...; a plain name sort would give 0, 1, 10, 100, 11, 2."""
+    for n in (0, 1, 2, 10, 11, 100):
+        (tmp_path / f"{n}.jpg").write_bytes(b"")
+    (tmp_path / "cover.jpg").write_bytes(b"")
+    assert [p.stem for p in list_frame_paths(tmp_path)] == ["0", "1", "2", "10", "11", "100", "cover"]

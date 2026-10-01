@@ -38,3 +38,18 @@ def test_gpu_memory_fraction_validation(monkeypatch):
     monkeypatch.setenv("ECHO_GPU_MEM_FRACTION", "2")
     with pytest.raises(ConfigError):
         gpu_memory_fraction()
+
+
+def test_cache_root_is_stamped_and_legacy_caches_are_refused(tmp_path):
+    from echo_routing.config import CACHE_MARKER, FRAME_ORDER_VERSION, check_cache_root
+    from echo_routing.errors import ConfigError
+    new = check_cache_root(tmp_path / "cache_v2")
+    assert (new / CACHE_MARKER).read_text().strip() == FRAME_ORDER_VERSION
+    assert check_cache_root(new) == new  # stamped roots are accepted again
+    legacy = tmp_path / "cache"; (legacy / "features").mkdir(parents=True)
+    with pytest.raises(ConfigError):
+        check_cache_root(legacy)
+    assert check_cache_root(legacy, allow_legacy=True) == legacy
+    (new / CACHE_MARKER).write_text("name-order\n")
+    with pytest.raises(ConfigError):
+        check_cache_root(new)

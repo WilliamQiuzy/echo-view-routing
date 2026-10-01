@@ -256,9 +256,11 @@ def test_centre_target_equals_clip_label_for_single_view_and_centre_for_mixed():
 
 def test_registry_resolves_seeded_vit_runs(tmp_path):
     from echo_routing.temporal.baselines.registry import decode_with_prob
+    from echo_routing.config import check_cache_root
+    pred = check_cache_root(tmp_path / "cache_v2")
     prob = np.tile(np.array([[0.1, 0.7, 0.1, 0.05, 0.05]]), (6, 1))
-    np.savez_compressed(tmp_path / "s.npz", prob=prob.astype(np.float32))
-    labels, p = decode_with_prob("vivit_fe@s1", np.full((6, 5), 0.2), {"vivit_fe@s1": {"pred_dir": str(tmp_path)}}, stream_id="s")
+    np.savez_compressed(pred / "s.npz", prob=prob.astype(np.float32))
+    labels, p = decode_with_prob("vivit_fe@s1", np.full((6, 5), 0.2), {"vivit_fe@s1": {"pred_dir": str(pred)}}, stream_id="s")
     assert labels.tolist() == [1] * 6 and np.allclose(p, prob)
     with pytest.raises(KeyError):
         decode_with_prob("b9@s1", np.full((6, 5), 0.2), {}, stream_id="s")

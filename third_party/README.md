@@ -7,3 +7,14 @@ Vendored external code. Policy: clone-only at a pinned commit, never edited; ada
 | STFM (Spatio-Temporal Fusion Model, EV9V authors) | https://github.com/bgx666/stfm | `532f60b2733a3442dcccb59099e00eba07bf293d` | server: `third_party/stfm/` (gitignored locally) |
 
 Re-clone on the server with `git clone https://github.com/bgx666/stfm.git third_party/stfm && git -C third_party/stfm checkout 532f60b`.
+
+## Patches
+
+`patches/` holds the only changes ever made to vendored code; each is applied to a fresh copy, never to the pinned clone.
+
+- `ms-tcn-py3.patch`, `asformer-py3.patch`: Python 3 compatibility only.
+- `stfm-numeric-frame-order.patch` (2026-09-30): the official STFM loader lists frames with `sorted(os.listdir(...))`.
+  EV9V names frames `0.jpg, 1.jpg, …` without zero padding, so that order shuffles frames within each clip. The patch
+  sorts by the number in the name. The pinned clone stays unpatched so that the reproduction of the authors' numbers
+  remains exact. A fair temporal baseline uses a patched copy:
+  `cp -r third_party/stfm third_party/stfm_numeric && git -C third_party/stfm_numeric apply ../patches/stfm-numeric-frame-order.patch`.

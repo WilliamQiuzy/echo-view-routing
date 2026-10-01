@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import html
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -38,6 +39,28 @@ CLASSES = ["PLAX", "PSAX", "A4C", "A5C", "SC4C"]
 ROUTING_SENTENCE = ("<b>Routing</b> means sending each part of an echo recording to the analysis made for its view. "
                     "Parts the model is unsure about are held back for a person to check.")
 
+
+
+# Shown until the results are recomputed with frames in true order (defect found 2026-09-30; see
+# docs/results/2026-09-30_realvideo_round1). Remove both constants' uses once the pages are rebuilt from new runs.
+PENDING_BOX = 'style="border:2px solid #c92a2a;border-radius:8px;padding:10px 14px;margin:14px 0"'
+PENDING_TAG = ('<p style="display:inline-block;font-size:12px;font-weight:600;color:#c92a2a;border:1px solid #c92a2a;'
+               'border-radius:10px;padding:0 8px;margin:2px 0 8px">Pending recomputation</p>')
+FRAME_ORDER_SENTENCE = ("On 30 September 2026 we found that our code read the frames of each EV9V clip out of order. EV9V names "
+                        "its frames 0.jpg, 1.jpg and so on without leading zeros, and sorting those names as text puts 10.jpg "
+                        "before 2.jpg.")
+PENDING_NOTICE = (f'<div id="pending" {PENDING_BOX}><p><b>These results are being recomputed.</b> {FRAME_ORDER_SENTENCE}</p>'
+                  "<p>Every number that depends on the order of frames inside a clip is unreliable until it is recomputed. "
+                  "This covers the segmentation and routing results, the sliding-window baselines and the videos below, "
+                  "whose frames jump back and forth in time. The recognition scores will also shift a little, because "
+                  "different frames were sampled. The authors' STFM code sorts frames the same way, so the reproduced STFM "
+                  "numbers rest on the same shuffled order.</p><p>Please do not cite these numbers until this notice is "
+                  "removed.</p></div>")
+
+
+def mark_pending(page: str, ids: tuple[str, ...]) -> str:
+    """Insert the pending tag after each <h2 id=...> heading in `ids`."""
+    return re.sub(r'(<h2 id="(?:' + "|".join(ids) + r')">.*?</h2>)', lambda m: m.group(1) + PENDING_TAG, page)
 
 def esc(s):
     return html.escape(str(s))
@@ -311,7 +334,7 @@ def build(out: Path) -> Path:
   <span class="navsep"></span><a href="#recognition">Recognition</a><a href="#segmentation">Segmentation</a><a href="#routing">Routing</a><a href="#reproduction">Reproduction</a><a href="#models">Models</a>
 </nav>
 <div class="wrap">
-<header id="top"><h1>Five baselines on EV9V</h1><p>Press play. Each row is one published model reading the same frames. Our Vision-Transformer designs are on a <a href="vit.html">separate page</a>.</p><p>{ROUTING_SENTENCE} In the rows below, held-back parts are hatched.</p>{keys}</header>
+<header id="top"><h1>Five baselines on EV9V</h1>{PENDING_NOTICE}<p>Press play. Each row is one published model reading the same frames. Our Vision-Transformer designs are on a <a href="vit.html">separate page</a>.</p><p>{ROUTING_SENTENCE} In the rows below, held-back parts are hatched.</p>{keys}</header>
 {streams_html(streams)}
 <section style="display:grid;gap:12px">{table_html(metrics)}</section>
 <section>{repro_html()}</section>
@@ -320,6 +343,7 @@ def build(out: Path) -> Path:
 </div>
 <script>{JS}</script>
 """
+    page = mark_pending(page, ("recognition", "segmentation", "routing", "reproduction"))
     out.write_text(page)
     return out
 

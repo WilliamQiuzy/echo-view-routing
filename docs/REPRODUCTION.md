@@ -18,6 +18,9 @@ model or training logic. Results that do not follow this protocol are labelled *
 Removed from the reported set: the control rules (File-mean, Argmax, Smoothing, HMM, JS-divergence) stay in the code as sanity checks only, and **our compact MS-TCN re-implementation** (`echo_routing/temporal/models/mstcn.py`) — kept
 only as unit-tested reference code, never reported.
 
+
+> **Frame order (2026-09-30).** The official STFM loader lists frames with `sorted(os.listdir(...))`. EV9V names frames without zero padding, so this shuffles frames within each clip. Our reproduction matches the authors' pipeline including this behaviour. A fair temporal baseline needs STFM retrained with frames in numeric order; see `docs/results/2026-09-30_frame_order_fix/`.
+
 ## STFM
 
 - Task: the authors' nine-code, video-level classification (their `INDEXOFLABEL` order).

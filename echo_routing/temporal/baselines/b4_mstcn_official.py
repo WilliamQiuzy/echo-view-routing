@@ -8,9 +8,11 @@ from pathlib import Path
 
 import numpy as np
 
+from echo_routing.config import require_current_cache
 from echo_routing.errors import CacheMissError
 
 _CACHE: dict[str, np.ndarray] = {}
+_CHECKED: set[str] = set()
 
 
 def lookup_prob(cfg: dict, stream_id: str | None) -> np.ndarray:
@@ -19,6 +21,8 @@ def lookup_prob(cfg: dict, stream_id: str | None) -> np.ndarray:
         raise KeyError("b4 requires cfg['mstcn_official']['pred_dir'] (use --set mstcn_official.pred_dir=<dir>)")
     if stream_id is None:
         raise ValueError("b4 needs the stream id to look up official predictions")
+    if pred_dir not in _CHECKED:  # every external prediction (MS-TCN, ASFormer, windowed, ViT) is read through here
+        require_current_cache(pred_dir); _CHECKED.add(pred_dir)
     key = f"{pred_dir}/{stream_id}"
     if key not in _CACHE:
         path = Path(pred_dir) / f"{stream_id}.npz"

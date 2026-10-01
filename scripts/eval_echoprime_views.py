@@ -20,6 +20,7 @@ import torchvision  # noqa: E402
 from PIL import Image  # noqa: E402
 
 from echo_routing.config import gpu_memory_fraction, load_paths  # noqa: E402
+from echo_routing.ingest.frames import list_frame_paths  # noqa: E402
 from echo_routing.evaluate.metrics_classification import classification_summary  # noqa: E402
 from echo_routing.manifest import load_manifest  # noqa: E402
 
@@ -53,7 +54,7 @@ def main() -> None:
     rows = []
     with torch.no_grad():
         for r in df.itertuples(index=False):
-            frames = sorted(Path(r.frames_dir).glob("*.jpg"))
+            frames = list_frame_paths(Path(r.frames_dir))
             fi = 0 if args.frame == "first" else len(frames) // 2
             img = np.asarray(Image.open(frames[fi]).convert("RGB"))
             x = torch.as_tensor(utils.crop_and_scale(img), dtype=torch.float).permute(2, 0, 1)  # their preprocessing

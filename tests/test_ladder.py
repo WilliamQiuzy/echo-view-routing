@@ -94,7 +94,12 @@ def test_b4_official_lookup_by_stream_id(world, tmp_path):
     from echo_routing.errors import CacheMissError
     from echo_routing.temporal.baselines.registry import decode_with_prob
     cfg, natives, val, test = world
-    pred_dir = tmp_path / "pred"; pred_dir.mkdir()
+    from echo_routing.config import ConfigError, check_cache_root
+    legacy = tmp_path / "legacy"; legacy.mkdir()
+    np.savez(legacy / f"{test[0].recipe.recipe_id}.npz", prob=test[0].prob)
+    with pytest.raises(ConfigError):  # predictions outside a stamped cache root are refused
+        decode_with_prob("b4", test[0].prob, dict(cfg, mstcn_official={"pred_dir": str(legacy)}), test[0].feat, test[0].recipe.recipe_id)
+    pred_dir = check_cache_root(tmp_path / "cache_v2") / "pred"; pred_dir.mkdir()
     for s in test[:2]:
         np.savez(pred_dir / f"{s.recipe.recipe_id}.npz", prob=s.prob)
     np.savez(pred_dir / f"{natives[0].video_id}.npz", prob=natives[0].prob)
