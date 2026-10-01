@@ -328,7 +328,8 @@ validation. The HMM and both B3 settings were rerun on the same test inputs, so 
 reported one by one. They are not patients and are not pooled into one test.
 
 **Run records.** The GPU repeat of the seed check passed every test, including bit-identical final weights for a
-repeated seed.
+repeated seed. The six checkpoints are frozen under `models_frozen/mstcn_seeded/` (versions `trtrue_psna_ms0` to
+`trrand_ps500_ms2`), each with its run record and the seed patch.
 
 | Model seed | Initial weights (both training orders) | Final weights, true / shuffled training | Training time |
 |---|---|---|---|
