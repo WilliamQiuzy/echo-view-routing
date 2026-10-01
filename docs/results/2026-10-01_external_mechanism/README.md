@@ -25,9 +25,9 @@ isolated flickers easily. Shuffling could therefore make smoothing look better t
 |---|---|
 | Task 0, seed control and isolated naming | Done. The tiny verification passed on CPU. A GPU repeat runs at the start of the queued matrix. |
 | Task 1, EV9V permutation mechanism on existing caches | Done. Two identical runs. |
-| Task 2, EchoNet-Pediatric inventory, frozen protocol and direct transfer | Done. Classification transfer failed the frozen rule. Permutation results are descriptive only. |
+| Task 2, EchoNet-Pediatric inventory, frozen protocol and direct transfer | Done. The fixed pipeline's direct transfer failed and did not reach the frozen external replication standard. Permutation results are descriptive only. |
 | Task 3, MS-TCN 3 seeds × 2 training orders | Queued behind the ASFormer retrain (expected start about 15:40 UTC). Not yet executed. |
-| Joint true-order comparison with costs | Done except the B5 ASFormer row, which waits for the retrain. |
+| Joint true-order comparison with costs | Done, including B5 ASFormer v2 (retrain finished 14:22 UTC, frozen as `asformer_official/v2_frameorder`). |
 | Optional Pediatric re-selection of decoding parameters on the calibration folds | Not executed. |
 
 ## 1. Executable checklist
@@ -103,8 +103,13 @@ isolated flickers easily. Shuffling could therefore make smoothing look better t
 ## 2. Task 0 — seeds and isolation
 
 - The local wrappers `run_mstcn_official.py` and `run_asformer_official.py` pass no seed. The official MS-TCN entry
-  hard-codes seed 1538574472, and ASFormer hard-codes 19980125. Earlier run names ending in `s0/s1/s2` therefore do
-  not show that different training seeds were used.
+  hard-codes seed 1538574472, and ASFormer hard-codes 19980125.
+- **Correction of the run records.** Every MS-TCN and ASFormer run before this round has a directory name ending in
+  `-s0`. That suffix is the wrapper's configuration seed, not the training seed. Each of these runs trained with the
+  entry's fixed seed, so a directory name is not evidence of an independent training seed. Any reading of these runs
+  as different training seeds, and any seed-variance interpretation built on them, is withdrawn. A search of all
+  branches, the result pages and the ledger found no such statement; the ledger already says "official seed". This
+  correction covers MS-TCN and ASFormer only. Other models were not checked here.
 - A patched copy, `third_party/ms-tcn_seeded`, adds `third_party/patches/ms-tcn-seed.patch` to the pinned clone
   (commit `33ed91c`). The patch takes `--seed` and seeds Python's `random`, NumPy and PyTorch (CPU and CUDA), with
   deterministic cuDNN. Python's `random` sets the official batch order. The entry writes the seed it used and a
@@ -210,12 +215,14 @@ samples, and random order lowers this by 33 points.
 
 ### 3.5 What Task 1 shows
 
-- **Supported on EV9V.** Full random order lowers internal cuts and deviations after smoothing for every decoder. It
-  also raises boundary F1 for B1, the HMM and default B3. Block orders, which keep runs of 5 or more samples together,
-  give no reduction in cuts and no gain in boundary F1. For the HMM they even add cuts, probably because moved blocks
-  create new transitions. Deviations after decoding fall only slightly under block orders (at most 0.003 for the HMM,
-  against 0.010 under random order). This is the pattern the plan set as the condition for the "broken-up deviation
-  runs" explanation. The same pattern appears with a second encoder.
+- **The EV9V results support the explanation that shuffling breaks up consecutive prediction deviations.** Full
+  random order lowers internal cuts and deviations after smoothing for every decoder. It also raises boundary F1 for
+  B1, the HMM and default B3. Block orders keep the order of samples inside each block, but a deviation run that
+  crosses a block edge can still be cut. They split far fewer runs than random order (§3.2) and give no reduction in
+  cuts and no gain in boundary F1. For the HMM they even add cuts, probably because moved blocks create new
+  transitions. Deviations after decoding fall only slightly under block orders (at most 0.003 for the HMM, against
+  0.010 under random order). This is the pattern the plan set as the condition for the explanation. The same pattern
+  appears with a second encoder.
 - **Size.** The effect is large for the default decoders and small for the audited B3. Audited B3 already uses a
   long window and a high threshold. Under shuffling its multi-stream boundary F1 rises by 0.020 and its pair-stream
   boundary F1 does not change measurably.
@@ -238,7 +245,7 @@ majority-vote recall of at least 0.80 for both A4C and PSAX.
 | Per sample | 114,500 | 0.428 | 0.547 | 0.764 | 0.176 |
 | Per clip (majority vote) | 6,354 | 0.447 | 0.570 | 0.810 | 0.183 |
 
-- **Transfer fails the frozen rule.** PSAX clip recall is 0.183. Of the 3,676 PSAX test clips, B0 calls 1,516 PLAX,
+- **The fixed pipeline fails the frozen classification rule.** PSAX clip recall is 0.183. Of the 3,676 PSAX test clips, B0 calls 1,516 PLAX,
   685 SC4C, 433 A5C, 370 A4C and only 672 PSAX. Of the 2,678 A4C clips, 2,168 are called A4C and 412 SC4C.
 - The calibration folds show the same picture (clip recall A4C 0.794, PSAX 0.193).
 - Temporal decoding does not change it. The clip majority-vote accuracy is 0.436–0.453 for B0 through MS-TCN.
@@ -247,10 +254,10 @@ majority-vote recall of at least 0.80 for both A4C and PSAX.
 
 ### 4.2 Permutation results (descriptive only)
 
-Because transfer failed, the results below describe the behaviour of the frozen pipeline on Pediatric. They do not
-replicate the EV9V finding. B0 disagrees with the clip label on 57% of samples, and 82% of those deviating samples lie
-in runs of at least 5 samples (EV9V 52%). Most errors are whole-clip misreads that no order can break up. Random order
-lowers that share by only 2.3 points.
+Because the direct transfer failed, the results below describe the behaviour of the frozen pipeline on Pediatric.
+They neither replicate nor refute the EV9V finding. B0 disagrees with the clip label on 57% of samples, and 82% of
+those deviating samples lie in runs of at least 5 samples (EV9V 52%). When most of a clip is wrong, no order can break
+its errors into short runs. Random order lowers that share by only 2.3 points.
 
 | Decoder | Native internal cuts per clip, true | Random − true | Exam-stream boundary F1, true | Random − true |
 |---|---|---|---|---|
@@ -269,12 +276,41 @@ lowers that share by only 2.3 points.
   audited B3 and MS-TCN show no change.
 - Pediatric contains no A4C/A5C transitions, so it cannot test that part of the EV9V problem.
 
-### 4.3 What Task 2 shows
+### 4.3 Locating a change is not recognising the views
 
-- The fixed EV9V representation does not support external validation on EchoNet-Pediatric. No clips were filtered and
-  no data were re-split to rescue the analysis.
-- The optional re-selection of decoding parameters on the calibration folds was not run. It could not repair a
-  frame classifier that misreads most PSAX clips.
+This table uses the existing true-order predictions on the test folds; nothing was retrained. Classification is
+scored on native clips. Segment F1@50 and boundary F1 are scored on the 2,574 exam streams, which hold 2,558 true
+view changes. The last column re-reads the same decoded streams. It is the share of true view changes that the
+decoder finds within 0.5 s *and* labels correctly on both sides. "Correctly" means the majority decoded label of the
+fragment before and of the fragment after equals that fragment's true view. Intervals resample first-token groups.
+
+| Method | Clip accuracy | Clip macro-F1 (A4C, PSAX) | Segment F1@50 | Boundary F1 | Boundary recall | Changes found with both views right |
+|---|---|---|---|---|---|---|
+| B0 frame classifier | 0.447 | 0.570 | 0.114 | 0.191 | 0.965 | 0.150 [0.135, 0.164] |
+| B1 smoothing | 0.453 | 0.581 | 0.438 | 0.720 | 0.826 | 0.149 [0.134, 0.163] |
+| B2 HMM | 0.445 [0.435, 0.457] | 0.572 | 0.470 | 0.803 [0.789, 0.816] | 0.743 | 0.143 [0.128, 0.156] |
+| B3, default | 0.452 | 0.580 | 0.453 | 0.736 | 0.670 | 0.151 [0.135, 0.164] |
+| B3, audited | 0.449 | 0.577 | 0.418 | 0.513 | 0.347 | 0.123 [0.109, 0.136] |
+| B4 MS-TCN v2 | 0.436 | 0.342 | 0.400 | 0.141 | 0.103 | 0.018 [0.013, 0.023] |
+
+On EV9V the same HMM reaches clip macro-F1 0.940, segment F1@50 0.804 and boundary F1 0.833 on 4–8 fragment streams.
+
+- The HMM still reaches a boundary F1 of 0.803 on Pediatric exam streams, close to its 0.833 on EV9V 4–8 fragment
+  streams. Its clip accuracy, however, is only 0.445.
+- Only 14% of the true view changes are found with the right view on both sides. Of the changes the HMM does find,
+  19% [17%, 21%] have both views right.
+- A boundary score can therefore stay high while the views before and after the change are wrong. A method
+  comparison needs classification and class-aware segment scores next to boundary scores. Boundary metrics alone
+  cannot rank methods.
+- Full intervals for every cell are in `pediatric_joint.md`.
+
+### 4.4 What Task 2 shows
+
+- The fixed pipeline's direct transfer to EchoNet-Pediatric failed, so it did not reach the frozen external
+  replication standard. This is not evidence against the EV9V explanation, and it does not show that other methods
+  could not test it on this dataset. No clips were filtered and no data were re-split to rescue the analysis.
+- The optional re-selection of decoding parameters on the calibration folds was not run. Decoding parameters do not
+  change the frame classifier's errors.
 - Costs on Pediatric match EV9V. B0 extraction took 176 s for 141,260 samples (1.25 ms per sample including AVI
   decoding, 6 loader workers). Decoding took 0.07 µs (B0), 2.4 µs (B1), 6.3 µs (HMM), 21 µs (B3) and 285 µs (MS-TCN,
   short sequences on the GPU) per sample.
@@ -297,7 +333,7 @@ different end-to-end encoders. A difference between rows therefore compares whol
 | B3, default | 0.943 | 0.808 | 0.909 | 0.847 | 0.953 | 0.163 | 0.285 |
 | B3, audited | 0.930 | 0.871 | 0.980 | 0.927 | 0.926 | 0.064 | 0.052 |
 | B4 MS-TCN v2 | 0.947 | 0.824 | 0.923 | 0.876 | 0.960 | 0.099 | 0.147 |
-| B5 ASFormer v2 | pending | | | | | | |
+| B5 ASFormer v2 | 0.956 | 0.856 | 0.976 | 0.904 | 0.942 | 0.099 | 0.139 |
 | B6 STFM, numeric-order model | 0.960 | 0.859 | 0.897 | 0.844 | 0.879 | 0.089 | 0.126 |
 | B7 EchoViewCLIP | 0.972 | 0.867 | 0.967 | 0.899 | 0.953 | 0.084 | 0.098 |
 | B8 EchoPrime per frame | 0.943 | 0.496 | 0.535 | 0.522 | 0.974 | 0.287 | 1.623 |
@@ -314,6 +350,8 @@ Paired differences to B4 whose 95% interval excludes zero:
 - EchoViewCLIP has higher clip macro-F1 (+0.025 [+0.004, +0.051]) and segment F1@50 (+0.043 [+0.010, +0.077]) and
   fewer internal cuts (−0.050 [−0.094, −0.006]). STFM has lower boundary recall on 4–8 fragment streams
   (−0.082 [−0.115, −0.048]).
+- B5 ASFormer v2 differs from B4 only in a slightly lower boundary recall on 4–8 fragment streams (−0.018
+  [−0.036, −0.003]). All its other differences include zero.
 - No method is better than B4 on every endpoint, so this table names no overall winner.
 
 **Cost.** Feature extraction dominates. B0 needs about 2.64 ms per sample to read and letterbox a frame on the CPU
@@ -322,19 +360,27 @@ CPU thread costs 0.04 µs per sample for B0's argmax, 1.1 µs for B1, 5.7 µs fo
 and 118 µs for the MS-TCN forward pass. B6–B8 have no separate decoding step, and their extraction was not re-timed.
 Their logged runs over the 2,068 validation and test streams took minutes of wall time (9.6 min for EchoPrime).
 
-## 7. Decision rule status
+## 7. Scope and closing rule
 
-The plan names three conditions for continuing toward a methodology paper.
+The plan named three conditions for a cross-dataset methodology paper.
 
-1. **Independent Pediatric replication.** Not obtained. Classification transfer failed the frozen rule, so Pediatric
-   cannot confirm or refute the mechanism with this representation.
-2. **A clear mechanism from the EV9V deviation diagnostics.** Obtained for EV9V. Full random order flatters
-   smoothing, and orders that keep runs of 5 or more samples together do not. The same holds with EchoPrime as the
-   frame encoder.
-3. **Model-comparison effects that repeat across training seeds.** Pending. Task 3 has not run yet.
+1. **Independent Pediatric replication.** Not obtained. The fixed pipeline's direct transfer failed and did not
+   reach the frozen external replication standard. Pediatric therefore neither confirms nor refutes the explanation.
+2. **EV9V deviation diagnostics.** The EV9V results support the explanation that shuffling breaks up consecutive
+   prediction deviations. Full random order flatters smoothing, and block orders, which keep the order inside each
+   block, do not. The same holds with EchoPrime as the frame encoder.
+3. **Model-comparison effects that repeat across training seeds.** Task 3 answers this for EV9V.
 
-Under the plan's rules the present evidence supports, at most, an EV9V-scoped reproduction and audit. A methodology
-paper would need an external dataset on which the frame recognizer transfers. The final call waits for Task 3.
+The external condition is not met, so the scope is settled as EV9V (decision of 2026-10-01). The seed matrix can make
+the EV9V conclusions more or less credible, but it cannot fill the external gap. The work closes by the first matching
+case below, and no further round starts automatically.
+
+- If the seed matrix consistently supports the present findings, the result is an EV9V-scoped reproduction and
+  evaluation audit report. Its publication target is judged after that.
+- If learned models show a consistent advantage in true order, the summary "no consistent advantage" is corrected.
+  The frame-order defect and the time-structure audit stay as findings.
+- If the comparison changes markedly from seed to seed, the report states that uncertainty and the work closes as the
+  Capstone report.
 
 ## 8. Reproduction
 

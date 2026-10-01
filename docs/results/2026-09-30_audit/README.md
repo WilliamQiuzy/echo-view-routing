@@ -15,7 +15,7 @@ This round follows `docs/research_plan.md` ("问题 A 第一轮后的决定"). I
 
 ## 1. Corrected model comparison
 
-All rows use the same ladder configuration as run `20260928-001145`, on `cache_v2`. The table is built from three runs:
+All rows use the same ladder configuration as run `20260928-001145`, on `cache_v2`. The table is built from these runs:
 
 | Rows | Run |
 |---|---|
@@ -23,6 +23,7 @@ All rows use the same ladder configuration as run `20260928-001145`, on `cache_v
 | B3, audited setting | `20261001-035221-baselines-02a18614-s0` |
 | B6 STFM, name-order seed-100 model | `20261001-041024-baselines-e5dc6b97-s0` |
 | B6 STFM, numeric-order seed-100 model | `20261001-041038-baselines-e415228d-s0` |
+| B5 ASFormer (added 2026-10-01) | `20261001-142859-baselines-1d1e90ee-s0` (B0–B5; its B0–B4 rows equal `20261001-034125` exactly), with bootstrap in its `reports/bootstrap.md` |
 
 | Method | How its setting was chosen | Clip macro-F1 | Frame acc | Frag/min | Boundary F1, pairs | Boundary F1, 4–8 fragments | Error at 5%, multi thresholds | Policy 2 coverage / error |
 |---|---|---|---|---|---|---|---|---|
@@ -32,7 +33,7 @@ All rows use the same ladder configuration as run `20260928-001145`, on `cache_v
 | B3 change points | ladder default (0.5 s, JS 0.15) | 0.943 | 0.961 | 3.57 | 0.909 | 0.847 | 0.080 | 0.766 / 0.031 |
 | B3 change points, audited | §3, chosen on validation (0.9 s, JS 0.31) | 0.930 | 0.973 | 0.69 | 0.980 | 0.927 | 0.083 | 0.741 / 0.018 |
 | B4 MS-TCN (official code) | authors' constants, retrained on `cache_v2` | 0.947 | 0.973 | 1.51 | 0.923 | 0.876 | 0.088 | 0.848 / 0.024 |
-| B5 ASFormer (official code) | authors' constants; retraining started on `cache_v2` | running | | | | | | |
+| B5 ASFormer (official code) | authors' constants, retrained on `cache_v2` (frozen as `asformer_official/v2_frameorder`) | 0.956 | 0.977 | 1.64 | 0.976 | 0.904 | 0.087 | 0.846 / 0.026 |
 | B6 STFM (official code), windowed | seed-100 model trained on name-sorted frames (as reproduced) | 0.971 | 0.981 | 0.70 | 0.938 | 0.868 | 0.051 | 0.536 / 0.046 |
 | B6 STFM (official code), windowed | seed-100 model trained with the numeric-order patch | 0.960 | 0.974 | 1.09 | 0.897 | 0.844 | 0.058 | 0.444 / 0.050 |
 | B7 EchoViewCLIP stage 1, windowed | authors' recipe, trained on MP4 in true order | 0.972 | 0.976 | 0.78 | 0.967 | 0.899 | 0.057 | 0.586 / 0.044 |
@@ -45,7 +46,7 @@ All rows use the same ladder configuration as run `20260928-001145`, on `cache_v
   labels.
 - **The error columns** report the share of routed time that is wrong.
 
-**Paired bootstrap against MS-TCN** (run `20261001-034125`, and the two STFM runs, each of which also contains MS-TCN; pairs resampled by stream, multi streams by cine):
+**Paired bootstrap against MS-TCN** (run `20261001-034125`, the two STFM runs and the B5 run `20261001-142859`, each of which also contains MS-TCN; pairs resampled by stream, multi streams by cine):
 
 | Method | Pairs: boundary F1 | Pairs: same-view split rate | 4–8 fragments: boundary F1 | 4–8 fragments: same-view split rate |
 |---|---|---|---|---|
@@ -55,6 +56,7 @@ All rows use the same ladder configuration as run `20260928-001145`, on `cache_v
 | B7 EchoViewCLIP | +0.044 [−0.012, 0.105] | −0.008 [−0.028, 0.000] | +0.023 [−0.045, 0.102] | −0.015 [−0.049, 0.020] |
 | B6 STFM, name-order model | +0.015 [−0.041, 0.073] | −0.008 [−0.028, 0.000] | −0.008 [−0.079, 0.071] | −0.040 [−0.081, 0.000] |
 | B6 STFM, numeric-order model | −0.026 [−0.088, 0.035] | −0.008 [−0.028, 0.000] | −0.032 [−0.111, 0.051] | −0.010 [−0.048, 0.034] |
+| B5 ASFormer | +0.053 [−0.008, 0.114] | 0.000 [0.000, 0.000] | +0.028 [−0.030, 0.097] | 0.000 [−0.028, 0.033] |
 
 **STFM, official evaluation.** This is the authors' video-level test on 888 clips and nine codes, a different task
 from the ladder.
@@ -200,4 +202,6 @@ minute in native clips; frozen for test.
 
 ## Pending in this round
 
-- B5 ASFormer: retraining on `cache_v2` with the authors' constants is running (about 12 hours); its row will be added.
+- B5 ASFormer: done on 2026-10-01. The retrain on `cache_v2` with the authors' constants finished, the model is frozen as
+  `models_frozen/asformer_official/v2_frameorder`, and its row is in table 1. Both of its boundary F1 differences to
+  MS-TCN include zero. It trained with the entry's fixed seed 19980125, so it is one training run, not a seed study.
