@@ -1,0 +1,118 @@
+{
+ "device": "cpu",
+ "runs": {
+  "true_s0": "79f4a41af6e3-rf1fb31cd63-trtrue-psna-numeric-2026-09-30-verify12-cpu-ms0",
+  "true_s0_rep": "79f4a41af6e3-rf1fb31cd63-trtrue-psna-numeric-2026-09-30-verify12-cpu-ms0-rep",
+  "true_s1": "79f4a41af6e3-rf1fb31cd63-trtrue-psna-numeric-2026-09-30-verify12-cpu-ms1",
+  "rand_s0": "79f4a41af6e3-rf1fb31cd63-trrand-ps500-numeric-2026-09-30-verify12-cpu-ms0"
+ },
+ "checks": {
+  "same_seed_same_init": true,
+  "same_seed_same_final_weights": true,
+  "different_seed_different_init": true,
+  "condition_pair_same_init": true,
+  "condition_pair_different_final": true,
+  "recorded_seed_matches": true,
+  "distinct_model_dirs": true,
+  "true_export_equals_v2_export": "12/12",
+  "true_and_rand_data_differ": true
+ },
+ "done": {
+  "true_s0": {
+   "run": "79f4a41af6e3-rf1fb31cd63-trtrue-psna-numeric-2026-09-30-verify12-cpu-ms0",
+   "entry": "third_party/ms-tcn_seeded/main.py",
+   "clone_commit": "33ed91c0c7576650a2367efc602553af4c5295b1",
+   "pinned": "33ed91c0c7576650a2367efc602553af4c5295b1",
+   "seed_patch_sha256": "d8052e9d8679f28655589d0d8c2fdaad388cdfe2304764a6e7a10eebe8a90762",
+   "model_seed": 0,
+   "init_sha256": "72babdb4663bb0d105da5afb7221c6f9bd425145e97ace89e04b4e42954ff9f6",
+   "epochs": 2,
+   "final_model": "epoch-2.model",
+   "final_sha256": "99dc66f61809272a4177b7d903b315ea578004597c85c0fd7839bb433bf8dbfd",
+   "device": "cpu",
+   "seconds": 4.2,
+   "data": {
+    "data_name": "79f4a41af6e3-rf1fb31cd63-trtrue-psna-numeric-2026-09-30-verify12-cpu",
+    "condition": "true",
+    "permutation_seed": null,
+    "recipe_digest": "f1fb31cd63",
+    "encoder": "79f4a41af6e3",
+    "frame_order": "numeric-2026-09-30",
+    "train_streams": 12,
+    "features_digest": "5b01d847059dfe434ab76ba26fe94ac7fc566cc992cc7432d956759f7d012218"
+   }
+  },
+  "true_s0_rep": {
+   "run": "79f4a41af6e3-rf1fb31cd63-trtrue-psna-numeric-2026-09-30-verify12-cpu-ms0-rep",
+   "entry": "third_party/ms-tcn_seeded/main.py",
+   "clone_commit": "33ed91c0c7576650a2367efc602553af4c5295b1",
+   "pinned": "33ed91c0c7576650a2367efc602553af4c5295b1",
+   "seed_patch_sha256": "d8052e9d8679f28655589d0d8c2fdaad388cdfe2304764a6e7a10eebe8a90762",
+   "model_seed": 0,
+   "init_sha256": "72babdb4663bb0d105da5afb7221c6f9bd425145e97ace89e04b4e42954ff9f6",
+   "epochs": 2,
+   "final_model": "epoch-2.model",
+   "final_sha256": "99dc66f61809272a4177b7d903b315ea578004597c85c0fd7839bb433bf8dbfd",
+   "device": "cpu",
+   "seconds": 5.5,
+   "data": {
+    "data_name": "79f4a41af6e3-rf1fb31cd63-trtrue-psna-numeric-2026-09-30-verify12-cpu",
+    "condition": "true",
+    "permutation_seed": null,
+    "recipe_digest": "f1fb31cd63",
+    "encoder": "79f4a41af6e3",
+    "frame_order": "numeric-2026-09-30",
+    "train_streams": 12,
+    "features_digest": "5b01d847059dfe434ab76ba26fe94ac7fc566cc992cc7432d956759f7d012218"
+   }
+  },
+  "true_s1": {
+   "run": "79f4a41af6e3-rf1fb31cd63-trtrue-psna-numeric-2026-09-30-verify12-cpu-ms1",
+   "entry": "third_party/ms-tcn_seeded/main.py",
+   "clone_commit": "33ed91c0c7576650a2367efc602553af4c5295b1",
+   "pinned": "33ed91c0c7576650a2367efc602553af4c5295b1",
+   "seed_patch_sha256": "d8052e9d8679f28655589d0d8c2fdaad388cdfe2304764a6e7a10eebe8a90762",
+   "model_seed": 1,
+   "init_sha256": "69826d663783ee4a70f01d425d3dc2e70960fd43e850858dbe934b9258a9b82f",
+   "epochs": 2,
+   "final_model": "epoch-2.model",
+   "final_sha256": "f8dd92c6fd7abd0bd85ec0085e5f6d4bd1bd6c211e253e8c06e3aea58348a50b",
+   "device": "cpu",
+   "seconds": 5.2,
+   "data": {
+    "data_name": "79f4a41af6e3-rf1fb31cd63-trtrue-psna-numeric-2026-09-30-verify12-cpu",
+    "condition": "true",
+    "permutation_seed": null,
+    "recipe_digest": "f1fb31cd63",
+    "encoder": "79f4a41af6e3",
+    "frame_order": "numeric-2026-09-30",
+    "train_streams": 12,
+    "features_digest": "5b01d847059dfe434ab76ba26fe94ac7fc566cc992cc7432d956759f7d012218"
+   }
+  },
+  "rand_s0": {
+   "run": "79f4a41af6e3-rf1fb31cd63-trrand-ps500-numeric-2026-09-30-verify12-cpu-ms0",
+   "entry": "third_party/ms-tcn_seeded/main.py",
+   "clone_commit": "33ed91c0c7576650a2367efc602553af4c5295b1",
+   "pinned": "33ed91c0c7576650a2367efc602553af4c5295b1",
+   "seed_patch_sha256": "d8052e9d8679f28655589d0d8c2fdaad388cdfe2304764a6e7a10eebe8a90762",
+   "model_seed": 0,
+   "init_sha256": "72babdb4663bb0d105da5afb7221c6f9bd425145e97ace89e04b4e42954ff9f6",
+   "epochs": 2,
+   "final_model": "epoch-2.model",
+   "final_sha256": "36504a231d45b4f8f9f57cb6b3c9d8bcfe8f6c3c3b43a651831a914b4f1c3e7f",
+   "device": "cpu",
+   "seconds": 4.1,
+   "data": {
+    "data_name": "79f4a41af6e3-rf1fb31cd63-trrand-ps500-numeric-2026-09-30-verify12-cpu",
+    "condition": "rand",
+    "permutation_seed": 500,
+    "recipe_digest": "f1fb31cd63",
+    "encoder": "79f4a41af6e3",
+    "frame_order": "numeric-2026-09-30",
+    "train_streams": 12,
+    "features_digest": "9864f3f04829e04d5c6114b0359904e39a2b62c57672cd44229fe03854537d2d"
+   }
+  }
+ }
+}

@@ -21,6 +21,7 @@ METHOD_DESCRIPTIONS = {
     "b1": "probability moving average + hysteresis",
     "b2": "sticky HMM, Viterbi over posteriors",
     "b3": "JS divergence between left/right windows + persistent label change",
+    "b3a": "B3 with the audited setting (decode.b3a: window and threshold chosen on true-order validation, docs/results/2026-09-30_audit)",
     "b4": "official MS-TCN (yabufarha/ms-tcn, pinned) on frozen features",
     "b4_reimpl": "our compact MS-TCN re-implementation (reference only, never reported)",
     "b5": "official ASFormer (ChinaYi/ASFormer, pinned) on frozen features",
@@ -63,6 +64,18 @@ def _b3(prob, feat, cfg, stream_id=None):
     return labels_from_boundaries(prob, b), prob
 
 
+# Audited B3 setting (docs/results/2026-09-30_audit): 0.9 s windows; JS threshold at the 0.998 quantile of
+# true-order validation native-clip scores, chosen by the problem A rule on validation only.
+AUDITED_B3 = {"half_window": 9, "threshold": 0.31007912515352554, "nms_radius": 5}
+
+
+def _b3a(prob, feat, cfg, stream_id=None):
+    """Same decoder as B3, configured by cfg['decode']['b3a'] (default AUDITED_B3) so both settings pair in one run."""
+    c = cfg["decode"].get("b3a", AUDITED_B3)
+    b = detect_boundaries(prob, int(c["half_window"]), float(c["threshold"]), int(c["nms_radius"]))
+    return labels_from_boundaries(prob, b), prob
+
+
 def _b4(prob, feat, cfg, stream_id=None):
     """Official MS-TCN predictions (cache/mstcn_official/<tag>/<stream_id>.npz produced by scripts/run_mstcn_official.py)."""
     from echo_routing.temporal.baselines.b4_mstcn_official import lookup_prob  # lazy
@@ -91,14 +104,14 @@ def _lookup_factory(cfg_key: str):
     return _dec
 
 
-DECODERS: dict[str, Decoder] = {"b0": _b0, "b1": _b1, "b2": _b2, "b3": _b3, "b4": _b4, "b4_reimpl": _b4_reimpl, "b5": _b5,
+DECODERS: dict[str, Decoder] = {"b0": _b0, "b1": _b1, "b2": _b2, "b3": _b3, "b3a": _b3a, "b4": _b4, "b4_reimpl": _b4_reimpl, "b5": _b5,
                                 "b6": _lookup_factory("stfm_windowed"), "b7": _lookup_factory("echoviewclip_windowed"),
                                 "b8": _lookup_factory("echoprime_windowed"),
                                 **{m: _lookup_factory(m) for m in VIT_FAMILY}}
 
 # Frame-level stage of each pipeline: routing policy 2 scores a method's segments with these probabilities, i.e. the
 # pipeline's own evidence before temporal smoothing. Methods not listed are their own frame or window stage.
-FRAME_STAGE = {"b1": "b0", "b2": "b0", "b3": "b0", "b4": "b0", "b4_reimpl": "b0", "b5": "b0",
+FRAME_STAGE = {"b1": "b0", "b2": "b0", "b3": "b0", "b3a": "b0", "b4": "b0", "b4_reimpl": "b0", "b5": "b0",
                "vit_router": "vit_frame", "mstcn_vitfeat": "vit_frame"}
 
 

@@ -34,6 +34,7 @@ decode:
   b1: {window: 5, min_run: 5, mode: prob}
   b2: {stay: 0.98}
   b3: {half_window: 5, threshold: 0.15, nms_radius: 5}
+  b3a: {half_window: 9, threshold: 0.31007912515352554, nms_radius: 5}   # audited B3 (docs/results/2026-09-30_audit)
 policy:
   score: p10_agree
   min_len: 5                  # samples (0.5 s)
