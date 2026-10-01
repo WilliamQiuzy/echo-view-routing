@@ -268,7 +268,7 @@ its errors into short runs. Random order lowers that share by only 2.3 points.
 | B3, audited | 0.005 | +0.000 [−0.002, +0.002] | 0.513 | −0.005 [−0.013, +0.003] |
 | B4 MS-TCN v2 | 0.302 | +0.000 [−0.018, +0.018] | 0.141 | −0.001 [−0.009, +0.006] |
 
-- Deviations after decoding barely move (HMM −0.003 [−0.005, −0.000]; the others include zero).
+- Deviations after decoding change little (HMM −0.003 [−0.005, −0.000]; the others include zero).
 - MS-TCN v2 labels 95% of the samples in Pediatric exam streams A4C, so it finds only 10% of the view changes there.
   Audited B3 keeps its high precision (0.98) but finds 35% of them. The EV9V-frozen settings do not carry over.
 - Same-class cut rates in the `same` bank change by at most 0.012 (default B3 −0.012 [−0.022, −0.002]).
@@ -392,12 +392,27 @@ Effect = shuffled test minus true-order test, mean over the ten test seeds, for 
 | B2 HMM (same inputs) | −0.103 [−0.158, −0.046] | −0.010 [−0.014, −0.006] | +0.036 [+0.008, +0.064] | +0.070 [+0.039, +0.101] |
 | B3, audited (same inputs) | −0.029 [−0.047, −0.012] | −0.004 [−0.009, −0.001] | +0.009 [−0.008, +0.032] | +0.020 [+0.005, +0.035] |
 
-- Shuffled testing barely moves the MS-TCN trained in true order. Only one of twelve seed-by-endpoint intervals above
-  excludes zero. The HMM gains on every endpoint.
+- For the MS-TCN trained in true order, no consistent change across seeds was observed under shuffled testing. Only
+  one of twelve seed-by-endpoint intervals above excludes zero. This is a failure to detect a change, not evidence
+  that the model is unaffected. The HMM gains on every endpoint.
 - The comparison therefore changes with the test order. In true order the HMM makes more internal cuts than MS-TCN in
   every seed (+0.068 to +0.117 per clip). Under shuffled testing the difference is +0.004 [−0.032, +0.039],
-  +0.028 [−0.048, +0.088] and −0.020 [−0.061, +0.019]. The same holds for default B3. A shuffled test set would hide
-  MS-TCN's stability advantage over the untuned smoothers.
+  +0.028 [−0.048, +0.088] and −0.020 [−0.061, +0.019].
+- A significant difference turning non-significant is not itself a test, so the change was tested directly. The
+  method-by-test-order contrast is (HMM − MS-TCN) under shuffled testing minus (HMM − MS-TCN) under true-order
+  testing, on internal cuts per native clip, with the same paired draws over presumed patient groups for all four
+  cells.
+
+| Contrast (internal cuts per clip) | Seed 0 | Seed 1 | Seed 2 |
+|---|---|---|---|
+| HMM vs MS-TCN (primary) | −0.063 [−0.128, −0.002] | −0.089 [−0.163, −0.020] | −0.101 [−0.161, −0.046] |
+| Default B3 vs MS-TCN | −0.149 [−0.229, −0.073] | −0.175 [−0.256, −0.102] | −0.187 [−0.268, −0.111] |
+| Audited B3 vs MS-TCN | +0.011 [−0.044, +0.070] | −0.015 [−0.064, +0.032] | −0.027 [−0.074, +0.020] |
+
+- Shuffled testing narrows the HMM's excess of cuts over MS-TCN in every seed, and the default B3's as well. For
+  audited B3 no consistent change was observed. On the secondary endpoints the HMM contrast is −0.007 to −0.011 for
+  the deviation rate (every interval below zero) and +0.037 to +0.058 for 4–8 fragment boundary F1 (lower limits
+  0.000 to +0.013). A shuffled test set would hide MS-TCN's stability advantage over the untuned smoothers.
 
 ### 5.3 What shuffled training changes
 
@@ -423,8 +438,10 @@ testing).
 
 ### 5.4 What Task 3 shows
 
-- The EV9V findings hold in all three seeds. Shuffled testing flatters the untuned smoothers and barely changes a
-  model trained in true order. Shuffled training makes the learned model less stable on real order.
+- The EV9V findings hold in all three seeds. Shuffled testing flatters the untuned smoothers, while no consistent
+  change was observed for the model trained in true order. The method-by-test-order contrast confirms that shuffled
+  testing narrows the HMM–MS-TCN difference in every seed. Shuffled training makes the learned model less stable on
+  real order.
 - The earlier summary that learned models show no consistent advantage needs a correction. In true order, MS-TCN
   makes consistently fewer internal cuts than the untuned smoothers in every seed. It has no consistent advantage in
   boundary F1, segment F1@50 or clip macro-F1. The tuned simple baseline (audited B3) is consistently ahead of every
@@ -500,7 +517,8 @@ and no further round starts automatically.
 **Closing determination.**
 
 - The seed matrix consistently supports the evaluation findings (first case). In every seed, shuffled testing
-  flatters the untuned smoothers and barely changes the MS-TCN trained in true order, and shuffled training makes
+  flatters the untuned smoothers and narrows their difference to the MS-TCN trained in true order (method-by-test-order
+  contrast, every seed), and shuffled training makes
   MS-TCN less stable on real order.
 - It also shows one consistent true-order advantage of the learned model. MS-TCN makes fewer internal cuts than the
   untuned smoothers in every seed. As the second case requires, the summary "no consistent advantage" is corrected

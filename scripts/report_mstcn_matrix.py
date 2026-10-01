@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 """2 x 2 MS-TCN permutation matrix per model seed (task 3 of the 2026-10-01 round), from scripts/mstcn_matrix.py output.
 
+The "method x test order" rows give (simple decoder - MS-TCN trained in true order) under shuffled testing minus the
+same difference under true-order testing, so they test whether shuffled testing changes the method comparison.
 Cells: training order (true / within-fragment random, one fixed permutation) x test order (true / random, mean over
 the ten task-1 seeds). Per model seed the report gives the four cells, the test-order effect inside each training
 condition, the training-order effect at each test order, and their interaction, each with a paired 95% bootstrap
@@ -62,6 +64,10 @@ def seed_block(tabs: dict, runs: dict, simple: list[str]) -> dict:
                 e[f"test effect ({m})"] = {"value": sr[0][k] - sp[0][k], "ci95": interval(sr[1][k] - sp[1][k])}
                 e[f"{m} minus MS-TCN trained in true order (test true)"] = {"value": sp[0][k] - pt[("true", "true")], "ci95": interval(sp[1][k] - rp[("true", "true")])}
                 e[f"{m} minus MS-TCN trained in true order (test random)"] = {"value": sr[0][k] - pt[("true", "random")], "ci95": interval(sr[1][k] - rp[("true", "random")])}
+                # method x test order: (m - MS-TCN)_shuffled test - (m - MS-TCN)_true test, same draws for all four cells
+                e[f"method x test order ({m} vs MS-TCN trained in true order)"] = {
+                    "value": (sr[0][k] - pt[("true", "random")]) - (sp[0][k] - pt[("true", "true")]),
+                    "ci95": interval((sr[1][k] - rp[("true", "random")]) - (sp[1][k] - rp[("true", "true")]))}
             out[f"{name}: {k}"] = e
     return out
 

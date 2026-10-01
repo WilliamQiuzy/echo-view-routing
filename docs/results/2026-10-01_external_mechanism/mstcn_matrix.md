@@ -15,12 +15,15 @@ Rows are training orders and columns are test orders. Test random = mean over th
 | test effect (simple:b2) | -0.103 [-0.158, -0.046] | -0.103 [-0.158, -0.046] | -0.103 [-0.158, -0.046] | -0.103 (-0.103 to -0.103) |
 | simple:b2 minus MS-TCN trained in true order (test true) | +0.068 [+0.005, +0.130] | +0.117 [+0.054, +0.186] | +0.081 [+0.042, +0.119] | +0.089 (+0.068 to +0.117) |
 | simple:b2 minus MS-TCN trained in true order (test random) | +0.004 [-0.032, +0.039] | +0.028 [-0.048, +0.088] | -0.020 [-0.061, +0.019] | +0.004 (-0.020 to +0.028) |
+| method x test order (simple:b2 vs MS-TCN trained in true order) | -0.063 [-0.128, -0.002] | -0.089 [-0.163, -0.020] | -0.101 [-0.161, -0.046] | -0.085 (-0.101 to -0.063) |
 | test effect (simple:b3) | -0.188 [-0.256, -0.125] | -0.188 [-0.256, -0.125] | -0.188 [-0.256, -0.125] | -0.188 (-0.188 to -0.188) |
 | simple:b3 minus MS-TCN trained in true order (test true) | +0.141 [+0.075, +0.204] | +0.191 [+0.121, +0.264] | +0.155 [+0.104, +0.203] | +0.162 (+0.141 to +0.191) |
 | simple:b3 minus MS-TCN trained in true order (test random) | -0.008 [-0.054, +0.032] | +0.016 [-0.051, +0.072] | -0.032 [-0.079, +0.013] | -0.008 (-0.032 to +0.016) |
+| method x test order (simple:b3 vs MS-TCN trained in true order) | -0.149 [-0.229, -0.073] | -0.175 [-0.256, -0.102] | -0.187 [-0.268, -0.111] | -0.170 (-0.187 to -0.149) |
 | test effect (simple:b3a) | -0.029 [-0.047, -0.012] | -0.029 [-0.047, -0.012] | -0.029 [-0.047, -0.012] | -0.029 (-0.029 to -0.029) |
 | simple:b3a minus MS-TCN trained in true order (test true) | -0.091 [-0.147, -0.039] | -0.041 [-0.083, -0.002] | -0.078 [-0.129, -0.030] | -0.070 (-0.091 to -0.041) |
 | simple:b3a minus MS-TCN trained in true order (test random) | -0.080 [-0.137, -0.033] | -0.056 [-0.125, -0.001] | -0.104 [-0.169, -0.046] | -0.080 (-0.104 to -0.056) |
+| method x test order (simple:b3a vs MS-TCN trained in true order) | +0.011 [-0.044, +0.070] | -0.015 [-0.064, +0.032] | -0.027 [-0.074, +0.020] | -0.010 (-0.027 to +0.011) |
 
 ## native: cuts per min
 
@@ -35,12 +38,15 @@ Rows are training orders and columns are test orders. Test random = mean over th
 | test effect (simple:b2) | -1.062 [-1.605, -0.481] | -1.062 [-1.605, -0.481] | -1.062 [-1.605, -0.481] | -1.062 (-1.062 to -1.062) |
 | simple:b2 minus MS-TCN trained in true order (test true) | +0.697 [+0.055, +1.305] | +1.213 [+0.574, +1.840] | +0.839 [+0.456, +1.195] | +0.916 (+0.697 to +1.213) |
 | simple:b2 minus MS-TCN trained in true order (test random) | +0.043 [-0.335, +0.397] | +0.290 [-0.507, +0.901] | -0.205 [-0.620, +0.194] | +0.043 (-0.205 to +0.290) |
+| method x test order (simple:b2 vs MS-TCN trained in true order) | -0.654 [-1.296, -0.026] | -0.922 [-1.652, -0.211] | -1.044 [-1.632, -0.491] | -0.873 (-1.044 to -0.654) |
 | test effect (simple:b3) | -1.944 [-2.539, -1.332] | -1.944 [-2.539, -1.332] | -1.944 [-2.539, -1.332] | -1.944 (-1.944 to -1.944) |
 | simple:b3 minus MS-TCN trained in true order (test true) | +1.458 [+0.802, +2.051] | +1.974 [+1.275, +2.631] | +1.600 [+1.107, +2.065] | +1.677 (+1.458 to +1.974) |
 | simple:b3 minus MS-TCN trained in true order (test random) | -0.079 [-0.542, +0.334] | +0.169 [-0.542, +0.754] | -0.326 [-0.806, +0.136] | -0.079 (-0.326 to +0.169) |
+| method x test order (simple:b3 vs MS-TCN trained in true order) | -1.537 [-2.279, -0.767] | -1.805 [-2.532, -1.070] | -1.926 [-2.692, -1.194] | -1.756 (-1.926 to -1.537) |
 | test effect (simple:b3a) | -0.295 [-0.495, -0.126] | -0.295 [-0.495, -0.126] | -0.295 [-0.495, -0.126] | -0.295 (-0.295 to -0.295) |
 | simple:b3a minus MS-TCN trained in true order (test true) | -0.942 [-1.496, -0.405] | -0.426 [-0.839, -0.026] | -0.800 [-1.289, -0.328] | -0.722 (-0.942 to -0.426) |
 | simple:b3a minus MS-TCN trained in true order (test random) | -0.830 [-1.392, -0.353] | -0.582 [-1.280, -0.015] | -1.077 [-1.691, -0.494] | -0.830 (-1.077 to -0.582) |
+| method x test order (simple:b3a vs MS-TCN trained in true order) | +0.112 [-0.453, +0.731] | -0.156 [-0.659, +0.334] | -0.277 [-0.770, +0.206] | -0.107 (-0.277 to +0.112) |
 
 ## native: deviation rate
 
@@ -55,12 +61,15 @@ Rows are training orders and columns are test orders. Test random = mean over th
 | test effect (simple:b2) | -0.010 [-0.014, -0.006] | -0.010 [-0.014, -0.006] | -0.010 [-0.014, -0.006] | -0.010 (-0.010 to -0.010) |
 | simple:b2 minus MS-TCN trained in true order (test true) | +0.008 [+0.003, +0.013] | +0.010 [+0.004, +0.017] | +0.003 [+0.000, +0.007] | +0.007 (+0.003 to +0.010) |
 | simple:b2 minus MS-TCN trained in true order (test random) | +0.001 [-0.002, +0.005] | +0.004 [-0.003, +0.011] | -0.008 [-0.015, -0.002] | -0.001 (-0.008 to +0.004) |
+| method x test order (simple:b2 vs MS-TCN trained in true order) | -0.007 [-0.011, -0.003] | -0.007 [-0.010, -0.003] | -0.011 [-0.018, -0.005] | -0.008 (-0.011 to -0.007) |
 | test effect (simple:b3) | -0.015 [-0.022, -0.008] | -0.015 [-0.022, -0.008] | -0.015 [-0.022, -0.008] | -0.015 (-0.015 to -0.015) |
 | simple:b3 minus MS-TCN trained in true order (test true) | +0.011 [+0.006, +0.017] | +0.014 [+0.006, +0.021] | +0.007 [+0.002, +0.012] | +0.011 (+0.007 to +0.014) |
 | simple:b3 minus MS-TCN trained in true order (test random) | +0.000 [-0.005, +0.005] | +0.002 [-0.006, +0.011] | -0.009 [-0.019, -0.002] | -0.002 (-0.009 to +0.002) |
+| method x test order (simple:b3 vs MS-TCN trained in true order) | -0.011 [-0.018, -0.005] | -0.011 [-0.019, -0.004] | -0.016 [-0.028, -0.007] | -0.013 (-0.016 to -0.011) |
 | test effect (simple:b3a) | -0.004 [-0.009, -0.001] | -0.004 [-0.009, -0.001] | -0.004 [-0.009, -0.001] | -0.004 (-0.004 to -0.004) |
 | simple:b3a minus MS-TCN trained in true order (test true) | -0.001 [-0.008, +0.006] | +0.002 [-0.007, +0.010] | -0.005 [-0.012, +0.001] | -0.001 (-0.005 to +0.002) |
 | simple:b3a minus MS-TCN trained in true order (test random) | -0.002 [-0.008, +0.004] | +0.001 [-0.008, +0.010] | -0.011 [-0.021, -0.002] | -0.004 (-0.011 to +0.001) |
+| method x test order (simple:b3a vs MS-TCN trained in true order) | -0.001 [-0.005, +0.003] | -0.001 [-0.004, +0.003] | -0.006 [-0.011, -0.001] | -0.002 (-0.006 to -0.001) |
 
 ## pairs: boundary F1
 
@@ -75,12 +84,15 @@ Rows are training orders and columns are test orders. Test random = mean over th
 | test effect (simple:b2) | +0.036 [+0.008, +0.064] | +0.036 [+0.008, +0.064] | +0.036 [+0.008, +0.064] | +0.036 (+0.036 to +0.036) |
 | simple:b2 minus MS-TCN trained in true order (test true) | -0.041 [-0.080, -0.002] | -0.053 [-0.099, -0.007] | +0.058 [-0.011, +0.127] | -0.012 (-0.053 to +0.058) |
 | simple:b2 minus MS-TCN trained in true order (test random) | +0.018 [-0.007, +0.046] | -0.016 [-0.044, +0.008] | +0.043 [+0.010, +0.077] | +0.015 (-0.016 to +0.043) |
+| method x test order (simple:b2 vs MS-TCN trained in true order) | +0.059 [+0.020, +0.097] | +0.037 [-0.005, +0.077] | -0.014 [-0.068, +0.041] | +0.027 (-0.014 to +0.059) |
 | test effect (simple:b3) | +0.049 [+0.014, +0.087] | +0.049 [+0.014, +0.087] | +0.049 [+0.014, +0.087] | +0.049 (+0.049 to +0.049) |
 | simple:b3 minus MS-TCN trained in true order (test true) | -0.062 [-0.110, -0.015] | -0.075 [-0.124, -0.023] | +0.036 [-0.042, +0.113] | -0.033 (-0.075 to +0.036) |
 | simple:b3 minus MS-TCN trained in true order (test random) | +0.010 [-0.017, +0.038] | -0.024 [-0.040, -0.008] | +0.035 [+0.003, +0.070] | +0.007 (-0.024 to +0.035) |
+| method x test order (simple:b3 vs MS-TCN trained in true order) | +0.072 [+0.023, +0.128] | +0.050 [+0.003, +0.096] | -0.001 [-0.068, +0.067] | +0.040 (-0.001 to +0.072) |
 | test effect (simple:b3a) | +0.009 [-0.008, +0.032] | +0.009 [-0.008, +0.032] | +0.009 [-0.008, +0.032] | +0.009 (+0.009 to +0.009) |
 | simple:b3a minus MS-TCN trained in true order (test true) | +0.008 [-0.020, +0.037] | -0.004 [-0.033, +0.030] | +0.107 [+0.034, +0.178] | +0.037 (-0.004 to +0.107) |
 | simple:b3a minus MS-TCN trained in true order (test random) | +0.040 [+0.012, +0.072] | +0.006 [-0.006, +0.022] | +0.066 [+0.027, +0.112] | +0.038 (+0.006 to +0.066) |
+| method x test order (simple:b3a vs MS-TCN trained in true order) | +0.032 [-0.003, +0.072] | +0.010 [-0.026, +0.043] | -0.041 [-0.094, +0.013] | +0.001 (-0.041 to +0.032) |
 
 ## pairs: boundary recall
 
@@ -95,12 +107,15 @@ Rows are training orders and columns are test orders. Test random = mean over th
 | test effect (simple:b2) | +0.000 [+0.000, +0.000] | +0.000 [+0.000, +0.000] | +0.000 [+0.000, +0.000] | +0.000 (+0.000 to +0.000) |
 | simple:b2 minus MS-TCN trained in true order (test true) | +0.008 [+0.000, +0.027] | +0.000 [+0.000, +0.000] | +0.000 [+0.000, +0.000] | +0.003 (+0.000 to +0.008) |
 | simple:b2 minus MS-TCN trained in true order (test random) | +0.000 [+0.000, +0.000] | +0.000 [+0.000, +0.000] | +0.000 [+0.000, +0.000] | +0.000 (+0.000 to +0.000) |
+| method x test order (simple:b2 vs MS-TCN trained in true order) | -0.008 [-0.027, +0.000] | +0.000 [+0.000, +0.000] | +0.000 [+0.000, +0.000] | -0.003 (-0.008 to +0.000) |
 | test effect (simple:b3) | +0.000 [+0.000, +0.000] | +0.000 [+0.000, +0.000] | +0.000 [+0.000, +0.000] | +0.000 (+0.000 to +0.000) |
 | simple:b3 minus MS-TCN trained in true order (test true) | +0.008 [+0.000, +0.027] | +0.000 [+0.000, +0.000] | +0.000 [+0.000, +0.000] | +0.003 (+0.000 to +0.008) |
 | simple:b3 minus MS-TCN trained in true order (test random) | +0.000 [+0.000, +0.000] | +0.000 [+0.000, +0.000] | +0.000 [+0.000, +0.000] | +0.000 (+0.000 to +0.000) |
+| method x test order (simple:b3 vs MS-TCN trained in true order) | -0.008 [-0.027, +0.000] | +0.000 [+0.000, +0.000] | +0.000 [+0.000, +0.000] | -0.003 (-0.008 to +0.000) |
 | test effect (simple:b3a) | +0.000 [+0.000, +0.000] | +0.000 [+0.000, +0.000] | +0.000 [+0.000, +0.000] | +0.000 (+0.000 to +0.000) |
 | simple:b3a minus MS-TCN trained in true order (test true) | +0.008 [+0.000, +0.027] | +0.000 [+0.000, +0.000] | +0.000 [+0.000, +0.000] | +0.003 (+0.000 to +0.008) |
 | simple:b3a minus MS-TCN trained in true order (test random) | +0.000 [+0.000, +0.000] | +0.000 [+0.000, +0.000] | +0.000 [+0.000, +0.000] | +0.000 (+0.000 to +0.000) |
+| method x test order (simple:b3a vs MS-TCN trained in true order) | -0.008 [-0.027, +0.000] | +0.000 [+0.000, +0.000] | +0.000 [+0.000, +0.000] | -0.003 (-0.008 to +0.000) |
 
 ## pairs: same-class cut rate
 
@@ -115,12 +130,15 @@ Rows are training orders and columns are test orders. Test random = mean over th
 | test effect (simple:b2) | +0.001 [+0.000, +0.003] | +0.001 [+0.000, +0.003] | +0.001 [+0.000, +0.003] | +0.001 (+0.001 to +0.001) |
 | simple:b2 minus MS-TCN trained in true order (test true) | -0.008 [-0.026, +0.000] | -0.008 [-0.026, +0.000] | -0.008 [-0.026, +0.000] | -0.008 (-0.008 to -0.008) |
 | simple:b2 minus MS-TCN trained in true order (test random) | -0.007 [-0.024, +0.000] | -0.010 [-0.028, +0.000] | -0.008 [-0.025, +0.000] | -0.009 (-0.010 to -0.007) |
+| method x test order (simple:b2 vs MS-TCN trained in true order) | +0.001 [+0.000, +0.003] | -0.002 [-0.008, +0.002] | +0.000 [-0.002, +0.002] | -0.000 (-0.002 to +0.001) |
 | test effect (simple:b3) | -0.005 [-0.023, +0.006] | -0.005 [-0.023, +0.006] | -0.005 [-0.023, +0.006] | -0.005 (-0.005 to -0.005) |
 | simple:b3 minus MS-TCN trained in true order (test true) | +0.000 [-0.023, +0.024] | +0.000 [-0.023, +0.024] | +0.000 [-0.023, +0.024] | +0.000 (+0.000 to +0.000) |
 | simple:b3 minus MS-TCN trained in true order (test random) | -0.005 [-0.018, +0.002] | -0.008 [-0.022, +0.002] | -0.006 [-0.018, +0.000] | -0.006 (-0.008 to -0.005) |
+| method x test order (simple:b3 vs MS-TCN trained in true order) | -0.005 [-0.023, +0.006] | -0.008 [-0.025, +0.005] | -0.006 [-0.025, +0.006] | -0.006 (-0.008 to -0.005) |
 | test effect (simple:b3a) | +0.000 [+0.000, +0.000] | +0.000 [+0.000, +0.000] | +0.000 [+0.000, +0.000] | +0.000 (+0.000 to +0.000) |
 | simple:b3a minus MS-TCN trained in true order (test true) | -0.008 [-0.026, +0.000] | -0.008 [-0.026, +0.000] | -0.008 [-0.026, +0.000] | -0.008 (-0.008 to -0.008) |
 | simple:b3a minus MS-TCN trained in true order (test random) | -0.008 [-0.026, +0.000] | -0.011 [-0.031, +0.000] | -0.009 [-0.028, +0.000] | -0.009 (-0.011 to -0.008) |
+| method x test order (simple:b3a vs MS-TCN trained in true order) | +0.000 [-0.000, +0.000] | -0.003 [-0.008, +0.000] | -0.001 [-0.003, +0.000] | -0.001 (-0.003 to +0.000) |
 
 ## multi: boundary F1
 
@@ -135,12 +153,15 @@ Rows are training orders and columns are test orders. Test random = mean over th
 | test effect (simple:b2) | +0.070 [+0.039, +0.101] | +0.070 [+0.039, +0.101] | +0.070 [+0.039, +0.101] | +0.070 (+0.070 to +0.070) |
 | simple:b2 minus MS-TCN trained in true order (test true) | -0.046 [-0.106, +0.007] | -0.012 [-0.070, +0.042] | -0.022 [-0.055, +0.015] | -0.027 (-0.046 to -0.012) |
 | simple:b2 minus MS-TCN trained in true order (test random) | +0.000 [-0.024, +0.025] | +0.046 [+0.006, +0.089] | +0.015 [-0.013, +0.047] | +0.020 (+0.000 to +0.046) |
+| method x test order (simple:b2 vs MS-TCN trained in true order) | +0.046 [+0.000, +0.093] | +0.058 [+0.013, +0.103] | +0.037 [+0.001, +0.074] | +0.047 (+0.037 to +0.058) |
 | test effect (simple:b3) | +0.073 [+0.045, +0.101] | +0.073 [+0.045, +0.101] | +0.073 [+0.045, +0.101] | +0.073 (+0.073 to +0.073) |
 | simple:b3 minus MS-TCN trained in true order (test true) | -0.032 [-0.077, +0.016] | +0.002 [-0.039, +0.045] | -0.008 [-0.051, +0.036] | -0.012 (-0.032 to +0.002) |
 | simple:b3 minus MS-TCN trained in true order (test random) | +0.017 [-0.008, +0.044] | +0.062 [+0.026, +0.101] | +0.032 [+0.004, +0.064] | +0.037 (+0.017 to +0.062) |
+| method x test order (simple:b3 vs MS-TCN trained in true order) | +0.048 [+0.006, +0.090] | +0.060 [+0.024, +0.097] | +0.040 [-0.002, +0.082] | +0.049 (+0.040 to +0.060) |
 | test effect (simple:b3a) | +0.020 [+0.005, +0.035] | +0.020 [+0.005, +0.035] | +0.020 [+0.005, +0.035] | +0.020 (+0.020 to +0.020) |
 | simple:b3a minus MS-TCN trained in true order (test true) | +0.048 [+0.008, +0.095] | +0.082 [+0.045, +0.119] | +0.072 [+0.029, +0.116] | +0.068 (+0.048 to +0.082) |
 | simple:b3a minus MS-TCN trained in true order (test random) | +0.044 [+0.015, +0.077] | +0.090 [+0.053, +0.126] | +0.060 [+0.020, +0.101] | +0.065 (+0.044 to +0.090) |
+| method x test order (simple:b3a vs MS-TCN trained in true order) | -0.004 [-0.041, +0.032] | +0.008 [-0.024, +0.037] | -0.013 [-0.044, +0.019] | -0.003 (-0.013 to +0.008) |
 
 ## multi: boundary recall
 
@@ -155,12 +176,15 @@ Rows are training orders and columns are test orders. Test random = mean over th
 | test effect (simple:b2) | +0.001 [-0.016, +0.017] | +0.001 [-0.016, +0.017] | +0.001 [-0.016, +0.017] | +0.001 (+0.001 to +0.001) |
 | simple:b2 minus MS-TCN trained in true order (test true) | -0.003 [-0.021, +0.017] | +0.053 [+0.025, +0.081] | +0.005 [-0.011, +0.021] | +0.018 (-0.003 to +0.053) |
 | simple:b2 minus MS-TCN trained in true order (test random) | +0.003 [-0.011, +0.017] | +0.042 [+0.018, +0.068] | +0.007 [-0.008, +0.021] | +0.017 (+0.003 to +0.042) |
+| method x test order (simple:b2 vs MS-TCN trained in true order) | +0.006 [-0.014, +0.026] | -0.011 [-0.028, +0.006] | +0.001 [-0.018, +0.020] | -0.001 (-0.011 to +0.006) |
 | test effect (simple:b3) | +0.003 [-0.012, +0.018] | +0.003 [-0.012, +0.018] | +0.003 [-0.012, +0.018] | +0.003 (+0.003 to +0.003) |
 | simple:b3 minus MS-TCN trained in true order (test true) | -0.005 [-0.027, +0.016] | +0.050 [+0.021, +0.081] | +0.003 [-0.016, +0.021] | +0.016 (-0.005 to +0.050) |
 | simple:b3 minus MS-TCN trained in true order (test random) | +0.002 [-0.011, +0.016] | +0.041 [+0.018, +0.067] | +0.006 [-0.009, +0.021] | +0.017 (+0.002 to +0.041) |
+| method x test order (simple:b3 vs MS-TCN trained in true order) | +0.008 [-0.012, +0.028] | -0.009 [-0.025, +0.007] | +0.003 [-0.015, +0.022] | +0.001 (-0.009 to +0.008) |
 | test effect (simple:b3a) | +0.002 [-0.012, +0.016] | +0.002 [-0.012, +0.016] | +0.002 [-0.012, +0.016] | +0.002 (+0.002 to +0.002) |
 | simple:b3a minus MS-TCN trained in true order (test true) | -0.032 [-0.053, -0.013] | +0.024 [-0.003, +0.050] | -0.024 [-0.045, -0.005] | -0.011 (-0.032 to +0.024) |
 | simple:b3a minus MS-TCN trained in true order (test random) | -0.026 [-0.042, -0.012] | +0.013 [-0.008, +0.036] | -0.022 [-0.038, -0.008] | -0.012 (-0.026 to +0.013) |
+| method x test order (simple:b3a vs MS-TCN trained in true order) | +0.006 [-0.009, +0.022] | -0.011 [-0.028, +0.006] | +0.002 [-0.014, +0.018] | -0.001 (-0.011 to +0.006) |
 
 ## multi: same-class cut rate
 
@@ -175,12 +199,15 @@ Rows are training orders and columns are test orders. Test random = mean over th
 | test effect (simple:b2) | -0.023 [-0.052, +0.002] | -0.023 [-0.052, +0.002] | -0.023 [-0.052, +0.002] | -0.023 (-0.023 to -0.023) |
 | simple:b2 minus MS-TCN trained in true order (test true) | +0.040 [+0.000, +0.083] | +0.069 [+0.020, +0.124] | +0.045 [+0.004, +0.090] | +0.051 (+0.040 to +0.069) |
 | simple:b2 minus MS-TCN trained in true order (test random) | +0.023 [-0.004, +0.053] | +0.042 [+0.005, +0.082] | +0.010 [-0.016, +0.038] | +0.025 (+0.010 to +0.042) |
+| method x test order (simple:b2 vs MS-TCN trained in true order) | -0.017 [-0.051, +0.016] | -0.027 [-0.061, +0.003] | -0.034 [-0.069, +0.000] | -0.026 (-0.034 to -0.017) |
 | test effect (simple:b3) | -0.061 [-0.101, -0.022] | -0.061 [-0.101, -0.022] | -0.061 [-0.101, -0.022] | -0.061 (-0.061 to -0.061) |
 | simple:b3 minus MS-TCN trained in true order (test true) | +0.054 [+0.006, +0.107] | +0.084 [+0.023, +0.146] | +0.059 [+0.010, +0.113] | +0.066 (+0.054 to +0.084) |
 | simple:b3 minus MS-TCN trained in true order (test random) | -0.000 [-0.020, +0.017] | +0.019 [-0.012, +0.054] | -0.013 [-0.033, +0.006] | +0.002 (-0.013 to +0.019) |
+| method x test order (simple:b3 vs MS-TCN trained in true order) | -0.055 [-0.099, -0.013] | -0.065 [-0.115, -0.015] | -0.072 [-0.122, -0.025] | -0.064 (-0.072 to -0.055) |
 | test effect (simple:b3a) | -0.021 [-0.049, +0.005] | -0.021 [-0.049, +0.005] | -0.021 [-0.049, +0.005] | -0.021 (-0.021 to -0.021) |
 | simple:b3a minus MS-TCN trained in true order (test true) | -0.045 [-0.090, -0.005] | -0.015 [-0.060, +0.025] | -0.040 [-0.074, -0.010] | -0.033 (-0.045 to -0.015) |
 | simple:b3a minus MS-TCN trained in true order (test random) | -0.059 [-0.093, -0.028] | -0.040 [-0.069, -0.015] | -0.072 [-0.109, -0.036] | -0.057 (-0.072 to -0.040) |
+| method x test order (simple:b3a vs MS-TCN trained in true order) | -0.015 [-0.055, +0.023] | -0.025 [-0.064, +0.011] | -0.032 [-0.074, +0.006] | -0.024 (-0.032 to -0.015) |
 
 ## Clip macro-F1 (no interval)
 
