@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>切面标注试点</title>
+<style>
+:root { --bg:#f6f6f3; --panel:#ffffff; --ink:#1d1d1f; --muted:#66666c; --line:#d9d9d4; --A:#d9480f; --B:#1c7ed6; --C:#7c7f86;
+        --sel:#f59f00; --ok:#2b8a3e; --warn:#c92a2a; --btn:#efefeb; }
+* { box-sizing:border-box; }
+body { margin:0; font:14px/1.45 -apple-system,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif; background:var(--bg); color:var(--ink); }
+header { display:flex; flex-wrap:wrap; gap:10px 14px; align-items:center; padding:8px 16px; background:var(--panel);
+         border-bottom:1px solid var(--line); position:sticky; top:0; z-index:3; }
+header strong { font-size:15px; }
+button, select, input[type=text], textarea { font:inherit; }
+button { background:var(--btn); border:1px solid var(--line); border-radius:6px; padding:5px 10px; cursor:pointer; color:var(--ink); }
+button:hover { border-color:#b8b8b2; }
+button:disabled { opacity:.45; cursor:default; }
+.muted { color:var(--muted); }
+main { display:grid; grid-template-columns:170px minmax(0,1fr) 380px; gap:12px; padding:12px 16px; align-items:start; }
+@media (max-width:1150px) { main { grid-template-columns:1fr; } #cliplist { max-height:180px; } }
+.panel { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:10px 12px; }
+#cliplist { max-height:calc(100vh - 90px); overflow:auto; padding:6px; }
+#cliplist button { display:flex; justify-content:space-between; width:100%; margin:2px 0; padding:4px 8px; text-align:left; background:transparent; border-color:transparent; }
+#cliplist button.cur { background:#fff3d6; border-color:var(--sel); }
+#cliplist .done { color:var(--ok); }
+.canvaswrap { background:#000; border-radius:6px; overflow:hidden; }
+canvas { display:block; width:100%; height:auto; }
+.timeline { position:relative; margin:10px 0 4px; }
+#bar { position:relative; height:18px; background:#ecece8; border-radius:4px; overflow:hidden; }
+#bar div { position:absolute; top:0; bottom:0; }
+#bar .ivA { background:var(--A); opacity:.75; } #bar .ivB { background:var(--B); opacity:.75; } #bar .ivC { background:var(--C); opacity:.75; }
+#bar .pend { background:var(--sel); opacity:.55; } #bar .cursor { width:2px; background:#111; }
+#slider { width:100%; margin:6px 0 0; }
+.row { display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin:6px 0; }
+.t { color:#fff; border:none; }
+.t.A { background:var(--A); } .t.B { background:var(--B); } .t.C { background:var(--C); }
+.badge { display:inline-block; min-width:20px; padding:0 6px; border-radius:10px; color:#fff; font-weight:600; text-align:center; }
+.badge.A { background:var(--A); } .badge.B { background:var(--B); } .badge.C { background:var(--C); }
+h3 { margin:12px 0 6px; font-size:14px; }
+fieldset { border:none; padding:0; margin:0 0 8px; }
+fieldset label { margin-right:10px; white-space:nowrap; }
+table { width:100%; border-collapse:collapse; font-size:13px; }
+td { border-top:1px solid var(--line); padding:4px 3px; vertical-align:top; }
+td select { max-width:120px; }
+td input[type=text] { width:100%; }
+textarea { width:100%; min-height:54px; }
+.warn { color:var(--warn); margin:4px 0; }
+.okmsg { color:var(--ok); }
+#help { position:fixed; inset:40px max(16px,calc(50% - 380px)); background:var(--panel); border:1px solid var(--line); border-radius:10px;
+        padding:16px 20px; overflow:auto; z-index:5; box-shadow:0 10px 40px rgba(0,0,0,.25); }
+#help[hidden] { display:none; }
+kbd { border:1px solid var(--line); border-bottom-width:2px; border-radius:4px; padding:0 4px; background:#fafafa; font-size:12px; }
+.file input { display:none; }
+.file { background:var(--btn); border:1px solid var(--line); border-radius:6px; padding:5px 10px; cursor:pointer; }
+</style>
+</head>
+<body>
+<header>
+  <strong>切面标注试点 · View annotation pilot</strong>
+  <span id="readerInfo" class="muted"></span>
+  <span id="progress"></span>
+  <span id="saveInfo" class="muted"></span>
+  <span style="flex:1"></span>
+  <button id="btnHelp">说明 Help</button>
+  <button id="btnExport">导出 Export</button>
+  <label class="file">导入 Import<input type="file" id="fileImport" accept=".json,application/json"></label>
+</header>
+
+<main>
+  <nav id="cliplist" class="panel" aria-label="clips"></nav>
+
+  <section class="panel">
+    <div class="row"><strong id="clipTitle"></strong><span id="clipMeta" class="muted"></span></div>
+    <div class="canvaswrap"><canvas id="cv" width="640" height="480"></canvas></div>
+    <div class="timeline"><div id="bar"></div><input type="range" id="slider" min="0" max="0" value="0" step="1" aria-label="frame"></div>
+    <div class="row">
+      <button id="btnPlay">▶ 播放 Play</button>
+      <button data-step="-10">−10</button><button data-step="-1">◀ −1</button>
+      <button data-step="1">+1 ▶</button><button data-step="10">+10</button>
+      <label>速度 Speed <select id="speed"><option value="0.25">0.25×</option><option value="0.5">0.5×</option><option value="1" selected>1×</option></select></label>
+      <label><input type="checkbox" id="loop" checked> 循环 Loop</label>
+      <span id="frameInfo" class="muted"></span>
+    </div>
+    <div class="row">
+      <button id="btnStart">[ 起点 Start</button><button id="btnEnd">] 终点 End</button>
+      <span id="selInfo" class="muted"></span>
+    </div>
+    <div class="row">
+      <button class="t A" data-type="A">A 切面改变 View change</button>
+      <button class="t B" data-type="B">B 同一切面·证据不足 Same view, insufficient evidence</button>
+      <button class="t C" data-type="C">C 无法判断 Undeterminable</button>
+    </div>
+  </section>
+
+  <aside class="panel" id="form">
+    <h3>1. 图像是否显示切面变成了另一个切面？ Do the images show a change to a different view?</h3>
+    <fieldset id="q1">
+      <label><input type="radio" name="q1" value="yes"> 是 Yes</label>
+      <label><input type="radio" name="q1" value="no"> 否 No</label>
+      <label><input type="radio" name="q1" value="unsure"> 无法判断 Can't tell</label>
+    </fieldset>
+    <h3>2. 主要切面 Main view <span class="muted">(可选 optional)</span></h3>
+    <select id="mainView"></select>
+    <h3>3. 区间 Intervals</h3>
+    <div id="intervals" class="muted">尚无区间 No intervals yet.</div>
+    <h3>4. 整体把握 Confidence</h3>
+    <fieldset id="conf">
+      <label><input type="radio" name="conf" value="1"> 低 Low</label>
+      <label><input type="radio" name="conf" value="2"> 中 Medium</label>
+      <label><input type="radio" name="conf" value="3"> 高 High</label>
+    </fieldset>
+    <h3>5. 备注 Comment</h3>
+    <textarea id="comment" placeholder="可选 optional"></textarea>
+    <div id="warnings"></div>
+    <div class="row">
+      <button id="btnPrev">← 上一个 Prev</button>
+      <button id="btnDone">✓ 完成并下一个 Done &amp; next</button>
+    </div>
+  </aside>
+</main>
+
+<div id="help" hidden>
+  <h2>标注说明 Instructions</h2>
+  <p>每段录像只看图像本身，不要猜测来源或用途。录像顺序已随机，编号不含任何信息。<br>
+     Judge each clip from the images only. Order is random and IDs carry no information.</p>
+  <ol>
+    <li>先以 1× 完整看一遍，再用 0.5× 或逐帧查看。<br>Watch once at 1×, then at 0.5× or frame by frame.</li>
+    <li>回答问题 1：图像是否显示切面变成了另一个切面。只按图像判断，不需要判断探头是否移动。<br>Answer question 1: do the images show a change to a different view? Judge from the images; you do not need to decide whether the probe moved.</li>
+    <li>标注区间：用 <kbd>[</kbd> <kbd>]</kbd> 设起点和终点，再点类型。<br>Mark intervals: set start and end with <kbd>[</kbd> <kbd>]</kbd>, then click a type.
+      <ul>
+        <li><span class="badge A">A</span> 切面改变：起点 = 旧切面最后一个清楚的帧，终点 = 新切面第一个清楚的帧（中间为过渡）。突变时起点 = 终点。填写改变前后的切面。<br>
+            View change: start = last frame clearly in the old view, end = first frame clearly in the new view (the frames between are the transition). For an abrupt change, start = end. Give the views before and after.</li>
+        <li><span class="badge B">B</span> 同一切面、局部证据不足：切面没有变，但这些帧里辨认该切面所需的结构看不到或看不清（例如某些时相结构消失、声影、伪像）。如随心动周期反复出现，请勾选。<br>
+            Same view, locally insufficient evidence: the view has not changed, but in these frames the structures that identify it are not visible (e.g. lost in some phases, shadowing, artefact). Tick if it recurs with the cardiac cycle.</li>
+        <li><span class="badge C">C</span> 无法判断：无法确定是切面改变还是证据不足，或者拿不准。允许不确定，拿不准时请选 C。<br>Undeterminable: you cannot tell which of the two it is, or you are unsure. Uncertainty is allowed; choose C rather than forcing A or B.</li>
+      </ul></li>
+    <li>图像仍是同一切面、只有轻微晃动时，不算切面改变。整段清楚、无改变的录像：问题 1 选"否"，不标区间。<br>
+        Slight movement within one view is not a change. A clear clip with no change: answer "No" and mark nothing.</li>
+    <li>结果自动保存在本浏览器；完成后点"导出"，把 JSON 文件发回。<br>Work autosaves in this browser; when finished click Export and send back the JSON file.</li>
+  </ol>
+  <p>快捷键 Keys: <kbd>Space</kbd> 播放/暂停 play/pause · <kbd>←</kbd>/<kbd>→</kbd> ±1 帧 frame · <kbd>Shift</kbd>+<kbd>←</kbd>/<kbd>→</kbd> ±10 · <kbd>[</kbd> 起点 start · <kbd>]</kbd> 终点 end</p>
+  <button id="btnCloseHelp">关闭 Close</button>
+</div>
+
+<script src="clips.js"></script>
+<script>
+"use strict";
+const VIEWS = ["", "PLAX", "PSAX 主动脉瓣水平 AV level", "PSAX 二尖瓣水平 MV level", "PSAX 乳头肌水平 papillary", "PSAX 心尖水平 apex",
+  "RV 流入/流出道 inflow/outflow", "A4C", "A5C", "A2C", "A3C", "SC4C", "剑突下 IVC", "胸骨上 SSN", "非标准 Non-standard", "不确定 Unsure"];
+const TYPE_NAME = { A: "切面改变 View change", B: "证据不足 Insufficient", C: "无法判断 Undeterminable" };
+const P = window.PILOT || { version: "missing", clips: [] };
+const $ = (id) => document.getElementById(id);
+
+let reader = null, store = {}, cur = 0, frame = 0, playing = false, acc = 0, lastT = 0, pend = { start: null, end: null };
+let images = [], loaded = 0, openedAt = Date.now(), storageOk = true;
+
+function storageKey() { return `pilotAnn:${P.version}:${reader}`; }
+function safeGet(k) { try { return localStorage.getItem(k); } catch (e) { storageOk = false; return null; } }
+function safeSet(k, v) { try { localStorage.setItem(k, v); return true; } catch (e) { storageOk = false; return false; } }
+
+function initReader() {
+  reader = safeGet("pilotReader");
+  while (!reader) {
+    const r = (prompt("请输入读者编号（如 R1）\nEnter your reader ID (e.g. R1)") || "").trim();
+    if (/^[A-Za-z0-9_-]{1,20}$/.test(r)) { reader = r; safeSet("pilotReader", r); }
+  }
+  $("readerInfo").textContent = `读者 Reader: ${reader}`;
+  const raw = safeGet(storageKey());
+  if (raw) { try { store = JSON.parse(raw) || {}; } catch (e) { store = {}; } }
+}
+
+function ann(id) {
+  if (!store[id]) store[id] = { q_change: null, main_view: "", confidence: null, comment: "", intervals: [], done: false, seconds_open: 0 };
+  return store[id];
+}
+function save() {
+  const ok = safeSet(storageKey(), JSON.stringify(store));
+  $("saveInfo").textContent = ok ? "已自动保存 autosaved" : "⚠ 无法自动保存，请经常导出 autosave unavailable — export often";
+}
+
+function clip() { return P.clips[cur]; }
+function fmtT(f) { return (f / clip().fps).toFixed(2) + " s"; }
+
+function buildList() {
+  const nav = $("cliplist"); nav.innerHTML = "";
+  P.clips.forEach((c, i) => {
+    const b = document.createElement("button");
+    const a = store[c.id];
+    b.innerHTML = `<span>${c.practice ? "练习 " : ""}${c.id}</span><span class="done">${a && a.done ? "✓" : ""}</span>`;
+    if (i === cur) b.className = "cur";
+    b.onclick = () => openClip(i);
+    nav.appendChild(b);
+  });
+  const scored = P.clips.filter((c) => !c.practice);
+  const nDone = scored.filter((c) => store[c.id] && store[c.id].done).length;
+  $("progress").textContent = `进度 Progress ${nDone}/${scored.length}`;
+}
+
+function openClip(i) {
+  closeClipTimer();
+  stop(); cur = i; frame = 0; acc = 0; pend = { start: null, end: null };
+  const c = clip();
+  $("clipTitle").textContent = (c.practice ? "练习 Practice · " : "") + c.id;
+  $("clipMeta").textContent = `${c.n_frames} 帧 frames · ${(c.n_frames / c.fps).toFixed(1)} s · ${c.fps} fps`;
+  $("slider").max = c.n_frames - 1; $("slider").value = 0;
+  images = []; loaded = 0;
+  for (let k = 1; k <= c.n_frames; k++) {
+    const im = new Image();
+    im.onload = () => { loaded++; if (k - 1 === frame || loaded === c.n_frames) draw(); updateFrameInfo(); };
+    im.src = `clips/${c.id}/${String(k).padStart(6, "0")}.jpg`;
+    images.push(im);
+  }
+  openedAt = Date.now();
+  fillForm(); buildList(); draw(); updateFrameInfo(); renderBar();
+}
+function closeClipTimer() {
+  if (!P.clips.length) return;
+  const a = ann(clip().id);
+  a.seconds_open = Math.round((a.seconds_open || 0) + (Date.now() - openedAt) / 1000);
+}
+
+function draw() {
+  const cv = $("cv"), ctx = cv.getContext && cv.getContext("2d"), im = images[frame];
+  if (!ctx) return;
+  ctx.fillStyle = "#000"; ctx.fillRect(0, 0, cv.width, cv.height);
+  if (!im || !im.complete || !im.naturalWidth) return;
+  const s = Math.min(cv.width / im.naturalWidth, cv.height / im.naturalHeight);
+  const w = im.naturalWidth * s, h = im.naturalHeight * s;
+  ctx.drawImage(im, (cv.width - w) / 2, (cv.height - h) / 2, w, h);
+}
+function updateFrameInfo() {
+  const c = clip();
+  $("frameInfo").textContent = `帧 Frame ${frame + 1}/${c.n_frames} · ${fmtT(frame)}` + (loaded < c.n_frames ? ` · 载入 loading ${loaded}/${c.n_frames}` : "");
+  $("slider").value = frame;
+  const cursor = $("bar").querySelector(".cursor");
+  if (cursor) cursor.style.left = pct(frame) + "%";
+}
+function pct(f) { return (100 * f) / clip().n_frames; }
+function seek(f) { frame = Math.max(0, Math.min(clip().n_frames - 1, f)); draw(); updateFrameInfo(); }
+
+function tick(t) {
+  if (!playing) return;
+  const c = clip(), dt = lastT ? t - lastT : 0; lastT = t;
+  acc += (dt / 1000) * c.fps * parseFloat($("speed").value);
+  while (acc >= 1) {
+    acc -= 1;
+    if (frame + 1 >= c.n_frames) { if ($("loop").checked) frame = 0; else { stop(); break; } } else frame += 1;
+  }
+  draw(); updateFrameInfo();
+  if (playing) requestAnimationFrame(tick);
+}
+function play() { if (playing) return; playing = true; lastT = 0; acc = 0; $("btnPlay").textContent = "❚❚ 暂停 Pause"; requestAnimationFrame(tick); }
+function stop() { playing = false; $("btnPlay").textContent = "▶ 播放 Play"; }
+
+function renderBar() {
+  const bar = $("bar"), a = ann(clip().id); bar.innerHTML = "";
+  const add = (cls, s, e) => { const d = document.createElement("div"); d.className = cls; d.style.left = pct(s) + "%"; d.style.width = Math.max(0.4, pct(e + 1) - pct(s)) + "%"; bar.appendChild(d); };
+  a.intervals.forEach((iv) => add("iv" + iv.type, iv.start, iv.end));
+  if (pend.start !== null) add("pend", pend.start, pend.end !== null ? pend.end : pend.start);
+  const cur_ = document.createElement("div"); cur_.className = "cursor"; cur_.style.left = pct(frame) + "%"; bar.appendChild(cur_);
+  const s = pend.start, e = pend.end;
+  $("selInfo").textContent = s === null ? "未选区间 no selection" : `选择 selection: ${s + 1}–${(e ?? s) + 1} (${fmtT(s)}–${fmtT(e ?? s)})`;
+}
+
+function addInterval(type) {
+  if (pend.start === null) { alert("请先设起点 [ ，再设终点 ]\nSet a start [ and an end ] first."); return; }
+  let s = pend.start, e = pend.end === null ? pend.start : pend.end;
+  if (e < s) [s, e] = [e, s];
+  const a = ann(clip().id);
+  a.intervals.push({ type, start: s, end: e, start_s: +(s / clip().fps).toFixed(3), end_s: +(e / clip().fps).toFixed(3),
+                     from_view: "", to_view: "", recurs_with_cycle: false, note: "" });
+  a.intervals.sort((x, y) => x.start - y.start);
+  pend = { start: null, end: null };
+  save(); renderIntervals(); renderBar(); validate();
+}
+
+function viewSelect(value, onChange) {
+  const s = document.createElement("select");
+  VIEWS.forEach((v) => { const o = document.createElement("option"); o.value = v; o.textContent = v || "—"; s.appendChild(o); });
+  s.value = value || ""; s.onchange = () => onChange(s.value); return s;
+}
+
+function renderIntervals() {
+  const a = ann(clip().id), box = $("intervals");
+  if (!a.intervals.length) { box.className = "muted"; box.textContent = "尚无区间 No intervals yet."; return; }
+  box.className = ""; box.innerHTML = "";
+  const tb = document.createElement("table");
+  a.intervals.forEach((iv, k) => {
+    const tr = document.createElement("tr");
+    const td1 = document.createElement("td"); td1.innerHTML = `<span class="badge ${iv.type}" title="${TYPE_NAME[iv.type]}">${iv.type}</span>`;
+    const td2 = document.createElement("td"); td2.textContent = `${iv.start + 1}–${iv.end + 1}\n`;
+    td2.title = `${fmtT(iv.start)}–${fmtT(iv.end)}`;
+    const jump = document.createElement("button"); jump.textContent = "↦"; jump.title = "跳到起点 jump to start"; jump.onclick = () => seek(iv.start); td2.appendChild(jump);
+    const td3 = document.createElement("td");
+    if (iv.type === "A") {
+      td3.append("从 from ", viewSelect(iv.from_view, (v) => { iv.from_view = v; save(); validate(); }),
+                 " 到 to ", viewSelect(iv.to_view, (v) => { iv.to_view = v; save(); validate(); }));
+    } else if (iv.type === "B") {
+      const lab = document.createElement("label"); const cb = document.createElement("input"); cb.type = "checkbox"; cb.checked = !!iv.recurs_with_cycle;
+      cb.onchange = () => { iv.recurs_with_cycle = cb.checked; save(); };
+      lab.append(cb, " 随心动周期反复 recurs with cycle"); td3.appendChild(lab);
+    }
+    const note = document.createElement("input"); note.type = "text"; note.placeholder = "备注 note (可选)"; note.value = iv.note || "";
+    note.oninput = () => { iv.note = note.value; save(); }; td3.appendChild(note);
+    const td4 = document.createElement("td"); const del = document.createElement("button"); del.textContent = "✕"; del.title = "删除 delete";
+    del.onclick = () => { a.intervals.splice(k, 1); save(); renderIntervals(); renderBar(); validate(); }; td4.appendChild(del);
+    tr.append(td1, td2, td3, td4); tb.appendChild(tr);
+  });
+  box.appendChild(tb);
+}
+
+function fillForm() {
+  const a = ann(clip().id);
+  document.querySelectorAll('input[name=q1]').forEach((r) => { r.checked = r.value === a.q_change; });
+  document.querySelectorAll('input[name=conf]').forEach((r) => { r.checked = r.value === String(a.confidence); });
+  $("mainView").value = a.main_view || ""; $("comment").value = a.comment || "";
+  renderIntervals(); validate();
+}
+
+function validate() {
+  const a = ann(clip().id), w = [];
+  const nA = a.intervals.filter((iv) => iv.type === "A").length;
+  if (a.q_change === "yes" && !nA) w.push("问题 1 选了“是”，请标出至少一个 A 区间。 Q1 is Yes: mark at least one A interval.");
+  if (a.q_change === "no" && nA) w.push("问题 1 选了“否”，但有 A 区间。 Q1 is No but there is an A interval.");
+  a.intervals.filter((iv) => iv.type === "A" && (!iv.from_view || !iv.to_view)).length &&
+    w.push("A 区间请填写改变前后的切面。 Give the views before and after each A interval.");
+  const iv = a.intervals;
+  for (let i = 0; i < iv.length; i++) for (let j = i + 1; j < iv.length; j++)
+    if (iv[i].type !== iv[j].type && iv[i].start <= iv[j].end && iv[j].start <= iv[i].end)
+      w.push(`区间 ${iv[i].type} 与 ${iv[j].type} 重叠 (${iv[i].start + 1}–${iv[i].end + 1} / ${iv[j].start + 1}–${iv[j].end + 1})。 Intervals of different types overlap.`);
+  $("warnings").innerHTML = w.map((m) => `<div class="warn">⚠ ${m}</div>`).join("") ||
+    (a.done ? '<div class="okmsg">✓ 已完成 done</div>' : "");
+  return w;
+}
+
+function markDone() {
+  const a = ann(clip().id);
+  if (!a.q_change) { alert("请先回答问题 1。\nPlease answer question 1 first."); return; }
+  const w = validate();
+  if (w.length && !confirm("仍有提示未处理，确定完成？\nThere are open warnings. Mark done anyway?")) return;
+  a.done = true; a.done_at = new Date().toISOString(); save(); buildList();
+  if (cur + 1 < P.clips.length) openClip(cur + 1); else validate();
+}
+
+function exportJson() {
+  closeClipTimer(); openedAt = Date.now(); save();
+  const payload = { schema: 1, pilot_version: P.version, reader, exported_at: new Date().toISOString(), n_clips: P.clips.length, annotations: store };
+  const blob = new Blob([JSON.stringify(payload, null, 1)], { type: "application/json" });
+  const a = document.createElement("a"); const ts = new Date().toISOString().slice(0, 16).replace(/[-:T]/g, "");
+  a.href = URL.createObjectURL(blob); a.download = `pilot_${P.version}_${reader}_${ts}.json`; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+
+function importJson(file) {
+  const fr = new FileReader();
+  fr.onload = () => {
+    try {
+      const d = JSON.parse(fr.result);
+      if (d.pilot_version !== P.version) { alert(`版本不符 version mismatch: ${d.pilot_version} ≠ ${P.version}`); return; }
+      if (d.reader !== reader && !confirm(`文件属于读者 ${d.reader}，当前为 ${reader}。仍导入？\nFile belongs to ${d.reader}. Import anyway?`)) return;
+      store = Object.assign({}, store, d.annotations || {}); save(); openClip(cur);
+    } catch (e) { alert("无法读取该文件 Cannot read this file: " + e.message); }
+  };
+  fr.readAsText(file);
+}
+
+function wire() {
+  const sel = $("mainView"); VIEWS.forEach((v) => { const o = document.createElement("option"); o.value = v; o.textContent = v || "—"; sel.appendChild(o); });
+  sel.onchange = () => { ann(clip().id).main_view = sel.value; save(); };
+  document.querySelectorAll('input[name=q1]').forEach((r) => r.onchange = () => { ann(clip().id).q_change = r.value; save(); validate(); });
+  document.querySelectorAll('input[name=conf]').forEach((r) => r.onchange = () => { ann(clip().id).confidence = +r.value; save(); });
+  $("comment").oninput = () => { ann(clip().id).comment = $("comment").value; save(); };
+  $("btnPlay").onclick = () => (playing ? stop() : play());
+  document.querySelectorAll("[data-step]").forEach((b) => b.onclick = () => { stop(); seek(frame + parseInt(b.dataset.step, 10)); });
+  $("slider").oninput = () => { stop(); seek(parseInt($("slider").value, 10)); };
+  $("btnStart").onclick = () => { pend = { start: frame, end: null }; renderBar(); };
+  $("btnEnd").onclick = () => { if (pend.start === null) pend.start = frame; pend.end = frame; renderBar(); };
+  document.querySelectorAll("[data-type]").forEach((b) => b.onclick = () => addInterval(b.dataset.type));
+  $("btnDone").onclick = markDone;
+  $("btnPrev").onclick = () => { if (cur > 0) openClip(cur - 1); };
+  $("btnExport").onclick = exportJson;
+  $("fileImport").onchange = (e) => { if (e.target.files[0]) importJson(e.target.files[0]); e.target.value = ""; };
+  $("btnHelp").onclick = () => { $("help").hidden = false; };
+  $("btnCloseHelp").onclick = () => { $("help").hidden = true; };
+  document.addEventListener("keydown", (e) => {
+    const tag = (e.target.tagName || "").toLowerCase();
+    if (["input", "select", "textarea"].includes(tag) && e.target.type !== "range" && e.target.type !== "radio" && e.target.type !== "checkbox") return;
+    if (e.key === " ") { e.preventDefault(); playing ? stop() : play(); }
+    else if (e.key === "ArrowLeft") { e.preventDefault(); stop(); seek(frame - (e.shiftKey ? 10 : 1)); }
+    else if (e.key === "ArrowRight") { e.preventDefault(); stop(); seek(frame + (e.shiftKey ? 10 : 1)); }
+    else if (e.key === "[") { $("btnStart").click(); }
+    else if (e.key === "]") { $("btnEnd").click(); }
+  });
+  window.addEventListener("beforeunload", () => { closeClipTimer(); save(); });
+}
+
+if (!P.clips.length) {
+  document.body.innerHTML = "<p style='padding:20px'>未找到 clips.js 或其中没有录像。 clips.js is missing or empty.</p>";
+} else {
+  wire(); initReader(); if (!safeGet("pilotHelpSeen")) { $("help").hidden = false; safeSet("pilotHelpSeen", "1"); }
+  openClip(0); save();
+}
+</script>
+</body>
+</html>
