@@ -61,6 +61,7 @@ def seed_block(tabs: dict, runs: dict, simple: list[str]) -> dict:
                 sp, sr = cell(df[df["model"] == m], unit, cols, funcs, units, W, "true"), cell(df[df["model"] == m], unit, cols, funcs, units, W, "random")
                 e[f"test effect ({m})"] = {"value": sr[0][k] - sp[0][k], "ci95": interval(sr[1][k] - sp[1][k])}
                 e[f"{m} minus MS-TCN trained in true order (test true)"] = {"value": sp[0][k] - pt[("true", "true")], "ci95": interval(sp[1][k] - rp[("true", "true")])}
+                e[f"{m} minus MS-TCN trained in true order (test random)"] = {"value": sr[0][k] - pt[("true", "random")], "ci95": interval(sr[1][k] - rp[("true", "random")])}
             out[f"{name}: {k}"] = e
     return out
 

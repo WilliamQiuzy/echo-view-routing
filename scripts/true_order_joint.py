@@ -40,6 +40,15 @@ N_BOOT, BOOT_SEED = 2000, 20261001
 ENC = "79f4a41af6e3"
 
 
+def extra_b4(arg: str | None) -> list[dict]:
+    """Extra official-MS-TCN prediction dirs, "label=dir;label=dir" (e.g. the seeded matrix models in true order)."""
+    out = []
+    for item in filter(None, (arg or "").split(";")):
+        label, _, pred = item.partition("=")
+        out.append({"name": label.strip(), "method": "b4", "encoder": "b0", "set": {"mstcn_official": {"pred_dir": pred.strip()}}})
+    return out
+
+
 def specs(paths, ep_b3a: dict) -> list[dict]:
     c = paths.cache_root
     out = [{"name": "B0 frame classifier", "method": "b0", "encoder": "b0"},
@@ -210,6 +219,7 @@ def time_b0_extraction(paths, cfg: dict, n_clips: int = 100) -> dict:
 def main() -> None:
     ap = base_parser("Joint true-order comparison"); ap.add_argument("--out", required=True); ap.add_argument("--reference", default="B4 MS-TCN v2")
     ap.add_argument("--ep-b3a", default="runs/_demo/permutation_mechanism_r2/echoprime_b3a.json"); ap.add_argument("--skip-timing", action="store_true")
+    ap.add_argument("--extra-b4", default=None, help='extra MS-TCN prediction dirs as "label=dir;label=dir"')
     args = ap.parse_args(); cfg = load_cfg(args); cfg["decode"].setdefault("b3a", dict(AUDITED_B3)); paths = load_paths(); out = Path(args.out)
     hz = cfg["sampling"]["target_hz"]
     ep = json.loads(Path(args.ep_b3a).read_text()); ep_b3a = {k: ep[k] for k in ("half_window", "threshold", "nms_radius")}
@@ -217,7 +227,7 @@ def main() -> None:
     bank_p, bank_m = pair_bank(idx, "test", cfg), multi_bank(idx, "test", cfg)
     inputs = {e: (natives(fz, idx, "test", "true", 0, None, e)[0], [assemble(fz, r, "true", 0, None, e)[0] for r in bank_p.recipes],
                   [assemble(fz, r, "true", 0, None, e)[0] for r in bank_m.recipes]) for e in ("b0", "echoprime")}
-    sp = specs(paths, ep_b3a)
+    sp = specs(paths, ep_b3a) + extra_b4(args.extra_b4)
     evals = {s["name"]: evaluate_spec(s, cfg, inputs, hz) for s in sp}
     boot = bootstrap(evals, args.reference)
     res = {"methods": [s["name"] for s in sp], "reference": args.reference, "clip_macro_f1": {k: clip_f1(v) for k, v in evals.items()},

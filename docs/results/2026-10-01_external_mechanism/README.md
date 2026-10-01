@@ -23,10 +23,10 @@ isolated flickers easily. Shuffling could therefore make smoothing look better t
 
 | Item | State |
 |---|---|
-| Task 0, seed control and isolated naming | Done. The tiny verification passed on CPU. A GPU repeat runs at the start of the queued matrix. |
+| Task 0, seed control and isolated naming | Done. The tiny verification passed on the CPU and again on the GPU. |
 | Task 1, EV9V permutation mechanism on existing caches | Done. Two identical runs. |
 | Task 2, EchoNet-Pediatric inventory, frozen protocol and direct transfer | Done. The fixed pipeline's direct transfer failed and did not reach the frozen external replication standard. Permutation results are descriptive only. |
-| Task 3, MS-TCN 3 seeds × 2 training orders | Queued behind the ASFormer retrain (expected start about 15:40 UTC). Not yet executed. |
+| Task 3, MS-TCN 3 seeds × 2 training orders | Done. Six trainings (14:22–16:07 UTC), tested in true order and under the ten test seeds. |
 | Joint true-order comparison with costs | Done, including B5 ASFormer v2 (retrain finished 14:22 UTC, frozen as `asformer_official/v2_frameorder`). |
 | Optional Pediatric re-selection of decoding parameters on the calibration folds | Not executed. |
 
@@ -115,7 +115,8 @@ isolated flickers easily. Shuffling could therefore make smoothing look better t
   deterministic cuDNN. Python's `random` sets the official batch order. The entry writes the seed it used and a
   SHA-256 digest of the initial weights. The matrix wrapper adds a `DONE.json` that records the entry, the seed, the
   initial and final weight digests, the data digest and the device.
-- The tiny run used 12 training streams, 2 epochs and the CPU. It passed every check below.
+- The tiny run used 12 training streams, 2 epochs and the CPU. It passed every check below. The same checks were
+  repeated on the GPU at the start of the matrix job and passed again (`mstcn_verify_cuda.json`).
 
 | Check | Result |
 |---|---|
@@ -317,7 +318,118 @@ On EV9V the same HMM reaches clip macro-F1 0.940, segment F1@50 0.804 and bounda
 
 ## 5. Task 3 — MS-TCN training/test permutation matrix
 
-Not yet executed. The six trainings are queued behind the ASFormer retrain (see §1.4).
+**Setup.** Official MS-TCN (authors' constants: 50 epochs, batch 1, learning rate 5e-4) was trained six times on the
+same 1,500 training streams. Model seeds were 0, 1 and 2. Each seed was trained twice: once on the streams in true
+order, and once with every training fragment permuted by one fixed seed (500), never reshuffled between epochs.
+The two runs of one seed share their initial weights and batch order, so they differ only in the order inside
+training fragments. Every model was tested in true order and under the ten Task 1 random seeds, on exactly the
+Task 1 test inputs. Decoding is fixed (argmax of the MS-TCN output), and routing thresholds come from true-order
+validation. The HMM and both B3 settings were rerun on the same test inputs, so all rows are paired. Seeds are
+reported one by one. They are not patients and are not pooled into one test.
+
+**Run records.** The GPU repeat of the seed check passed every test, including bit-identical final weights for a
+repeated seed.
+
+| Model seed | Initial weights (both training orders) | Final weights, true / shuffled training | Training time |
+|---|---|---|---|
+| 0 | `72babdb4…` | `cad31a2f…` / `ac94eaa3…` | 34.7 min each |
+| 1 | `69826d66…` | `de3b9b36…` / `b810db65…` | 34.3 min each |
+| 2 | `cbf9d07f…` | `4553fd71…` / `d4dc9157…` | 35.1 min each |
+
+### 5.1 True-order training and testing, per seed
+
+The MS-TCN seeds differ from each other. MS-TCN v2 (the official fixed seed, §6) is shown for reference.
+
+| Endpoint | Seed 0 | Seed 1 | Seed 2 | v2, official seed |
+|---|---|---|---|---|
+| Clip macro-F1 | 0.944 | 0.929 | 0.925 | 0.947 |
+| Segment F1@50, 4–8 fragments | 0.827 | 0.818 | 0.817 | 0.824 |
+| Boundary F1, pairs | 0.971 | 0.984 | 0.873 | 0.923 |
+| Boundary F1, 4–8 fragments | 0.879 | 0.845 | 0.855 | 0.876 |
+| Boundary recall, 4–8 fragments | 0.958 | 0.902 | 0.950 | 0.960 |
+| Same-class cut rate, 4–8 fragments | 0.109 | 0.079 | 0.104 | 0.099 |
+| Internal cuts per native clip | 0.144 | 0.094 | 0.130 | 0.147 |
+
+The next table gives each method minus the MS-TCN of each seed, both tested in true order, with 95% intervals.
+"Consistent" means every seed's interval excludes zero on the same side. ASFormer and EchoViewCLIP are single runs,
+so their own seed variation is unknown.
+
+| Method | Endpoint | Seed 0 | Seed 1 | Seed 2 | Across seeds |
+|---|---|---|---|---|---|
+| B2 HMM | internal cuts per clip | +0.068 [+0.005, +0.130] | +0.117 [+0.054, +0.186] | +0.081 [+0.042, +0.119] | consistently more cuts |
+| B3, default | internal cuts per clip | +0.141 [+0.075, +0.204] | +0.191 [+0.121, +0.264] | +0.155 [+0.104, +0.203] | consistently more cuts |
+| B2 HMM | boundary F1, 4–8 fragments | −0.046 [−0.103, +0.009] | −0.012 [−0.071, +0.041] | −0.022 [−0.057, +0.014] | no difference in any seed |
+| B2 HMM | segment F1@50, 4–8 fragments | −0.023 [−0.050, +0.004] | −0.014 [−0.047, +0.021] | −0.013 [−0.048, +0.024] | no difference in any seed |
+| B2 HMM | boundary F1, pairs | −0.041 [−0.081, +0.000] | −0.053 [−0.102, −0.008] | +0.058 [−0.012, +0.127] | depends on the seed |
+| B3, audited | boundary F1, 4–8 fragments | +0.048 [+0.007, +0.093] | +0.082 [+0.045, +0.119] | +0.072 [+0.030, +0.117] | consistently higher |
+| B3, audited | segment F1@50, 4–8 fragments | +0.043 [+0.014, +0.077] | +0.053 [+0.027, +0.079] | +0.054 [+0.017, +0.095] | consistently higher |
+| B3, audited | internal cuts per clip | −0.091 [−0.147, −0.039] | −0.041 [−0.083, −0.002] | −0.078 [−0.129, −0.030] | consistently fewer cuts |
+| B3, audited | boundary recall, 4–8 fragments | −0.032 [−0.052, −0.013] | +0.024 [−0.003, +0.050] | −0.024 [−0.043, −0.005] | lower in two seeds |
+| B3, audited | clip macro-F1 | −0.014 [−0.032, +0.002] | +0.002 [−0.029, +0.030] | +0.006 [−0.007, +0.016] | no difference in any seed |
+| B3, audited | boundary F1, pairs | +0.008 [−0.018, +0.036] | −0.004 [−0.031, +0.029] | +0.107 [+0.036, +0.184] | depends on the seed |
+| B5 ASFormer v2 | segment F1@50, 4–8 fragments | +0.029 [+0.004, +0.054] | +0.038 [+0.007, +0.071] | +0.039 [+0.007, +0.072] | consistently higher |
+| B7 EchoViewCLIP | clip macro-F1 | +0.027 [+0.006, +0.052] | +0.043 [+0.015, +0.074] | +0.047 [+0.027, +0.070] | consistently higher |
+
+- **Stable across seeds.** MS-TCN cuts inside native clips less often than the untuned smoothers. Its boundary F1 and
+  segment F1@50 on 4–8 fragment streams do not differ from theirs. Audited B3 beats every MS-TCN seed on 4–8 fragment
+  boundary F1 and segment F1@50 and cuts less often, but it misses more changes in two of three seeds and its clip
+  macro-F1 does not differ.
+- **Seed-dependent.** MS-TCN's own pair-stream boundary F1 ranges from 0.873 to 0.984, so the sign of its
+  difference to the HMM flips between seeds. Its clip macro-F1 ranges from 0.925 to 0.944. Pair-stream boundary
+  scores therefore cannot rank MS-TCN against the simple decoders.
+- The full per-seed comparison for every method and endpoint is in `mstcn_seed_stability.txt`.
+
+### 5.2 What shuffled testing changes
+
+Effect = shuffled test minus true-order test, mean over the ten test seeds, for the model trained in true order.
+
+| Model | Internal cuts per clip | Deviation rate | Boundary F1, pairs | Boundary F1, 4–8 fragments |
+|---|---|---|---|---|
+| MS-TCN seed 0 | −0.039 [−0.098, +0.015] | −0.004 [−0.007, +0.000] | −0.023 [−0.052, +0.004] | +0.024 [−0.009, +0.059] |
+| MS-TCN seed 1 | −0.013 [−0.062, +0.038] | −0.004 [−0.007, +0.000] | −0.001 [−0.023, +0.029] | +0.012 [−0.014, +0.043] |
+| MS-TCN seed 2 | −0.002 [−0.044, +0.042] | +0.001 [−0.004, +0.007] | +0.050 [−0.002, +0.102] | +0.033 [+0.001, +0.065] |
+| B2 HMM (same inputs) | −0.103 [−0.158, −0.046] | −0.010 [−0.014, −0.006] | +0.036 [+0.008, +0.064] | +0.070 [+0.039, +0.101] |
+| B3, audited (same inputs) | −0.029 [−0.047, −0.012] | −0.004 [−0.009, −0.001] | +0.009 [−0.008, +0.032] | +0.020 [+0.005, +0.035] |
+
+- Shuffled testing barely moves the MS-TCN trained in true order. Only one of twelve seed-by-endpoint intervals above
+  excludes zero. The HMM gains on every endpoint.
+- The comparison therefore changes with the test order. In true order the HMM makes more internal cuts than MS-TCN in
+  every seed (+0.068 to +0.117 per clip). Under shuffled testing the difference is +0.004 [−0.032, +0.039],
+  +0.028 [−0.048, +0.088] and −0.020 [−0.061, +0.019]. The same holds for default B3. A shuffled test set would hide
+  MS-TCN's stability advantage over the untuned smoothers.
+
+### 5.3 What shuffled training changes
+
+Effect = model trained on shuffled fragments minus the model trained in true order, same seed, both tested in true
+order. The interaction is (shuffled-trained gain from shuffled testing) minus (true-trained gain from shuffled
+testing).
+
+| Endpoint | Seed 0 | Seed 1 | Seed 2 |
+|---|---|---|---|
+| Internal cuts per clip | +0.100 [+0.034, +0.164] | +0.057 [+0.018, +0.100] | +0.104 [+0.048, +0.165] |
+| Deviation rate | +0.003 [−0.002, +0.007] | +0.002 [−0.002, +0.005] | +0.007 [+0.001, +0.012] |
+| Boundary F1, pairs | −0.011 [−0.050, +0.026] | −0.035 [−0.084, +0.012] | +0.032 [−0.047, +0.109] |
+| Boundary F1, 4–8 fragments | −0.050 [−0.099, −0.005] | +0.016 [−0.035, +0.070] | −0.009 [−0.054, +0.035] |
+| Same-class cut rate, 4–8 fragments | +0.020 [−0.014, +0.059] | +0.030 [−0.015, +0.073] | +0.050 [+0.005, +0.099] |
+| Clip macro-F1 | +0.007 [−0.004, +0.020] | +0.017 [−0.003, +0.039] | +0.015 [−0.008, +0.036] |
+| Interaction, internal cuts per clip | −0.063 [−0.120, −0.006] | −0.058 [−0.142, +0.021] | −0.100 [−0.165, −0.040] |
+
+- Training on shuffled fragments makes MS-TCN cut more often inside true-order clips in every seed (+0.057 to
+  +0.104 per clip). The other endpoints do not move consistently.
+- The shuffled-trained model then gains from shuffled testing (−0.071 to −0.102 cuts per clip, every interval below
+  zero). It has learned the time structure of its training data, so training and test order should match the
+  intended deployment.
+
+### 5.4 What Task 3 shows
+
+- The EV9V findings hold in all three seeds. Shuffled testing flatters the untuned smoothers and barely changes a
+  model trained in true order. Shuffled training makes the learned model less stable on real order.
+- The earlier summary that learned models show no consistent advantage needs a correction. In true order, MS-TCN
+  makes consistently fewer internal cuts than the untuned smoothers in every seed. It has no consistent advantage in
+  boundary F1, segment F1@50 or clip macro-F1. The tuned simple baseline (audited B3) is consistently ahead of every
+  MS-TCN seed on 4–8 fragment boundary F1, segment F1@50 and internal cuts, at a cost in boundary recall in two of
+  three seeds.
+- Pair-stream boundary comparisons depend on the training seed and should not be used to rank methods.
 
 ## 6. Joint true-order comparison on EV9V
 
@@ -353,6 +465,8 @@ Paired differences to B4 whose 95% interval excludes zero:
 - B5 ASFormer v2 differs from B4 only in a slightly lower boundary recall on 4–8 fragment streams (−0.018
   [−0.036, −0.003]). All its other differences include zero.
 - No method is better than B4 on every endpoint, so this table names no overall winner.
+- B4 here is MS-TCN v2, trained once with the official fixed seed. §5.1 shows which of these comparisons hold across
+  three training seeds.
 
 **Cost.** Feature extraction dominates. B0 needs about 2.64 ms per sample to read and letterbox a frame on the CPU
 and 0.22 ms for the forward pass on a shared GPU (100 test clips, 7,392 samples, one clip per batch). Decoding on one
@@ -372,8 +486,8 @@ The plan named three conditions for a cross-dataset methodology paper.
 3. **Model-comparison effects that repeat across training seeds.** Task 3 answers this for EV9V.
 
 The external condition is not met, so the scope is settled as EV9V (decision of 2026-10-01). The seed matrix can make
-the EV9V conclusions more or less credible, but it cannot fill the external gap. The work closes by the first matching
-case below, and no further round starts automatically.
+the EV9V conclusions more or less credible, but it cannot fill the external gap. The work closes by the cases below,
+and no further round starts automatically.
 
 - If the seed matrix consistently supports the present findings, the result is an EV9V-scoped reproduction and
   evaluation audit report. Its publication target is judged after that.
@@ -381,6 +495,19 @@ case below, and no further round starts automatically.
   The frame-order defect and the time-structure audit stay as findings.
 - If the comparison changes markedly from seed to seed, the report states that uncertainty and the work closes as the
   Capstone report.
+
+**Closing determination.**
+
+- The seed matrix consistently supports the evaluation findings (first case). In every seed, shuffled testing
+  flatters the untuned smoothers and barely changes the MS-TCN trained in true order, and shuffled training makes
+  MS-TCN less stable on real order.
+- It also shows one consistent true-order advantage of the learned model. MS-TCN makes fewer internal cuts than the
+  untuned smoothers in every seed. As the second case requires, the summary "no consistent advantage" is corrected
+  to the wording of §5.4. The frame-order defect and the time-structure findings stand unchanged.
+- Pair-stream boundary comparisons vary with the training seed. That uncertainty is stated in §5.1 and those scores
+  are not used to rank methods.
+- The work therefore closes as an EV9V-scoped reproduction and evaluation audit report. Its publication target is
+  still to be judged. No further round has been started, and the results page has not been published.
 
 ## 8. Reproduction
 
@@ -395,8 +522,18 @@ python scripts/pediatric_inventory.py --out runs/_demo/pediatric/inventory.json
 python scripts/pediatric_freeze.py
 python scripts/pediatric_extract.py
 python scripts/pediatric_eval.py --out runs/_demo/pediatric/eval_v1 --workers 3
-# Task 3, queued behind ASFormer
+# Task 3 (ran after the ASFormer retrain) and its per-seed reports
 python scripts/mstcn_matrix.py queue --after-pid <ASFormer pid>
+python scripts/report_mstcn_matrix.py --dir runs/_demo/mstcn_matrix
+python scripts/true_order_joint.py -c runs/20260928-001145-baselines-1b027c50-s0/config.resolved.yaml --skip-timing \
+    --out runs/_demo/true_order_joint_seed0 --reference "MS-TCN seed 0 (true-trained)" \
+    --extra-b4 "MS-TCN seed 0 (true-trained)=cache_v2/mstcn_matrix/<run ms0>/true;..."   # one run per reference seed
+# Pediatric joint table
+python scripts/report_pediatric_joint.py --out runs/_demo/pediatric/joint_v1
+# B5 ASFormer rows
+python scripts/run_baselines.py -c runs/20260928-001145-baselines-1b027c50-s0/config.resolved.yaml --ckpt-hash 79f4a41af6e3 \
+    --methods b0,b1,b2,b3,b4,b5 --pred-dir cache_v2/mstcn_official/79f4a41af6e3 --asformer-pred-dir cache_v2/asformer_official/79f4a41af6e3
+python scripts/bootstrap_ladder.py --run-dir runs/20261001-142859-baselines-1d1e90ee-s0 --reference b4
 # Joint true-order comparison
 python scripts/true_order_joint.py -c runs/20260928-001145-baselines-1b027c50-s0/config.resolved.yaml --out runs/_demo/true_order_joint
 ```
