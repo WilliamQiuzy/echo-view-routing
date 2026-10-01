@@ -41,6 +41,7 @@ def clip_indices(image_num: int) -> tuple[list[int], list[list[int]]]:
 def main() -> None:
     ap = base_parser("STFM windowed"); ap.add_argument("--ckpt-hash", required=True)
     ap.add_argument("--stfm-ckpt", default="models_frozen/stfm_official/seed100/model.ckpt"); ap.add_argument("--limit", type=int, default=None)
+    ap.add_argument("--tag", default="", help="output suffix, e.g. frozen_s100 or numeric_s100, so different checkpoints do not overwrite")
     args = ap.parse_args(); cfg = load_cfg(args); paths = load_paths()
     repo = paths.repo_root / "third_party" / "stfm"; sys.path.insert(0, str(repo))
     from models_enhanced import create_enhanced_stfm  # noqa: E402  (official)
@@ -53,7 +54,7 @@ def main() -> None:
     tf = v2.Compose([v2.Resize(256), v2.CenterCrop(224), v2.ToImage()])
     norm = v2.Compose([v2.ToDtype(torch.float32, scale=True), v2.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])])
     plans = json.loads((paths.data_root / "window_plans" / args.ckpt_hash / "plans.json").read_text())
-    frames_root = Path(plans["frames_root"]); out = paths.cache_root / "stfm_windowed" / args.ckpt_hash; out.mkdir(parents=True, exist_ok=True)
+    frames_root = Path(plans["frames_root"]); out = paths.cache_root / "stfm_windowed" / (args.ckpt_hash + (f"_{args.tag}" if args.tag else "")); out.mkdir(parents=True, exist_ok=True)
     paths_cache: dict[str, list] = {}; img_cache: dict[tuple, torch.Tensor] = {}
 
     def frame(video_id, fi, gamma):

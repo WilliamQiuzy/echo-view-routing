@@ -42,6 +42,10 @@ it, using exactly the same frames. They differ only in how those frames are pair
 | Pool | The before-window and the after-window are averaged first, without matching phases. |
 | Scramble | As phase, but each earlier cycle is re-paired at its own random offset of 0.25–0.75 of a cycle. Three seeds. |
 
+The pool control removes phase correspondence, not all cardiac-cycle information: its window length is still
+`K * estimated_period`, and its score calibration still distinguishes period-available samples from fallback samples.
+A detector with fixed-duration windows and no period-based calibration has not yet been evaluated here.
+
 How the three variants are run:
 
 - **Period.** It comes from image motion in 2.4 s windows of the stream itself. A window counts only if its peak is at
@@ -130,13 +134,15 @@ ordering stayed the same.
    - By the stop rule in `docs/research_plan.md`, phase is therefore no longer the core of the method. The EchoPrime
      recheck is not triggered.
    - This holds for this implementation and this proxy task only. It does not rule out every possible use of phase.
-2. **What does help on this proxy is multi-frame comparison with calibrated decoding.**
-   - The pooled two-window detector, which uses no phase information, makes about 0.6 extra cuts per minute in native
-     clips at matched recall.
-   - That is against 1.1–2.5 for the existing smoothing, HMM and change-point decoders.
-   - It is on par with the retrained MS-TCN.
-   - The gain may partly come from the percentile calibration and segment-level labelling. It needs a confirmation on
-     data that has not informed earlier decisions before it is claimed.
+2. **An exploratory finding is the performance of the period-adaptive pooled detector.**
+   - Without pairing phases, it makes about 0.59 extra cuts per minute in native clips at test recall 0.946.
+   - B1–B3 make 1.1–2.5 extra cuts per minute at test recalls 0.952–0.956. The frozen operating points do not have
+     identical recall, so the table alone does not establish superiority at equal recall.
+   - Its point estimates are close to retrained MS-TCN; this is not an equivalence result.
+   - It still uses estimated periods to choose window lengths. Attribution needs a fixed-duration control and
+     comparisons with matched windows, score calibration and decoding. B3 already labels segments using their mean
+     probability, so that operation is not unique to pool. Independent confirmation would follow only after this
+     component audit; see `docs/research_plan.md`.
 3. **Limits.**
    - The joins are abrupt and artificial.
    - Native clips may hold unlabelled real changes.

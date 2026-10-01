@@ -84,15 +84,24 @@ What changed:
 
 ### Order versus sampled images
 
+> **Superseded by the frozen-set protocol in `docs/results/2026-09-30_audit/` (table 2).** Checked fragment by
+> fragment, this intermediate cache kept the legacy image set in only 203 of 2,393 constructed-stream fragments
+> (median Jaccard 0.60). With the sets frozen, the policy 2 coverage change is mainly an image-set effect, and true
+> order raises B1-B3 coverage on the legacy images. The attribution below should not be used.
+
 The old name sort had two effects. It put a clip's frames out of order, and, because frames were picked by position,
 it changed which images were picked. `scripts/legacy_set_true_order.py` separates the two. It rebuilds the legacy B0
 cache with its own sampled images put back into true time order (`cache_v2_legacyset/`), and the ladder was rerun on
 it (run `20261001-031300-baselines-1b027c50-s0`).
 
-- Legacy cache against this one gives the order effect, because the images are the same.
-- This cache against `cache_v2` gives the set effect, because both are in order but the images differ.
+- For full native clips, the legacy cache and this one contain the same images in different orders. B0 majority-vote
+  classification therefore cleanly checks invariance to order.
+- The intermediate cache and `cache_v2` use different sampled images and temporal spacing. They are not yet a clean
+  sampling-only contrast for time-dependent decoders and metrics.
 - The samples in this cache keep their true frame numbers, so their spacing is irregular, while the ladder still
   treats them as 10 Hz.
+- Constructed streams crop by sample position. A complete-clip image-set match does not by itself establish that each
+  cropped fragment has the same frame IDs across conditions; that needs a separate audit.
 
 | Method | Measure | Legacy | Same images, true order | New images, true order |
 |---|---|---|---|---|
@@ -104,10 +113,11 @@ it (run `20261001-031300-baselines-1b027c50-s0`).
 | B2 | policy 2 coverage | 0.810 | 0.774 | 0.759 |
 | B3 | policy 2 coverage | 0.889 | 0.767 | 0.766 |
 
-- **Clip-level scores change only through the images picked.** B0's clip macro-F1 does not move when only the order
+- **B0 majority-vote clip scores change only through the images picked.** B0's clip macro-F1 does not move when only the order
   changes, because the clip label is a majority vote.
-- **Order drives the stability and routing changes.** Fragments per minute and most of the policy 2 coverage drop come
-  from order.
+- **Stability and routing change in the reordering diagnostic.** Their causal attribution remains provisional because
+  the intermediate condition uses irregular sampling under a fixed-rate evaluator, and fragment-level image sets
+  have not been checked. These results should not yet be described as an isolated physical-time order effect.
 - **Boundary scores of the smoothing baselines move by about 0.02 or less** in each step.
 - **MS-TCN is not decomposed.** That would need it retrained on this cache.
 
