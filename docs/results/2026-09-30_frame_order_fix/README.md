@@ -82,6 +82,35 @@ What changed:
 - **The earlier conclusion does not hold.** The claim that learned temporal models find view changes much better than
   simple smoothing depended on shuffled frames.
 
+### Order versus sampled images
+
+The old name sort had two effects. It put a clip's frames out of order, and, because frames were picked by position,
+it changed which images were picked. `scripts/legacy_set_true_order.py` separates the two. It rebuilds the legacy B0
+cache with its own sampled images put back into true time order (`cache_v2_legacyset/`), and the ladder was rerun on
+it (run `20261001-031300-baselines-1b027c50-s0`).
+
+- Legacy cache against this one gives the order effect, because the images are the same.
+- This cache against `cache_v2` gives the set effect, because both are in order but the images differ.
+- The samples in this cache keep their true frame numbers, so their spacing is irregular, while the ladder still
+  treats them as 10 Hz.
+
+| Method | Measure | Legacy | Same images, true order | New images, true order |
+|---|---|---|---|---|
+| B0 | clip macro-F1 | 0.957 | 0.957 | 0.944 |
+| B0 | frag/min | 23.1 | 19.2 | 19.9 |
+| B0 | boundary F1, pairs | 0.499 | 0.536 | 0.521 |
+| B1 | frag/min | 2.36 | 2.69 | 2.72 |
+| B1 | policy 2 coverage | 0.815 | 0.764 | 0.782 |
+| B2 | policy 2 coverage | 0.810 | 0.774 | 0.759 |
+| B3 | policy 2 coverage | 0.889 | 0.767 | 0.766 |
+
+- **Clip-level scores change only through the images picked.** B0's clip macro-F1 does not move when only the order
+  changes, because the clip label is a majority vote.
+- **Order drives the stability and routing changes.** Fragments per minute and most of the policy 2 coverage drop come
+  from order.
+- **Boundary scores of the smoothing baselines move by about 0.02 or less** in each step.
+- **MS-TCN is not decomposed.** That would need it retrained on this cache.
+
 ## 4. Objective checks without expert labels
 
 ### Overlap of change candidates and reliable phase (EV9V)
