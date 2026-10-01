@@ -38,7 +38,8 @@ isolated flickers easily. Shuffling could therefore make smoothing look better t
   and B0 checkpoint `79f4a41af6e3`. The manifest `data/manifests/ev9v_native.csv` lists 5,138 clips (train 3,683,
   validation 567, test 888). The ladder test banks hold 800 native clips in 125 presumed patient groups, 240 pair
   streams and 120 streams of 4–8 fragments built from 405 clips. Patient groups are inferred from the file-name
-  prefix and are not verified identities.
+  prefix, a recording timestamp shared by the clips of one session (703 sessions, median six clips, none crossing a
+  split). They are not verified identities.
 - **EchoNet-Pediatric.** The server copy holds 7,810 AVI files (A4C 3,284, PSAX 4,526). All of them open and decode,
   and the decoded frame count equals the container count for every file. Frames are 112 × 112. Frame rates range
   from 21 to 193 frames per second (median 50). Clips are short, with a median of 1.6 s (10th–90th percentile
