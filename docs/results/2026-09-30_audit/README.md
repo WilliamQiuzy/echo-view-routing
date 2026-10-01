@@ -21,7 +21,8 @@ All rows use the same ladder configuration as run `20260928-001145`, on `cache_v
 |---|---|
 | B0–B4, B7, B8 | `20261001-034125-baselines-17047dcb-s0`, with bootstrap in its `reports/bootstrap.md` |
 | B3, audited setting | `20261001-035221-baselines-02a18614-s0` |
-| B6 STFM | runs pending (see below) |
+| B6 STFM, name-order seed-100 model | `20261001-041024-baselines-e5dc6b97-s0` |
+| B6 STFM, numeric-order seed-100 model | `20261001-041038-baselines-e415228d-s0` |
 
 | Method | How its setting was chosen | Clip macro-F1 | Frame acc | Frag/min | Boundary F1, pairs | Boundary F1, 4–8 fragments | Error at 5%, multi thresholds | Policy 2 coverage / error |
 |---|---|---|---|---|---|---|---|---|
@@ -32,7 +33,8 @@ All rows use the same ladder configuration as run `20260928-001145`, on `cache_v
 | B3 change points, audited | §3, chosen on validation (0.9 s, JS 0.31) | 0.930 | 0.973 | 0.69 | 0.980 | 0.927 | 0.083 | 0.741 / 0.018 |
 | B4 MS-TCN (official code) | authors' constants, retrained on `cache_v2` | 0.947 | 0.973 | 1.51 | 0.923 | 0.876 | 0.088 | 0.848 / 0.024 |
 | B5 ASFormer (official code) | authors' constants; retraining started on `cache_v2` | running | | | | | | |
-| B6 STFM (official code), windowed | name-order seed-100 model, and patched seed-100 model | running | | | | | | |
+| B6 STFM (official code), windowed | seed-100 model trained on name-sorted frames (as reproduced) | 0.971 | 0.981 | 0.70 | 0.938 | 0.868 | 0.051 | 0.536 / 0.046 |
+| B6 STFM (official code), windowed | seed-100 model trained with the numeric-order patch | 0.960 | 0.974 | 1.09 | 0.897 | 0.844 | 0.058 | 0.444 / 0.050 |
 | B7 EchoViewCLIP stage 1, windowed | authors' recipe, trained on MP4 in true order | 0.972 | 0.976 | 0.78 | 0.967 | 0.899 | 0.057 | 0.586 / 0.044 |
 | B8 EchoPrime, per frame | released weights | 0.943 | 0.956 | 15.32 | 0.535 | 0.522 | 0.092 | 0.836 / 0.024 |
 
@@ -43,7 +45,7 @@ All rows use the same ladder configuration as run `20260928-001145`, on `cache_v
   labels.
 - **The error columns** report the share of routed time that is wrong.
 
-**Paired bootstrap against MS-TCN** (run `20261001-034125`; pairs resampled by stream, multi streams by cine):
+**Paired bootstrap against MS-TCN** (run `20261001-034125`, and the two STFM runs, each of which also contains MS-TCN; pairs resampled by stream, multi streams by cine):
 
 | Method | Pairs: boundary F1 | Pairs: same-view split rate | 4–8 fragments: boundary F1 | 4–8 fragments: same-view split rate |
 |---|---|---|---|---|
@@ -51,6 +53,8 @@ All rows use the same ladder configuration as run `20260928-001145`, on `cache_v
 | B2 HMM | +0.007 [−0.032, 0.044] | −0.008 [−0.028, 0.000] | −0.043 [−0.112, 0.032] | +0.050 [0.012, 0.091] |
 | B3 default | −0.014 [−0.069, 0.041] | 0.000 [−0.025, 0.025] | −0.029 [−0.083, 0.040] | +0.064 [0.019, 0.113] |
 | B7 EchoViewCLIP | +0.044 [−0.012, 0.105] | −0.008 [−0.028, 0.000] | +0.023 [−0.045, 0.102] | −0.015 [−0.049, 0.020] |
+| B6 STFM, name-order model | +0.015 [−0.041, 0.073] | −0.008 [−0.028, 0.000] | −0.008 [−0.079, 0.071] | −0.040 [−0.081, 0.000] |
+| B6 STFM, numeric-order model | −0.026 [−0.088, 0.035] | −0.008 [−0.028, 0.000] | −0.032 [−0.111, 0.051] | −0.010 [−0.048, 0.034] |
 
 **STFM, official evaluation.** This is the authors' video-level test on 888 clips and nine codes, a different task
 from the ladder.
@@ -64,11 +68,17 @@ from the ladder.
 - The model is frozen as `models_frozen/stfm_numeric/s100`; the retrained MS-TCN is frozen as
   `models_frozen/mstcn_official/v2_frameorder`.
 - This is one paired seed. It shows the size of one change, not stability across seeds.
+- On the ladder, the windowed models compare the other way round: the name-order model scores higher than the
+  numeric-order model (two-fragment boundary F1 0.938 against 0.897). With one seed per model this difference cannot
+  be interpreted.
+- In the old ladder, the name-order model with name-sorted windows scored 0.963 / 0.859 boundary F1 and 0.51
+  frag/min.
 
 **Reading.**
 
 - With frames in order and the same inputs, the official MS-TCN shows no clear advantage over smoothing, HMM or
-  default change points on boundary F1; every interval includes zero.
+  default change points on boundary F1; every interval includes zero. Both STFM models also fall within MS-TCN's
+  intervals.
 - MS-TCN does still split same-view joins less often in 4–8-fragment streams.
 - EchoViewCLIP, a video model trained on frames in true order, scores highest among the published models on clip
   macro-F1 and boundary F1, but routes the least at 5% error.
@@ -191,5 +201,3 @@ minute in native clips; frozen for test.
 ## Pending in this round
 
 - B5 ASFormer: retraining on `cache_v2` with the authors' constants is running (about 12 hours); its row will be added.
-- B6 STFM windowed: inference with the name-order seed-100 model and with the patched seed-100 model is running into
-  `cache_v2/stfm_windowed/79f4a41af6e3_{frozen_s100,numeric_s100}`; its rows will be added.
