@@ -26,7 +26,7 @@ from echo_routing.temporal.dev_data import EvalSet, FeatureStore, TrainData, eva
 from echo_routing.temporal.dev_train import Settings, decoded_digest, evaluate_head, time_decode, train_head
 
 HALVES = ("selection", "calibration")
-DECODED_LABEL_KEYS = ("labels", "local_labels", "frame_labels", "prob")
+DECODED_LABEL_KEYS = ("labels", "local_labels", "frame_labels", "prob", "prepool_prob")
 SOURCE_FILES = ("echo_routing/temporal/models/boundary_context.py", "echo_routing/temporal/losses/boundary_context.py",
                 "echo_routing/temporal/dev_data.py", "echo_routing/temporal/dev_heads.py", "echo_routing/temporal/dev_train.py",
                 "echo_routing/temporal/dev_run.py", "echo_routing/evaluate/dev_metrics.py")
@@ -49,6 +49,25 @@ def load_json(path: Path) -> tuple[dict, str]:
     return json.loads(raw), hashlib.sha256(raw).hexdigest()
 
 
+def check_index(idx, proto: dict) -> None:
+    """The feature cache must hold every protocol clip (train and both validation halves) and no test row."""
+    need = set(proto["train"]["clips"]) | {c for h in HALVES for c in proto["validation"][h]["clips"]}
+    missing = sorted(need - set(idx["video_id"]))
+    if missing:
+        raise SystemExit(f"feature cache lacks {len(missing)} protocol clips, e.g. {missing[:3]}")
+    bad = sorted(set(idx["split"]) - {"train", "validation"})
+    if bad:
+        raise SystemExit(f"feature cache holds rows of split(s) {bad}; development runs must not read test")
+
+
+def feature_dim_of(fman: dict, actual: int) -> int:
+    """Input dimension of the temporal heads: declared by the feature manifest (round 2) and checked against the cache."""
+    declared = fman.get("feature_dim")
+    if declared is not None and int(declared) != int(actual):
+        raise SystemExit(f"feature manifest declares dim {declared}, cache holds {actual}")
+    return int(actual)
+
+
 class Inputs:
     """Protocol, feature cache, training data and validation halves of one encoder."""
 
@@ -59,6 +78,7 @@ class Inputs:
         key = self.fman["encoder"]["cache_key"]
         self.store = FeatureStore(cache_root, key)
         idx = read_index(variant_dir(cache_root, key, "orig"))
+        check_index(idx, self.proto)
         self.labels = dict(zip(idx["video_id"], idx["label_index"].astype(int)))
         bank = multi_bank(idx, "train", cfg)
         bank_digest = digest([recipe_to_dict(r) for r in bank.recipes])
@@ -68,6 +88,7 @@ class Inputs:
                                tuple((v, self.labels[v]) for v in self.proto["train"]["clips"]), self.store)
         self.halves = {h: eval_set(self.proto, h, self.labels, self.store) for h in HALVES}
         self.cache_key = key
+        self.feature_dim = feature_dim_of(self.fman, self.train.streams[0].feat.shape[1])
 
     def frame_majority(self, ev: EvalSet, hz: float, tol_s: float) -> dict:
         """The encoder's own per-sample argmax (B0) on one half: the reference for the native-F1 floor."""

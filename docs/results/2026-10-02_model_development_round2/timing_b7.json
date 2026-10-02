@@ -1,0 +1,27 @@
+{
+ "groups": {
+  "1-60": {
+   "n_sequences": 20,
+   "n_samples": 649,
+   "preprocess_ms_per_sample": 6.186599513868843,
+   "model_ms_per_sample": 6.0668743853363996,
+   "system_ms_per_sample": 12.253473899205243
+  },
+  "61-120": {
+   "n_sequences": 20,
+   "n_samples": 1740,
+   "preprocess_ms_per_sample": 6.0974306790238435,
+   "model_ms_per_sample": 5.9025316921346445,
+   "system_ms_per_sample": 11.999962371158489
+  },
+  "121-400": {
+   "n_sequences": 20,
+   "n_samples": 3263,
+   "preprocess_ms_per_sample": 6.362669167369707,
+   "model_ms_per_sample": 5.877986785944596,
+   "system_ms_per_sample": 12.240655953314302
+  }
+ },
+ "device": "NVIDIA L40S",
+ "note": "batch = 1 window of 16 frames; fp32; CPU preprocessing in one process"
+}

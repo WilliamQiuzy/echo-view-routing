@@ -32,7 +32,7 @@ def main() -> None:
                                                     settings.streams_per_batch, settings.natives_per_batch) for s in b]
     class_weight, pos_weight = asrf_weights(first, num_classes=5)
     oc = cfg["official_heads"]["asrf"]
-    head = ASRFHead(load_paths().repo_root / "third_party" / "asrf", int(first[0].feat.shape[1]), class_weight, pos_weight,
+    head = ASRFHead(load_paths().repo_root / "third_party" / "asrf", inputs.feature_dim, class_weight, pos_weight,
                     lambda_b=float(oc["lambda_b"]), boundary_th=float(oc["boundary_th"]), device=device)
     head.decoding = f"official refinement_with_boundary, boundary_th {oc['boundary_th']}"
     augment = feature_mask_augment(**cfg["augment"]["feature_mask"]) if args.augment else None

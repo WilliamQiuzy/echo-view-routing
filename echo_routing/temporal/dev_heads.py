@@ -59,12 +59,13 @@ class BoundaryContextHead:
         for chunk in _batched(seqs, batch_size):
             b = collate(chunk, device); o = model(b["x"], b["mask"])
             prob = torch.softmax(o["class_logits"], 1).transpose(1, 2).cpu().numpy()
+            pre = torch.softmax(o["mixed_logits"], 1).transpose(1, 2).cpu().numpy()   # before pooling; diagnostics only
             lab = o["class_logits"].argmax(1).cpu().numpy(); bp = torch.sigmoid(o["boundary_logits"][:, 0]).cpu().numpy()
             g = o["gate"][:, 0].cpu().numpy(); lp = o["local_logits"].argmax(1).cpu().numpy()
             for i, s in enumerate(chunk):
                 n = s.labels.size
                 out[s.seq_id] = {"labels": lab[i, :n], "prob": prob[i, :n], "boundary_prob": bp[i, :n], "gate": g[i, :n],
-                                 "local_labels": lp[i, :n]}
+                                 "local_labels": lp[i, :n], "prepool_prob": pre[i, :n]}
         return out
 
 
@@ -163,7 +164,8 @@ class ASRFHead:
         x = batch["x"]; t = batch["labels"].masked_fill(batch["labels"] < 0, ASRF_IGNORE)
         b = self._boundary(batch); mask = batch["mask"] > 0
         out_cls, out_bound = model(x)
-        cls = sum(self.criterion_cls(o, t, x) for o in out_cls) / len(out_cls)
+        sim = x.detach()   # Gaussian-similarity index of the official loss: a fixed weighting, never a gradient path
+        cls = sum(self.criterion_cls(o, t, sim) for o in out_cls) / len(out_cls)
         bnd = sum(self.criterion_bound(o, b, mask) for o in out_bound) / len(out_bound)
         return cls + self.lambda_b * bnd, {"cls": float(cls.detach()), "boundary": float(bnd.detach())}
 

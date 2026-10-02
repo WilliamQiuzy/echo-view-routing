@@ -1,5 +1,8 @@
 # Model development, round 1 (2026-10-02)
 
+*Wording corrected on 2026-10-02 after review. "Parity" is replaced by "no consistent difference detected", the
+head timings are no longer read as a speed result, and per-sample and native-clip claims are kept apart.*
+
 This round follows `docs/superpowers/plans/2026-10-02-model-development.md`. The goal was a new temporal model that
 outputs a view label for every sample of a continuous stream and beats the existing strong baselines under a fair
 comparison. The model tested is "boundary-controlled context aggregation". It learns local classification and view
@@ -37,15 +40,16 @@ predicted change. Everything below is on the EV9V validation split. The test spl
    points with every interval above zero. On the calibration half the gains are +2.4 to +3.4 points, and only one of
    the three intervals excludes zero. Once any segment-level decoder is applied, the path term makes no consistent
    difference.
-3. **The error analysis points to one problem.** M4 labels whole fragments better than the segment-level baselines.
-   On the calibration half (seed 0) it gets 17 fragments entirely wrong, against 36 for ASRF and 31 for the audited
-   B3. Its losses come from short runs of wrong labels at view changes and inside fragments, which split segments in
+3. **The error analysis points to one problem.** On constructed streams in the calibration half (seed 0), M4 gets
+   fewer fragments entirely wrong than the segment-level baselines: 17 against 36 for ASRF and 31 for the audited
+   B3. This is a constructed-stream result; M4 is not better at native-clip classification. Its losses come from short runs of wrong labels at view changes and inside fragments, which split segments in
    two.
 4. **One fix was trained for that problem: segment pooling (M5).** M5 averages the class evidence over each
    predicted segment, weighted by the predicted boundary probabilities. It raises segment F1 over M4 in every seed
    and on both halves (+5.5 to +13.3 points), and it cuts internal cuts by a factor of 7 to 10. The price is 1.8–3.4
    points of boundary recall on the selection half.
-5. **M5 reaches parity with the strongest baseline but does not beat it.** Over three seeds M5 averages 0.949
+5. **No consistent difference was detected between M5 and the strongest baseline, and M5 does not beat it.** This
+   is not evidence that the two are equivalent. Over three seeds M5 averages 0.949
    segment F1 on the calibration half and 0.917 on the selection half. ASRF averages 0.952 and 0.927. The audited and
    tuned B3 decoders on the encoder's probabilities reach 0.928–0.934 on both halves. No contrast between M5 and ASRF
    is consistent across seeds. The round therefore meets neither the 0.5-point expansion gate nor the 1-point
@@ -71,15 +75,17 @@ range, and B3 does not depend on the seed.
 
 What M5 gains:
 
-- It labels more samples correctly on constructed streams. In seed 0, 2.9% of stream samples are wrong for M5
+- On constructed streams only, it labels more samples correctly. This is a per-sample result. It does not carry
+  over to native-clip classification, where M5 is not better (see below). In seed 0, 2.9% of stream samples are wrong for M5
   against 4.9% for ASRF on the calibration half, and 6.5% against 9.3% on the selection half. M5 corrects 384 and
   507 stream samples that ASRF gets wrong and breaks 80 and 87.
 - Its boundary recall on the calibration half is higher in two of three seeds (+2.5, +0.5 and −0.3 points; not
   consistent).
 - It is consistently better than the adapted official MS-TCN (+2.7 to +5.3 points of segment F1 on both halves in
   every seed). M4 decoded by its own boundary segments is also consistently better than the tuned HMM.
-- It is smaller and faster: 380k parameters against 1.19M, and 0.007 ms per sample for the head against 0.137 ms for
-  ASRF's sequence-by-sequence official decoding.
+- It is smaller: 380k parameters against 1.19M. The head timings in section 7 (0.007 ms per sample against 0.137 ms)
+  are not a speed comparison. M5 was decoded in batches while ASRF ran one sequence at a time in its official
+  decoding, and neither figure includes the encoder. A speed claim needs the same batching and full-system timing.
 
 What M5 loses:
 
@@ -372,9 +378,10 @@ All rows share these costs.
 
 These options are not executed. The choice changes the plan's gate, so it is the project owner's decision.
 
-- **Stronger visual input.** Several different heads now land at the same ceiling, about 0.95 segment F1 on the
-  calibration half. Their remaining shared errors are whole A4C/A5C clips and fragments. More gain probably needs
-  better visual evidence, which is Task 5's EchoViewCLIP features with every comparator upgraded too. The plan starts
+- **Stronger visual input.** Several different heads land near 0.95 segment F1 on the calibration half. This is
+  not a demonstrated ceiling. Their remaining shared errors are whole A4C/A5C clips and fragments. That supports
+  checking the visual representation, but it does not rule out a mismatch between whole-clip labels and local
+  evidence. Testing it means Task 5's EchoViewCLIP features with every comparator upgraded too. The plan starts
   Task 5 only after a trend against the strongest comparator, and that trend was not seen.
 - **Better use of the boundary head.** Within the temporal head, the open question is whether the boundary
   information can beat ASRF's segment voting outright, not just match it. One option is training the boundary head

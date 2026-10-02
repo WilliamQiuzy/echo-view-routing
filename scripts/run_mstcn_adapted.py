@@ -23,7 +23,7 @@ def main() -> None:
     run_dir = new_run_dir(cfg, f"md_M0_lr{settings.lr:g}")
     inputs, ckpt_dir, device = prepare(args, cfg, "M0", settings, run_dir)
     repo = load_paths().repo_root / "third_party" / "ms-tcn"
-    head = MSTCNHead(repo, in_dim=int(inputs.train.streams[0].feat.shape[1]), **cfg["official_heads"]["mstcn"])
+    head = MSTCNHead(repo, in_dim=inputs.feature_dim, **cfg["official_heads"]["mstcn"])
     run("M0", head, inputs, cfg, settings, run_dir, ckpt_dir, device,
         extra_manifest={"upstream": {"repo": "yabufarha/ms-tcn", "commit": head.commit, "model": "MultiStageModel",
                                      "loss": "Trainer.train: CE + 0.15 clamped T-MSE per stage", **cfg["official_heads"]["mstcn"]}})

@@ -36,15 +36,15 @@ def main() -> None:
     ap.add_argument("--overfit", type=int, default=0)
     args = ap.parse_args(); cfg = load_cfg(args)
     v = cfg["variants"][args.variant]
-    model_cfg = {**cfg["boundary_context"], "use_path": bool(v["use_path"]), "fixed_gate": args.fixed_gate,
-                 "segment_pool": bool(args.segment_pool)}
     row = ({"plain": "M2p", "aux": "M3p", "full": "M5"}[args.variant] if args.segment_pool else ROWS[args.variant]) \
         + ("_fixedgate" if args.fixed_gate is not None else "") + ("_aug" if args.augment else "")
-    head = BoundaryContextHead(model_cfg, float(v["boundary_weight"]),
-                               name=f"boundary_context_{args.variant}{'_pool' if args.segment_pool else ''}")
     settings = settings_of(args, cfg)
     run_dir = new_run_dir(cfg, f"md_{row}{'_overfit' if args.overfit else ''}_lr{settings.lr:g}")
     inputs, ckpt_dir, device = prepare(args, cfg, row, settings, run_dir)
+    model_cfg = {**cfg["boundary_context"], "in_dim": inputs.feature_dim, "use_path": bool(v["use_path"]),
+                 "fixed_gate": args.fixed_gate, "segment_pool": bool(args.segment_pool)}
+    head = BoundaryContextHead(model_cfg, float(v["boundary_weight"]),
+                               name=f"boundary_context_{args.variant}{'_pool' if args.segment_pool else ''}")
     if args.overfit:
         res = overfit_check(head, list(inputs.train.streams[:args.overfit]), device, seed=settings.seed)
         (run_dir / "overfit.json").write_text(json.dumps({"row": row, "model_cfg": model_cfg, **res}, indent=1))

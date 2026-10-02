@@ -1,0 +1,55 @@
+# Round 2 (docs/superpowers/plans/2026-10-02-model-development-round2.md): visual input E1 (EchoViewCLIP stage-1
+# per-frame image encoder + a 5-class linear probe) against E0 (the v3 ResNet-18 and its own head). Fixed before any E1
+# training. Everything not set here is inherited unchanged from round 1 (boundary_context_v1 -> model_development_v1):
+# the protocol, both validation halves and their banks, the 1,500-stream training bank, labels, 10 Hz frame indices,
+# gamma variants, model structures, losses, optimiser, update budget, decoding grids and the checkpoint rule.
+extends: boundary_context_v1.yaml
+run_name: model_development_v2
+experiment: round2
+
+parent_protocol:                 # reused as is; never edited in place
+  path: runs/20261002-051140-model_development_protocol-fa45e7f4-s0/protocol.json
+  sha256: a897483b776e8cff1ba8b92774c6a82537758bcba6abd362f2d8603f37997593
+
+selection:
+  # fixed before round 2 (round-1 report, section 8): when no decoding setting meets both the native floor and the
+  # recall requirement, keep recall first, then the floor, then neither. Fallback rows stay flagged and never count
+  # as meeting the final goals.
+  fallback_order: [both, recall_only, native_floor_only, neither]
+
+reporting:
+  decodings: [default, b3]       # every method: its default decoding and the same B3 grid on its posteriors, as two rows
+  asrf_default: official refinement_with_boundary at boundary_th 0.5
+  no_new_decoder_families: true
+
+encoders:
+  E0: {name: v3 ResNet-18 + own head, cache_key: beb36d80df31,
+       feature_manifest: runs/20261002-053334-feature_manifest-6941483d-s0/feature_manifest.json}
+  E1: {name: EchoViewCLIP stage-1 image encoder + linear probe,
+       visual_checkpoint: models_frozen/echoviewclip_stage1/v1/best.pth,
+       visual_checkpoint_sha256: a74c7b233e79c67ca1d9b145f938283ed945378b4ccf3765d2bcc104f8dc0dfc,
+       layer: "model.image_encoder (CLIP ViT-B/16, ln_post(class token) @ proj), 512-d",
+       note: "trained by this project on EV9V train, 9 classes, selected on the historical validation split"}
+
+probe:                           # Task 3: frozen visual weights, linear 5-class head
+  lr: 0.001
+  weight_decay: 0.0001
+  batch_size: 256
+  max_epochs: 20
+  patience: 5
+  seed: 0
+  samples_per_clip: 16           # per epoch, spaced over the cached 10 Hz samples; with replacement for short clips
+  clips_per_epoch: null          # null = number of training clips, drawn class-balanced with replacement (as v3)
+  select_on: selection           # native macro-F1, 10 Hz majority vote; calibration never chooses probe weights
+
+joint_finetune:                  # Task 5b, only if its pre-registered start condition holds
+  start_condition: "(A or B) and C (round-2 plan, Task 5b)"
+  candidate_rule: "higher 3-seed mean selection-half default-decoding segment F1@50 of M3p and M5; M3p if the gap < 0.005"
+  unfreeze: [image_encoder.transformer.resblocks.11, image_encoder.ln_post, image_encoder.proj]
+  backbone_lr: 0.00001
+  head_lr: 0.0001
+  weight_decay: 0.0001
+  max_epochs: 10
+  patience: 3
+  effective_batch: 8             # the whole round-1 batch per update; the encoder's trainable part runs in checkpointed
+                                 # chunks, so no gradient accumulation is used (scripts/train_joint_visual_temporal.py)

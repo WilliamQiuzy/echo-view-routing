@@ -65,7 +65,8 @@ def apply(family: str, params: dict, post: dict) -> dict[str, np.ndarray]:
 
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--runs", required=True, help="row=run_dir;row=run_dir")
+    ap.add_argument("--runs", default="", help="row=run_dir;row=run_dir")
+    ap.add_argument("--pred-dirs", default="", help="row=dir;... prediction directories (<stream id>.npz with prob), e.g. B7")
     ap.add_argument("--feature-manifest", required=True); ap.add_argument("--protocol", required=True)
     ap.add_argument("-c", "--config", default="configs/experiments/boundary_context_v1.yaml")
     ap.add_argument("--tag", default="", help="run-name tag (default: the first row)")
@@ -76,26 +77,34 @@ def main() -> None:
     base = {h: inputs.frame_majority(inputs.halves[h], hz, tol_s) for h in HALVES}
     floor = base["calibration"]["native_macro_f1"] - float(sc["native_f1_tolerance"])
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    in_dim = int(inputs.train.streams[0].feat.shape[1])
-    first = args.runs.split(";")[0].partition("=")[0].strip()
+    in_dim = inputs.feature_dim
+    first = (args.runs or args.pred_dirs).split(";")[0].partition("=")[0].strip()
     run_dir = new_run_dir(cfg, f"md_posterior_decoders_{args.tag or first}")   # distinct names for parallel runs
     results, grid_rows = {}, []
-    for item in filter(None, args.runs.split(";")):
+    sources = [(i, "run") for i in filter(None, args.runs.split(";"))] + [(i, "pred") for i in filter(None, args.pred_dirs.split(";"))]
+    for item, kind in sources:
         row, _, rd = item.partition("="); rd = Path(rd.strip()); row = row.strip()
-        man = json.loads((rd / "run_manifest.json").read_text())
-        head = head_from_manifest(man, paths.repo_root, in_dim, device)
-        model = head.build().to(device); model.load_state_dict(torch.load(man["checkpoints"]["best"], map_location=device))
-        post = {h: head.decode(model, inputs.halves[h].sequences(), device) for h in HALVES}
-        has_b = "boundary_prob" in next(iter(post["calibration"].values())) and man.get("boundary_weight", 1.0) != 0.0
+        if kind == "pred":   # an external system's per-stream probabilities; no boundary output
+            post = {h: {s.seq_id: {"prob": np.load(rd / f"{s.seq_id}.npz")["prob"]} for s in inputs.halves[h].sequences()} for h in HALVES}
+            has_b = False
+        else:
+            man = json.loads((rd / "run_manifest.json").read_text())
+            head = head_from_manifest(man, paths.repo_root, in_dim, device)
+            model = head.build().to(device); model.load_state_dict(torch.load(man["checkpoints"]["best"], map_location=device))
+            post = {h: head.decode(model, inputs.halves[h].sequences(), device) for h in HALVES}
+            has_b = "boundary_prob" in next(iter(post["calibration"].values())) and man.get("boundary_weight", 1.0) != 0.0
         cal_nat = [post["calibration"][s.seq_id]["prob"] for s in inputs.halves["calibration"].natives]
+        # native floor: each system's own frame-level majority vote (an external system's argmax; else the encoder's)
+        row_floor = floor if kind == "run" else evaluate_predictions(apply("argmax", {}, post["calibration"]), inputs.halves["calibration"],
+                                                                         hz, tol_s)[0]["native_macro_f1"] - float(sc["native_f1_tolerance"])
         recs = []
         for i, (fam, params) in enumerate(decoders(cfg, cal_nat, has_b)):
             m, _ = evaluate_predictions(apply(fam, params, post["calibration"]), inputs.halves["calibration"], hz, tol_s)
             recs.append({"order": i, "family": fam, "params": params, **{k: m[k] for k in FLAT}})
         grid_rows += [{"row": row, **r, "params": json.dumps(r["params"])} for r in recs]
-        results[row] = {"run_dir": str(rd), "families": {}}
+        results[row] = {"run_dir": str(rd), "source": kind, "floor_calibration": row_floor, "families": {}}
         for fam in sorted({r["family"] for r in recs}):
-            op = select_operating_point([r for r in recs if r["family"] == fam], floor, float(sc["boundary_recall_min"]), float(sc["tie_margin"]))
+            op = select_operating_point([r for r in recs if r["family"] == fam], row_floor, float(sc["boundary_recall_min"]), float(sc["tie_margin"]))
             entry = {"status": op["status"], "params": op["main"]["params"]}
             for h in HALVES:
                 m, tables = evaluate_predictions(apply(fam, op["main"]["params"], post[h]), inputs.halves[h], hz, tol_s)

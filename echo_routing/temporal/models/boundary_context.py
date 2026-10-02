@@ -169,9 +169,11 @@ class BoundaryContextNet(nn.Module):
         else:
             g = torch.full_like(local_logits[..., :1], float(self.cfg.fixed_gate))
         logits = (1.0 - g) * local_logits + g * ctx_logits
+        mixed = logits
         if self.cfg.segment_pool:
             logits = segment_pool(torch.log_softmax(logits, dim=-1), full_path, valid)
         vm = valid[..., None].to(logits.dtype)
+        # mixed_logits (before segment pooling) is a diagnostic field only; class_logits is the model output
         return {"class_logits": (logits * vm).transpose(1, 2), "local_logits": (local_logits * vm).transpose(1, 2),
                 "context_logits": (ctx_logits * vm).transpose(1, 2), "boundary_logits": b_logits[:, None, :],
-                "gate": (g * vm).transpose(1, 2)}
+                "gate": (g * vm).transpose(1, 2), "mixed_logits": (mixed * vm).transpose(1, 2)}

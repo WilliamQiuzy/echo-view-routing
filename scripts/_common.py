@@ -47,6 +47,14 @@ def new_run_dir(cfg: dict[str, Any], name: str | None = None) -> Path:
     stamp = dt.datetime.now().strftime("%Y%m%d-%H%M%S")
     run_id = f"{stamp}-{name or cfg.get('run_name', 'run')}-{config_hash(cfg)}-s{cfg.get('seed', 0)}"
     run_dir = paths.runs_root / run_id
-    run_dir.mkdir(parents=True, exist_ok=True)
+    paths.runs_root.mkdir(parents=True, exist_ok=True)
+    for k in range(2, 1000):  # jobs started in the same second must never share a directory
+        try:
+            run_dir.mkdir()
+            break
+        except FileExistsError:
+            run_dir = paths.runs_root / f"{run_id}-{k}"
+    else:
+        raise FileExistsError(f"no free run directory for {run_id}")
     (run_dir / "config.resolved.yaml").write_text(yaml.safe_dump(cfg, sort_keys=False))
     return run_dir
