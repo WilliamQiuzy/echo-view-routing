@@ -1,0 +1,227 @@
+{
+  "version": 1,
+  "frame_order": "numeric-2026-09-30",
+  "classes": [
+    "PLAX",
+    "PSAX",
+    "A4C",
+    "A5C",
+    "SC4C"
+  ],
+  "sample_hz": 10,
+  "tolerance_seconds": 0.5,
+  "summary": {
+    "STFM": {
+      "cuts": 101,
+      "clips_with_switches": 49,
+      "matched": 333,
+      "true": 379
+    },
+    "EchoViewCLIP": {
+      "cuts": 78,
+      "clips_with_switches": 37,
+      "matched": 361,
+      "true": 379
+    }
+  },
+  "cases": [
+    {
+      "id": "native-switches",
+      "case_id": "EV-f1e11e81",
+      "kind": "native",
+      "file": "native-switches.mp4",
+      "poster": "native-switches.jpg",
+      "duration": 14.4,
+      "reference": [
+        {
+          "start": 0.0,
+          "end": 14.4,
+          "label": "A5C"
+        }
+      ],
+      "boundaries": [],
+      "joins": [],
+      "methods": {
+        "STFM": {
+          "segments": [
+            {
+              "start": 0.0,
+              "end": 5.0,
+              "label": "A5C"
+            },
+            {
+              "start": 5.0,
+              "end": 5.5,
+              "label": "A4C"
+            },
+            {
+              "start": 5.5,
+              "end": 14.4,
+              "label": "A5C"
+            }
+          ],
+          "switch_times": [
+            5.0,
+            5.5
+          ],
+          "majority": "A5C",
+          "missed_boundaries": []
+        },
+        "EchoViewCLIP": {
+          "segments": [
+            {
+              "start": 0.0,
+              "end": 1.0,
+              "label": "A5C"
+            },
+            {
+              "start": 1.0,
+              "end": 2.0,
+              "label": "A4C"
+            },
+            {
+              "start": 2.0,
+              "end": 3.5,
+              "label": "A5C"
+            },
+            {
+              "start": 3.5,
+              "end": 4.0,
+              "label": "A4C"
+            },
+            {
+              "start": 4.0,
+              "end": 5.0,
+              "label": "A5C"
+            },
+            {
+              "start": 5.0,
+              "end": 6.0,
+              "label": "A4C"
+            },
+            {
+              "start": 6.0,
+              "end": 8.5,
+              "label": "A5C"
+            },
+            {
+              "start": 8.5,
+              "end": 9.5,
+              "label": "A4C"
+            },
+            {
+              "start": 9.5,
+              "end": 14.4,
+              "label": "A5C"
+            }
+          ],
+          "switch_times": [
+            1.0,
+            2.0,
+            3.5,
+            4.0,
+            5.0,
+            6.0,
+            8.5,
+            9.5
+          ],
+          "majority": "A5C",
+          "missed_boundaries": []
+        }
+      },
+      "video_sha256": "ed869d89d9f6069b70f69ef2dba5f5ebf11b60e534e7e4f26ca8ec234bdb193f",
+      "prediction_sha256": {
+        "STFM": "fd670b127ff6c27bb2c97784ed93cc309c25e41224f42eecb89c1d2417d1300a",
+        "EchoViewCLIP": "729c153f79526f0b6717cb46ea89c410504d12758a48ff3923cbdab9616b1a74"
+      }
+    },
+    {
+      "id": "missed-transition",
+      "case_id": "multi_test_0033",
+      "kind": "constructed",
+      "file": "missed-transition.mp4",
+      "poster": "missed-transition.jpg",
+      "duration": 11.1,
+      "reference": [
+        {
+          "start": 0.0,
+          "end": 1.4,
+          "label": "A4C"
+        },
+        {
+          "start": 1.4,
+          "end": 3.2,
+          "label": "A5C"
+        },
+        {
+          "start": 3.2,
+          "end": 11.1,
+          "label": "SC4C"
+        }
+      ],
+      "boundaries": [
+        1.4,
+        3.2
+      ],
+      "joins": [
+        1.4,
+        3.2,
+        6.2,
+        9.6
+      ],
+      "methods": {
+        "STFM": {
+          "segments": [
+            {
+              "start": 0.0,
+              "end": 3.0,
+              "label": "A5C"
+            },
+            {
+              "start": 3.0,
+              "end": 11.1,
+              "label": "SC4C"
+            }
+          ],
+          "switch_times": [
+            3.0
+          ],
+          "majority": "SC4C",
+          "missed_boundaries": [
+            1.4
+          ]
+        },
+        "EchoViewCLIP": {
+          "segments": [
+            {
+              "start": 0.0,
+              "end": 3.0,
+              "label": "A5C"
+            },
+            {
+              "start": 3.0,
+              "end": 11.1,
+              "label": "SC4C"
+            }
+          ],
+          "switch_times": [
+            3.0
+          ],
+          "majority": "SC4C",
+          "missed_boundaries": [
+            1.4
+          ]
+        }
+      },
+      "video_sha256": "eb8d91f461e5ee63f12a227b23b76642b7bb9c91e5694ca36ab5358514637643",
+      "prediction_sha256": {
+        "STFM": "8795e682ec36dbc3a00683bfdc35ce9ca74644b1232153b5491118e0148db3aa",
+        "EchoViewCLIP": "8e62cca689842155fa21f63e8e23f713c629bd2d604ac4bc15ad83f008d9a7de"
+      }
+    }
+  ],
+  "recipe_sha256": "f81f26d03db51426dc538e7b8da6b20753b5eaabfe583b68a56b7afeed29c259",
+  "export_script_sha256": "b6be5821d7d809b2a1e10073451d1ae3c84daf5e88b505956d320eb123df2873",
+  "selection": "Illustrative failure cases selected after inspecting existing predictions; not representative sampling.",
+  "source": "EV9V / bgx666, CC BY 4.0; constructed case includes the recorded gamma=0.9 edits."
+}
