@@ -1,7 +1,13 @@
-"""Training loop for the ResNet-18 frame classifier (B0 encoder). Resumable; checkpoints every epoch."""
+"""Training loop for the ResNet-18 frame classifier (B0 encoder). Resumable; checkpoints every epoch.
+
+Training workers are restarted every epoch (persistent_workers=False) so that each epoch's resampled frames reach them.
+With `val_clip_ids` (a protocol's checkpoint-selection clips) validation uses every 10 Hz sample and the clip-level
+majority vote of the final evaluation; without it the legacy rule (16 spaced frames, summed probabilities) is kept."""
 from __future__ import annotations
 
+import hashlib
 import json
+import random
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -15,7 +21,7 @@ from torch.utils.data import DataLoader
 
 from echo_routing.config import gpu_memory_fraction
 from echo_routing.ingest.frames import VideoRecord
-from echo_routing.features.dataset import EpochFrameDataset, FixedFrameDataset
+from echo_routing.features.dataset import EpochFrameDataset, FixedFrameDataset, RateFrameDataset
 from echo_routing.evaluate.metrics import classification_summary
 from echo_routing.audit.label_map import LabelOntology
 from echo_routing.manifest import task_subset
@@ -63,7 +69,9 @@ def records_from_manifest(df: pd.DataFrame, task: str, split: str) -> list[Video
 
 
 def setup_device(seed: int) -> torch.device:
+    random.seed(seed)
     torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
     np.random.seed(seed)
     if torch.cuda.is_available():
         torch.cuda.set_per_process_memory_fraction(gpu_memory_fraction())
@@ -95,25 +103,58 @@ def evaluate(model: FrameEncoder, loader: DataLoader, device, num_classes: int, 
     return {"frame": frame, "cine": cine}
 
 
+@torch.no_grad()
+def evaluate_vote(model: FrameEncoder, loader: DataLoader, device, num_classes: int, records) -> dict[str, Any]:
+    """Per-sample argmax over every 10 Hz sample; clip label = majority vote (ties to the lower class index)."""
+    model.eval()
+    preds, ys, vids = [], [], []
+    for x, y, v in loader:
+        with torch.autocast(device_type=device.type, dtype=torch.bfloat16, enabled=device.type == "cuda"):
+            logits = model(x.to(device, non_blocking=True))
+        preds.append(logits.float().argmax(1).cpu().numpy()); ys.append(y.numpy()); vids.append(v.numpy())
+    pred = np.concatenate(preds); y = np.concatenate(ys); vid = np.concatenate(vids)
+    votes = np.zeros((len(records), num_classes)); np.add.at(votes, (vid, pred), 1)
+    cine_y = np.array([r.label_index for r in records])
+    return {"frame": classification_summary(y, pred, num_classes), "cine": classification_summary(cine_y, votes.argmax(1), num_classes),
+            "rule": "10 Hz samples, clip majority vote"}
+
+
+def train_loader_kwargs(num_workers: int, cuda: bool) -> dict[str, Any]:
+    """Fresh workers every epoch, so EpochFrameDataset.resample() reaches them."""
+    return dict(num_workers=num_workers, pin_memory=cuda, persistent_workers=False)
+
+
+def param_digest(model: torch.nn.Module) -> str:
+    return hashlib.sha256(b"".join(p.detach().cpu().numpy().tobytes() for p in model.parameters())).hexdigest()
+
+
 def train(cfg: TrainConfig, manifest: pd.DataFrame, ontology: LabelOntology, out_dir: Path,
-          resume: Path | None = None) -> Path:
+          resume: Path | None = None, val_clip_ids: list[str] | None = None) -> Path:
     out_dir = Path(out_dir); out_dir.mkdir(parents=True, exist_ok=True)
     classes = ontology.classes(cfg.task); num_classes = len(classes)
     device = setup_device(cfg.seed)
     train_recs = records_from_manifest(manifest, cfg.task, "train")
     val_recs = records_from_manifest(manifest, cfg.task, "validation")
+    if val_clip_ids is not None:
+        keep = set(val_clip_ids); val_recs = [r for r in val_recs if r.video_id in keep]
+        if len(val_recs) != len(keep):
+            raise RuntimeError(f"protocol lists {len(keep)} validation clips, {len(val_recs)} found in the manifest")
     if not train_recs or not val_recs:
         raise RuntimeError("no training/validation records with frames on disk; build the manifest first")
     train_ds = EpochFrameDataset(train_recs, cfg.frames_per_video, cfg.image_size, cfg.videos_per_epoch, cfg.seed, augment=True)
-    val_ds = FixedFrameDataset(val_recs, cfg.eval_frames_per_video, cfg.image_size)
-    dl_kw = dict(num_workers=cfg.num_workers, pin_memory=device.type == "cuda", persistent_workers=cfg.num_workers > 0)
-    train_dl = DataLoader(train_ds, batch_size=cfg.batch_size, shuffle=True, drop_last=True, **dl_kw)
-    val_dl = DataLoader(val_ds, batch_size=cfg.batch_size * 2, shuffle=False, **dl_kw)
+    val_ds = RateFrameDataset(val_recs, cfg.image_size) if val_clip_ids is not None else FixedFrameDataset(val_recs, cfg.eval_frames_per_video, cfg.image_size)
+    train_dl = DataLoader(train_ds, batch_size=cfg.batch_size, shuffle=True, drop_last=True,
+                          **train_loader_kwargs(cfg.num_workers, device.type == "cuda"))
+    val_dl = DataLoader(val_ds, batch_size=cfg.batch_size * 2, shuffle=False, num_workers=cfg.num_workers,
+                        pin_memory=device.type == "cuda", persistent_workers=cfg.num_workers > 0)
+    run_eval = evaluate_vote if val_clip_ids is not None else evaluate
 
     model = FrameEncoder(num_classes, cfg.backbone, pretrained=True).to(device)
     opt = torch.optim.AdamW(model.parameters(), lr=cfg.lr, weight_decay=cfg.weight_decay)
     sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, T_max=cfg.epochs)
     weights = class_weights(train_recs, num_classes).to(device)
+    init_sha = param_digest(model)
+    (out_dir / "init_digest.txt").write_text(f"seed {cfg.seed}\ninit_sha256 {init_sha}\n")
     start_epoch, best_score, bad_epochs = 0, -1.0, 0
     if resume and Path(resume).is_file():
         model, meta = load_checkpoint(resume, map_location=str(device)); model.to(device)
@@ -121,16 +162,21 @@ def train(cfg: TrainConfig, manifest: pd.DataFrame, ontology: LabelOntology, out
         start_epoch, best_score = int(meta["epoch"]) + 1, float(meta.get("best_score", -1.0))
     log_path = out_dir / "train_log.jsonl"
     for epoch in range(start_epoch, cfg.epochs):
-        train_ds.resample(epoch); model.train(); t0 = time.time(); losses = []
-        for x, y, _ in train_dl:
+        train_ds.resample(epoch); model.train(); t0 = time.time(); losses = []; order = hashlib.sha256(); seen = set()
+        for x, y, v, f in train_dl:
+            if epoch < 2:  # sample-order digest from what the workers actually returned
+                order.update(np.stack([v.numpy(), f.numpy()]).astype(np.int64).tobytes()); seen.update(zip(v.tolist(), f.tolist()))
             x, y = x.to(device, non_blocking=True), y.to(device, non_blocking=True)
             with torch.autocast(device_type=device.type, dtype=torch.bfloat16, enabled=cfg.amp and device.type == "cuda"):
                 loss = F.cross_entropy(model(x).float(), y, weight=weights)
             opt.zero_grad(set_to_none=True); loss.backward(); opt.step(); losses.append(loss.item())
         sched.step()
-        metrics = evaluate(model, val_dl, device, num_classes, val_recs)
+        metrics = run_eval(model, val_dl, device, num_classes, val_recs)
         score = metrics["cine"]["macro_f1"]
-        rec = {"epoch": epoch, "train_loss": float(np.mean(losses)), "val": metrics, "seconds": time.time() - t0, "lr": sched.get_last_lr()[0]}
+        rec = {"epoch": epoch, "train_loss": float(np.mean(losses)), "val": metrics, "seconds": time.time() - t0, "lr": sched.get_last_lr()[0],
+               "init_sha256": init_sha}
+        if epoch < 2:
+            rec["sample_order_sha256"] = order.hexdigest(); rec["distinct_samples"] = len(seen)
         with log_path.open("a") as fh: fh.write(json.dumps(rec) + "\n")
         print(json.dumps({k: rec[k] for k in ("epoch", "train_loss", "seconds")} | {"val_cine_macro_f1": score, "val_frame_acc": metrics["frame"]["accuracy"]}), flush=True)
         extra = {"epoch": epoch, "optimizer": opt.state_dict(), "scheduler": sched.state_dict(), "best_score": max(best_score, score),

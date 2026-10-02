@@ -1,0 +1,33 @@
+# Round-1 temporal heads on the shared v3 features (docs/superpowers/plans/2026-10-02-model-development.md, Tasks 3-4).
+# Data, optimiser, update budget and checkpoint rule come from model_development_v1.yaml (temporal_training, selection)
+# and are the same for M0-M4. Each update reads batch_size/2 training streams and batch_size/2 native windows.
+extends: model_development_v1.yaml
+run_name: boundary_context_v1
+seed: 0
+
+boundary_context:                # first version of the new model (Task 3)
+  in_dim: 512
+  dim: 128
+  num_classes: 5
+  dilations: [1, 2, 4]
+  dropout: 0.2
+  heads: 4
+  radius: 20                     # samples on each side (about 4 s span at 10 Hz)
+  path_coef: 1.0                 # fixed in the first version
+
+variants:                        # Task 4 rows of the new model; same modules and initial weights for one seed
+  plain: {use_path: false, boundary_weight: 0.0}   # M2: local attention + gate, no boundary loss, no path term
+  aux: {use_path: false, boundary_weight: 0.2}     # M3: M2 + boundary auxiliary loss, attention does not read b
+  full: {use_path: true, boundary_weight: 0.2}     # M4: attention reads the predicted boundaries
+
+official_heads:                  # M0 / M1: authors' classes and losses, pinned commits; shared training recipe
+  mstcn: {num_stages: 4, num_layers: 10, num_f_maps: 64}
+  asrf: {lambda_b: 0.1, boundary_th: 0.5}
+
+augment:                         # second step only (Task 4), for M1 and M4 together; evaluation inputs stay unperturbed
+  feature_mask: {stream_prob: 0.3, span: [3, 8], max_fraction: 0.2, min_gap_to_change: 5}
+
+posterior_decoding:              # decoders on learned posteriors (diagnostic of round 1). The HMM and B3 grids are the
+  # decode_grids above; the boundary-segment grid was written into scripts/posterior_decoders.py before its first run
+  # (seed 0) and is fixed here before seeds 1-2. Settings are chosen on the calibration half by the shared rule.
+  bseg: {threshold: [0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9], nms_radius: [5]}

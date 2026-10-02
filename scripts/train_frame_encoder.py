@@ -18,6 +18,7 @@ def main() -> None:
     ap = base_parser("Train frame encoder")
     ap.add_argument("--resume", default=None, help="path to last.pt to resume from")
     ap.add_argument("--run-dir", default=None, help="reuse an existing run dir (with --resume)")
+    ap.add_argument("--protocol", default=None, help="protocol.json; validate on its checkpoint-selection clips by 10 Hz majority vote")
     args = ap.parse_args()
     cfg = load_cfg(args)
     paths = load_paths()
@@ -30,9 +31,18 @@ def main() -> None:
         "eval_frames_per_video": cfg["sampling"]["eval_frames_per_video"], "amp": enc["amp"],
     })
     run_dir = Path(args.run_dir) if args.run_dir else new_run_dir(cfg)
+    val_clip_ids = None
+    if args.protocol:
+        import hashlib, json
+        raw = Path(args.protocol).read_bytes(); proto = json.loads(raw)
+        val_clip_ids = proto["validation"]["selection"]["clips"]
+        (run_dir / "run_manifest.json").write_text(json.dumps({
+            "protocol": str(args.protocol), "protocol_sha256": hashlib.sha256(raw).hexdigest(),
+            "validation": "checkpoint-selection half, every 10 Hz sample, clip majority vote",
+            "n_validation_clips": len(val_clip_ids), "config": cfg, "seed": cfg["seed"]}, indent=1, default=str))
     ckpt_dir = paths.checkpoints_root / run_dir.name
     print(f"run_dir={run_dir}\nckpt_dir={ckpt_dir}\n{tcfg}", flush=True)
-    best = train(tcfg, load_manifest(paths.manifest_path), load_ontology(), ckpt_dir, resume=args.resume)
+    best = train(tcfg, load_manifest(paths.manifest_path), load_ontology(), ckpt_dir, resume=args.resume, val_clip_ids=val_clip_ids)
     (run_dir / "best_checkpoint.txt").write_text(str(best))
     print(f"best checkpoint: {best}")
 

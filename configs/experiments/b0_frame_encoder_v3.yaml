@@ -1,0 +1,21 @@
+# B0 v3 (model development round 1, Task 2): retrained on correctly ordered frames with the per-epoch resampling fix.
+# Same recipe as the original B0; checkpoint selection on the protocol's selection half by 10 Hz clip majority vote.
+extends: ../base.yaml
+run_name: b0_frame_encoder_v3
+seed: 0
+preprocess:
+  image_size: 224
+sampling:
+  train_frames_per_video: 16
+  eval_frames_per_video: 16
+encoder:
+  backbone: resnet18
+  pretrained: true
+  lr: 0.0003
+  weight_decay: 0.0001
+  batch_size: 64
+  epochs: 30
+  patience: 6
+  num_workers: 6
+  amp: true
+  videos_per_epoch: null

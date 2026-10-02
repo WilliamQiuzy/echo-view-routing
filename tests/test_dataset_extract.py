@@ -32,8 +32,8 @@ def test_epoch_dataset_balanced_and_resampled(tiny_images):
     _, recs = tiny_images
     ds = EpochFrameDataset(recs, frames_per_video=4, image_size=32, videos_per_epoch=6, seed=0, augment=True)
     assert len(ds) == 6 * 4
-    x, y, v = ds[0]
-    assert x.shape == (3, 32, 32) and y in (0, 1) and 0 <= v < 3
+    x, y, v, f = ds[0]
+    assert x.shape == (3, 32, 32) and y in (0, 1) and 0 <= v < 3 and f >= 0
     before = [(s.video_idx, s.frame_idx) for s in ds.samples]
     ds.resample(1)
     assert [(s.video_idx, s.frame_idx) for s in ds.samples] != before
