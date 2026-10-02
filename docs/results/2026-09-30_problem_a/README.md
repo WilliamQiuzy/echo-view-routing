@@ -1,5 +1,10 @@
 # Problem A, round 1: phase correspondence against same-budget pooling (2026-09-30)
 
+> **Correction (2026-10-01).** In this document the EV9V "patient groups" or "presumed patient groups" are
+> recording sessions, inferred from a file-name prefix that is a timestamp shared by the clips of one session.
+> Sessions never cross a data split, but patient identities are unavailable, so patient overlap across sessions or
+> splits cannot be assessed. The numbers are unchanged; only the description of the grouping changes.
+
 **Question.** Does comparing the same cardiac phase across adjacent cycles reduce extra cuts at a fixed recall of label
 changes? And if it does, is the gain due to the phase correspondence, or just to pooling several frames?
 

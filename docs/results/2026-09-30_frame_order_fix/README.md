@@ -1,5 +1,10 @@
 # Frame-order fix and objective checks (2026-09-30)
 
+> **Correction (2026-10-01).** In this document the EV9V "patient groups" or "presumed patient groups" are
+> recording sessions, inferred from a file-name prefix that is a timestamp shared by the clips of one session.
+> Sessions never cross a data split, but patient identities are unavailable, so patient overlap across sessions or
+> splits cannot be assessed. The numbers are unchanged; only the description of the grouping changes.
+
 The defect is described and verified in `docs/results/2026-09-30_realvideo_round1/` §0. In short, EV9V names frames
 without zero padding, and our loader sorted them as text. Each clip was therefore read in a shuffled order, and
 sampling by position picked different frames than intended. This page records the fix, what was rerun, and the

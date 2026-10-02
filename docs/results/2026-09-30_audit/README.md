@@ -1,5 +1,10 @@
 # Corrected EV9V reproduction and evaluation audit (2026-09-30)
 
+> **Correction (2026-10-01).** In this document the EV9V "patient groups" or "presumed patient groups" are
+> recording sessions, inferred from a file-name prefix that is a timestamp shared by the clips of one session.
+> Sessions never cross a data split, but patient identities are unavailable, so patient overlap across sessions or
+> splits cannot be assessed. The numbers are unchanged; only the description of the grouping changes.
+
 This round follows `docs/research_plan.md` ("问题 A 第一轮后的决定"). It delivers three tables:
 
 1. a corrected model comparison;

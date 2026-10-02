@@ -2,9 +2,11 @@
 """Per-seed true-order comparison (paper Table 3 / S4 Table), from three runs of scripts/true_order_joint.py that use
 the MS-TCN of seed 0, 1 and 2 (trained in true order) as the paired reference.
 
-For every method and endpoint it prints method minus MS-TCN seed s with the 95% interval, and a verdict: "higher" or
-"lower in all seeds" when every interval excludes zero on the same side, "no difference in any seed" when every
-interval includes zero, and "seed-dependent" otherwise.
+For every method and endpoint it prints method minus MS-TCN seed s with the 95% interval and a category: "consistently
+higher" or "consistently lower" when all three intervals exclude zero on the same side, otherwise "no consistent
+difference detected" (not evidence of equivalence), with the per-seed pattern (+, -, 0) appended. It also prints the
+direct contrasts between the MS-TCN seeds, which are the evidence for saying that a result varies with the training
+seed. Every interval is conditional on one trained model, and all seeds share the same test data.
 """
 from __future__ import annotations
 
@@ -21,12 +23,10 @@ METHODS = ["B1 smoothing", "B2 HMM", "B3 change points, default", "B3 change poi
 def verdict(xs: list[tuple[float, list[float]]]) -> str:
     sig = [(lo > 0) - (hi < 0) for _, (lo, hi) in xs]
     if all(v == 1 for v in sig):
-        return "higher in all seeds"
+        return "consistently higher"
     if all(v == -1 for v in sig):
-        return "lower in all seeds"
-    if all(v == 0 for v in sig):
-        return "no difference in any seed"
-    return "seed-dependent " + "".join({1: "+", -1: "-", 0: "0"}[v] for v in sig)
+        return "consistently lower"
+    return "no consistent difference detected (" + "".join({1: "+", -1: "-", 0: "0"}[v] for v in sig) + ")"
 
 
 def main() -> None:
@@ -46,6 +46,13 @@ def main() -> None:
                 name = f"MS-TCN seed {s} (shuffle-trained)" if m.startswith("shuffle") else m
                 x = J[s]["endpoints"][name][e]; xs.append((x["diff"], x["diff_ci95"]))
             print(f"{m:40s} " + " | ".join("%+.3f [%+.3f, %+.3f]" % (d, lo, hi) for d, (lo, hi) in xs) + "  -> " + verdict(xs))
+    print("\n## direct contrasts between MS-TCN seeds (true-trained, true test)")
+    for ref in seeds:
+        for o in seeds:
+            if o <= ref:
+                continue
+            row = J[ref]["endpoints"][own[o]]
+            print(f"seed {o} - seed {ref}: " + " | ".join("%s %+.3f [%+.3f, %+.3f]" % (e, row[e]["diff"], *row[e]["diff_ci95"]) for e in EPS))
 
 
 if __name__ == "__main__":

@@ -1,5 +1,10 @@
 # Real-video round 1 (2026-09-30)
 
+> **Correction (2026-10-01).** In this document the EV9V "patient groups" or "presumed patient groups" are
+> recording sessions, inferred from a file-name prefix that is a timestamp shared by the clips of one session.
+> Sessions never cross a data split, but patient identities are unavailable, so patient overlap across sessions or
+> splits cannot be assessed. The numbers are unchanged; only the description of the grouping changes.
+
 Follow-up checks and the frame-order fix are in `docs/results/2026-09-30_frame_order_fix/`. There are currently no
 independent echo experts, so the blinded pilot in §4 is on hold.
 

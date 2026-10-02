@@ -9,89 +9,94 @@ same-class cut rate, multi s0 0.109 [0.066, 0.155] | s1 0.079 [0.044, 0.119] | s
 native cuts per clip s0 0.144 [0.091, 0.202] | s1 0.094 [0.056, 0.136] | s2 0.130 [0.080, 0.185]
 
 ## clip macro-F1: method minus MS-TCN seed s (true-trained, true test)
-B1 smoothing                             +0.002 [-0.012, +0.019] | +0.018 [-0.006, +0.043] | +0.022 [+0.009, +0.037]  -> seed-dependent 00+
-B2 HMM                                   -0.005 [-0.021, +0.011] | +0.011 [-0.016, +0.037] | +0.015 [+0.001, +0.028]  -> seed-dependent 00+
-B3 change points, default                -0.002 [-0.020, +0.018] | +0.014 [-0.010, +0.039] | +0.018 [+0.000, +0.037]  -> no difference in any seed
-B3 change points, audited                -0.014 [-0.032, +0.002] | +0.002 [-0.029, +0.030] | +0.006 [-0.007, +0.016]  -> no difference in any seed
-B4 MS-TCN v2                             +0.002 [-0.008, +0.014] | +0.018 [-0.005, +0.040] | +0.022 [+0.003, +0.041]  -> seed-dependent 00+
-B5 ASFormer v2                           +0.011 [-0.003, +0.027] | +0.027 [+0.009, +0.046] | +0.031 [+0.011, +0.050]  -> seed-dependent 0++
-B6 STFM windowed, numeric-order model    +0.015 [-0.007, +0.036] | +0.031 [-0.002, +0.061] | +0.035 [+0.011, +0.057]  -> seed-dependent 00+
-B7 EchoViewCLIP windowed                 +0.027 [+0.006, +0.052] | +0.043 [+0.015, +0.074] | +0.047 [+0.027, +0.070]  -> higher in all seeds
-shuffle-trained, same seed               +0.007 [-0.004, +0.020] | +0.017 [-0.003, +0.039] | +0.015 [-0.008, +0.036]  -> no difference in any seed
+B1 smoothing                             +0.002 [-0.012, +0.019] | +0.018 [-0.006, +0.043] | +0.022 [+0.009, +0.037]  -> no consistent difference detected (00+)
+B2 HMM                                   -0.005 [-0.021, +0.011] | +0.011 [-0.016, +0.037] | +0.015 [+0.001, +0.028]  -> no consistent difference detected (00+)
+B3 change points, default                -0.002 [-0.020, +0.018] | +0.014 [-0.010, +0.039] | +0.018 [+0.000, +0.037]  -> no consistent difference detected (000)
+B3 change points, audited                -0.014 [-0.032, +0.002] | +0.002 [-0.029, +0.030] | +0.006 [-0.007, +0.016]  -> no consistent difference detected (000)
+B4 MS-TCN v2                             +0.002 [-0.008, +0.014] | +0.018 [-0.005, +0.040] | +0.022 [+0.003, +0.041]  -> no consistent difference detected (00+)
+B5 ASFormer v2                           +0.011 [-0.003, +0.027] | +0.027 [+0.009, +0.046] | +0.031 [+0.011, +0.050]  -> no consistent difference detected (0++)
+B6 STFM windowed, numeric-order model    +0.015 [-0.007, +0.036] | +0.031 [-0.002, +0.061] | +0.035 [+0.011, +0.057]  -> no consistent difference detected (00+)
+B7 EchoViewCLIP windowed                 +0.027 [+0.006, +0.052] | +0.043 [+0.015, +0.074] | +0.047 [+0.027, +0.070]  -> consistently higher
+shuffle-trained, same seed               +0.007 [-0.004, +0.020] | +0.017 [-0.003, +0.039] | +0.015 [-0.008, +0.036]  -> no consistent difference detected (000)
 
 ## segment F1@50, multi: method minus MS-TCN seed s (true-trained, true test)
-B1 smoothing                             -0.001 [-0.026, +0.026] | +0.008 [-0.025, +0.043] | +0.009 [-0.026, +0.051]  -> no difference in any seed
-B2 HMM                                   -0.023 [-0.050, +0.004] | -0.014 [-0.047, +0.021] | -0.013 [-0.048, +0.024]  -> no difference in any seed
-B3 change points, default                -0.020 [-0.052, +0.011] | -0.010 [-0.043, +0.023] | -0.009 [-0.050, +0.033]  -> no difference in any seed
-B3 change points, audited                +0.043 [+0.014, +0.077] | +0.053 [+0.027, +0.079] | +0.054 [+0.017, +0.095]  -> higher in all seeds
-B4 MS-TCN v2                             -0.004 [-0.036, +0.028] | +0.006 [-0.036, +0.047] | +0.007 [-0.035, +0.050]  -> no difference in any seed
-B5 ASFormer v2                           +0.029 [+0.004, +0.054] | +0.038 [+0.007, +0.071] | +0.039 [+0.007, +0.072]  -> higher in all seeds
-B6 STFM windowed, numeric-order model    +0.032 [+0.000, +0.067] | +0.041 [+0.003, +0.080] | +0.042 [+0.003, +0.086]  -> higher in all seeds
-B7 EchoViewCLIP windowed                 +0.039 [+0.012, +0.068] | +0.049 [+0.013, +0.084] | +0.050 [+0.012, +0.092]  -> higher in all seeds
-shuffle-trained, same seed               -0.030 [-0.057, -0.000] | +0.006 [-0.031, +0.043] | -0.017 [-0.052, +0.019]  -> seed-dependent -00
+B1 smoothing                             -0.001 [-0.026, +0.026] | +0.008 [-0.025, +0.043] | +0.009 [-0.026, +0.051]  -> no consistent difference detected (000)
+B2 HMM                                   -0.023 [-0.050, +0.004] | -0.014 [-0.047, +0.021] | -0.013 [-0.048, +0.024]  -> no consistent difference detected (000)
+B3 change points, default                -0.020 [-0.052, +0.011] | -0.010 [-0.043, +0.023] | -0.009 [-0.050, +0.033]  -> no consistent difference detected (000)
+B3 change points, audited                +0.043 [+0.014, +0.077] | +0.053 [+0.027, +0.079] | +0.054 [+0.017, +0.095]  -> consistently higher
+B4 MS-TCN v2                             -0.004 [-0.036, +0.028] | +0.006 [-0.036, +0.047] | +0.007 [-0.035, +0.050]  -> no consistent difference detected (000)
+B5 ASFormer v2                           +0.029 [+0.004, +0.054] | +0.038 [+0.007, +0.071] | +0.039 [+0.007, +0.072]  -> consistently higher
+B6 STFM windowed, numeric-order model    +0.032 [+0.000, +0.067] | +0.041 [+0.003, +0.080] | +0.042 [+0.003, +0.086]  -> consistently higher
+B7 EchoViewCLIP windowed                 +0.039 [+0.012, +0.068] | +0.049 [+0.013, +0.084] | +0.050 [+0.012, +0.092]  -> consistently higher
+shuffle-trained, same seed               -0.030 [-0.057, -0.000] | +0.006 [-0.031, +0.043] | -0.017 [-0.052, +0.019]  -> no consistent difference detected (-00)
 
 ## segment F1@50, pairs: method minus MS-TCN seed s (true-trained, true test)
-B1 smoothing                             -0.005 [-0.024, +0.011] | -0.018 [-0.037, +0.000] | +0.039 [+0.004, +0.077]  -> seed-dependent 00+
-B2 HMM                                   -0.012 [-0.031, +0.007] | -0.024 [-0.049, -0.003] | +0.032 [-0.004, +0.073]  -> seed-dependent 0-0
-B3 change points, default                -0.020 [-0.046, +0.003] | -0.032 [-0.057, -0.010] | +0.025 [-0.015, +0.068]  -> seed-dependent 0-0
-B3 change points, audited                +0.011 [-0.005, +0.028] | -0.001 [-0.015, +0.012] | +0.055 [+0.019, +0.098]  -> seed-dependent 00+
-B4 MS-TCN v2                             -0.014 [-0.032, +0.001] | -0.027 [-0.056, -0.003] | +0.030 [-0.007, +0.072]  -> seed-dependent 0-0
-B5 ASFormer v2                           +0.004 [-0.013, +0.022] | -0.008 [-0.026, +0.008] | +0.048 [+0.019, +0.084]  -> seed-dependent 00+
-B6 STFM windowed, numeric-order model    -0.006 [-0.024, +0.014] | -0.018 [-0.041, +0.003] | +0.039 [-0.001, +0.085]  -> no difference in any seed
-B7 EchoViewCLIP windowed                 +0.012 [-0.011, +0.034] | -0.000 [-0.019, +0.018] | +0.056 [+0.016, +0.101]  -> seed-dependent 00+
-shuffle-trained, same seed               +0.004 [-0.008, +0.018] | -0.012 [-0.031, +0.004] | +0.015 [-0.020, +0.055]  -> no difference in any seed
+B1 smoothing                             -0.005 [-0.024, +0.011] | -0.018 [-0.037, +0.000] | +0.039 [+0.004, +0.077]  -> no consistent difference detected (00+)
+B2 HMM                                   -0.012 [-0.031, +0.007] | -0.024 [-0.049, -0.003] | +0.032 [-0.004, +0.073]  -> no consistent difference detected (0-0)
+B3 change points, default                -0.020 [-0.046, +0.003] | -0.032 [-0.057, -0.010] | +0.025 [-0.015, +0.068]  -> no consistent difference detected (0-0)
+B3 change points, audited                +0.011 [-0.005, +0.028] | -0.001 [-0.015, +0.012] | +0.055 [+0.019, +0.098]  -> no consistent difference detected (00+)
+B4 MS-TCN v2                             -0.014 [-0.032, +0.001] | -0.027 [-0.056, -0.003] | +0.030 [-0.007, +0.072]  -> no consistent difference detected (0-0)
+B5 ASFormer v2                           +0.004 [-0.013, +0.022] | -0.008 [-0.026, +0.008] | +0.048 [+0.019, +0.084]  -> no consistent difference detected (00+)
+B6 STFM windowed, numeric-order model    -0.006 [-0.024, +0.014] | -0.018 [-0.041, +0.003] | +0.039 [-0.001, +0.085]  -> no consistent difference detected (000)
+B7 EchoViewCLIP windowed                 +0.012 [-0.011, +0.034] | -0.000 [-0.019, +0.018] | +0.056 [+0.016, +0.101]  -> no consistent difference detected (00+)
+shuffle-trained, same seed               +0.004 [-0.008, +0.018] | -0.012 [-0.031, +0.004] | +0.015 [-0.020, +0.055]  -> no consistent difference detected (000)
 
 ## boundary F1, pairs: method minus MS-TCN seed s (true-trained, true test)
-B1 smoothing                             -0.038 [-0.076, +0.000] | -0.050 [-0.091, -0.008] | +0.061 [-0.008, +0.129]  -> seed-dependent 0-0
-B2 HMM                                   -0.041 [-0.081, +0.000] | -0.053 [-0.102, -0.008] | +0.058 [-0.012, +0.127]  -> seed-dependent 0-0
-B3 change points, default                -0.062 [-0.107, -0.017] | -0.075 [-0.120, -0.028] | +0.036 [-0.043, +0.119]  -> seed-dependent --0
-B3 change points, audited                +0.008 [-0.018, +0.036] | -0.004 [-0.031, +0.029] | +0.107 [+0.036, +0.184]  -> seed-dependent 00+
-B4 MS-TCN v2                             -0.048 [-0.093, +0.000] | -0.061 [-0.116, -0.008] | +0.050 [-0.035, +0.137]  -> seed-dependent 0-0
-B5 ASFormer v2                           +0.004 [-0.036, +0.038] | -0.008 [-0.049, +0.030] | +0.103 [+0.045, +0.164]  -> seed-dependent 00+
-B6 STFM windowed, numeric-order model    -0.074 [-0.126, -0.025] | -0.086 [-0.139, -0.035] | +0.024 [-0.064, +0.116]  -> seed-dependent --0
-B7 EchoViewCLIP windowed                 -0.004 [-0.043, +0.033] | -0.017 [-0.055, +0.023] | +0.094 [+0.017, +0.184]  -> seed-dependent 00+
-shuffle-trained, same seed               -0.011 [-0.052, +0.026] | -0.035 [-0.089, +0.012] | +0.032 [-0.048, +0.114]  -> no difference in any seed
+B1 smoothing                             -0.038 [-0.076, +0.000] | -0.050 [-0.091, -0.008] | +0.061 [-0.008, +0.129]  -> no consistent difference detected (0-0)
+B2 HMM                                   -0.041 [-0.081, +0.000] | -0.053 [-0.102, -0.008] | +0.058 [-0.012, +0.127]  -> no consistent difference detected (0-0)
+B3 change points, default                -0.062 [-0.107, -0.017] | -0.075 [-0.120, -0.028] | +0.036 [-0.043, +0.119]  -> no consistent difference detected (--0)
+B3 change points, audited                +0.008 [-0.018, +0.036] | -0.004 [-0.031, +0.029] | +0.107 [+0.036, +0.184]  -> no consistent difference detected (00+)
+B4 MS-TCN v2                             -0.048 [-0.093, +0.000] | -0.061 [-0.116, -0.008] | +0.050 [-0.035, +0.137]  -> no consistent difference detected (0-0)
+B5 ASFormer v2                           +0.004 [-0.036, +0.038] | -0.008 [-0.049, +0.030] | +0.103 [+0.045, +0.164]  -> no consistent difference detected (00+)
+B6 STFM windowed, numeric-order model    -0.074 [-0.126, -0.025] | -0.086 [-0.139, -0.035] | +0.024 [-0.064, +0.116]  -> no consistent difference detected (--0)
+B7 EchoViewCLIP windowed                 -0.004 [-0.043, +0.033] | -0.017 [-0.055, +0.023] | +0.094 [+0.017, +0.184]  -> no consistent difference detected (00+)
+shuffle-trained, same seed               -0.011 [-0.052, +0.026] | -0.035 [-0.089, +0.012] | +0.032 [-0.048, +0.114]  -> no consistent difference detected (000)
 
 ## boundary F1, multi: method minus MS-TCN seed s (true-trained, true test)
-B1 smoothing                             -0.028 [-0.076, +0.020] | +0.005 [-0.043, +0.053] | -0.004 [-0.044, +0.032]  -> no difference in any seed
-B2 HMM                                   -0.046 [-0.103, +0.009] | -0.012 [-0.071, +0.041] | -0.022 [-0.057, +0.014]  -> no difference in any seed
-B3 change points, default                -0.032 [-0.074, +0.017] | +0.002 [-0.039, +0.045] | -0.008 [-0.052, +0.036]  -> no difference in any seed
-B3 change points, audited                +0.048 [+0.007, +0.093] | +0.082 [+0.045, +0.119] | +0.072 [+0.030, +0.117]  -> higher in all seeds
-B4 MS-TCN v2                             -0.003 [-0.073, +0.056] | +0.031 [-0.045, +0.095] | +0.021 [-0.056, +0.085]  -> no difference in any seed
-B5 ASFormer v2                           +0.025 [-0.012, +0.063] | +0.058 [+0.013, +0.101] | +0.049 [+0.006, +0.087]  -> seed-dependent 0++
-B6 STFM windowed, numeric-order model    -0.035 [-0.107, +0.038] | -0.001 [-0.072, +0.071] | -0.011 [-0.068, +0.049]  -> no difference in any seed
-B7 EchoViewCLIP windowed                 +0.020 [-0.053, +0.091] | +0.054 [-0.019, +0.126] | +0.044 [-0.026, +0.108]  -> no difference in any seed
-shuffle-trained, same seed               -0.050 [-0.099, -0.005] | +0.016 [-0.036, +0.069] | -0.009 [-0.052, +0.031]  -> seed-dependent -00
+B1 smoothing                             -0.028 [-0.076, +0.020] | +0.005 [-0.043, +0.053] | -0.004 [-0.044, +0.032]  -> no consistent difference detected (000)
+B2 HMM                                   -0.046 [-0.103, +0.009] | -0.012 [-0.071, +0.041] | -0.022 [-0.057, +0.014]  -> no consistent difference detected (000)
+B3 change points, default                -0.032 [-0.074, +0.017] | +0.002 [-0.039, +0.045] | -0.008 [-0.052, +0.036]  -> no consistent difference detected (000)
+B3 change points, audited                +0.048 [+0.007, +0.093] | +0.082 [+0.045, +0.119] | +0.072 [+0.030, +0.117]  -> consistently higher
+B4 MS-TCN v2                             -0.003 [-0.073, +0.056] | +0.031 [-0.045, +0.095] | +0.021 [-0.056, +0.085]  -> no consistent difference detected (000)
+B5 ASFormer v2                           +0.025 [-0.012, +0.063] | +0.058 [+0.013, +0.101] | +0.049 [+0.006, +0.087]  -> no consistent difference detected (0++)
+B6 STFM windowed, numeric-order model    -0.035 [-0.107, +0.038] | -0.001 [-0.072, +0.071] | -0.011 [-0.068, +0.049]  -> no consistent difference detected (000)
+B7 EchoViewCLIP windowed                 +0.020 [-0.053, +0.091] | +0.054 [-0.019, +0.126] | +0.044 [-0.026, +0.108]  -> no consistent difference detected (000)
+shuffle-trained, same seed               -0.050 [-0.099, -0.005] | +0.016 [-0.036, +0.069] | -0.009 [-0.052, +0.031]  -> no consistent difference detected (-00)
 
 ## boundary recall, multi: method minus MS-TCN seed s (true-trained, true test)
-B1 smoothing                             -0.018 [-0.042, +0.003] | +0.037 [+0.008, +0.071] | -0.011 [-0.031, +0.010]  -> seed-dependent 0+0
-B2 HMM                                   -0.003 [-0.022, +0.016] | +0.053 [+0.026, +0.081] | +0.005 [-0.011, +0.021]  -> seed-dependent 0+0
-B3 change points, default                -0.005 [-0.026, +0.015] | +0.050 [+0.022, +0.080] | +0.003 [-0.016, +0.020]  -> seed-dependent 0+0
-B3 change points, audited                -0.032 [-0.052, -0.013] | +0.024 [-0.003, +0.050] | -0.024 [-0.043, -0.005]  -> seed-dependent -0-
-B4 MS-TCN v2                             +0.003 [-0.008, +0.015] | +0.058 [+0.033, +0.086] | +0.011 [-0.005, +0.026]  -> seed-dependent 0+0
-B5 ASFormer v2                           -0.016 [-0.031, -0.003] | +0.040 [+0.019, +0.063] | -0.008 [-0.029, +0.013]  -> seed-dependent -+0
-B6 STFM windowed, numeric-order model    -0.079 [-0.112, -0.047] | -0.024 [-0.067, +0.021] | -0.071 [-0.106, -0.040]  -> seed-dependent -0-
-B7 EchoViewCLIP windowed                 -0.005 [-0.022, +0.011] | +0.050 [+0.021, +0.082] | +0.003 [-0.018, +0.022]  -> seed-dependent 0+0
-shuffle-trained, same seed               +0.005 [-0.007, +0.019] | +0.053 [+0.028, +0.081] | +0.016 [-0.003, +0.035]  -> seed-dependent 0+0
+B1 smoothing                             -0.018 [-0.042, +0.003] | +0.037 [+0.008, +0.071] | -0.011 [-0.031, +0.010]  -> no consistent difference detected (0+0)
+B2 HMM                                   -0.003 [-0.022, +0.016] | +0.053 [+0.026, +0.081] | +0.005 [-0.011, +0.021]  -> no consistent difference detected (0+0)
+B3 change points, default                -0.005 [-0.026, +0.015] | +0.050 [+0.022, +0.080] | +0.003 [-0.016, +0.020]  -> no consistent difference detected (0+0)
+B3 change points, audited                -0.032 [-0.052, -0.013] | +0.024 [-0.003, +0.050] | -0.024 [-0.043, -0.005]  -> no consistent difference detected (-0-)
+B4 MS-TCN v2                             +0.003 [-0.008, +0.015] | +0.058 [+0.033, +0.086] | +0.011 [-0.005, +0.026]  -> no consistent difference detected (0+0)
+B5 ASFormer v2                           -0.016 [-0.031, -0.003] | +0.040 [+0.019, +0.063] | -0.008 [-0.029, +0.013]  -> no consistent difference detected (-+0)
+B6 STFM windowed, numeric-order model    -0.079 [-0.112, -0.047] | -0.024 [-0.067, +0.021] | -0.071 [-0.106, -0.040]  -> no consistent difference detected (-0-)
+B7 EchoViewCLIP windowed                 -0.005 [-0.022, +0.011] | +0.050 [+0.021, +0.082] | +0.003 [-0.018, +0.022]  -> no consistent difference detected (0+0)
+shuffle-trained, same seed               +0.005 [-0.007, +0.019] | +0.053 [+0.028, +0.081] | +0.016 [-0.003, +0.035]  -> no consistent difference detected (0+0)
 
 ## same-class cut rate, multi: method minus MS-TCN seed s (true-trained, true test)
-B1 smoothing                             +0.035 [-0.009, +0.077] | +0.064 [+0.009, +0.120] | +0.040 [+0.000, +0.080]  -> seed-dependent 0+0
-B2 HMM                                   +0.040 [-0.005, +0.082] | +0.069 [+0.015, +0.124] | +0.045 [+0.000, +0.089]  -> seed-dependent 0+0
-B3 change points, default                +0.054 [+0.000, +0.106] | +0.084 [+0.021, +0.149] | +0.059 [+0.005, +0.112]  -> seed-dependent 0++
-B3 change points, audited                -0.045 [-0.091, +0.000] | -0.015 [-0.060, +0.028] | -0.040 [-0.075, -0.009]  -> seed-dependent 00-
-B4 MS-TCN v2                             -0.010 [-0.034, +0.013] | +0.020 [-0.022, +0.061] | -0.005 [-0.039, +0.028]  -> no difference in any seed
-B5 ASFormer v2                           -0.010 [-0.036, +0.016] | +0.020 [-0.021, +0.062] | -0.005 [-0.028, +0.016]  -> no difference in any seed
-B6 STFM windowed, numeric-order model    -0.020 [-0.070, +0.031] | +0.010 [-0.053, +0.072] | -0.015 [-0.069, +0.039]  -> no difference in any seed
-B7 EchoViewCLIP windowed                 -0.025 [-0.071, +0.020] | +0.005 [-0.051, +0.060] | -0.020 [-0.064, +0.029]  -> no difference in any seed
-shuffle-trained, same seed               +0.020 [-0.015, +0.058] | +0.030 [-0.015, +0.073] | +0.050 [+0.000, +0.097]  -> no difference in any seed
+B1 smoothing                             +0.035 [-0.009, +0.077] | +0.064 [+0.009, +0.120] | +0.040 [+0.000, +0.080]  -> no consistent difference detected (0+0)
+B2 HMM                                   +0.040 [-0.005, +0.082] | +0.069 [+0.015, +0.124] | +0.045 [+0.000, +0.089]  -> no consistent difference detected (0+0)
+B3 change points, default                +0.054 [+0.000, +0.106] | +0.084 [+0.021, +0.149] | +0.059 [+0.005, +0.112]  -> no consistent difference detected (0++)
+B3 change points, audited                -0.045 [-0.091, +0.000] | -0.015 [-0.060, +0.028] | -0.040 [-0.075, -0.009]  -> no consistent difference detected (00-)
+B4 MS-TCN v2                             -0.010 [-0.034, +0.013] | +0.020 [-0.022, +0.061] | -0.005 [-0.039, +0.028]  -> no consistent difference detected (000)
+B5 ASFormer v2                           -0.010 [-0.036, +0.016] | +0.020 [-0.021, +0.062] | -0.005 [-0.028, +0.016]  -> no consistent difference detected (000)
+B6 STFM windowed, numeric-order model    -0.020 [-0.070, +0.031] | +0.010 [-0.053, +0.072] | -0.015 [-0.069, +0.039]  -> no consistent difference detected (000)
+B7 EchoViewCLIP windowed                 -0.025 [-0.071, +0.020] | +0.005 [-0.051, +0.060] | -0.020 [-0.064, +0.029]  -> no consistent difference detected (000)
+shuffle-trained, same seed               +0.020 [-0.015, +0.058] | +0.030 [-0.015, +0.073] | +0.050 [+0.000, +0.097]  -> no consistent difference detected (000)
 
 ## native cuts per clip: method minus MS-TCN seed s (true-trained, true test)
-B1 smoothing                             +0.098 [+0.029, +0.168] | +0.147 [+0.074, +0.222] | +0.111 [+0.060, +0.169]  -> higher in all seeds
-B2 HMM                                   +0.068 [+0.005, +0.130] | +0.117 [+0.054, +0.186] | +0.081 [+0.042, +0.119]  -> higher in all seeds
-B3 change points, default                +0.141 [+0.075, +0.204] | +0.191 [+0.121, +0.264] | +0.155 [+0.104, +0.203]  -> higher in all seeds
-B3 change points, audited                -0.091 [-0.147, -0.039] | -0.041 [-0.083, -0.002] | -0.078 [-0.129, -0.030]  -> lower in all seeds
-B4 MS-TCN v2                             +0.004 [-0.061, +0.073] | +0.054 [-0.002, +0.123] | +0.017 [-0.043, +0.084]  -> no difference in any seed
-B5 ASFormer v2                           -0.005 [-0.056, +0.042] | +0.045 [-0.002, +0.092] | +0.009 [-0.037, +0.057]  -> no difference in any seed
-B6 STFM windowed, numeric-order model    -0.017 [-0.066, +0.027] | +0.033 [-0.018, +0.084] | -0.004 [-0.041, +0.031]  -> no difference in any seed
-B7 EchoViewCLIP windowed                 -0.046 [-0.106, +0.011] | +0.004 [-0.052, +0.061] | -0.033 [-0.078, +0.014]  -> no difference in any seed
-shuffle-trained, same seed               +0.100 [+0.034, +0.164] | +0.057 [+0.018, +0.100] | +0.104 [+0.048, +0.165]  -> higher in all seeds
+B1 smoothing                             +0.098 [+0.029, +0.168] | +0.147 [+0.074, +0.222] | +0.111 [+0.060, +0.169]  -> consistently higher
+B2 HMM                                   +0.068 [+0.005, +0.130] | +0.117 [+0.054, +0.186] | +0.081 [+0.042, +0.119]  -> consistently higher
+B3 change points, default                +0.141 [+0.075, +0.204] | +0.191 [+0.121, +0.264] | +0.155 [+0.104, +0.203]  -> consistently higher
+B3 change points, audited                -0.091 [-0.147, -0.039] | -0.041 [-0.083, -0.002] | -0.078 [-0.129, -0.030]  -> consistently lower
+B4 MS-TCN v2                             +0.004 [-0.061, +0.073] | +0.054 [-0.002, +0.123] | +0.017 [-0.043, +0.084]  -> no consistent difference detected (000)
+B5 ASFormer v2                           -0.005 [-0.056, +0.042] | +0.045 [-0.002, +0.092] | +0.009 [-0.037, +0.057]  -> no consistent difference detected (000)
+B6 STFM windowed, numeric-order model    -0.017 [-0.066, +0.027] | +0.033 [-0.018, +0.084] | -0.004 [-0.041, +0.031]  -> no consistent difference detected (000)
+B7 EchoViewCLIP windowed                 -0.046 [-0.106, +0.011] | +0.004 [-0.052, +0.061] | -0.033 [-0.078, +0.014]  -> no consistent difference detected (000)
+shuffle-trained, same seed               +0.100 [+0.034, +0.164] | +0.057 [+0.018, +0.100] | +0.104 [+0.048, +0.165]  -> consistently higher
+
+## direct contrasts between MS-TCN seeds (true-trained, true test)
+seed 1 - seed 0: clip macro-F1 -0.016 [-0.036, +0.006] | segment F1@50, multi -0.009 [-0.046, +0.030] | segment F1@50, pairs +0.012 [-0.004, +0.030] | boundary F1, pairs +0.012 [-0.022, +0.043] | boundary F1, multi -0.033 [-0.078, +0.011] | boundary recall, multi -0.055 [-0.083, -0.030] | same-class cut rate, multi -0.030 [-0.070, +0.005] | native cuts per clip -0.050 [-0.092, -0.011]
+seed 2 - seed 0: clip macro-F1 -0.020 [-0.035, -0.003] | segment F1@50, multi -0.010 [-0.051, +0.029] | segment F1@50, pairs -0.044 [-0.084, -0.012] | boundary F1, pairs -0.099 [-0.177, -0.025] | boundary F1, multi -0.024 [-0.076, +0.028] | boundary recall, multi -0.008 [-0.024, +0.009] | same-class cut rate, multi -0.005 [-0.036, +0.028] | native cuts per clip -0.014 [-0.066, +0.032]
+seed 2 - seed 1: clip macro-F1 -0.004 [-0.032, +0.023] | segment F1@50, multi -0.001 [-0.048, +0.043] | segment F1@50, pairs -0.056 [-0.097, -0.020] | boundary F1, pairs -0.111 [-0.194, -0.030] | boundary F1, multi +0.010 [-0.044, +0.062] | boundary recall, multi +0.047 [+0.022, +0.076] | same-class cut rate, multi +0.025 [-0.017, +0.068] | native cuts per clip +0.036 [-0.014, +0.086]

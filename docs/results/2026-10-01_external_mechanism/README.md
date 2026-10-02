@@ -36,10 +36,11 @@ isolated flickers easily. Shuffling could therefore make smoothing look better t
 
 - **EV9V, corrected image set.** All frame-derived inputs come from `cache_v2` (frame order `numeric-2026-09-30`)
   and B0 checkpoint `79f4a41af6e3`. The manifest `data/manifests/ev9v_native.csv` lists 5,138 clips (train 3,683,
-  validation 567, test 888). The ladder test banks hold 800 native clips in 125 presumed patient groups, 240 pair
-  streams and 120 streams of 4–8 fragments built from 405 clips. Patient groups are inferred from the file-name
-  prefix, a recording timestamp shared by the clips of one session (703 sessions, median six clips, none crossing a
-  split). They are not verified identities.
+  validation 567, test 888). The ladder test banks hold 800 native clips in 125 recording sessions, 240 pair
+  streams and 120 streams of 4–8 fragments built from 405 clips. Clips are clustered by
+  recording-session prefixes inferred from file names, a timestamp shared by the clips of one session (703 sessions,
+  median six clips, none crossing a split). Patient identities are unavailable, so patient overlap across sessions or
+  splits cannot be assessed. (Correction of 2026-10-01: earlier wording called these sessions presumed patients.)
 - **EchoNet-Pediatric.** The server copy holds 7,810 AVI files (A4C 3,284, PSAX 4,526). All of them open and decode,
   and the decoded frame count equals the container count for every file. Frames are 112 × 112. Frame rates range
   from 21 to 193 frames per second (median 50). Clips are short, with a median of 1.6 s (10th–90th percentile
@@ -137,8 +138,8 @@ Only the order of samples inside each fragment or clip changes. The conditions a
 sorted as text, the legacy order), reverse order, full random order (10 seeds), and block orders. A block order cuts
 a fragment into blocks of 5, 10 or 20 samples, keeps the order inside each block, and shuffles the blocks with the
 same 10 seeds. Validation stays in true order. Decoder settings and routing thresholds therefore come from
-true-order validation and are never re-selected per condition. Intervals resample native clips by presumed patient
-group, pair streams by stream, and 4–8 fragment streams by clip (these streams reuse clips). Each interval is a 95%
+true-order validation and are never re-selected per condition. Intervals resample native clips by recording
+session, pair streams by stream, and 4–8 fragment streams by clip (these streams reuse clips). Each interval is a 95%
 percentile bootstrap over 2,000 draws, and the same draws serve every method, condition and seed.
 
 **Checks.**
@@ -228,7 +229,7 @@ samples, and random order lowers this by 33 points.
 - **Size.** The effect is large for the default decoders and small for the audited B3. Audited B3 already uses a
   long window and a high threshold. Under shuffling its multi-stream boundary F1 rises by 0.020 and its pair-stream
   boundary F1 does not change measurably.
-- **Limits.** EV9V took part in development, the patient groups are inferred, the constructed streams reuse clips,
+- **Limits.** EV9V took part in development, sessions are not verified patients, the constructed streams reuse clips,
   and deviations are measured against clip labels. The result explains how shuffling flatters smoothing on this data.
   It does not show the size of the effect on continuous scanning.
 
@@ -322,7 +323,8 @@ On EV9V the same HMM reaches clip macro-F1 0.940, segment F1@50 0.804 and bounda
 **Setup.** Official MS-TCN (authors' constants: 50 epochs, batch 1, learning rate 5e-4) was trained six times on the
 same 1,500 training streams. Model seeds were 0, 1 and 2. Each seed was trained twice: once on the streams in true
 order, and once with every training fragment permuted by one fixed seed (500), never reshuffled between epochs.
-The two runs of one seed share their initial weights and batch order, so they differ only in the order inside
+The two runs of one seed share their initial weights (initial-parameter digest) and their batch order (same seeded
+generator over the same stream list; the order itself was not recorded), so they differ only in the order inside
 training fragments. Every model was tested in true order and under the ten Task 1 random seeds, on exactly the
 Task 1 test inputs. Decoding is fixed (argmax of the MS-TCN output), and routing thresholds come from true-order
 validation. The HMM and both B3 settings were rerun on the same test inputs, so all rows are paired. Seeds are
@@ -360,25 +362,30 @@ so their own seed variation is unknown.
 |---|---|---|---|---|---|
 | B2 HMM | internal cuts per clip | +0.068 [+0.005, +0.130] | +0.117 [+0.054, +0.186] | +0.081 [+0.042, +0.119] | consistently more cuts |
 | B3, default | internal cuts per clip | +0.141 [+0.075, +0.204] | +0.191 [+0.121, +0.264] | +0.155 [+0.104, +0.203] | consistently more cuts |
-| B2 HMM | boundary F1, 4–8 fragments | −0.046 [−0.103, +0.009] | −0.012 [−0.071, +0.041] | −0.022 [−0.057, +0.014] | no difference in any seed |
-| B2 HMM | segment F1@50, 4–8 fragments | −0.023 [−0.050, +0.004] | −0.014 [−0.047, +0.021] | −0.013 [−0.048, +0.024] | no difference in any seed |
-| B2 HMM | boundary F1, pairs | −0.041 [−0.081, +0.000] | −0.053 [−0.102, −0.008] | +0.058 [−0.012, +0.127] | depends on the seed |
+| B2 HMM | boundary F1, 4–8 fragments | −0.046 [−0.103, +0.009] | −0.012 [−0.071, +0.041] | −0.022 [−0.057, +0.014] | no consistent difference detected |
+| B2 HMM | segment F1@50, 4–8 fragments | −0.023 [−0.050, +0.004] | −0.014 [−0.047, +0.021] | −0.013 [−0.048, +0.024] | no consistent difference detected |
+| B2 HMM | boundary F1, pairs | −0.041 [−0.081, +0.000] | −0.053 [−0.102, −0.008] | +0.058 [−0.012, +0.127] | no consistent difference detected; MS-TCN seed 2 lower than seeds 0 and 1 |
 | B3, audited | boundary F1, 4–8 fragments | +0.048 [+0.007, +0.093] | +0.082 [+0.045, +0.119] | +0.072 [+0.030, +0.117] | consistently higher |
 | B3, audited | segment F1@50, 4–8 fragments | +0.043 [+0.014, +0.077] | +0.053 [+0.027, +0.079] | +0.054 [+0.017, +0.095] | consistently higher |
 | B3, audited | internal cuts per clip | −0.091 [−0.147, −0.039] | −0.041 [−0.083, −0.002] | −0.078 [−0.129, −0.030] | consistently fewer cuts |
 | B3, audited | boundary recall, 4–8 fragments | −0.032 [−0.052, −0.013] | +0.024 [−0.003, +0.050] | −0.024 [−0.043, −0.005] | lower in two seeds |
-| B3, audited | clip macro-F1 | −0.014 [−0.032, +0.002] | +0.002 [−0.029, +0.030] | +0.006 [−0.007, +0.016] | no difference in any seed |
-| B3, audited | boundary F1, pairs | +0.008 [−0.018, +0.036] | −0.004 [−0.031, +0.029] | +0.107 [+0.036, +0.184] | depends on the seed |
+| B3, audited | clip macro-F1 | −0.014 [−0.032, +0.002] | +0.002 [−0.029, +0.030] | +0.006 [−0.007, +0.016] | no consistent difference detected |
+| B3, audited | boundary F1, pairs | +0.008 [−0.018, +0.036] | −0.004 [−0.031, +0.029] | +0.107 [+0.036, +0.184] | no consistent difference detected; MS-TCN seed 2 lower than seeds 0 and 1 |
 | B5 ASFormer v2 | segment F1@50, 4–8 fragments | +0.029 [+0.004, +0.054] | +0.038 [+0.007, +0.071] | +0.039 [+0.007, +0.072] | consistently higher |
 | B7 EchoViewCLIP | clip macro-F1 | +0.027 [+0.006, +0.052] | +0.043 [+0.015, +0.074] | +0.047 [+0.027, +0.070] | consistently higher |
 
-- **Stable across seeds.** MS-TCN cuts inside native clips less often than the untuned smoothers. Its boundary F1 and
-  segment F1@50 on 4–8 fragment streams do not differ from theirs. Audited B3 beats every MS-TCN seed on 4–8 fragment
-  boundary F1 and segment F1@50 and cuts less often, but it misses more changes in two of three seeds and its clip
-  macro-F1 does not differ.
-- **Seed-dependent.** MS-TCN's own pair-stream boundary F1 ranges from 0.873 to 0.984, so the sign of its
-  difference to the HMM flips between seeds. Its clip macro-F1 ranges from 0.925 to 0.944. Pair-stream boundary
-  scores therefore cannot rank MS-TCN against the simple decoders.
+- **Consistent across seeds** (all three intervals exclude zero on the same side). MS-TCN cuts inside native clips
+  less often than the untuned smoothers. Audited B3 achieves higher 4–8 fragment boundary F1 and segment F1@50 than
+  every MS-TCN seed and cuts less often; it misses more changes in two of three seeds.
+- **No consistent difference detected.** Between MS-TCN and the untuned smoothers on 4–8 fragment boundary F1 and
+  segment F1@50, and between audited B3 and MS-TCN on clip macro-F1. This is not evidence of equivalence; no
+  equivalence margin was defined.
+- **Varies with the training seed** (direct contrasts between MS-TCN seeds). Seed 2's pair-stream boundary F1 is lower
+  than that of seeds 0 and 1 by 0.099 [0.025, 0.177] and 0.111 [0.030, 0.194], and seed 1's 4–8 fragment boundary
+  recall is lower than that of seeds 0 and 2. Pair-stream boundary scores therefore cannot rank MS-TCN against the
+  simple decoders.
+- Each interval is conditional on one trained model, and the seeds share the same test data, so they are not three
+  independent validations.
 - The full per-seed comparison for every method and endpoint is in `mstcn_seed_stability.txt`.
 
 ### 5.2 What shuffled testing changes
@@ -401,7 +408,7 @@ Effect = shuffled test minus true-order test, mean over the ten test seeds, for 
   +0.028 [−0.048, +0.088] and −0.020 [−0.061, +0.019].
 - A significant difference turning non-significant is not itself a test, so the change was tested directly. The
   method-by-test-order contrast is (HMM − MS-TCN) under shuffled testing minus (HMM − MS-TCN) under true-order
-  testing, on internal cuts per native clip, with the same paired draws over presumed patient groups for all four
+  testing, on internal cuts per native clip, with the same paired draws over recording sessions for all four
   cells.
 
 | Contrast (internal cuts per clip) | Seed 0 | Seed 1 | Seed 2 |
@@ -444,11 +451,12 @@ testing).
   testing narrows the HMM–MS-TCN difference in every seed. Shuffled training makes the learned model less stable on
   real order.
 - The earlier summary that learned models show no consistent advantage needs a correction. In true order, MS-TCN
-  makes consistently fewer internal cuts than the untuned smoothers in every seed. It has no consistent advantage in
-  boundary F1, segment F1@50 or clip macro-F1. The tuned simple baseline (audited B3) is consistently ahead of every
-  MS-TCN seed on 4–8 fragment boundary F1, segment F1@50 and internal cuts, at a cost in boundary recall in two of
-  three seeds.
-- Pair-stream boundary comparisons depend on the training seed and should not be used to rank methods.
+  makes consistently fewer internal cuts than the untuned smoothers in every seed. No consistent difference in
+  boundary F1, segment F1@50 or clip macro-F1 was detected. The validation-tuned simple baseline (audited B3) achieves
+  higher 4–8 fragment boundary F1 and segment F1@50 and fewer internal cuts than every MS-TCN seed, with lower
+  boundary recall in two of three seeds.
+- MS-TCN's pair-stream boundary F1 varies with the training seed (direct contrasts), so pair-stream comparisons
+  should not be used to rank methods.
 
 ## 6. Joint true-order comparison on EV9V
 
