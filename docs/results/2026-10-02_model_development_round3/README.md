@@ -123,16 +123,17 @@ that the E1 probe's per-sample output varies more than E0's. Whether that also d
 For two E1 seeds the calibration half chose 0.5, the checkpoint threshold. Their calibrated and default rows are
 identical, which also checks that the training-time decoding and the decoder script agree.
 
-**The checkpoint and threshold rules do not explain the shortfall.**
+**The checkpoint and threshold rules do not appear to explain the shortfall.**
 - The native floor rejected many epochs. Only 27 of 43, 10 of 18 and 3 of 11 E0 epochs met it, and 3 of 11, 2 of 15
   and 4 of 15 E1 epochs. On these halves one recording can decide the floor. On the E0 selection half, 0.951 against
   0.965 is one A5C recording (7 against 8 of 11 right).
-- Ignoring the checkpoint rule, the best selection-half value of any epoch at threshold 0.5 is 0.916 for E0 and 0.883
-  for E1. This uses the selection half both to choose and to score, so it is an optimistic bound. It is still below
-  0.934.
-- Ignoring the floor in the threshold choice, the best calibration-half values are 0.949, 0.946 and 0.947 for E0 and
-  0.944, 0.960 and 0.961 for E1. All are below 0.972. On E1, higher thresholds cut less and score better, but they
-  lower native macro-F1 below the floor.
+- Without the checkpoint rule, the highest selection-half value among the trained epochs, all decoded at the fixed
+  threshold 0.5, is 0.916 for E0 and 0.883 for E1. This is a maximum over epochs at one threshold. It is not an upper
+  bound over all combinations of epoch and threshold, because the other thresholds were not scored for every epoch.
+  It also uses the selection half both to choose and to score. It is still below 0.934.
+- Without the floor in the threshold choice, the best calibration-half values over the threshold grid, at the chosen
+  checkpoints, are 0.949, 0.946 and 0.947 for E0 and 0.944, 0.960 and 0.961 for E1. All are below 0.972. On E1,
+  higher thresholds cut less and score better, but they lower native macro-F1 below the floor.
 - For E0 seeds 1 and 2, no threshold met the native floor on the calibration half. The rule fell back to recall only.
 
 ## 4. Strict comparison
@@ -264,7 +265,8 @@ because M5 got them wrong, so the original row is zero by construction.
 - The step-1 thresholds and the step-2 calibrated thresholds were chosen on the calibration half. Calibration-half
   values for those rows are therefore in-sample.
 - Two of six boundary-only runs chose epoch 2, and early stopping ended them after 11 epochs. Two more chose epoch 6.
-  This is the shared rule, and the optimistic bound in section 3 stays below the target.
+  This is the shared rule. The best trained epoch at threshold 0.5 (section 3) also stays below the target, but that
+  is a maximum over epochs at one threshold, not a bound over all epochs and thresholds.
 
 ## 8. Files and runs
 
