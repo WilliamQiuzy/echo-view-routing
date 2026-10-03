@@ -76,7 +76,22 @@ result.
   evidence inside each predicted segment instead of its mean. A segmentation mechanism that keeps short segments could
   add about 1 point on the selection half at best, even if it were perfect.
 
-### Recommended next step (one)
+### Decision after review (2026-10-03)
+
+No echo expert is available, so the clip review below will not take place. The user decided as follows.
+- **Labels stay.** Every main result keeps all clips and their public labels.
+- **The rule's verdict is not a finding.** The "data" verdict says the scores depend heavily on a few clips. It does
+  not show that those clips are mislabelled. A whole clip read as another class by its mean probability may itself be
+  the aggregation problem that section 7 describes.
+- **Sensitivity analysis.** A separate analysis removes the ten clips listed in
+  `configs/experiments/evidence_pooling_v1.yaml`, with the same list for every system and no re-tuning. It only shows
+  how much the conclusions depend on those clips. It can never decide a winner.
+- **Next round.** Round 5 tests whether keeping intermittent high-score evidence improves the A4C/A5C decision without
+  new A4C errors. It first checks that the success criterion is reachable with the intervals it would use.
+
+The recommendation as first written is kept below for the record.
+
+### Recommended next step (one), as first written
 
 The pre-declared rule selects **data first**. The five most affected clips carry 54% of the common errors, and 52%
 have a whole source clip read as another class. Both thresholds are passed on E0 and E1 and for both category
@@ -268,6 +283,8 @@ The evidence is there, but a fixed threshold trades it against A4C clips that sh
 | E1, stable common | 30 | 77% | 77% | 67% |
 
 The first rule that holds is "data". It holds in every row. The "visual" rule would also hold, but it comes second.
+The verdict means the scores depend heavily on a few clips. It does not establish that any clip is mislabelled. No
+expert has looked at them, and the "whole clip" input uses the same mean pooling that section 7 calls into question.
 
 ## 9. Limitations
 
