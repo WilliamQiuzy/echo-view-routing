@@ -19,8 +19,9 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from echo_routing.temporal.dev_data import Seq, collate
-from echo_routing.temporal.losses.boundary_context import total_loss
-from echo_routing.temporal.models.boundary_context import BoundaryContextConfig, BoundaryContextNet
+from echo_routing.temporal.losses.boundary_context import boundary_loss, total_loss
+from echo_routing.temporal.models.boundary_context import BoundaryContextConfig, BoundaryContextNet, BoundaryOnlyNet
+from echo_routing.temporal.segments import boundary_decode
 
 MSTCN_PINNED = "33ed91c0c7576650a2367efc602553af4c5295b1"
 ASRF_PINNED = "9623f1e8d9a1171333a4eeb65d190997b6c44a95"
@@ -66,6 +67,40 @@ class BoundaryContextHead:
                 n = s.labels.size
                 out[s.seq_id] = {"labels": lab[i, :n], "prob": prob[i, :n], "boundary_prob": bp[i, :n], "gate": g[i, :n],
                                  "local_labels": lp[i, :n], "prepool_prob": pre[i, :n]}
+        return out
+
+
+class BoundaryOnlyHead:
+    """Round 3, step 2: boundaries from BoundaryOnlyNet, labels from the frozen classifier's probabilities (Seq.prob).
+    Default decoding uses `threshold` (the pre-declared checkpoint threshold); the calibrated threshold comes later."""
+
+    name = "boundary_only"
+
+    def __init__(self, model_cfg: dict, threshold: float = 0.5, nms_radius: int = 5) -> None:
+        self.cfg = dict(model_cfg); self.threshold, self.nms_radius = float(threshold), int(nms_radius)
+        self.decoding = f"boundary peaks >= {self.threshold} (NMS {self.nms_radius}), frozen-classifier mean probability per interval"
+
+    def build(self) -> nn.Module:
+        # every size comes from the config (boundary_only block plus in_dim); a missing key fails here, not silently
+        return BoundaryOnlyNet(int(self.cfg["in_dim"]), int(self.cfg["dim"]), tuple(int(d) for d in self.cfg["dilations"]),
+                               float(self.cfg["dropout"]))
+
+    def loss(self, model: nn.Module, batch: dict) -> tuple[torch.Tensor, dict[str, float]]:
+        out = model(batch["x"], batch["mask"])
+        loss = boundary_loss(out["boundary_logits"][:, 0], batch["b_target"], batch["b_weight"], batch["b_counted"])
+        return loss, {"boundary": float(loss.detach())}
+
+    @torch.no_grad()
+    def decode(self, model: nn.Module, seqs: list[Seq], device, batch_size: int = 32) -> dict[str, dict[str, np.ndarray]]:
+        model.eval(); out = {}
+        for chunk in _batched(seqs, batch_size):
+            b = collate(chunk, device); bp = torch.sigmoid(model(b["x"], b["mask"])["boundary_logits"][:, 0]).cpu().numpy()
+            for i, s in enumerate(chunk):
+                if s.prob is None:
+                    raise ValueError(f"{s.seq_id}: the frozen classifier's probabilities are missing")
+                n = s.labels.size
+                out[s.seq_id] = {"labels": boundary_decode(s.prob, bp[i, :n], self.threshold, self.nms_radius), "prob": s.prob,
+                                 "boundary_prob": bp[i, :n]}
         return out
 
 
@@ -196,6 +231,8 @@ def head_from_manifest(manifest: dict, repo_root: Path, in_dim: int, device) -> 
     name = manifest["head"]
     if name.startswith("boundary_context"):
         return BoundaryContextHead(manifest["model_cfg"], manifest["boundary_weight"], name)
+    if name == "boundary_only":
+        return BoundaryOnlyHead(manifest["model_cfg"], manifest["decode_threshold"], manifest["decode_nms_radius"])
     if name == "mstcn":
         up = manifest["upstream"]
         return MSTCNHead(repo_root / "third_party" / "ms-tcn", in_dim, num_stages=up["num_stages"], num_layers=up["num_layers"],

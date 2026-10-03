@@ -203,12 +203,16 @@ Of the three A5C clips that every E0 method missed on the selection half, E1 fix
 A4C fragment at samples 126–136 of `multi_selection_0004` (source clip `2022-03-28_15-40-18_320x240_30`), which M5
 seed 0 reads as A5C.
 - The probe favours A4C (about 0.8) apart from a short A5C rise at the end.
-- M5's boundary head puts b ≈ 1 at both joins, so attention is cut at the fragment's ends and the segmentation is
-  right.
+- M5's boundary head puts b ≈ 1 at both joins, and the segmentation is right.
 - M5's probabilities before pooling already favour A5C over the whole fragment (0.6–0.8), and pooling only flattens
   them.
 
-In this case the class information is lost inside the fragment, before pooling and without cross-boundary mixing.
+**Correction (after review).** An earlier version said this case excluded cross-boundary mixing. That claim is
+withdrawn. In `echo_routing/temporal/models/boundary_context.py`, three dilated convolutions run before the boundary
+head and before attention is restricted. Their receptive field is 15 samples, 7 on each side, and the fragment is
+only 10 samples long. Neighbouring fragments can therefore reach the fragment's features before any boundary takes
+effect. The loss happens before pooling, but its source (the convolutions, the attention or the gate) is not
+identified. The round-3 neighbour-swap check tests this directly.
 Across the three M5 seeds and both halves there are 64 fragments where the probe is right and M5 is wrong on at least
 80% of the fragment. Counted once per source recording, they come from 25 distinct source clips.
 
@@ -451,8 +455,8 @@ What this round establishes, as evidence for the next decision:
 - **Recognition gains need a temporal output that preserves them.** A better clip classifier (E1) did not give better
   segmentation, and both temporal heads blurred part of its classification.
 - **For M5, the loss is inside its own segments.** Relabelling M5's segments with the visual classifier recovers
-  0.3–1.4 points of segment F1@50 in every seed. The cases show the loss happening before pooling, even with confident
-  boundaries.
+  0.3–1.4 points of segment F1@50 in every seed. The cases show the loss happening before pooling. Mixing from
+  neighbouring fragments through the convolutions is not excluded (see the correction under case B).
 - **Two possible next experiments.** One is a decoder that takes segment extents from the temporal model and labels
   from the frozen classifier. The other is a head trained to preserve the classifier's posterior inside predicted
   segments. Either is a new, separately tested change, and the strongest-baseline bar stays as it is.

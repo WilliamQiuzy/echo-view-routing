@@ -30,6 +30,7 @@ class Seq:
     feat: np.ndarray      # (T, D)
     labels: np.ndarray    # (T,) proxy (stream) or clip label (native)
     joins: np.ndarray     # recipe joins; empty for native clips and windows
+    prob: np.ndarray | None = None   # (T, C) the frozen frame-level classifier's probabilities (round 3); never a model input
 
 
 class FeatureStore:
@@ -47,12 +48,14 @@ class FeatureStore:
 
 
 def stream_seq(stream: Stream) -> Seq:
-    return Seq(stream.recipe.recipe_id, False, stream.feat.astype(np.float16), stream.labels.astype(np.int64), stream.joins.astype(int))
+    return Seq(stream.recipe.recipe_id, False, stream.feat.astype(np.float16), stream.labels.astype(np.int64), stream.joins.astype(int),
+               stream.prob.astype(np.float32))
 
 
 def native_seq(video_id: str, label: int, vf: VideoFeatures, start: int = 0, length: int | None = None, seq_id: str | None = None) -> Seq:
     end = vf.n if length is None else start + length
-    return Seq(seq_id or video_id, True, vf.feat[start:end].astype(np.float16), np.full(end - start, int(label), np.int64), np.zeros(0, int))
+    return Seq(seq_id or video_id, True, vf.feat[start:end].astype(np.float16), np.full(end - start, int(label), np.int64), np.zeros(0, int),
+               vf.prob[start:end].astype(np.float32))
 
 
 @dataclass(frozen=True)
@@ -145,6 +148,6 @@ def feature_mask_augment(stream_prob: float, span: tuple[int, int], max_fraction
             return seq
         start, length = options[int(rng.integers(len(options)))]
         feat = seq.feat.copy(); feat[start:start + length] = 0
-        return Seq(seq.seq_id, seq.is_native, feat, seq.labels, seq.joins)
+        return Seq(seq.seq_id, seq.is_native, feat, seq.labels, seq.joins, seq.prob)
 
     return apply

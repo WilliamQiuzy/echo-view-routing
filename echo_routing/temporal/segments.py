@@ -54,3 +54,16 @@ def non_max_suppression(scores: np.ndarray, threshold: float, radius: int) -> np
         if all(abs(i - k) > radius for k in kept):
             kept.append(int(i))
     return np.array(sorted(kept), dtype=int)
+
+
+def boundary_decode(prob: np.ndarray, boundary: np.ndarray, threshold: float, nms_radius: int) -> np.ndarray:
+    """Intervals from boundary probabilities (peaks >= threshold after non-maximum suppression, position 0 excluded),
+    each labelled with the argmax of its mean class probability; adjacent intervals with the same label merge because
+    the labels are written per sample. Used by the round-2 boundary segments and both round-3 steps."""
+    prob = np.asarray(prob, float); b = np.where(np.arange(len(boundary)) > 0, np.asarray(boundary, float), 0.0)
+    cuts = np.concatenate([[0], non_max_suppression(b, threshold, nms_radius), [prob.shape[0]]])
+    labels = np.empty(prob.shape[0], dtype=int)
+    for a, e in zip(cuts[:-1], cuts[1:]):
+        if e > a:
+            labels[a:e] = int(prob[a:e].mean(0).argmax())
+    return labels

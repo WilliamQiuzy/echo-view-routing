@@ -177,3 +177,21 @@ class BoundaryContextNet(nn.Module):
         return {"class_logits": (logits * vm).transpose(1, 2), "local_logits": (local_logits * vm).transpose(1, 2),
                 "context_logits": (ctx_logits * vm).transpose(1, 2), "boundary_logits": b_logits[:, None, :],
                 "gate": (g * vm).transpose(1, 2), "mixed_logits": (mixed * vm).transpose(1, 2)}
+
+
+class BoundaryOnlyNet(nn.Module):
+    """Round 3, step 2: the projection, the three dilated convolutions and the boundary head of M5, trained with the
+    boundary loss only. It outputs boundary logits; interval labels come from the frozen frame-level classifier, so no
+    class information passes through this network."""
+
+    def __init__(self, in_dim: int, dim: int = 128, dilations: tuple[int, ...] = (1, 2, 4), dropout: float = 0.2) -> None:
+        super().__init__()
+        self.proj = nn.Conv1d(in_dim, dim, 1)
+        self.local = nn.ModuleList([LocalLayer(dim, int(d), dropout) for d in dilations])
+        self.boundary = BoundaryHead(dim, dropout)
+
+    def forward(self, x: torch.Tensor, mask: torch.Tensor) -> dict[str, torch.Tensor]:
+        h = self.proj(x) * mask
+        for layer in self.local:
+            h = layer(h, mask)
+        return {"boundary_logits": self.boundary(h.transpose(1, 2))[:, None, :]}

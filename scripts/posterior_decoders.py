@@ -26,19 +26,18 @@ import torch  # noqa: E402
 
 from echo_routing.config import load_paths  # noqa: E402
 from echo_routing.evaluate.dev_metrics import evaluate_predictions, select_operating_point  # noqa: E402
-from echo_routing.temporal.baselines.b3_js_divergence import boundary_scores, labels_from_boundaries  # noqa: E402
+from echo_routing.temporal.baselines.b3_js_divergence import boundary_scores  # noqa: E402
 from echo_routing.temporal.baselines.registry import decode_with_prob  # noqa: E402
 from echo_routing.temporal.dev_heads import head_from_manifest  # noqa: E402
 from echo_routing.temporal.dev_run import HALVES, Inputs  # noqa: E402
-from echo_routing.temporal.segments import non_max_suppression  # noqa: E402
+from echo_routing.temporal.segments import boundary_decode  # noqa: E402
 
 FLAT = ("native_macro_f1", "segment_f1_50_multi", "boundary_recall_multi", "boundary_f1_multi", "native_internal_cuts_per_clip",
         "same_class_cut_rate_multi", "segment_f1_50_pairs")
 
 
 def boundary_segments(prob: np.ndarray, b: np.ndarray, threshold: float, nms_radius: int) -> np.ndarray:
-    peaks = non_max_suppression(np.where(np.arange(b.size) > 0, b, 0.0), threshold, nms_radius)
-    return labels_from_boundaries(prob, peaks)
+    return boundary_decode(prob, b, threshold, nms_radius)
 
 
 def decoders(cfg: dict, cal_native_probs: list[np.ndarray], has_boundary: bool) -> list[tuple[str, dict]]:
@@ -52,10 +51,15 @@ def decoders(cfg: dict, cal_native_probs: list[np.ndarray], has_boundary: bool) 
     if has_boundary:
         bg = cfg["posterior_decoding"]["bseg"]
         out += [("bseg", {"threshold": float(t), "nms_radius": int(r)}) for t, r in itertools.product(bg["threshold"], bg["nms_radius"])]
+        if "boundary_decoding" in cfg:   # round 3: the model's boundaries, labels from the frozen frame-level classifier
+            bd = cfg["boundary_decoding"]
+            out += [("bdec", {"threshold": float(t), "nms_radius": int(bd["nms_radius"])}) for t in bd["threshold"]]
     return out
 
 
-def apply(family: str, params: dict, post: dict) -> dict[str, np.ndarray]:
+def apply(family: str, params: dict, post: dict, cls: dict | None = None) -> dict[str, np.ndarray]:
+    if family == "bdec":
+        return {k: boundary_decode(cls[k], v["boundary_prob"], params["threshold"], params["nms_radius"]) for k, v in post.items()}
     if family == "argmax":
         return {k: v["prob"].argmax(1) for k, v in post.items()}
     if family == "bseg":
@@ -70,6 +74,7 @@ def main() -> None:
     ap.add_argument("--feature-manifest", required=True); ap.add_argument("--protocol", required=True)
     ap.add_argument("-c", "--config", default="configs/experiments/boundary_context_v1.yaml")
     ap.add_argument("--tag", default="", help="run-name tag (default: the first row)")
+    ap.add_argument("--families", default="", help="comma list of decoder families to evaluate (default: all)")
     args = ap.parse_args(); args.set = []
     cfg = load_cfg(args); paths = load_paths(); sc = cfg["selection"]
     hz = float(cfg["protocol"]["hz"]); tol_s = float(sc["boundary_tolerance_s"])
@@ -81,6 +86,9 @@ def main() -> None:
     first = (args.runs or args.pred_dirs).split(";")[0].partition("=")[0].strip()
     run_dir = new_run_dir(cfg, f"md_posterior_decoders_{args.tag or first}")   # distinct names for parallel runs
     results, grid_rows = {}, []
+    cls = {h: {**{s.seq_id: inputs.store.get(s.seq_id, "orig").prob for s in inputs.halves[h].natives},
+               **{s.recipe.recipe_id: s.prob for s in (*inputs.halves[h].pairs, *inputs.halves[h].multi)}} for h in HALVES}
+    keep = set(filter(None, args.families.split(",")))
     sources = [(i, "run") for i in filter(None, args.runs.split(";"))] + [(i, "pred") for i in filter(None, args.pred_dirs.split(";"))]
     for item, kind in sources:
         row, _, rd = item.partition("="); rd = Path(rd.strip()); row = row.strip()
@@ -95,11 +103,11 @@ def main() -> None:
             has_b = "boundary_prob" in next(iter(post["calibration"].values())) and man.get("boundary_weight", 1.0) != 0.0
         cal_nat = [post["calibration"][s.seq_id]["prob"] for s in inputs.halves["calibration"].natives]
         # native floor: each system's own frame-level majority vote (an external system's argmax; else the encoder's)
-        row_floor = floor if kind == "run" else evaluate_predictions(apply("argmax", {}, post["calibration"]), inputs.halves["calibration"],
+        row_floor = floor if kind == "run" else evaluate_predictions(apply("argmax", {}, post["calibration"], cls["calibration"]), inputs.halves["calibration"],
                                                                          hz, tol_s)[0]["native_macro_f1"] - float(sc["native_f1_tolerance"])
         recs = []
-        for i, (fam, params) in enumerate(decoders(cfg, cal_nat, has_b)):
-            m, _ = evaluate_predictions(apply(fam, params, post["calibration"]), inputs.halves["calibration"], hz, tol_s)
+        for i, (fam, params) in enumerate(d for d in decoders(cfg, cal_nat, has_b) if not keep or d[0] in keep):
+            m, _ = evaluate_predictions(apply(fam, params, post["calibration"], cls["calibration"]), inputs.halves["calibration"], hz, tol_s)
             recs.append({"order": i, "family": fam, "params": params, **{k: m[k] for k in FLAT}})
         grid_rows += [{"row": row, **r, "params": json.dumps(r["params"])} for r in recs]
         results[row] = {"run_dir": str(rd), "source": kind, "floor_calibration": row_floor, "families": {}}
@@ -107,7 +115,7 @@ def main() -> None:
             op = select_operating_point([r for r in recs if r["family"] == fam], row_floor, float(sc["boundary_recall_min"]), float(sc["tie_margin"]))
             entry = {"status": op["status"], "params": op["main"]["params"]}
             for h in HALVES:
-                m, tables = evaluate_predictions(apply(fam, op["main"]["params"], post[h]), inputs.halves[h], hz, tol_s)
+                m, tables = evaluate_predictions(apply(fam, op["main"]["params"], post[h], cls[h]), inputs.halves[h], hz, tol_s)
                 entry[h] = {k: m[k] for k in (*FLAT, "native_per_class_recall", "boundary_precision_multi", "native_internal_cuts_per_min")}
                 for tname in ("native", "multi_seg", "multi_frag"):
                     tables[tname].to_csv(run_dir / f"rows_{row}_{fam}_{h}_{tname}.csv", index=False)

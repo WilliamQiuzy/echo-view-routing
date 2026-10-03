@@ -40,6 +40,7 @@ JOBS = {
     "M5": ["scripts/train_boundary_context.py", "--variant", "full", "--segment-pool"],
     "M3p": ["scripts/train_boundary_context.py", "--variant", "aux", "--segment-pool"],
     "simple": ["scripts/calibrate_simple_decoders.py"],
+    "BO": ["scripts/train_boundary_only.py"],
 }
 
 
@@ -91,7 +92,8 @@ def main() -> None:
                "--feature-manifest", args.feature_manifest, "--protocol", args.protocol]
         if args.lr is not None and n != "simple":
             cmd += ["--lr", str(args.lr)]
-        log = ROOT / args.logs / f"md_{experiment}_{n}_s{args.seed}{'' if args.lr is None else f'_lr{args.lr:g}'}.log"
+        # the feature digest keeps logs of the same job on different inputs apart (two queues once shared one log)
+        log = ROOT / args.logs / f"md_{experiment}_{n}_s{args.seed}_f{features_sha[:8]}{'' if args.lr is None else f'_lr{args.lr:g}'}.log"
         status[n] = {"state": "running", "identity": identities[n], "experiment": experiment, "config": args.config,
                      "protocol_sha256": protocol_sha, "feature_manifest_sha256": features_sha, "seed": args.seed,
                      "started": dt.datetime.now().isoformat(timespec="seconds"), "log": str(log), "cmd": cmd}
