@@ -1,0 +1,75 @@
+# Round 5 (the user's decision of 2026-10-03 after round 4): does keeping intermittent high-score frame evidence
+# improve the A4C/A5C decision without new A4C errors? No echo expert is available, so every main result keeps all
+# clips and their public labels. Step 1 (reachability) runs before any training; step 2 (one small trained decider,
+# section `decider`, added before any training) runs only if step 1 holds. Written before any round-5 number was
+# computed. Protocol, halves, banks, floors and the success criterion are inherited unchanged.
+extends: failure_analysis_v1.yaml
+run_name: evidence_pooling_v1
+experiment: round5_evidence_pooling
+
+sensitivity:
+  # how much the conclusions depend on the ten source clips that held 38 of the 54 E0 common errors in round 4 (every
+  # clip with at least two of them); a check of dependence only, never used to declare a winner
+  exclude_clips:
+    - 2022-05-26_10-29-41_320x240_2
+    - 2022-07-20_14-54-55_320x240_1
+    - 2022-06-25_09-28-23_000_320x240_13
+    - 2022-05-26_10-29-41_320x240_0
+    - 2022-05-03_09-01-08_320x240_8
+    - 2022-07-19_16-16-01_320x240_3
+    - 2022-07-10_10-39-11_001_320x240_6
+    - 2022-06-25_08-31-30_000_320x240_0
+    - 2022-05-26_14-32-19_320x240_0
+    - 2022-04-29_18-53-17_003_320x240_2
+  rule: "the same list for every system: the clips leave the native set, every pair or multi-fragment stream with a
+    fragment from them is removed, and no setting is re-tuned or re-selected"
+
+reachability:
+  bases: ["E0 ASRF seeds 0-2", "E1 ASRF seeds 0-2"]
+  reference_only: ["E0 B3 tuned", "E1 B3 tuned"]      # reported with their own boundaries; not step-2 bases
+  spans:
+    final: "the system's final segments under its current decoding"
+    candidate: "ASRF: the spans between the boundary head's accepted peaks (official argrelmax at boundary_th 0.5,
+      unchanged) before the class vote merges equal neighbours; B3: the spans between its detected boundaries. Using
+      candidate spans is a new decoding setting, and every decision rule in step 2 must then use exactly these spans"
+  oracle: "every span whose current label is A4C or A5C takes its reference majority class when that is A4C or A5C;
+    every other span keeps its label; equal neighbours then merge; native clips, pairs and streams alike"
+  candidate_recall: "recall of the candidate cuts themselves (one-to-one within 0.5 s): the most any relabelling of
+    these spans can reach"
+  holds_if: "for one base and one span type, the oracle gives a three-seed mean segment F1@50 of at least the target on
+    both halves, boundary recall of at least 0.95 in every seed and half, and native macro-F1 at or above the input's
+    floor in every seed and half. The 0.95 recall requirement is never relaxed."
+
+decider:                       # step 2. Added after step 1 held (E1 ASRF, candidate spans) and before any training.
+  base: "E1 ASRF seeds 0-2 with candidate spans, a new decoding setting: the spans between the boundary head's
+    accepted peaks. A span keeps ASRF's class vote unless that vote is A4C or A5C; then the rule below chooses between
+    A4C and A5C in either direction. Equal neighbours merge afterwards. Every rule uses exactly these spans, on native
+    clips, pairs and streams alike."
+  evidence: "the frozen E1 probe's per-sample class probabilities inside the span (the cached E1 output); nothing else"
+  rules:
+    mean: "the larger of the mean p(A4C) and the mean p(A5C) over the span (the original mean-probability decision)"
+    trained_mean: "the classifier below on the span's five mean class probabilities"
+    trained_distribution: "the same classifier on fixed statistics of the span: the five mean class probabilities; the
+      10th, 25th, 50th, 75th and 90th percentiles and the maximum of p(A5C); the 10th, 50th and 90th percentiles of
+      p(A4C); the standard deviation of p(A5C); the shares of samples with p(A5C) above 0.5 and above 0.8"
+  classifier: "one hidden layer of 32 ReLU units on inputs standardised with the training means and deviations; Adam
+    (learning rate 0.01, weight decay 0.001), 300 full-batch epochs, weighted binary cross-entropy; A5C when the output
+    probability is at least 0.5. No epoch, threshold or setting is chosen on validation data."
+  training_spans: "training split only: every A4C or A5C reference unit of the 1,500 training-bank streams, once with
+    its exact limits and once with each limit moved by an integer drawn uniformly from -3 to 3 (a span must keep at
+    least 5 samples and an A4C or A5C reference majority, its label); and every A4C or A5C training clip (orig variant)
+    as one span"
+  weights: "every source clip (a span's first one) carries the same total weight; then A4C and A5C get equal totals"
+  seeds: "0, 1, 2: initialisation and the limit draws; decider seed k runs on ASRF seed k"
+  validation: "never used for training or for any choice; the ten sensitivity clips are never supervision"
+  report:
+    - "the success test of the round-1 plan for every rule (three-seed mean segment F1@50 at least the target on each
+       half, recall >= 0.95 and the native floor in every seed and half)"
+    - "paired per-seed contrasts with 95% bootstrap intervals: trained_distribution - trained_mean (does the
+       distribution add information beyond recalibration), trained_distribution - mean, trained_mean - mean, each rule
+       against E1 ASRF's default output and against the strongest previous configuration of each half"
+    - "A5C units (reference segments) and native clips that turn right and A4C units and native clips that turn wrong,
+       against the mean rule on the same spans and against ASRF's default output, counted by units, source clips and
+       sessions"
+    - "how much of the change comes from the one or two clips that change most, and every table again without the ten
+       sensitivity clips (dependence only, never a winner)"
