@@ -1,0 +1,72 @@
+# Round 6 (the user's decision of 2026-10-03 after round 5): does training an A4C/A5C classifier directly on actual
+# short spans improve the span labels and reduce false pieces, and does that need the visual encoder to change?
+# A paired experiment. V0 trains a small head on frozen visual features. V1 trains the same head together with the last
+# ViT block, its final normalisation and its projection. Everything else is identical. Round 2 already fine-tuned the
+# same block with frame-level and boundary losses; the new element is the span-level objective. Written before any
+# round-6 training. Protocol, halves, floors, the success criterion and the ten sensitivity clips are inherited.
+extends: evidence_pooling_v1.yaml
+run_name: span_classifier_v1
+experiment: round6_span_classifier
+
+spans:
+  source: "the frozen E1 ASRF of rounds 2-5, official decode. Candidate spans are the spans between the boundary head's
+    accepted peaks (argrelmax at 0.5) before the class vote, as in round 5. Model seed k uses ASRF seed k in training
+    and in validation. The fine-tuned encoder never changes the spans or the vote."
+  decided: "spans whose ASRF vote is A4C or A5C; the classifier picks A4C or A5C in either direction; every other span
+    keeps the vote; equal neighbours merge afterwards"
+  training: "training split only: the 1,500 training-bank streams and every training clip as a native recording, both
+    decoded by the frozen ASRF seed; every span voted A4C or A5C whose reference majority class is A4C or A5C"
+  label: "the reference class covering the most samples of the span; spans whose majority is another class are not
+    used; the majority share (purity) is recorded"
+  weights: "the span's source clip is the one covering most of its samples; every source clip carries the same total
+    weight; then A4C and A5C get equal totals"
+  frames: "the span's 10 Hz samples, at most 32 taken evenly spaced (same rule in training and validation), each with
+    the contrast variant of its fragment"
+  report: "length and purity of training and validation spans, and how often the vote differs from the majority"
+
+models:
+  encoder: "the exported E1 image encoder (models_frozen/e1_echoviewclip_probe/v1/visual_encoder_fp32.pt), loaded
+    strictly into the pinned EchoViewCLIP VisionTransformer, fp32 with TF32 off; parity checked against the stored
+    reference embeddings (1e-3) and the E1 cache (2e-2, float16) before training"
+  span_feature: "the mean of the span's frame embeddings (512)"
+  head: "Linear(512, 128), ReLU, Linear(128, 2); the same initialisation for V0 and V1 within a seed"
+  V0: "head only; every encoder parameter frozen. Its span features are computed once with the frozen encoder over the
+    same frames, which equals running the frozen encoder at every update"
+  V1: "head and transformer.resblocks.11, ln_post and proj; the rest frozen"
+  optimiser: "AdamW, weight decay 0.0001, head lr 0.0001, encoder lr 0.00001 (V1); linear warm-up over the first epoch,
+    then cosine to zero; gradient norm clipped at 1.0; weighted cross-entropy"
+  batches: "16 spans per update; the span order of an epoch depends only on (seed, epoch) and is the same for V0 and
+    V1"
+  budget: "8 epochs for both; the final weights are used; no epoch, threshold or setting is chosen on validation data"
+  decision: "A5C when the head's A5C probability is at least 0.5"
+  seeds: [0, 1, 2]
+
+evaluation:
+  classification: "validation spans voted A4C or A5C whose majority is A4C or A5C: accuracy and per-class recall of the
+    ASRF vote, the round-5 mean rule, V0 and V1, by spans and by source clips"
+  system: "after equal neighbours merge: segment F1@50, boundary recall and native macro-F1; A5C units and native clips
+    turning right and A4C ones turning wrong against ASRF's default and against the mean rule on the same spans; false
+    pieces in both directions with their clips; paired per-seed bootstrap contrasts V1 - V0, V0 - mean rule, V1 - mean
+    rule, each model against ASRF's default and against the strongest previous configuration"
+  success: "unchanged: three-seed mean segment F1@50 at least 1 point above the strongest previous configuration of each
+    half, recall >= 0.95 and native macro-F1 at or above the E1 floors (0.973 selection, 0.980 calibration) in every seed
+    and half; the floors never move with a new encoder"
+  sensitivity: "every system table again without the ten clips (dependence only, never a winner)"
+
+interpretation:                # the user's rules, fixed before training
+  - "V0 improves and V1 does not improve further: the gain comes from using the features or from the classification
+     training, not from visual fine-tuning"
+  - "V1 beats V0 consistently and improves the full system: supports that short-span supervision improves the visual
+     representation"
+  - "classification improves but false pieces increase, or the full system stays behind: the model goal is not met, and
+     a classification gain alone is not reported as success"
+  - "neither improves: the short-span classification route ends; no larger encoder or extra module follows
+     automatically"
+
+terms:                         # what the interpretation rules mean, fixed before training
+  classification_improves: "span accuracy (A4C/A5C-majority validation spans) above the ASRF vote's in all three seeds
+    on both halves"
+  system_improves: "segment F1@50 consistently higher than ASRF's default output (all three paired intervals above zero)
+    on at least one half and not consistently lower on the other"
+  fragments_increase: "the summed false pieces in both directions exceed ASRF's default in at least two seeds on a half"
+  v1_beats_v0: "V1 - V0 segment F1@50 consistently higher on at least one half and not consistently lower on the other"
