@@ -41,8 +41,9 @@ whether the high-score frames show a real outflow tract or whether any label is 
      - **A4C pieces inside A5C segments.** On the selection half these rise from 8, 18 and 19 (seeds 0, 1 and 2) to 26
        to 36.
      - **A5C pieces inside A4C segments.** These rise from 2–9 to 10–16.
-   - The evidence varies within the cardiac cycle, so short spans cut from one A5C segment fall on both sides of the
-     decision.
+   - Observation: within a recording, the classifier's A5C score fluctuates from sample to sample, and short spans cut
+     from one A5C segment fall on both sides of the decision. Whether the fluctuation follows the cardiac cycle was not
+     tested. That remains a hypothesis.
 5. **No rule passes the success test.** On all clips the rules reach 0.873 to 0.876 on the selection half and 0.946 to
    0.952 on the calibration half. They also stay below the native floor on the selection half.
 6. **Without the ten sensitivity clips, the conclusions do not change.** The distribution and mean classifiers still
@@ -50,16 +51,24 @@ whether the high-score frames show a real outflow tract or whether any label is 
    no consistent difference from ASRF's default there. This analysis removes 43 of the 120 streams in each half, so it
    shows dependence only.
 
-**Reading.** In this form, keeping intermittent high-score evidence does not improve classification. It also adds
-A4C/A5C false pieces.
-- **Training data.** On the training split, the pattern appears in both classes: 9% of A4C units and 6% of A5C units
-  have a mean p(A5C) below 0.5 with a 90th percentile above 0.8. The statistics beyond the mean raise training accuracy
-  by only 0.1 to 0.3 points.
-- **Short spans.** The problem is not the decision rule alone. The frame evidence itself is too intermittent to label
-  short spans consistently.
+**Reading.** Observations, hypotheses and conclusions are kept apart here.
+- **Experimental conclusion.** In this form, a decision that reads statistics of the five class probabilities does not
+  improve classification. It also adds A4C/A5C false pieces.
+- **Observation (training data).** On the training split, the pattern appears in both classes: 9% of A4C units and 6%
+  of A5C units have a mean p(A5C) below 0.5 with a 90th percentile above 0.8. The statistics beyond the mean raise
+  training accuracy by only 0.1 to 0.3 points.
+- **Observation (short spans).** The probability scores fluctuate within a recording, so a rule on short spans
+  labels pieces of one segment differently.
+- **Not shown.** The decider read only five class probabilities. It never read the 512-dimensional visual features,
+  so this round does not show that those features lack usable information. Round 2 already fine-tuned the last ViT
+  block, with frame-level and boundary losses. A span-level training objective has not been tested.
 
-What remains open is whether a better visual representation separates A4C from A5C on short spans. That would mean
-training a visual model, which is outside what this round allowed. The choice is the user's.
+## Decision after this round (2026-10-03)
+
+The user ended the probability-aggregation route. The next round is a paired visual experiment on actual short spans,
+described in `configs/experiments/span_classifier_v1.yaml`. One model uses frozen visual features and trains only a
+small head. The other also fine-tunes the last ViT block, its final normalisation and its projection. Both start from
+the same weights and see the same spans, frames and batches.
 
 ## 1. What was fixed in advance
 

@@ -59,7 +59,8 @@ result.
 - **Segmentation alone has little room.** Suppose every wrong unit gets its reference interval, labelled by the
   classifier's own evidence. E0 B3 then rises by 1.2 points on the selection half and 2.7 on the calibration half.
   Keeping the predicted intervals and correcting only the class raises it by 4.6 and 4.0.
-- **The class decision fails in a specific way.** In misread A5C units the A5C evidence is intermittent. In 63% of
+- **The class decision fails in a specific way.** In misread A5C units the classifier's A5C score is intermittent
+  (an observation about model scores, not about anatomy). In 63% of
   them on E0 (85% on E1), the 90th percentile of p(A5C) exceeds 0.8, while the median sample stays below 0.5. A4C
   units rarely look like this (2% on E0, 5% on E1). In case 1 below, p(A5C) peaks about once per second. Averaging over
   the segment, as B3's labelling and the whole-clip check do, removes these peaks.
@@ -95,7 +96,7 @@ The recommendation as first written is kept below for the record.
 
 The pre-declared rule selects **data first**. The five most affected clips carry 54% of the common errors, and 52%
 have a whole source clip read as another class. Both thresholds are passed on E0 and E1 and for both category
-definitions. One caveat applies. The whole-clip check uses the mean, which the intermittent evidence shows to be
+definitions. One caveat applies. The whole-clip check uses the mean, which the intermittent scores suggest may be
 biased against A5C. The concentration in a few clips does not depend on that.
 
 - **The step itself.** Check the ten concentrated clips before any training.
@@ -249,7 +250,7 @@ segment can cover more than its unit. They are bounds for this kind of fix, not 
 there repairs only the units that the row's system gets wrong. Some are therefore empty by definition, such as the
 B3-only column in ASRF rows.
 
-## 7. Added after the inventory: intermittent A5C evidence and a probe
+## 7. Added after the inventory: intermittent A5C scores and a probe
 
 The case figures showed A5C probability peaking about once per second inside misread A5C units. The statistics below
 were computed afterwards, so they are not pre-declared.
@@ -296,8 +297,8 @@ expert has looked at them, and the "whole clip" input uses the same mean pooling
   clips and sessions are reported.
 - The repairs are idealised. Section 7 was added after the inventory, and its probe threshold was chosen on the
   calibration half, which is development data like the selection half.
-- The "whole clip" check and B3's labels both use the mean probability, which section 7 shows to be biased against
-  intermittent A5C evidence.
+- The "whole clip" check and B3's labels both use the mean probability, which section 7 suggests may be biased
+  against intermittent A5C scores.
 
 ## 10. Files and runs
 
