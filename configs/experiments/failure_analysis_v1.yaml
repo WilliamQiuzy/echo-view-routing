@@ -1,0 +1,75 @@
+# Round 4 (the user's decision of 2026-10-02 after round 3): locate where the strong baselines fail, from existing
+# predictions only. No large-scale training; nothing here is a model result. Written before any failure table was
+# computed. Protocol, halves and banks are inherited unchanged (model_development_v3 -> v2 -> v1).
+extends: model_development_v3.yaml
+run_name: failure_analysis_v1
+experiment: round4_failure_analysis
+
+systems:
+  main: ["E0 B3 tuned", "E0 ASRF seeds 0-2"]     # B3: the simple-decoder run's selected setting; ASRF: stored predictions
+  check: ["E1 B3 tuned", "E1 ASRF seeds 0-2"]
+  fixed: ["B7 with B3 on its posteriors"]          # the official EchoViewCLIP system, reported on both halves
+
+units:
+  # a unit is a reference segment of a multi-fragment stream: a run of fragments with the same class (a same-class
+  # join is not a boundary). A unit is wrong for a system when no predicted segment of its class is matched to it at
+  # IoU 0.5 by the one-to-one matching of segment F1@50. An unmatched predicted segment is spurious and is hosted by
+  # the unit it overlaps most. Sources: the unit's source clips (video_id) and sessions (the protocol's split unit,
+  # the clip id without its last "_k"); repeated use of a clip in several streams is never counted as a new case.
+  iou: 0.5
+
+categories:                    # per visual input and half; k = number of ASRF seeds (of 3) with the unit wrong
+  stable_common: "B3 wrong and k = 3"
+  common_two_plus: "B3 wrong and k >= 2"
+  b3_only: "B3 wrong and k = 0"
+  asrf_only: "B3 right and k >= 2"
+  # every cell of B3 (right, wrong) x k (0..3) is reported as well, so nothing is hidden by a strict intersection
+
+causes:                        # one cause per wrong unit: the first rule that applies
+  # predicted changes are matched one-to-one to reference changes (greedy by distance, within `near` samples)
+  hit: 5                       # matched within 5 samples (0.5 s, the boundary tolerance)
+  near: 10                     # matched within 10 samples (1 s) but beyond 5: shifted; unmatched: missed
+  rules:
+    - "label: a predicted segment overlaps the unit at IoU >= 0.5 but has another class"
+    - "missed_cut: a reference change at one of the unit's edges has no matched predicted change"
+    - "extra_cut: an unmatched predicted change lies inside the unit"
+    - "boundary_shift: everything else (edges matched, at least one beyond 5 samples, nothing cuts the interior)"
+
+checks:                        # per unit, with the same frames and contrast variant as in the stream
+  full_clip: "frozen classifier's mean probability over each whole source clip (same variant) -> class"
+  reference_interval: "frozen classifier's mean probability over the unit's own samples -> class"
+  isolated: "the unit's samples alone through B3 (same setting) and ASRF (same checkpoint) -> majority label"
+  in_stream: "the system's labels inside the unit -> majority label"
+  undetermined: "when the reference-interval class differs from the label, whether the model or the label is at
+    fault cannot be determined from the fragment label alone (no expert review): marked 'cannot be determined'"
+
+rates:
+  length_bins: [[10, 10], [11, 15], [16, 20], [21, 30], [31, 60], [61, 1000]]   # unit length in samples (10 Hz)
+  by: ["class", "length bin", "class x length bin", "neighbour class", "class pair at each change"]
+  controls: "right units of the same class and length bin, same half and system"
+  neighbour_check_condition: "in the main systems, units of class c with a neighbour of class x fail at least twice
+    as often as units of class c without one, within the same length bins, with at least 10 wrong units from at least
+    5 source clips; then the paired swap check runs for that (c, x)"
+
+neighbour_check:               # only when the condition above holds; target frames fixed, neighbours swapped
+  variants: ["original", "isolated", "same_class_neighbours", "other_clip_neighbours"]
+  controls: "right units of class c get a neighbour of class x from another clip"
+
+simulation:                    # diagnostic only, never a model result
+  target: "the cause with the most wrong units over the main systems (both halves)"
+  segmentation_only: "each affected unit takes its reference interval, labelled by the argmax of the frozen
+    classifier's mean probability inside it (for ASRF also its own posteriors)"
+  class_only: "every predicted segment overlapping an affected unit takes the majority reference class over its own
+    span; predicted intervals are kept"
+  ideal: "each affected unit takes its reference class on its reference interval"
+  target_gain: "segment F1@50 needed to be 1 point above the strongest previous configuration on each half"
+
+decision:                      # which single next step the evidence points to; fixed before any failure table
+  evidence: "E0 units in common_two_plus (B3 wrong and at least two ASRF seeds wrong), both halves pooled"
+  rules:                       # the first that holds
+    - "data: the five most affected source clips hold at least half of these units, or at least half have a whole
+       source clip that the frozen classifier assigns to another class"
+    - "visual: at least half have the wrong class from the frozen classifier's mean over their own samples"
+    - "segmentation: otherwise (the visual evidence inside most units is right and the systems lose it)"
+  headroom: "the ideal repair of the target cause must lift the main systems to the target on both halves for a
+    mechanism aimed at that cause to be able to reach the +1 point goal at all"
