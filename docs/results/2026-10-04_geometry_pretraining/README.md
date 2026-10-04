@@ -20,8 +20,13 @@ not read, and the paper stays paused.
 ## Answer
 
 Under the pre-declared rules, **G2 does not pass the screening, neither G1 nor G2 is better than G0, and no system
-reaches the final goal.** The config's rule for this case applies: this direction stops at this data scale. CETUS
-would change the scale, not the rules.
+reaches the final goal.** The config's rule for this case applies: this direction stops at this data scale.
+
+**Post-round resource update, 2026-10-04.** The CETUS organiser's reply, shared by the project lead, grants the requested
+research use but confirms only ED/ES 3D volumes and annotations are available. CETUS therefore cannot be described as
+simply adding more full dynamic sequences: it would also change temporal sampling and the data distribution. The
+stopping decision and this round's success criteria remain unchanged. No additional training is triggered by the
+permission. Details are in `docs/data_requests/2026-10-03_cetus_request.md`.
 
 1. **The tilt term changes nothing measurable in the 2D tasks.** G2 − G1 shows no consistent difference in any
    classification or segmentation measure on either half. For segment F1@50, the per-seed differences are −0.4 to +0.3
@@ -42,13 +47,18 @@ would change the scale, not the rules.
      selection against 0.973; 0.969 to 0.978 on calibration against 0.980). On G0's features it meets both.
    - **False changes.** B3's internal cuts per native clip on the calibration half rise from 0.068 (G0) to 0.114 to
      0.118 with G1 features. The rise is consistent across the three seeds.
-5. **The tilt was learned, but it did not reach the 2D tasks.** On held-out people, G2's tilt head errs by 4.65° to
+5. **G2 predicts tilt on held-out 3D slices, without a detected downstream gain.** On held-out people, G2's tilt head errs by 4.65° to
    4.71°. Always predicting zero errs by 6.59°, and the contrast-only baseline on the model's input errs by 5.85°. No
    G2 seed carries the shortcut warning (its threshold is 5.32°).
 
 **What this does not show.** This round does not show that 3D geometry cannot help view classification. It covers one
 form of supervision (tilt difference with InfoNCE), one trainable block, one budget and 42 volumes from 19 people. It
 shows that this form, at this scale, adds nothing measurable to E1 on EV9V.
+
+**Route closed, 2026-10-04.** The project lead closed this G1/G2 route after the results. The results, the six
+encoders and the stop decision are kept, and no further training is run for it. The encoders are frozen read-only
+in `models_frozen/geometry_pretraining/` on the server, with digests in `frozen_weights.json`. The next training
+round waits for a new testable mechanism, distinct from this one.
 
 ## 1. What ran
 
@@ -89,8 +99,10 @@ and the calibration half has 61 and 18.
   there is no consistent difference.
 - In all six encoders, one A5C clip that G0 missed on the selection half becomes right, and one A4C clip becomes A5C.
   On the calibration half, two A4C clips become A5C in all six encoders, and one A5C clip becomes right in G2 seed 1
-  only. One PSAX clip turns PLAX in seed 0 of both arms. The ranking stays, but the decision point moves toward A5C. G1 and G2 move it alike, so the shift comes from
-  the slice data and InfoNCE, not from the tilt term.
+  only. One PSAX clip turns PLAX in seed 0 of both arms. The AUC changes little while more clips are assigned A5C.
+  The shared pattern in G1 and G2 is consistent with their shared pretraining/probe-refitting pipeline; it does not
+  isolate InfoNCE from probe fitting or establish that every ranking is unchanged. No consistent incremental effect
+  of the tilt term is detected.
 
 ## 3. Segmentation (stage B)
 
@@ -156,10 +168,15 @@ shows where the probe did lose clips.
 | Zero predictor | 6.59° | 9.95° | |
 | Contrast baseline, final input | 5.85° | 8.26° | |
 
-G1's tilt head is never trained, so its error only shows the untrained head. G2's head learns the tilt well beyond the
-contrast-only baseline. G2 also enlarges the distances in the encoder's output, but between times as much as between
-tilts. The ratio of the two is 1.54 to 1.55 for G1 and 1.55 to 1.56 for G2. The added tilt information does not change
-the probe's ranking of A4C against A5C clips (section 2).
+G1's tilt head is never trained, so its error only shows the untrained head. G2's reported error is lower than the
+contrast-only baseline. This does not establish that its encoder acquired additional geometric information relative
+to G0 or G1: that would require equivalently trained readouts on the frozen encoders, which were not run. Not triggering
+the specific contrast-baseline warning also does not rule out other shortcuts. These limitations do not change the
+negative downstream result or require another experiment to close this round.
+
+G2 also enlarges the distances in the encoder's output, but between times as much as between
+tilts. The ratio of the two is 1.54 to 1.55 for G1 and 1.55 to 1.56 for G2. This does not show the hoped-for
+separation of heart motion from plane change. The A4C/A5C AUC also changes little (section 2).
 
 The contrast baseline is described in `start_review.md`. On the model's input it explains more of the tilt than on raw
 slices (R² 0.21 against 0.07), mainly through the slice mean.
@@ -186,5 +203,6 @@ slices (R² 0.21 against 0.07), mainly through the slice mean.
   - `scripts/geometry_round_run.sh` runs the round, and `scripts/geometry_round_report.py` writes the report.
 - **Numbers.** `report.json` and `report_tables.md` hold every table and per-seed interval, and
   `contrast_baseline.json` holds the baseline.
+- **Weights.** `frozen_weights.json` lists the frozen files and their digests.
 - **Server only.** The banks are in `data/geometry/banks/`, the encoders in `runs/geometry/{G1,G2}_s{k}/`, the
   embeddings in `cache_v2/geo_raw/` and the logs in `logs/geometry_*.log`.
