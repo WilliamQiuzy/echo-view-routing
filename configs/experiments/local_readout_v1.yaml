@@ -1,0 +1,94 @@
+# Round 7 (the project lead's decision of 2026-10-04, after the CETUS intake): do the frozen E1 encoder's local patch
+# tokens carry A4C/A5C information that its global vector does not readily give? A readout comparison on the round-6
+# spans. No encoder parameter trains, and CETUS is not used. Written before any round-7 training. Spans, frames, labels,
+# weights, seeds, protocol, halves, floors, the success criterion and the ten sensitivity clips are inherited unchanged
+# from span_classifier_v1.yaml.
+extends: span_classifier_v1.yaml
+run_name: local_readout_v1
+experiment: round7_local_readout
+
+question: "Do the patch tokens of the frozen E1 encoder carry A4C/A5C information that the global token does not
+  readily give? P2 - P1 is the main comparison. This is an untested hypothesis, not a known defect: the ViT already
+  processes local regions; only the way features are read out has not been compared. Attention-based multiple-instance
+  pooling (Ilse, Tomczak and Welling, ICML 2018) is an established method and is not a contribution of this project.
+  The round asks only whether this readout exposes a specific bottleneck."
+
+arms:
+  P0: "round-6 V0 unchanged: the mean of the span's global frame embeddings into the span head; it must reproduce V0's
+    stored validation predictions exactly"
+  P1: "the global token of each frame, a residual frame module, learnable temporal weighting, the span head"
+  P2: "all 197 tokens of each frame (the global token and the 196 patch tokens); learnable weighting over the tokens
+    reads local regions first, then the same temporal weighting and the span head"
+
+features:
+  encoder: "the exported E1 encoder (models_frozen/e1_echoviewclip_probe/v1), every parameter frozen, fp32, TF32 off;
+    round 6's parity checks (stored reference embeddings 1e-3, E1 cache 2e-2)"
+  layer: "the last block's output for every token, through ln_post and proj: 197 tokens of 512 per frame. Token 0 is
+    the global token, the existing embedding (checked within 1e-5). P1 and P2 read the same layer at the same width"
+  computed: "P0 keeps round 6's span means. P1 and P2 share one frozen forward pass per update, so both read identical
+    tokens"
+
+readout:                                  # echo_routing/temporal/local_readout.py
+  temporal: "gated attention over the span's frames: weights softmax over frames of w . (tanh(V f) * sigmoid(U f)),
+    hidden 128, padding masked; the same module and the same initialisation in P1 and P2"
+  tokens_P2: "gated attention over the 197 tokens of each frame, hidden 128; the frame vector is their weighted mean.
+    The global token is one of the tokens, so P2 can fall back to P1's input; a gain therefore means the patch tokens
+    add something"
+  frame_module_P1: "residual MLP on the global token, 512-128-512 with ReLU, last layer starting at zero. It has as many
+    parameters as P2's token attention (131,712 against 131,457), so P1 and P2 differ only in what the frame vector
+    reads"
+  head: "round 6's span head, Linear(512, 128), ReLU, Linear(128, 2), with round 6's initialisation (seed 1000 + k) in
+    every arm"
+  capacity: "trainable parameters: P0 65,922; P1 329,091; P2 328,836. P1 and P2 must stay within 1%"
+  initialisation: "the temporal module from seed 2000 + k, copied into P1 and P2; P2's token attention and P1's frame
+    module from seed 3000 + k"
+
+training:
+  data: "as round 6: for seed k, the spans of ASRF seed k on the training split with an A4C or A5C majority, at most 32
+    evenly spaced frames each with their contrast variants, and the same span weights"
+  optimiser: "as round 6: AdamW, lr 1e-4 for every trainable parameter, weight decay 1e-4, warm-up over the first
+    epoch then cosine to zero, gradient norm clipped at 1.0, weighted cross-entropy"
+  batches: "16 spans per update in round 6's epoch order (it depends only on seed and epoch), the same for P1 and P2"
+  budget: "8 epochs; the final weights; nothing is chosen on validation data"
+  decision: "A5C when the A5C probability is at least 0.5"
+  seeds: [0, 1, 2]
+
+evaluation:
+  spans: "the validation spans of the same ASRF seed, with predicted boundaries only; every span voted A4C or A5C is
+    decided; no span, clip or case is selected for training or scoring"
+  classification: "on validation spans with an A4C or A5C majority: accuracy, A4C recall, A5C recall, errors in each
+    direction (A4C read as A5C, A5C read as A4C) with their source clips, and separation (AUC of the A5C - A4C logit
+    margin)"
+  system: "after equal neighbours merge, as round 6: segment F1@50, boundary recall, native macro-F1, false pieces;
+    A5C units fixed and A4C units broken with the number of clips and sessions behind them"
+  contrasts: ["P2 - P1 (main)", "P1 - P0", "P2 - P0", "each arm against ASRF's default", "each arm against E1's B3
+    tuned", "each arm against the strongest previous configuration"]
+  statistics: "paired bootstrap per seed (2,000 draws, seed 20261002): span measures resample sessions of the spans'
+    source clips; system measures use report_model_development.paired_bootstrap. Consistent = all three seeds' 95%
+    intervals exclude zero in the same direction"
+  final_goal: "unchanged: three-seed mean segment F1@50 at least 1 point above the strongest previous configuration on
+    each half, boundary recall >= 0.95 and native macro-F1 at or above the floors (0.973 selection, 0.980 calibration)
+    in every seed and half; judged separately from the rules below"
+
+interpretation:                           # the project lead's rules, fixed before training
+  - "No classification gain of P2 over P1 (term below): the hypothesis ends. Read this way, the patch tokens add no
+    detectable A4C/A5C information"
+  - "A classification gain of P2 over P1 without a system gain: recorded as a local gain only, not as a system gain"
+  - "Both gains: worth further testing. The final goal (beating B3, ASRF and the strongest previous configuration
+    with the thresholds met) is unchanged and judged separately"
+  - "'No consistent difference detected' is not evidence of no effect or of no loss"
+  - "Every gain is reported with the number of independent source clips and sessions behind it"
+  - "The test split stays sealed"
+
+terms:
+  classification_gain: "P2 - P1 span accuracy or separation consistently higher on at least one half, and neither of
+    them consistently lower on either half"
+  system_gain: "P2 - P1 segment F1@50 consistently higher on at least one half and not consistently lower on the other"
+
+start_conditions:
+  - "P0 reproduces round-6 V0: identical validation predictions for every sequence, both halves, all three seeds"
+  - "token 0 of the all-token path equals the existing global embedding within 1e-5 on round 6's parity frames"
+  - "P1 and P2 within 1% in trainable parameters; their temporal modules and heads identical at initialisation"
+  - "unit tests pass (tests/test_local_readout.py), and a sanity run (256 spans, one epoch) runs end to end; it is not
+    reported"
+  - "one GPU job at a time; the test split is not read"
