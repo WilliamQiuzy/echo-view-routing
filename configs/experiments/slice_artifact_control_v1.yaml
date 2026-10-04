@@ -1,0 +1,67 @@
+# Slice-artifact control (the user's decision of 2026-10-03 after the EchoSlicer feasibility check): could the geometric
+# supervision we can generate by re-slicing 3D volumes be replaced by cues such as image smoothness? No network is
+# trained, no slice gets a view label, and controlling one statistic is not taken to solve the transfer to real 2D
+# recordings. Written before the control was run. Volumes, reader and slicing geometry as in
+# scripts/echoslicer_controlled.py (EchoSlicer commit 78f7085).
+volumes: [A_0, B_0, C_0]
+
+start_planes:                    # all derived geometrically from one plane; none is a view label
+  S1: "the A4C plane selected by EchoSlicer's classifier-guided search, used only as a geometric starting point"
+  S2: "S1 with the azimuth (phi) of its normal rotated by +20 degrees: the same obliqueness, another orientation"
+  S3: "S1 with the elevation (theta) of its normal set to 90 degrees: parallel to the volume's central azimuthal plane,
+    the least oblique plane through the same offset"
+
+tilt: "the elevation (theta) of the normal from -15 to +15 degrees around each start plane in 0.5-degree steps, both
+  directions; obliqueness = |theta_n - 90|, the angle between the slice and the volume's central azimuthal plane"
+times: "the first volume of the cycle and the volume nearest mid-cycle"
+grid: "one fixed in-plane grid per start plane (its own extent, 0.387 mm pixels), raw intensities"
+mask: "per start plane, only the pixels inside the volume in every frame of its sweep at both times"
+measures: "inside the mask: SD of intensity (contrast), sharpness (variance of the Laplacian), mean"
+matched_smoothing: "every frame of a sweep (start plane and time) is blurred with the smallest Gaussian that brings its
+  sharpness down to the sweep's lowest sharpness (bisection on sigma, 0 to 4 pixels); the measures are recomputed"
+tests:
+  - "Spearman of contrast with the signed tilt, raw and smoothing-matched"
+  - "Spearman of contrast with obliqueness, raw and smoothing-matched"
+reading: "if raw contrast falls with obliqueness on both sides of 90 degrees and the relation weakens after matching,
+  smoothing is a likely shortcut for the tilt; if it persists after matching, other image content drives it. Either
+  way the result concerns these three volumes and this reader only."
+curves:
+  tilt: "mean absolute change from the frame at tilt 0 to frames at tilts of +-0.5, 1, 2, 4, 8 and 15 degrees, per start
+    plane and time, raw and smoothing-matched"
+  time: "mean absolute change between frames k volumes apart at each start plane (k = 1 to half the cycle), averaged
+    over start times, reported against seconds"
+
+# Amendments after the first run (2026-10-03). Its summaries had been looked at when these were made, so they are not
+# pre-declared; each one gives its reason. The first run's tilt sweeps are reproduced with --margin 0, and its outputs
+# are kept in docs/results/2026-10-03_echoslicer_feasibility/numbers/artifact_control_run1/.
+amendments:
+  - "evaluation region: the common mask shrunk by 17 pixels (square neighbourhood): 1 for the Laplacian stencil plus 16,
+    scipy's Gaussian radius at the largest blur (sigma 4, truncate 4). In the first run the Laplacian and the blur at
+    the mask's edge reached pixels outside the volume (value 0) in some frames, so the volume edge could enter the
+    sharpness measure and the matched control. Contrast (SD) and mean use no neighbours and were not affected by this."
+  - "the reading rule needs contrast against obliqueness on each side of 90 degrees; the first run computed only the
+    pooled correlation. Per-side Spearman is now computed for every side with at least 5 frames."
+  - "time curve: non-cyclic pairs (i, i + k) only, and the same evaluation region as the tilt curves of that start
+    plane, so that tilt and time changes are measured on the same pixels. The first run wrapped around the cycle and
+    used the start plane's own mask."
+  - "descriptive only: relative sharpness = sharpness / SD^2, which does not grow with contrast, to tell fine detail
+    apart from contrast. Not used in the reading rule or the matching."
+  - "post-hoc check of the interpolation hypothesis, added because the first run's matching needed blurs below 0.5
+    pixel: the rendered pixels are 0.387 mm while the volume's samples are about 1-4 mm apart, so the variance of the
+    Laplacian mostly measures pixel-scale interpolation detail, and matching it leaves coarser smoothing untouched. The
+    same planes are also rendered with nearest-neighbour sampling, where every pixel is one voxel's value and nothing
+    is averaged, and contrast is tested the same way. A relation that persists there is not caused by interpolation
+    averaging; it does not tell anatomy apart from acquisition effects such as beam steering."
+  - "a fourth start plane, S4 = EchoSlicer's A2C plane, used only as a geometric start. Added because S1-S3 turned out
+    to share one fan of planes: S3 keeps S1's offset and azimuth and changes only theta_n, so its sweep is another
+    window on S1's fan, and S2 lies 1.5-7 degrees from S1 because S1's normal is close to vertical. S4 lies 60-76
+    degrees from S1, so its fan is genuinely different. Its sweep varies theta_n the same way."
+  - "obliqueness is computed as arccos |sin theta_n|, the angle between the slice and the central azimuthal plane. It
+    equals the declared |theta_n - 90| for theta_n in [0, 180], which covers every S1-S3 frame, and stays correct for
+    S4 frames whose theta_n is below 0. Obliqueness turns at every multiple of 90 degrees of theta_n, so the per-side
+    test splits each sweep at the fold nearest its start plane: theta_n = 90 for S1-S3 and 0 for S4 (from the second
+    code review; splitting S4 at 90 would have pooled C_0's frames on both sides of its fold at 0)."
+  - "time. Each file is a live 3D recording of 2.0-3.2 s spanning about 3-4 heartbeats (DICOM frame time 0018,1063,
+    number of frames and heart rate 0018,1088), not one cardiac cycle. 'Mid-cycle' above therefore means the middle of
+    the recording, at an arbitrary cardiac phase, and 'half the cycle' in the time curve means half the recording.
+    Seconds now come from the frame time; the first runs used the rounded display rate (0008,2144), 3% slower."
