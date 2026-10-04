@@ -27,6 +27,11 @@ SPAN = ("accuracy", "A4C recall", "A5C recall", "separation (AUC)")
 SYS = ("multi segment F1@50", "multi boundary recall", "native macro-F1", "native cuts per clip")
 PAIRS = (("P2", "P1"), ("P1", "P0"), ("P2", "P0"))
 FLOORS, RECALL_MIN, MARGIN = {"selection": 0.973, "calibration": 0.980}, 0.95, 0.01
+# The strongest previous configuration is the fixed reference of rounds 3-6 and the geometry round (model_development_v3:
+# E0 B3 tuned on selection, B7 with B3 on calibration). Later systems with a higher calibration mean exist: round 2's
+# joint ASRF (0.9726) and the geometry round's G1 ASRF (0.97389, below the floors on selection). The report also states
+# whether any verdict would change against that highest previous calibration mean. Added before any round-7 result.
+HIGHEST_PREVIOUS_CALIBRATION = 0.9738935784747763
 
 
 def auc(score: np.ndarray, pos: np.ndarray) -> float:
@@ -65,7 +70,9 @@ def goal(tables: dict, strongest: dict) -> dict:
         rec, nat = min(m["boundary_recall_multi"] for m in ms), min(m["native_macro_f1"] for m in ms)
         out[h] = {"mean_segment_f1_50": mean, "strongest": strongest[h], "min_recall": rec, "min_native_f1": nat,
                   "passes": bool(mean >= strongest[h] + MARGIN and rec >= RECALL_MIN and nat >= FLOORS[h])}
-    return {**out, "passes_both": out["selection"]["passes"] and out["calibration"]["passes"]}
+    alt = out["calibration"]["mean_segment_f1_50"] >= HIGHEST_PREVIOUS_CALIBRATION + MARGIN and out["calibration"]["passes"]
+    return {**out, "passes_both": out["selection"]["passes"] and out["calibration"]["passes"],
+            "passes_both_against_highest_previous_calibration": out["selection"]["passes"] and bool(alt)}
 
 
 def terms(ca: dict, cb: dict) -> dict:
@@ -124,6 +131,9 @@ def markdown(r: dict) -> list[str]:
         for h in HALVES:
             o = g[h]
             md.append(f"| {arm} | {h} | {o['mean_segment_f1_50']:.4f} ({o['strongest'] + MARGIN:.4f}) | {o['min_recall']:.3f} | {o['min_native_f1']:.3f} ({FLOORS[h]}) | {'yes' if o['passes'] else 'no'} |")
+    differ = [arm for arm, g in r["goals"].items() if g["passes_both"] != g["passes_both_against_highest_previous_calibration"]]
+    md += ["", f"Against the highest previous calibration mean ({HIGHEST_PREVIOUS_CALIBRATION:.4f}, the geometry round's G1 ASRF) instead of "
+           f"the fixed reference, the final-goal verdict changes for: {', '.join(differ) if differ else 'no arm'}."]
     md += ["", "## Flips (stream units; clips, sessions in brackets)", "", "| comparison | half | A5C fixed s0 / s1 / s2 | A4C broken s0 / s1 / s2 |", "|---|---|---|---|"]
     for comp in ("P2 vs P1", "P1 vs P0", "P2 vs P0", "P0 vs default", "P1 vs default", "P2 vs default"):
         for h in HALVES:
