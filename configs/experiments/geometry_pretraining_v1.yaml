@@ -86,7 +86,8 @@ evaluation:                               # real 2D only; test split stays seale
     systems: ["ASRF (job M1, 3 seeds)", "B3 tuned (job simple)"]
     entry: "scripts/model_development_queue.py with each arm's feature manifest"
     native_f1_floors: {selection: 0.973, calibration: 0.980}   # fixed for every arm, applied at report time
-    boundary_recall_min: 0.95             # multi-fragment boundary recall within 0.5 s on the calibration half
+    boundary_recall_min: 0.95             # multi-fragment boundary recall within 0.5 s, every seed and half (see
+                                          # amendments; the jobs also apply it on calibration to choose operating points)
     job_rules: "inside the jobs, checkpoint and operating-point choice keep the established rules (each encoder's
       frame-majority baseline minus 0.005, recall 0.95); the thresholds above judge every arm alike, as in round 6"
     metrics: ["segment F1@50", "boundary recall within 0.5 s", "native macro-F1", "native_internal_cuts_per_clip"]
@@ -192,3 +193,8 @@ amendments:                               # revisions before any training run
     A5C clips), so rule 2 could not detect a gain. One revision for every arm: the rules use the AUC over cached
     samples (G0: 0.915 and 0.882), which measures the same margin before it is averaged over a clip. The clip-mean AUC
     is still reported."
+  - "2026-10-04, after training and before any downstream result was read: the comment on boundary_recall_min named
+    the calibration half, where the jobs apply 0.95 when they choose operating points. As a threshold for every
+    system it applies in every seed and half, as final_goal states and as round 6 applied it. An independent code
+    review raised the ambiguity; the report also states whether checking recall on the calibration half only would
+    change any verdict. The six encoders record the hash of this file as of commit 3a079c1."

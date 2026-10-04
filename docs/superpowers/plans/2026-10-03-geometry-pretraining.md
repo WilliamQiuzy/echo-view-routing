@@ -112,10 +112,15 @@ G1 和 G2 用同一个切片对库、同样的顺序、增强、可训练参数�
 **Files:**
 - Create: `scripts/geometry_round_run.sh`、`scripts/geometry_round_report.py`、`configs/experiments/geometry_downstream_v1.yaml`、`docs/results/2026-10-04_geometry_pretraining/`
 
-- [ ] 阶段 A（分类）在两个半区上报告：
+- [x] 阶段 A（分类）在两个半区上报告：
   - A4C/A5C 区分：原生 A4C 与 A5C 片段的逐样本 probe 差值 AUC（规则使用），片段平均差值的 AUC 一并报告；
   - A4C 召回和 A5C 召回；
   - native macro-F1；
   - 录像内部错误变化（逐帧 probe 的 native_internal_cuts_per_clip）。
-- [ ] 阶段 B（分段）：ASRF（3 个种子）和 B3 tuned。报告 segment F1@50、0.5 s 内的边界召回、native macro-F1 和录像内切分。每个系统都对照 native 下限（0.973/0.980）和边界召回 ≥0.95，并与 B3、ASRF 和最强旧配置（0.9344/0.9721）比较。最终目标沿用前几轮：三种子平均 segment F1@50 在每个半区都比最强旧配置高至少 1 个百分点，且每个种子、每个半区都满足阈值。
-- [ ] 对比 G2−G1、G2−G0、G1−G0，按种子做配对 bootstrap；只有三个种子的区间都同向不含 0 才称"一致"，否则写"未检出一致差异"。按配置中的 `interpretation` 解读，并单列机制证据（保留人上的 d_alpha 误差及其与对比度基线的比较、同平面不同时间的表示变化）。
+- [x] 阶段 B（分段）：ASRF（3 个种子）和 B3 tuned。报告 segment F1@50、0.5 s 内的边界召回、native macro-F1 和录像内切分。每个系统都对照 native 下限（0.973/0.980）和边界召回 ≥0.95，并与 B3、ASRF 和最强旧配置（0.9344/0.9721）比较。最终目标沿用前几轮：三种子平均 segment F1@50 在每个半区都比最强旧配置高至少 1 个百分点，且每个种子、每个半区都满足阈值。
+- [x] 对比 G2−G1、G2−G0、G1−G0，按种子做配对 bootstrap；只有三个种子的区间都同向不含 0 才称"一致"，否则写"未检出一致差异"。按配置中的 `interpretation` 解读，并单列机制证据（保留人上的 d_alpha 误差及其与对比度基线的比较、同平面不同时间的表示变化）。
+
+**结果（2026-10-04，`docs/results/2026-10-04_geometry_pretraining/README.md`）。** 按预先固定的规则：G2 没有通过筛查；G1、G2 都不优于 G0；没有任何系统达到最终目标。按配置，这个方向在当前数据规模下停止，CETUS 只改变规模、不改变规则。
+- G2−G1 在两个半区的任何分类和分段指标上都没有一致差异，segment F1@50 每个种子相差 −0.4 到 +0.3 个百分点。
+- "未检出一致差异"不等于没有损失：六个 G1/G2 的 probe 都把 A4C/A5C 判定点移向 A5C（排序不变），calibration 上同样两个 A4C 片段被判成 A5C，native macro-F1 从 0.985 降到 0.969–0.979；G1/G2 特征上的 B3 在每个种子都低于两个 native 下限；G1 特征上 B3 在 calibration 的录像内切分一致增加。
+- 机制证据：G2 的倾角头在保留人上误差 4.65°–4.71°（"总预测 0" 6.59°，对比度基线 5.85°，无捷径警示），但这部分信息没有进入真实二维任务。
