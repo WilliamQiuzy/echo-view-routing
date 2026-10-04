@@ -29,9 +29,12 @@ used in the feasibility check. They show whether a slice looks like a standard v
    pairs across one cardiac cycle at 18 to 21 volumes per second. It also contains A5C-like planes in two thirds of
    the volunteers. Its limits are one gated cycle per person, healthy volunteers only, and one scanner model.
 7. **Pipeline checks.** The slice pipeline passes the start-condition checks on all three EchoSlicer volumes with
-   EchoSlicer planes and on 14 of 15 STACOM volunteers. The exception, v14, is explained in section 6.
+   EchoSlicer planes and on 14 of 15 STACOM volunteers under the first rule. The exception, v14, failed a score
+   comparison between two differently rendered images. Rendered under aligned conditions, all 18 volumes agree in
+   coordinates and pixels (section 6). The rule was revised once for every volume before training, and v14's first
+   result stays on record.
 
-All 15 STACOM volunteers meet the inclusion rule. With EchoSlicer's 26 eligible volumes, the experiment has 41
+All 15 STACOM volunteers meet the inclusion rule. With EchoSlicer's 27 eligible volumes, the experiment has 42
 volumes from 19 people.
 
 ## 1. Source and access
@@ -120,15 +123,30 @@ These are start condition 3 of `configs/experiments/geometry_pretraining_v1.yaml
 - **Cartesian and spherical paths.** Each STACOM volunteer was rendered both directly and through a fine spherical
   resampling, in four planes (A4C, A4C tilted by ±10°, A4C rotated by 60°). On shared pixels the Pearson r is at least
   0.998, the best matching shift is zero in every case, and the mean absolute difference is below 1 grey level.
-- **A4C score of the pipeline's STACOM rendering.** It falls within 0.1 of EchoSlicer's search result in 14 of 15
-  volunteers. In v14 it is 0.975 against 0.847. The pre-declared check required agreement within 0.1 in both
-  directions, so v14 fails it as written, although a wrong rendering would lower the score, not raise it. Whether to
-  read the check one-sided is left to the start review.
+- **A4C score of the pipeline's STACOM rendering (first rule).** It falls within 0.1 of EchoSlicer's search result in
+  14 of 15 volunteers. In v14 it is 0.975 against 0.847, so v14 fails the check as written. This result stays on
+  record.
+- **Aligned comparison (revised rule).** The first check compared classifier scores of two different images. The
+  pipeline used its fixed 160 × 150 mm grid. EchoSlicer used its own grid, extent, rotation and flips. On the fixed
+  grid the pipeline scored higher in all 18 volumes, by 0.002 to 0.128. The comparison was therefore repeated under
+  aligned conditions (`scripts/geometry_aligned_check.py`). Both renderings used EchoSlicer's sample points, frame 0,
+  its display orientation and its per-frame min-max grey scale, and the raw images were compared.
+  - Coordinates: every EchoSlicer sample point lies on the pipeline's plane, at most 6e-14 mm away.
+  - Pixels: Pearson r is 1.000 on EchoSlicer's own three volumes and 0.994 to 0.998 on the 15 STACOM volunteers. The
+    best matching shift is zero in all 18.
+  - Classifier, as an auxiliary check: the scores of the two aligned images differ by at most 0.01 in 17 volumes and
+    by 0.037 in v14 (0.884 against 0.847).
+
+  Correctness is now judged on coordinate and pixel agreement under aligned conditions, with the classifier
+  comparison made on aligned images as an auxiliary check. The revision applies to every volume and was made before
+  any training (config, `amendments`). v14 is not passed because of its higher score; it passes because its aligned
+  rendering matches EchoSlicer's.
 - **Fixed masks.** At random tilts in ±15°, no mask pixel fell outside the volume in any of the 29 EchoSlicer volumes or
-  the 15 STACOM volunteers.
-- **Inclusion.** The masks cover a median of 34% to 64% of the slice in STACOM. In EchoSlicer, three thin or narrow
-  volumes fall below the 20% rule (D_0 0%, D_3 10%, D_1 18%) and are excluded. That leaves 26 EchoSlicer volumes,
-  person D with one of them.
+  the 15 STACOM volunteers. The bank renderer also stops if a pixel falls outside; no bank stopped.
+- **Inclusion.** The masks cover a median of 34% to 64% of the slice in STACOM. The rule is evaluated with the final
+  masks over the 181 whole-degree ψ values that the sampler draws from. In EchoSlicer, two thin or narrow volumes fall
+  below the 20% rule (D_0 0%, D_3 10%) and are excluded. D_1 has 21% and is kept. An earlier estimate from 5 ψ values
+  gave it 18%. That leaves 27 EchoSlicer volumes, person D with two of them.
 - **Display orientation.** Sweeping ψ from the A4C plane, the classifier finds A2C and A3C at negative ψ in most
   volunteers and in EchoSlicer's B_0 and C_0. This is the range the pair sampler uses (−150° to +30°).
 

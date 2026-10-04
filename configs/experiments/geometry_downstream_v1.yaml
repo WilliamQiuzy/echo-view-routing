@@ -1,0 +1,8 @@
+# Downstream evaluation of the geometry-pretraining encoders (configs/experiments/geometry_pretraining_v1.yaml,
+# evaluation). The round-2 recipe is inherited unchanged: protocol and halves, probe recipe, ASRF settings, decoding
+# grids, checkpoint and operating-point rules. Only the experiment id differs, so run identities and logs stay apart
+# from round 2. G0 reuses the round-2 E1 runs, which the new extractor reproduces exactly
+# (runs/geometry/g0_reproduction).
+extends: model_development_v2.yaml
+run_name: geometry_downstream_v1
+experiment: geometry_v1
