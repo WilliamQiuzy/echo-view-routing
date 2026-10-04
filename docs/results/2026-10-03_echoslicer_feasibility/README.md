@@ -13,12 +13,19 @@ real continuous scans.
 
 **Second pass, later on 2026-10-03.** Four things changed after the first version.
 - The CETUS request draft is in `docs/data_requests/2026-10-03_cetus_request.md`. The project lead reported sending
-  the request on 2026-10-03; no reply or permission has been reported. Any agreement remains for the lead to sign.
+  the request on 2026-10-03. Its status at that point was awaiting a reply; see the update below.
 - A limited control for slicing artifacts was run on the same three volumes (section 5).
 - Three statements of the first version were too broad and are narrowed here. They concern the "5 times" comparison of
   plane and time changes, the claim that real 2D frames lack the contrast cue, and the missing Echo-POSED weights.
 - The resource table now separates the scale each source describes from the data we actually hold. A timing error is
   also corrected. Each EchoSlicer file is a live recording of about 3 s and several heartbeats, not one cycle.
+
+**Update, 2026-10-04.** The organiser's reply shared by the project lead grants the requested research use of CETUS,
+but confirms that the currently supplied data contain only ED and ES 3D volumes with annotations, not complete dynamic
+cycles. Actual files have not been inspected in this review. The request record documents the new collection and the
+stated use/sharing conditions. The pilot on EchoSlicer and STACOM has also finished without meeting its screening or
+final success criteria (`../2026-10-04_geometry_pretraining/README.md`). Its current route is stopped; CETUS permission
+does not automatically restart it.
 
 ## Answer
 
@@ -41,29 +48,29 @@ real continuous scans.
 2. **Data.** Few independent subjects are in hand.
    - **In hand.** EchoSlicer's 29 volumes come from 4 people. STACOM 2011's 15 volunteers, one gated cycle each, were
      downloaded after this check and verified in `docs/results/2026-10-03_stacom_verification/`. That makes 19 people.
-   - **Described but not obtained.** CETUS describes 45 patients with one full cycle each. Its agreement, however,
-     covers only the evaluation of endocardial segmentation, and its old download platform no longer answers. Whether
-     the 45 dynamic sequences can still be obtained, and whether our use is allowed, is unconfirmed. The request asks
-     both, and the project lead reports that it has been sent. MITEA has 134 subjects but only two frames per scan.
+   - **Described but not obtained.** CETUS historically described 45 patients with one full cycle each. The organiser's
+     reply now permits our research use but confirms only ED/ES 3D volumes with annotations are available. The supplied
+     collection has not been downloaded or verified in this review. MITEA has 134 subjects but only two frames per scan.
      Echo One (527 patients) is announced in the Echo-POSED paper, with no download found.
 3. **Prior method.** Echo-POSED (May 2026) learns a frame-level probe pose from 3D slices, invariant to cardiac phase.
    It never tests real 2D videos, view classes or temporal change. Its code and weights are announced, but no link was
    found. That does not block this direction. A reimplementation from the paper can serve as the control if it is
    labelled as ours, comes with simple controls and claims none of the paper's results.
-4. **Start conditions.** The conditions for a training round are not met now. The main reason is that the dynamic 3D
-   data in hand come from 4 people. That describes the present. It is not a finding that the direction is infeasible.
-   Section 7 lists what would change it, and section 8 states the one question a training round would have to answer.
+4. **Historical start conditions and current outcome.** Initially only 4 people's dynamic data were in hand. STACOM
+   subsequently brought the total to 19, and the minimal pilot ran after its start review. It did not meet the
+   screening or final success criteria. The current route is stopped; this does not establish that all uses of 3D
+   supervision are infeasible. Sections 7 and 8 retain the feasibility rationale and pilot question.
 
 ## 1. What is available
 
-| Resource | Described by the source | Obtained by us (2026-10-03) | Access and use conditions |
+| Resource | Described by the source | Obtained by us (updated 2026-10-04) | Access and use conditions |
 |---|---|---|---|
 | EchoSlicer code ([github.com/echonet/3d-echo](https://github.com/echonet/3d-echo)) | Reads Philips 3D DICOM, finds standard planes by a classifier-guided search (EchoPrime view classifier, EchoNet-Dynamic LV segmentation), re-slices 2D videos | Cloned at commit `78f7085` and run | Public; **no LICENSE file** |
 | EchoSlicer dataset (release v1.0, 1.1 GB) | 29 3D+t volumes from 4 people (A 15, B 5, C 5, D 4), the authors themselves; Philips EPIQ CVx | **All 29 volumes**, on the server | Public download; the README calls it open-source; no license file; the DICOM headers contain a patient-name field (not read) |
 | Echo-POSED ([arXiv 2606.02634](https://arxiv.org/abs/2606.02634), 30 May 2026) | Self-supervised probe-pose model trained on 3D slices; model and data said to be released | Nothing | **No URL** in the paper, on GitHub or in web search |
 | Echo One | 527 patients, 397 3D videos after filtering (348 development, 49 test), GE Vivid E95 | Nothing | Announced only |
 | STACOM 2011 motion challenge | 15 healthy volunteers + 1 phantom, 4D apical volumes, DICOM | **All 15 volunteers**, downloaded and verified after this check (`docs/results/2026-10-03_stacom_verification/`); the phantom was not downloaded | Open access; the page asks users to cite Tobon-Gomez et al. 2013 |
-| CETUS 2014 | 45 patients (15 healthy, 15 after myocardial infarction, 15 with dilated cardiomyopathy), one cardiac cycle each, three vendors | **Nothing.** The MIDAS link on the challenge site returns 404, and the collection on the Human Heart Project database needs a login. | The agreement allows use only to evaluate endocardial segmentation. Any other use needs the organisers' written permission. Request sent on 2026-10-03, as reported by the project lead; response and permission pending. |
+| CETUS 2014 | Historical description: 45 patients, three vendors, full cycles. Organiser's current reply: **ED/ES volumes and annotations only** | **Nothing verified in this review.** A new collection URL has been supplied. | Requested research use permitted in the reply shared on 2026-10-04; CC BY-NC-SA 4.0 and research-only use stated. Derived features, trained weights and example publication slices permitted; data redistribution prohibited. See the request record. |
 | MITEA | 134 subjects, 2 scans each with **2 frames** (end-diastole, end-systole) | Nothing | Institutional request form, CC BY-NC-SA 4.0, no redistribution |
 
 **Content of the EchoSlicer volumes.**
@@ -334,17 +341,17 @@ Gains on simulated slices would not count.
 
 | Condition | Status | Evidence |
 |---|---|---|
-| Dynamic 3D data in hand, with enough independent subjects for the planned experiment | **Partly met** | The dynamic 3D data in hand now come from 19 people: 4 from EchoSlicer and 15 from STACOM 2011, downloaded and verified after this check. CETUS (45 patients) is described but not obtained; access and permission are pending. MITEA is static, and Echo One is not downloadable. |
+| Dynamic 3D data in hand, with enough independent subjects for the planned experiment | **Pilot completed** | Dynamic data from 19 people were available for the pilot, with 15 people used for pretraining and 4 held out. CETUS use is now permitted but its current release contains ED/ES only, not full cycles; files remain unverified here. |
 | The new supervision does not use a classifier's predictions as truth | Met in principle | Relative plane geometry is exact by construction. EchoSlicer's standard-view planes come from a classifier-guided search and serve only as geometric starts, never as labels. |
 | A prior method as a control | **Not a blocker** | Echo-POSED's code and weights have no download link. A reimplementation from the paper can serve if it is labelled as ours, comes with simple controls and claims none of the paper's results. |
 | Slicing cues controlled | **Partly** | Section 5. Contrast tracks the tilt, and matched smoothing does not remove it. Training would need standardised frames and a contrast-only baseline. |
-| A validation path back to real 2D recordings | Can be designed | Sections 6 and 8. Gains on simulated slices are not counted. |
+| A validation path back to real 2D recordings | Pilot evaluated | The completed round reports real EV9V classification and constructed-stream segmentation; no arm met the screening and final success criteria. Gains on simulated slices are not counted. |
 
 **Verdict.** When this check was written, the conditions were not met, mainly because only 4 people's dynamic data
 were in hand. That was a statement about the data, not a finding that the direction is infeasible. With STACOM 2011
-added, a minimal three-arm experiment is now planned in `docs/superpowers/plans/2026-10-03-geometry-pretraining.md`
-and `configs/experiments/geometry_pretraining_v1.yaml`. It starts only when the start conditions written there hold
-and the project lead approves.
+added, a minimal three-arm experiment was specified in `docs/superpowers/plans/2026-10-03-geometry-pretraining.md`
+and `configs/experiments/geometry_pretraining_v1.yaml`. It passed its start review and ran on 2026-10-04. The result
+did not meet the screening or final success criteria, and the current route is stopped.
 
 **Sample size.** No fixed number of subjects, such as 60, serves as a gate. Each experiment sets its own number from
 its design. For example, a check of whether the slicing cues hold across people needs people held out of training. The
@@ -352,10 +359,12 @@ decisive comparison in section 8 is scored on real EV9V clips, whose number is f
 calibration halves.
 
 **What would add data.**
-- The CETUS organisers confirm that the dynamic sequences can be obtained and permit our use.
+- CETUS permission is now granted, but its ED/ES volumes would add subjects and two sampled phases, not complete
+  dynamic sequences. Any future use must account for that difference.
 - Echo One becomes downloadable.
 
-Either would add people to the same experiment without changing its rules. Progress does not wait on either.
+Neither is an automatic training trigger. The pilot's negative result and stopping decision remain on record; a new
+experiment would need a specific rationale and a protocol that reflects the data actually available.
 
 ## 8. The question a training round must answer
 
