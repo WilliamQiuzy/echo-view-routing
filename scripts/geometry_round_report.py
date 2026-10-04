@@ -133,15 +133,20 @@ def screening(ca: dict, cb: dict) -> dict:
 
 
 def goal(tables: dict, strongest_value: dict) -> dict:
-    """Final goal per half: three-seed mean segment F1@50 >= strongest + 1 point, recall and native floor in every seed."""
+    """Final goal per half: three-seed mean segment F1@50 >= strongest + 1 point, recall and native floor in every seed
+    and half, as in round 6. The config's comment on boundary_recall_min names the calibration half, where the jobs
+    apply it to operating points; the verdict with recall checked on the calibration half only is kept beside it."""
     out = {}
     for h in HALVES:
         ms = [metrics(tables[k][h]) for k in SEEDS]; mean = float(np.mean([m["segment_f1_50_multi"] for m in ms]))
         rec, nat = min(m["boundary_recall_multi"] for m in ms), min(m["native_macro_f1"] for m in ms)
+        gain, rec_ok = mean >= strongest_value[h] + MARGIN, rec >= RECALL_MIN
         out[h] = {"mean_segment_f1_50": mean, "strongest": strongest_value[h], "min_recall": rec, "min_native_f1": nat,
-                  "floor": FLOORS[h], "thresholds_met": bool(rec >= RECALL_MIN and nat >= FLOORS[h]),
-                  "passes": bool(mean >= strongest_value[h] + MARGIN and rec >= RECALL_MIN and nat >= FLOORS[h])}
-    return {**out, "passes_both": out["selection"]["passes"] and out["calibration"]["passes"]}
+                  "floor": FLOORS[h], "thresholds_met": bool(rec_ok and nat >= FLOORS[h]),
+                  "passes": bool(gain and rec_ok and nat >= FLOORS[h]),
+                  "passes_recall_on_calibration_only": bool(gain and (rec_ok or h == "selection") and nat >= FLOORS[h])}
+    return {**out, "passes_both": out["selection"]["passes"] and out["calibration"]["passes"],
+            "passes_both_recall_on_calibration_only": all(out[h]["passes_recall_on_calibration_only"] for h in HALVES)}
 
 
 def mechanism(geo: Path, baseline: dict | None, self_test: bool) -> dict:
@@ -183,6 +188,10 @@ def reading(s: dict, goals: dict, mech: dict) -> list[str]:
             lines.append(f"{arm} loses A4C/A5C separation against G0 consistently: not a success, whatever else improves")
     met = [f"{arm} {sys}" for arm in ("G1", "G2") for sys in SYSTEMS if goals[f"{arm} {sys}"]["passes_both"]]
     lines.append("final goal met by: " + ", ".join(met) if met else "no G1 or G2 system meets the final goal on both halves")
+    differ = [f"{arm} {sys}" for arm in ("G1", "G2") for sys in SYSTEMS
+              if goals[f"{arm} {sys}"]["passes_both"] != goals[f"{arm} {sys}"]["passes_both_recall_on_calibration_only"]]
+    lines.append("with boundary recall checked on the calibration half only, the final-goal verdict changes for: " + ", ".join(differ)
+                 if differ else "checking boundary recall on the calibration half only changes no final-goal verdict")
     if mech.get("shortcut_warning"):
         lines.append("shortcut warning: the contrast baseline on the final input predicts d_alpha about as well as G2's head")
     return lines
