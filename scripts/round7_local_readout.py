@@ -77,7 +77,8 @@ def train_pair(enc, p1, p2, recs: list, t: np.ndarray, w: np.ndarray, seed: int,
     for epoch in range(epochs):
         order = epoch_order(len(t), seed, epoch); sums, t0 = {"P1": 0.0, "P2": 0.0}, time.time()
         plans = [[list(recs[i].refs) for i in order[b * BATCH:(b + 1) * BATCH]] for b in range(per)]
-        dl = DataLoader(FrameBatches(plans, frame_paths), batch_size=None, num_workers=workers, prefetch_factor=2, pin_memory=True)
+        dl = DataLoader(FrameBatches(plans, frame_paths), batch_size=None, num_workers=workers, prefetch_factor=2 if workers else None,
+                        pin_memory=True)
         for b, (u8, counts) in enumerate(dl):
             tok = all_tokens(enc, u8.to(device, non_blocking=True)); c = counts.tolist()
             idx = torch.tensor(order[b * BATCH:(b + 1) * BATCH], device=device)
