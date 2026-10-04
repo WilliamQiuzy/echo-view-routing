@@ -1,0 +1,110 @@
+# Geometry-supervised pretraining, minimal design (the user's decision of 2026-10-03, after the CETUS request was sent).
+# Written before any pretraining run; plan: docs/superpowers/plans/2026-10-03-geometry-pretraining.md. Nothing here may
+# start until every item under `start_conditions` holds and the project lead approves. Changes go under `amendments`.
+experiment: geometry_pretraining_v1
+
+question: "Does adding geometric supervision keep the A4C/A5C difference better than ordinary pretraining with the
+  same data and the same budget, while reducing false changes inside a recording? Answered only on real 2D EV9V clips,
+  against B3 and ASRF. A more accurate 3D angle, or steadier output on one plane, is mechanism evidence only."
+
+arms:
+  G0: "the E1 encoder as it is (EchoViewCLIP stage-1 image encoder, models_frozen/e1_echoviewclip_probe/v1)"
+  G1: "E1 + ordinary pretraining on the slice pairs: the InfoNCE term only"
+  G2: "E1 + the same InfoNCE term + the geometric term on d_alpha"
+  identical_for_G1_G2: [pair bank and its order, augmentation draws, trainable parameters, initialisation, optimiser,
+    steps, batch, seeds, preprocessing]
+  only_difference: "lambda_geo = 0 for G1, 1.0 for G2 (fixed in advance, not tuned)"
+
+data:
+  sources:
+    echoslicer: "29 Philips EPIQ CVx 3D+t volumes from 4 people (A 15, B 5, C 5, D 4); acoustic grid; 6-30 volumes/s"
+    stacom2011: "15 volunteers, one Philips iE33 Cartesian volume each, one gated cycle at 18-21 volumes/s; probe pose
+      from scripts/stacom_verify.py"
+    cetus: "not used until the organisers grant access and permission"
+  split_by_person: "no person's volumes are divided between pretraining and held-out checks"
+  held_out_people: [echoslicer C, stacom v14, stacom v15, stacom v16]   # mechanism checks and the contrast baseline only
+  inclusion: "a (volume, psi) draw is kept only if its fixed mask covers at least 20% of the slice; a volume whose median
+    coverage over psi is below 20% is dropped and listed"
+
+pairs:                                    # echo_routing/geometry/pairs.py
+  plane: "ProbePlane(psi, alpha): psi uniform on [-150, 30] degrees about the beam, alpha the fan tilt about the lateral
+    axis (the A4C to A5C motion), planes through the probe. psi and psi + 180 are the same plane mirrored; this range
+    keeps the standard display orientation, with A4C near 0 and EchoSlicer's A2C and A3C at negative psi"
+  alpha_range_deg: [-15, 15]
+  kinds: {same_plane: "same plane, two times (only the heart moved; d_alpha = 0)",
+          same_time: "two planes, one time (only the plane moved)", both: "both changed"}
+  kind_probabilities: [0.3333, 0.3333, 0.3333]
+  grid: {pixel_mm: 0.5, width_mm: 160, depth_mm: 150}
+  bank: "rendered once per seed and stored with its digest; G1 and G2 read the same bank in the same order"
+  controls:
+    fixed_mask: "both slices share the region visible at every tilt in alpha_range for that psi"
+    standardise: "each slice moved inside the mask to the mean and SD of EV9V training frames' sectors, then clipped"
+    contrast_baseline: "a ridge regression from per-slice mean, SD, sharpness and relative sharpness (raw and after
+      standardisation) to d_alpha, trained on pretraining people, scored on held-out people"
+
+model:
+  encoder: "VisualEncoder(load_vision_transformer(...), trainable_blocks=1): resblocks.11, ln_post and proj train"
+  preprocessing: "as E1: grey copied to RGB, short side 256 (bilinear), centre crop 224, mean [123.675, 116.28,
+    103.53], std [58.395, 57.12, 57.375] on 0-255"
+  infonce: {projector: "512-512-128 MLP", temperature: 0.1,
+            positives: "the two slices of a same_plane pair (same plane, two times), the analogue of frames of one clip",
+            negatives: "every other slice in the batch"}
+  geometric_term: {head: "MLP on [z1, z2, z1 - z2, z1 * z2] -> 256 -> 1", target: "d_alpha / 15 degrees",
+                   loss: "smooth L1", pairs: "all kinds (d_alpha = 0 for same_plane)"}
+  optimiser: {name: AdamW, lr_encoder: 1.0e-5, lr_heads: 1.0e-4, weight_decay: 1.0e-4, warmup_steps: 300,
+              schedule: cosine, grad_clip: 1.0}
+  budget: {steps: 3000, pairs_per_step: 32, seeds: [0, 1, 2], weights: "final, no early stopping"}
+  tf32: false
+
+evaluation:                               # real 2D only; test split stays sealed
+  halves: [selection, calibration]
+  stage_a_classification:
+    features: "frame embeddings of EV9V train and validation clips from each arm's encoder (main-environment
+      extractor, same raw layout and frame indices as the E1 cache)"
+    probe: "the E1 recipe: Linear(512, 5), AdamW 1e-3, at most 20 epochs, patience 5, kept on selection clip-majority
+      macro-F1"
+    metrics: ["A4C/A5C separation: AUC of the clip-mean probe margin (A5C minus A4C) on native A4C and A5C clips",
+              "A4C recall and A5C recall (clip majority)", "native macro-F1",
+              "false changes inside a recording: native_internal_cuts_per_clip of the frame-wise probe"]
+  stage_b_segmentation:
+    systems: ["ASRF (job M1, 3 seeds)", "B3 tuned (job simple)"]
+    entry: "scripts/model_development_queue.py with each arm's feature manifest"
+    native_f1_floors: {selection: 0.973, calibration: 0.980}   # fixed for every arm
+    metrics: ["segment F1@50", "boundary recall within 0.5 s", "native macro-F1", "native_internal_cuts_per_clip"]
+    references: {strongest_previous: {selection: 0.9344, calibration: 0.9721}}
+  contrasts: ["G2 - G1", "G2 - G0", "G1 - G0"]
+  statistics: "paired bootstrap per seed (report_model_development.paired_bootstrap); consistent = all three seeds'
+    95% intervals exclude zero in the same direction; otherwise 'no consistent difference detected'"
+  mechanism_only: ["d_alpha error on held-out people, against the contrast baseline",
+                   "embedding change between times at one plane against between tilts at one time"]
+
+interpretation:                           # fixed before training
+  - "Geometry helps only if all hold: (1) G2 shows no consistent loss against G0 or G1 in A4C/A5C separation or A5C
+    recall on either half; (2) G2 - G1 is consistently positive in A4C/A5C separation on at least one half and not
+    consistently negative on the other; (3) G2 - G1 shows no consistent increase in false changes inside a recording;
+    (4) in stage B, G2's systems are not consistently below G1's and gain consistently in segment F1@50 on at least
+    one half."
+  - "Only then is a larger round (more data, more steps) considered. G2 must also be compared with the strongest
+    previous configuration and with ASRF; failing those is reported as such."
+  - "G1 better than G0 while G2 adds nothing over G1: the slice data help, the geometry does not."
+  - "Any arm with a consistent loss of A4C/A5C separation against G0 is not a success, whatever else improves."
+  - "If the contrast baseline predicts d_alpha on held-out people about as well as G2's head, G2 may be using the
+    shortcut; this is reported next to every G2 result."
+  - "Neither G1 nor G2 better than G0: stop this direction at this data scale; CETUS would change the scale, not the
+    rules."
+
+start_conditions:
+  - "STACOM: all 15 volunteers decode (DICOM equals VTK), sectors fitted, timing recorded, one probe-frame convention
+    (azimuth axis, handedness, anterior side) fixed for all, inclusion list written."
+  - "EchoSlicer: all 29 volumes load as SphericalVolume; exclusions by the coverage rule listed."
+  - "Pipeline: geometry unit tests pass; on real volumes, (a) EchoSlicer's A4C planes rendered by the pipeline score
+    within 0.1 of EchoSlicer's own A4C probability, (b) the Cartesian path and a fine spherical resampling of each
+    STACOM volume render the same planes with Pearson r >= 0.95 on shared pixels and a best-matching shift of zero
+    pixels (speckle-level differences from the extra resampling are expected; a pose error would shift the image),
+    (c) no fixed-mask pixel falls outside the volume at randomly drawn tilts."
+  - "Main-environment extractor written; G0 through it matches the existing E1 raw embeddings within 2e-2 (max abs);
+    TF32 off."
+  - "Probe, B3 and ASRF run end to end on G0 features and reproduce the recorded E1 numbers."
+  - "Pair banks rendered and their digests recorded; held-out people fixed above."
+  - "One run at a time on the GPU, within 20 GB."
+  - "The project lead approves the launch."

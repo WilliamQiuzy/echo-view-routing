@@ -12,8 +12,8 @@ No echo expert is available. Nothing here gives a view label to any re-sliced fr
 real continuous scans.
 
 **Second pass, later on 2026-10-03.** Four things changed after the first version.
-- A request to the CETUS organisers is drafted in `docs/data_requests/2026-10-03_cetus_request.md`. The project lead
-  sends it and signs any agreement.
+- The CETUS request draft is in `docs/data_requests/2026-10-03_cetus_request.md`. The project lead reported sending
+  the request on 2026-10-03; no reply or permission has been reported. Any agreement remains for the lead to sign.
 - A limited control for slicing artifacts was run on the same three volumes (section 5).
 - Three statements of the first version were too broad and are narrowed here. They concern the "5 times" comparison of
   plane and time changes, the claim that real 2D frames lack the contrast cue, and the missing Echo-POSED weights.
@@ -28,22 +28,24 @@ real continuous scans.
    - **Controlled videos.** Three videos per volume keep the plane fixed, tilt the plane, or change both, and every
      frame's parameters are saved.
    - **Leaks.** The visible region reveals the tilt unless a common mask is applied. Inside the mask, image contrast
-     still changes with the tilt. Section 5 shows that this does not come from interpolation smoothing and that
-     matching sharpness does not remove it. Re-slicing may therefore give a model cues that real 2D recordings do not
-     share. That is a risk to control in any training. Whether real recordings share the cues has not been tested.
+     still changes with the tilt. Section 5 shows that matching pixel-scale sharpness does not remove it, and that it
+     also appears without linear-interpolation averaging. That does not fully rule out smoothing or other effects of
+     the 3D acquisition. Re-slicing may therefore give a model cues that real 2D recordings do not share. That is a
+     risk to control in any training. Whether real recordings share the cues has not been tested.
    - **Size of a plane change.** Image change here is the mean absolute difference in grey levels between two frames.
      A fan of planes is the set of planes reached by tilting one start plane. In the fan around the A4C plane, a 0.5°
      tilt changes the image about 5 times less than one volume step of the recording (0.11–0.16 s). In the fan around
      the A2C plane the same ratio is 5.5–11. The ratio belongs to these step sizes and planes only. Around the A4C
      plane, a tilt of about 3.5–4° changes the image as much as one volume step.
      The ratio is not a measure of how hard the task is, and it is not a signal-to-noise ratio.
-2. **Data.** Too few independent subjects are in hand.
-   - **In hand.** EchoSlicer's 29 volumes come from 4 people. Nothing else has been downloaded.
-   - **Described but not obtained.** STACOM 2011 describes 15 volunteers with open access. CETUS describes 45 patients
-     with one full cycle each. Its agreement, however, covers only the evaluation of endocardial segmentation, and its
-     old download platform no longer answers. Whether the 45 dynamic sequences can still be obtained, and whether our
-     use is allowed, is unconfirmed. The drafted request asks both. MITEA has 134 subjects but only two frames per
-     scan. Echo One (527 patients) is announced in the Echo-POSED paper, with no download found.
+2. **Data.** Few independent subjects are in hand.
+   - **In hand.** EchoSlicer's 29 volumes come from 4 people. STACOM 2011's 15 volunteers, one gated cycle each, were
+     downloaded after this check and verified in `docs/results/2026-10-03_stacom_verification/`. That makes 19 people.
+   - **Described but not obtained.** CETUS describes 45 patients with one full cycle each. Its agreement, however,
+     covers only the evaluation of endocardial segmentation, and its old download platform no longer answers. Whether
+     the 45 dynamic sequences can still be obtained, and whether our use is allowed, is unconfirmed. The request asks
+     both, and the project lead reports that it has been sent. MITEA has 134 subjects but only two frames per scan.
+     Echo One (527 patients) is announced in the Echo-POSED paper, with no download found.
 3. **Prior method.** Echo-POSED (May 2026) learns a frame-level probe pose from 3D slices, invariant to cardiac phase.
    It never tests real 2D videos, view classes or temporal change. Its code and weights are announced, but no link was
    found. That does not block this direction. A reimplementation from the paper can serve as the control if it is
@@ -60,8 +62,8 @@ real continuous scans.
 | EchoSlicer dataset (release v1.0, 1.1 GB) | 29 3D+t volumes from 4 people (A 15, B 5, C 5, D 4), the authors themselves; Philips EPIQ CVx | **All 29 volumes**, on the server | Public download; the README calls it open-source; no license file; the DICOM headers contain a patient-name field (not read) |
 | Echo-POSED ([arXiv 2606.02634](https://arxiv.org/abs/2606.02634), 30 May 2026) | Self-supervised probe-pose model trained on 3D slices; model and data said to be released | Nothing | **No URL** in the paper, on GitHub or in web search |
 | Echo One | 527 patients, 397 3D videos after filtering (348 development, 49 test), GE Vivid E95 | Nothing | Announced only |
-| STACOM 2011 motion challenge | 15 healthy volunteers + 1 phantom, 4D apical volumes, DICOM | Nothing; not downloaded | Open access with citation (tokenised links) |
-| CETUS 2014 | 45 patients (15 healthy, 15 after myocardial infarction, 15 with dilated cardiomyopathy), one cardiac cycle each, three vendors | **Nothing.** The MIDAS link on the challenge site returns 404, and the collection on the Human Heart Project database needs a login. | The agreement allows use only to evaluate endocardial segmentation. Any other use needs the organisers' written permission. Request drafted, not sent. |
+| STACOM 2011 motion challenge | 15 healthy volunteers + 1 phantom, 4D apical volumes, DICOM | **All 15 volunteers**, downloaded and verified after this check (`docs/results/2026-10-03_stacom_verification/`); the phantom was not downloaded | Open access; the page asks users to cite Tobon-Gomez et al. 2013 |
+| CETUS 2014 | 45 patients (15 healthy, 15 after myocardial infarction, 15 with dilated cardiomyopathy), one cardiac cycle each, three vendors | **Nothing.** The MIDAS link on the challenge site returns 404, and the collection on the Human Heart Project database needs a login. | The agreement allows use only to evaluate endocardial segmentation. Any other use needs the organisers' written permission. Request sent on 2026-10-03, as reported by the project lead; response and permission pending. |
 | MITEA | 134 subjects, 2 scans each with **2 frames** (end-diastole, end-systole) | Nothing | Institutional request form, CC BY-NC-SA 4.0, no redistribution |
 
 **Content of the EchoSlicer volumes.**
@@ -120,7 +122,9 @@ real continuous scans.
 
 **What the contrast change is not.** The first version suggested a cause. Tilting moves the slice into the elevation
 direction, which is sampled more coarsely (about 1.7° against 1.1° in azimuth), so interpolation would smooth it more.
-Section 5 tests this directly, and interpolation averaging does not explain the change.
+Section 5 tests this. The relation also appears without linear-interpolation averaging, so that averaging alone does
+not explain it. Smoothing from other sources, such as the beam width or the scanner's own processing, is not ruled
+out.
 
 **Consequence.** A model trained on such slices could learn to read the tilt from contrast instead of anatomy. Whether
 real 2D recordings show the same relation is untested. A real probe tilt also changes what the plane cuts through, and
@@ -218,11 +222,13 @@ recording. Obliqueness is tested separately on each side of the sweep's fold.
   0.3 grey levels, and its correlations are unchanged. Under the declared reading rule, a relation that persists after
   matching points to image content rather than smoothing. Because the matching acted only at the pixel scale, that
   reading rests on the next check rather than on the matching.
-- **Interpolation averaging is not the cause.** With nearest-neighbour rendering, contrast is higher in every frame,
-  by 1.7–2.4 grey levels on average per sweep, as expected without averaging. Its correlations with the tilt are
-  nearly unchanged. The relation therefore comes from which voxels the plane passes through. That can be anatomy, which a real probe tilt would also
-  change. It can also be a property of the 3D acquisition, such as weaker signal from steered beams or effects of
-  depth, which real 2D recordings would not share. Three volumes cannot tell these apart.
+- **The relation does not need interpolation averaging.** With nearest-neighbour rendering, contrast is higher in
+  every frame, by 1.7–2.4 grey levels on average per sweep, as expected without averaging. Its correlations with the
+  tilt are nearly unchanged, so the relation appears without linear-interpolation averaging. This does not fully rule
+  out smoothing or other acquisition effects. The voxels are already smoothed by the beam width and the scanner's
+  processing, and that smoothing can vary with steering angle and depth. Anatomy, which a real probe tilt would also
+  change, remains possible too. Three volumes cannot tell these apart, so the training plan carries the controls
+  instead (section 8).
 - **Sharpness is a weaker and less consistent cue.** With the margin, sharpness varied over a sweep by 8–41% of its
   mean in the A4C fan and 7–11% in the A2C fan. That is less than contrast in 16 of 24 sweeps. It tracks the tilt in
   some sweeps (|ρ| up to 0.90), but its direction differs between volumes. The first run's sharpness, and the
@@ -281,8 +287,9 @@ smoothness?
 - **Within a volume, partly yes.** In 11 of 24 sweeps a frame's contrast alone ranks the tilts almost perfectly, and
   sharpness tracks the tilt in some sweeps. A model that compares frames from the same volume could learn part of the
   tilt from these cues instead of anatomy.
-- **Not through interpolation smoothing.** Matching sharpness changes nothing, and nearest-neighbour rendering leaves
-  the contrast relation in place. The cues come from which voxels the plane passes through.
+- **Not explained by interpolation averaging alone.** Matching pixel-scale sharpness changes nothing, and the relation
+  also appears with nearest-neighbour rendering. Smoothing already in the voxels, from the beam width or the scanner's
+  processing, and other acquisition effects are not ruled out.
 - **Across volumes, less consistently.** Contrast mostly falls with obliqueness, but the relation reverses in C_0's A2C
   fan and is weak on one side of 90° in several A4C-fan sweeps. Sharpness has no consistent direction.
 - **Real 2D recordings.** Whether they share the cues is untested. If the cues come from anatomy, a real probe tilt
@@ -327,41 +334,44 @@ Gains on simulated slices would not count.
 
 | Condition | Status | Evidence |
 |---|---|---|
-| Dynamic 3D data in hand, with enough independent subjects for the planned experiment | **Not met now** | The dynamic 3D data in hand come from 4 people (EchoSlicer). STACOM 2011 (15 volunteers) and CETUS (45 patients) are described but not obtained, and CETUS access and permission are unconfirmed. MITEA is static, and Echo One is not downloadable. |
+| Dynamic 3D data in hand, with enough independent subjects for the planned experiment | **Partly met** | The dynamic 3D data in hand now come from 19 people: 4 from EchoSlicer and 15 from STACOM 2011, downloaded and verified after this check. CETUS (45 patients) is described but not obtained; access and permission are pending. MITEA is static, and Echo One is not downloadable. |
 | The new supervision does not use a classifier's predictions as truth | Met in principle | Relative plane geometry is exact by construction. EchoSlicer's standard-view planes come from a classifier-guided search and serve only as geometric starts, never as labels. |
 | A prior method as a control | **Not a blocker** | Echo-POSED's code and weights have no download link. A reimplementation from the paper can serve if it is labelled as ours, comes with simple controls and claims none of the paper's results. |
 | Slicing cues controlled | **Partly** | Section 5. Contrast tracks the tilt, and matched smoothing does not remove it. Training would need standardised frames and a contrast-only baseline. |
 | A validation path back to real 2D recordings | Can be designed | Sections 6 and 8. Gains on simulated slices are not counted. |
 
-**Verdict.** The conditions for a training round are not met now. That is a statement about the data in hand, not a
-finding that the direction is infeasible.
+**Verdict.** When this check was written, the conditions were not met, mainly because only 4 people's dynamic data
+were in hand. That was a statement about the data, not a finding that the direction is infeasible. With STACOM 2011
+added, a minimal three-arm experiment is now planned in `docs/superpowers/plans/2026-10-03-geometry-pretraining.md`
+and `configs/experiments/geometry_pretraining_v1.yaml`. It starts only when the start conditions written there hold
+and the project lead approves.
 
 **Sample size.** No fixed number of subjects, such as 60, serves as a gate. Each experiment sets its own number from
 its design. For example, a check of whether the slicing cues hold across people needs people held out of training. The
 decisive comparison in section 8 is scored on real EV9V clips, whose number is fixed by the existing selection and
 calibration halves.
 
-**What would change the verdict.**
+**What would add data.**
 - The CETUS organisers confirm that the dynamic sequences can be obtained and permit our use.
 - Echo One becomes downloadable.
 
-Either would put more people's dynamic 3D data in hand. Progress does not wait on Echo One. With data in hand, the
-comparison in section 8 would come next.
+Either would add people to the same experiment without changing its rules. Progress does not wait on either.
 
 ## 8. The question a training round must answer
 
 A later training round would answer one question. Does adding geometric supervision keep the A4C/A5C difference
 better than ordinary pretraining with the same data and the same budget, while reducing false changes inside a
-recording?
-- **Comparison.** The same encoder is pretrained on the same re-sliced data with the same compute, once with and once
-  without the geometric target.
+recording? The plan fixes three arms on one encoder. G0 is the E1 encoder as it is. G1 adds ordinary pretraining on
+the slice pairs. G2 adds the same pretraining plus the geometric target, the signed tilt between two slices.
+- **Comparison.** G1 and G2 use the same slice pairs in the same order, the same augmentation, trainable parameters
+  and budget. They differ only in the geometric term.
 - **Scoring.** Scores come from real 2D clips under the existing protocol, on the selection and calibration halves
   with no test split. They are A4C/A5C classification, the temporal segmentation metrics (segment F1@50, boundary
   recall within 0.5 s and native macro-F1), and false changes inside a recording, meaning predicted boundaries where
   the reference has none. The comparison is against B3 and ASRF.
 - **What does not count.** A more accurate 3D angle prediction on slices does not meet the goal by itself.
-- **Controls.** Standardised frames and a contrast-only baseline come from section 5. A labelled reimplementation of
-  Echo-POSED serves as the prior method if its weights remain unavailable.
+- **Controls.** A fixed mask per pair, standardised frames and a contrast-only baseline come from section 5. A
+  labelled reimplementation of Echo-POSED serves as the prior method if its weights remain unavailable.
 
 The paper stays paused.
 
@@ -371,8 +381,8 @@ The paper stays paused.
 - All tilts change θ_n. S1–S3 share one fan of planes, and S4 adds a second. Rotations of the plane about the probe's
   axis were not tested.
 - The checks measure image statistics. They do not show whether a trained model would use those cues.
-- The nearest-neighbour check removes interpolation averaging, but it cannot separate anatomy from acquisition effects
-  such as beam steering.
+- The nearest-neighbour check removes only the linear interpolation done here. It does not remove smoothing already
+  in the voxels, and it cannot separate anatomy from acquisition effects such as beam steering.
 - Image change is a mean absolute grey-level difference, which mixes anatomy with speckle.
 - Timing comes from the DICOM frame time and the stored heart rate, which were not checked against an ECG.
 - Echo-POSED was read from its paper only, since no code or weights were available. Its reported numbers are not
