@@ -1,0 +1,155 @@
+# EV9V complementarity of E0 and B7, and one fixed equal-weight fusion
+# (docs/superpowers/plans/2026-10-05-ev9v-complementarity-distillation.md, tasks 1-2).
+# Written and committed before any result of this round is computed. Only the validation halves of the frozen EV9V
+# protocol are read; the test split stays sealed. No EchoNet-Pediatric data, cache or adapted weight is read.
+#
+# Existing related experiment, checked before writing. It is not equivalent and is not redone. The 2026-09-28
+# segment-level fusion "MS-TCN + EchoViewCLIP" (docs/results/2026-09-28_policy2_fusion/) took its boundaries from
+# MS-TCN and relabelled MS-TCN's segments with a probability mixture. It ran on the old ladder streams and on caches
+# that read frames in name order, and its numbers are withdrawn pending recomputation
+# (docs/results/2026-09-30_frame_order_fix/). No frame-level fusion of E0 and B7 followed by B3 exists on the current
+# protocol.
+extends: model_development_v2.yaml
+run_name: ev9v_complementarity_v1
+experiment: ev9v_complementarity
+
+inputs:                          # the explicit input manifest; the script never searches for the latest run directory.
+                                 # Digests: sha256 over the sorted lines '<relative path>\t<file sha256>'
+                                 # (echo_routing.evaluate.complementarity.files_digest; --print-digests).
+  protocol:
+    path: runs/20261002-051140-model_development_protocol-fa45e7f4-s0/protocol.json
+    sha256: a897483b776e8cff1ba8b92774c6a82537758bcba6abd362f2d8603f37997593
+  source_manifest:               # read only to list the test clips, none of which may appear in any input
+    path: data/manifests/ev9v_native.csv
+    sha256: 037b20e0f3451545505c7b80dfc0c1894265e406066c86137df3518174c10433
+  E0:
+    name: v3 ResNet-18 frame classifier with its own head (per-sample softmax at 10 Hz)
+    cache_key: beb36d80df31
+    feature_manifest: runs/20261002-053334-feature_manifest-6941483d-s0/feature_manifest.json
+    feature_manifest_sha256: 98427975333243e17e3ed736b0b2224b108d1a9a4c3bc488211272e8c691fcd9
+    files_digest: e4ab937d3b901486b5bdc6a006b59a9e2a39ef31bfd064ab57ce7f56011b2932   # every cache file the two halves read
+    frozen_b3_run: runs/20261002-061914-md_simple_decoders-8e834aa6-s0     # E0 B3 tuned: the selection-half reference
+  B7:
+    name: EchoViewCLIP stage-1 video model (official code, trained by this project on EV9V train), sliding windows
+    checkpoint: models_frozen/echoviewclip_stage1/v1/best.pth
+    checkpoint_sha256: a74c7b233e79c67ca1d9b145f938283ed945378b4ccf3765d2bcc104f8dc0dfc
+    runner: scripts/run_windowed_echoviewclip.py   # unchanged since 9c40e53 (numeric frame order); run under envs/echoviewclip
+    runner_config: models_frozen/echoviewclip_stage1/v1/ev9v_stage1_test.yaml
+    runner_config_sha256: f880d99a837f5ec5db1af730afc74582e2c8929165e95160fca62caebc300243
+    label_list: data/echoviewclip/labels_ev9v.csv  # nine codes in RAW9 order: PLAX, three PSAX levels, A4C, A5C, PMPALA, PSAX papillary, SC4C
+    label_list_sha256: badc8e08c1c1e53c194e0aa0410ece682c5b18af27ad796c2f6717b76b86e5cc
+    window_plans: data/window_plans/beb36d80df31_protocol_a897483b776e/plans.json
+    window_plans_sha256: 51517ea886bffe235918ad9bd250f4811efae39ee0d27fc29b648dde0fac26ba
+    pred_dir: cache_v2/echoviewclip_windowed/beb36d80df31_protocol_a897483b776e
+    pred_digest: 5054631a831ba7d3806e26e16307b25950cf822cade036c50e18c7b577e5da71    # the 1,013 cached prediction files
+    frozen_b3_run: runs/20261002-145232-md_posterior_decoders_B7-38bbcf7c-s0   # B7 with B3: the calibration-half reference
+    window: {frames: 16, samples: 16, stride_samples: 5}   # 1.6 s windows every 0.5 s along each input stream
+    coverage: "validation halves only (521 native clips, 252 pair streams, 240 multi-fragment streams); no training-bank or test predictions exist"
+
+# No input path may name a test bank or an EchoNet-Pediatric product. The runner config's "_test" is the official
+# test-time preprocessing, not the test split. The test split itself is guarded by clip ids: every sample of every
+# input must come from a validation clip of the protocol, never from a manifest test row, and the plan's banks must
+# be exactly the six validation banks.
+forbidden_input_substrings: [recipes_test, native_test, pairs_test, multi_test, pediatric, ped_adapt, ped-]
+
+classes:
+  family5: [PLAX, PSAX, A4C, A5C, SC4C]
+  b7_raw9_order: [PLHLA, PMASA, PMVLSA, PASA, A4C, A5C, PMPALA, PPMLSA, SC4C]
+  b7_raw9_to_family5: {PLHLA: PLAX, PMASA: PSAX, PMVLSA: PSAX, PASA: PSAX, A4C: A4C, A5C: A5C, PMPALA: null, PPMLSA: PSAX, SC4C: SC4C}
+  # The frozen map of scripts/run_windowed_echoviewclip.py, reused unchanged: PMPALA's mass is dropped as before. The
+  # cached five-family rows must equal this map of the cached nine-code output. The five mapped columns are then
+  # divided by their sum, so every B7 row is a distribution, as the plan's checks require. This is the only change to
+  # B7's stored rows; it applies to every B7 row of task 2 (the single-teacher control and the fusion). The frozen
+  # B7 + B3 is reproduced and reported on the stored rows. The dropped mass is reported.
+  b7_map_tolerance: 1.0e-5
+  b7_min_mapped_mass: 1.0e-6     # a sample with less mapped mass stops the run
+  e0_sum_tolerance: 1.0e-3       # E0 rows are softmax outputs: checked, not rescaled
+
+time_axis:
+  hz: 10.0
+  rule: >-
+    Each sequence is the protocol recipe's 10 Hz samples as rendered by echo_routing.compose.stream_assembler.render
+    (native clips: every cached sample of the clip). E0 reads its cached sample. B7 gives each sample the output of the
+    window whose centre is nearest, the runner's piecewise-constant assignment.
+  alignment: >-
+    Per sample, E0's (clip, actual frame index, contrast variant) must equal B7's plan reference (clip, frame index,
+    gamma of that variant), and the lengths must be equal. Any mismatch stops the run. The plan's sequences must be
+    exactly the two halves' sequences.
+
+audit:                           # task 1; labels are used for diagnosis only and never enter a fusion or a selection
+  reproduce:                     # the frozen systems must reproduce their reported metrics and segment counts exactly
+    E0_B3: {params: "selected.json: selected.b3.main", metrics: "validation_metrics.json: methods['B3 tuned (main)']",
+            rows: "rows_b3_tuned_main_{half}_multi_seg.csv", probabilities: E0 cached rows}
+    B7_B3: {params: "posterior_decoders.json: results.B7.families.b3.params", metrics: "posterior_decoders.json: results.B7.families.b3",
+            rows: "rows_B7_b3_{half}_multi_seg.csv", probabilities: B7 stored five-family rows}
+    tolerance: 1.0e-12
+  units: >-
+    A unit is a reference segment of a multi-fragment stream (echo_routing.evaluate.failure_units.stream_units). It is
+    right for a system when the one-to-one matching of segment F1@50 gives it a predicted segment of its class. A native
+    clip is right when the majority of its decoded labels is its label.
+  causes: {hit: 5, near: 10}     # as configs/experiments/failure_analysis_v1.yaml
+  cells: [both right, only E0 right, only B7 right, both wrong]
+  summaries: [unit, recording, session, class, half]   # units are never counted as independent cases
+  teacher_opinion: >-
+    For units and native clips whose outcome differs between the two systems, and for those both get wrong: the argmax
+    of each teacher's mean probability over the reference interval. Different classes: the teachers disagree on the
+    class. The same class: only the segmentation differs between the full systems.
+  windows_across_joins: "count, from the plans, the B7 windows whose frames span a join (windows run along the stream)"
+  spot_check:                    # B7 re-run with the unchanged runner on a fixed subset, compared with the cache
+    per_bank: 2                  # the first two stream ids (sorted) of each of the six validation banks
+    tolerance: 1.0e-4            # max absolute difference of the nine-code and five-family rows
+    dir: runs/ev9v_complementarity/b7_spot_check
+  round4_clue: docs/results/2026-10-03_failure_analysis/units.csv   # read only
+
+fusion:                          # task 2: one fixed fusion; no training
+  weights: {E0: 0.5, B7: 0.5}    # q = 0.5 * p_E0 + 0.5 * p_B7 per sample; no search over weights, temperature,
+                                 # class coefficients or post-processing
+  systems: [E0, B7, q]           # the same B3 grid and the same rule for all three; the frozen originals stay separate rows
+  b3_grid: >-
+    decode_grids.b3 of model_development_v1.yaml: half_window [5, 7, 9, 11, 15] x threshold_quantile [0.80, 0.85, 0.90,
+    0.95, 0.97, 0.99, 0.995, 0.999], nms_radius 5. Each threshold is that quantile of the system's own B3 scores over the
+    calibration native clips (scripts/calibrate_simple_decoders.grid), as for the frozen E0 B3 and B7 + B3.
+  order: "half_window ascending, then threshold_quantile ascending (the enumeration order of calibrate_simple_decoders.grid)"
+  rule:
+    half: calibration
+    native_macro_f1_min: 0.980
+    boundary_recall_min: 0.95
+    maximise: segment_f1_50_multi
+    ties: "an equal segment F1@50 goes to the earlier setting in `order`"
+    infeasible: "no setting meets both constraints: the system is reported infeasible, without a fallback setting"
+  selection_half: "the chosen setting is applied once; no other setting is evaluated on the selection half"
+  comparisons:                   # fused minus other, per half; the controls are compared only when feasible
+    - [q, E0]                    # same-budget single-teacher controls
+    - [q, B7]
+    - [q, E0 frozen]             # the original frozen systems
+    - [q, B7 frozen]
+    - [E0, E0 frozen]            # what the common rule changes for each teacher
+    - [B7, B7 frozen]
+  bootstrap: >-
+    scripts/report_model_development.paired_bootstrap (2,000 draws, seed 20261002): native clips resampled by session,
+    multi-fragment streams by stream. Streams reuse recordings, so the stream draws are not independent and the
+    intervals understate the uncertainty. Teachers and fusion are fixed systems: one decoding each, never seeds.
+  references:
+    selection: {value: 0.934409687184662, system: E0 B3 tuned,
+                source: "runs/20261002-061914-md_simple_decoders-8e834aa6-s0/validation_metrics.json"}
+    calibration: {value: 0.9721421709894332, system: B7 with B3,
+                  source: "runs/20261002-145232-md_posterior_decoders_B7-38bbcf7c-s0/posterior_decoders.json"}
+    calibration_sensitivity: {value: 0.9738935784747763, system: geometry G1 ASRF three-seed mean,
+                              source: "docs/results/2026-10-04_geometry_pretraining/report.json goals/G1 ASRF/calibration",
+                              note: "reported separately; changes neither the start conditions nor the final goal"}
+  margin: 0.005
+  native_floor: {selection: 0.973, calibration: 0.980}
+  boundary_recall_floor: 0.95
+  start_conditions:              # all four are needed before task 3 trains anything. This is a compute-allocation
+                                 # gate, not a test of whether complementary information exists.
+    1: "q + B3 segment F1@50 >= reference + margin on both halves (full-precision references above)"
+    2: >-
+      For each single-teacher control feasible on calibration, q + B3 segment F1@50 >= control + margin on both halves.
+      An infeasible control is marked so and gets no fallback setting; its frozen system is still reported. If neither
+      control is feasible, the condition is not met and only the change in feasibility is reported.
+    3: "q + B3 boundary recall >= 0.95 on both halves; native macro-F1 >= 0.973 (selection) and >= 0.980 (calibration)"
+    4: >-
+      The per-source lists of fixed and newly wrong units and native clips reproduce the totals exactly (matched,
+      predicted and reference segments; correct native clips). Whether the gain sits in a few recordings is reported in
+      full; it has no threshold.
+  if_not_met: "write the English report, keep every raw result, stop; no weight search and no gate training"
