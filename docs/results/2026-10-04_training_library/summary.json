@@ -1,0 +1,226 @@
+{
+ "training_clips": 3364,
+ "sessions": 502,
+ "per_class": {
+  "PLAX": {
+   "clips": 1120,
+   "sessions": 448
+  },
+  "PSAX": {
+   "clips": 974,
+   "sessions": 362
+  },
+  "A4C": {
+   "clips": 858,
+   "sessions": 405
+  },
+  "A5C": {
+   "clips": 217,
+   "sessions": 139
+  },
+  "SC4C": {
+   "clips": 195,
+   "sessions": 154
+  }
+ },
+ "systems": {
+  "E0": {
+   "A5C read as A4C": {
+    "clips": 2,
+    "sessions": 2,
+    "top3_sessions_share": 1.0,
+    "clips_per_session_max": 1
+   },
+   "A4C read as A5C": {
+    "clips": 7,
+    "sessions": 6,
+    "top3_sessions_share": 0.5714285714285714,
+    "clips_per_session_max": 2
+   },
+   "A4C clip accuracy": 0.986013986013986,
+   "A4C read as another class (not A4C/A5C)": 5,
+   "A5C clip accuracy": 0.9907834101382489,
+   "A5C read as another class (not A4C/A5C)": 0
+  },
+  "E1": {
+   "A5C read as A4C": {
+    "clips": 16,
+    "sessions": 16,
+    "top3_sessions_share": 0.1875,
+    "clips_per_session_max": 1
+   },
+   "A4C read as A5C": {
+    "clips": 5,
+    "sessions": 5,
+    "top3_sessions_share": 0.6,
+    "clips_per_session_max": 1
+   },
+   "A4C clip accuracy": 0.9906759906759907,
+   "A4C read as another class (not A4C/A5C)": 3,
+   "A5C clip accuracy": 0.9262672811059908,
+   "A5C read as another class (not A4C/A5C)": 0
+  },
+  "ASRF": {
+   "A5C read as A4C": {
+    "clips": 13,
+    "sessions": 13,
+    "top3_sessions_share": 0.23076923076923078,
+    "clips_per_session_max": 1
+   },
+   "A4C read as A5C": {
+    "clips": 7,
+    "sessions": 7,
+    "top3_sessions_share": 0.42857142857142855,
+    "clips_per_session_max": 1
+   },
+   "A4C clip accuracy": 0.9906759906759907,
+   "A4C read as another class (not A4C/A5C)": 1,
+   "A5C clip accuracy": 0.9400921658986175,
+   "A5C read as another class (not A4C/A5C)": 0
+  }
+ },
+ "ASRF_seed_disagreement_clips": 27,
+ "confused_by_E1_or_ASRF": {
+  "clips": 26,
+  "sessions": 24,
+  "top3_sessions_share": 0.19230769230769232,
+  "clips_per_session_max": 2,
+  "by_direction": {
+   "A5C read as A4C": 18,
+   "A4C read as A5C": 8
+  },
+  "confused_by_2_or_3_systems": 15,
+  "confused_by_all_3": 1
+ },
+ "correct_vs_confused": {
+  "A4C": {
+   "margin_E1": {
+    "correct": {
+     "n": 850,
+     "median": -1.8310944437980652,
+     "q25": -2.1743395924568176,
+     "q75": -1.3802652657032013
+    },
+    "confused": {
+     "n": 8,
+     "median": 0.5758213400840759,
+     "q25": 0.2658221274614334,
+     "q75": 1.1213487684726715
+    }
+   },
+   "margin_E0": {
+    "correct": {
+     "n": 850,
+     "median": -5.45844841003418,
+     "q25": -6.700281143188477,
+     "q75": -3.9532638788223267
+    },
+    "confused": {
+     "n": 8,
+     "median": -0.5713838338851929,
+     "q25": -1.3638421297073364,
+     "q75": 0.040934983640909195
+    }
+   },
+   "seconds": {
+    "correct": {
+     "n": 850,
+     "median": 3.4,
+     "q25": 2.2,
+     "q75": 6.275
+    },
+    "confused": {
+     "n": 8,
+     "median": 3.45,
+     "q25": 2.9,
+     "q75": 5.4
+    }
+   }
+  },
+  "A5C": {
+   "margin_E1": {
+    "correct": {
+     "n": 199,
+     "median": 2.5301785469055176,
+     "q25": 1.807800531387329,
+     "q75": 3.0335530042648315
+    },
+    "confused": {
+     "n": 18,
+     "median": 0.3065922111272812,
+     "q25": -0.09010622091591358,
+     "q75": 0.46420541405677795
+    }
+   },
+   "margin_E0": {
+    "correct": {
+     "n": 199,
+     "median": 5.013950824737549,
+     "q25": 3.9463382959365845,
+     "q75": 6.405462026596069
+    },
+    "confused": {
+     "n": 18,
+     "median": 3.3106459379196167,
+     "q25": 2.804462432861328,
+     "q75": 4.070803761482239
+    }
+   },
+   "seconds": {
+    "correct": {
+     "n": 199,
+     "median": 3.6,
+     "q25": 2.2,
+     "q75": 6.0
+    },
+    "confused": {
+     "n": 18,
+     "median": 5.0,
+     "q25": 2.875,
+     "q75": 8.075
+    }
+   }
+  }
+ },
+ "cross_clip_similarity_E1": {
+  "sessions_with_both_classes": 113,
+  "same class, other session": {
+   "pairs": 390024,
+   "mean": 0.9495854147323707
+  },
+  "same class, other session (sessions with both)": {
+   "pairs": 55392,
+   "mean": 0.9222660013108241
+  },
+  "same class, same session": {
+   "pairs": 1065,
+   "mean": 0.9645450926896012
+  },
+  "same class, same session (sessions with both)": {
+   "pairs": 541,
+   "mean": 0.9534033233511429
+  },
+  "A4C-A5C, same session": {
+   "pairs": 536,
+   "mean": 0.2786101527943323
+  },
+  "A4C-A5C, same session (sessions with both)": {
+   "pairs": 536,
+   "mean": 0.2786101527943323
+  },
+  "A4C-A5C, other session": {
+   "pairs": 185650,
+   "mean": 0.3265517828042909
+  },
+  "A4C-A5C, other session (sessions with both)": {
+   "pairs": 48184,
+   "mean": 0.32872854949725344
+  }
+ },
+ "decision": {
+  "S1_breadth": true,
+  "S2_shared": true,
+  "S3_cross_clip": false,
+  "supported": false
+ }
+}
