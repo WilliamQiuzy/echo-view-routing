@@ -441,7 +441,7 @@ def fusion(cfg: dict, paths, args) -> None:
     systems = {k: {"status": "frozen original", "params": v["params"], **{h: runs[k][h]["metrics"] for h in HALVES}} for k, v in fz.items()}
     grid_rows = []
     for name in fzc["systems"]:
-        records, sel = calibrate(cfg, inputs, probs[name])
+        records, sel = calibrate(cfg, inputs, probs[name]["calibration"])   # the grid sees the calibration half only
         grid_rows += [{"system": name, **r, "params": json.dumps(r["params"])} for r in records]
         systems[name] = {"status": sel["status"], "n_feasible": sel["n_feasible"], "n_settings": sel["n_settings"],
                          "params": sel["chosen"]["params"] if sel["chosen"] else None}
