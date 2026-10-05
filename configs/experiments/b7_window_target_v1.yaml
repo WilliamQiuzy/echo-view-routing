@@ -1,0 +1,85 @@
+# Does B7's window output answer "which view at this time"? (user plan of 2026-10-05, steps 1-4; step 5 only on
+# evidence). Written and committed before any result of this check. No training. Only the EV9V validation halves are
+# read; the test split stays sealed; no EchoNet-Pediatric input; public labels unchanged. This check does not restore
+# the old ViT grid and is not claimed as a method.
+#
+# Inputs, hashes, alignment checks and the class map are inherited from ev9v_complementarity_v1.yaml and re-verified
+# by its load() on every run. Its audit and fusion sections are not used here.
+extends: ev9v_complementarity_v1.yaml
+run_name: b7_window_target_v1
+experiment: b7_window_target
+
+record_check:                    # step 1, from the run records (no computation)
+  centre_supervised_runs:        # all trained 2026-09-25, before the frame-order fix of 2026-09-30
+    V2c: [20260925-085555-vivit_fe_centre-4f2a5c8a-s0]
+    V4c: [20260925-092542-mvit_echoprime_centre-096d032f-s0, 20260925-115626-mvit_echoprime_centre-2b726856-s1,
+          20260925-114340-mvit_echoprime_centre-24b6e2ab-s2]
+  loader_then: "echo_routing.ingest.frames.list_frame_paths sorted frame files by name at 2e7703c, and echo_routing/vit/datasets.py read frames through it, so training clips (single-view and mixed) and evaluation windows used frames out of time order"
+  post_fix_runs: "none: no ViT-family run, checkpoint or cache_v2 prediction after 2026-09-30 on the server, and no ledger entry"
+  b7_architecture: "third_party/EchoViewCLIP/trainers/vificlip.py: each frame is encoded alone; frame features are pooled by a temporal mean and by a softmax attention computed from each frame's own feature; neither pooling uses the frame's position, so a window's output does not depend on frame order"
+
+census:                          # step 2: the current B7 windows as cached (ev9v_complementarity_v1 inputs)
+  windows: >-
+    The runner's own windows on every validation sequence (native clips, pair streams, multi-fragment streams): centres
+    every 5 samples (window_centres), 16 samples clamped to the sequence, 16 frames spread evenly over them; the cached
+    row at a centre sample is that window's output.
+  centre: the window's centre sample c (also when the window is clamped at a sequence edge)
+  categories:                    # from the recordings and labels of the window's 16 frames
+    single recording: all frames from one recording
+    cross-recording, one view: frames from two or more recordings, all with the same label
+    mixed views: frames with two or more labels
+  error: the argmax of the window's B7 output differs from the label of the centre sample
+  deduplication: >-
+    For every half, sequence kind and category: windows, wrong windows, distinct centre recordings and sessions, those
+    with at least one wrong window, and the recording-averaged error rate (each centre recording weighted once).
+  mixed_details: >-
+    Number of frames of the centre's class among the 16 (bins <= 7, 8, 9-11, 12-15); whether a wrong output names a
+    class present in the window or an absent one; the centre class and output class pairs.
+
+probe:                           # step 3: paired context swap, B7 run on constructed windows (inference only)
+  targets: every validation native recording with at least 16 cached samples (both halves)
+  window: "the recording's middle 16 samples, starting at n // 2 - 8 (orig contrast, cached 10 Hz frame indices)"
+  centre_frames: [4, 8, 12, 14]  # positions [8 - m/2, 8 + m/2) keep the target's frames; the rest is context
+  primary_centre_frames: [12, 14]   # the centre's class holds the majority, as in every real window with one change
+                                    # not at its centre; 8 is the balance point and 4 a short segment
+  conditions:
+    own: the target's own frames at the context positions (no join); one window per target
+    same view: one other recording of the same class, same half, another session
+    other view: for each other class, one recording of that class, same half, another session
+  context_frames: the context recording's middle 16 samples, at the context positions
+  context_choice: "numpy default_rng([seed, half, target index, class]) over the sorted candidates with at least 16 samples; the same context recording for every centre size"
+  seed: 20261005
+  dir: runs/b7_window_target/probe   # windows.json and meta.csv (labels kept apart from the runner's input); pred/probe.npz
+  runner: >-
+    scripts/b7_window_probe.py under envs/echoviewclip: the frozen checkpoint, the authors' factory, the preprocessing
+    and the nine-to-five map of scripts/run_windowed_echoviewclip.py, one window per forward pass in float32
+  reproduction_check: "the first four windows of each of the 12 spot-check streams must equal the B7 cache within 1e-4, or the probe stops"
+  order_check: "the first 40 other-view windows at 8 centre frames (sorted ids) re-run with their frames reversed; the largest difference is reported"
+  scoring: "correct = argmax equals the target's class; the renormalised probability of the target's class; whether the output names the context's class"
+  contrasts: "other view minus same view, paired by target, context class and centre size; same view minus own"
+  bootstrap: {draws: 2000, seed: 20261002, unit: session of the target recording}
+  support_rule: >-
+    Context pull is supported at a primary centre size if the pooled other-view minus same-view accuracy has a 95%
+    interval below zero and at least half of the additional errors name the context's class. A4C/A5C pairs are reported
+    separately. More errors in mixed windows (step 2) alone are not evidence that the context causes them.
+
+room:                            # step 4: what this error type costs the full system, and the training gate
+  affected: "centre recordings and sessions with at least one wrong mixed-views window, per half and class pair; units whose outcome changes"
+  repairs:
+    R1: >-
+      Ideal repair of this error type: every mixed-views window whose output is wrong gets the one-hot of its centre
+      label; samples keep their nearest window. Native clips have no mixed-views windows and are unchanged.
+    R2: >-
+      Reference only, not this error type: every window with a wrong centre in any category, native clips included.
+  decodings:                     # existing settings only; nothing is re-tuned
+    frozen: "the frozen B7 + B3 setting (runs/20261002-145232-md_posterior_decoders_B7-38bbcf7c-s0) on the stored rows"
+    common_rule: {params: {half_window: 9, threshold: 0.0005778548352362705, nms_radius: 5},
+                  rows: renormalised, source: "docs/results/2026-10-05_ev9v_complementarity/fusion.json systems.B7"}
+  goal: >-
+    The final goal: segment F1@50 at least 0.01 above the strongest previous system on both halves (0.934409687184662 +
+    0.01 and 0.9721421709894332 + 0.01), boundary recall >= 0.95 and native macro-F1 >= 0.973 (selection) and >= 0.980
+    (calibration).
+  gate: >-
+    A training comparison is drafted (step 5) only if R1 meets the whole goal on both halves under one decoding. The
+    segment-F1 part and the floors are reported separately, so that a floor miss is not read as a lack of
+    segmentation room. If the gate fails, no training comparison is drafted and nothing is trained.
