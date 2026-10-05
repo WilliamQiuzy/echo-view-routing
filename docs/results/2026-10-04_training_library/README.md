@@ -19,10 +19,13 @@ paused.
      sessions with most of them hold 19%.
    - **Shared failure holds.** 15 of the 26 are confused by at least two of E0, the E1 probe and ASRF.
    - **Cross-recording structure fails, clearly.** In E1's clip embeddings, same-class clips from different sessions
-     have a mean cosine similarity of 0.92. A4C and A5C clips from the same session have 0.28. The embedding is
-     organised by view, not by session. The deficiency the hypothesis targets is not present in the training library.
+     have a mean cosine similarity of 0.92. A4C and A5C clips from the same session have 0.28. On the clips the models
+     were trained on, the features cluster mainly by view, not by session. This does not exclude weak local separation
+     of a few hard cases, and it says nothing about unseen recordings.
 2. **What was trained? Nothing.** Following the rule, the C0/C1 comparison was not assembled.
-3. **Does the new supervision help? Not tested.** The training library gave no basis for it.
+3. **Does the new supervision help? Not tested.** The pre-declared start condition was not met, so the benefit of
+   cross-recording supervised contrast remains untested. This round does not show that the current features are
+   sufficient, nor that only new annotations could make progress.
 4. **How far is the strong baseline? Unchanged.** No system so far meets the final goal on both halves. The closest
    points come from different systems.
    - On the selection half, round 2's E0 M3p with B3 decoding reaches 0.934, 1.1 points short of the target of 0.944.
@@ -92,23 +95,24 @@ sessions that hold both classes.
 | A4C and A5C, same session | 536 | 0.279 |
 
 Same-class clips from different sessions are almost as similar as same-class clips from one session. Both are far more
-similar than A4C and A5C clips from the same session. Recordings of one view already cluster across sources. A
-loss that pulls them together and pushes A4C from A5C would act mostly on pairs that are already separated.
+similar than A4C and A5C clips from the same session. On these trained clips, recordings of one view cluster across
+sources on average. Averages over many pairs do not show how a cross-recording loss would act on the few
+near-boundary clips, or on recordings no model has seen.
 
 E1's encoder was itself trained with a label-driven contrastive objective. EchoViewCLIP stage 1 matches each video to
 the text of its view name, which pulls all clips of a view towards one shared anchor. Cross-recording supervised
-contrast between samples would add pairwise pulls on top of that. It was not an equivalent experiment, but its main
-effect is already visible in the training data.
+contrast between samples would add pairwise pulls on top of that. It was not an equivalent experiment. The clustering
+by view is consistent with that objective, but this check cannot separate its effect from the data.
 
 ## 5. What the training library is missing for this objective
 
-The candidate stops because the training data do not show its target. A training objective aimed at the cases that
-remain would need cases that are not in the library.
+The candidate stops because its pre-declared start condition was not met. The library is also thin in two respects
+that any objective aimed at the remaining cases would meet.
 - **More A5C recordings from independent sessions.** The library has 217 A5C clips from 139 sessions, against 858 A4C
   clips from 405.
-- **A label finer than the clip.** The public labels name a view for the whole clip. They cannot show which frames of
-  a borderline A5C clip display the five-chamber structures. A loss built on clip labels can therefore not target the
-  near-boundary cases more precisely than the current classification loss already does.
+- **A label finer than the clip.** The public labels name a view for the whole clip. They do not show which frames of
+  a borderline A5C clip display the five-chamber structures. Whether clip-level supervision could still improve such
+  cases was not tested.
 
 No label was changed on the basis of model predictions, and every clip was kept.
 
