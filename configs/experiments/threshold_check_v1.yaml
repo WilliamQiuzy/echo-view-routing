@@ -1,0 +1,60 @@
+# Post-hoc decision-calibration diagnostic on round 7 (the project lead's decision of 2026-10-04, after the round-7
+# results). No training: every weight, candidate span and merge rule is frozen, and only the span scores of P0 and P1
+# saved by round 7 are used. Written before any threshold was evaluated. It does not restart P2 and is not a model
+# contribution. Protocol, halves, floors, the success criterion and the strongest previous configuration are inherited.
+extends: local_readout_v1.yaml
+run_name: threshold_check_v1
+experiment: round7_threshold_check
+
+question: "P1 ranked A4C/A5C spans better than P0 in round 7, but every decision used the fixed threshold 0.5. Does a
+  threshold chosen on the calibration half turn that ranking into a full-system gain on the selection half?"
+
+scores: "the A5C - A4C logit margins of P0 and P1 saved by round 7 (spans_<half>.csv of the three seed runs); a span is
+  called A5C when sigmoid(margin) >= p"
+frozen: "all weights; ASRF's candidate spans and votes; which spans are decided (those voted A4C or A5C); the rule that
+  every other span keeps its vote; the merging of equal neighbours"
+
+threshold:
+  grid: [0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60, 0.65, 0.70, 0.75, 0.80, 0.85, 0.90,
+         0.95]                            # the same for P0 and P1
+  chosen_on: "the calibration half only, separately for each arm and seed"
+  feasible: "native macro-F1 >= 0.980 and boundary recall >= 0.95, both on the calibration half"
+  objective: "the largest full-system segment F1@50 on the calibration half among the feasible thresholds"
+  ties: "the threshold closest to 0.5; of two equally close, the one above 0.5"
+  infeasible: "if no threshold is feasible, that arm and seed is reported as a failure. No other threshold, fallback or
+    relaxed rule is used, and its selection half is not scored at any new threshold"
+  after_choice: "the chosen threshold is applied once to the selection half. The halves are not swapped, the objective
+    is not changed and nothing is tuned again after the selection results are read. The script scores the selection
+    half only at the chosen threshold and at 0.5. The 0.5 results are kept beside them"
+
+evaluation:
+  selection_half: "segment F1@50, boundary recall, native macro-F1 and cuts at the chosen threshold and at 0.5, beside
+    ASRF's default, E1's B3 tuned and the strongest previous configuration"
+  calibration_half: "reported at the chosen threshold and marked as tuned there, hence optimistic"
+  recovered_and_new_errors: "against the same arm at 0.5 and against ASRF (its vote for spans, its default output for
+    stream units and native clips): A4C and A5C turned right and turned wrong, each with the number of independent
+    source clips and sessions behind it and how many come from the four common clips"
+  common_clips: "the source clips of the A5C spans that every round-7 readout (P0, P1 and P2) reads as A4C in every
+    seed on the selection half. They are all kept. They are reused material, not independent cases"
+  statistics: "paired bootstrap per seed on the selection half (report_model_development.paired_bootstrap); consistent
+    = all three seeds' 95% intervals exclude zero in the same direction"
+  final_goal: "unchanged. The calibration half is no longer untouched for these systems, so a pass there is optimistic"
+
+terms:
+  calibration_gain: "for an arm, segment F1@50 at the chosen threshold consistently higher than at 0.5 on the
+    selection half, with a feasible threshold in all three seeds"
+  ranking_into_decisions: "P1 - P0, both at their chosen thresholds, segment F1@50 consistently higher on the selection
+    half, with feasible thresholds for both arms in all three seeds"
+  beats_asrf: "an arm at its chosen threshold consistently above ASRF's default in segment F1@50 on the selection half"
+
+interpretation:                           # fixed before any threshold was evaluated
+  - "Neither a calibration gain for either arm nor ranking_into_decisions: the search on these fixed spans and readout
+    scores ends"
+  - "Any gain is a calibration gain of a post-hoc decision rule, not a new model. The final goal is judged separately
+    and stays open unless it is met"
+  - "'No consistent difference detected' is not evidence of no effect"
+  - "The test split stays sealed and the paper stays paused"
+
+start_conditions:
+  - "the decoded validation spans equal round 7's saved spans, span by span, for every seed and half"
+  - "at threshold 0.5, the recomputed P0 and P1 systems equal round 7's stored predictions for every sequence"
