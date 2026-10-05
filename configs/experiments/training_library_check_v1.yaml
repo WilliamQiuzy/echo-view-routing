@@ -1,0 +1,42 @@
+# Round 8, step 1 (the project lead's instruction of 2026-10-04): does the training library hold an A4C/A5C confusion
+# that spreads over many sources and is worth a training objective? Written before any training-library number was
+# computed. No model is trained and no label is changed. Protocol and halves are inherited.
+extends: model_development_v2.yaml
+run_name: training_library_check_v1
+experiment: round8_training_library
+
+question: "Is there an A4C/A5C confusion in the training library that spans many independent sources and that a
+  training objective could address? This step decides whether the cross-recording supervised-contrastive hypothesis
+  is examined at all."
+
+data:
+  clips: "the protocol's training clips (EV9V train, 3,364 native recordings); recordings are deduplicated by clip and
+    by recording session (video id without its last field)"
+  seen_by_models: "every training clip was seen in training by E0's encoder and head, E1's encoder (EchoViewCLIP stage 1
+    was trained on all of them), the E1 probe and ASRF (training-bank streams). All predictions here are in-sample:
+    they describe how the training data is fitted, not generalisation"
+  predictions: "existing models only: E0's head (v3 cache), the E1 probe (formal E1 cache) and the E1 ASRF of rounds
+    2-5, seeds 0-2, decoding each training clip as a native recording. A clip's prediction is the majority of its
+    10 Hz samples; for ASRF, the class most seeds give"
+  validation: "not used; the four validation clips of rounds 4-7 are not revisited"
+
+measures:
+  confusion: "A5C clips read as A4C and A4C clips read as A5C, per system, with the number of clips and sessions and the
+    share held by the three sessions with most such clips"
+  co_failure: "for each confused clip, which of E0, the E1 probe and ASRF (majority of seeds) also confuse it"
+  correct_vs_wrong: "clip-mean margin logit(A5C) - logit(A4C) of E0 and the E1 probe, and clip length, for correct and
+    confused A4C and A5C clips"
+  cross_clip_features: "E1 clip embeddings (mean of the clip's frame embeddings, unit length): mean cosine similarity
+    of same-class clip pairs from different sessions, of same-class pairs within a session, and of A4C-A5C pairs within
+    a session and across sessions"
+
+decision:                                 # fixed before computing; all three must hold
+  S1_breadth: "the clips confused between A4C and A5C (either direction) by the E1 probe or by ASRF come from at least
+    10 sessions, and the 3 sessions with most such clips hold less than half of them"
+  S2_shared: "at least half of those clips are confused by at least two of the three systems (E0, E1 probe, ASRF)"
+  S3_cross_clip: "in E1's clip embeddings, same-class pairs from different sessions are on average less similar than
+    A4C-A5C pairs from the same session (view discrimination across recordings is weaker than the session's
+    appearance), computed over the sessions holding both A4C and A5C training clips"
+  if_supported: "the round-8 hypothesis (cross-recording supervised contrast, C0 against C1) is pre-registered next"
+  if_not: "the candidate stops here; the report states which training cases are missing, and no training round is
+    assembled"
