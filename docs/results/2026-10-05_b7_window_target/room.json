@@ -1,0 +1,987 @@
+{
+ "inputs": {
+  "hashes": {
+   "protocol": "a897483b776e8cff1ba8b92774c6a82537758bcba6abd362f2d8603f37997593",
+   "source manifest": "037b20e0f3451545505c7b80dfc0c1894265e406066c86137df3518174c10433",
+   "E0 feature manifest": "98427975333243e17e3ed736b0b2224b108d1a9a4c3bc488211272e8c691fcd9",
+   "B7 checkpoint": "a74c7b233e79c67ca1d9b145f938283ed945378b4ccf3765d2bcc104f8dc0dfc",
+   "B7 runner config": "f880d99a837f5ec5db1af730afc74582e2c8929165e95160fca62caebc300243",
+   "B7 label list": "badc8e08c1c1e53c194e0aa0410ece682c5b18af27ad796c2f6717b76b86e5cc",
+   "B7 window plans": "51517ea886bffe235918ad9bd250f4811efae39ee0d27fc29b648dde0fac26ba"
+  },
+  "digests": {
+   "E0 files": "e4ab937d3b901486b5bdc6a006b59a9e2a39ef31bfd064ab57ce7f56011b2932",
+   "B7 predictions": "5054631a831ba7d3806e26e16307b25950cf822cade036c50e18c7b577e5da71"
+  },
+  "manifest_test_clips": 888,
+  "test_clips_in_inputs": 0,
+  "sequences": {
+   "selection": {
+    "native": {
+     "sequences": 284,
+     "samples": 16635
+    },
+    "pairs": {
+     "sequences": 137,
+     "samples": 5691
+    },
+    "multi": {
+     "sequences": 120,
+     "samples": 14961
+    }
+   },
+   "calibration": {
+    "native": {
+     "sequences": 237,
+     "samples": 14323
+    },
+    "pairs": {
+     "sequences": 115,
+     "samples": 4883
+    },
+    "multi": {
+     "sequences": 120,
+     "samples": 15010
+    }
+   }
+  }
+ },
+ "affected": {
+  "selection": {
+   "windows": 218,
+   "recordings": 88,
+   "sessions": 32,
+   "by_pair": [
+    {
+     "pair": "A4C -> A5C",
+     "windows": 28,
+     "recordings": 17,
+     "sessions": 12
+    },
+    {
+     "pair": "A4C -> PLAX",
+     "windows": 38,
+     "recordings": 31,
+     "sessions": 19
+    },
+    {
+     "pair": "A4C -> PSAX",
+     "windows": 14,
+     "recordings": 12,
+     "sessions": 10
+    },
+    {
+     "pair": "A4C -> SC4C",
+     "windows": 10,
+     "recordings": 9,
+     "sessions": 7
+    },
+    {
+     "pair": "A5C -> A4C",
+     "windows": 44,
+     "recordings": 4,
+     "sessions": 3
+    },
+    {
+     "pair": "A5C -> PLAX",
+     "windows": 6,
+     "recordings": 4,
+     "sessions": 3
+    },
+    {
+     "pair": "A5C -> PSAX",
+     "windows": 2,
+     "recordings": 2,
+     "sessions": 2
+    },
+    {
+     "pair": "A5C -> SC4C",
+     "windows": 5,
+     "recordings": 3,
+     "sessions": 2
+    },
+    {
+     "pair": "PLAX -> A4C",
+     "windows": 1,
+     "recordings": 1,
+     "sessions": 1
+    },
+    {
+     "pair": "PLAX -> A5C",
+     "windows": 7,
+     "recordings": 7,
+     "sessions": 5
+    },
+    {
+     "pair": "PLAX -> PSAX",
+     "windows": 4,
+     "recordings": 4,
+     "sessions": 4
+    },
+    {
+     "pair": "PLAX -> SC4C",
+     "windows": 1,
+     "recordings": 1,
+     "sessions": 1
+    },
+    {
+     "pair": "PSAX -> A5C",
+     "windows": 6,
+     "recordings": 5,
+     "sessions": 5
+    },
+    {
+     "pair": "PSAX -> PLAX",
+     "windows": 15,
+     "recordings": 12,
+     "sessions": 12
+    },
+    {
+     "pair": "PSAX -> SC4C",
+     "windows": 1,
+     "recordings": 1,
+     "sessions": 1
+    },
+    {
+     "pair": "SC4C -> A4C",
+     "windows": 3,
+     "recordings": 1,
+     "sessions": 1
+    },
+    {
+     "pair": "SC4C -> A5C",
+     "windows": 7,
+     "recordings": 6,
+     "sessions": 6
+    },
+    {
+     "pair": "SC4C -> PLAX",
+     "windows": 25,
+     "recordings": 1,
+     "sessions": 1
+    },
+    {
+     "pair": "SC4C -> PSAX",
+     "windows": 1,
+     "recordings": 1,
+     "sessions": 1
+    }
+   ]
+  },
+  "calibration": {
+   "windows": 168,
+   "recordings": 86,
+   "sessions": 31,
+   "by_pair": [
+    {
+     "pair": "A4C -> A5C",
+     "windows": 21,
+     "recordings": 15,
+     "sessions": 12
+    },
+    {
+     "pair": "A4C -> PLAX",
+     "windows": 32,
+     "recordings": 22,
+     "sessions": 16
+    },
+    {
+     "pair": "A4C -> PSAX",
+     "windows": 15,
+     "recordings": 12,
+     "sessions": 10
+    },
+    {
+     "pair": "A4C -> SC4C",
+     "windows": 16,
+     "recordings": 15,
+     "sessions": 12
+    },
+    {
+     "pair": "A5C -> A4C",
+     "windows": 15,
+     "recordings": 5,
+     "sessions": 5
+    },
+    {
+     "pair": "A5C -> PLAX",
+     "windows": 6,
+     "recordings": 4,
+     "sessions": 4
+    },
+    {
+     "pair": "A5C -> PSAX",
+     "windows": 4,
+     "recordings": 4,
+     "sessions": 3
+    },
+    {
+     "pair": "A5C -> SC4C",
+     "windows": 5,
+     "recordings": 4,
+     "sessions": 4
+    },
+    {
+     "pair": "PLAX -> A4C",
+     "windows": 1,
+     "recordings": 1,
+     "sessions": 1
+    },
+    {
+     "pair": "PLAX -> A5C",
+     "windows": 6,
+     "recordings": 5,
+     "sessions": 4
+    },
+    {
+     "pair": "PLAX -> PSAX",
+     "windows": 2,
+     "recordings": 2,
+     "sessions": 2
+    },
+    {
+     "pair": "PLAX -> SC4C",
+     "windows": 4,
+     "recordings": 4,
+     "sessions": 4
+    },
+    {
+     "pair": "PSAX -> A4C",
+     "windows": 2,
+     "recordings": 2,
+     "sessions": 2
+    },
+    {
+     "pair": "PSAX -> A5C",
+     "windows": 9,
+     "recordings": 7,
+     "sessions": 6
+    },
+    {
+     "pair": "PSAX -> PLAX",
+     "windows": 11,
+     "recordings": 11,
+     "sessions": 11
+    },
+    {
+     "pair": "PSAX -> SC4C",
+     "windows": 11,
+     "recordings": 10,
+     "sessions": 7
+    },
+    {
+     "pair": "SC4C -> A5C",
+     "windows": 8,
+     "recordings": 4,
+     "sessions": 4
+    }
+   ]
+  }
+ },
+ "metrics": [
+  {
+   "decoding": "frozen",
+   "variant": "original",
+   "half": "selection",
+   "segment_f1_50_multi": 0.8798449612403101,
+   "boundary_recall_multi": 0.9554973821989529,
+   "native_macro_f1": 0.9566353840806396,
+   "native_internal_cuts_per_clip": 0.06338028169014084,
+   "repaired_windows": 0
+  },
+  {
+   "decoding": "frozen",
+   "variant": "original",
+   "half": "calibration",
+   "segment_f1_50_multi": 0.9721421709894332,
+   "boundary_recall_multi": 0.9748743718592965,
+   "native_macro_f1": 0.9926596980255518,
+   "native_internal_cuts_per_clip": 0.04219409282700422,
+   "repaired_windows": 0
+  },
+  {
+   "decoding": "frozen",
+   "variant": "R1",
+   "half": "selection",
+   "segment_f1_50_multi": 0.9070208728652751,
+   "boundary_recall_multi": 0.9973821989528796,
+   "native_macro_f1": 0.9566353840806396,
+   "native_internal_cuts_per_clip": 0.06338028169014084,
+   "repaired_windows": 218
+  },
+  {
+   "decoding": "frozen",
+   "variant": "R1",
+   "half": "calibration",
+   "segment_f1_50_multi": 0.9856733524355301,
+   "boundary_recall_multi": 1.0,
+   "native_macro_f1": 0.9926596980255518,
+   "native_internal_cuts_per_clip": 0.04219409282700422,
+   "repaired_windows": 168
+  },
+  {
+   "decoding": "frozen",
+   "variant": "R2",
+   "half": "selection",
+   "segment_f1_50_multi": 1.0,
+   "boundary_recall_multi": 0.9973821989528796,
+   "native_macro_f1": 1.0,
+   "native_internal_cuts_per_clip": 0.0,
+   "repaired_windows": 466
+  },
+  {
+   "decoding": "frozen",
+   "variant": "R2",
+   "half": "calibration",
+   "segment_f1_50_multi": 1.0,
+   "boundary_recall_multi": 1.0,
+   "native_macro_f1": 1.0,
+   "native_internal_cuts_per_clip": 0.0,
+   "repaired_windows": 250
+  },
+  {
+   "decoding": "common rule",
+   "variant": "original",
+   "half": "selection",
+   "segment_f1_50_multi": 0.8658420551855376,
+   "boundary_recall_multi": 0.9607329842931938,
+   "native_macro_f1": 0.9566353840806396,
+   "native_internal_cuts_per_clip": 0.09154929577464789,
+   "repaired_windows": 0
+  },
+  {
+   "decoding": "common rule",
+   "variant": "original",
+   "half": "calibration",
+   "segment_f1_50_multi": 0.9731800766283525,
+   "boundary_recall_multi": 0.9773869346733668,
+   "native_macro_f1": 0.9856102003642988,
+   "native_internal_cuts_per_clip": 0.06329113924050633,
+   "repaired_windows": 0
+  },
+  {
+   "decoding": "common rule",
+   "variant": "R1",
+   "half": "selection",
+   "segment_f1_50_multi": 0.892422825070159,
+   "boundary_recall_multi": 1.0,
+   "native_macro_f1": 0.9566353840806396,
+   "native_internal_cuts_per_clip": 0.09154929577464789,
+   "repaired_windows": 218
+  },
+  {
+   "decoding": "common rule",
+   "variant": "R1",
+   "half": "calibration",
+   "segment_f1_50_multi": 0.9856733524355301,
+   "boundary_recall_multi": 1.0,
+   "native_macro_f1": 0.9856102003642988,
+   "native_internal_cuts_per_clip": 0.06329113924050633,
+   "repaired_windows": 168
+  },
+  {
+   "decoding": "common rule",
+   "variant": "R2",
+   "half": "selection",
+   "segment_f1_50_multi": 1.0,
+   "boundary_recall_multi": 0.9973821989528796,
+   "native_macro_f1": 1.0,
+   "native_internal_cuts_per_clip": 0.0,
+   "repaired_windows": 466
+  },
+  {
+   "decoding": "common rule",
+   "variant": "R2",
+   "half": "calibration",
+   "segment_f1_50_multi": 1.0,
+   "boundary_recall_multi": 1.0,
+   "native_macro_f1": 1.0,
+   "native_internal_cuts_per_clip": 0.0,
+   "repaired_windows": 250
+  }
+ ],
+ "unit_changes": {
+  "frozen|selection": {
+   "fixed": [
+    "multi_selection_0011#2",
+    "multi_selection_0012#2",
+    "multi_selection_0023#2",
+    "multi_selection_0027#3",
+    "multi_selection_0031#1",
+    "multi_selection_0033#3",
+    "multi_selection_0038#1",
+    "multi_selection_0043#4",
+    "multi_selection_0055#2",
+    "multi_selection_0059#1",
+    "multi_selection_0068#2",
+    "multi_selection_0072#3",
+    "multi_selection_0072#4",
+    "multi_selection_0072#5",
+    "multi_selection_0076#4",
+    "multi_selection_0078#3",
+    "multi_selection_0078#4",
+    "multi_selection_0080#0",
+    "multi_selection_0080#1",
+    "multi_selection_0087#2",
+    "multi_selection_0102#3",
+    "multi_selection_0113#1",
+    "multi_selection_0114#1",
+    "multi_selection_0117#1",
+    "multi_selection_0117#2",
+    "multi_selection_0117#3"
+   ],
+   "new_errors": [
+    "multi_selection_0020#2",
+    "multi_selection_0064#0"
+   ],
+   "concentration": {
+    "fixed": 26,
+    "new_errors": 2,
+    "net": 24,
+    "recordings_in_fixed": 17,
+    "recordings_in_new_errors": 4,
+    "top1": {
+     "recordings": [
+      "2022-04-25_09-46-52_007_320x240_9"
+     ],
+     "fixed_involving": 6,
+     "net_without": 18
+    },
+    "top3": {
+     "recordings": [
+      "2022-04-25_09-46-52_007_320x240_9",
+      "2022-05-26_10-29-41_320x240_2",
+      "2022-03-25_08-44-50_320x240_3"
+     ],
+     "fixed_involving": 12,
+     "net_without": 12
+    },
+    "top5": {
+     "recordings": [
+      "2022-04-25_09-46-52_007_320x240_9",
+      "2022-05-26_10-29-41_320x240_2",
+      "2022-03-25_08-44-50_320x240_3",
+      "2022-03-25_09-13-33_320x240_001_0",
+      "2022-03-25_09-13-33_320x240_001_11"
+     ],
+     "fixed_involving": 14,
+     "net_without": 10
+    },
+    "by_recording": [
+     [
+      "2022-04-25_09-46-52_007_320x240_9",
+      6,
+      0,
+      6
+     ],
+     [
+      "2022-05-26_10-29-41_320x240_2",
+      4,
+      0,
+      4
+     ],
+     [
+      "2022-03-25_08-44-50_320x240_3",
+      2,
+      0,
+      2
+     ],
+     [
+      "2022-03-25_09-13-33_320x240_001_0",
+      1,
+      0,
+      1
+     ],
+     [
+      "2022-03-25_09-13-33_320x240_001_11",
+      1,
+      0,
+      1
+     ],
+     [
+      "2022-03-28_15-40-18_320x240_1",
+      1,
+      0,
+      1
+     ],
+     [
+      "2022-03-28_15-40-18_320x240_17",
+      1,
+      0,
+      1
+     ],
+     [
+      "2022-03-28_15-40-18_320x240_3",
+      1,
+      0,
+      1
+     ],
+     [
+      "2022-04-29_18-53-17_002_320x240_2",
+      1,
+      0,
+      1
+     ],
+     [
+      "2022-04-29_18-53-17_005_320x240_4",
+      1,
+      0,
+      1
+     ],
+     [
+      "2022-04-29_18-53-17_005_320x240_5",
+      1,
+      0,
+      1
+     ],
+     [
+      "2022-04-29_18-53-17_006_320x240_4",
+      1,
+      0,
+      1
+     ],
+     [
+      "2022-04-29_18-53-17_009_320x240_6",
+      1,
+      0,
+      1
+     ],
+     [
+      "2022-06-23_10-33-04_320x240_8",
+      1,
+      0,
+      1
+     ],
+     [
+      "2022-06-24_09-20-45_320x240_1",
+      1,
+      0,
+      1
+     ],
+     [
+      "2022-07-04_09-22-51_000_320x240_6",
+      1,
+      0,
+      1
+     ],
+     [
+      "2022-07-20_14-54-55_320x240_1",
+      1,
+      2,
+      -1
+     ],
+     [
+      "2022-03-25_09-13-33_320x240_000_23",
+      0,
+      1,
+      -1
+     ],
+     [
+      "2022-03-25_09-13-33_320x240_005_6",
+      0,
+      1,
+      -1
+     ],
+     [
+      "2022-05-26_10-29-41_320x240_0",
+      0,
+      1,
+      -1
+     ]
+    ]
+   }
+  },
+  "frozen|calibration": {
+   "fixed": [
+    "multi_calibration_0001#1",
+    "multi_calibration_0007#2",
+    "multi_calibration_0011#3",
+    "multi_calibration_0015#2",
+    "multi_calibration_0015#3",
+    "multi_calibration_0015#4",
+    "multi_calibration_0028#4",
+    "multi_calibration_0104#1",
+    "multi_calibration_0117#1",
+    "multi_calibration_0117#6"
+   ],
+   "new_errors": [],
+   "concentration": {
+    "fixed": 10,
+    "new_errors": 0,
+    "net": 10,
+    "recordings_in_fixed": 11,
+    "recordings_in_new_errors": 0,
+    "top1": {
+     "recordings": [
+      "2022-05-03_09-01-08_320x240_8"
+     ],
+     "fixed_involving": 2,
+     "net_without": 8
+    },
+    "top3": {
+     "recordings": [
+      "2022-05-03_09-01-08_320x240_8",
+      "2022-03-28_11-32-59_320x240_7",
+      "2022-05-07_14-25-11_320x240_8"
+     ],
+     "fixed_involving": 4,
+     "net_without": 6
+    },
+    "top5": {
+     "recordings": [
+      "2022-05-03_09-01-08_320x240_8",
+      "2022-03-28_11-32-59_320x240_7",
+      "2022-05-07_14-25-11_320x240_8",
+      "2022-05-23_14-17-51_320x240_7",
+      "2022-06-25_09-28-23_000_320x240_13"
+     ],
+     "fixed_involving": 5,
+     "net_without": 5
+    },
+    "by_recording": [
+     [
+      "2022-05-03_09-01-08_320x240_8",
+      2,
+      0,
+      2
+     ],
+     [
+      "2022-03-28_11-32-59_320x240_7",
+      1,
+      0,
+      1
+     ],
+     [
+      "2022-05-07_14-25-11_320x240_8",
+      1,
+      0,
+      1
+     ],
+     [
+      "2022-05-23_14-17-51_320x240_7",
+      1,
+      0,
+      1
+     ],
+     [
+      "2022-06-25_09-28-23_000_320x240_13",
+      1,
+      0,
+      1
+     ],
+     [
+      "2022-06-30_09-06-00_000_320x240_7",
+      1,
+      0,
+      1
+     ],
+     [
+      "2022-07-03_09-26-11_001_320x240_2",
+      1,
+      0,
+      1
+     ],
+     [
+      "2022-07-04_09-59-30_320x240_1",
+      1,
+      0,
+      1
+     ],
+     [
+      "2022-07-26_15-43-05_320x240_4",
+      1,
+      0,
+      1
+     ],
+     [
+      "2022-07-26_15-58-25_320x240_6",
+      1,
+      0,
+      1
+     ],
+     [
+      "2022-07-27_08-45-04_320x240_17",
+      1,
+      0,
+      1
+     ]
+    ]
+   }
+  },
+  "common rule|selection": {
+   "fixed": [
+    "multi_selection_0011#2",
+    "multi_selection_0012#2",
+    "multi_selection_0031#1",
+    "multi_selection_0033#3",
+    "multi_selection_0038#1",
+    "multi_selection_0043#4",
+    "multi_selection_0055#2",
+    "multi_selection_0057#1",
+    "multi_selection_0059#1",
+    "multi_selection_0068#2",
+    "multi_selection_0072#3",
+    "multi_selection_0072#4",
+    "multi_selection_0072#5",
+    "multi_selection_0076#4",
+    "multi_selection_0080#1",
+    "multi_selection_0087#2",
+    "multi_selection_0102#3",
+    "multi_selection_0113#1",
+    "multi_selection_0114#1",
+    "multi_selection_0117#1",
+    "multi_selection_0117#2",
+    "multi_selection_0117#3"
+   ],
+   "new_errors": [],
+   "concentration": {
+    "fixed": 22,
+    "new_errors": 0,
+    "net": 22,
+    "recordings_in_fixed": 14,
+    "recordings_in_new_errors": 0,
+    "top1": {
+     "recordings": [
+      "2022-04-25_09-46-52_007_320x240_9"
+     ],
+     "fixed_involving": 6,
+     "net_without": 16
+    },
+    "top3": {
+     "recordings": [
+      "2022-04-25_09-46-52_007_320x240_9",
+      "2022-05-26_10-29-41_320x240_2",
+      "2022-03-25_08-44-50_320x240_3"
+     ],
+     "fixed_involving": 11,
+     "net_without": 11
+    },
+    "top5": {
+     "recordings": [
+      "2022-04-25_09-46-52_007_320x240_9",
+      "2022-05-26_10-29-41_320x240_2",
+      "2022-03-25_08-44-50_320x240_3",
+      "2022-03-25_09-13-33_320x240_001_11",
+      "2022-03-28_15-40-18_320x240_1"
+     ],
+     "fixed_involving": 13,
+     "net_without": 9
+    },
+    "by_recording": [
+     [
+      "2022-04-25_09-46-52_007_320x240_9",
+      6,
+      0,
+      6
+     ],
+     [
+      "2022-05-26_10-29-41_320x240_2",
+      4,
+      0,
+      4
+     ],
+     [
+      "2022-03-25_08-44-50_320x240_3",
+      1,
+      0,
+      1
+     ],
+     [
+      "2022-03-25_09-13-33_320x240_001_11",
+      1,
+      0,
+      1
+     ],
+     [
+      "2022-03-28_15-40-18_320x240_1",
+      1,
+      0,
+      1
+     ],
+     [
+      "2022-03-28_15-40-18_320x240_3",
+      1,
+      0,
+      1
+     ],
+     [
+      "2022-04-29_18-53-17_002_320x240_2",
+      1,
+      0,
+      1
+     ],
+     [
+      "2022-04-29_18-53-17_005_320x240_4",
+      1,
+      0,
+      1
+     ],
+     [
+      "2022-04-29_18-53-17_005_320x240_5",
+      1,
+      0,
+      1
+     ],
+     [
+      "2022-04-29_18-53-17_006_320x240_4",
+      1,
+      0,
+      1
+     ],
+     [
+      "2022-04-29_18-53-17_009_320x240_6",
+      1,
+      0,
+      1
+     ],
+     [
+      "2022-06-23_10-33-04_320x240_8",
+      1,
+      0,
+      1
+     ],
+     [
+      "2022-06-24_09-20-45_320x240_1",
+      1,
+      0,
+      1
+     ],
+     [
+      "2022-07-08_14-52-51_320x240_7",
+      1,
+      0,
+      1
+     ]
+    ]
+   }
+  },
+  "common rule|calibration": {
+   "fixed": [
+    "multi_calibration_0001#1",
+    "multi_calibration_0007#2",
+    "multi_calibration_0011#3",
+    "multi_calibration_0028#4",
+    "multi_calibration_0104#1",
+    "multi_calibration_0115#3",
+    "multi_calibration_0117#1",
+    "multi_calibration_0117#6"
+   ],
+   "new_errors": [],
+   "concentration": {
+    "fixed": 8,
+    "new_errors": 0,
+    "net": 8,
+    "recordings_in_fixed": 9,
+    "recordings_in_new_errors": 0,
+    "top1": {
+     "recordings": [
+      "2022-05-03_09-01-08_320x240_8"
+     ],
+     "fixed_involving": 2,
+     "net_without": 6
+    },
+    "top3": {
+     "recordings": [
+      "2022-05-03_09-01-08_320x240_8",
+      "2022-03-28_11-32-59_320x240_7",
+      "2022-05-23_14-17-51_320x240_7"
+     ],
+     "fixed_involving": 3,
+     "net_without": 5
+    },
+    "top5": {
+     "recordings": [
+      "2022-05-03_09-01-08_320x240_8",
+      "2022-03-28_11-32-59_320x240_7",
+      "2022-05-23_14-17-51_320x240_7",
+      "2022-06-25_09-28-23_000_320x240_13",
+      "2022-07-03_09-26-11_001_320x240_2"
+     ],
+     "fixed_involving": 4,
+     "net_without": 4
+    },
+    "by_recording": [
+     [
+      "2022-05-03_09-01-08_320x240_8",
+      2,
+      0,
+      2
+     ],
+     [
+      "2022-03-28_11-32-59_320x240_7",
+      1,
+      0,
+      1
+     ],
+     [
+      "2022-05-23_14-17-51_320x240_7",
+      1,
+      0,
+      1
+     ],
+     [
+      "2022-06-25_09-28-23_000_320x240_13",
+      1,
+      0,
+      1
+     ],
+     [
+      "2022-07-03_09-26-11_001_320x240_2",
+      1,
+      0,
+      1
+     ],
+     [
+      "2022-07-04_09-22-51_320x240_3",
+      1,
+      0,
+      1
+     ],
+     [
+      "2022-07-26_15-43-05_320x240_4",
+      1,
+      0,
+      1
+     ],
+     [
+      "2022-07-26_15-58-25_320x240_6",
+      1,
+      0,
+      1
+     ],
+     [
+      "2022-07-27_08-45-04_320x240_17",
+      1,
+      0,
+      1
+     ]
+    ]
+   }
+  }
+ },
+ "goal": {
+  "frozen": {
+   "segment_part": {
+    "selection": false,
+    "calibration": true
+   },
+   "floors_part": {
+    "selection": false,
+    "calibration": true
+   },
+   "met": false
+  },
+  "common rule": {
+   "segment_part": {
+    "selection": false,
+    "calibration": true
+   },
+   "floors_part": {
+    "selection": false,
+    "calibration": true
+   },
+   "met": false
+  }
+ },
+ "gate_met": false
+}
