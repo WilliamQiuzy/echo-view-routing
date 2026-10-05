@@ -66,20 +66,22 @@ class Clips(Dataset):
 
 
 def main() -> None:
-    ap = argparse.ArgumentParser(description="B0 over the frozen EchoNet-Pediatric list")
+    ap = argparse.ArgumentParser(description="B0 (or another frame encoder of the same family) over the frozen EchoNet-Pediatric list")
+    ap.add_argument("--ckpt", default=B0_CKPT, help="frame-encoder checkpoint; default the frozen B0. E0 (v3) uses the same preprocessing")
     ap.add_argument("--protocol-dir", default=f"data/manifests/pediatric/{PROTOCOL_VERSION}")
     ap.add_argument("--workers", type=int, default=6); ap.add_argument("--limit", type=int, default=None)
     args = ap.parse_args(); paths = load_paths(); proto_dir = Path(args.protocol_dir)
     proto = verify_protocol(proto_dir)
     videos = pd.read_csv(proto_dir / "videos.csv", dtype={"clip_no": str})
-    if checkpoint_hash(Path(B0_CKPT)) != B0_HASH:
+    ckpt_hash = checkpoint_hash(Path(args.ckpt))
+    if args.ckpt == B0_CKPT and ckpt_hash != B0_HASH:
         raise SystemExit("B0 checkpoint hash mismatch")
-    model, meta = load_checkpoint(Path(B0_CKPT)); size = int(meta.get("image_size", 224))
+    model, meta = load_checkpoint(Path(args.ckpt)); size = int(meta.get("image_size", 224))
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     if device.type == "cuda":
         torch.cuda.set_per_process_memory_fraction(gpu_memory_fraction())
     model.eval().to(device)
-    out = paths.cache_root / "pediatric" / PREPROCESS_VERSION / "features" / B0_HASH; out.mkdir(parents=True, exist_ok=True)
+    out = paths.cache_root / "pediatric" / PREPROCESS_VERSION / "features" / ckpt_hash; out.mkdir(parents=True, exist_ok=True)
     todo = videos if args.limit is None else videos.head(args.limit)
     todo = todo[[cached_n_samples(out / f"{v}.npz") is None for v in todo["video_id"]]]
     dl = DataLoader(Clips(todo, size), batch_size=None, shuffle=False, num_workers=args.workers,
@@ -109,7 +111,7 @@ def main() -> None:
             rows.append({"video_id": r.video_id, "split": r.role, "raw_label": r.view, "label_index": int(r.label),
                          "n_samples": n, "path": str(out / f"{r.video_id}.npz")})
     write_index(out, rows)
-    write_meta(out, {"ckpt": B0_CKPT, "ckpt_hash": B0_HASH, "classes": meta.get("classes"), "target_hz": HZ, "image_size": size,
+    write_meta(out, {"ckpt": str(args.ckpt), "ckpt_hash": ckpt_hash, "classes": meta.get("classes"), "target_hz": HZ, "image_size": size,
                      "preprocess_version": PREPROCESS_VERSION, "protocol_version": PROTOCOL_VERSION,
                      "protocol_videos_digest": proto["videos_digest"], "extraction_seconds": round(elapsed, 1),
                      "samples_extracted_this_call": n_frames, "device": str(device)})

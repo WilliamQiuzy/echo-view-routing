@@ -1,0 +1,67 @@
+# Cross-population step 1 (the project lead's instruction of 2026-10-04): do the current strong systems fail to
+# transfer to EchoNet-Pediatric? Written before any prediction of these systems on Pediatric. No model is trained or
+# tuned here. The frozen Pediatric protocol pediatric-external-v1 (folds, groups, sampling, banks) is reused unchanged.
+# EV9V's success criterion is unchanged; Pediatric results do not replace it and are not a new independent final
+# validation.
+extends: model_development_v2.yaml
+run_name: pediatric_transfer_v2
+experiment: pediatric_transfer_v2
+
+question: "Do the current strong systems (not the old B0) still fail on EchoNet-Pediatric's A4C and PSAX recordings,
+  broadly enough to justify one conventional adaptation comparison?"
+
+data:
+  protocol: "data/manifests/pediatric/pediatric-external-v1 (frozen 2026-10-01 before any prediction; digests checked
+    before use): 7,810 videos (A4C 3,284, PSAX 4,526) from 1,939 first-token groups and 4,467 exams; folds 0-1 are the
+    calibration part (1,456 videos, 390 groups), folds 2-9 the test part (6,354 videos, 1,549 groups)"
+  main_analysis: "native clips of the test folds; the calibration folds are reported beside them"
+  groups: "the first file-name token. The official file lists carry no patient identifier and the dataset page does
+    not say how the folds were made. The groups never cross a fold; in 951 of the 953 groups with several exams the sex
+    is constant, and ages within a group span a median of 2 years (at most 7). They are consistent with patients but
+    not confirmed as patients by the provider"
+  exposure: "before this step, Pediatric was read only by the 2026-10-01 round: inventory, protocol freeze, the old B0
+    (ImageNet ResNet-18 trained on EV9V) and its decoders B1-B4 on both parts, with results reported. Nothing was
+    trained or tuned on Pediatric. The test folds have therefore been viewed and cannot become an unseen test set by
+    re-splitting"
+  licence: "the dataset page grants use 'for personal, non-commercial research purposes only' and forbids
+    distributing, publishing or reproducing any part of the data and any clinical use. It does not enumerate model
+    training; this project reads training research models as research use. Data stay on the server, only aggregate
+    numbers enter the repository, and nothing derived from Pediatric (data, frames or weights) is shared"
+
+systems:                                  # every weight was trained on EV9V only; none has seen Pediatric
+  E0_B3: "E0 (v3 frame encoder and head, ResNet-18, EV9V train) per-sample probabilities, decoded by B3 with E0's
+    EV9V-selected parameters (half window 9, threshold 0.3902, NMS 5)"
+  E1_B3: "E1 (EchoViewCLIP stage-1 image encoder + linear probe, EV9V train) per-sample probabilities, decoded by B3
+    with E1's EV9V-selected parameters (half window 9, threshold 0.2246, NMS 5)"
+  E1_ASRF: "the E1 ASRF of rounds 2-5, seeds 0, 1 and 2, official decode, on E1 features"
+  B7: "the official EchoViewCLIP stage-1 video model (official code; weights trained by this project on EV9V with the
+    official recipe), sliding 16-frame windows as on EV9V, all nine outputs kept"
+  references: "E0 and E1 per-sample argmax (B0) are reported as frame-classifier references"
+
+preprocessing:
+  sampling: "the frozen protocol's: the nearest frame to t = k/10 s at the AVI's own frame rate"
+  E0: "as frozen for Pediatric and as E0's EV9V extraction: aspect-preserving letterbox to 224, ImageNet
+    normalisation, bfloat16 autocast"
+  E1: "as E1's EV9V extraction: PIL RGB, short side to 256 (bilinear), centre crop 224, CLIP normalisation, fp32 with
+    TF32 off. The 112 x 112 Pediatric frames are therefore upsampled"
+  B7: "as on EV9V: short side 256, centre crop 224, mean/std normalisation, 16 frames per 1.6 s window, stride 0.5 s"
+
+class_mapping: "the five family5 outputs stay (PLAX, PSAX, A4C, A5C, SC4C); a PSAX or A4C clip read as any other output
+  counts as wrong. B7's nine outputs map to families as on EV9V (four PSAX levels to PSAX), except that PMPALA is kept
+  as its own wrong output instead of being dropped. No prediction is restricted to A4C and PSAX"
+
+measures:
+  clips: "clip label = majority of the system's per-sample labels (ASRF: per seed, and the class most seeds give);
+    A4C recall, PSAX recall, macro-F1 over the two present classes; where misread clips go"
+  sources: "the number of groups holding misread clips of each class and their share of the groups holding that class;
+    the share of misread clips in the 10 groups with most of them"
+  no_filtering: "every video of the protocol is scored; none is removed for being predicted right or wrong"
+
+decision:                                 # fixed before any prediction
+  adequate: "the frozen transfer rule of pediatric-external-v1: clip recall >= 0.80 for both A4C and PSAX on the test
+    folds"
+  broad_failure: "E1 + B3 or E1 + ASRF (the class most seeds give) misses the adequate rule in some class, and that
+    class's misread clips come from at least 10% of the groups holding it"
+  if_broad_failure: "the adaptation comparison D0/D1/D2 (starting from E1) is pre-registered next; training and
+    selection use only the calibration folds"
+  if_not: "the round stops here; no candidate follows automatically"
