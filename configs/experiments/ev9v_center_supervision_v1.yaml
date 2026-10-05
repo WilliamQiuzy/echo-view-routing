@@ -1,0 +1,97 @@
+# EV9V target-time supervision: paired training of one video model under three window targets
+# (docs/superpowers/plans/2026-10-05-ev9v-center-supervision-training.md). Fixed before any training or result.
+#
+# Inherits model_development_v2.yaml only for the frozen protocol and for the keys that rebuild the protocol's
+# 1,500-stream training bank (recipes, multi); the bank digest is checked against the protocol. Every parameter of
+# this round sits under center_supervision, and this round's scripts read nothing else from the inherited files: no
+# raw9 task, class weights, old frame sampling, early stopping, validation-based checkpoint choice or test data.
+extends: model_development_v2.yaml
+run_name: ev9v_center_supervision_v1
+experiment: center_supervision_v1
+
+center_supervision:
+  inputs:
+    protocol: {path: runs/20261002-051140-model_development_protocol-fa45e7f4-s0/protocol.json,
+               sha256: a897483b776e8cff1ba8b92774c6a82537758bcba6abd362f2d8603f37997593}
+    visual_export: {path: models_frozen/e1_echoviewclip_probe/v1/visual_encoder_fp32.pt,
+                    sha256: c9f87aa2edaa9ba1fc2ad0617c59e7a3ffcb63ea4a33e154d21c5f4acb9d5869}
+    visual_reference: {path: models_frozen/e1_echoviewclip_probe/v1/visual_encoder_fp32.json,
+                       sha256: 274cab6b8e844bff260477262b603af9c64d5e3c2e95fa7b7b60195b5ae4238d}
+    probe: {path: models_frozen/e1_echoviewclip_probe/v1/probe.pt,
+            sha256: 41f2033d53b3ad334fc549bd50ff8c6f4387dca50851bcc5109d010171146531}
+    feature_manifest: {path: models_frozen/e1_echoviewclip_probe/v1/feature_manifest.json,
+                       sha256: 56f59166ba3f1b428867e4ec9a7e6dfd800cb5bccd79db8191d3c916421f17c3}
+    cache_key: 16efc85be645      # cache_v2 (numeric frame order): actual 10 Hz frame indices and E1 fp16 features
+    source_checkpoint: {path: models_frozen/echoviewclip_stage1/v1/best.pth,   # provenance only, never loaded
+                        sha256: a74c7b233e79c67ca1d9b145f938283ed945378b4ccf3765d2bcc104f8dc0dfc}
+    echoviewclip_commit: f6a0d86074d7c906ae41546cd5f09f8b94da432a
+  classes: [PLAX, PSAX, A4C, A5C, SC4C]   # the five-family subset; the 3,364 training recordings, nothing else
+  window:                        # B7's rule: window_samples clamped to the sequence, 16 evenly spaced frames
+    samples: 16
+    frames: 16
+    stride: 5                    # inference centres (window_centres), shared by native clips and constructed streams
+    max_offset: 15               # relative positions s[i] - c lie in [-15, 15]; anything outside raises
+  sampling:                      # generated once per seed, then fixed; the data RNG is separate from the model RNG
+    data_seed_base: 20261005     # numpy default_rng([data_seed_base, seed])
+    epochs: 10
+    updates_per_epoch: 375
+    native_per_update: 4         # shared by N, S and C: class uniform, recording uniform, target sample uniform
+    mixed_per_update: 4          # S and C: target class uniform, target recording uniform, mixed window uniform
+    native_gamma: {orig: 0.5, gamma090: 0.5}   # per native window (draw_native; prepare refuses other values); mixed windows keep the streams' variants
+    mixed_definition: "at least two labels among the window's 16 frames; several recordings of one label is not mixed"
+    n_replacement: "the target recording's own native window at the same target frame, with that frame's contrast variant"
+  model:
+    unfreeze: [image_encoder.transformer.resblocks.8, image_encoder.transformer.resblocks.9,
+               image_encoder.transformer.resblocks.10, image_encoder.transformer.resblocks.11,
+               image_encoder.ln_post, image_encoder.proj]
+    encoder_chunk: 128           # frames per checkpointed chunk of the trainable blocks
+    temporal: {layers: 2, heads: 8, ffn: 2048, activation: gelu, norm_first: true, dropout: 0.1}
+    position: "learned embedding per relative offset (31 entries); the CLS token has its own learned position"
+    position_init_std: 0.02
+    heads_init: "E1 probe weight and bias for both the window head and the auxiliary frame head, trained separately"
+    init: "per seed, torch.manual_seed(seed) initialises the temporal layers, CLS and positions; one saved initial state dict per seed is shared by N, S and C"
+  loss:
+    main:
+      N: "one-hot of the target label (the recording label)"
+      S: "frame-label shares over the 16 input positions"
+      C: "one-hot of label[c], the target sample's label"
+    aux_weight: 0.5              # cross-entropy of the auxiliary frame head on the 16 frame labels
+    class_weights: none
+    label_smoothing: 0.0
+  optimiser:
+    name: AdamW
+    lr_encoder: 1.0e-5
+    lr_head: 1.0e-4              # temporal layers, CLS, positions, window head and frame head
+    weight_decay: 1.0e-4
+    grad_clip: 1.0
+    warmup_updates: 375          # linear warm-up, then cosine to 0 (echo_routing.temporal.dev_train.lr_factor)
+  arms: [N, S, C]
+  seeds: [0, 1, 2]
+  queue_order: "seed 0, 1, 2; within a seed N, S, C; one GPU job at a time"
+  precision: "fp32, TF32 off"
+  checkpoint: "the final epoch only; no early stopping; no validation during training"
+  smoke:
+    updates: 6
+    reproducibility: {loss_abs: 1.0e-4, params_abs: 1.0e-5}   # two identical short runs from the same state
+    resume: {params_abs: 1.0e-5}                              # 3 + 3 updates with a reload against 6 in one go
+    parity: {reference_fp32: 1.0e-3, cache_fp16: 2.0e-2}       # initial encoder against the export and the E1 cache
+  evaluation:                    # Task 4, after all nine trainings
+    primary_system: C + B3
+    rows: [window argmax, B3]
+    b3_grid: {half_window: [5, 7, 9, 11, 15], quantile: [0.80, 0.85, 0.90, 0.95, 0.97, 0.99, 0.995, 0.999], nms_radius: 5}
+    b3_rule: >-
+      Per model and seed. Thresholds are quantiles of that model's own calibration native-clip B3 scores. Among the
+      settings with calibration native macro-F1 >= 0.980 and multi boundary recall >= 0.95, the highest segment F1@50
+      wins; an equal score goes to the earlier grid entry (half_window, then quantile, ascending). The setting is then
+      applied once to the selection half.
+    b3_infeasible_diagnostic: {half_window: 9, quantile: 0.95, nms_radius: 5}   # reported, never passes a criterion
+    references: {selection: 0.934409687184662, calibration: 0.9721421709894332,
+                 calibration_sensitivity: 0.9738935784747763}
+    goal: >-
+      The same C + B3: three-seed mean segment F1@50 at least 0.01 above the reference on both halves; in every seed
+      and half boundary recall >= 0.95 and native macro-F1 >= 0.973 (selection) / 0.980 (calibration).
+    mechanism: >-
+      C - S per seed and half with the existing paired bootstrap (native clips by session; streams by stream, an
+      approximate interval because streams reuse recordings). A consistent gain on a half needs all three seeds'
+      intervals above zero; an interval containing zero is not called equality.
+    baselines: "E0 + B3, E1 + B3, B7 + B3 and E1 + ASRF seeds 0-2: existing frozen outputs, reproduced before use"
