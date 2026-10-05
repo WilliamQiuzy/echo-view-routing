@@ -1,0 +1,82 @@
+# Cross-population step 2 (the project lead's instruction of 2026-10-04, triggered by step 1's pre-declared rule): one
+# conventional adaptation comparison starting from E1. Written after step 1 (docs/results/2026-10-05_pediatric_transfer)
+# and before any adaptation training. Domain adaptation is not claimed as novel. The EV9V success criterion is
+# unchanged, and Pediatric results do not replace it. The test folds have been viewed (step 1 and 2026-10-01) and are
+# scored, never used for training or selection.
+extends: model_development_v2.yaml
+run_name: pediatric_adapt_v1
+experiment: pediatric_adapt_v1
+
+questions:
+  - "Does conventional head adaptation fix E1's Pediatric failure (A4C read as A5C), or must the visual representation
+    change?"
+  - "Do recognition gains reach temporal segmentation, while EV9V performance is kept?"
+
+arms:
+  D0: "no adaptation: the E1 encoder, its probe, E1's EV9V-selected B3 and the E1 ASRF of rounds 2-5"
+  D1: "the visual encoder frozen; the linear head (Linear(512, 5), starting from E1's probe) trains"
+  D2: "the same head, plus the encoder's last block (transformer.resblocks.11), ln_post and proj"
+  identical_for_D1_D2: [target labels and frames, source replay, batches and their order, augmentation (none),
+    initialisation, optimiser, budget, seeds]
+
+training:
+  target: "Pediatric calibration folds 0-1 only (1,456 native clips: A4C 606 -> class A4C, PSAX 850 -> class PSAX; 390
+    groups), the frozen protocol's 10 Hz samples, E1's preprocessing (short side 256, centre crop 224)"
+  source_replay: "EV9V training clips (3,364, five classes), their 10 Hz samples (orig), E1's preprocessing"
+  batch: "64 frames per update: 32 target frames (8 clips x 4 frames) and 32 source frames (8 clips x 4 frames)"
+  sampling: "target: class uniform over A4C and PSAX, then a group holding that class uniformly, then one of its clips of
+    that class uniformly; source: clips class-balanced as in the E1 probe recipe; 4 evenly spaced samples per clip with
+    a random phase (with replacement when a clip has fewer than 4). The plan of every update depends only on the seed"
+  loss: "cross-entropy over the five outputs, mean over the 64 frames"
+  optimiser: "AdamW, head lr 1e-3, encoder lr 1e-5 (D2), weight decay 1e-4, linear warm-up over 100 updates, cosine to
+    zero, gradient norm clipped at 1.0, fp32 with TF32 off"
+  budget: "1,500 updates; final weights; no checkpoint, epoch or threshold is chosen on any Pediatric data"
+  seeds: [0, 1, 2]
+  checks: ["D1 and D2 read bit-identical batches in each seed (digests logged)", "D1 changes no encoder tensor; D2
+    changes only resblocks.11, ln_post and proj"]
+
+downstream:                               # the same training and calibration budget for every representation
+  ev9v_cache: "each arm and seed writes a formal EV9V feature cache with its own head (scripts/train_feature_probe.py
+    --head): D1 on E1's raw embeddings, D2 on embeddings re-extracted with its encoder"
+  b3: "re-selected for every arm and seed on EV9V's calibration half by the established simple job, as for D0"
+  asrf: "D2: retrained on its EV9V features with the round-2 recipe (job M1), seed k for D2 seed k. D1's features equal
+    E1's, so its ASRF is E1's ASRF seed k (retraining would only repeat it). ASRF never sees Pediatric labels in any arm;
+    adapting the temporal model with Pediatric streams is not part of this comparison"
+  pediatric_inputs: "D1: E1's Pediatric embeddings with the D1 head; D2: Pediatric re-extracted with the D2 encoder and
+    head; both with the frozen protocol's samples"
+
+evaluation:
+  pediatric_native: "test folds: A4C and PSAX clip recall (majority of per-sample labels), macro-F1 over the two
+    present classes, where misread clips go, and clips turned right and turned wrong against D0 with their groups; for
+    the frame classifier, B3 and ASRF"
+  pediatric_streams: "the frozen test exam streams (2,574; whole clips of one exam in clip order). They are built by
+    stitching clips and are a constructed proxy, not continuous scanning. Segment F1@50, boundary recall within 0.5 s,
+    cuts inside a clip, and the share of true view changes found within 0.5 s with the views on both sides right"
+  ev9v: "both halves: five-class native macro-F1, A4C and A5C recall, segment F1@50, boundary recall and cuts per
+    clip, for B3 and ASRF of every arm and seed, against D0, the floors (0.973 selection, 0.980 calibration), recall
+    >= 0.95 and the strongest previous configuration; the final goal is unchanged"
+  statistics: "per seed, paired bootstrap (2,000 draws, seed 20261002): Pediatric by group (first file-name token),
+    EV9V by session and stream (report_model_development.paired_bootstrap). Consistent = all three seeds' 95% intervals
+    exclude zero in the same direction"
+
+terms:                                    # fixed before training
+  meets_transfer_rule: "clip recall >= 0.80 for both A4C and PSAX on the Pediatric test folds"
+  head_suffices: "D1 + B3 meets the transfer rule in all three seeds, and D2 - D1 shows no consistent gain in Pediatric
+    clip macro-F1 for B3"
+  representation_helps: "D2 - D1 Pediatric clip macro-F1 for B3 consistently higher, with D2 + B3 meeting the transfer
+    rule in all three seeds"
+  gap_remains: "neither D1 + B3 nor D2 + B3 meets the transfer rule in all three seeds"
+  segmentation_gain: "for an adapted arm, the share of true view changes found with both views right on the Pediatric
+    test exam streams consistently higher than D0's, for B3 or for ASRF"
+  ev9v_kept: "no consistent loss against D0 in EV9V native macro-F1 or segment F1@50 on either half, for B3 and for
+    ASRF"
+
+interpretation:
+  - "If plain head adaptation already fixes the failure, it is reported as a conventional adaptation effect, not as a
+    contribution"
+  - "If a stable gap remains after equal adaptation, a new model may later be designed around that gap; nothing is
+    added automatically in this round"
+  - "A recognition gain that does not reach the segmentation measures, or that costs EV9V performance, is reported as
+    such"
+  - "'No consistent difference detected' is not evidence of no effect; the test split of EV9V stays sealed and the
+    paper stays paused"

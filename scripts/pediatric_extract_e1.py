@@ -65,13 +65,17 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--protocol-dir", default=f"data/manifests/pediatric/{PROTOCOL_VERSION}")
     ap.add_argument("--workers", type=int, default=6); ap.add_argument("--limit", type=int, default=None)
+    ap.add_argument("--encoder", default=EXPORT, help="encoder export (E1 export format); default E1")
+    ap.add_argument("--head", default=None, help="Linear(512, 5) head (state_dict, in_dim); default the E1 probe")
+    ap.add_argument("--key", default=None, help="output directory name under features/; default the E1 cache key")
     a = ap.parse_args(); strict_fp32(); paths = load_paths(); proto_dir = Path(a.protocol_dir); proto = verify_protocol(proto_dir)
     videos = pd.read_csv(proto_dir / "videos.csv", dtype={"clip_no": str})
-    man = json.loads(Path(E1_MANIFEST).read_text())["encoder"]; key = man["cache_key"]
-    if sha256_file(Path(man["checkpoint"])) != man["sha256"]:
+    man = json.loads(Path(E1_MANIFEST).read_text())["encoder"]; key = a.key or man["cache_key"]
+    head_path = Path(a.head) if a.head else Path(man["checkpoint"])
+    if a.head is None and sha256_file(head_path) != man["sha256"]:
         raise SystemExit("E1 probe digest differs from its manifest")
     device = torch.device("cuda"); torch.cuda.set_per_process_memory_fraction(gpu_memory_fraction())
-    enc, info = load_encoder(Path(EXPORT), device); probe = load_probe(Path(man["checkpoint"])).to(device)
+    enc, info = load_encoder(Path(a.encoder), device); probe = load_probe(head_path).to(device)
     out = paths.cache_root / "pediatric" / PREPROCESS / "features" / key; out.mkdir(parents=True, exist_ok=True)
     todo = videos if a.limit is None else videos.head(a.limit)
     todo = todo[[cached_n_samples(out / f"{v}.npz") is None for v in todo["video_id"]]]
@@ -98,7 +102,8 @@ def main() -> None:
             rows.append({"video_id": r.video_id, "split": r.role, "raw_label": r.view, "label_index": int(r.label), "n_samples": c,
                          "path": str(out / f"{r.video_id}.npz")})
     write_index(out, rows)
-    write_meta(out, {"encoder_export": EXPORT, "encoder_sha256": sha256_file(Path(EXPORT)), "probe": man["checkpoint"], "probe_sha256": man["sha256"],
+    write_meta(out, {"encoder_export": str(a.encoder), "encoder_sha256": sha256_file(Path(a.encoder)), "probe": str(head_path),
+                     "probe_sha256": sha256_file(head_path),
                      "cache_key": key, "commit": info["commit"], "preprocess_version": PREPROCESS, "protocol_version": PROTOCOL_VERSION,
                      "protocol_videos_digest": proto["videos_digest"], "target_hz": HZ, "precision": "fp32, TF32 off",
                      "classes": man.get("classes"), "seconds": round(time.time() - t0, 1), "samples_this_call": n})

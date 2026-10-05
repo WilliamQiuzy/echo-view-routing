@@ -112,6 +112,7 @@ def main() -> None:
     ap = base_parser("E1 probe and feature cache")
     ap.add_argument("--raw-dir", required=True); ap.add_argument("--protocol", required=True)
     ap.add_argument("--v3-feature-manifest", required=True)
+    ap.add_argument("--head", default=None, help="a trained Linear(512, 5) head (state_dict, in_dim); skips probe training and writes the formal cache with it (Pediatric adaptation, configs/experiments/pediatric_adapt_v1.yaml)")
     args = ap.parse_args(); cfg = load_cfg(args); paths = load_paths(); pc = cfg["probe"]
     raw = Path(args.raw_dir); emeta = json.loads((raw / "extract_meta.json").read_text())
     proto_raw = Path(args.protocol).read_bytes(); proto = json.loads(proto_raw)
@@ -121,7 +122,7 @@ def main() -> None:
     v3idx = read_index(variant_dir(paths.cache_root, v3key, "orig")); check_index(v3idx, proto)
     v3_order = list(v3idx["video_id"])            # the training bank is drawn in index order, so keep the v3 order
     v3idx = v3idx.set_index("video_id")
-    run_dir = new_run_dir(cfg, "e1_probe"); log_lines = []
+    run_dir = new_run_dir(cfg, "e1_probe" if args.head is None else "adapted_head"); log_lines = []
 
     def log(msg: str) -> None:
         print(msg, flush=True); log_lines.append(msg)
@@ -130,11 +131,19 @@ def main() -> None:
         return np.load(raw / "raw" / var / f"{v}.npz")["emb"]
 
     train = list(proto["train"]["clips"]); sel = list(proto["validation"]["selection"]["clips"])
-    probe, records, best_epoch = train_probe([emb(v) for v in train], [int(v3idx.loc[v, "label_index"]) for v in train],
-                                             [emb(v) for v in sel], [int(v3idx.loc[v, "label_index"]) for v in sel], pc, log)
+    if args.head is None:
+        probe, records, best_epoch = train_probe([emb(v) for v in train], [int(v3idx.loc[v, "label_index"]) for v in train],
+                                                 [emb(v) for v in sel], [int(v3idx.loc[v, "label_index"]) for v in sel], pc, log)
+    else:                                         # a head trained elsewhere: no training and no selection here
+        blob = torch.load(args.head, map_location="cpu", weights_only=False)
+        probe = nn.Linear(int(blob["in_dim"]), NUM_CLASSES); probe.load_state_dict(blob["state_dict"]); probe.eval()
+        f1 = clip_majority_f1(probe, [emb(v) for v in sel], [int(v3idx.loc[v, "label_index"]) for v in sel])
+        records, best_epoch = [{"head": str(args.head), "selection_native_macro_f1": f1}], 0
+        log(f"given head {args.head}: selection native macro-F1 {f1:.4f} (reported, not used for any choice)")
     probe_path = run_dir / "probe.pt"
     torch.save({"state_dict": probe.state_dict(), "in_dim": int(probe.in_features), "classes": ["PLAX", "PSAX", "A4C", "A5C", "SC4C"],
-                "epoch": best_epoch, "recipe": dict(pc), "visual_checkpoint_sha256": emeta["checkpoint_sha256"], "layer": emeta["layer"]}, probe_path)
+                "epoch": best_epoch, "recipe": dict(pc) if args.head is None else {"given_head": str(args.head)},
+                "visual_checkpoint_sha256": emeta["checkpoint_sha256"], "layer": emeta["layer"]}, probe_path)
     probe_sha = sha256_file(probe_path)
     (run_dir / "train_log.jsonl").write_text("".join(json.dumps(r) + "\n" for r in records))
     key = hashlib.sha256(json.dumps({"visual": emeta["checkpoint_sha256"], "layer": emeta["layer"], "preprocessing": emeta["preprocessing"],

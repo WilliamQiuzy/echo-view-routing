@@ -1,0 +1,6 @@
+# Downstream evaluation of the Pediatric adaptation arms (configs/experiments/pediatric_adapt_v1.yaml, downstream). The
+# round-2 recipe is inherited unchanged (protocol, halves, ASRF settings, decoding grids, checkpoint and operating-point
+# rules). Only the experiment id differs, so run identities and logs stay apart from earlier rounds.
+extends: model_development_v2.yaml
+run_name: pediatric_adapt_downstream_v1
+experiment: pediatric_adapt_v1
