@@ -1,0 +1,1411 @@
+{
+ "inputs": {
+  "hashes": {
+   "protocol": "a897483b776e8cff1ba8b92774c6a82537758bcba6abd362f2d8603f37997593",
+   "source manifest": "037b20e0f3451545505c7b80dfc0c1894265e406066c86137df3518174c10433",
+   "E0 feature manifest": "98427975333243e17e3ed736b0b2224b108d1a9a4c3bc488211272e8c691fcd9",
+   "B7 checkpoint": "a74c7b233e79c67ca1d9b145f938283ed945378b4ccf3765d2bcc104f8dc0dfc",
+   "B7 runner config": "f880d99a837f5ec5db1af730afc74582e2c8929165e95160fca62caebc300243",
+   "B7 label list": "badc8e08c1c1e53c194e0aa0410ece682c5b18af27ad796c2f6717b76b86e5cc",
+   "B7 window plans": "51517ea886bffe235918ad9bd250f4811efae39ee0d27fc29b648dde0fac26ba"
+  },
+  "digests": {
+   "E0 files": "e4ab937d3b901486b5bdc6a006b59a9e2a39ef31bfd064ab57ce7f56011b2932",
+   "B7 predictions": "5054631a831ba7d3806e26e16307b25950cf822cade036c50e18c7b577e5da71"
+  },
+  "manifest_test_clips": 888,
+  "test_clips_in_inputs": 0,
+  "sequences": {
+   "selection": {
+    "native": {
+     "sequences": 284,
+     "samples": 16635
+    },
+    "pairs": {
+     "sequences": 137,
+     "samples": 5691
+    },
+    "multi": {
+     "sequences": 120,
+     "samples": 14961
+    }
+   },
+   "calibration": {
+    "native": {
+     "sequences": 237,
+     "samples": 14323
+    },
+    "pairs": {
+     "sequences": 115,
+     "samples": 4883
+    },
+    "multi": {
+     "sequences": 120,
+     "samples": 15010
+    }
+   }
+  }
+ },
+ "coverage": "validation halves only (521 native clips, 252 pair streams, 240 multi-fragment streams); no training-bank or test predictions exist",
+ "b7_dropped_mass": {
+  "selection": {
+   "samples": 37287,
+   "mean": 0.024545063755318904,
+   "median": 0.012516672722995281,
+   "p99": 0.2942011058330536,
+   "max": 0.9263204336166382,
+   "share_above_0.1": 0.02781130152600102,
+   "share_above_0.5": 0.006999758629012792,
+   "mean_by_true_class": {
+    "PLAX": 0.02444765059937194,
+    "PSAX": 0.04405864954895411,
+    "A4C": 0.01676210746959879,
+    "A5C": 0.01270351386076357,
+    "SC4C": 0.017222014697273476
+   }
+  },
+  "calibration": {
+   "samples": 34216,
+   "mean": 0.033487013319300596,
+   "median": 0.01240134984254837,
+   "p99": 0.6794748306274414,
+   "max": 0.8954275846481323,
+   "share_above_0.1": 0.04535889642272621,
+   "share_above_0.5": 0.017623334112695815,
+   "mean_by_true_class": {
+    "PLAX": 0.014497413140559063,
+    "PSAX": 0.08558426677768967,
+    "A4C": 0.018426119479317035,
+    "A5C": 0.01042283669433671,
+    "SC4C": 0.012967502738836949
+   }
+  }
+ },
+ "windows": {
+  "selection/pairs": {
+   "windows": 1190,
+   "windows_spanning_a_join": 520,
+   "samples": 5691,
+   "samples_given_a_spanning_window": 2513
+  },
+  "selection/multi": {
+   "windows": 3032,
+   "windows_spanning_a_join": 1834,
+   "samples": 14961,
+   "samples_given_a_spanning_window": 9080
+  },
+  "calibration/pairs": {
+   "windows": 1023,
+   "windows_spanning_a_join": 440,
+   "samples": 4883,
+   "samples_given_a_spanning_window": 2131
+  },
+  "calibration/multi": {
+   "windows": 3048,
+   "windows_spanning_a_join": 1798,
+   "samples": 15010,
+   "samples_given_a_spanning_window": 8935
+  }
+ },
+ "spot_check": {
+  "streams": [
+   "multi_calibration_0000",
+   "multi_calibration_0001",
+   "multi_selection_0000",
+   "multi_selection_0001",
+   "2022-03-24_16-19-44_320x240_000_0",
+   "2022-03-24_16-19-44_320x240_000_4",
+   "2022-03-24_16-19-44_320x240_002_0",
+   "2022-03-24_16-19-44_320x240_002_1",
+   "pairs_calibration_diff_edit_0000",
+   "pairs_calibration_diff_edit_0001",
+   "pairs_selection_diff_edit_0000",
+   "pairs_selection_diff_edit_0001"
+  ],
+  "max_abs_diff": 0.0,
+  "per_stream": {
+   "multi_calibration_0000": 0.0,
+   "multi_calibration_0001": 0.0,
+   "multi_selection_0000": 0.0,
+   "multi_selection_0001": 0.0,
+   "2022-03-24_16-19-44_320x240_000_0": 0.0,
+   "2022-03-24_16-19-44_320x240_000_4": 0.0,
+   "2022-03-24_16-19-44_320x240_002_0": 0.0,
+   "2022-03-24_16-19-44_320x240_002_1": 0.0,
+   "pairs_calibration_diff_edit_0000": 0.0,
+   "pairs_calibration_diff_edit_0001": 0.0,
+   "pairs_selection_diff_edit_0000": 0.0,
+   "pairs_selection_diff_edit_0001": 0.0
+  },
+  "tolerance": 0.0001
+ },
+ "reproduction": {
+  "E0 frozen|selection": {
+   "native_macro_f1": 0.9650312221231043,
+   "segment_f1_50_multi": 0.934409687184662,
+   "boundary_recall_multi": 0.9607329842931938,
+   "native_internal_cuts_per_clip": 0.014084507042253521,
+   "segments_matched_pred_true": [
+    463,
+    489,
+    502
+   ],
+   "max_abs_diff": 0.0
+  },
+  "E0 frozen|calibration": {
+   "native_macro_f1": 0.965990117909637,
+   "segment_f1_50_multi": 0.9339805825242719,
+   "boundary_recall_multi": 0.9547738693467337,
+   "native_internal_cuts_per_clip": 0.03375527426160337,
+   "segments_matched_pred_true": [
+    481,
+    512,
+    518
+   ],
+   "max_abs_diff": 0.0
+  },
+  "B7 frozen|selection": {
+   "native_macro_f1": 0.9566353840806396,
+   "segment_f1_50_multi": 0.8798449612403101,
+   "boundary_recall_multi": 0.9554973821989529,
+   "native_internal_cuts_per_clip": 0.06338028169014084,
+   "segments_matched_pred_true": [
+    454,
+    530,
+    502
+   ],
+   "max_abs_diff": 0.0
+  },
+  "B7 frozen|calibration": {
+   "native_macro_f1": 0.9926596980255518,
+   "segment_f1_50_multi": 0.9721421709894332,
+   "boundary_recall_multi": 0.9748743718592965,
+   "native_internal_cuts_per_clip": 0.04219409282700422,
+   "segments_matched_pred_true": [
+    506,
+    523,
+    518
+   ],
+   "max_abs_diff": 0.0
+  }
+ },
+ "frozen_params": {
+  "E0 frozen": {
+   "half_window": 9,
+   "threshold": 0.39023423383871153,
+   "nms_radius": 5,
+   "threshold_quantile": 0.999
+  },
+  "B7 frozen": {
+   "half_window": 11,
+   "threshold": 0.0789225098201578,
+   "nms_radius": 5,
+   "threshold_quantile": 0.99
+  }
+ },
+ "units_by_half": [
+  {
+   "half": "calibration",
+   "cell": "both right",
+   "items": 475,
+   "recordings": 212,
+   "sessions": 35
+  },
+  {
+   "half": "calibration",
+   "cell": "only E0 right",
+   "items": 6,
+   "recordings": 8,
+   "sessions": 8
+  },
+  {
+   "half": "calibration",
+   "cell": "only B7 right",
+   "items": 31,
+   "recordings": 21,
+   "sessions": 18
+  },
+  {
+   "half": "calibration",
+   "cell": "both wrong",
+   "items": 6,
+   "recordings": 7,
+   "sessions": 7
+  },
+  {
+   "half": "selection",
+   "cell": "both right",
+   "items": 437,
+   "recordings": 229,
+   "sessions": 36
+  },
+  {
+   "half": "selection",
+   "cell": "only E0 right",
+   "items": 26,
+   "recordings": 17,
+   "sessions": 13
+  },
+  {
+   "half": "selection",
+   "cell": "only B7 right",
+   "items": 17,
+   "recordings": 12,
+   "sessions": 11
+  },
+  {
+   "half": "selection",
+   "cell": "both wrong",
+   "items": 22,
+   "recordings": 11,
+   "sessions": 9
+  }
+ ],
+ "units_by_class": [
+  {
+   "half": "calibration",
+   "class": "A4C",
+   "cell": "both right",
+   "items": 102,
+   "recordings": 56,
+   "sessions": 28
+  },
+  {
+   "half": "calibration",
+   "class": "A4C",
+   "cell": "only E0 right",
+   "items": 4,
+   "recordings": 6,
+   "sessions": 6
+  },
+  {
+   "half": "calibration",
+   "class": "A4C",
+   "cell": "only B7 right",
+   "items": 7,
+   "recordings": 8,
+   "sessions": 8
+  },
+  {
+   "half": "calibration",
+   "class": "A4C",
+   "cell": "both wrong",
+   "items": 1,
+   "recordings": 1,
+   "sessions": 1
+  },
+  {
+   "half": "calibration",
+   "class": "A5C",
+   "cell": "both right",
+   "items": 74,
+   "recordings": 18,
+   "sessions": 14
+  },
+  {
+   "half": "calibration",
+   "class": "A5C",
+   "cell": "only E0 right",
+   "items": 0,
+   "recordings": 0,
+   "sessions": 0
+  },
+  {
+   "half": "calibration",
+   "class": "A5C",
+   "cell": "only B7 right",
+   "items": 18,
+   "recordings": 9,
+   "sessions": 8
+  },
+  {
+   "half": "calibration",
+   "class": "A5C",
+   "cell": "both wrong",
+   "items": 5,
+   "recordings": 6,
+   "sessions": 6
+  },
+  {
+   "half": "calibration",
+   "class": "PLAX",
+   "cell": "both right",
+   "items": 100,
+   "recordings": 68,
+   "sessions": 27
+  },
+  {
+   "half": "calibration",
+   "class": "PLAX",
+   "cell": "only E0 right",
+   "items": 2,
+   "recordings": 2,
+   "sessions": 2
+  },
+  {
+   "half": "calibration",
+   "class": "PLAX",
+   "cell": "only B7 right",
+   "items": 1,
+   "recordings": 1,
+   "sessions": 1
+  },
+  {
+   "half": "calibration",
+   "class": "PLAX",
+   "cell": "both wrong",
+   "items": 0,
+   "recordings": 0,
+   "sessions": 0
+  },
+  {
+   "half": "calibration",
+   "class": "PSAX",
+   "cell": "both right",
+   "items": 97,
+   "recordings": 63,
+   "sessions": 24
+  },
+  {
+   "half": "calibration",
+   "class": "PSAX",
+   "cell": "only E0 right",
+   "items": 0,
+   "recordings": 0,
+   "sessions": 0
+  },
+  {
+   "half": "calibration",
+   "class": "PSAX",
+   "cell": "only B7 right",
+   "items": 5,
+   "recordings": 3,
+   "sessions": 3
+  },
+  {
+   "half": "calibration",
+   "class": "PSAX",
+   "cell": "both wrong",
+   "items": 0,
+   "recordings": 0,
+   "sessions": 0
+  },
+  {
+   "half": "calibration",
+   "class": "SC4C",
+   "cell": "both right",
+   "items": 102,
+   "recordings": 7,
+   "sessions": 6
+  },
+  {
+   "half": "calibration",
+   "class": "SC4C",
+   "cell": "only E0 right",
+   "items": 0,
+   "recordings": 0,
+   "sessions": 0
+  },
+  {
+   "half": "calibration",
+   "class": "SC4C",
+   "cell": "only B7 right",
+   "items": 0,
+   "recordings": 0,
+   "sessions": 0
+  },
+  {
+   "half": "calibration",
+   "class": "SC4C",
+   "cell": "both wrong",
+   "items": 0,
+   "recordings": 0,
+   "sessions": 0
+  },
+  {
+   "half": "selection",
+   "class": "A4C",
+   "cell": "both right",
+   "items": 93,
+   "recordings": 69,
+   "sessions": 28
+  },
+  {
+   "half": "selection",
+   "class": "A4C",
+   "cell": "only E0 right",
+   "items": 6,
+   "recordings": 5,
+   "sessions": 5
+  },
+  {
+   "half": "selection",
+   "class": "A4C",
+   "cell": "only B7 right",
+   "items": 5,
+   "recordings": 5,
+   "sessions": 5
+  },
+  {
+   "half": "selection",
+   "class": "A4C",
+   "cell": "both wrong",
+   "items": 7,
+   "recordings": 7,
+   "sessions": 5
+  },
+  {
+   "half": "selection",
+   "class": "A5C",
+   "cell": "both right",
+   "items": 77,
+   "recordings": 10,
+   "sessions": 9
+  },
+  {
+   "half": "selection",
+   "class": "A5C",
+   "cell": "only E0 right",
+   "items": 4,
+   "recordings": 5,
+   "sessions": 4
+  },
+  {
+   "half": "selection",
+   "class": "A5C",
+   "cell": "only B7 right",
+   "items": 10,
+   "recordings": 4,
+   "sessions": 4
+  },
+  {
+   "half": "selection",
+   "class": "A5C",
+   "cell": "both wrong",
+   "items": 15,
+   "recordings": 4,
+   "sessions": 4
+  },
+  {
+   "half": "selection",
+   "class": "PLAX",
+   "cell": "both right",
+   "items": 105,
+   "recordings": 81,
+   "sessions": 29
+  },
+  {
+   "half": "selection",
+   "class": "PLAX",
+   "cell": "only E0 right",
+   "items": 3,
+   "recordings": 3,
+   "sessions": 2
+  },
+  {
+   "half": "selection",
+   "class": "PLAX",
+   "cell": "only B7 right",
+   "items": 0,
+   "recordings": 0,
+   "sessions": 0
+  },
+  {
+   "half": "selection",
+   "class": "PLAX",
+   "cell": "both wrong",
+   "items": 0,
+   "recordings": 0,
+   "sessions": 0
+  },
+  {
+   "half": "selection",
+   "class": "PSAX",
+   "cell": "both right",
+   "items": 87,
+   "recordings": 56,
+   "sessions": 24
+  },
+  {
+   "half": "selection",
+   "class": "PSAX",
+   "cell": "only E0 right",
+   "items": 1,
+   "recordings": 1,
+   "sessions": 1
+  },
+  {
+   "half": "selection",
+   "class": "PSAX",
+   "cell": "only B7 right",
+   "items": 1,
+   "recordings": 2,
+   "sessions": 2
+  },
+  {
+   "half": "selection",
+   "class": "PSAX",
+   "cell": "both wrong",
+   "items": 0,
+   "recordings": 0,
+   "sessions": 0
+  },
+  {
+   "half": "selection",
+   "class": "SC4C",
+   "cell": "both right",
+   "items": 75,
+   "recordings": 13,
+   "sessions": 11
+  },
+  {
+   "half": "selection",
+   "class": "SC4C",
+   "cell": "only E0 right",
+   "items": 12,
+   "recordings": 3,
+   "sessions": 3
+  },
+  {
+   "half": "selection",
+   "class": "SC4C",
+   "cell": "only B7 right",
+   "items": 1,
+   "recordings": 1,
+   "sessions": 1
+  },
+  {
+   "half": "selection",
+   "class": "SC4C",
+   "cell": "both wrong",
+   "items": 0,
+   "recordings": 0,
+   "sessions": 0
+  }
+ ],
+ "natives_by_half": [
+  {
+   "half": "calibration",
+   "cell": "both right",
+   "items": 232,
+   "recordings": 232,
+   "sessions": 36
+  },
+  {
+   "half": "calibration",
+   "cell": "only E0 right",
+   "items": 0,
+   "recordings": 0,
+   "sessions": 0
+  },
+  {
+   "half": "calibration",
+   "cell": "only B7 right",
+   "items": 4,
+   "recordings": 4,
+   "sessions": 4
+  },
+  {
+   "half": "calibration",
+   "cell": "both wrong",
+   "items": 1,
+   "recordings": 1,
+   "sessions": 1
+  },
+  {
+   "half": "selection",
+   "cell": "both right",
+   "items": 278,
+   "recordings": 278,
+   "sessions": 36
+  },
+  {
+   "half": "selection",
+   "cell": "only E0 right",
+   "items": 3,
+   "recordings": 3,
+   "sessions": 3
+  },
+  {
+   "half": "selection",
+   "cell": "only B7 right",
+   "items": 1,
+   "recordings": 1,
+   "sessions": 1
+  },
+  {
+   "half": "selection",
+   "cell": "both wrong",
+   "items": 2,
+   "recordings": 2,
+   "sessions": 2
+  }
+ ],
+ "natives_by_class": [
+  {
+   "half": "calibration",
+   "class": "A4C",
+   "cell": "both right",
+   "items": 61,
+   "recordings": 61,
+   "sessions": 29
+  },
+  {
+   "half": "calibration",
+   "class": "A4C",
+   "cell": "only E0 right",
+   "items": 0,
+   "recordings": 0,
+   "sessions": 0
+  },
+  {
+   "half": "calibration",
+   "class": "A4C",
+   "cell": "only B7 right",
+   "items": 0,
+   "recordings": 0,
+   "sessions": 0
+  },
+  {
+   "half": "calibration",
+   "class": "A4C",
+   "cell": "both wrong",
+   "items": 0,
+   "recordings": 0,
+   "sessions": 0
+  },
+  {
+   "half": "calibration",
+   "class": "A5C",
+   "cell": "both right",
+   "items": 14,
+   "recordings": 14,
+   "sessions": 11
+  },
+  {
+   "half": "calibration",
+   "class": "A5C",
+   "cell": "only E0 right",
+   "items": 0,
+   "recordings": 0,
+   "sessions": 0
+  },
+  {
+   "half": "calibration",
+   "class": "A5C",
+   "cell": "only B7 right",
+   "items": 3,
+   "recordings": 3,
+   "sessions": 3
+  },
+  {
+   "half": "calibration",
+   "class": "A5C",
+   "cell": "both wrong",
+   "items": 1,
+   "recordings": 1,
+   "sessions": 1
+  },
+  {
+   "half": "calibration",
+   "class": "PLAX",
+   "cell": "both right",
+   "items": 80,
+   "recordings": 80,
+   "sessions": 28
+  },
+  {
+   "half": "calibration",
+   "class": "PLAX",
+   "cell": "only E0 right",
+   "items": 0,
+   "recordings": 0,
+   "sessions": 0
+  },
+  {
+   "half": "calibration",
+   "class": "PLAX",
+   "cell": "only B7 right",
+   "items": 0,
+   "recordings": 0,
+   "sessions": 0
+  },
+  {
+   "half": "calibration",
+   "class": "PLAX",
+   "cell": "both wrong",
+   "items": 0,
+   "recordings": 0,
+   "sessions": 0
+  },
+  {
+   "half": "calibration",
+   "class": "PSAX",
+   "cell": "both right",
+   "items": 70,
+   "recordings": 70,
+   "sessions": 24
+  },
+  {
+   "half": "calibration",
+   "class": "PSAX",
+   "cell": "only E0 right",
+   "items": 0,
+   "recordings": 0,
+   "sessions": 0
+  },
+  {
+   "half": "calibration",
+   "class": "PSAX",
+   "cell": "only B7 right",
+   "items": 1,
+   "recordings": 1,
+   "sessions": 1
+  },
+  {
+   "half": "calibration",
+   "class": "PSAX",
+   "cell": "both wrong",
+   "items": 0,
+   "recordings": 0,
+   "sessions": 0
+  },
+  {
+   "half": "calibration",
+   "class": "SC4C",
+   "cell": "both right",
+   "items": 7,
+   "recordings": 7,
+   "sessions": 6
+  },
+  {
+   "half": "calibration",
+   "class": "SC4C",
+   "cell": "only E0 right",
+   "items": 0,
+   "recordings": 0,
+   "sessions": 0
+  },
+  {
+   "half": "calibration",
+   "class": "SC4C",
+   "cell": "only B7 right",
+   "items": 0,
+   "recordings": 0,
+   "sessions": 0
+  },
+  {
+   "half": "calibration",
+   "class": "SC4C",
+   "cell": "both wrong",
+   "items": 0,
+   "recordings": 0,
+   "sessions": 0
+  },
+  {
+   "half": "selection",
+   "class": "A4C",
+   "cell": "both right",
+   "items": 86,
+   "recordings": 86,
+   "sessions": 29
+  },
+  {
+   "half": "selection",
+   "class": "A4C",
+   "cell": "only E0 right",
+   "items": 1,
+   "recordings": 1,
+   "sessions": 1
+  },
+  {
+   "half": "selection",
+   "class": "A4C",
+   "cell": "only B7 right",
+   "items": 0,
+   "recordings": 0,
+   "sessions": 0
+  },
+  {
+   "half": "selection",
+   "class": "A4C",
+   "cell": "both wrong",
+   "items": 0,
+   "recordings": 0,
+   "sessions": 0
+  },
+  {
+   "half": "selection",
+   "class": "A5C",
+   "cell": "both right",
+   "items": 8,
+   "recordings": 8,
+   "sessions": 8
+  },
+  {
+   "half": "selection",
+   "class": "A5C",
+   "cell": "only E0 right",
+   "items": 0,
+   "recordings": 0,
+   "sessions": 0
+  },
+  {
+   "half": "selection",
+   "class": "A5C",
+   "cell": "only B7 right",
+   "items": 1,
+   "recordings": 1,
+   "sessions": 1
+  },
+  {
+   "half": "selection",
+   "class": "A5C",
+   "cell": "both wrong",
+   "items": 2,
+   "recordings": 2,
+   "sessions": 2
+  },
+  {
+   "half": "selection",
+   "class": "PLAX",
+   "cell": "both right",
+   "items": 104,
+   "recordings": 104,
+   "sessions": 30
+  },
+  {
+   "half": "selection",
+   "class": "PLAX",
+   "cell": "only E0 right",
+   "items": 1,
+   "recordings": 1,
+   "sessions": 1
+  },
+  {
+   "half": "selection",
+   "class": "PLAX",
+   "cell": "only B7 right",
+   "items": 0,
+   "recordings": 0,
+   "sessions": 0
+  },
+  {
+   "half": "selection",
+   "class": "PLAX",
+   "cell": "both wrong",
+   "items": 0,
+   "recordings": 0,
+   "sessions": 0
+  },
+  {
+   "half": "selection",
+   "class": "PSAX",
+   "cell": "both right",
+   "items": 68,
+   "recordings": 68,
+   "sessions": 25
+  },
+  {
+   "half": "selection",
+   "class": "PSAX",
+   "cell": "only E0 right",
+   "items": 0,
+   "recordings": 0,
+   "sessions": 0
+  },
+  {
+   "half": "selection",
+   "class": "PSAX",
+   "cell": "only B7 right",
+   "items": 0,
+   "recordings": 0,
+   "sessions": 0
+  },
+  {
+   "half": "selection",
+   "class": "PSAX",
+   "cell": "both wrong",
+   "items": 0,
+   "recordings": 0,
+   "sessions": 0
+  },
+  {
+   "half": "selection",
+   "class": "SC4C",
+   "cell": "both right",
+   "items": 12,
+   "recordings": 12,
+   "sessions": 10
+  },
+  {
+   "half": "selection",
+   "class": "SC4C",
+   "cell": "only E0 right",
+   "items": 1,
+   "recordings": 1,
+   "sessions": 1
+  },
+  {
+   "half": "selection",
+   "class": "SC4C",
+   "cell": "only B7 right",
+   "items": 0,
+   "recordings": 0,
+   "sessions": 0
+  },
+  {
+   "half": "selection",
+   "class": "SC4C",
+   "cell": "both wrong",
+   "items": 0,
+   "recordings": 0,
+   "sessions": 0
+  }
+ ],
+ "recordings": {
+  "selection|only E0 right": {
+   "items": 26,
+   "recordings": 17,
+   "top": [
+    [
+     "2022-04-25_09-46-52_007_320x240_9",
+     12
+    ],
+    [
+     "2022-05-26_10-29-41_320x240_2",
+     3
+    ],
+    [
+     "2022-03-25_09-13-33_320x240_000_8",
+     3
+    ],
+    [
+     "2022-04-29_18-53-17_009_320x240_6",
+     3
+    ],
+    [
+     "2022-03-25_09-13-33_320x240_000_23",
+     2
+    ],
+    [
+     "2022-03-25_08-44-50_320x240_3",
+     1
+    ],
+    [
+     "2022-03-28_15-40-18_320x240_3",
+     1
+    ],
+    [
+     "2022-03-28_15-40-18_320x240_17",
+     1
+    ],
+    [
+     "2022-03-25_09-13-33_320x240_005_5",
+     1
+    ],
+    [
+     "2022-04-29_18-53-17_005_320x240_0",
+     1
+    ]
+   ],
+   "items_involving_top1": 12,
+   "items_involving_top3": 15,
+   "items_involving_top5": 18
+  },
+  "selection|only B7 right": {
+   "items": 17,
+   "recordings": 12,
+   "top": [
+    [
+     "2022-05-26_10-29-41_320x240_0",
+     8
+    ],
+    [
+     "2022-07-20_14-54-55_320x240_1",
+     4
+    ],
+    [
+     "2022-03-24_16-19-44_320x240_003_3",
+     1
+    ],
+    [
+     "2022-03-25_08-44-50_320x240_5",
+     1
+    ],
+    [
+     "2022-03-25_09-13-33_320x240_000_23",
+     1
+    ],
+    [
+     "2022-03-25_08-44-50_320x240_6",
+     1
+    ],
+    [
+     "2022-03-28_15-40-18_320x240_7",
+     1
+    ],
+    [
+     "2022-03-25_09-13-33_320x240_005_6",
+     1
+    ],
+    [
+     "2022-04-29_18-53-17_005_320x240_5",
+     1
+    ],
+    [
+     "2022-05-31_10-03-46_320x240_3",
+     1
+    ]
+   ],
+   "items_involving_top1": 8,
+   "items_involving_top3": 11,
+   "items_involving_top5": 13
+  },
+  "calibration|only E0 right": {
+   "items": 6,
+   "recordings": 8,
+   "top": [
+    [
+     "2022-03-28_11-32-59_320x240_7",
+     1
+    ],
+    [
+     "2022-05-07_14-25-11_320x240_8",
+     1
+    ],
+    [
+     "2022-06-30_09-06-00_000_320x240_7",
+     1
+    ],
+    [
+     "2022-07-04_09-59-30_320x240_1",
+     1
+    ],
+    [
+     "2022-07-16_09-22-04_320x240_7",
+     1
+    ],
+    [
+     "2022-07-25_15-53-59_320x240_2",
+     1
+    ],
+    [
+     "2022-07-26_15-58-25_320x240_6",
+     1
+    ],
+    [
+     "2022-07-27_08-45-04_320x240_17",
+     1
+    ]
+   ],
+   "items_involving_top1": 1,
+   "items_involving_top3": 3,
+   "items_involving_top5": 5
+  },
+  "calibration|only B7 right": {
+   "items": 31,
+   "recordings": 21,
+   "top": [
+    [
+     "2022-06-25_09-28-23_000_320x240_13",
+     6
+    ],
+    [
+     "2022-05-26_14-32-19_320x240_0",
+     3
+    ],
+    [
+     "2022-04-29_18-53-17_003_320x240_2",
+     3
+    ],
+    [
+     "2022-06-25_09-28-23_000_320x240_5",
+     2
+    ],
+    [
+     "2022-06-25_08-31-30_000_320x240_0",
+     2
+    ],
+    [
+     "2022-07-03_09-26-11_001_320x240_0",
+     2
+    ],
+    [
+     "2022-07-10_10-39-11_001_320x240_6",
+     2
+    ],
+    [
+     "2022-07-19_16-16-01_320x240_3",
+     2
+    ],
+    [
+     "2022-03-28_11-32-59_320x240_9",
+     1
+    ],
+    [
+     "2022-05-23_14-17-51_320x240_7",
+     1
+    ]
+   ],
+   "items_involving_top1": 6,
+   "items_involving_top3": 11,
+   "items_involving_top5": 15
+  }
+ },
+ "opinion_units": {
+  "selection": [
+   {
+    "cell": "only E0 right",
+    "opinion": "teachers disagree on class",
+    "items": 18,
+    "recordings": 10,
+    "E0 class right": 18,
+    "B7 class right": 0
+   },
+   {
+    "cell": "only E0 right",
+    "opinion": "same class opinion",
+    "items": 8,
+    "recordings": 10,
+    "E0 class right": 8,
+    "B7 class right": 8
+   },
+   {
+    "cell": "only B7 right",
+    "opinion": "teachers disagree on class",
+    "items": 8,
+    "recordings": 3,
+    "E0 class right": 1,
+    "B7 class right": 7
+   },
+   {
+    "cell": "only B7 right",
+    "opinion": "same class opinion",
+    "items": 9,
+    "recordings": 11,
+    "E0 class right": 8,
+    "B7 class right": 8
+   },
+   {
+    "cell": "both wrong",
+    "opinion": "teachers disagree on class",
+    "items": 2,
+    "recordings": 2,
+    "E0 class right": 1,
+    "B7 class right": 1
+   },
+   {
+    "cell": "both wrong",
+    "opinion": "same class opinion",
+    "items": 20,
+    "recordings": 10,
+    "E0 class right": 6,
+    "B7 class right": 6
+   }
+  ],
+  "calibration": [
+   {
+    "cell": "only E0 right",
+    "opinion": "teachers disagree on class",
+    "items": 3,
+    "recordings": 3,
+    "E0 class right": 3,
+    "B7 class right": 0
+   },
+   {
+    "cell": "only E0 right",
+    "opinion": "same class opinion",
+    "items": 3,
+    "recordings": 5,
+    "E0 class right": 3,
+    "B7 class right": 3
+   },
+   {
+    "cell": "only B7 right",
+    "opinion": "teachers disagree on class",
+    "items": 12,
+    "recordings": 6,
+    "E0 class right": 0,
+    "B7 class right": 12
+   },
+   {
+    "cell": "only B7 right",
+    "opinion": "same class opinion",
+    "items": 19,
+    "recordings": 17,
+    "E0 class right": 19,
+    "B7 class right": 19
+   },
+   {
+    "cell": "both wrong",
+    "opinion": "teachers disagree on class",
+    "items": 1,
+    "recordings": 3,
+    "E0 class right": 0,
+    "B7 class right": 1
+   },
+   {
+    "cell": "both wrong",
+    "opinion": "same class opinion",
+    "items": 5,
+    "recordings": 5,
+    "E0 class right": 0,
+    "B7 class right": 0
+   }
+  ]
+ },
+ "opinion_natives": {
+  "selection": [
+   {
+    "cell": "only E0 right",
+    "opinion": "teachers disagree on class",
+    "items": 3,
+    "recordings": 3,
+    "E0 class right": 3,
+    "B7 class right": 0
+   },
+   {
+    "cell": "only E0 right",
+    "opinion": "same class opinion",
+    "items": 0,
+    "recordings": 0,
+    "E0 class right": 0,
+    "B7 class right": 0
+   },
+   {
+    "cell": "only B7 right",
+    "opinion": "teachers disagree on class",
+    "items": 1,
+    "recordings": 1,
+    "E0 class right": 0,
+    "B7 class right": 1
+   },
+   {
+    "cell": "only B7 right",
+    "opinion": "same class opinion",
+    "items": 0,
+    "recordings": 0,
+    "E0 class right": 0,
+    "B7 class right": 0
+   },
+   {
+    "cell": "both wrong",
+    "opinion": "teachers disagree on class",
+    "items": 0,
+    "recordings": 0,
+    "E0 class right": 0,
+    "B7 class right": 0
+   },
+   {
+    "cell": "both wrong",
+    "opinion": "same class opinion",
+    "items": 2,
+    "recordings": 2,
+    "E0 class right": 0,
+    "B7 class right": 0
+   }
+  ],
+  "calibration": [
+   {
+    "cell": "only E0 right",
+    "opinion": "teachers disagree on class",
+    "items": 0,
+    "recordings": 0,
+    "E0 class right": 0,
+    "B7 class right": 0
+   },
+   {
+    "cell": "only E0 right",
+    "opinion": "same class opinion",
+    "items": 0,
+    "recordings": 0,
+    "E0 class right": 0,
+    "B7 class right": 0
+   },
+   {
+    "cell": "only B7 right",
+    "opinion": "teachers disagree on class",
+    "items": 2,
+    "recordings": 2,
+    "E0 class right": 0,
+    "B7 class right": 2
+   },
+   {
+    "cell": "only B7 right",
+    "opinion": "same class opinion",
+    "items": 2,
+    "recordings": 2,
+    "E0 class right": 2,
+    "B7 class right": 2
+   },
+   {
+    "cell": "both wrong",
+    "opinion": "teachers disagree on class",
+    "items": 0,
+    "recordings": 0,
+    "E0 class right": 0,
+    "B7 class right": 0
+   },
+   {
+    "cell": "both wrong",
+    "opinion": "same class opinion",
+    "items": 1,
+    "recordings": 1,
+    "E0 class right": 0,
+    "B7 class right": 0
+   }
+  ]
+ },
+ "round4_clue": {
+  "agrees_with_round4_outcomes": true,
+  "E0 common errors (B3 and >= 2 ASRF seeds wrong)|selection": {
+   "units": 32,
+   "B7_B3_wrong": 21,
+   "B7_B3_right": 11,
+   "recordings": 16,
+   "recordings_B7_right": 7,
+   "recordings_B7_wrong": 10
+  },
+  "E0 common errors (B3 and >= 2 ASRF seeds wrong)|calibration": {
+   "units": 22,
+   "B7_B3_wrong": 6,
+   "B7_B3_right": 16,
+   "recordings": 13,
+   "recordings_B7_right": 8,
+   "recordings_B7_wrong": 7
+  },
+  "E0 common errors (B3 and >= 2 ASRF seeds wrong)|both": {
+   "units": 54,
+   "B7_B3_wrong": 27,
+   "B7_B3_right": 27,
+   "recordings": 29,
+   "recordings_B7_right": 15,
+   "recordings_B7_wrong": 17
+  },
+  "E0 common right (B3 and >= 2 ASRF seeds right)|selection": {
+   "units": 451,
+   "B7_B3_wrong": 22,
+   "B7_B3_right": 429,
+   "recordings": 228,
+   "recordings_B7_right": 228,
+   "recordings_B7_wrong": 12
+  },
+  "E0 common right (B3 and >= 2 ASRF seeds right)|calibration": {
+   "units": 477,
+   "B7_B3_wrong": 6,
+   "B7_B3_right": 471,
+   "recordings": 212,
+   "recordings_B7_right": 212,
+   "recordings_B7_wrong": 8
+  },
+  "E0 common right (B3 and >= 2 ASRF seeds right)|both": {
+   "units": 928,
+   "B7_B3_wrong": 28,
+   "B7_B3_right": 900,
+   "recordings": 440,
+   "recordings_B7_right": 440,
+   "recordings_B7_wrong": 20
+  }
+ }
+}

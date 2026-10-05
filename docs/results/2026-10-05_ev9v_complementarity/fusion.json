@@ -1,0 +1,2331 @@
+{
+ "inputs": {
+  "hashes": {
+   "protocol": "a897483b776e8cff1ba8b92774c6a82537758bcba6abd362f2d8603f37997593",
+   "source manifest": "037b20e0f3451545505c7b80dfc0c1894265e406066c86137df3518174c10433",
+   "E0 feature manifest": "98427975333243e17e3ed736b0b2224b108d1a9a4c3bc488211272e8c691fcd9",
+   "B7 checkpoint": "a74c7b233e79c67ca1d9b145f938283ed945378b4ccf3765d2bcc104f8dc0dfc",
+   "B7 runner config": "f880d99a837f5ec5db1af730afc74582e2c8929165e95160fca62caebc300243",
+   "B7 label list": "badc8e08c1c1e53c194e0aa0410ece682c5b18af27ad796c2f6717b76b86e5cc",
+   "B7 window plans": "51517ea886bffe235918ad9bd250f4811efae39ee0d27fc29b648dde0fac26ba"
+  },
+  "digests": {
+   "E0 files": "e4ab937d3b901486b5bdc6a006b59a9e2a39ef31bfd064ab57ce7f56011b2932",
+   "B7 predictions": "5054631a831ba7d3806e26e16307b25950cf822cade036c50e18c7b577e5da71"
+  },
+  "manifest_test_clips": 888,
+  "test_clips_in_inputs": 0,
+  "sequences": {
+   "selection": {
+    "native": {
+     "sequences": 284,
+     "samples": 16635
+    },
+    "pairs": {
+     "sequences": 137,
+     "samples": 5691
+    },
+    "multi": {
+     "sequences": 120,
+     "samples": 14961
+    }
+   },
+   "calibration": {
+    "native": {
+     "sequences": 237,
+     "samples": 14323
+    },
+    "pairs": {
+     "sequences": 115,
+     "samples": 4883
+    },
+    "multi": {
+     "sequences": 120,
+     "samples": 15010
+    }
+   }
+  }
+ },
+ "weights": {
+  "E0": 0.5,
+  "B7": 0.5
+ },
+ "systems": {
+  "E0 frozen": {
+   "status": "frozen original",
+   "params": {
+    "half_window": 9,
+    "threshold": 0.39023423383871153,
+    "nms_radius": 5,
+    "threshold_quantile": 0.999
+   }
+  },
+  "B7 frozen": {
+   "status": "frozen original",
+   "params": {
+    "half_window": 11,
+    "threshold": 0.0789225098201578,
+    "nms_radius": 5,
+    "threshold_quantile": 0.99
+   }
+  },
+  "E0": {
+   "status": "infeasible",
+   "n_feasible": 0,
+   "n_settings": 40,
+   "params": null
+  },
+  "B7": {
+   "status": "feasible",
+   "n_feasible": 28,
+   "n_settings": 40,
+   "params": {
+    "half_window": 9,
+    "threshold": 0.0005778548352362705,
+    "nms_radius": 5,
+    "threshold_quantile": 0.8
+   }
+  },
+  "q": {
+   "status": "feasible",
+   "n_feasible": 26,
+   "n_settings": 40,
+   "params": {
+    "half_window": 11,
+    "threshold": 0.22802094488504168,
+    "nms_radius": 5,
+    "threshold_quantile": 0.999
+   }
+  }
+ },
+ "metrics": {
+  "E0 frozen": {
+   "selection": {
+    "native_macro_f1": 0.9650312221231043,
+    "segment_f1_50_multi": 0.934409687184662,
+    "boundary_recall_multi": 0.9607329842931938,
+    "boundary_precision_multi": 0.994579945799458,
+    "boundary_f1_multi": 0.9773635153129161,
+    "native_internal_cuts_per_clip": 0.014084507042253521,
+    "same_class_cut_rate_multi": 0.004347826086956522,
+    "segment_f1_50_pairs": 0.9927710843373494,
+    "native_A4C_as_A5C": 0,
+    "native_A5C_as_A4C": 3,
+    "units_A4C_as_A5C": 3,
+    "units_A5C_as_A4C": 25,
+    "units_wrong": 39,
+    "extra_cuts_inside_units": 2
+   },
+   "calibration": {
+    "native_macro_f1": 0.965990117909637,
+    "segment_f1_50_multi": 0.9339805825242719,
+    "boundary_recall_multi": 0.9547738693467337,
+    "boundary_precision_multi": 0.9693877551020408,
+    "boundary_f1_multi": 0.9620253164556962,
+    "native_internal_cuts_per_clip": 0.03375527426160337,
+    "same_class_cut_rate_multi": 0.01990049751243781,
+    "segment_f1_50_pairs": 0.9588235294117647,
+    "native_A4C_as_A5C": 0,
+    "native_A5C_as_A4C": 4,
+    "units_A4C_as_A5C": 3,
+    "units_A5C_as_A4C": 23,
+    "units_wrong": 37,
+    "extra_cuts_inside_units": 12
+   }
+  },
+  "B7 frozen": {
+   "selection": {
+    "native_macro_f1": 0.9566353840806396,
+    "segment_f1_50_multi": 0.8798449612403101,
+    "boundary_recall_multi": 0.9554973821989529,
+    "boundary_precision_multi": 0.8902439024390244,
+    "boundary_f1_multi": 0.9217171717171717,
+    "native_internal_cuts_per_clip": 0.06338028169014084,
+    "same_class_cut_rate_multi": 0.05652173913043478,
+    "segment_f1_50_pairs": 0.9665071770334929,
+    "native_A4C_as_A5C": 1,
+    "native_A5C_as_A4C": 2,
+    "units_A4C_as_A5C": 5,
+    "units_A5C_as_A4C": 17,
+    "units_wrong": 48,
+    "extra_cuts_inside_units": 40
+   },
+   "calibration": {
+    "native_macro_f1": 0.9926596980255518,
+    "segment_f1_50_multi": 0.9721421709894332,
+    "boundary_recall_multi": 0.9748743718592965,
+    "boundary_precision_multi": 0.9627791563275434,
+    "boundary_f1_multi": 0.968789013732834,
+    "native_internal_cuts_per_clip": 0.04219409282700422,
+    "same_class_cut_rate_multi": 0.03482587064676617,
+    "segment_f1_50_pairs": 0.9647058823529412,
+    "native_A4C_as_A5C": 0,
+    "native_A5C_as_A4C": 1,
+    "units_A4C_as_A5C": 1,
+    "units_A5C_as_A4C": 4,
+    "units_wrong": 12,
+    "extra_cuts_inside_units": 10
+   }
+  },
+  "B7": {
+   "selection": {
+    "native_macro_f1": 0.9566353840806396,
+    "segment_f1_50_multi": 0.8658420551855376,
+    "boundary_recall_multi": 0.9607329842931938,
+    "boundary_precision_multi": 0.8554778554778555,
+    "boundary_f1_multi": 0.905055487053021,
+    "native_internal_cuts_per_clip": 0.09154929577464789,
+    "same_class_cut_rate_multi": 0.07391304347826087,
+    "segment_f1_50_pairs": 0.9665071770334929,
+    "native_A4C_as_A5C": 1,
+    "native_A5C_as_A4C": 2,
+    "units_A4C_as_A5C": 5,
+    "units_A5C_as_A4C": 16,
+    "units_wrong": 47,
+    "extra_cuts_inside_units": 56
+   },
+   "calibration": {
+    "native_macro_f1": 0.9856102003642988,
+    "segment_f1_50_multi": 0.9731800766283525,
+    "boundary_recall_multi": 0.9773869346733668,
+    "boundary_precision_multi": 0.958128078817734,
+    "boundary_f1_multi": 0.9676616915422885,
+    "native_internal_cuts_per_clip": 0.06329113924050633,
+    "same_class_cut_rate_multi": 0.03482587064676617,
+    "segment_f1_50_pairs": 0.9707602339181286,
+    "native_A4C_as_A5C": 1,
+    "native_A5C_as_A4C": 1,
+    "units_A4C_as_A5C": 1,
+    "units_A5C_as_A4C": 4,
+    "units_wrong": 10,
+    "extra_cuts_inside_units": 11
+   }
+  },
+  "q": {
+   "selection": {
+    "native_macro_f1": 0.9650312221231043,
+    "segment_f1_50_multi": 0.9137760158572844,
+    "boundary_recall_multi": 0.9554973821989529,
+    "boundary_precision_multi": 0.9431524547803618,
+    "boundary_f1_multi": 0.9492847854356307,
+    "native_internal_cuts_per_clip": 0.01056338028169014,
+    "same_class_cut_rate_multi": 0.034782608695652174,
+    "segment_f1_50_pairs": 0.9879518072289156,
+    "native_A4C_as_A5C": 0,
+    "native_A5C_as_A4C": 3,
+    "units_A4C_as_A5C": 4,
+    "units_A5C_as_A4C": 21,
+    "units_wrong": 41,
+    "extra_cuts_inside_units": 21
+   },
+   "calibration": {
+    "native_macro_f1": 0.9850094876660341,
+    "segment_f1_50_multi": 0.9643201542912246,
+    "boundary_recall_multi": 0.9773869346733668,
+    "boundary_precision_multi": 0.974937343358396,
+    "boundary_f1_multi": 0.9761606022584692,
+    "native_internal_cuts_per_clip": 0.012658227848101266,
+    "same_class_cut_rate_multi": 0.014925373134328358,
+    "segment_f1_50_pairs": 0.9707602339181286,
+    "native_A4C_as_A5C": 0,
+    "native_A5C_as_A4C": 2,
+    "units_A4C_as_A5C": 1,
+    "units_A5C_as_A4C": 16,
+    "units_wrong": 18,
+    "extra_cuts_inside_units": 9
+   }
+  }
+ },
+ "comparisons": {
+  "q - B7": {
+   "selection": {
+    "bootstrap": {
+     "native macro-F1": {
+      "delta": 0.008395838042464687,
+      "ci95": [
+       -0.03270242344678442,
+       0.053426189428872686
+      ]
+     },
+     "native cuts per clip": {
+      "delta": -0.08098591549295775,
+      "ci95": [
+       -0.13383026591098382,
+       -0.0257953482935952
+      ]
+     },
+     "multi segment F1@50": {
+      "delta": 0.04793396067174682,
+      "ci95": [
+       0.023781881071868818,
+       0.07560876303819761
+      ]
+     },
+     "multi boundary recall": {
+      "delta": -0.005235602094240899,
+      "ci95": [
+       -0.021624559341950646,
+       0.010638297872340385
+      ]
+     },
+     "multi boundary F1": {
+      "delta": 0.044229298382609694,
+      "ci95": [
+       0.02536408529009445,
+       0.06480593095481568
+      ]
+     },
+     "same-class cut rate": {
+      "delta": -0.0391304347826087,
+      "ci95": [
+       -0.07173043083385366,
+       -0.008618847627468326
+      ]
+     }
+    },
+    "consistent_with_totals": true,
+    "segments": {
+     "q": [
+      461,
+      507,
+      502
+     ],
+     "B7": [
+      455,
+      549,
+      502
+     ]
+    },
+    "units": {
+     "fixed": [
+      "multi_selection_0012#2",
+      "multi_selection_0016#0",
+      "multi_selection_0024#1",
+      "multi_selection_0033#3",
+      "multi_selection_0038#4",
+      "multi_selection_0043#4",
+      "multi_selection_0046#0",
+      "multi_selection_0055#2",
+      "multi_selection_0057#3",
+      "multi_selection_0060#2",
+      "multi_selection_0068#2",
+      "multi_selection_0071#0",
+      "multi_selection_0076#4",
+      "multi_selection_0087#2",
+      "multi_selection_0102#3",
+      "multi_selection_0107#0",
+      "multi_selection_0108#0",
+      "multi_selection_0114#1"
+     ],
+     "new_errors": [
+      "multi_selection_0003#2",
+      "multi_selection_0008#1",
+      "multi_selection_0020#2",
+      "multi_selection_0022#0",
+      "multi_selection_0058#2",
+      "multi_selection_0078#3",
+      "multi_selection_0078#4",
+      "multi_selection_0080#0",
+      "multi_selection_0081#2",
+      "multi_selection_0081#4",
+      "multi_selection_0092#1",
+      "multi_selection_0100#1"
+     ],
+     "concentration": {
+      "fixed": 18,
+      "new_errors": 12,
+      "net": 6,
+      "recordings_in_fixed": 11,
+      "recordings_in_new_errors": 14,
+      "top1": {
+       "recordings": [
+        "2022-04-25_09-46-52_007_320x240_9"
+       ],
+       "fixed_involving": 10,
+       "net_without": -4
+      },
+      "top3": {
+       "recordings": [
+        "2022-04-25_09-46-52_007_320x240_9",
+        "2022-03-25_09-13-33_320x240_000_8",
+        "2022-03-25_08-44-50_320x240_3"
+       ],
+       "fixed_involving": 11,
+       "net_without": -4
+      },
+      "top5": {
+       "recordings": [
+        "2022-04-25_09-46-52_007_320x240_9",
+        "2022-03-25_09-13-33_320x240_000_8",
+        "2022-03-25_08-44-50_320x240_3",
+        "2022-03-25_09-13-33_320x240_005_5",
+        "2022-03-28_15-40-18_320x240_1"
+       ],
+       "fixed_involving": 13,
+       "net_without": -6
+      },
+      "by_recording": [
+       [
+        "2022-04-25_09-46-52_007_320x240_9",
+        10,
+        0,
+        10
+       ],
+       [
+        "2022-03-25_09-13-33_320x240_000_8",
+        3,
+        0,
+        3
+       ],
+       [
+        "2022-03-25_09-13-33_320x240_005_5",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-03-28_15-40-18_320x240_1",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-04-29_18-53-17_005_320x240_0",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-04-29_18-53-17_006_320x240_4",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-04-29_18-53-17_009_320x240_6",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-06-23_10-33-04_320x240_8",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-06-24_09-20-45_320x240_1",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-03-25_08-44-50_320x240_3",
+        1,
+        1,
+        0
+       ],
+       [
+        "2022-03-25_09-13-33_320x240_000_23",
+        0,
+        1,
+        -1
+       ],
+       [
+        "2022-03-25_09-13-33_320x240_001_0",
+        0,
+        1,
+        -1
+       ],
+       [
+        "2022-03-28_15-40-18_320x240_0",
+        0,
+        1,
+        -1
+       ],
+       [
+        "2022-03-31_10-38-01_320x240_4",
+        0,
+        1,
+        -1
+       ],
+       [
+        "2022-04-29_18-53-17_002_320x240_2",
+        0,
+        1,
+        -1
+       ],
+       [
+        "2022-04-29_18-53-17_005_320x240_5",
+        0,
+        1,
+        -1
+       ],
+       [
+        "2022-04-29_18-53-17_009_320x240_7",
+        0,
+        1,
+        -1
+       ],
+       [
+        "2022-05-26_10-29-41_320x240_2",
+        0,
+        1,
+        -1
+       ],
+       [
+        "2022-05-31_10-03-46_320x240_3",
+        0,
+        1,
+        -1
+       ],
+       [
+        "2022-06-02_15-48-27_320x240_8",
+        0,
+        1,
+        -1
+       ],
+       [
+        "2022-07-04_09-22-51_000_320x240_6",
+        0,
+        1,
+        -1
+       ],
+       [
+        "2022-07-20_14-54-55_320x240_1",
+        0,
+        1,
+        -1
+       ],
+       [
+        "2022-05-26_10-29-41_320x240_0",
+        1,
+        3,
+        -2
+       ]
+      ]
+     }
+    },
+    "natives": {
+     "fixed": [
+      "2022-03-28_15-40-18_320x240_11",
+      "2022-04-25_09-46-52_007_320x240_9",
+      "2022-04-29_18-53-17_005_320x240_0"
+     ],
+     "new_errors": [
+      "2022-07-20_14-54-55_320x240_1"
+     ],
+     "concentration": {
+      "fixed": 3,
+      "new_errors": 1,
+      "net": 2,
+      "recordings_in_fixed": 3,
+      "recordings_in_new_errors": 1,
+      "top1": {
+       "recordings": [
+        "2022-03-28_15-40-18_320x240_11"
+       ],
+       "fixed_involving": 1,
+       "net_without": 1
+      },
+      "top3": {
+       "recordings": [
+        "2022-03-28_15-40-18_320x240_11",
+        "2022-04-25_09-46-52_007_320x240_9",
+        "2022-04-29_18-53-17_005_320x240_0"
+       ],
+       "fixed_involving": 3,
+       "net_without": -1
+      },
+      "top5": {
+       "recordings": [
+        "2022-03-28_15-40-18_320x240_11",
+        "2022-04-25_09-46-52_007_320x240_9",
+        "2022-04-29_18-53-17_005_320x240_0"
+       ],
+       "fixed_involving": 3,
+       "net_without": -1
+      },
+      "by_recording": [
+       [
+        "2022-03-28_15-40-18_320x240_11",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-04-25_09-46-52_007_320x240_9",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-04-29_18-53-17_005_320x240_0",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-07-20_14-54-55_320x240_1",
+        0,
+        1,
+        -1
+       ]
+      ]
+     }
+    }
+   },
+   "calibration": {
+    "bootstrap": {
+     "native macro-F1": {
+      "delta": -0.0006007126982646716,
+      "ci95": [
+       -0.02529253407090449,
+       0.021802902361312663
+      ]
+     },
+     "native cuts per clip": {
+      "delta": -0.05063291139240507,
+      "ci95": [
+       -0.10294701213818862,
+       -0.008546099290780144
+      ]
+     },
+     "multi segment F1@50": {
+      "delta": -0.008859922337127846,
+      "ci95": [
+       -0.02409334781766768,
+       0.005682532187937766
+      ]
+     },
+     "multi boundary recall": {
+      "delta": 0.0,
+      "ci95": [
+       -0.017328887739520234,
+       0.016713924911036734
+      ]
+     },
+     "multi boundary F1": {
+      "delta": 0.008498910716180696,
+      "ci95": [
+       -0.005529344436495914,
+       0.023367256241204032
+      ]
+     },
+     "same-class cut rate": {
+      "delta": -0.01990049751243781,
+      "ci95": [
+       -0.04854691124667068,
+       0.005050505050505048
+      ]
+     }
+    },
+    "consistent_with_totals": true,
+    "segments": {
+     "q": [
+      500,
+      519,
+      518
+     ],
+     "B7": [
+      508,
+      526,
+      518
+     ]
+    },
+    "units": {
+     "fixed": [
+      "multi_calibration_0007#2",
+      "multi_calibration_0067#2",
+      "multi_calibration_0115#3",
+      "multi_calibration_0117#6"
+     ],
+     "new_errors": [
+      "multi_calibration_0014#2",
+      "multi_calibration_0017#4",
+      "multi_calibration_0026#3",
+      "multi_calibration_0026#5",
+      "multi_calibration_0031#4",
+      "multi_calibration_0050#0",
+      "multi_calibration_0059#2",
+      "multi_calibration_0079#1",
+      "multi_calibration_0079#2",
+      "multi_calibration_0094#2",
+      "multi_calibration_0096#0",
+      "multi_calibration_0106#1"
+     ],
+     "concentration": {
+      "fixed": 4,
+      "new_errors": 12,
+      "net": -8,
+      "recordings_in_fixed": 6,
+      "recordings_in_new_errors": 7,
+      "top1": {
+       "recordings": [
+        "2022-03-28_11-32-59_320x240_7"
+       ],
+       "fixed_involving": 1,
+       "net_without": -9
+      },
+      "top3": {
+       "recordings": [
+        "2022-03-28_11-32-59_320x240_7",
+        "2022-07-04_09-22-51_320x240_3",
+        "2022-07-16_09-22-04_320x240_7"
+       ],
+       "fixed_involving": 3,
+       "net_without": -11
+      },
+      "top5": {
+       "recordings": [
+        "2022-03-28_11-32-59_320x240_7",
+        "2022-07-04_09-22-51_320x240_3",
+        "2022-07-16_09-22-04_320x240_7",
+        "2022-07-25_15-53-59_320x240_2",
+        "2022-07-26_15-58-25_320x240_6"
+       ],
+       "fixed_involving": 3,
+       "net_without": -11
+      },
+      "by_recording": [
+       [
+        "2022-03-28_11-32-59_320x240_7",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-07-04_09-22-51_320x240_3",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-07-16_09-22-04_320x240_7",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-07-25_15-53-59_320x240_2",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-07-26_15-58-25_320x240_6",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-07-27_08-45-04_320x240_17",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-04-29_18-53-17_003_320x240_2",
+        0,
+        1,
+        -1
+       ],
+       [
+        "2022-05-26_14-32-19_320x240_0",
+        0,
+        1,
+        -1
+       ],
+       [
+        "2022-07-26_15-43-05_320x240_4",
+        0,
+        1,
+        -1
+       ],
+       [
+        "2022-07-27_08-45-04_320x240_15",
+        0,
+        1,
+        -1
+       ],
+       [
+        "2022-06-25_08-31-30_000_320x240_0",
+        0,
+        2,
+        -2
+       ],
+       [
+        "2022-07-19_16-16-01_320x240_3",
+        0,
+        3,
+        -3
+       ],
+       [
+        "2022-06-25_09-28-23_000_320x240_13",
+        0,
+        5,
+        -5
+       ]
+      ]
+     }
+    },
+    "natives": {
+     "fixed": [
+      "2022-07-26_15-58-25_320x240_6"
+     ],
+     "new_errors": [
+      "2022-07-26_15-43-05_320x240_4"
+     ],
+     "concentration": {
+      "fixed": 1,
+      "new_errors": 1,
+      "net": 0,
+      "recordings_in_fixed": 1,
+      "recordings_in_new_errors": 1,
+      "top1": {
+       "recordings": [
+        "2022-07-26_15-58-25_320x240_6"
+       ],
+       "fixed_involving": 1,
+       "net_without": -1
+      },
+      "top3": {
+       "recordings": [
+        "2022-07-26_15-58-25_320x240_6"
+       ],
+       "fixed_involving": 1,
+       "net_without": -1
+      },
+      "top5": {
+       "recordings": [
+        "2022-07-26_15-58-25_320x240_6"
+       ],
+       "fixed_involving": 1,
+       "net_without": -1
+      },
+      "by_recording": [
+       [
+        "2022-07-26_15-58-25_320x240_6",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-07-26_15-43-05_320x240_4",
+        0,
+        1,
+        -1
+       ]
+      ]
+     }
+    }
+   }
+  },
+  "q - E0 frozen": {
+   "selection": {
+    "bootstrap": {
+     "native macro-F1": {
+      "delta": 0.0,
+      "ci95": [
+       0.0,
+       0.0
+      ]
+     },
+     "native cuts per clip": {
+      "delta": -0.003521126760563381,
+      "ci95": [
+       -0.030046562474694307,
+       0.017621422785428154
+      ]
+     },
+     "multi segment F1@50": {
+      "delta": -0.02063367132737759,
+      "ci95": [
+       -0.04298939500298814,
+       -0.00025397147889487446
+      ]
+     },
+     "multi boundary recall": {
+      "delta": -0.005235602094240899,
+      "ci95": [
+       -0.022559231832730495,
+       0.008241758241758212
+      ]
+     },
+     "multi boundary F1": {
+      "delta": -0.028078729877285435,
+      "ci95": [
+       -0.04256451389906957,
+       -0.015330799335605187
+      ]
+     },
+     "same-class cut rate": {
+      "delta": 0.030434782608695653,
+      "ci95": [
+       0.008928571428571428,
+       0.056046664167915976
+      ]
+     }
+    },
+    "consistent_with_totals": true,
+    "segments": {
+     "q": [
+      461,
+      507,
+      502
+     ],
+     "E0 frozen": [
+      463,
+      489,
+      502
+     ]
+    },
+    "units": {
+     "fixed": [
+      "multi_selection_0017#0",
+      "multi_selection_0020#1",
+      "multi_selection_0033#1",
+      "multi_selection_0033#2",
+      "multi_selection_0055#0",
+      "multi_selection_0057#3",
+      "multi_selection_0064#0",
+      "multi_selection_0092#3",
+      "multi_selection_0095#4",
+      "multi_selection_0115#1"
+     ],
+     "new_errors": [
+      "multi_selection_0015#2",
+      "multi_selection_0031#1",
+      "multi_selection_0060#1",
+      "multi_selection_0072#3",
+      "multi_selection_0072#4",
+      "multi_selection_0072#5",
+      "multi_selection_0081#2",
+      "multi_selection_0081#3",
+      "multi_selection_0081#4",
+      "multi_selection_0085#0",
+      "multi_selection_0092#1",
+      "multi_selection_0095#2"
+     ],
+     "concentration": {
+      "fixed": 10,
+      "new_errors": 12,
+      "net": -2,
+      "recordings_in_fixed": 8,
+      "recordings_in_new_errors": 11,
+      "top1": {
+       "recordings": [
+        "2022-05-26_10-29-41_320x240_0"
+       ],
+       "fixed_involving": 4,
+       "net_without": -5
+      },
+      "top3": {
+       "recordings": [
+        "2022-05-26_10-29-41_320x240_0",
+        "2022-07-20_14-54-55_320x240_1",
+        "2022-03-24_16-19-44_320x240_003_3"
+       ],
+       "fixed_involving": 7,
+       "net_without": -8
+      },
+      "top5": {
+       "recordings": [
+        "2022-05-26_10-29-41_320x240_0",
+        "2022-07-20_14-54-55_320x240_1",
+        "2022-03-24_16-19-44_320x240_003_3",
+        "2022-03-25_08-44-50_320x240_5",
+        "2022-03-25_08-44-50_320x240_6"
+       ],
+       "fixed_involving": 9,
+       "net_without": -10
+      },
+      "by_recording": [
+       [
+        "2022-05-26_10-29-41_320x240_0",
+        4,
+        1,
+        3
+       ],
+       [
+        "2022-07-20_14-54-55_320x240_1",
+        3,
+        0,
+        3
+       ],
+       [
+        "2022-03-24_16-19-44_320x240_003_3",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-03-25_08-44-50_320x240_5",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-03-25_08-44-50_320x240_6",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-03-25_09-13-33_320x240_005_6",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-03-28_15-40-18_320x240_7",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-06-25_10-12-37_320x240_4",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-03-28_15-40-18_320x240_0",
+        0,
+        1,
+        -1
+       ],
+       [
+        "2022-03-28_15-40-18_320x240_3",
+        0,
+        1,
+        -1
+       ],
+       [
+        "2022-03-31_10-38-01_320x240_4",
+        0,
+        1,
+        -1
+       ],
+       [
+        "2022-07-08_14-52-51_320x240_10",
+        0,
+        1,
+        -1
+       ],
+       [
+        "2022-03-25_09-13-33_320x240_000_23",
+        0,
+        2,
+        -2
+       ],
+       [
+        "2022-04-25_09-46-52_007_320x240_9",
+        0,
+        2,
+        -2
+       ],
+       [
+        "2022-04-29_18-53-17_002_320x240_2",
+        0,
+        2,
+        -2
+       ],
+       [
+        "2022-04-29_18-53-17_009_320x240_6",
+        0,
+        2,
+        -2
+       ],
+       [
+        "2022-04-29_18-53-17_009_320x240_7",
+        0,
+        2,
+        -2
+       ],
+       [
+        "2022-05-26_10-29-41_320x240_2",
+        0,
+        4,
+        -4
+       ]
+      ]
+     }
+    },
+    "natives": {
+     "fixed": [],
+     "new_errors": [],
+     "concentration": {
+      "fixed": 0,
+      "new_errors": 0,
+      "net": 0,
+      "recordings_in_fixed": 0,
+      "recordings_in_new_errors": 0,
+      "top1": {
+       "recordings": [],
+       "fixed_involving": 0,
+       "net_without": 0
+      },
+      "top3": {
+       "recordings": [],
+       "fixed_involving": 0,
+       "net_without": 0
+      },
+      "top5": {
+       "recordings": [],
+       "fixed_involving": 0,
+       "net_without": 0
+      },
+      "by_recording": []
+     }
+    }
+   },
+   "calibration": {
+    "bootstrap": {
+     "native macro-F1": {
+      "delta": 0.019019369756397175,
+      "ci95": [
+       0.0,
+       0.04507817446520122
+      ]
+     },
+     "native cuts per clip": {
+      "delta": -0.02109704641350211,
+      "ci95": [
+       -0.0502288841467612,
+       0.0
+      ]
+     },
+     "multi segment F1@50": {
+      "delta": 0.03033957176695279,
+      "ci95": [
+       0.013831945646326949,
+       0.048155304126915
+      ]
+     },
+     "multi boundary recall": {
+      "delta": 0.022613065326633097,
+      "ci95": [
+       0.005050505050505083,
+       0.04348104793756974
+      ]
+     },
+     "multi boundary F1": {
+      "delta": 0.014135285802773012,
+      "ci95": [
+       0.0015670533678861565,
+       0.027700673221888548
+      ]
+     },
+     "same-class cut rate": {
+      "delta": -0.004975124378109453,
+      "ci95": [
+       -0.026911916888176447,
+       0.016218419506462974
+      ]
+     }
+    },
+    "consistent_with_totals": true,
+    "segments": {
+     "q": [
+      500,
+      519,
+      518
+     ],
+     "E0 frozen": [
+      481,
+      512,
+      518
+     ]
+    },
+    "units": {
+     "fixed": [
+      "multi_calibration_0008#2",
+      "multi_calibration_0010#1",
+      "multi_calibration_0024#1",
+      "multi_calibration_0039#1",
+      "multi_calibration_0039#2",
+      "multi_calibration_0048#3",
+      "multi_calibration_0051#3",
+      "multi_calibration_0077#0",
+      "multi_calibration_0084#0",
+      "multi_calibration_0091#0",
+      "multi_calibration_0091#1",
+      "multi_calibration_0097#2",
+      "multi_calibration_0097#3",
+      "multi_calibration_0101#1",
+      "multi_calibration_0106#3",
+      "multi_calibration_0109#0",
+      "multi_calibration_0109#1",
+      "multi_calibration_0109#2",
+      "multi_calibration_0111#0",
+      "multi_calibration_0114#1"
+     ],
+     "new_errors": [
+      "multi_calibration_0096#0"
+     ],
+     "concentration": {
+      "fixed": 20,
+      "new_errors": 1,
+      "net": 19,
+      "recordings_in_fixed": 17,
+      "recordings_in_new_errors": 1,
+      "top1": {
+       "recordings": [
+        "2022-04-29_18-53-17_003_320x240_2"
+       ],
+       "fixed_involving": 2,
+       "net_without": 17
+      },
+      "top3": {
+       "recordings": [
+        "2022-04-29_18-53-17_003_320x240_2",
+        "2022-05-26_14-32-19_320x240_0",
+        "2022-06-25_09-28-23_000_320x240_5"
+       ],
+       "fixed_involving": 6,
+       "net_without": 13
+      },
+      "top5": {
+       "recordings": [
+        "2022-04-29_18-53-17_003_320x240_2",
+        "2022-05-26_14-32-19_320x240_0",
+        "2022-06-25_09-28-23_000_320x240_5",
+        "2022-07-03_09-26-11_001_320x240_0",
+        "2022-07-10_10-39-11_001_320x240_6"
+       ],
+       "fixed_involving": 10,
+       "net_without": 9
+      },
+      "by_recording": [
+       [
+        "2022-04-29_18-53-17_003_320x240_2",
+        2,
+        0,
+        2
+       ],
+       [
+        "2022-05-26_14-32-19_320x240_0",
+        2,
+        0,
+        2
+       ],
+       [
+        "2022-06-25_09-28-23_000_320x240_5",
+        2,
+        0,
+        2
+       ],
+       [
+        "2022-07-03_09-26-11_001_320x240_0",
+        2,
+        0,
+        2
+       ],
+       [
+        "2022-07-10_10-39-11_001_320x240_6",
+        2,
+        0,
+        2
+       ],
+       [
+        "2022-03-28_11-32-59_320x240_9",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-05-03_09-01-08_320x240_9",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-05-07_14-25-11_320x240_2",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-05-23_14-17-51_320x240_7",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-05-26_14-32-19_320x240_1",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-06-25_09-28-23_000_320x240_13",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-07-03_09-26-11_000_320x240_10",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-07-04_09-59-30_320x240_1",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-07-10_10-39-11_000_320x240_16",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-07-25_16-09-22_320x240_1",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-07-26_15-58-25_320x240_5",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-07-27_08-45-04_320x240_11",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-07-19_16-16-01_320x240_3",
+        0,
+        1,
+        -1
+       ]
+      ]
+     }
+    },
+    "natives": {
+     "fixed": [
+      "2022-05-26_14-32-19_320x240_0",
+      "2022-06-25_09-28-23_000_320x240_13",
+      "2022-07-10_10-39-11_001_320x240_6"
+     ],
+     "new_errors": [],
+     "concentration": {
+      "fixed": 3,
+      "new_errors": 0,
+      "net": 3,
+      "recordings_in_fixed": 3,
+      "recordings_in_new_errors": 0,
+      "top1": {
+       "recordings": [
+        "2022-05-26_14-32-19_320x240_0"
+       ],
+       "fixed_involving": 1,
+       "net_without": 2
+      },
+      "top3": {
+       "recordings": [
+        "2022-05-26_14-32-19_320x240_0",
+        "2022-06-25_09-28-23_000_320x240_13",
+        "2022-07-10_10-39-11_001_320x240_6"
+       ],
+       "fixed_involving": 3,
+       "net_without": 0
+      },
+      "top5": {
+       "recordings": [
+        "2022-05-26_14-32-19_320x240_0",
+        "2022-06-25_09-28-23_000_320x240_13",
+        "2022-07-10_10-39-11_001_320x240_6"
+       ],
+       "fixed_involving": 3,
+       "net_without": 0
+      },
+      "by_recording": [
+       [
+        "2022-05-26_14-32-19_320x240_0",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-06-25_09-28-23_000_320x240_13",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-07-10_10-39-11_001_320x240_6",
+        1,
+        0,
+        1
+       ]
+      ]
+     }
+    }
+   }
+  },
+  "q - B7 frozen": {
+   "selection": {
+    "bootstrap": {
+     "native macro-F1": {
+      "delta": 0.008395838042464687,
+      "ci95": [
+       -0.03270242344678442,
+       0.053426189428872686
+      ]
+     },
+     "native cuts per clip": {
+      "delta": -0.0528169014084507,
+      "ci95": [
+       -0.08090863481043553,
+       -0.021811520376175588
+      ]
+     },
+     "multi segment F1@50": {
+      "delta": 0.03393105461697432,
+      "ci95": [
+       0.012855217296733912,
+       0.058333032713208346
+      ]
+     },
+     "multi boundary recall": {
+      "delta": 0.0,
+      "ci95": [
+       -0.016791835653290406,
+       0.017767627646245843
+      ]
+     },
+     "multi boundary F1": {
+      "delta": 0.02756761371845895,
+      "ci95": [
+       0.009853632218073885,
+       0.045821178718870446
+      ]
+     },
+     "same-class cut rate": {
+      "delta": -0.021739130434782608,
+      "ci95": [
+       -0.05309969873846733,
+       0.008929572389493911
+      ]
+     }
+    },
+    "consistent_with_totals": true,
+    "segments": {
+     "q": [
+      461,
+      507,
+      502
+     ],
+     "B7 frozen": [
+      454,
+      530,
+      502
+     ]
+    },
+    "units": {
+     "fixed": [
+      "multi_selection_0012#2",
+      "multi_selection_0016#0",
+      "multi_selection_0023#2",
+      "multi_selection_0024#1",
+      "multi_selection_0033#3",
+      "multi_selection_0038#4",
+      "multi_selection_0043#4",
+      "multi_selection_0055#2",
+      "multi_selection_0060#2",
+      "multi_selection_0068#2",
+      "multi_selection_0071#0",
+      "multi_selection_0076#4",
+      "multi_selection_0087#2",
+      "multi_selection_0102#3",
+      "multi_selection_0107#0",
+      "multi_selection_0108#0",
+      "multi_selection_0114#1"
+     ],
+     "new_errors": [
+      "multi_selection_0003#2",
+      "multi_selection_0008#1",
+      "multi_selection_0020#2",
+      "multi_selection_0022#0",
+      "multi_selection_0058#2",
+      "multi_selection_0081#2",
+      "multi_selection_0081#4",
+      "multi_selection_0092#1",
+      "multi_selection_0100#0",
+      "multi_selection_0100#1"
+     ],
+     "concentration": {
+      "fixed": 17,
+      "new_errors": 10,
+      "net": 7,
+      "recordings_in_fixed": 10,
+      "recordings_in_new_errors": 11,
+      "top1": {
+       "recordings": [
+        "2022-04-25_09-46-52_007_320x240_9"
+       ],
+       "fixed_involving": 10,
+       "net_without": -3
+      },
+      "top3": {
+       "recordings": [
+        "2022-04-25_09-46-52_007_320x240_9",
+        "2022-03-25_09-13-33_320x240_000_8",
+        "2022-03-25_08-44-50_320x240_3"
+       ],
+       "fixed_involving": 11,
+       "net_without": -4
+      },
+      "top5": {
+       "recordings": [
+        "2022-04-25_09-46-52_007_320x240_9",
+        "2022-03-25_09-13-33_320x240_000_8",
+        "2022-03-25_08-44-50_320x240_3",
+        "2022-03-25_09-13-33_320x240_005_5",
+        "2022-03-28_15-40-18_320x240_17"
+       ],
+       "fixed_involving": 13,
+       "net_without": -6
+      },
+      "by_recording": [
+       [
+        "2022-04-25_09-46-52_007_320x240_9",
+        10,
+        0,
+        10
+       ],
+       [
+        "2022-03-25_09-13-33_320x240_000_8",
+        3,
+        0,
+        3
+       ],
+       [
+        "2022-03-25_08-44-50_320x240_3",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-03-25_09-13-33_320x240_005_5",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-03-28_15-40-18_320x240_17",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-04-29_18-53-17_005_320x240_0",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-04-29_18-53-17_006_320x240_4",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-04-29_18-53-17_009_320x240_6",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-06-23_10-33-04_320x240_8",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-06-24_09-20-45_320x240_1",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-03-25_09-13-33_320x240_000_23",
+        0,
+        1,
+        -1
+       ],
+       [
+        "2022-03-28_15-40-18_320x240_0",
+        0,
+        1,
+        -1
+       ],
+       [
+        "2022-03-31_10-38-01_320x240_4",
+        0,
+        1,
+        -1
+       ],
+       [
+        "2022-04-29_18-53-17_002_320x240_2",
+        0,
+        1,
+        -1
+       ],
+       [
+        "2022-04-29_18-53-17_005_320x240_5",
+        0,
+        1,
+        -1
+       ],
+       [
+        "2022-04-29_18-53-17_009_320x240_7",
+        0,
+        1,
+        -1
+       ],
+       [
+        "2022-05-26_10-29-41_320x240_2",
+        0,
+        1,
+        -1
+       ],
+       [
+        "2022-05-31_10-03-46_320x240_3",
+        0,
+        1,
+        -1
+       ],
+       [
+        "2022-06-02_15-48-27_320x240_8",
+        0,
+        1,
+        -1
+       ],
+       [
+        "2022-07-20_14-54-55_320x240_1",
+        0,
+        1,
+        -1
+       ],
+       [
+        "2022-05-26_10-29-41_320x240_0",
+        0,
+        4,
+        -4
+       ]
+      ]
+     }
+    },
+    "natives": {
+     "fixed": [
+      "2022-03-28_15-40-18_320x240_11",
+      "2022-04-25_09-46-52_007_320x240_9",
+      "2022-04-29_18-53-17_005_320x240_0"
+     ],
+     "new_errors": [
+      "2022-07-20_14-54-55_320x240_1"
+     ],
+     "concentration": {
+      "fixed": 3,
+      "new_errors": 1,
+      "net": 2,
+      "recordings_in_fixed": 3,
+      "recordings_in_new_errors": 1,
+      "top1": {
+       "recordings": [
+        "2022-03-28_15-40-18_320x240_11"
+       ],
+       "fixed_involving": 1,
+       "net_without": 1
+      },
+      "top3": {
+       "recordings": [
+        "2022-03-28_15-40-18_320x240_11",
+        "2022-04-25_09-46-52_007_320x240_9",
+        "2022-04-29_18-53-17_005_320x240_0"
+       ],
+       "fixed_involving": 3,
+       "net_without": -1
+      },
+      "top5": {
+       "recordings": [
+        "2022-03-28_15-40-18_320x240_11",
+        "2022-04-25_09-46-52_007_320x240_9",
+        "2022-04-29_18-53-17_005_320x240_0"
+       ],
+       "fixed_involving": 3,
+       "net_without": -1
+      },
+      "by_recording": [
+       [
+        "2022-03-28_15-40-18_320x240_11",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-04-25_09-46-52_007_320x240_9",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-04-29_18-53-17_005_320x240_0",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-07-20_14-54-55_320x240_1",
+        0,
+        1,
+        -1
+       ]
+      ]
+     }
+    }
+   },
+   "calibration": {
+    "bootstrap": {
+     "native macro-F1": {
+      "delta": -0.0076502103595176285,
+      "ci95": [
+       -0.02918159174017198,
+       0.0
+      ]
+     },
+     "native cuts per clip": {
+      "delta": -0.029535864978902954,
+      "ci95": [
+       -0.062027616279069775,
+       0.0
+      ]
+     },
+     "multi segment F1@50": {
+      "delta": -0.00782201669820859,
+      "ci95": [
+       -0.023991368723701757,
+       0.008596354631027042
+      ]
+     },
+     "multi boundary recall": {
+      "delta": 0.002512562814070307,
+      "ci95": [
+       -0.015919386151428263,
+       0.022061540133294606
+      ]
+     },
+     "multi boundary F1": {
+      "delta": 0.007371588525635242,
+      "ci95": [
+       -0.006819310277067225,
+       0.02232126066708103
+      ]
+     },
+     "same-class cut rate": {
+      "delta": -0.01990049751243781,
+      "ci95": [
+       -0.04854691124667068,
+       0.005050505050505048
+      ]
+     }
+    },
+    "consistent_with_totals": true,
+    "segments": {
+     "q": [
+      500,
+      519,
+      518
+     ],
+     "B7 frozen": [
+      506,
+      523,
+      518
+     ]
+    },
+    "units": {
+     "fixed": [
+      "multi_calibration_0007#2",
+      "multi_calibration_0015#2",
+      "multi_calibration_0015#3",
+      "multi_calibration_0015#4",
+      "multi_calibration_0067#2",
+      "multi_calibration_0117#6"
+     ],
+     "new_errors": [
+      "multi_calibration_0014#2",
+      "multi_calibration_0017#4",
+      "multi_calibration_0026#3",
+      "multi_calibration_0026#5",
+      "multi_calibration_0031#4",
+      "multi_calibration_0050#0",
+      "multi_calibration_0059#2",
+      "multi_calibration_0079#1",
+      "multi_calibration_0079#2",
+      "multi_calibration_0094#2",
+      "multi_calibration_0096#0",
+      "multi_calibration_0106#1"
+     ],
+     "concentration": {
+      "fixed": 6,
+      "new_errors": 12,
+      "net": -6,
+      "recordings_in_fixed": 8,
+      "recordings_in_new_errors": 7,
+      "top1": {
+       "recordings": [
+        "2022-03-28_11-32-59_320x240_7"
+       ],
+       "fixed_involving": 1,
+       "net_without": -7
+      },
+      "top3": {
+       "recordings": [
+        "2022-03-28_11-32-59_320x240_7",
+        "2022-05-07_14-25-11_320x240_8",
+        "2022-06-30_09-06-00_000_320x240_7"
+       ],
+       "fixed_involving": 3,
+       "net_without": -9
+      },
+      "top5": {
+       "recordings": [
+        "2022-03-28_11-32-59_320x240_7",
+        "2022-05-07_14-25-11_320x240_8",
+        "2022-06-30_09-06-00_000_320x240_7",
+        "2022-07-04_09-59-30_320x240_1",
+        "2022-07-16_09-22-04_320x240_7"
+       ],
+       "fixed_involving": 5,
+       "net_without": -11
+      },
+      "by_recording": [
+       [
+        "2022-03-28_11-32-59_320x240_7",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-05-07_14-25-11_320x240_8",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-06-30_09-06-00_000_320x240_7",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-07-04_09-59-30_320x240_1",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-07-16_09-22-04_320x240_7",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-07-25_15-53-59_320x240_2",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-07-26_15-58-25_320x240_6",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-07-27_08-45-04_320x240_17",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-04-29_18-53-17_003_320x240_2",
+        0,
+        1,
+        -1
+       ],
+       [
+        "2022-05-26_14-32-19_320x240_0",
+        0,
+        1,
+        -1
+       ],
+       [
+        "2022-07-26_15-43-05_320x240_4",
+        0,
+        1,
+        -1
+       ],
+       [
+        "2022-07-27_08-45-04_320x240_15",
+        0,
+        1,
+        -1
+       ],
+       [
+        "2022-06-25_08-31-30_000_320x240_0",
+        0,
+        2,
+        -2
+       ],
+       [
+        "2022-07-19_16-16-01_320x240_3",
+        0,
+        3,
+        -3
+       ],
+       [
+        "2022-06-25_09-28-23_000_320x240_13",
+        0,
+        5,
+        -5
+       ]
+      ]
+     }
+    },
+    "natives": {
+     "fixed": [],
+     "new_errors": [
+      "2022-07-26_15-43-05_320x240_4"
+     ],
+     "concentration": {
+      "fixed": 0,
+      "new_errors": 1,
+      "net": -1,
+      "recordings_in_fixed": 0,
+      "recordings_in_new_errors": 1,
+      "top1": {
+       "recordings": [],
+       "fixed_involving": 0,
+       "net_without": -1
+      },
+      "top3": {
+       "recordings": [],
+       "fixed_involving": 0,
+       "net_without": -1
+      },
+      "top5": {
+       "recordings": [],
+       "fixed_involving": 0,
+       "net_without": -1
+      },
+      "by_recording": [
+       [
+        "2022-07-26_15-43-05_320x240_4",
+        0,
+        1,
+        -1
+       ]
+      ]
+     }
+    }
+   }
+  },
+  "B7 - B7 frozen": {
+   "selection": {
+    "bootstrap": {
+     "native macro-F1": {
+      "delta": 0.0,
+      "ci95": [
+       0.0,
+       0.0
+      ]
+     },
+     "native cuts per clip": {
+      "delta": 0.028169014084507046,
+      "ci95": [
+       0.0,
+       0.06271809146662896
+      ]
+     },
+     "multi segment F1@50": {
+      "delta": -0.014002906054772501,
+      "ci95": [
+       -0.029321660397659346,
+       -0.00012476572650022938
+      ]
+     },
+     "multi boundary recall": {
+      "delta": 0.005235602094240899,
+      "ci95": [
+       0.0,
+       0.013333333333333312
+      ]
+     },
+     "multi boundary F1": {
+      "delta": -0.016661684664150744,
+      "ci95": [
+       -0.03024982645556181,
+       -0.004928875282720171
+      ]
+     },
+     "same-class cut rate": {
+      "delta": 0.01739130434782609,
+      "ci95": [
+       0.004081217852994857,
+       0.03389830508474576
+      ]
+     }
+    },
+    "consistent_with_totals": true,
+    "segments": {
+     "B7": [
+      455,
+      549,
+      502
+     ],
+     "B7 frozen": [
+      454,
+      530,
+      502
+     ]
+    },
+    "units": {
+     "fixed": [
+      "multi_selection_0023#2",
+      "multi_selection_0078#3",
+      "multi_selection_0078#4",
+      "multi_selection_0080#0"
+     ],
+     "new_errors": [
+      "multi_selection_0046#0",
+      "multi_selection_0057#3",
+      "multi_selection_0100#0"
+     ],
+     "concentration": {
+      "fixed": 4,
+      "new_errors": 3,
+      "net": 1,
+      "recordings_in_fixed": 4,
+      "recordings_in_new_errors": 2,
+      "top1": {
+       "recordings": [
+        "2022-03-25_08-44-50_320x240_3"
+       ],
+       "fixed_involving": 1,
+       "net_without": 0
+      },
+      "top3": {
+       "recordings": [
+        "2022-03-25_08-44-50_320x240_3",
+        "2022-03-25_09-13-33_320x240_001_0",
+        "2022-03-28_15-40-18_320x240_17"
+       ],
+       "fixed_involving": 3,
+       "net_without": -2
+      },
+      "top5": {
+       "recordings": [
+        "2022-03-25_08-44-50_320x240_3",
+        "2022-03-25_09-13-33_320x240_001_0",
+        "2022-03-28_15-40-18_320x240_17",
+        "2022-07-04_09-22-51_000_320x240_6"
+       ],
+       "fixed_involving": 4,
+       "net_without": -3
+      },
+      "by_recording": [
+       [
+        "2022-03-25_08-44-50_320x240_3",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-03-25_09-13-33_320x240_001_0",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-03-28_15-40-18_320x240_17",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-07-04_09-22-51_000_320x240_6",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-03-28_15-40-18_320x240_1",
+        0,
+        1,
+        -1
+       ],
+       [
+        "2022-05-26_10-29-41_320x240_0",
+        0,
+        2,
+        -2
+       ]
+      ]
+     }
+    },
+    "natives": {
+     "fixed": [],
+     "new_errors": [],
+     "concentration": {
+      "fixed": 0,
+      "new_errors": 0,
+      "net": 0,
+      "recordings_in_fixed": 0,
+      "recordings_in_new_errors": 0,
+      "top1": {
+       "recordings": [],
+       "fixed_involving": 0,
+       "net_without": 0
+      },
+      "top3": {
+       "recordings": [],
+       "fixed_involving": 0,
+       "net_without": 0
+      },
+      "top5": {
+       "recordings": [],
+       "fixed_involving": 0,
+       "net_without": 0
+      },
+      "by_recording": []
+     }
+    }
+   },
+   "calibration": {
+    "bootstrap": {
+     "native macro-F1": {
+      "delta": -0.007049497661252957,
+      "ci95": [
+       -0.02477896727896726,
+       0.0
+      ]
+     },
+     "native cuts per clip": {
+      "delta": 0.021097046413502116,
+      "ci95": [
+       0.0,
+       0.04797735806305428
+      ]
+     },
+     "multi segment F1@50": {
+      "delta": 0.0010379056389192565,
+      "ci95": [
+       -0.006594130874412243,
+       0.011316930383559576
+      ]
+     },
+     "multi boundary recall": {
+      "delta": 0.002512562814070307,
+      "ci95": [
+       -0.005620941295415303,
+       0.014925373134328401
+      ]
+     },
+     "multi boundary F1": {
+      "delta": -0.0011273221905454545,
+      "ci95": [
+       -0.008520346262657769,
+       0.006429714697698444
+      ]
+     },
+     "same-class cut rate": {
+      "delta": 0.0,
+      "ci95": [
+       0.0,
+       0.0
+      ]
+     }
+    },
+    "consistent_with_totals": true,
+    "segments": {
+     "B7": [
+      508,
+      526,
+      518
+     ],
+     "B7 frozen": [
+      506,
+      523,
+      518
+     ]
+    },
+    "units": {
+     "fixed": [
+      "multi_calibration_0015#2",
+      "multi_calibration_0015#3",
+      "multi_calibration_0015#4"
+     ],
+     "new_errors": [
+      "multi_calibration_0115#3"
+     ],
+     "concentration": {
+      "fixed": 3,
+      "new_errors": 1,
+      "net": 2,
+      "recordings_in_fixed": 3,
+      "recordings_in_new_errors": 1,
+      "top1": {
+       "recordings": [
+        "2022-05-07_14-25-11_320x240_8"
+       ],
+       "fixed_involving": 1,
+       "net_without": 1
+      },
+      "top3": {
+       "recordings": [
+        "2022-05-07_14-25-11_320x240_8",
+        "2022-06-30_09-06-00_000_320x240_7",
+        "2022-07-04_09-59-30_320x240_1"
+       ],
+       "fixed_involving": 3,
+       "net_without": -1
+      },
+      "top5": {
+       "recordings": [
+        "2022-05-07_14-25-11_320x240_8",
+        "2022-06-30_09-06-00_000_320x240_7",
+        "2022-07-04_09-59-30_320x240_1"
+       ],
+       "fixed_involving": 3,
+       "net_without": -1
+      },
+      "by_recording": [
+       [
+        "2022-05-07_14-25-11_320x240_8",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-06-30_09-06-00_000_320x240_7",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-07-04_09-59-30_320x240_1",
+        1,
+        0,
+        1
+       ],
+       [
+        "2022-07-04_09-22-51_320x240_3",
+        0,
+        1,
+        -1
+       ]
+      ]
+     }
+    },
+    "natives": {
+     "fixed": [],
+     "new_errors": [
+      "2022-07-26_15-58-25_320x240_6"
+     ],
+     "concentration": {
+      "fixed": 0,
+      "new_errors": 1,
+      "net": -1,
+      "recordings_in_fixed": 0,
+      "recordings_in_new_errors": 1,
+      "top1": {
+       "recordings": [],
+       "fixed_involving": 0,
+       "net_without": -1
+      },
+      "top3": {
+       "recordings": [],
+       "fixed_involving": 0,
+       "net_without": -1
+      },
+      "top5": {
+       "recordings": [],
+       "fixed_involving": 0,
+       "net_without": -1
+      },
+      "by_recording": [
+       [
+        "2022-07-26_15-58-25_320x240_6",
+        0,
+        1,
+        -1
+       ]
+      ]
+     }
+    }
+   }
+  }
+ },
+ "references": {
+  "selection": {
+   "value": 0.934409687184662,
+   "system": "E0 B3 tuned",
+   "source": "runs/20261002-061914-md_simple_decoders-8e834aa6-s0/validation_metrics.json"
+  },
+  "calibration": {
+   "value": 0.9721421709894332,
+   "system": "B7 with B3",
+   "source": "runs/20261002-145232-md_posterior_decoders_B7-38bbcf7c-s0/posterior_decoders.json"
+  },
+  "calibration_sensitivity": {
+   "value": 0.9738935784747763,
+   "system": "geometry G1 ASRF three-seed mean",
+   "source": "docs/results/2026-10-04_geometry_pretraining/report.json goals/G1 ASRF/calibration",
+   "note": "reported separately; changes neither the start conditions nor the final goal"
+  }
+ },
+ "start_conditions": {
+  "q_feasible": true,
+  "margins_vs_references": {
+   "selection": -0.02063367132737759,
+   "calibration": -0.00782201669820859
+  },
+  "margins_vs_controls": {
+   "B7": {
+    "selection": 0.04793396067174682,
+    "calibration": -0.008859922337127846
+   }
+  },
+  "infeasible_controls": [
+   "E0"
+  ],
+  "floors": {
+   "selection": {
+    "boundary_recall": 0.9554973821989529,
+    "native_macro_f1": 0.9650312221231043
+   },
+   "calibration": {
+    "boundary_recall": 0.9773869346733668,
+    "native_macro_f1": 0.9850094876660341
+   }
+  },
+  "met": {
+   "1": false,
+   "2": false,
+   "3": false,
+   "4": true
+  },
+  "start_training": false,
+  "sensitivity_calibration": -0.009573424183551671
+ }
+}
