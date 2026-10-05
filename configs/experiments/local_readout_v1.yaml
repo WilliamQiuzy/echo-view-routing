@@ -92,3 +92,12 @@ start_conditions:
   - "unit tests pass (tests/test_local_readout.py), and a sanity run (256 spans, one epoch) runs end to end; it is not
     reported"
   - "one GPU job at a time; the test split is not read"
+
+amendments:                               # after the results; the rules and numbers above are unchanged
+  - "2026-10-04, wording only, from the project lead's review of the results: the first interpretation rule's second
+    sentence ('the patch tokens add no detectable A4C/A5C information') overstates. The result shows only that this
+    readout and training produced no consistent gain over P1; ending the route is an operational decision. The
+    generated report keeps the rule's original wording. In readout.tokens_P2, P2 can attend to the global token but has
+    no residual frame module, so P2 - P1 is a parameter-matched comparison of two readouts, not a nested test in which
+    P2 can reproduce every function of P1. P1 - P0 changes the residual module, the parameter count and the temporal
+    weighting together, so a P1 - P0 difference is not attributable to temporal weighting alone."

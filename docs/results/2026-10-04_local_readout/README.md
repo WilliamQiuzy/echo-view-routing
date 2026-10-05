@@ -15,8 +15,9 @@ Three readouts classify the same spans as A4C or A5C.
 
 P1 and P2 read the same layer at the same width, see identical tokens from one forward pass, use the same batches and
 start from the same head and temporal weights. P1's residual module has as many parameters as P2's token attention
-(329,091 against 328,836 trainable parameters in all). P2 − P1 is the main comparison. Because the global token is
-among P2's tokens, a gain of P2 would mean the patch tokens add something. The attention pooling follows Ilse et al.
+(329,091 against 328,836 trainable parameters in all). P2 − P1 is the main comparison. P2 can attend to the global
+token, but it does not contain P1's residual frame module. This is a parameter-matched comparison of two readouts,
+not a nested test in which P2 can reproduce every function of P1. The attention pooling follows Ilse et al.
 (ICML 2018); it is an established method, not a contribution here.
 
 The design, budget, statistics and stop rules were committed before any training (`configs/experiments/local_readout_v1.yaml`,
@@ -24,8 +25,9 @@ commit 07cd481). Spans, frames, labels, weights, seeds, optimiser and budget are
 
 ## Answer
 
-Under the pre-declared rule, **the hypothesis ends**. Read this way, the patch tokens add no detectable A4C/A5C
-information to the global token.
+Under the pre-declared rule, **this local-readout route ends**. This readout of patch tokens produced no consistent
+performance gain over P1. That is an operational stopping decision, not evidence that the tokens contain no additional
+A4C/A5C information. This wording clarification on 2026-10-04 changes neither the pre-registered rule nor any number.
 
 1. **Span classification.** P2 − P1 shows no consistent difference in accuracy, A4C recall, A5C recall or separation
    on either half.
@@ -38,10 +40,12 @@ information to the global token.
 3. **Against the references.** On the selection half, all three arms are consistently below ASRF's default (−2.3 to
    −4.5 points) and below the strongest previous configuration (−4.9 to −7.0 points). None meets the final goal on
    either half. Against the highest previous calibration mean instead of the fixed reference, no verdict changes.
-4. **An observation outside the main question.** Learned temporal weighting ranks spans better than the plain mean.
+4. **An observation outside the main question.** P1's combined readout ranks spans better than P0's plain mean.
    P1 − P0 separation is consistently higher on the calibration half (+1.2 to +3.4 AUC points) and higher in every
    seed on the selection half (+0.5 to +0.7, not consistent). Accuracy and the full system do not improve
-   consistently. The better ranking does not turn into better decisions at the fixed threshold of 0.5.
+   consistently. The better ranking does not turn into better decisions at the fixed threshold of 0.5. P1 also adds
+   a residual frame module and more parameters than P0, so the gain cannot be attributed to temporal weighting alone.
+   Whether a threshold chosen on calibration would improve the full system has not been tested in this round.
 
 **What this does not show.** It does not show that local image information is useless for A4C/A5C. It covers one
 readout: the frozen encoder's last-layer tokens through the projection trained for the global token, attention pooling,
@@ -110,7 +114,7 @@ calibration; the final goal needs 1 point more.
 | Classification gain of P2 over P1 | no |
 | System gain of P2 over P1 | no |
 
-The first rule applies: the hypothesis ends. No larger readout, intermediate layer or fine-tuning follows from this
+The first rule applies: this local-readout route ends, as an operational decision. No larger readout, intermediate layer or fine-tuning follows from this
 result automatically. The final goal is unchanged and not met. Beating B3, ASRF and the strongest previous
 configuration with the thresholds met remains open.
 
