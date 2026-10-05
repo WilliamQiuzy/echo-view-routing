@@ -241,7 +241,7 @@ def markdown(r: dict) -> list[str]:
             if a["chosen"] is None:
                 continue
             for ref, d in a["span_changes"]["selection"].items():
-                md.append(f"- seed {s['seed']} {arm} vs {ref}: " + "; ".join(f"{k} {v['spans']} ({v['clips']}, {v['sessions']}; {v['spans_from_common_clips']})" for k, v in d.items()))
+                md.append(f"- seed {s['seed']} {arm} {ref}: " + "; ".join(f"{k} {v['spans']} ({v['clips']}, {v['sessions']}; {v['spans_from_common_clips']})" for k, v in d.items()))
     md += ["", "Units and native clips (selection half; clips, sessions; touching the common clips):", ""]
     for s in r["seeds"]:
         for arm in ARMS:
@@ -249,7 +249,7 @@ def markdown(r: dict) -> list[str]:
             if a["chosen"] is None:
                 continue
             for ref, d in a["unit_changes"]["selection"].items():
-                md.append(f"- seed {s['seed']} {arm} vs {ref}: " + "; ".join(f"{k} {v['n']} ({v['clips']}, {v['sessions']}; {v['n_touching_common_clips']})" for k, v in d.items() if v["n"]))
+                md.append(f"- seed {s['seed']} {arm} {ref}: " + "; ".join(f"{k} {v['n']} ({v['clips']}, {v['sessions']}; {v['n_touching_common_clips']})" for k, v in d.items() if v["n"]))
     md += ["", "## Final goal (unchanged; calibration is optimistic here)", "", "```", json.dumps(r["goals"], indent=1), "```",
            "", "## Terms and reading", "", "```", json.dumps(r["terms"], indent=1), "```", "", f"Reading: **{r['reading']}**"]
     return md
