@@ -80,3 +80,16 @@ interpretation:
     such"
   - "'No consistent difference detected' is not evidence of no effect; the test split of EV9V stays sealed and the
     paper stays paused"
+
+amendments:                               # after the results; the rules and numbers above are unchanged
+  - "2026-10-05, from the project lead's review of the results.
+    (1) The term ev9v_kept means only that no EV9V decline against D0 was detected consistently across the three
+    seeds; thresholds are still missed in some seeds (D2 + ASRF native macro-F1 0.954 and 0.951 on the selection half;
+    D2 + B3 boundary recall 0.932 and 0.937 there).
+    (2) The Pediatric B3 gains lie in labelling and fewer false cuts, not in boundary detection: B3's boundary recall
+    shows no consistent change.
+    (3) The ASRF arm describes how an ASRF trained on the source domain transfers after visual adaptation. An equal
+    target-domain supervision budget for every system was possible but not given, so this comparison says nothing
+    about the ceiling of an ASRF adapted to Pediatric.
+    (4) The Pediatric training extension is ended. Authorisation under item 6 of the Research Use Agreement is not
+    confirmed (pediatric_transfer_v2.yaml, amendments); no further training on Pediatric before clarification"
