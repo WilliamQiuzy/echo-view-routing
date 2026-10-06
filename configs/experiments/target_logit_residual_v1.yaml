@@ -1,0 +1,62 @@
+# Target-logit residual readout: Z (zero-initialised CLS readout) and R (target-frame logits plus the same
+# zero-initialised CLS correction), three seeds each, against the three frozen C models of the center-supervision round
+# (docs/superpowers/plans/2026-10-06-target-logit-residual-training.md). Fixed and committed before any training.
+#
+# Everything not set here comes unchanged from the source round (ev9v_center_supervision_v1.yaml, center_supervision):
+# the E1 encoder and image path, blocks 8-11 + ln_post + proj trainable, the two-layer relative-position temporal head,
+# the windows, the optimiser, the budget, fp32 without TF32, the final epoch and the B3 evaluation grid.
+extends: ev9v_center_supervision_v1.yaml
+run_name: target_logit_residual_v1
+experiment: target_logit_residual_v1
+
+target_logit_residual:
+  source:
+    training_config: {path: configs/experiments/ev9v_center_supervision_v1.yaml,
+                      sha256: 3048b6a024f6362d75522e80ac31276a0124c0000616a4f1e8fd4c84d4d6669b}
+    manifest_index: {path: runs/center_supervision_v1/manifests/index.json,
+                     sha256: 8e2148b46d5cf028943f7000cffdfe114f31ed9320a5f6f14343359bfc1227a1}
+    status: {path: runs/center_supervision_v1/status.json,
+             sha256: 4a65c30b315b1d2d42c558f181c4bc1d6a5b08827fb31ae928f5c1767e397a71}
+    c_final: {C_s0: 05fa4ff74dd540310881c4d37e188ee04ec929ff7bab48b7b64dcd2d419745a2,
+              C_s1: 5c48f173b482fd37b3e3f8444ff2df2ce2edbdc6f0d3a7bc49b467ce9fc09d07,
+              C_s2: 370b7861c3655bc589e233b6d30eb236879a55fb53246e13f1e8d47d97e592f7}
+    data: "SC_s{seed}.npz of the source round, unchanged: 4 native and 4 mixed windows per update, same frames, gamma, order and repeats"
+    source_init: "init_s{seed}.pt of the source round, the state before any training (never a trained C checkpoint)"
+  arms:
+    Z: "final logits = delta = W h + b, the CLS readout after the final LayerNorm; W and b start at zero"
+    R: "final logits = a_c + delta; a_c = the frame head's logits at the target sample (positions with offset 0, averaged when a short clip repeats the frame); the same zero-initialised delta"
+  init: "per seed, the source init with head.head.weight and head.head.bias set to zero once; one file shared by Z and R; all other parameters equal to the source"
+  target: "C's hard target: CE(final logits, label[c]) + 0.5 x CE(frame logits, frame labels); no other loss term"
+  seeds: [0, 1, 2]
+  queue_order: "seed 0, 1, 2; within a seed Z then R; one GPU job at a time"
+  namespace: target_logit_residual_v1   # runs/, checkpoints/ and logs of this round only
+  identity: >-
+    sha256 of the experiment name, arm, seed, the full effective config, the source training config digest, the
+    manifest digest, the new init digest and the digests of echo_routing/vit/residual_target.py and
+    scripts/train_target_logit_residual.py. The old C runs are verified with their own training config.
+  smoke:
+    updates: 6
+    init_equivalence: 1.0e-5     # R at the start against the frame head (the E1 probe) on the same fp32 embedding
+    parity: {reference_fp32: 1.0e-3, cache_fp16: 2.0e-2}   # reported separately
+    reproducibility: {loss_abs: 1.0e-4, params_abs: 1.0e-5}
+    resume: {params_abs: 1.0e-5}   # 3 + 3 updates with a reload against 6 in one go
+    gradients: >-
+      First backward: the window output layer, the frame head and the encoder have finite non-zero gradients; the
+      temporal path before the output layer has exactly zero gradient, as expected with W = 0. After the first update
+      (non-zero learning rate) the temporal path has finite non-zero gradients.
+  evaluation:
+    primary_output: "each arm's final logits (R: the sum; Z and C: the CLS readout); never the frame head"
+    rows: [argmax, B3]
+    b3: "the center_supervision grid and rule: calibration only, native macro-F1 >= 0.980 and boundary recall >= 0.95, highest segment F1@50, ties by grid order; applied once to selection; no feasible setting = failure, 9/0.95/5 shown as a diagnostic"
+    comparisons: {primary: R - Z, required: [R - C, Z - C]}
+    delta_zero: "every R model once with delta = 0 (the target frame logits alone); it must equal that model's J-grid"
+    diagnostics: "native confusion, per-class recall with counts, fixed/new by source recording; target-sample error in native, single-recording and mixed windows (recording-weighted); the 474-target context probe; internal cuts; same-class join false cuts"
+    bootstrap: {draws: 2000, seed: 20261002}
+    consistent: "all three seeds' intervals exclude zero in the same direction; an interval containing zero is not equality"
+    archive: "per-sequence probabilities of every model on the server; summary without recording ids in the repository"
+  goal:                          # only one R + B3 system can be the candidate
+    selection_min: 0.944409687184662          # 0.934409687184662 + 0.01
+    calibration_min: 0.9821421709894332       # 0.9721421709894332 + 0.01
+    calibration_sensitivity: 0.9738935784747763
+    per_seed: "boundary recall >= 0.95 on both halves; native macro-F1 >= 0.973 (selection) and >= 0.980 (calibration); a B3 diagnostic row passes nothing"
+  stop: "after the six trainings; no automatic encoder freezing, distillation, gate, residual weight, longer training or threshold search"
