@@ -39,7 +39,7 @@ import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
 import torch  # noqa: E402
 
-from echo_routing.config import gpu_memory_fraction, load_paths  # noqa: E402
+from echo_routing.config import gpu_memory_fraction, load_config, load_paths  # noqa: E402
 from echo_routing.evaluate.complementarity import changes, sha256_file  # noqa: E402
 from echo_routing.evaluate.failure_units import session_of  # noqa: E402
 from echo_routing.evaluate.window_target import category, nearest_centre, window_frames  # noqa: E402
@@ -191,7 +191,11 @@ def main() -> None:
     torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False
     device = torch.device("cuda"); torch.cuda.set_per_process_memory_fraction(gpu_memory_fraction())
     hashes = check_inputs(rd, root)
-    runs = verify(cfg, cs, paths, root / rd["inputs"]["status"]["path"], root / Path(rd["inputs"]["manifest_index"]["path"]).parent)
+    # the runs' identities were built from the training config (its experiment name included); verify against it
+    train_cfg = load_config(root / rd["inputs"]["center_supervision_config"]["path"])
+    if train_cfg["center_supervision"] != cs:
+        raise SystemExit("the inherited center_supervision section differs from the training config")
+    runs = verify(train_cfg, cs, paths, root / rd["inputs"]["status"]["path"], root / Path(rd["inputs"]["manifest_index"]["path"]).parent)
     if {k: v["final_sha256"] for k, v in runs.items()} != rd["inputs"]["final_checkpoints"]:
         raise SystemExit("final checkpoints differ from the config")
     prev = json.loads((root / rd["inputs"]["previous_report"]["path"]).read_text())["models"]
