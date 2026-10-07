@@ -1,0 +1,52 @@
+# Frozen transfer check of the short-segment discriminators (docs/superpowers/plans/2026-10-07-short-segment-transfer.md).
+# Fixed and committed before any validation candidate is built or scored.
+#
+# Q0 and Q1 of short_segment_probe_v1 are rebuilt exactly (stored C, the original training library, the committed code;
+# no hyperparameter search) and applied unchanged to both validation halves, with the original thresholds. This is a
+# development-set transfer check: the halves were not used to fit these discriminators, but the project has used them
+# repeatedly and E1's historical choices involved them. It is not an independent validation or an unseen-patient
+# result. Nothing enters the full system; the test split stays sealed.
+#
+# Inherits short_segment_probe_v1.yaml, so the generator (J0, kappa 8), the candidate pattern, the category rules, the
+# tolerance and the Q0 / Q1 feature definitions are the same code and the same values.
+extends: short_segment_probe_v1.yaml
+run_name: short_segment_transfer_v1
+experiment: short_segment_transfer_v1
+
+short_segment_transfer:
+  probe:                         # read only; every sha256 is checked before use
+    config: {path: configs/experiments/short_segment_probe_v1.yaml, sha256: ffa6ba0a1026ea0f75cd92a533d15ae10a385ffb1c264a4294ecf420cf4262ad}
+    summary: {path: docs/results/2026-10-07_short_segment_probe/summary.json, sha256: 6aaf2b6af28c08243a55662a6d34c71cf047a2529884fe58c7a8d233df243b23}
+    libraries:
+      0: {arrays: {path: runs/short_segment_probe_v1/library_s0.npz, sha256: a074bb4328d103589b5e7e8d9e86b299bd65283eccfe45c0556a7e811f4caf61},
+          meta: {path: runs/short_segment_probe_v1/library_meta_s0.json, sha256: 1b3b25081b850098d436b6950df738a5564209c2e9dd47266fd94bf0c18d2786}}
+      1: {arrays: {path: runs/short_segment_probe_v1/library_s1.npz, sha256: 901077318d1a606211ae34cb574caf836afb35d4c0798508f1d4fcf34fcd9aff},
+          meta: {path: runs/short_segment_probe_v1/library_meta_s1.json, sha256: 0d6b19a4d71ea33bdfcd4926da1e0c0ddea5ca0458604bd9453f695c344831bd}}
+      2: {arrays: {path: runs/short_segment_probe_v1/library_s2.npz, sha256: c3e90637edaa668b30644807d5cdbc5285c67cdf80dec4a15547828c6c1c19d8},
+          meta: {path: runs/short_segment_probe_v1/library_meta_s2.json, sha256: d97a1f191f1cbcf30bf281266b1faf6eecb216d72d49fe3477baae8134cea52d}}
+  models: [Q0, Q1]
+  rebuild:
+    rule: "per seed and model, scripts.short_segment_probe.logistic(stored C) fitted on the original train part; no search"
+    must_reproduce: "the 0.95 and 0.90 thresholds (within 1e-9), the held-out AUC (within 1e-12) and every held-out keep and removal rate of the original summary"
+    saved: "the fitted pipelines (scaler and classifier), pickled on the server with their sha256"
+  thresholds: {primary: "0.95", secondary: "0.9"}   # the probe's calibration thresholds, applied unchanged; never re-chosen
+  halves: [selection, calibration]                  # the protocol's validation halves: native clips, pair streams, multi streams
+  inputs: "the L1_s{k} probabilities and fp16 features of the B_s{k} store, as for the training library"
+  tables:
+    primary: "per seed and half: correct A4C/A5C middles kept / wrongly removed; wrong A4C/A5C middles removed / missed; the same for other class pairs; every count with its recordings and sessions"
+    other: "candidates outside the binary task: count, share of all candidates and reason (sides not X, a third class under the middle, a reference change under the middle)"
+    auxiliary: "AUC per seed and half"
+  diagnostics:
+    sources: ["native clips", "pair streams", "multi streams"]
+    joins: "within 5 samples of the middle: a same-view join only when the reference view is the same on both sides of every such join; a view-change join otherwise; or no join"
+    length: "middle 10-40 samples"
+    small_subsets: "reported with counts and intervals; no extra streams are built to enlarge them"
+  bootstrap: {draws: 2000, seed: 20261002, units: "constructed stream for stream candidates, session for native candidates; the two halves pooled per seed for the decision"}
+  decision:                      # fixed before the check; per seed the two halves are pooled; 'most seeds' = at least 2 of 3
+    rates: "at the primary threshold: K = keep rate of correct middles, R = removal rate of wrong middles, overall (all) and for A4C/A5C pairs (aa)"
+    fails: "a model fails when, in most seeds, AUC < 0.80 or K_all < 0.90 or R_all < 0.50"
+    practical_Q0: "Q0 has practical value when, in most seeds, K_all >= 0.90, R_all >= 0.50, K_aa >= 0.90 and R_aa >= 0.50"
+    high_but_aa: "Q0 is high overall but removes correct A4C/A5C middles when, in most seeds, AUC >= 0.95, K_all >= 0.95 and R_all >= 0.80, while K_aa < 0.90"
+    extra_Q1: "Q1 shows extra value when, in every seed, the interval of Q1 - Q0 for R_all lies above zero, Q1's K_all is at most 2 points below Q0's, and Q1 - Q0 for R_aa is not below zero"
+    order: "both fail -> stop both discriminators and redesign training data and supervision; else Q1 extra value -> check by independent sources, then plan a full-system comparison; else Q0 practical value -> a full-system experiment of the simple Q0 comes first; else Q0 high overall but removes A4C/A5C -> not suited to the key problem, not integrated; else no branch -> not integrated, reported as is"
+  limitation: "the probe chose C by CV grouped by constructed stream; reused recordings can cross those folds, so the CV scores may be optimistic; C is not re-chosen here"
