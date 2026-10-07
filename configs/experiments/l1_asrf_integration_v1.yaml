@@ -1,0 +1,94 @@
+# L1 features with matched ASRF: the official ASRF trained on two frozen 512-d feature sets under one recipe, three
+# seeds each (docs/superpowers/plans/2026-10-07-l1-asrf-integration.md). Fixed before any training or new metric.
+#
+# Inherits model_development_v2.yaml for the frozen protocol, the 1,500-stream training bank, the validation banks and
+# the evaluation keys (10 Hz, boundary tolerance). Every parameter of this round sits under l1_asrf. The visual encoders
+# and heads are frozen; no new module, loss change, normalisation, masking augmentation, early stopping, selection-half
+# checkpoint choice, threshold search, test data or EchoNet-Pediatric data or products.
+extends: model_development_v2.yaml
+run_name: l1_asrf_integration_v1
+experiment: l1_asrf_integration_v1
+
+l1_asrf:
+  inputs:                        # every sha256 is checked before use
+    protocol: {path: runs/20261002-051140-model_development_protocol-fa45e7f4-s0/protocol.json,
+               sha256: a897483b776e8cff1ba8b92774c6a82537758bcba6abd362f2d8603f37997593}
+    e1_feature_manifest: {path: models_frozen/e1_echoviewclip_probe/v1/feature_manifest.json,
+                          sha256: 56f59166ba3f1b428867e4ec9a7e6dfd800cb5bccd79db8191d3c916421f17c3}
+    e1_cache_key: 16efc85be645   # cache_v2 (numeric frame order): E1 features (fp16), probe probabilities and logits
+    visual_export: {path: models_frozen/e1_echoviewclip_probe/v1/visual_encoder_fp32.pt,
+                    sha256: c9f87aa2edaa9ba1fc2ad0617c59e7a3ffcb63ea4a33e154d21c5f4acb9d5869}
+    visual_reference: {path: models_frozen/e1_echoviewclip_probe/v1/visual_encoder_fp32.json,
+                       sha256: 274cab6b8e844bff260477262b603af9c64d5e3c2e95fa7b7b60195b5ae4238d}
+    probe: {path: models_frozen/e1_echoviewclip_probe/v1/probe.pt,
+            sha256: 41f2033d53b3ad334fc549bd50ff8c6f4387dca50851bcc5109d010171146531}
+    fan224_config: {path: configs/experiments/fan224_visual_adaptation_v1.yaml,
+                    sha256: 166489adda9fb1c3267af69fff6ed144abf655a007336e116737b461de438a9d}
+    l1_models:                   # the frozen L1 runs of the fan224 round (legacy input, head + block 11 + ln_post + proj)
+      0: {frozen: models_frozen/fan224_visual_adaptation_v1/L1_s0, final_sha256: 6ec3d7201ebb49e5ea7848114f7c3818d6011476a6270d83a7b6ff36a18bcef9,
+          identity: 97e3d603063fab2ed3223626a459502a70895c93446a36b2c6c58fb47f2be1cc}
+      1: {frozen: models_frozen/fan224_visual_adaptation_v1/L1_s1, final_sha256: ec770c6e03ed3e3bb6dadb06204468d247a58b514a6e5615f81701ed4291322d,
+          identity: 92e8e26e650d438532d1acfc43a79934e921f3bfc756b6f3ccbfa562de12d511}
+      2: {frozen: models_frozen/fan224_visual_adaptation_v1/L1_s2, final_sha256: 75c5210ae6a3e5d140b8255bc3c152de7ecaa76ca029f7cd085a85d8fcef219f,
+          identity: da01c4afec04e997dabab0adc7d71b77cc8327f6be5038bbb20c528fdbe4d964}
+    l1_train_features: cache_v2/fan224_visual_adaptation_v1/train   # <L1_s{seed}>/<video>.npz + index.json, from report_fan224_visual.py --phase train-features
+  b_cache:                       # Task 1: one standard feature cache per L1 seed (cache_v2/features/<key>/<variant>/), new paths only
+    train: "the fan224 train export: frame_idx and feat (fp16) as stored; t_sec copied from the E1 cache after checking frame_idx"
+    validation: "every 10 Hz sample of the protocol's validation clips in orig and gamma090, extracted with the frozen L1 weights through the legacy input"
+    scores: "logit = the frozen L1 head on the stored fp16 feature (fp32 arithmetic); prob = softmax(logit); the export's stored probabilities serve as a check only"
+    parity: {stored_vs_online_fp16: 2.0e-2, export_reference_fp32: 1.0e-3, export_prob_max_abs: 5.0e-2}   # the last bounds the recomputed scores against the export's stored probabilities
+    index_order: "each variant's index rows in the E1 cache's row order (the training bank is drawn in index order)"
+  arms:
+    A: "the E1 feature cache (E1 encoder, legacy input), the matched control"
+    B: "the L1_s{seed} feature cache (legacy input), the pre-specified candidate"
+  seeds: [0, 1, 2]
+  queue_order: "seed 0, 1, 2; within a seed A then B; one GPU job at a time"
+  asrf:
+    repo: third_party/asrf
+    commit: 9623f1e8d9a1171333a4eeb65d190997b6c44a95
+    model: {in_channel: 512, n_classes: 5, n_features: 64, n_layers: 10, n_stages: 4, n_stages_asb: 4, n_stages_brb: 4}
+    loss: "official ActionSegmentationLoss (CE with class weights + Gaussian-similarity TMSE, weight 0.15) + lambda_b x BoundaryRegressionLoss (pos_weight)"
+    lambda_b: 0.1
+    boundary_th: 0.5
+    decoding: "official refinement_with_boundary at boundary_th 0.5; nothing appended"
+    weights: "median-frequency class weights and pos_weight = 1 / boundary-positive share, from the seed's epoch-0 batch labels (official rules); identical for A and B"
+    feature_normalisation: none
+    augmentation: none
+  training:
+    streams_per_batch: 4
+    natives_per_batch: 4
+    native_window: 256
+    native_per_epoch: 1500
+    epochs: 50                   # 375 updates per epoch, 18,750 per model; no early stopping
+    updates_per_epoch: 375
+    lr: 3.0e-4
+    weight_decay: 1.0e-4
+    grad_clip: 1.0
+    warmup_epochs: 2             # linear warm-up per update, then cosine to 0 (echo_routing.temporal.dev_train.lr_factor)
+    precision: "fp32, TF32 off, cuDNN deterministic"
+    dropout: "the official layers; the RNG is seeded with the seed right before the first update, so A and B of a seed draw the same masks"
+    init: "one saved ASRF initial state per seed (seed_everything(seed), then build); A and B load the same file"
+    batches: "TrainData.epoch_batches(seed, epoch, ...): identical sequence identities, lengths, labels and boundary targets for A and B"
+    resume: "after every epoch: weights, optimiser, scheduler, RNG, epoch records"
+  checkpoint_rule:               # new for this comparison; the historical E1 + ASRF chose on selection with early stopping
+    half: calibration            # the selection half is never read during training or checkpoint choice
+    native_min: 0.980
+    recall_min: 0.95
+    order: "highest segment F1@50 among feasible epochs; ties to fewer native internal cuts, then the earlier epoch"
+    infeasible: "the final epoch is reported as a diagnostic and cannot pass the goal"
+  evaluation:                    # Task 3, after all six trainings and checkpoint choices
+    systems: ["A + ASRF (3 seeds)", "B + ASRF (3 seeds)", "L1 + B3 (3 seeds, reproduced from the fan224 round)", "E0 + B3", "E1 + B3", "B7 + B3", "E1 + ASRF (historical, seeds 0-2)"]
+    main: "B - A"
+    secondary: "B - (L1 + B3)"
+    bootstrap: {draws: 2000, seed: 20261002}   # native clips by session, streams by stream (approximate)
+    fragment_transfer: "per reference same-class interval of every stream: the visual head's class by majority of per-frame argmax and by mean probability, on the same source frames and gamma; the whole source recordings with the same gamma and rule"
+    fault_localisation: "every true view change: found (both views right / a view wrong), merged, displaced, no candidate; extra cuts; as scripts/pediatric_boundary_faults.py, re-implemented without importing it"
+  goal:
+    system: "B + ASRF"
+    selection_min: 0.944409687184662          # 0.934409687184662 + 0.01
+    calibration_min: 0.9821421709894332       # 0.9721421709894332 + 0.01
+    calibration_sensitivity: 0.9738935784747763
+    per_seed: "a feasible checkpoint; boundary recall >= 0.95 and native macro-F1 >= 0.973 (selection) / 0.980 (calibration) in every seed and half"
+  stop_rules: >-
+    After the six trainings and one evaluation the combination stops. No encoder fine-tuning, ASRF loss change, output
+    head replacement, longer training or new search is started from these results.

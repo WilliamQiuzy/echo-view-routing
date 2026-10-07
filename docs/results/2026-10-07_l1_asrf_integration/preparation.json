@@ -1,0 +1,162 @@
+{
+ "what": "Pre-training record of the L1 + ASRF round (plan Tasks 1-2): input digests, the E1 and L1 parity checks, the three B caches, the A/B alignment and the seed-0 smoke checks. Produced before any training or calibration metric of this round.",
+ "inputs_sha256": {
+  "protocol": "a897483b776e8cff1ba8b92774c6a82537758bcba6abd362f2d8603f37997593",
+  "e1_feature_manifest": "56f59166ba3f1b428867e4ec9a7e6dfd800cb5bccd79db8191d3c916421f17c3",
+  "visual_export": "c9f87aa2edaa9ba1fc2ad0617c59e7a3ffcb63ea4a33e154d21c5f4acb9d5869",
+  "visual_reference": "274cab6b8e844bff260477262b603af9c64d5e3c2e95fa7b7b60195b5ae4238d",
+  "probe": "41f2033d53b3ad334fc549bd50ff8c6f4387dca50851bcc5109d010171146531",
+  "fan224_config": "166489adda9fb1c3267af69fff6ed144abf655a007336e116737b461de438a9d"
+ },
+ "e1_parity": {
+  "reference_max_abs": 2.86102294921875e-06,
+  "cache_fp16_max_abs": 0.0009722709655761719,
+  "cache_frames": 32
+ },
+ "b_caches": {
+  "L1_s0": {
+   "seed": 0,
+   "cache_key": "ebe798a624df",
+   "feature_manifest_sha256": "010af824ca3736352898da123350596c7bc7867103a71ce787830c9aecabc0a0",
+   "train_recordings": 3364,
+   "validation_recordings": 521,
+   "export_prob_max_abs_gap": 0.0001748800277709961,
+   "index_sha256": {
+    "orig": "52999a0d7116e2be22960b122c322566403a3534f9753bc28ca5ff2609c5236a",
+    "gamma090": "e460503b5eaf459ad90a93af010470f3f67f6499fede355e1eb496a6d25531f9"
+   },
+   "parity": {
+    "frames": 32,
+    "max_abs": {
+     "orig": 0.001880645751953125,
+     "gamma090": 0.001926422119140625
+    }
+   },
+   "feature_manifest": "runs/l1_asrf_integration_v1/features/feature_manifest_L1_s0.json"
+  },
+  "L1_s1": {
+   "seed": 1,
+   "cache_key": "49ef2810d941",
+   "feature_manifest_sha256": "297df54359d4e562f4d409154ce157f6f6cf9d1596d8a6eecc9ec096ca413705",
+   "train_recordings": 3364,
+   "validation_recordings": 521,
+   "export_prob_max_abs_gap": 0.00015687942504882812,
+   "index_sha256": {
+    "orig": "01aad95cc3136dbf92e50ab30ec25cb877b69050a51328d7d5542c52da47a1f0",
+    "gamma090": "1fdba689575670e6f4276503601c6c631861d72cdbea42aa9855107bc208c6a7"
+   },
+   "parity": {
+    "frames": 32,
+    "max_abs": {
+     "orig": 0.0018935203552246094,
+     "gamma090": 0.0019407272338867188
+    }
+   },
+   "feature_manifest": "runs/l1_asrf_integration_v1/features/feature_manifest_L1_s1.json"
+  },
+  "L1_s2": {
+   "seed": 2,
+   "cache_key": "e83275fd433d",
+   "feature_manifest_sha256": "427b0fac64c5990c377aa207a064098091f3d8f692f31c8c212cf88473af04a4",
+   "train_recordings": 3364,
+   "validation_recordings": 521,
+   "export_prob_max_abs_gap": 0.00016951560974121094,
+   "index_sha256": {
+    "orig": "57dca5aa48edf376a8ffa0d773a9ee26b8e8e9bce74a9f4bb64dbdbefe3d124a",
+    "gamma090": "12160608a22f990102c6d34eb7f084ad83e300d8890b1ee6298bc6ea681aa76f"
+   },
+   "parity": {
+    "frames": 32,
+    "max_abs": {
+     "orig": 0.0019407272338867188,
+     "gamma090": 0.0018467903137207031
+    }
+   },
+   "feature_manifest": "runs/l1_asrf_integration_v1/features/feature_manifest_L1_s2.json"
+  }
+ },
+ "alignment": {
+  "B_s0": {
+   "train_streams": 1500,
+   "train_streams_feature_differ": 1500,
+   "selection_pairs_feature_differ": 137,
+   "selection_multi_feature_differ": 120,
+   "calibration_pairs_feature_differ": 115,
+   "calibration_multi_feature_differ": 120,
+   "recordings_checked": 3885
+  },
+  "B_s1": {
+   "train_streams": 1500,
+   "train_streams_feature_differ": 1500,
+   "selection_pairs_feature_differ": 137,
+   "selection_multi_feature_differ": 120,
+   "calibration_pairs_feature_differ": 115,
+   "calibration_multi_feature_differ": 120,
+   "recordings_checked": 3885
+  },
+  "B_s2": {
+   "train_streams": 1500,
+   "train_streams_feature_differ": 1500,
+   "selection_pairs_feature_differ": 137,
+   "selection_multi_feature_differ": 120,
+   "calibration_pairs_feature_differ": 115,
+   "calibration_multi_feature_differ": 120,
+   "recordings_checked": 3885
+  }
+ },
+ "preparation_seconds": 481.7,
+ "smoke_seed0": {
+  "A": {
+   "reproducibility": {
+    "loss_max_abs": 2.384185791015625e-07,
+    "params_max_abs": 7.450580596923828e-09
+   },
+   "resume_params_max_abs": 7.450580596923828e-09,
+   "padding_label_loss_diff": 0.0,
+   "padded_positions": 831,
+   "zero_or_missing_gradients": [],
+   "parameters": 310,
+   "loss_first": 1.8343099355697632,
+   "selection_guard": true,
+   "seconds_per_update": 0.09229313373565674,
+   "seconds_per_calibration_eval": 6.459750652313232,
+   "peak_gpu_memory_mb": 240.37548828125,
+   "estimated_minutes_per_run": 34.22472983598709,
+   "ok": true,
+   "identity": "a104748a7a9075eb94835aa18fb624bea57166faeef24707a071061a36172714",
+   "plan_sha256": "0eac4adea8e7c3a863d526ed1b4f0a968be57864a295bdc874f27d01db8005a4",
+   "init_sha256": "5ff6f2285be88c755fe77127f55f84ea4f0698b7b6a7112d84edbd0f22ef776b",
+   "cache_key": "16efc85be645"
+  },
+  "B": {
+   "reproducibility": {
+    "loss_max_abs": 3.5762786865234375e-07,
+    "params_max_abs": 8.381903171539307e-08
+   },
+   "resume_params_max_abs": 7.450580596923828e-09,
+   "padding_label_loss_diff": 0.0,
+   "padded_positions": 831,
+   "zero_or_missing_gradients": [],
+   "parameters": 310,
+   "loss_first": 1.8394521474838257,
+   "selection_guard": true,
+   "seconds_per_update": 0.0921302604675293,
+   "seconds_per_calibration_eval": 6.2889063358306885,
+   "peak_gpu_memory_mb": 240.37548828125,
+   "estimated_minutes_per_run": 34.031461675961815,
+   "ok": true,
+   "identity": "c48e32759436b98638f027d467b00befcc947eabd609a700c0fa1e8294c792da",
+   "plan_sha256": "0eac4adea8e7c3a863d526ed1b4f0a968be57864a295bdc874f27d01db8005a4",
+   "init_sha256": "5ff6f2285be88c755fe77127f55f84ea4f0698b7b6a7112d84edbd0f22ef776b",
+   "cache_key": "ebe798a624df"
+  }
+ },
+ "smoke_shared": {
+  "plan_sha256_equal": true,
+  "init_sha256_equal": true,
+  "cache_keys": {
+   "A": "16efc85be645",
+   "B": "ebe798a624df"
+  }
+ }
+}
