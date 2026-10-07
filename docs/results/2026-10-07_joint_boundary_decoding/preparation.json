@@ -1,0 +1,173 @@
+{
+ "what": "Pre-metric record of the joint boundary decoding round (--extract): input digests, the boundary files, the reproduction of every stored B + ASRF prediction by the official decode, the check of the candidate peaks against the official argrelmax, the L1 probability checks and the alignment profiles of the boundary probabilities. No metric of this round existed when it was written.",
+ "inputs_sha256": {
+  "protocol": "a897483b776e8cff1ba8b92774c6a82537758bcba6abd362f2d8603f37997593",
+  "e1_feature_manifest": "56f59166ba3f1b428867e4ec9a7e6dfd800cb5bccd79db8191d3c916421f17c3",
+  "l1_asrf_config": "6a052003d0594ca4192e1d29ad8d0c474e2b916d755cd1d5d9c04d4adb520218",
+  "l1_asrf_summary": "c223af7636a1a741a9656b01e5ed5ebbf9d202fe4741dab618fefdf29558fe1a",
+  "l1_asrf_details": "7f4001d17ad39537f2a33dce954ba0f636743ff126bbbb9346847cb296b46fa0",
+  "fan224_details": "a1489f5d4dce814f5bfc57429483197927e9ea8646b06d5edbedf74d9d157548",
+  "seed 0": "verified",
+  "seed 1": "verified",
+  "seed 2": "verified"
+ },
+ "seconds": 58.5,
+ "seeds": {
+  "0": {
+   "sequences": {
+    "selection": {
+     "count": 541,
+     "official_decode_reproduces_stored_predictions": true,
+     "candidates_equal_official_argrelmax": true
+    },
+    "calibration": {
+     "count": 472,
+     "official_decode_reproduces_stored_predictions": true,
+     "candidates_equal_official_argrelmax": true
+    }
+   },
+   "l1_probs": {
+    "selection": {
+     "sequences": 541,
+     "max_abs_gap_to_b_store": 0.00010943412780761719
+    },
+    "calibration": {
+     "sequences": 472,
+     "max_abs_gap_to_b_store": 0.00016251206398010254
+    }
+   },
+   "alignment_calibration": {
+    "changes": 456,
+    "mean_b_by_offset": {
+     "-3": 0.044871999283235424,
+     "-2": 0.07964871526443555,
+     "-1": 0.16753785454937697,
+     "0": 0.9735012853910264,
+     "1": 0.20278152238920724,
+     "2": 0.07289793911867921,
+     "3": 0.05989985659477513
+    },
+    "peak_offset": 0
+   },
+   "alignment_training": {
+    "changes": 1041,
+    "mean_b_by_offset": {
+     "-3": 0.04133422751879672,
+     "-2": 0.06981034834728747,
+     "-1": 0.1598765605310914,
+     "0": 0.9829138230718494,
+     "1": 0.19896957703296178,
+     "2": 0.07695255196035108,
+     "3": 0.06360188225175967
+    },
+    "peak_offset": 0
+   },
+   "boundaries": "runs/joint_boundary_decoding_v1/boundaries/B_s0.npz",
+   "boundaries_sha256": "25088a66cda25988394499e8eaca25fccd7be1c03fdce0160679199b3f529d31"
+  },
+  "1": {
+   "sequences": {
+    "selection": {
+     "count": 541,
+     "official_decode_reproduces_stored_predictions": true,
+     "candidates_equal_official_argrelmax": true
+    },
+    "calibration": {
+     "count": 472,
+     "official_decode_reproduces_stored_predictions": true,
+     "candidates_equal_official_argrelmax": true
+    }
+   },
+   "l1_probs": {
+    "selection": {
+     "sequences": 541,
+     "max_abs_gap_to_b_store": 0.00010994076728820801
+    },
+    "calibration": {
+     "sequences": 472,
+     "max_abs_gap_to_b_store": 0.0001360177993774414
+    }
+   },
+   "alignment_calibration": {
+    "changes": 456,
+    "mean_b_by_offset": {
+     "-3": 0.03637491005346212,
+     "-2": 0.039239227837115004,
+     "-1": 0.06692251134377888,
+     "0": 0.9704527550248282,
+     "1": 0.0964272358330179,
+     "2": 0.03786849012708684,
+     "3": 0.0345459901727736
+    },
+    "peak_offset": 0
+   },
+   "alignment_training": {
+    "changes": 1041,
+    "mean_b_by_offset": {
+     "-3": 0.026394883561123423,
+     "-2": 0.0314948537892874,
+     "-1": 0.06133108317367124,
+     "0": 0.9823969716007582,
+     "1": 0.11654431791170916,
+     "2": 0.03624688597967692,
+     "3": 0.03294771773034776
+    },
+    "peak_offset": 0
+   },
+   "boundaries": "runs/joint_boundary_decoding_v1/boundaries/B_s1.npz",
+   "boundaries_sha256": "10f61410412a7e936814f4d3f7c2902220bef96a66dcd9bace1e40c7d13f2b09"
+  },
+  "2": {
+   "sequences": {
+    "selection": {
+     "count": 541,
+     "official_decode_reproduces_stored_predictions": true,
+     "candidates_equal_official_argrelmax": true
+    },
+    "calibration": {
+     "count": 472,
+     "official_decode_reproduces_stored_predictions": true,
+     "candidates_equal_official_argrelmax": true
+    }
+   },
+   "l1_probs": {
+    "selection": {
+     "sequences": 541,
+     "max_abs_gap_to_b_store": 0.0001385509967803955
+    },
+    "calibration": {
+     "sequences": 472,
+     "max_abs_gap_to_b_store": 0.0001342296600341797
+    }
+   },
+   "alignment_calibration": {
+    "changes": 456,
+    "mean_b_by_offset": {
+     "-3": 0.028799605320241346,
+     "-2": 0.03518407315705349,
+     "-1": 0.08184571517682471,
+     "0": 0.967964891836521,
+     "1": 0.08548658386867478,
+     "2": 0.03216967681114431,
+     "3": 0.04394800379266503
+    },
+    "peak_offset": 0
+   },
+   "alignment_training": {
+    "changes": 1041,
+    "mean_b_by_offset": {
+     "-3": 0.029853941939639382,
+     "-2": 0.029969245580588194,
+     "-1": 0.08083190506446739,
+     "0": 0.9817621107861815,
+     "1": 0.0927172225887022,
+     "2": 0.028828731278072967,
+     "3": 0.051049400226429544
+    },
+    "peak_offset": 0
+   },
+   "boundaries": "runs/joint_boundary_decoding_v1/boundaries/B_s2.npz",
+   "boundaries_sha256": "b5b2befc4976836d8204d1db1ad85d0b2c80647267da9dea526aed81b2450a9e"
+  }
+ }
+}

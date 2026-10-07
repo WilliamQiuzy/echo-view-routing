@@ -1,0 +1,101 @@
+# Joint boundary decoding: can ASRF's boundary evidence, used inside one joint decode, reduce how much correct visual
+# evidence the full system loses? (docs/superpowers/plans/2026-10-07-joint-boundary-decoding.md). Fixed before any metric.
+#
+# Nothing is trained. The three frozen L1 models give per-sample five-class probabilities (the exact arrays that L1 + B3
+# decoded in the fan224 round), and the three frozen B + ASRF models of the L1 + ASRF round give per-sample boundary
+# probabilities. Two decoders read only these arrays. Inherits model_development_v2.yaml for the frozen protocol, the
+# validation banks and the evaluation keys (10 Hz, boundary tolerance). No encoder or head training, no label change, no
+# test data, no EchoNet-Pediatric data or products.
+extends: model_development_v2.yaml
+run_name: joint_boundary_decoding_v1
+experiment: joint_boundary_decoding_v1
+
+joint_decoding:
+  inputs:                        # every sha256 is checked before use
+    protocol: {path: runs/20261002-051140-model_development_protocol-fa45e7f4-s0/protocol.json,
+               sha256: a897483b776e8cff1ba8b92774c6a82537758bcba6abd362f2d8603f37997593}
+    e1_feature_manifest: {path: models_frozen/e1_echoviewclip_probe/v1/feature_manifest.json,   # sequence references and the references' inputs
+                          sha256: 56f59166ba3f1b428867e4ec9a7e6dfd800cb5bccd79db8191d3c916421f17c3}
+    l1_asrf_config: {path: configs/experiments/l1_asrf_integration_v1.yaml,
+                     sha256: 6a052003d0594ca4192e1d29ad8d0c474e2b916d755cd1d5d9c04d4adb520218}
+    l1_asrf_summary: {path: docs/results/2026-10-07_l1_asrf_integration/summary.json,             # B + ASRF rows to reproduce
+                      sha256: c223af7636a1a741a9656b01e5ed5ebbf9d202fe4741dab618fefdf29558fe1a}
+    l1_asrf_details: {path: runs/l1_asrf_integration_v1/report/details.json,                      # server only: the three clips' ids
+                      sha256: 7f4001d17ad39537f2a33dce954ba0f636743ff126bbbb9346847cb296b46fa0}
+    fan224_details: {path: runs/fan224_visual_adaptation_v1/report/details.json,                   # L1 + B3 parameters and rows
+                     sha256: a1489f5d4dce814f5bfc57429483197927e9ea8646b06d5edbedf74d9d157548}
+    seeds:
+      0:
+        l1_probs: {path: runs/fan224_visual_adaptation_v1/report/probs_L1_s0.npz, sha256: a70c6a52aa16583edae6ece7c9555a25231b52dbeb7b8dd63db5638ee6e387f8}
+        asrf: {frozen: models_frozen/l1_asrf_integration_v1/B_s0, selected_sha256: a0708667d9825a694edfcf3fdf4229c8026c75e02b494724ea07ad22789b171d}
+        b_feature_manifest: {path: runs/l1_asrf_integration_v1/features/feature_manifest_L1_s0.json, sha256: 010af824ca3736352898da123350596c7bc7867103a71ce787830c9aecabc0a0}
+        asrf_preds: {path: runs/l1_asrf_integration_v1/report/preds_B_s0.npz, sha256: 0e5bffa19c2b6ed03d346a9a20a7dc61caa7055c918e0473bac21600a03b31df}
+      1:
+        l1_probs: {path: runs/fan224_visual_adaptation_v1/report/probs_L1_s1.npz, sha256: c93c30742bc0d260c01894a7a16b39f2b1b0684988d877b5454f6d6783bd1d30}
+        asrf: {frozen: models_frozen/l1_asrf_integration_v1/B_s1, selected_sha256: 783fa63df03bf131996d191cf422593dff974f0730572376ac12804085dcbe7d}
+        b_feature_manifest: {path: runs/l1_asrf_integration_v1/features/feature_manifest_L1_s1.json, sha256: 297df54359d4e562f4d409154ce157f6f6cf9d1596d8a6eecc9ec096ca413705}
+        asrf_preds: {path: runs/l1_asrf_integration_v1/report/preds_B_s1.npz, sha256: 69e3170733ea58734cb54f5c44d00d7a9b24691434915849eba393eada2fde61}
+      2:
+        l1_probs: {path: runs/fan224_visual_adaptation_v1/report/probs_L1_s2.npz, sha256: cd9b1309cbd96b4c6e0a95ae18c5e3b32cc931a022058bd94a946931c9c1976b}
+        asrf: {frozen: models_frozen/l1_asrf_integration_v1/B_s2, selected_sha256: 3c42c8cd903aa392485b0b56b3030379f15207ad3427ed4c22d1c63de2e08de2}
+        b_feature_manifest: {path: runs/l1_asrf_integration_v1/features/feature_manifest_L1_s2.json, sha256: 427b0fac64c5990c377aa207a064098091f3d8f692f31c8c212cf88473af04a4}
+        asrf_preds: {path: runs/l1_asrf_integration_v1/report/preds_B_s2.npz, sha256: 00eed1729c758a1587a67f7275514b44e1906824ec1b21e303481782eb99699a}
+  seeds: [0, 1, 2]               # seed k pairs L1_s{k} probabilities with the B_s{k} + ASRF boundaries trained on L1_s{k} features
+  decoder:
+    objective: "sum_t log p_t(y_t) + lambda * sum_{t>=1} [c_t log b_t + (1 - c_t) log(1 - b_t)] - kappa * sum_{t>=1} c_t; c_t = 1 when y_t != y_{t-1}"
+    p: "the L1_s{k} softmax probabilities of each sequence as stored by the fan224 report (fp32 features); never thresholded"
+    b: "sigmoid of the last boundary stage of the frozen B_s{k} + ASRF (checkpoint chosen on calibration in the L1 + ASRF round), run on the B_s{k} features of the same sequence"
+    alignment: "b_t pairs with c_t at the same index: ASRF's boundary target marks t when labels[t] != labels[t-1], and its official decode starts a segment at each accepted peak t"
+    eps: 1.0e-6                  # p clipped to [eps, 1], b clipped to [eps, 1 - eps]; float64 arithmetic
+    first_sample: "no transition term (b_0 is not used)"
+    ties: "staying beats switching when the two scores are equal; among equal predecessors and among equal final states the lowest class index wins"
+    reads: "p and b only; no reference labels, joins, source-recording boundaries or other sequence metadata"
+    search: "exact Viterbi over the whole sequence (5 classes); no thresholding of b into intervals, no vote-then-merge"
+  grid:
+    lambda: [0.0, 0.25, 0.5, 1.0, 2.0]
+    kappa: [0.0, 1.0, 2.0, 4.0, 8.0]
+    order: "lambda ascending, then kappa ascending (order 0 = lambda 0, kappa 0 = per-sample argmax)"
+  systems:
+    J0: "lambda = 0 (fixed switch cost); kappa chosen from the lambda = 0 row"
+    J1: "lambda and kappa chosen from the whole grid; lambda = 0 is allowed, and then J1 equals J0 and the boundary term cannot be credited"
+  choice:
+    half: calibration            # the selection half is not loaded until the choices are written and committed
+    per_seed: true
+    native_min: 0.980
+    recall_min: 0.95
+    rule: "highest multi-stream segment F1@50 among feasible settings; ties to the lower order (echo_routing.evaluate.complementarity.select_setting)"
+    infeasible: "reported as a failure for that seed and system; no fallback setting; the system then cannot pass the goal"
+  evaluation:
+    procedure: "the frozen choices are applied once to both halves; the full grid is never decoded on the selection half"
+    systems: ["J0 (3 seeds)", "J1 (3 seeds)", "L1 + B3 (3 seeds, reproduced)", "B + ASRF (3 seeds, reproduced from stored predictions)", "E0 + B3", "E1 + B3", "B7 + B3", "E1 + ASRF (historical, seeds 0-2)"]
+    main: "J1 - J0"
+    secondary: ["J1 - (L1 + B3)", "J1 - (B + ASRF)", "J1 - (E0 + B3)", "J1 - (B7 + B3)", "J0 - (L1 + B3)"]
+    strongest_references: "E0 + B3 (selection; the goal's selection value is its score + 0.01) and B7 + B3 (calibration; the goal's calibration value is its score + 0.01)"
+    bootstrap: {draws: 2000, seed: 20261002}   # native clips by session, streams by stream (approximate)
+    stable: "J1 is stably better than a system when all three seeds' 95% intervals for segment F1@50 lie above zero on the selection half, and no seed's calibration interval lies below zero (calibration chose the parameters, so its intervals are optimistic)"
+    tolerance_samples: 5         # true view change found = a final change matched one-to-one within 5 samples; displaced up to 15
+  diagnostics:                   # fixed here, computed once with the main table
+    three_clips: "the selection native clips that B + ASRF misreads and L1 + B3 reads correctly in every seed (ids from the L1 + ASRF details, server only): how many each system reads correctly; native clips newly misread against B + ASRF and against L1 + B3, by clip and session"
+    merged_changes: "true view changes of multi streams that B + ASRF misses although an ASRF candidate cut (accepted peak, argrelmax at 0.5) lies within 5 samples: how many J0 and J1 find (both views right / a view wrong), with the source recordings on both sides and their sessions"
+    extra_changes: "unmatched final changes more than 5 samples from every true change, inside a clip or at a same-view join, per system, with recordings and sessions; native clips with internal label switches"
+    visual_evidence: "fragments that the frozen L1 head reads correctly both as a fragment and as a whole recording (majority rule, B_s{k} store probabilities as in the L1 + ASRF round) and that sit in units the system does not match: fragments, recordings, sessions"
+    units: "unit outcomes by cause (echo_routing.evaluate.failure_units) for every system"
+    candidate_cuts: "the ASRF candidates serve every system in the change classification, so merged means a missed change with an ASRF candidate nearby"
+  checks:
+    - "brute force over all paths equals the dynamic programme on short random sequences"
+    - "lambda = 0 reproduces J0 exactly and ignores b; J0 agrees with the B2 HMM Viterbi on tie-free inputs"
+    - "the official ASRF decode from the extracted outputs reproduces the stored B + ASRF predictions of every validation sequence"
+    - "mean b around true changes peaks at offset 0 on training streams and on calibration streams"
+    - "every L1 probability array has its sequence's length; its gap to the B_s{k} store probabilities is reported (limit 5e-2)"
+    - "L1 + B3 and B + ASRF reproduce their earlier rows (5 metrics within 1e-12)"
+  goal:
+    system: "J1"
+    selection_min: 0.944409687184662          # 0.934409687184662 + 0.01
+    calibration_min: 0.9821421709894332       # 0.9721421709894332 + 0.01
+    calibration_sensitivity: 0.9738935784747763
+    per_seed: "a feasible choice; boundary recall >= 0.95 and native macro-F1 >= 0.973 (selection) / 0.980 (calibration) in every seed and half"
+  stop_rules: >-
+    If J1 is not stably better than both J0 and L1 + B3, the joint-decoding route ends: no further grid, clipping rule,
+    decoder variant or network. If J1 gains but misses the goal, the local gain is reported and whether training is
+    worthwhile is decided afterwards. Passing the goal on this twice-used development set would still need a separate
+    confirmation plan.
