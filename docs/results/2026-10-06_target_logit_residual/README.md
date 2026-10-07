@@ -7,6 +7,9 @@ The configuration and pipeline were committed before training (9eed6d8). Only EV
 and the two validation halves were read only after all six runs had ended. The test split and EchoNet-Pediatric were
 not read, and the public labels are unchanged.
 
+After the round closed, the lead asked for two additions, made without training or tuning. They are single-frame
+controls for the context probe (end of section 4) and a corrected definition of cuts per clip (Terms).
+
 ## Answers
 
 1. **Which six models were trained.** Z and R, each with seeds 0, 1 and 2.
@@ -59,7 +62,9 @@ threshold search was tried.
   0.95 there. The qualifying setting with the highest segment F1@50 is then applied once to the selection half. When
   no setting qualifies, the fixed setting 9 / 0.95 is shown as a diagnostic, and such rows pass nothing.
 - **Native clips** are whole single-view recordings. A clip is read correctly when the majority of its samples is.
-- **Cuts per clip** count label changes inside native clips. All of them are false.
+- **Cuts per clip** count additional label switches within clips assigned a single reference label. The
+  recording-level labels cannot confirm that every such switch is a real error; the evaluation convention counts
+  each one as an extra cut.
 - **Points** are hundredths of a metric. For example, +2.5 points of segment F1@50 means +0.025.
 
 ## 1. Results per model
@@ -235,11 +240,68 @@ view fills the rest of the window.
 | 14 of 16 | 0.979–0.980 | 0.978–0.982 | 0.967–0.980 |
 
 - **R keeps the target's own view when another view fills most of the window.** With 4 of 16 frames from the target,
-  R is right 94% of the time, while C and Z are right in 2–6% of cases.
+  R is right 94% of the time, while C and Z are right in 2–6% of cases. This is below what the target frame alone
+  gives (single-frame controls below).
 - **With 12 or 14 frames from the target, R is equal to or slightly below C and Z.** Its same-view accuracy is also
   slightly lower (0.975–0.989 against 0.983–1.000).
 - **The probe shows that R's output follows the target frame**, as the direct path is designed to do. The round did
   not test whether this property causes R's extra cuts.
+
+**Single-frame controls, added after the round closed.** R reads the target frame directly, so the probe's 94% could
+come from that frame alone. Two controls therefore read only the target frame of the same 474 targets (256 on the
+selection half, 218 on the calibration half). The first is frozen E1, the fp32 export with its probe, which is every
+arm's starting point. The second is each R model's own trained frame head. Every R model's Δ = 0 reading of the probe
+windows equals its frame-head control (logits within 4 × 10⁻⁶). Its final output reproduces the probe table above
+exactly.
+
+| Reading | Seed 0 | Seed 1 | Seed 2 |
+|---|---|---|---|
+| Frozen E1, target frame only | 0.960 | 0.960 | 0.960 |
+| R's own frame head, target frame only | 0.954 | 0.951 | 0.949 |
+| R final, 4 of 16 from the target, other view around | 0.939 | 0.941 | 0.938 |
+| R final, 8 of 16, other view | 0.957 | 0.961 | 0.953 |
+| R final, 12 of 16, other view | 0.968 | 0.975 | 0.964 |
+| R final, 14 of 16, other view | 0.973 | 0.980 | 0.967 |
+| R final, own window (16 of 16) | 0.977 | 0.981 | 0.970 |
+| R final, 4 of 16, same view around | 0.989 | 0.989 | 0.985 |
+
+The next table gives R final minus each control, in points with session-bootstrap 95% intervals (2,000 draws, seed
+20261002).
+
+| Window | Control | Seed 0 | Seed 1 | Seed 2 |
+|---|---|---|---|---|
+| 4 of 16, other view | own frame head | −1.5 (−2.3, −0.8) | −1.1 (−2.0, −0.1) | −1.2 (−1.8, −0.5) |
+| 4 of 16, other view | frozen E1 | −2.1 (−4.2, −0.4) | −1.9 (−3.5, −0.5) | −2.2 (−4.2, −0.7) |
+| 8 of 16, other view | own frame head | +0.3 (−0.8, +1.3) | +0.9 (+0.1, +2.0) | +0.3 (−0.3, +1.0) |
+| 8 of 16, other view | frozen E1 | −0.3 (−2.0, +1.2) | +0.1 (−1.1, +1.3) | −0.7 (−2.6, +0.7) |
+| 12 of 16, other view | own frame head | +1.4 (+0.2, +2.6) | +2.4 (+1.2, +3.8) | +1.5 (+0.5, +2.5) |
+| 12 of 16, other view | frozen E1 | +0.8 (−0.7, +2.2) | +1.5 (+0.3, +2.9) | +0.4 (−1.2, +1.9) |
+| 14 of 16, other view | own frame head | +2.0 (+0.6, +3.4) | +2.8 (+1.5, +4.5) | +1.7 (+0.7, +2.8) |
+| 14 of 16, other view | frozen E1 | +1.3 (−0.2, +2.8) | +2.0 (+0.8, +3.4) | +0.7 (−0.9, +2.1) |
+| Own window, 16 of 16 | own frame head | +2.3 (+0.8, +4.0) | +3.0 (+1.6, +4.6) | +2.1 (+1.0, +3.3) |
+| Own window, 16 of 16 | frozen E1 | +1.7 (+0.2, +3.3) | +2.1 (+0.8, +3.6) | +1.1 (−0.4, +2.5) |
+| 4 of 16, same view | own frame head | +3.6 (+1.8, +5.7) | +3.8 (+2.1, +5.8) | +3.6 (+1.9, +5.5) |
+| 4 of 16, same view | frozen E1 | +3.0 (+1.0, +5.2) | +3.0 (+1.4, +4.8) | +2.5 (+0.9, +4.4) |
+
+At 4 of 16 with another view around, the final output fixes and newly breaks these windows against the frame head
+(source recordings in brackets): 7 (5) and 35 (28) in seed 0, 13 (6) and 33 (31) in seed 1, and 8 (7) and 30 (28) in
+seed 2. Of the new errors, 30, 32 and 28 name the other view. Against frozen E1 the counts are 17 (6) and 57 (33),
+15 (5) and 51 (37), and 11 (5) and 53 (35).
+
+- **The 94% includes no gain beyond single-frame recognition.** At 4 of 16 with another view around, R's final
+  output is below its own frame head on the target frame alone in every seed (−1.1 to −1.5 points), and below frozen
+  E1 (−1.9 to −2.2 points). All six intervals lie below zero. Most of the windows it newly gets wrong name the other
+  view.
+- **Gains beyond the single frame appear when more of the window shows the target's view.**
+  - With 12 or 14 of 16 target frames, or with the full own window, the final output is above R's own frame head in
+    all three seeds, with intervals above zero.
+  - Against frozen E1 the same gains hold in all three seeds in none of these conditions.
+  - With same-view frames around the target, the final output is 2.5 to 3.8 points above the frame head at every share
+    and seed, with all intervals above zero. It is 1.5 to 3.0 points above frozen E1. Those E1 intervals exclude zero
+    at 4 and 8 of 16 in all seeds, but not in seed 2 at 12 and 14 of 16.
+- **What this means for the probe.** R's 94% at 4 of 16 reflects that it reads the target frame directly. The
+  correction lowers accuracy when another view fills most of the window and raises it when most frames show the
+  target's view. The probe does not test temporal order or motion.
 
 ## 5. Goal
 
@@ -302,5 +364,7 @@ The goal is not met by R, Z or C. As the plan fixes in advance, the round stops 
   paired comparisons, the goals for R, Z and C, the references, the run records and the timing. It contains no
   recording ids.
 - `report_tables.md` holds the generated tables.
+- `probe_single_frame_controls.json` holds every block of the single-frame controls, made by
+  `scripts/probe_single_frame_controls.py`. It contains no recording ids.
 - Per-recording details and the per-sequence probabilities of all nine models stay on the server in
   `runs/target_logit_residual_v1/report`.
