@@ -95,3 +95,50 @@ def test_sufficiency_and_decision():
     assert not sp.decide([_seed_result(0.01, -0.03, 0.0)] * 3)["extra_value"]                 # keeps too few true segments
     assert not sp.decide([_seed_result(0.01, 0.0, -0.1)] * 3)["extra_value"]                  # worse on spliced wrong segments
     assert sp.decide([_seed_result(0.01, 0.0, None)] * 3)["extra_value"]                      # no spliced (b) to judge
+
+
+# ----------------------------------------------------------------------------------------------- the training path, end to end
+import json  # noqa: E402
+from types import SimpleNamespace  # noqa: E402
+
+SP = {"seeds": [0], "model": {"C_grid": [0.01, 1.0]}, "operating_points": {"keep_rates": [0.95, 0.90]},
+      "evaluation": {"bootstrap": {"draws": 50, "seed": 3}}}
+
+
+def _library(seed=0, n_per=60):
+    """A synthetic library where the visual block carries the label and the Q0 block is noise."""
+    rng = np.random.default_rng(seed); meta, q0, vis, sim = [], [], [], []
+    for part, groups in (("train", 40), ("calibration", 20), ("held_out", 20)):
+        for i in range(n_per if part == "train" else n_per // 2):
+            cat = ("kept", "removed", "other")[i % 3]; g = f"{part}-g{i % groups}"
+            label = 1.0 if cat == "kept" else -1.0
+            q0.append(rng.standard_normal(33)); vis.append(rng.standard_normal(24) + 1.5 * label); sim.append(rng.standard_normal(2))
+            meta.append({"part": part, "group": g, "kind": "stream", "cat": cat, "splice": i % 4 == 0, "x": 2, "y": 3 if i % 2 else 0,
+                         "len_mid": 5 + i % 30, "mid_sessions": [g]})
+    return {"q0": np.asarray(q0, np.float32), "vis": np.asarray(vis, np.float32), "sim": np.asarray(sim, np.float32)}, meta
+
+
+def test_evaluate_seed_end_to_end():
+    arrays, meta = _library()
+    res = sp.evaluate_seed(arrays, meta, SP)
+    assert set(res["models"]) == set(sp.MODELS) and set(res["Q1 - Q0"]) == {"0.95", "0.9"}
+    q0, q1 = res["models"]["Q0"], res["models"]["Q1"]
+    assert q1["held_out_auc"] > 0.9 > q0["held_out_auc"]                                       # only Q1 sees the planted signal
+    assert q1["points"]["0.95"]["calibration"]["keep_rate_kept"] >= 0.95
+    d = res["Q1 - Q0"]["0.95"]
+    assert d["bootstrap"]["removal"]["delta"] > 0 and set(d["subgroup_removal"]) == {"all", "A4C/A5C pairs", "other pairs", "middle 10-40 samples"}
+
+
+def test_run_train_reports_insufficiency_and_results(tmp_path):
+    lib = tmp_path / "runs" / sp.NS; lib.mkdir(parents=True)
+    arrays, meta = _library()
+    np.savez_compressed(lib / "library_s0.npz", **arrays); (lib / "library_meta_s0.json").write_text(json.dumps(meta))
+    (lib / "composition.json").write_text(json.dumps({"seeds": {}}))
+    sp.run_train(SP, SimpleNamespace(repo_root=tmp_path), tmp_path / "out")
+    res = json.loads((tmp_path / "out" / "summary.json").read_text())
+    assert res["decision"]["reason"] == "insufficient examples in a part"                      # 10-20 per category is below 30
+    big_arrays, big_meta = _library(n_per=300)
+    np.savez_compressed(lib / "library_s0.npz", **big_arrays); (lib / "library_meta_s0.json").write_text(json.dumps(big_meta))
+    sp.run_train(SP, SimpleNamespace(repo_root=tmp_path), tmp_path / "out")
+    res = json.loads((tmp_path / "out" / "summary.json").read_text())
+    assert res["sufficiency"]["0"]["ok"] and "extra_value" in res["decision"] and (tmp_path / "out" / "report_tables.md").is_file()

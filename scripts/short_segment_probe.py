@@ -134,15 +134,25 @@ def bootstrap_diff(sa: np.ndarray, sb: np.ndarray, y: np.ndarray, ta: float, tb:
             out["removal"].append(float((sa[ii][yy == 0] < ta).mean() - (sb[ii][yy == 0] < tb).mean()))
         if (yy == 1).any():
             out["keep"].append(float((sa[ii][yy == 1] >= ta).mean() - (sb[ii][yy == 1] >= tb).mean()))
-    return {k: {"delta": point[k], "ci95": [float(np.percentile(v, 2.5)), float(np.percentile(v, 97.5))]} for k, v in out.items()}
+    ci = lambda v: [float(np.percentile(v, 2.5)), float(np.percentile(v, 97.5))] if v else [float("nan"), float("nan")]  # noqa: E731
+    return {k: {"delta": point[k], "ci95": ci(v)} for k, v in out.items()}
 
 
-def sufficient(meta_held_out: list[dict], need: dict) -> dict:
+def sufficient(meta_held_out: list[dict], need: dict, cats=("kept", "removed")) -> dict:
     out = {}
-    for cat in ("kept", "removed"):
+    for cat in cats:
         rows = [m for m in meta_held_out if m["cat"] == cat]
         out[cat] = {"candidates": len(rows), "sessions": len({s for m in rows for s in m["mid_sessions"]})}
-    out["ok"] = all(out[c]["candidates"] >= need["candidates"] and out[c]["sessions"] >= need["sessions"] for c in ("kept", "removed"))
+    out["ok"] = all(out[c]["candidates"] >= need["candidates"] and out[c]["sessions"] >= need["sessions"] for c in cats)
+    return out
+
+
+def parts_sufficient(meta: list[dict], need: dict) -> dict:
+    """The train part needs both categories (fitting), the calibration part the kept category (operating point) and the
+    held-out part both (evaluation), each at the configured counts."""
+    wanted = {"train": ("kept", "removed"), "calibration": ("kept",), "held_out": ("kept", "removed")}
+    out = {p: sufficient([m for m in meta if m["part"] == p], need, c) for p, c in wanted.items()}
+    out["ok"] = all(out[p]["ok"] for p in wanted)
     return out
 
 
@@ -271,15 +281,23 @@ def design(arrays: dict, model: str) -> np.ndarray:
     raise ValueError(model)
 
 
-def fit(x: np.ndarray, y: np.ndarray, groups: np.ndarray, grid: list[float]):
+def logistic(c: float):
+    """L2 logistic regression with lbfgs, stated explicitly (l1_ratio 0 is the L2 penalty in the scikit-learn API that
+    deprecates `penalty`)."""
     from sklearn.linear_model import LogisticRegression
-    from sklearn.model_selection import GroupKFold, cross_val_score
     from sklearn.pipeline import make_pipeline
     from sklearn.preprocessing import StandardScaler
-    make = lambda c: make_pipeline(StandardScaler(), LogisticRegression(C=c, class_weight="balanced", max_iter=5000))  # noqa: E731
-    cv = {c: float(np.mean(cross_val_score(make(c), x, y, groups=groups, cv=GroupKFold(n_splits=5), scoring="neg_log_loss"))) for c in grid}
+    return make_pipeline(StandardScaler(), LogisticRegression(C=c, l1_ratio=0.0, solver="lbfgs", class_weight="balanced", max_iter=5000))
+
+
+def fit(x: np.ndarray, y: np.ndarray, groups: np.ndarray, grid: list[float]):
+    """C by 5-fold stratified grouped CV (groups never split; both categories in every fold), ties to the smaller C."""
+    from sklearn.model_selection import StratifiedGroupKFold, cross_val_score
+    cv = {c: float(np.mean(cross_val_score(logistic(c), x, y, groups=groups, cv=StratifiedGroupKFold(n_splits=5), scoring="neg_log_loss"))) for c in grid}
+    if not all(np.isfinite(v) for v in cv.values()):
+        raise SystemExit(f"cross-validation gave a non-finite log loss {cv}; a fold lacks a category")
     best = max(cv.values()); c = min(k for k, v in cv.items() if v == best)
-    return make(c).fit(x, y), c, cv
+    return logistic(c).fit(x, y), c, cv
 
 
 def evaluate_seed(arrays: dict, meta: list[dict], sp: dict) -> dict:
@@ -319,14 +337,15 @@ def evaluate_seed(arrays: dict, meta: list[dict], sp: dict) -> dict:
 
 def run_train(sp: dict, paths, out_dir: Path) -> None:
     root = paths.repo_root; lib = root / "runs" / NS; comp = json.loads((lib / "composition.json").read_text()); res = {"seeds": {}, "composition": comp}
-    seeds = [int(s) for s in sp["seeds"]]; enough = all(comp["seeds"][str(s)]["sufficiency"]["ok"] for s in seeds)
-    if not enough:
-        res["decision"] = {"extra_value": False, "reason": "insufficient examples in the held-out part"}
+    seeds = [int(s) for s in sp["seeds"]]; metas = {s: json.loads((lib / f"library_meta_s{s}.json").read_text()) for s in seeds}
+    res["sufficiency"] = {str(s): parts_sufficient(metas[s], {"candidates": 30, "sessions": 15}) for s in seeds}
+    if not all(res["sufficiency"][str(s)]["ok"] for s in seeds):
+        res["decision"] = {"extra_value": False, "reason": "insufficient examples in a part"}
     else:
         for s in seeds:
             with np.load(lib / f"library_s{s}.npz") as z:
                 arrays = {k: z[k] for k in z.files}
-            res["seeds"][str(s)] = evaluate_seed(arrays, json.loads((lib / f"library_meta_s{s}.json").read_text()), sp); print(f"seed {s} trained", flush=True)
+            res["seeds"][str(s)] = evaluate_seed(arrays, metas[s], sp); print(f"seed {s} trained", flush=True)
         res["decision"] = decide([{"Q1 - Q0": {"0.95": res["seeds"][str(s)]["Q1 - Q0"]["0.95"]}} for s in seeds])
     out_dir.mkdir(parents=True, exist_ok=True); (out_dir / "summary.json").write_text(json.dumps(res, indent=1, default=str))
     (out_dir / "report_tables.md").write_text(tables_md(res)); print(json.dumps(res["decision"], indent=1)); print(f"wrote {out_dir}")
