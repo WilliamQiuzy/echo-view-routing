@@ -12,7 +12,9 @@
    Diagnostics, computed once with the main table:
    - fragment transfer: every reference unit of every multi-fragment stream is split into its source fragments; each
      fragment and its whole source recording (same variant, so the same gamma) is classified by the frozen visual head
-     (L1 for B and L1 + B3, E1 for A) with one rule at a time: majority of per-frame argmax, and mean probability;
+     (L1 for B and L1 + B3, E1 for A) with one rule at a time: majority of per-frame argmax, and mean probability.
+     The transfer table counts fragments, distinct source recordings and sessions per category, also split by the
+     system's outcome on the fragment's unit (added after the first evaluation pass, which counted fragments only);
    - unit outcomes (echo_routing.evaluate.failure_units): matched, or label / missed_cut / extra_cut / boundary_shift;
    - true view changes of the ASRF systems: found (both views right / a view wrong), merged, displaced, no candidate;
      extra cuts inside a clip or at a same-view join (the rules of scripts/pediatric_boundary_faults.py, re-implemented
@@ -97,6 +99,26 @@ def fragment_transfer(units_by_stream: dict, prob_of, rules=("majority", "mean")
 
 def transfer_category(recording_right: bool, fragment_right: bool) -> str:
     return TRANSFER[(0 if recording_right else 2) + (0 if fragment_right else 1)]
+
+
+def transfer_table(transfer_rows: list[dict], unit_rows: list[dict], rules=("majority", "mean")) -> dict:
+    """Per rule and transfer category: fragments, distinct source recordings and sessions, and the same counts split by
+    the system's outcome on the fragment's unit (matched, or the unit's cause). Fragments repeat recordings, so the
+    recording and session counts are the independent ones."""
+    outcome = {(u["stream"], u["unit"]): u["cause"] for u in unit_rows}
+    out = {}
+    for rule in rules:
+        cats: dict = {}
+        for r in transfer_rows:
+            c = cats.setdefault(r[f"{rule}_category"], {"fragments": 0, "recordings": set(), "sessions": set(), "by_outcome": {}})
+            c["fragments"] += 1; c["recordings"].add(r["video"]); c["sessions"].add(session_of(r["video"]))
+            o = c["by_outcome"].setdefault(outcome[(r["stream"], r["unit"])], {"fragments": 0, "recordings": set(), "sessions": set()})
+            o["fragments"] += 1; o["recordings"].add(r["video"]); o["sessions"].add(session_of(r["video"]))
+        out[rule] = {k: {"fragments": v["fragments"], "recordings": len(v["recordings"]), "sessions": len(v["sessions"]),
+                         "by_outcome": {o: {"fragments": w["fragments"], "recordings": len(w["recordings"]), "sessions": len(w["sessions"])}
+                                        for o, w in sorted(v["by_outcome"].items())}}
+                     for k, v in sorted(cats.items())}
+    return out
 
 
 def classify_changes(final: np.ndarray, cuts: list[int], labels: np.ndarray, joins: np.ndarray, semantic: np.ndarray) -> tuple[list[dict], dict]:
@@ -317,6 +339,7 @@ def run_evaluate(a, cfg: dict, la: dict, paths, device) -> None:
             faults = {h: fault_table(outs[h]["preds"], outs[h]["cuts"], inp.halves[h]) for h in HALVES}
             res["systems"][f"{key} + ASRF"] = {**rows, "chosen": man["chosen"]}; tables[key], preds[key] = tabs, {h: outs[h]["preds"] for h in HALVES}
             res["diagnostics"][f"{key} + ASRF"] = {"fragment_transfer": {h: {r: counts_by(transfer[h], f"{r}_category") for r in ("majority", "mean")} for h in HALVES},
+                                                   "transfer_table": {h: transfer_table(transfer[h], units[h][0]) for h in HALVES},
                                                    "units": {h: units[h][1] for h in HALVES}, "faults": faults}
             if arm == "B":
                 vis = {h: {s.seq_id: classify_rule(s.prob, "majority") == int(s.labels[0]) for s in inp.halves[h].natives} for h in HALVES}
@@ -330,7 +353,8 @@ def run_evaluate(a, cfg: dict, la: dict, paths, device) -> None:
         res["systems"][f"L1_s{seed} + B3"] = {**rows, "reproduction": chk}; tables[f"L1_s{seed}"], preds[f"L1_s{seed}"] = tabs, p_l1
         prob_of = (lambda v, var, s=inputs[f"B_s{seed}"].store: s.get(v, var).prob)
         tr = {h: fragment_transfer({s.recipe.recipe_id: stream_units(s.recipe) for s in inputs[f"B_s{seed}"].halves[h].multi}, prob_of) for h in HALVES}
-        res["diagnostics"][f"L1_s{seed} + B3"] = {"units": {h: unit_table(p_l1[h], inputs[f"B_s{seed}"].halves[h], tr[h])[1] for h in HALVES}}
+        ul = {h: unit_table(p_l1[h], inputs[f"B_s{seed}"].halves[h], tr[h]) for h in HALVES}
+        res["diagnostics"][f"L1_s{seed} + B3"] = {"units": {h: ul[h][1] for h in HALVES}, "transfer_table": {h: transfer_table(tr[h], ul[h][0]) for h in HALVES}}
         for name, (x, y) in {"B - A": (f"B_s{seed}", f"A_s{seed}"), "B - (L1 + B3)": (f"B_s{seed}", f"L1_s{seed}")}.items():
             res["comparisons"][f"s{seed}|{name}"] = {h: compare_one(tables[x][h], tables[y][h], preds[x][h], preds[y][h], seqs[h]) for h in HALVES}
     res["goal_B"] = goal(la, [res["systems"][f"B_s{s} + ASRF"] for s in la["seeds"]]); res["goal_A"] = goal(la, [res["systems"][f"A_s{s} + ASRF"] for s in la["seeds"]])

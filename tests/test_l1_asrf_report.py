@@ -40,6 +40,22 @@ def test_fragment_transfer_uses_the_same_variant_and_rule_for_fragment_and_recor
     assert c["majority_category"] == "recording right, fragment right" and c["variant"] == "gamma090"
 
 
+def test_transfer_table_counts_recordings_sessions_and_system_outcomes():
+    rows = [{"stream": "s", "unit": 0, "video": "p1_1", "majority_category": "recording right, fragment wrong", "mean_category": "recording right, fragment right"},
+            {"stream": "s", "unit": 1, "video": "p1_1", "majority_category": "recording right, fragment wrong", "mean_category": "recording right, fragment wrong"},
+            {"stream": "t", "unit": 0, "video": "p1_2", "majority_category": "recording right, fragment right", "mean_category": "recording right, fragment right"},
+            {"stream": "t", "unit": 0, "video": "p2_1", "majority_category": "recording right, fragment right", "mean_category": "recording right, fragment right"}]
+    units = [{"stream": "s", "unit": 0, "cause": "label"}, {"stream": "s", "unit": 1, "cause": "matched"}, {"stream": "t", "unit": 0, "cause": "missed_cut"}]
+    out = rp.transfer_table(rows, units)
+    wrong = out["majority"]["recording right, fragment wrong"]
+    assert (wrong["fragments"], wrong["recordings"], wrong["sessions"]) == (2, 1, 1)          # one recording repeated in two fragments
+    assert wrong["by_outcome"] == {"label": {"fragments": 1, "recordings": 1, "sessions": 1}, "matched": {"fragments": 1, "recordings": 1, "sessions": 1}}
+    right = out["majority"]["recording right, fragment right"]
+    assert (right["fragments"], right["recordings"], right["sessions"]) == (2, 2, 2)
+    assert right["by_outcome"] == {"missed_cut": {"fragments": 2, "recordings": 2, "sessions": 2}}   # both right, the system misses the unit
+    assert out["mean"]["recording right, fragment right"]["fragments"] == 3
+
+
 def test_change_faults():
     labels = np.array([0] * 10 + [2] * 10 + [3] * 10 + [3] * 10)
     joins = np.array([10, 20, 30]); semantic = np.array([10, 20])
