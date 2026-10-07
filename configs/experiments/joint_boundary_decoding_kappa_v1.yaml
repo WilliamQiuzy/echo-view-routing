@@ -1,0 +1,53 @@
+# Post-hoc switch-cost range check of the joint boundary decoding round. Fixed before any metric of this check.
+#
+# NOT part of the original pre-registration. The project lead asked for it after seeing that every J0 and J1 choice of
+# joint_boundary_decoding_v1 sat at the largest switch cost of its grid (kappa = 8) while the calibration score was still
+# rising. The original round, its configuration and its negative result stay unchanged
+# (docs/results/2026-10-07_joint_boundary_decoding/).
+#
+# Only the kappa range changes. The class and boundary probabilities already exported by the original round are reused
+# without re-extraction; the objective, clipping, tie rules, lambda values, models, 224 x 224 input, data split, choice
+# rule, comparisons and goal are inherited unchanged from joint_boundary_decoding_v1.yaml. No training.
+extends: joint_boundary_decoding_v1.yaml
+run_name: joint_boundary_decoding_kappa_v1
+experiment: joint_boundary_decoding_kappa_v1
+
+joint_decoding:
+  grid:
+    kappa: [0.0, 1.0, 2.0, 4.0, 8.0, 12.0, 16.0, 24.0, 32.0, 48.0, 64.0, 96.0, 128.0]   # fixed; no point is added after any result
+
+kappa_supplement:
+  status: "post-hoc check requested by the project lead after seeing that every optimum sat at the kappa upper limit; not part of the original pre-registration"
+  original:                      # read only; every sha256 is checked before use
+    config: {path: configs/experiments/joint_boundary_decoding_v1.yaml, sha256: d7b23e093b431fb80e76f6fcc771aa3f161862833bb63b9c354001c3fd7cce09}
+    extract: {path: runs/joint_boundary_decoding_v1/extract.json, sha256: 80aabc8cc4a659ce3c88d412378d64d38f7b8902ea4d58adfe3fb03b3549c162}
+    choices: {path: runs/joint_boundary_decoding_v1/choices.json, sha256: 34172100e2a236d4d9e79d6e3660526278625e2d79f259bea8f9ff0a15d7e9e7}
+    summary: {path: docs/results/2026-10-07_joint_boundary_decoding/summary.json, sha256: 7e3fe35d1219b43b3255ce79d949b199be12bb736f5ab76d2d1bb08fb5f84d11}
+    preds:                       # the original round's chosen J0 and J1 (kappa <= 8), reported as "J0 (kappa <= 8)" and "J1 (kappa <= 8)"
+      0: {J0: {path: runs/joint_boundary_decoding_v1/report/preds_J0_s0.npz, sha256: c3e8331d4af464e05b57cb61fa27196ace5f9b985e490895b8074d411969fa9a},
+          J1: {path: runs/joint_boundary_decoding_v1/report/preds_J1_s0.npz, sha256: 912509d5575b9e3d7997516b0ba6421625434fee3fada6f48af1b6ea067db2b9}}
+      1: {J0: {path: runs/joint_boundary_decoding_v1/report/preds_J0_s1.npz, sha256: ea8b45b963981fc7c3c3c3715dfeb44f599f0d3f4e3c978e7bc1da525416cce2},
+          J1: {path: runs/joint_boundary_decoding_v1/report/preds_J1_s1.npz, sha256: ea8b45b963981fc7c3c3c3715dfeb44f599f0d3f4e3c978e7bc1da525416cce2}}
+      2: {J0: {path: runs/joint_boundary_decoding_v1/report/preds_J0_s2.npz, sha256: b4a79f37314df7bcdb01a7a59c20a827849e9c351b8fe2a2a46b280aed31a415},
+          J1: {path: runs/joint_boundary_decoding_v1/report/preds_J1_s2.npz, sha256: 349ddd569608013d2817148d6238905653424f725702b95431b1b3b53234e839}}
+  reproduction: "every setting of the original 5 x 5 grid must give exactly the original calibration metrics; the original J0 and J1 predictions must give exactly their original rows"
+  calibration_curves: "per seed, lambda and kappa, on the calibration half: segment F1@50, multi boundary recall, native macro-F1 and extra changes (multi streams), plus native internal switches, matched units, predicted segments and the changes that B + ASRF merged which the setting finds; they ask whether a higher switch cost removes extra segments before it loses the recovered true changes"
+  upper_limit: "a choice at kappa = 128 is reported as a range limitation; no further point is searched and no global optimum is claimed"
+  evaluation:
+    procedure: "the choices are committed, then each chosen system is applied once to both halves; the grid is never decoded on the selection half"
+    systems: ["J0", "J1", "J0 (kappa <= 8)", "J1 (kappa <= 8)", "L1 + B3", "B + ASRF", "references"]
+    main: "J1 - J0"
+    secondary: ["J1 - (L1 + B3)", "J0 - (L1 + B3)", "J1 - (B + ASRF)", "J0 - (J0 (kappa <= 8))", "J1 - (J1 (kappa <= 8))", "J1 - (E0 + B3)", "J1 - (B7 + B3)"]
+    gains_and_losses: >-
+      For J0 and J1 against their kappa <= 8 counterparts: of the true changes the counterpart found (and of those it
+      recovered after B + ASRF merged them), how many are still found; how many extra changes and unmatched predicted
+      segments are removed; how many reference units the counterpart matched are now lost (swallowed); native clips
+      fixed and newly wrong, against the counterpart, L1 + B3 and B + ASRF. All by source recording and session.
+  decisions:                     # fixed before the check; 'stably better' is the original round's stable rule
+    improves: "a system improves when it is stably better than L1 + B3 (the control that decodes the same L1 probabilities); results against its kappa <= 8 counterpart are reported as well"
+    neither_improves: "neither J0 nor J1 improves: the decoding search on these fixed outputs ends"
+    j0_only: "J0 improves and J1 is not stably better than J0: J0 is kept as the stronger simple baseline and the boundary-term route stops"
+    j1_extra: "J1 is stably better than J0 but misses the goal: the local gain is reported; no training is started automatically"
+    attribution: "if J0 and J1 improve alike, the gain belongs to the switch-cost calibration, not to the ASRF boundary term"
+    goal: "even a met goal is a result on a twice-used development set and needs an independent confirmation"
+  stop_rules: "after this check the range is not extended again, whatever the result"
