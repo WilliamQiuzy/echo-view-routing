@@ -48,6 +48,7 @@ kappa_supplement:
     neither_improves: "neither J0 nor J1 improves: the decoding search on these fixed outputs ends"
     j0_only: "J0 improves and J1 is not stably better than J0: J0 is kept as the stronger simple baseline and the boundary-term route stops"
     j1_extra: "J1 is stably better than J0 but misses the goal: the local gain is reported; no training is started automatically"
+    j1_only: "J1 is stably better than L1 + B3, but J0 is not and J1 is not stably better than J0: reported as a local gain that cannot be credited to the boundary term; the boundary-term route stops and no training is started automatically"
     attribution: "if J0 and J1 improve alike, the gain belongs to the switch-cost calibration, not to the ASRF boundary term"
     goal: "even a met goal is a result on a twice-used development set and needs an independent confirmation"
   stop_rules: "after this check the range is not extended again, whatever the result"

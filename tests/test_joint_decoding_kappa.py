@@ -55,10 +55,89 @@ def _stab(j0, j1, extra):
     return {"J0 - (L1 + B3)": {"stable": j0}, "J1 - (L1 + B3)": {"stable": j1}, "J1 - (J0)": {"stable": extra}}
 
 
-def test_decision_table():
+def test_decision_table_is_named_in_the_config():
+    table = load_config(ROOT / "configs/experiments/joint_boundary_decoding_kappa_v1.yaml")["kappa_supplement"]["decisions"]
+    assert set(jk.DECISION_CASES) <= set(table)
     goals = {"J0": {"met": False}, "J1": {"met": False}}
-    assert jk.decisions(_stab(False, False, False), goals)["case"] == "neither_improves"
-    assert jk.decisions(_stab(True, True, False), goals)["case"] == "j0_only"
-    assert jk.decisions(_stab(True, True, True), goals)["case"] == "j1_extra"
-    assert jk.decisions(_stab(False, True, False), goals)["case"] == "j1_improves_without_extra_gain_over_j0"
-    assert jk.decisions(_stab(False, False, True), goals)["case"] == "j1_extra"     # J1 above J0 without beating L1 + B3: reported as local
+    cases = {(False, False, False): "neither_improves", (True, True, False): "j0_only", (True, False, False): "j0_only",
+             (True, True, True): "j1_extra", (False, False, True): "j1_extra", (False, True, False): "j1_only"}
+    for flags, case in cases.items():
+        d = jk.decisions(_stab(*flags), goals, table)
+        assert d["case"] == case and d["action"] == table[case]
+
+
+# ----------------------------------------------------------------------------------------------- a toy half
+import numpy as np  # noqa: E402
+
+from echo_routing.compose.recipe_builder import Fragment, Recipe  # noqa: E402
+from echo_routing.compose.stream_assembler import render  # noqa: E402
+from echo_routing.evaluate.failure_units import stream_units  # noqa: E402
+from echo_routing.features.cache import VideoFeatures  # noqa: E402
+from echo_routing.temporal.dev_data import EvalSet, native_seq  # noqa: E402
+from echo_routing.temporal.dev_run import HALVES  # noqa: E402
+from echo_routing.temporal.joint_decoding import joint_viterbi  # noqa: E402
+from scripts.joint_boundary_decoding import candidates  # noqa: E402
+from scripts.report_l1_asrf import fragment_transfer  # noqa: E402
+
+CFG = {"protocol": {"hz": 10.0}, "selection": {"boundary_tolerance_s": 0.5}}
+
+
+def _vf(vid, n, label, noise=()):
+    prob = np.full((n, 5), 0.02, np.float32); prob[:, label] = 0.92
+    for i in noise:                                   # single frames read as another class
+        prob[i] = 0.02; prob[i, (label + 1) % 5] = 0.92
+    return VideoFeatures(vid, np.arange(n) * 3, np.arange(n) * 0.1, np.zeros((n, 4), np.float32), prob, np.zeros((n, 5), np.float32))
+
+
+class _Store:
+    def __init__(self):
+        self.d = {"a_1": _vf("a_1", 40, 2, (5,)), "b_1": _vf("b_1", 40, 3), "c_2": _vf("c_2", 40, 0), "d_3": _vf("d_3", 40, 1, (20,))}
+
+    def get(self, vid, variant):
+        return self.d[vid]
+
+
+def _toy():
+    st = _Store()
+    natives = tuple(native_seq(v, lab, st.get(v, "orig")) for v, lab in (("a_1", 2), ("b_1", 3), ("c_2", 0), ("d_3", 1)))
+    pairs = (render(Recipe("p1", "cell", (Fragment("a_1", 2, "orig", 10, 30), Fragment("b_1", 3, "orig", 0, 20))), st.get),)
+    multi = (render(Recipe("m1", "cell", (Fragment("a_1", 2, "orig", 0, 15), Fragment("b_1", 3, "orig", 5, 25), Fragment("c_2", 0, "orig", 0, 15))), st.get),
+             render(Recipe("m2", "cell", (Fragment("d_3", 1, "orig", 0, 25), Fragment("c_2", 0, "orig", 10, 30), Fragment("b_1", 3, "orig", 0, 15))), st.get))
+    ev = EvalSet("toy", natives, pairs, multi); probs = {s.seq_id: s.prob for s in ev.sequences()}
+    b = {sid: np.full(len(p), 0.02) for sid, p in probs.items()}
+    for s in (*pairs, *multi):
+        b[s.recipe.recipe_id][s.semantic_boundaries] = 0.97
+    cuts = {s.recipe.recipe_id: candidates(b[s.recipe.recipe_id]) for s in multi}
+    return st, ev, probs, b, cuts
+
+
+def test_curve_records_on_a_toy_half():
+    st, ev, probs, b, cuts = _toy(); merged = {("m1", int(ev.multi[0].semantic_boundaries[0]))}
+    r0, r1, r2 = jk.curve_records(CFG, [(0.0, 0.0), (0.0, 8.0), (2.0, 8.0)], probs, b, ev, cuts, merged)
+    assert (r0["order"], r1["order"], r2["order"]) == (0, 1, 2) and r1["params"] == {"lambda": 0.0, "kappa": 8.0}
+    assert r0["native_switches"] == 4 and r1["native_switches"] == 0                    # argmax keeps the single noisy frames
+    assert r0["extra_changes"] == 2 and r1["extra_changes"] == r2["extra_changes"] == 0         # the frame at 20 of m2 lies within 5 of the change at 25
+    assert r1["matched_units"] == r1["predicted_segments"] == 6 and r1["unmatched_predicted_segments"] == 0
+    assert r0["predicted_segments"] - r0["matched_units"] == r0["unmatched_predicted_segments"] > 0
+    assert all(r["merged_total"] == 1 and r["merged_found"] == 1 for r in (r0, r1, r2))
+
+
+def test_evaluate_core_builds_comparisons_before_gains(monkeypatch):
+    import scripts.report_l1_asrf as rl
+    import scripts.report_model_development as rmd
+    monkeypatch.setattr(rmd, "N_BOOT", 20); monkeypatch.setattr(rl, "N_BOOT", 20)
+    st, ev, probs, b, cuts = _toy(); halves = {h: ev for h in HALVES}; seqs = {h: jk.seqs_of(ev, st) for h in HALVES}
+    truth = {s.seq_id: s.labels.astype(int) for s in ev.sequences()}; argmax = {k: p.argmax(1) for k, p in probs.items()}
+    smooth = {k: joint_viterbi(probs[k], b[k], 0.0, 8.0) for k in probs}
+    preds = {n: {h: p for h in HALVES} for n, p in (("B + ASRF", truth), ("L1 + B3", smooth), ("J0 (kappa <= 8)", argmax), ("J1 (kappa <= 8)", argmax),
+                                                     ("J0", smooth), ("J1", smooth))}
+    transfer = {h: fragment_transfer({s.recipe.recipe_id: stream_units(s.recipe) for s in ev.multi}, lambda v, var: st.get(v, var).prob) for h in HALVES}
+    res, _ = jk.evaluate_core(CFG, preds, halves, seqs, {h: cuts for h in HALVES}, transfer, ["a_1", "b_1", "c_2"])
+    assert set(res["comparisons"]) == {f"{x} - ({y})" for x, y in jk.CONTRASTS}
+    g = res["gains_losses"]["J0"]["selection"]
+    assert g["units"] == res["comparisons"]["J0 - (J0 (kappa <= 8))"]["selection"]["segment_changes"]
+    assert g["extra_changes"]["old"]["count"] == 2 and g["extra_changes"]["new"]["count"] == 0
+    assert g["kept"]["count"] == g["found_by_old"]["count"] == 4 and g["lost"]["count"] == 0
+    assert g["unmatched_predicted_segments"] == {"old": 4, "new": 0} and g["native_switches"] == {"old": 4, "new": 0}   # each noisy frame is one unmatched segment
+    assert res["diagnostics"]["J1"]["three_clips"] == {"clips": 3, "right": 3, "sessions_right": 3}     # sessions a, b and c
+    assert res["diagnostics"]["J0"]["selection"]["segments"] == {"matched": 6, "predicted": 6, "reference": 6, "unmatched_predicted": 0}

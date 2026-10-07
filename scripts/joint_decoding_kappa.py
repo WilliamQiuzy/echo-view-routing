@@ -45,7 +45,7 @@ from echo_routing.config import load_paths  # noqa: E402
 from echo_routing.evaluate.complementarity import sha256_file  # noqa: E402
 from echo_routing.evaluate.failure_units import stream_units  # noqa: E402
 from echo_routing.temporal.dev_data import FeatureStore  # noqa: E402
-from echo_routing.temporal.dev_run import HALVES, load_json  # noqa: E402
+from echo_routing.temporal.dev_run import HALVES, digest, load_json  # noqa: E402
 from echo_routing.temporal.joint_decoding import joint_viterbi_grid  # noqa: E402
 from echo_routing.temporal.segments import boundaries_from_labels  # noqa: E402
 from echo_routing.temporal.windowed import stream_plan  # noqa: E402
@@ -86,18 +86,14 @@ def gains_losses(ch_new: list[dict], ch_old: list[dict], ch_asrf: list[dict]) ->
             "found_only_now": dedup(newly), "recovered_by_old": dedup(rec_old), "recovered_kept": dedup(rec_kept)}
 
 
-def decisions(stab: dict, goals: dict) -> dict:
-    """The configuration's decision table, applied to the stable-rule outcomes."""
+DECISION_CASES = ("neither_improves", "j0_only", "j1_extra", "j1_only")
+
+
+def decisions(stab: dict, goals: dict, table: dict) -> dict:
+    """The configuration's decision table (every case named there before any metric), applied to the stable-rule outcomes."""
     j0 = stab["J0 - (L1 + B3)"]["stable"]; j1 = stab["J1 - (L1 + B3)"]["stable"]; extra = stab["J1 - (J0)"]["stable"]
-    if extra:
-        case = "j1_extra"
-    elif j0:
-        case = "j0_only"
-    elif j1:
-        case = "j1_improves_without_extra_gain_over_j0"
-    else:
-        case = "neither_improves"
-    return {"case": case, "j0_improves": j0, "j1_improves": j1, "j1_stably_better_than_j0": extra,
+    case = "j1_extra" if extra else "j0_only" if j0 else "j1_only" if j1 else "neither_improves"
+    return {"case": case, "action": table[case], "j0_improves": j0, "j1_improves": j1, "j1_stably_better_than_j0": extra,
             "goal_met": {n: bool(goals[n].get("met")) for n in goals}}
 
 
@@ -154,7 +150,7 @@ def run_choose(cfg: dict, jd: dict, ks: dict, paths, config_path: str) -> None:
         raise SystemExit("the boundary probabilities must come from the original extraction")
     la = l1_asrf_cfg(jd, root); th = float(la["asrf"]["boundary_th"]); grid = grid_of(jd); ch = jd["choice"]
     orig_choices = json.loads((root / ks["original"]["choices"]["path"]).read_text()); orig_sum = json.loads((root / ks["original"]["summary"]["path"]).read_text())
-    out = {"status": ks["status"], "config_sha256": sha256_file(root / config_path), "original": orig, "grid": grid, "seeds": {}}
+    out = {"status": ks["status"], "config_sha256": sha256_file(root / config_path), "merged_config_digest": digest(cfg), "original": orig, "grid": grid, "seeds": {}}
     for seed in seeds_of(jd):
         spec = jd["inputs"]["seeds"][seed]; ev = calibration_set(jd, paths, seed)
         bprobs = load_half(root / extract["seeds"][str(seed)]["boundaries"], "calibration")
@@ -173,13 +169,13 @@ def run_choose(cfg: dict, jd: dict, ks: dict, paths, config_path: str) -> None:
     print(f"wrote {path} sha256 {sha256_file(path)}")
 
 
-def check_choices(jd: dict, root: Path, config_path: str) -> dict:
+def check_choices(cfg: dict, jd: dict, root: Path, config_path: str) -> dict:
     path = root / "runs" / NS / "choices.json"
     if not path.is_file():
         raise SystemExit("run --choose first")
     ch = json.loads(path.read_text())
-    if ch["config_sha256"] != sha256_file(root / config_path) or [tuple(g) for g in ch["grid"]] != grid_of(jd):
-        raise SystemExit("the config or the grid changed after the choice")
+    if ch["config_sha256"] != sha256_file(root / config_path) or ch["merged_config_digest"] != digest(cfg) or [tuple(g) for g in ch["grid"]] != grid_of(jd):
+        raise SystemExit("the config (with everything it extends) or the grid changed after the choice")
     for s in seeds_of(jd):
         if choose_systems(ch["seeds"][str(s)]["grid"], float(jd["choice"]["native_min"]), float(jd["choice"]["recall_min"])) != ch["seeds"][str(s)]["choice"]:
             raise SystemExit(f"seed {s}: the stored choice does not follow from the stored grid")
@@ -238,11 +234,11 @@ def check_reproduction(res: dict, orig: dict, seed: int) -> None:
 
 def run_evaluate(cfg: dict, jd: dict, ks: dict, paths, a) -> None:
     root = paths.repo_root; la = l1_asrf_cfg(jd, root); check_inputs(jd, root); check_original(ks, root); extract, _ = extraction(root)
-    choices = check_choices(jd, root, a.config); seeds = seeds_of(jd); orig = json.loads((root / ks["original"]["summary"]["path"]).read_text())
+    choices = check_choices(cfg, jd, root, a.config); seeds = seeds_of(jd); orig = json.loads((root / ks["original"]["summary"]["path"]).read_text())
     three = three_clips(json.loads((root / jd["inputs"]["l1_asrf_details"]["path"]).read_text()), seeds)
     inputs_e1, seqs = validation(cfg, {"inputs": {"protocol": jd["inputs"]["protocol"], "feature_manifest": {"path": jd["inputs"]["e1_feature_manifest"]["path"]}}}, paths)
     rep = root / "runs" / NS / "report"; rep.mkdir(parents=True, exist_ok=True); out = root / a.out; out.mkdir(parents=True, exist_ok=True)
-    res = {"status": ks["status"], "choices": {s: choices["seeds"][str(s)]["choice"] for s in seeds}, "upper_limit": {s: choices["seeds"][str(s)]["upper_limit"] for s in seeds},
+    res = {"status": ks["status"], "choices": {str(s): choices["seeds"][str(s)]["choice"] for s in seeds}, "upper_limit": {str(s): choices["seeds"][str(s)]["upper_limit"] for s in seeds},
            "choices_sha256": choices["sha256"], "seeds": {}, "timing": {}}
     tables, preds = {}, {}
     for s in seeds:
@@ -265,10 +261,10 @@ def run_evaluate(cfg: dict, jd: dict, ks: dict, paths, a) -> None:
                                                                        for h in HALVES}
     res["stable"] = {f"{x} - ({y})": stable([res["seeds"][str(s)]["comparisons"].get(f"{x} - ({y})") for s in seeds]) for x, y in CONTRASTS}
     for name in SYSTEMS:
-        rows = [{"chosen": {"status": res["choices"][s][name]["status"]}, **{h: res["seeds"][str(s)]["systems"][name][h] for h in HALVES}}
+        rows = [{"chosen": {"status": res["choices"][str(s)][name]["status"]}, **{h: res["seeds"][str(s)]["systems"][name][h] for h in HALVES}}
                 for s in seeds if name in res["seeds"][str(s)]["systems"]]
         res[f"goal_{name}"] = goal(jd, rows) if len(rows) == len(seeds) else {"met": False, "reason": "a seed has no feasible choice"}
-    res["decision"] = decisions(res["stable"], {n: res[f"goal_{n}"] for n in SYSTEMS})
+    res["decision"] = decisions(res["stable"], {n: res[f"goal_{n}"] for n in SYSTEMS}, ks["decisions"])
     (rep / "details.json").write_text(json.dumps(res, indent=1, default=str))
     (out / "summary.json").write_text(json.dumps(strip_ids(res), indent=1, default=str)); (out / "report_tables.md").write_text(tables_md(strip_ids(res)))
     print(json.dumps({k: res[k] for k in ("decision", "upper_limit")}, indent=1, default=str)); print(f"wrote {out}")
