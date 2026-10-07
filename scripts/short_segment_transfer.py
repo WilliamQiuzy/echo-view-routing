@@ -10,6 +10,8 @@ validation; nothing enters the full system and the test split stays sealed.
              and features; the frozen pipelines and the original thresholds (never re-chosen). Tables led by A4C/A5C,
              the candidates outside the binary task with their reasons, source and join diagnostics, the Q1 - Q0
              bootstrap and the fixed decision.
+  --diagnose Reporting only, added after the results: exact intervals for the saved counts (the config's small-subset
+             intervals) and counts of recordings shared by seeds, sources and middles. Nothing is rescored.
 
   python scripts/short_segment_transfer.py --config configs/experiments/short_segment_transfer_v1.yaml --rebuild
 """
@@ -285,12 +287,85 @@ def tables_md(res: dict, prim: str) -> str:
                       "## Sources and joins (halves pooled)\n", md_table(subs), "## Decision\n", "```\n" + json.dumps(res["decision"], indent=1) + "\n```\n"])
 
 
+# ----------------------------------------------------------------------------------------------- reporting amendment
+def exact_interval(k: int, n: int, level: float = 0.95) -> list[float] | None:
+    """Clopper-Pearson interval for k of n (None for n = 0). It treats the middles as independent cases."""
+    from scipy.stats import beta
+    if n == 0:
+        return None
+    a = (1 - level) / 2
+    return [0.0 if k == 0 else float(beta.ppf(a, k, n - k + 1)), 1.0 if k == n else float(beta.ppf(1 - a, k + 1, n - k))]
+
+
+def rate_intervals(summary: dict, prim: str) -> dict:
+    """Per seed and model, the pooled halves' keep and removal counts with exact intervals: the pair groups and every
+    diagnostic subset, at the primary threshold. Computed from the saved counts; nothing is rescored."""
+    out = {}
+    for s, r in summary["seeds"].items():
+        for m in ("Q0", "Q1"):
+            t = r["pooled halves"][m][prim]; cells = {**{g: t[g] for g in ("A4C/A5C pairs", "other pairs", "all")}, **t["subsets"]}
+            out.setdefault(s, {})[m] = {g: {"keep": [x["kept"]["kept"], x["kept"]["n"], exact_interval(x["kept"]["kept"], x["kept"]["n"])],
+                                            "removal": [x["removed"]["removed"], x["removed"]["n"], exact_interval(x["removed"]["removed"], x["removed"]["n"])]}
+                                        for g, x in cells.items()}
+    return out
+
+
+def shared_recordings(rows_by_seed: dict[str, list[dict]], view: dict[str, int]) -> dict:
+    """Counts only (no ids) of how far seeds, sources and middles share recordings. 'view' maps a recording to its
+    reference view; every fragment is single-view, so the views under a middle are those of its recordings."""
+    aa = lambda r: {r["x"], r["y"]} == {sp.A4C, sp.A5C}
+    n_views = lambda r: len({view[v] for v in r["mid_videos"]})
+    wrong = [r for rows in rows_by_seed.values() for r in rows if r["cat"] == "removed" and aa(r)]; rec = {v for r in wrong for v in r["mid_videos"]}
+    out = {"wrong A4C/A5C middles over all seeds": {"middles": len(wrong), "recordings": len(rec), "sessions": len({session_of(v) for v in rec})}, "seeds": {}}
+    units = {}
+    for s, rows in rows_by_seed.items():
+        w = [r for r in rows if r["cat"] == "removed"]; waa = [r for r in w if aa(r)]; st = [r for r in waa if r["kind"] != "native clips"]
+        nat = {v for r in waa if r["kind"] == "native clips" for v in r["mid_videos"]}; wn = [r for r in w if r["kind"] == "native clips"]
+        caa = [r for r in rows if r["cat"] == "kept" and aa(r)]; own = [[v for v in r["mid_videos"] if view[v] == r["y"]] for r in caa]
+        units[s] = {(r["half"], r["group"], frozenset(o)) for r, o in zip(caa, own)}; ov = [v for o in own for v in o]
+        out["seeds"][s] = {
+            "wrong A4C/A5C middles": {"native clips": len(waa) - len(st), "streams": len(st),
+                                      "streams on a recording that also gives a native-clip wrong A4C/A5C middle": sum(bool(set(r["mid_videos"]) & nat) for r in st)},
+            "native-clip wrong middles": {"middles": len(wn), "clips": len({v for r in wn for v in r["mid_videos"]})},
+            "correct A4C/A5C middles": {"middles": len(caa), "by recordings under the middle": {str(k): c for k, c in sorted(Counter(len(r["mid_videos"]) for r in caa).items())},
+                                        "recordings of the middle's view": len(set(ov)), "their sessions": len({session_of(v) for v in ov}),
+                                        "streams": len({r["group"] for r in caa}), "recordings of the middle's view under two or more middles": sum(c > 1 for c in Counter(ov).values())},
+            "two or more reference views under the middle": {"correct middles": sum(n_views(r) >= 2 for r in rows if r["cat"] == "kept"),
+                                                             "correct A4C/A5C middles": sum(n_views(r) >= 2 for r in caa),
+                                                             "outside the binary task, by assigned reason": dict(Counter(r["reason"] for r in rows if r["cat"] == "other" and n_views(r) >= 2))}}
+    u = list(units.values())
+    out["correct A4C/A5C middles over all seeds"] = {"same true units in every seed": all(x == u[0] for x in u), "distinct true units": len(set().union(*u))}
+    return out
+
+
+def run_diagnose(cfg: dict, st: dict, paths, out_dir: Path) -> None:
+    """Reporting only, after --apply: exact intervals for the saved counts and the shared-recording counts of the
+    server's candidate lists. Writes diagnostics.json, which holds no ids."""
+    root = paths.repo_root; spc = cfg["short_segment_probe"]; prot = spc["inputs"]["protocol"]
+    if sha256_file(root / prot["path"]) != prot["sha256"]:
+        raise SystemExit("protocol sha256 changed")
+    proto = json.loads((root / prot["path"]).read_text()); view = {}
+    for h in HALVES:
+        for bank in proto["validation"][h]["banks"].values():
+            for f in (f for rc in bank["recipes"] for f in rc["fragments"]):
+                if view.setdefault(f["video_id"], int(f["label"])) != int(f["label"]):
+                    raise SystemExit("a recording carries two reference views")
+    rows = {str(int(s)): [r for h in HALVES for r in json.loads((root / "runs" / NS / f"candidates_s{int(s)}_{h}.json").read_text())] for s in spc["seeds"]}
+    summary = json.loads((out_dir / "summary.json").read_text())
+    res = {"intervals": {"method": "Clopper-Pearson 95%, pooled halves, primary threshold; [count, n, interval]; middles share recordings, so these are too narrow",
+                         "seeds": rate_intervals(summary, st["thresholds"]["primary"])},
+           "shared recordings": shared_recordings(rows, view)}
+    (out_dir / "diagnostics.json").write_text(json.dumps(res, indent=1)); print(f"wrote {out_dir / 'diagnostics.json'}")
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--config", required=True); ap.add_argument("--out", required=True)
-    step = ap.add_mutually_exclusive_group(required=True); step.add_argument("--rebuild", action="store_true"); step.add_argument("--apply", action="store_true")
+    step = ap.add_mutually_exclusive_group(required=True)
+    for name in ("--rebuild", "--apply", "--diagnose"):
+        step.add_argument(name, action="store_true")
     a = ap.parse_args(); a.set = []; cfg = load_cfg(a); st = cfg["short_segment_transfer"]; paths = load_paths(); out = paths.repo_root / a.out
-    (run_rebuild if a.rebuild else run_apply)(cfg, st, paths, out)
+    (run_rebuild if a.rebuild else run_apply if a.apply else run_diagnose)(cfg, st, paths, out)
 
 
 if __name__ == "__main__":

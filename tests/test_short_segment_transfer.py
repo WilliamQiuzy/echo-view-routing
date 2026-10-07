@@ -104,3 +104,35 @@ def test_candidates_and_tables_on_a_toy_half():
     t = tr.half_tables(rows, scores, {"Q0": {"0.95": 0.5}, "Q1": {"0.95": 0.5}})
     assert t["candidates"] == len(rows) and t["Q0"]["0.95"]["all"]["kept"]["n"] + t["Q0"]["0.95"]["all"]["removed"]["n"] + t["other"]["n"] == len(rows)
     assert set(t["Q0"]["0.95"]["subsets"]) == set(tr.SUBSETS)
+
+
+def test_exact_interval():
+    assert tr.exact_interval(0, 0) is None
+    lo, hi = tr.exact_interval(9, 13)
+    assert abs(lo - 0.38574) < 1e-4 and abs(hi - 0.90908) < 1e-4
+    assert tr.exact_interval(0, 5)[0] == 0.0 and tr.exact_interval(5, 5)[1] == 1.0
+
+
+def test_shared_recording_counts():
+    view = {"p1_1": 2, "p1_2": 3, "p2_1": 2, "p3_1": 3, "p4_1": 2}
+    kept = {"half": "selection", "group": "selection|stream:r1", "kind": "multi streams", "cat": "kept", "x": 2, "y": 3, "mid_videos": ["p1_1", "p1_2"], "reason": None}
+    native = {"half": "selection", "group": "selection|session:p2", "kind": "native clips", "cat": "removed", "x": 2, "y": 3, "mid_videos": ["p2_1"], "reason": None}
+    stream = {**native, "group": "selection|stream:r2", "kind": "multi streams"}                  # repeats the native error's recording
+    other = {**kept, "group": "selection|stream:r3", "cat": "other", "mid_videos": ["p3_1", "p4_1"], "reason": "sides not X"}
+    out = tr.shared_recordings({"0": [kept, native, stream, other], "1": [kept, native]}, view)
+    assert out["wrong A4C/A5C middles over all seeds"] == {"middles": 3, "recordings": 1, "sessions": 1}
+    s0 = out["seeds"]["0"]
+    assert s0["wrong A4C/A5C middles"] == {"native clips": 1, "streams": 1, "streams on a recording that also gives a native-clip wrong A4C/A5C middle": 1}
+    assert s0["native-clip wrong middles"] == {"middles": 1, "clips": 1}
+    assert s0["correct A4C/A5C middles"] == {"middles": 1, "by recordings under the middle": {"2": 1}, "recordings of the middle's view": 1, "their sessions": 1,
+                                             "streams": 1, "recordings of the middle's view under two or more middles": 0}
+    assert s0["two or more reference views under the middle"] == {"correct middles": 1, "correct A4C/A5C middles": 1,
+                                                                  "outside the binary task, by assigned reason": {"sides not X": 1}}
+    assert out["correct A4C/A5C middles over all seeds"] == {"same true units in every seed": True, "distinct true units": 1}
+
+
+def test_rate_intervals_read_the_pooled_counts():
+    cell = {"kept": {"n": 13, "kept": 9}, "removed": {"n": 0, "removed": 0}}
+    t = {"A4C/A5C pairs": cell, "other pairs": cell, "all": cell, "subsets": {"no join": cell}}
+    out = tr.rate_intervals({"seeds": {"0": {"pooled halves": {"Q0": {"0.95": t}, "Q1": {"0.95": t}}}}}, "0.95")
+    assert out["0"]["Q0"]["no join"]["keep"][:2] == [9, 13] and out["0"]["Q1"]["all"]["removal"] == [0, 0, None]
