@@ -1,0 +1,99 @@
+# EV9V fan224 visual adaptation: two inputs x two training scopes, three seeds each, one five-class visual head per
+# 10 Hz sample, B3 downstream (docs/superpowers/plans/2026-10-06-fan224-visual-adaptation.md). Fixed before any
+# training or validation result.
+#
+# Inherits model_development_v2.yaml only for the frozen protocol and the evaluation keys (10 Hz, boundary tolerance,
+# the validation halves and their constructed streams, the B3 grid helper). Every parameter of this round sits under
+# fan224. No temporal module, attention, residual, distillation, new loss, early stopping, validation-based checkpoint
+# choice, test data or EchoNet-Pediatric data or products.
+extends: model_development_v2.yaml
+run_name: fan224_visual_adaptation_v1
+experiment: fan224_visual_adaptation_v1
+
+fan224:
+  inputs:                        # copied from ev9v_center_supervision_v1.yaml; every sha256 is checked before use
+    protocol: {path: runs/20261002-051140-model_development_protocol-fa45e7f4-s0/protocol.json,
+               sha256: a897483b776e8cff1ba8b92774c6a82537758bcba6abd362f2d8603f37997593}
+    visual_export: {path: models_frozen/e1_echoviewclip_probe/v1/visual_encoder_fp32.pt,
+                    sha256: c9f87aa2edaa9ba1fc2ad0617c59e7a3ffcb63ea4a33e154d21c5f4acb9d5869}
+    visual_reference: {path: models_frozen/e1_echoviewclip_probe/v1/visual_encoder_fp32.json,
+                       sha256: 274cab6b8e844bff260477262b603af9c64d5e3c2e95fa7b7b60195b5ae4238d}
+    probe: {path: models_frozen/e1_echoviewclip_probe/v1/probe.pt,
+            sha256: 41f2033d53b3ad334fc549bd50ff8c6f4387dca50851bcc5109d010171146531}
+    feature_manifest: {path: models_frozen/e1_echoviewclip_probe/v1/feature_manifest.json,
+                       sha256: 56f59166ba3f1b428867e4ec9a7e6dfd800cb5bccd79db8191d3c916421f17c3}
+    cache_key: 16efc85be645      # cache_v2 (numeric frame order): the 10 Hz sample indices, time stamps and labels
+    echoviewclip_commit: f6a0d86074d7c906ae41546cd5f09f8b94da432a
+  classes: [PLAX, PSAX, A4C, A5C, SC4C]
+  input_types:
+    L:                           # the existing E1 path, unchanged
+      kind: legacy
+      transform: "RGB, gamma LUT, short side 256 (bilinear), centre crop 224 (echo_routing.temporal.joint_visual.load_frame_u8)"
+    F:                           # Task 1: frozen after the training-image QC
+      kind: fan224_v1
+      transform: "RGB, gamma LUT, fixed sector template, bounding-box crop, bilinear resize to 224 on the longer side, black centred padding (echo_routing.ingest.fan224)"
+      transform_digest: 619b8e21c7a74716e25f92ce4746544bd8263b7c29a6295bddf1503ef7a9af5a
+      frames_root: data/derived/fan224_v1            # <variant>/<video_id>/<frame_idx:06d>.png, written by check_fan224_input.py --phase export
+      train_manifest: data/derived/fan224_v1/manifest_train.csv   # 415,228 frames = 207,614 samples x 2 variants
+      train_manifest_sha256: c54a9143471568e22ee18f635b8c28fe01d506234f569d319a55e8d86ab87c3a
+      reading: "read as stored: RGB 224 x 224 is checked, nothing is resized or cropped (fan224.read_fan224_png)"
+  normalisation: "the existing CLIP mean/std on the GPU (VisualEncoder.normalise), identical for L and F"
+  arms:
+    L0: {input: L, trainable: head}
+    L1: {input: L, trainable: [head, image_encoder.transformer.resblocks.11, image_encoder.ln_post, image_encoder.proj]}
+    F0: {input: F, trainable: head}
+    F1: {input: F, trainable: [head, image_encoder.transformer.resblocks.11, image_encoder.ln_post, image_encoder.proj]}
+  candidate: F1                  # the pre-specified adaptation candidate; never replaced after looking at selection
+  seeds: [0, 1, 2]
+  queue_order: "seed 0, 1, 2; within a seed L0, L1, F0, F1; one GPU job at a time"
+  init: "every arm and seed: the E1 export (encoder) and the E1 probe (Linear 512 -> 5); one saved initial state per seed"
+  head_only: "the whole encoder is frozen explicitly, ln_post and proj included, and runs in eval mode without autograd"
+  sampling:                      # generated once per seed, saved, shared by the four arms
+    data_seed_base: 20261007     # numpy default_rng([data_seed_base, seed])
+    updates: 1500
+    recordings_per_update: 16
+    samples_per_recording: 4
+    recording_rule: "class uniform over the five classes, then recording uniform within the class"
+    position_rule: "spaced_indices(n, 4, rng) over the recording's 10 Hz samples (random phase per bin); with replacement when n < 4"
+    gamma: {orig: 0.5, gamma090: 0.5}   # one draw per recording and update; applied before any spatial step in both inputs
+    augmentation: none
+  loss: "mean per-frame five-class cross-entropy; the recording label is propagated to its frames (weak supervision)"
+  optimiser:
+    name: AdamW
+    lr_head: 1.0e-3
+    lr_encoder: 1.0e-5           # L1 and F1 only
+    weight_decay: 1.0e-4
+    grad_clip: 1.0               # global norm over all trained parameters
+    warmup_updates: 100          # linear warm-up, then cosine to 0
+  precision: "fp32, TF32 off"
+  checkpoint: "the final update only; no early stopping; no validation during training"
+  resume_every: 250              # resume state (weights, optimiser, scheduler, RNG) every 250 updates
+  feature_cache_in_training: none   # every arm runs the encoder online on the saved batch plan
+  smoke:
+    updates: 6
+    reproducibility: {loss_abs: 1.0e-5, params_abs: 1.0e-6}   # two identical short runs from the same state
+    resume: {params_abs: 1.0e-6}                              # 3 + 3 updates with a reload against 6 in one go
+    parity: {reference_fp32: 1.0e-3, cache_fp16: 2.0e-2}       # the initial L encoder against the export and the E1 cache
+  evaluation:                    # Task 3, after all twelve trainings
+    extract: "train split and both validation halves, every 10 Hz sample, orig and gamma090; per-sample visual head, no windows"
+    rows: [argmax, B3]
+    b3_grid: {half_window: [5, 7, 9, 11, 15], quantile: [0.80, 0.85, 0.90, 0.95, 0.97, 0.99, 0.995, 0.999], nms_radius: 5}
+    b3_rule: >-
+      Per model and seed. Thresholds are quantiles of that model's own calibration native-clip B3 scores. Among the
+      settings with calibration native macro-F1 >= 0.980 and multi boundary recall >= 0.95, the highest segment F1@50
+      wins; an equal score goes to the earlier grid entry (half_window, then quantile, ascending). The setting is then
+      applied once to the selection half.
+    b3_infeasible_diagnostic: {half_window: 9, quantile: 0.95, nms_radius: 5}   # reported, never passes a criterion
+    zero_shot: "the unadapted E1 head on L and on F: an input-sensitivity control only"
+    contrasts: ["F0 - L0", "F1 - L1", "F1 - F0", "L1 - L0", "(F1 - F0) - (L1 - L0)"]
+    bootstrap: {draws: 2000, seed: 20261002}   # native clips by session, streams by stream (approximate)
+    baselines: "E0 + B3, E1 + B3, B7 + B3 and E1 + ASRF seeds 0-2: existing frozen outputs, reproduced before use"
+  goal:
+    system: F1 + B3
+    selection_min: 0.944409687184662          # 0.934409687184662 + 0.01
+    calibration_min: 0.9821421709894332       # 0.9721421709894332 + 0.01
+    calibration_sensitivity: 0.9738935784747763
+    per_seed: "boundary recall >= 0.95 and native macro-F1 >= 0.973 (selection) / 0.980 (calibration) in every seed and half"
+  stop_rules: >-
+    After the twelve trainings and one evaluation the round stops. No learning-rate scan, larger trainable part,
+    temporal module, retrained ASRF or new threshold search is started from these results.
