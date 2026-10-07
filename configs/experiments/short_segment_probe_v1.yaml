@@ -1,0 +1,72 @@
+# Short-segment probe: can a correct short view segment be told from a wrong short predicted segment, and do frozen
+# visual features add information beyond the existing statistics? (docs/superpowers/plans/2026-10-07-short-segment-probe.md)
+# Fixed and committed before the candidate library is built and before any discriminator is trained.
+#
+# Training recordings only: both validation halves and the test split are not read. No encoder or ViT training, no new
+# Transformer, no change to public labels; the result is not integrated into the full system. The frozen encoders have
+# seen these training recordings, so this probe measures how a new discriminator does on held-out training sessions,
+# not generalisation to unseen patients.
+extends: model_development_v2.yaml
+run_name: short_segment_probe_v1
+experiment: short_segment_probe_v1
+
+short_segment_probe:
+  inputs:                        # every sha256 is checked before use
+    protocol: {path: runs/20261002-051140-model_development_protocol-fa45e7f4-s0/protocol.json,
+               sha256: a897483b776e8cff1ba8b92774c6a82537758bcba6abd362f2d8603f37997593}
+    b_feature_manifests:         # the frozen L1_s{k} feature caches (fp16 features, L1 head probabilities) of the L1 + ASRF round
+      0: {path: runs/l1_asrf_integration_v1/features/feature_manifest_L1_s0.json, sha256: 010af824ca3736352898da123350596c7bc7867103a71ce787830c9aecabc0a0}
+      1: {path: runs/l1_asrf_integration_v1/features/feature_manifest_L1_s1.json, sha256: 297df54359d4e562f4d409154ce157f6f6cf9d1596d8a6eecc9ec096ca413705}
+      2: {path: runs/l1_asrf_integration_v1/features/feature_manifest_L1_s2.json, sha256: 427b0fac64c5990c377aa207a064098091f3d8f692f31c8c212cf88473af04a4}
+  seeds: [0, 1, 2]               # one library per frozen L1 model; the partition and the streams are shared
+  partition:                     # of the protocol's training clips only
+    unit: session                # the clip id without its last '_k'; every clip of a session falls in one part
+    fractions: {train: 0.6, calibration: 0.2, held_out: 0.2}
+    seed: 20261007               # permutation of the sorted session ids
+  streams:                       # built inside each part, so no constructed stream crosses parts
+    builder: "echo_routing.compose.recipe_builder.make_multi_recipes with the base multi settings: 4-8 fragments of 10-40 samples, edit_prob 0.5 (gamma090), p_same_next 0.35 (same-view joins kept as the splice control), reuse across streams, never within a stream"
+    n_streams: {train: 900, calibration: 300, held_out: 300}
+    seeds: {train: 202610071, calibration: 202610072, held_out: 202610073}
+    natives: "every training clip of the part, orig variant"
+  generator:                     # the one fixed candidate generator; no other generator is compared
+    decoder: "J0 of the joint decoding round: echo_routing.temporal.joint_decoding.joint_viterbi with lambda 0"
+    kappa: 8.0
+    eps: 1.0e-6
+    probabilities: "the L1_s{k} probabilities of each sequence from the B_s{k} store"
+  candidates:
+    pattern: "three consecutive runs of the decoded labels whose outer runs share a class X that the middle run's class Y differs from"
+    tolerance_samples: 5
+    labels:
+      kept: "(a) the middle overlaps a reference unit of class Y with IoU >= 0.5, and the reference majority of both outer runs is X"
+      removed: "(b) every reference label inside the middle is X, and the reference majority of both outer runs is X"
+      other: "(c) everything else: mixed, a third class, a reference boundary inside, or outer runs not X; recorded, never used as a binary label"
+    splice_flag: "a physical join (recording change) within 5 samples of the middle's span; native clips have none"
+  features:
+    side_window: 16              # samples of each outer run next to the middle (all of it when shorter)
+    Q0: "log lengths of middle and both outer runs; one-hot X and Y; mean L1 probabilities of the middle and both side windows; mean p(Y), mean p(Y) - p(X) and mean log p(Y) - log p(X) over the middle; B3 JS-divergence boundary scores (half window 7) at the middle's two edges"
+    Q1: "Q0 plus the mean frozen L1_s{k} 512-d features of the middle and both side windows and the two cosine similarities middle-left and middle-right"
+    diagnostic_Q0_sim: "Q0 plus only the two cosine similarities; reported to read how much of any Q1 gain a discontinuity measure carries; not part of the decision"
+    excluded: "ASRF outputs: the frozen ASRF was trained on the training streams' boundaries, so its boundary scores on training data would leak the labels"
+  model:
+    estimator: "StandardScaler then L2 logistic regression, class_weight balanced, lbfgs, max_iter 5000; positive class = (a) kept"
+    C_grid: [0.001, 0.01, 0.1, 1.0, 10.0]
+    selection: "5-fold GroupKFold on the train part, groups = stream (constructed) or session (native); score = negative log loss; then refit on the whole train part"
+    budget: "the same grid, folds and refit for Q0, Q1 and the diagnostic"
+  operating_points:
+    keep_rates: [0.95, 0.90]     # share of (a) kept, set on the calibration part; 0.95 is primary
+    rule: "the highest threshold whose calibration keep rate of (a) is at least the target; a candidate is kept when its score is at or above it"
+  evaluation:                    # on the held-out part only
+    primary: "removal rate of (b) at the 0.95 operating point, Q1 - Q0, with the held-out keep rate of (a) beside it"
+    secondary: ["0.90 operating point", "ROC AUC", "average precision"]
+    subgroups: ["A4C/A5C pairs ({X, Y} = {A4C, A5C})", "other class pairs", "length-matched: middle length 10-40 samples", "(b) at a splice against (b) inside a clip"]
+    bootstrap: {draws: 2000, seed: 20261002, units: "constructed stream for stream candidates, session for native candidates"}
+    composition: "per part and category: candidates, independent source recordings and sessions; lengths, class pairs, confidence and splice flags"
+  sufficiency: "per seed, the held-out part needs at least 30 (a) and 30 (b) candidates, each from at least 15 sessions; otherwise the probe reports insufficient examples and stops"
+  decision:
+    extra_value: >-
+      Q1 shows extra discriminative value only when, in all three seeds, the held-out interval of Q1 - Q0 for the (b)
+      removal rate at the 0.95 point lies above zero, Q1's held-out keep rate of (a) is at most 2 points below Q0's, and
+      the point estimate of Q1 - Q0 for the removal rate of the (b) candidates at a splice (the same-view splice
+      control) is not below zero in any seed. Ties in the C choice go to the smaller C.
+    otherwise: "no basis for a segment-level module; nothing is integrated into the full system"
+    next: "only with extra value is a full-system experiment planned, against B3, ASRF and the strongest earlier configuration; it would not promise to repair missed boundaries or to reach the goal"
