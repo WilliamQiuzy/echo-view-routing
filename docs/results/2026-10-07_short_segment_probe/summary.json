@@ -1,0 +1,2518 @@
+{
+ "seeds": {
+  "0": {
+   "models": {
+    "Q0": {
+     "C": 10.0,
+     "cv_neg_log_loss": {
+      "0.001": -0.4289567768573761,
+      "0.01": -0.21467311084270477,
+      "0.1": -0.13876416981220246,
+      "1.0": -0.11839979663491249,
+      "10.0": -0.11599955856800079
+     },
+     "thresholds": {
+      "0.95": 0.6817760467529297,
+      "0.9": 0.9650834798812866
+     },
+     "held_out_auc": 0.9987421383647799,
+     "held_out_average_precision_removed": 0.9960490603374663,
+     "points": {
+      "0.95": {
+       "all": {
+        "keep_rate_kept": 0.9748427672955975,
+        "removal_rate_removed": 1.0,
+        "n_kept": 159,
+        "n_removed": 50
+       },
+       "A4C/A5C pairs": {
+        "keep_rate_kept": 0.7272727272727273,
+        "removal_rate_removed": 1.0,
+        "n_kept": 11,
+        "n_removed": 40
+       },
+       "other pairs": {
+        "keep_rate_kept": 0.9932432432432432,
+        "removal_rate_removed": 1.0,
+        "n_kept": 148,
+        "n_removed": 10
+       },
+       "middle 10-40 samples": {
+        "keep_rate_kept": 0.9852941176470589,
+        "removal_rate_removed": 1.0,
+        "n_kept": 136,
+        "n_removed": 35
+       },
+       "removed at a splice": {
+        "keep_rate_kept": null,
+        "removal_rate_removed": 1.0,
+        "n_kept": 0,
+        "n_removed": 10
+       },
+       "removed inside a clip": {
+        "keep_rate_kept": null,
+        "removal_rate_removed": 1.0,
+        "n_kept": 0,
+        "n_removed": 40
+       },
+       "calibration": {
+        "keep_rate_kept": 0.9554140127388535,
+        "removal_rate_removed": 0.92,
+        "n_kept": 157,
+        "n_removed": 25
+       }
+      },
+      "0.9": {
+       "all": {
+        "keep_rate_kept": 0.9433962264150944,
+        "removal_rate_removed": 1.0,
+        "n_kept": 159,
+        "n_removed": 50
+       },
+       "A4C/A5C pairs": {
+        "keep_rate_kept": 0.36363636363636365,
+        "removal_rate_removed": 1.0,
+        "n_kept": 11,
+        "n_removed": 40
+       },
+       "other pairs": {
+        "keep_rate_kept": 0.9864864864864865,
+        "removal_rate_removed": 1.0,
+        "n_kept": 148,
+        "n_removed": 10
+       },
+       "middle 10-40 samples": {
+        "keep_rate_kept": 0.9485294117647058,
+        "removal_rate_removed": 1.0,
+        "n_kept": 136,
+        "n_removed": 35
+       },
+       "removed at a splice": {
+        "keep_rate_kept": null,
+        "removal_rate_removed": 1.0,
+        "n_kept": 0,
+        "n_removed": 10
+       },
+       "removed inside a clip": {
+        "keep_rate_kept": null,
+        "removal_rate_removed": 1.0,
+        "n_kept": 0,
+        "n_removed": 40
+       },
+       "calibration": {
+        "keep_rate_kept": 0.9044585987261147,
+        "removal_rate_removed": 1.0,
+        "n_kept": 157,
+        "n_removed": 25
+       }
+      }
+     }
+    },
+    "Q1": {
+     "C": 1.0,
+     "cv_neg_log_loss": {
+      "0.001": -0.3071723639965057,
+      "0.01": -0.18338678479194642,
+      "0.1": -0.12370189726352691,
+      "1.0": -0.11861944645643234,
+      "10.0": -0.1195043832063675
+     },
+     "thresholds": {
+      "0.95": 0.8267518877983093,
+      "0.9": 0.9694180488586426
+     },
+     "held_out_auc": 0.9880503144654089,
+     "held_out_average_precision_removed": 0.9527204095012545,
+     "points": {
+      "0.95": {
+       "all": {
+        "keep_rate_kept": 0.9748427672955975,
+        "removal_rate_removed": 0.9,
+        "n_kept": 159,
+        "n_removed": 50
+       },
+       "A4C/A5C pairs": {
+        "keep_rate_kept": 0.8181818181818182,
+        "removal_rate_removed": 0.9,
+        "n_kept": 11,
+        "n_removed": 40
+       },
+       "other pairs": {
+        "keep_rate_kept": 0.9864864864864865,
+        "removal_rate_removed": 0.9,
+        "n_kept": 148,
+        "n_removed": 10
+       },
+       "middle 10-40 samples": {
+        "keep_rate_kept": 0.9852941176470589,
+        "removal_rate_removed": 0.9142857142857143,
+        "n_kept": 136,
+        "n_removed": 35
+       },
+       "removed at a splice": {
+        "keep_rate_kept": null,
+        "removal_rate_removed": 0.8,
+        "n_kept": 0,
+        "n_removed": 10
+       },
+       "removed inside a clip": {
+        "keep_rate_kept": null,
+        "removal_rate_removed": 0.925,
+        "n_kept": 0,
+        "n_removed": 40
+       },
+       "calibration": {
+        "keep_rate_kept": 0.9554140127388535,
+        "removal_rate_removed": 0.96,
+        "n_kept": 157,
+        "n_removed": 25
+       }
+      },
+      "0.9": {
+       "all": {
+        "keep_rate_kept": 0.9308176100628931,
+        "removal_rate_removed": 0.98,
+        "n_kept": 159,
+        "n_removed": 50
+       },
+       "A4C/A5C pairs": {
+        "keep_rate_kept": 0.45454545454545453,
+        "removal_rate_removed": 0.975,
+        "n_kept": 11,
+        "n_removed": 40
+       },
+       "other pairs": {
+        "keep_rate_kept": 0.9662162162162162,
+        "removal_rate_removed": 1.0,
+        "n_kept": 148,
+        "n_removed": 10
+       },
+       "middle 10-40 samples": {
+        "keep_rate_kept": 0.9338235294117647,
+        "removal_rate_removed": 1.0,
+        "n_kept": 136,
+        "n_removed": 35
+       },
+       "removed at a splice": {
+        "keep_rate_kept": null,
+        "removal_rate_removed": 1.0,
+        "n_kept": 0,
+        "n_removed": 10
+       },
+       "removed inside a clip": {
+        "keep_rate_kept": null,
+        "removal_rate_removed": 0.975,
+        "n_kept": 0,
+        "n_removed": 40
+       },
+       "calibration": {
+        "keep_rate_kept": 0.9044585987261147,
+        "removal_rate_removed": 1.0,
+        "n_kept": 157,
+        "n_removed": 25
+       }
+      }
+     }
+    },
+    "Q0+sim": {
+     "C": 1.0,
+     "cv_neg_log_loss": {
+      "0.001": -0.4084038555622101,
+      "0.01": -0.21196821928024293,
+      "0.1": -0.1402075171470642,
+      "1.0": -0.11924512386322021,
+      "10.0": -0.12218647301197053
+     },
+     "thresholds": {
+      "0.95": 0.6048868298530579,
+      "0.9": 0.8906607627868652
+     },
+     "held_out_auc": 0.9988679245283019,
+     "held_out_average_precision_removed": 0.9964637165275894,
+     "points": {
+      "0.95": {
+       "all": {
+        "keep_rate_kept": 0.9748427672955975,
+        "removal_rate_removed": 1.0,
+        "n_kept": 159,
+        "n_removed": 50
+       },
+       "A4C/A5C pairs": {
+        "keep_rate_kept": 0.7272727272727273,
+        "removal_rate_removed": 1.0,
+        "n_kept": 11,
+        "n_removed": 40
+       },
+       "other pairs": {
+        "keep_rate_kept": 0.9932432432432432,
+        "removal_rate_removed": 1.0,
+        "n_kept": 148,
+        "n_removed": 10
+       },
+       "middle 10-40 samples": {
+        "keep_rate_kept": 0.9852941176470589,
+        "removal_rate_removed": 1.0,
+        "n_kept": 136,
+        "n_removed": 35
+       },
+       "removed at a splice": {
+        "keep_rate_kept": null,
+        "removal_rate_removed": 1.0,
+        "n_kept": 0,
+        "n_removed": 10
+       },
+       "removed inside a clip": {
+        "keep_rate_kept": null,
+        "removal_rate_removed": 1.0,
+        "n_kept": 0,
+        "n_removed": 40
+       },
+       "calibration": {
+        "keep_rate_kept": 0.9554140127388535,
+        "removal_rate_removed": 0.92,
+        "n_kept": 157,
+        "n_removed": 25
+       }
+      },
+      "0.9": {
+       "all": {
+        "keep_rate_kept": 0.949685534591195,
+        "removal_rate_removed": 1.0,
+        "n_kept": 159,
+        "n_removed": 50
+       },
+       "A4C/A5C pairs": {
+        "keep_rate_kept": 0.45454545454545453,
+        "removal_rate_removed": 1.0,
+        "n_kept": 11,
+        "n_removed": 40
+       },
+       "other pairs": {
+        "keep_rate_kept": 0.9864864864864865,
+        "removal_rate_removed": 1.0,
+        "n_kept": 148,
+        "n_removed": 10
+       },
+       "middle 10-40 samples": {
+        "keep_rate_kept": 0.9558823529411765,
+        "removal_rate_removed": 1.0,
+        "n_kept": 136,
+        "n_removed": 35
+       },
+       "removed at a splice": {
+        "keep_rate_kept": null,
+        "removal_rate_removed": 1.0,
+        "n_kept": 0,
+        "n_removed": 10
+       },
+       "removed inside a clip": {
+        "keep_rate_kept": null,
+        "removal_rate_removed": 1.0,
+        "n_kept": 0,
+        "n_removed": 40
+       },
+       "calibration": {
+        "keep_rate_kept": 0.9044585987261147,
+        "removal_rate_removed": 0.96,
+        "n_kept": 157,
+        "n_removed": 25
+       }
+      }
+     }
+    }
+   },
+   "Q1 - Q0": {
+    "0.95": {
+     "bootstrap": {
+      "removal": {
+       "delta": -0.09999999999999998,
+       "ci95": [
+        -0.19513520678685042,
+        -0.023795681063123027
+       ]
+      },
+      "keep": {
+       "delta": 0.0,
+       "ci95": [
+        -0.01851851851851849,
+        0.018750000000000044
+       ]
+      }
+     },
+     "subgroup_removal": {
+      "all": -0.09999999999999998,
+      "A4C/A5C pairs": -0.09999999999999998,
+      "other pairs": -0.09999999999999998,
+      "middle 10-40 samples": -0.08571428571428574
+     },
+     "splice_removed_delta": -0.19999999999999996,
+     "inside_removed_delta": -0.07499999999999996
+    },
+    "0.9": {
+     "bootstrap": {
+      "removal": {
+       "delta": -0.020000000000000018,
+       "ci95": [
+        -0.06666666666666665,
+        0.0
+       ]
+      },
+      "keep": {
+       "delta": -0.012578616352201255,
+       "ci95": [
+        -0.04762720156555767,
+        0.01987086092715229
+       ]
+      }
+     },
+     "subgroup_removal": {
+      "all": -0.020000000000000018,
+      "A4C/A5C pairs": -0.025000000000000022,
+      "other pairs": 0.0,
+      "middle 10-40 samples": 0.0
+     },
+     "splice_removed_delta": 0.0,
+     "inside_removed_delta": -0.025000000000000022
+    }
+   },
+   "Q0+sim - Q0": {
+    "0.95": {
+     "bootstrap": {
+      "removal": {
+       "delta": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "keep": {
+       "delta": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      }
+     },
+     "subgroup_removal": {
+      "all": 0.0,
+      "A4C/A5C pairs": 0.0,
+      "other pairs": 0.0,
+      "middle 10-40 samples": 0.0
+     },
+     "splice_removed_delta": 0.0,
+     "inside_removed_delta": 0.0
+    },
+    "0.9": {
+     "bootstrap": {
+      "removal": {
+       "delta": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "keep": {
+       "delta": 0.0062893081761006275,
+       "ci95": [
+        -0.013518141429100416,
+        0.02684563758389258
+       ]
+      }
+     },
+     "subgroup_removal": {
+      "all": 0.0,
+      "A4C/A5C pairs": 0.0,
+      "other pairs": 0.0,
+      "middle 10-40 samples": 0.0
+     },
+     "splice_removed_delta": 0.0,
+     "inside_removed_delta": 0.0
+    }
+   },
+   "Q1 - Q0+sim": {
+    "0.95": {
+     "bootstrap": {
+      "removal": {
+       "delta": -0.09999999999999998,
+       "ci95": [
+        -0.19513520678685042,
+        -0.023795681063123027
+       ]
+      },
+      "keep": {
+       "delta": 0.0,
+       "ci95": [
+        -0.01851851851851849,
+        0.018750000000000044
+       ]
+      }
+     },
+     "subgroup_removal": {
+      "all": -0.09999999999999998,
+      "A4C/A5C pairs": -0.09999999999999998,
+      "other pairs": -0.09999999999999998,
+      "middle 10-40 samples": -0.08571428571428574
+     },
+     "splice_removed_delta": -0.19999999999999996,
+     "inside_removed_delta": -0.07499999999999996
+    },
+    "0.9": {
+     "bootstrap": {
+      "removal": {
+       "delta": -0.020000000000000018,
+       "ci95": [
+        -0.06666666666666665,
+        0.0
+       ]
+      },
+      "keep": {
+       "delta": -0.018867924528301883,
+       "ci95": [
+        -0.05264715042042983,
+        0.01242236024844712
+       ]
+      }
+     },
+     "subgroup_removal": {
+      "all": -0.020000000000000018,
+      "A4C/A5C pairs": -0.025000000000000022,
+      "other pairs": 0.0,
+      "middle 10-40 samples": 0.0
+     },
+     "splice_removed_delta": 0.0,
+     "inside_removed_delta": -0.025000000000000022
+    }
+   }
+  },
+  "1": {
+   "models": {
+    "Q0": {
+     "C": 10.0,
+     "cv_neg_log_loss": {
+      "0.001": -0.4380356252193451,
+      "0.01": -0.23278465867042542,
+      "0.1": -0.15848495960235595,
+      "1.0": -0.14053816199302674,
+      "10.0": -0.1370970278978348
+     },
+     "thresholds": {
+      "0.95": 0.5684086084365845,
+      "0.9": 0.9052664637565613
+     },
+     "held_out_auc": 0.9977985690698954,
+     "held_out_average_precision_removed": 0.992473044613537,
+     "points": {
+      "0.95": {
+       "all": {
+        "keep_rate_kept": 0.9810126582278481,
+        "removal_rate_removed": 0.9782608695652174,
+        "n_kept": 158,
+        "n_removed": 46
+       },
+       "A4C/A5C pairs": {
+        "keep_rate_kept": 0.8,
+        "removal_rate_removed": 0.9736842105263158,
+        "n_kept": 10,
+        "n_removed": 38
+       },
+       "other pairs": {
+        "keep_rate_kept": 0.9932432432432432,
+        "removal_rate_removed": 1.0,
+        "n_kept": 148,
+        "n_removed": 8
+       },
+       "middle 10-40 samples": {
+        "keep_rate_kept": 0.9852941176470589,
+        "removal_rate_removed": 1.0,
+        "n_kept": 136,
+        "n_removed": 30
+       },
+       "removed at a splice": {
+        "keep_rate_kept": null,
+        "removal_rate_removed": 1.0,
+        "n_kept": 0,
+        "n_removed": 9
+       },
+       "removed inside a clip": {
+        "keep_rate_kept": null,
+        "removal_rate_removed": 0.972972972972973,
+        "n_kept": 0,
+        "n_removed": 37
+       },
+       "calibration": {
+        "keep_rate_kept": 0.9559748427672956,
+        "removal_rate_removed": 0.9642857142857143,
+        "n_kept": 159,
+        "n_removed": 28
+       }
+      },
+      "0.9": {
+       "all": {
+        "keep_rate_kept": 0.9556962025316456,
+        "removal_rate_removed": 1.0,
+        "n_kept": 158,
+        "n_removed": 46
+       },
+       "A4C/A5C pairs": {
+        "keep_rate_kept": 0.4,
+        "removal_rate_removed": 1.0,
+        "n_kept": 10,
+        "n_removed": 38
+       },
+       "other pairs": {
+        "keep_rate_kept": 0.9932432432432432,
+        "removal_rate_removed": 1.0,
+        "n_kept": 148,
+        "n_removed": 8
+       },
+       "middle 10-40 samples": {
+        "keep_rate_kept": 0.9558823529411765,
+        "removal_rate_removed": 1.0,
+        "n_kept": 136,
+        "n_removed": 30
+       },
+       "removed at a splice": {
+        "keep_rate_kept": null,
+        "removal_rate_removed": 1.0,
+        "n_kept": 0,
+        "n_removed": 9
+       },
+       "removed inside a clip": {
+        "keep_rate_kept": null,
+        "removal_rate_removed": 1.0,
+        "n_kept": 0,
+        "n_removed": 37
+       },
+       "calibration": {
+        "keep_rate_kept": 0.9056603773584906,
+        "removal_rate_removed": 1.0,
+        "n_kept": 159,
+        "n_removed": 28
+       }
+      }
+     }
+    },
+    "Q1": {
+     "C": 0.1,
+     "cv_neg_log_loss": {
+      "0.001": -0.3353120684623718,
+      "0.01": -0.2041335493326187,
+      "0.1": -0.14308273941278457,
+      "1.0": -0.14867113530635834,
+      "10.0": -0.15507435649633408
+     },
+     "thresholds": {
+      "0.95": 0.5873585343360901,
+      "0.9": 0.8138746619224548
+     },
+     "held_out_auc": 0.9927077600440286,
+     "held_out_average_precision_removed": 0.9644460950609356,
+     "points": {
+      "0.95": {
+       "all": {
+        "keep_rate_kept": 0.9746835443037974,
+        "removal_rate_removed": 0.9782608695652174,
+        "n_kept": 158,
+        "n_removed": 46
+       },
+       "A4C/A5C pairs": {
+        "keep_rate_kept": 0.8,
+        "removal_rate_removed": 0.9736842105263158,
+        "n_kept": 10,
+        "n_removed": 38
+       },
+       "other pairs": {
+        "keep_rate_kept": 0.9864864864864865,
+        "removal_rate_removed": 1.0,
+        "n_kept": 148,
+        "n_removed": 8
+       },
+       "middle 10-40 samples": {
+        "keep_rate_kept": 0.9779411764705882,
+        "removal_rate_removed": 1.0,
+        "n_kept": 136,
+        "n_removed": 30
+       },
+       "removed at a splice": {
+        "keep_rate_kept": null,
+        "removal_rate_removed": 1.0,
+        "n_kept": 0,
+        "n_removed": 9
+       },
+       "removed inside a clip": {
+        "keep_rate_kept": null,
+        "removal_rate_removed": 0.972972972972973,
+        "n_kept": 0,
+        "n_removed": 37
+       },
+       "calibration": {
+        "keep_rate_kept": 0.9559748427672956,
+        "removal_rate_removed": 0.9642857142857143,
+        "n_kept": 159,
+        "n_removed": 28
+       }
+      },
+      "0.9": {
+       "all": {
+        "keep_rate_kept": 0.9493670886075949,
+        "removal_rate_removed": 0.9782608695652174,
+        "n_kept": 158,
+        "n_removed": 46
+       },
+       "A4C/A5C pairs": {
+        "keep_rate_kept": 0.4,
+        "removal_rate_removed": 0.9736842105263158,
+        "n_kept": 10,
+        "n_removed": 38
+       },
+       "other pairs": {
+        "keep_rate_kept": 0.9864864864864865,
+        "removal_rate_removed": 1.0,
+        "n_kept": 148,
+        "n_removed": 8
+       },
+       "middle 10-40 samples": {
+        "keep_rate_kept": 0.9558823529411765,
+        "removal_rate_removed": 1.0,
+        "n_kept": 136,
+        "n_removed": 30
+       },
+       "removed at a splice": {
+        "keep_rate_kept": null,
+        "removal_rate_removed": 1.0,
+        "n_kept": 0,
+        "n_removed": 9
+       },
+       "removed inside a clip": {
+        "keep_rate_kept": null,
+        "removal_rate_removed": 0.972972972972973,
+        "n_kept": 0,
+        "n_removed": 37
+       },
+       "calibration": {
+        "keep_rate_kept": 0.9056603773584906,
+        "removal_rate_removed": 1.0,
+        "n_kept": 159,
+        "n_removed": 28
+       }
+      }
+     }
+    },
+    "Q0+sim": {
+     "C": 1.0,
+     "cv_neg_log_loss": {
+      "0.001": -0.4206976592540741,
+      "0.01": -0.23146964311599733,
+      "0.1": -0.16039552986621858,
+      "1.0": -0.14352756142616271,
+      "10.0": -0.14955198466777803
+     },
+     "thresholds": {
+      "0.95": 0.4502526819705963,
+      "0.9": 0.777627170085907
+     },
+     "held_out_auc": 0.99821133736929,
+     "held_out_average_precision_removed": 0.9938696199175959,
+     "points": {
+      "0.95": {
+       "all": {
+        "keep_rate_kept": 0.9873417721518988,
+        "removal_rate_removed": 0.9782608695652174,
+        "n_kept": 158,
+        "n_removed": 46
+       },
+       "A4C/A5C pairs": {
+        "keep_rate_kept": 0.9,
+        "removal_rate_removed": 0.9736842105263158,
+        "n_kept": 10,
+        "n_removed": 38
+       },
+       "other pairs": {
+        "keep_rate_kept": 0.9932432432432432,
+        "removal_rate_removed": 1.0,
+        "n_kept": 148,
+        "n_removed": 8
+       },
+       "middle 10-40 samples": {
+        "keep_rate_kept": 0.9926470588235294,
+        "removal_rate_removed": 1.0,
+        "n_kept": 136,
+        "n_removed": 30
+       },
+       "removed at a splice": {
+        "keep_rate_kept": null,
+        "removal_rate_removed": 1.0,
+        "n_kept": 0,
+        "n_removed": 9
+       },
+       "removed inside a clip": {
+        "keep_rate_kept": null,
+        "removal_rate_removed": 0.972972972972973,
+        "n_kept": 0,
+        "n_removed": 37
+       },
+       "calibration": {
+        "keep_rate_kept": 0.9559748427672956,
+        "removal_rate_removed": 0.9642857142857143,
+        "n_kept": 159,
+        "n_removed": 28
+       }
+      },
+      "0.9": {
+       "all": {
+        "keep_rate_kept": 0.9683544303797469,
+        "removal_rate_removed": 1.0,
+        "n_kept": 158,
+        "n_removed": 46
+       },
+       "A4C/A5C pairs": {
+        "keep_rate_kept": 0.6,
+        "removal_rate_removed": 1.0,
+        "n_kept": 10,
+        "n_removed": 38
+       },
+       "other pairs": {
+        "keep_rate_kept": 0.9932432432432432,
+        "removal_rate_removed": 1.0,
+        "n_kept": 148,
+        "n_removed": 8
+       },
+       "middle 10-40 samples": {
+        "keep_rate_kept": 0.9705882352941176,
+        "removal_rate_removed": 1.0,
+        "n_kept": 136,
+        "n_removed": 30
+       },
+       "removed at a splice": {
+        "keep_rate_kept": null,
+        "removal_rate_removed": 1.0,
+        "n_kept": 0,
+        "n_removed": 9
+       },
+       "removed inside a clip": {
+        "keep_rate_kept": null,
+        "removal_rate_removed": 1.0,
+        "n_kept": 0,
+        "n_removed": 37
+       },
+       "calibration": {
+        "keep_rate_kept": 0.9056603773584906,
+        "removal_rate_removed": 0.9642857142857143,
+        "n_kept": 159,
+        "n_removed": 28
+       }
+      }
+     }
+    }
+   },
+   "Q1 - Q0": {
+    "0.95": {
+     "bootstrap": {
+      "removal": {
+       "delta": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "keep": {
+       "delta": -0.006329113924050667,
+       "ci95": [
+        -0.02994462881465985,
+        0.013160073196235543
+       ]
+      }
+     },
+     "subgroup_removal": {
+      "all": 0.0,
+      "A4C/A5C pairs": 0.0,
+      "other pairs": 0.0,
+      "middle 10-40 samples": 0.0
+     },
+     "splice_removed_delta": 0.0,
+     "inside_removed_delta": 0.0
+    },
+    "0.9": {
+     "bootstrap": {
+      "removal": {
+       "delta": -0.021739130434782594,
+       "ci95": [
+        -0.07692307692307687,
+        0.0
+       ]
+      },
+      "keep": {
+       "delta": -0.006329113924050667,
+       "ci95": [
+        -0.0370427881297446,
+        0.019108280254777066
+       ]
+      }
+     },
+     "subgroup_removal": {
+      "all": -0.021739130434782594,
+      "A4C/A5C pairs": -0.02631578947368418,
+      "other pairs": 0.0,
+      "middle 10-40 samples": 0.0
+     },
+     "splice_removed_delta": 0.0,
+     "inside_removed_delta": -0.027027027027026973
+    }
+   },
+   "Q0+sim - Q0": {
+    "0.95": {
+     "bootstrap": {
+      "removal": {
+       "delta": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "keep": {
+       "delta": 0.006329113924050667,
+       "ci95": [
+        0.0,
+        0.01999999999999991
+       ]
+      }
+     },
+     "subgroup_removal": {
+      "all": 0.0,
+      "A4C/A5C pairs": 0.0,
+      "other pairs": 0.0,
+      "middle 10-40 samples": 0.0
+     },
+     "splice_removed_delta": 0.0,
+     "inside_removed_delta": 0.0
+    },
+    "0.9": {
+     "bootstrap": {
+      "removal": {
+       "delta": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "keep": {
+       "delta": 0.012658227848101333,
+       "ci95": [
+        0.0,
+        0.03870967741935483
+       ]
+      }
+     },
+     "subgroup_removal": {
+      "all": 0.0,
+      "A4C/A5C pairs": 0.0,
+      "other pairs": 0.0,
+      "middle 10-40 samples": 0.0
+     },
+     "splice_removed_delta": 0.0,
+     "inside_removed_delta": 0.0
+    }
+   },
+   "Q1 - Q0+sim": {
+    "0.95": {
+     "bootstrap": {
+      "removal": {
+       "delta": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "keep": {
+       "delta": -0.012658227848101333,
+       "ci95": [
+        -0.0328947368421052,
+        0.0
+       ]
+      }
+     },
+     "subgroup_removal": {
+      "all": 0.0,
+      "A4C/A5C pairs": 0.0,
+      "other pairs": 0.0,
+      "middle 10-40 samples": 0.0
+     },
+     "splice_removed_delta": 0.0,
+     "inside_removed_delta": 0.0
+    },
+    "0.9": {
+     "bootstrap": {
+      "removal": {
+       "delta": -0.021739130434782594,
+       "ci95": [
+        -0.07692307692307687,
+        0.0
+       ]
+      },
+      "keep": {
+       "delta": -0.018987341772152,
+       "ci95": [
+        -0.0479041916167664,
+        0.006369426751592355
+       ]
+      }
+     },
+     "subgroup_removal": {
+      "all": -0.021739130434782594,
+      "A4C/A5C pairs": -0.02631578947368418,
+      "other pairs": 0.0,
+      "middle 10-40 samples": 0.0
+     },
+     "splice_removed_delta": 0.0,
+     "inside_removed_delta": -0.027027027027026973
+    }
+   }
+  },
+  "2": {
+   "models": {
+    "Q0": {
+     "C": 10.0,
+     "cv_neg_log_loss": {
+      "0.001": -0.42538452744483946,
+      "0.01": -0.2149876058101654,
+      "0.1": -0.14238877296447755,
+      "1.0": -0.12483026981353759,
+      "10.0": -0.12482375875115395
+     },
+     "thresholds": {
+      "0.95": 0.6280428767204285,
+      "0.9": 0.9596987962722778
+     },
+     "held_out_auc": 0.99703125,
+     "held_out_average_precision_removed": 0.988147200037185,
+     "points": {
+      "0.95": {
+       "all": {
+        "keep_rate_kept": 0.975,
+        "removal_rate_removed": 0.95,
+        "n_kept": 160,
+        "n_removed": 40
+       },
+       "A4C/A5C pairs": {
+        "keep_rate_kept": 0.7272727272727273,
+        "removal_rate_removed": 0.9310344827586207,
+        "n_kept": 11,
+        "n_removed": 29
+       },
+       "other pairs": {
+        "keep_rate_kept": 0.9932885906040269,
+        "removal_rate_removed": 1.0,
+        "n_kept": 149,
+        "n_removed": 11
+       },
+       "middle 10-40 samples": {
+        "keep_rate_kept": 0.9854014598540146,
+        "removal_rate_removed": 0.9565217391304348,
+        "n_kept": 137,
+        "n_removed": 23
+       },
+       "removed at a splice": {
+        "keep_rate_kept": null,
+        "removal_rate_removed": 1.0,
+        "n_kept": 0,
+        "n_removed": 7
+       },
+       "removed inside a clip": {
+        "keep_rate_kept": null,
+        "removal_rate_removed": 0.9393939393939394,
+        "n_kept": 0,
+        "n_removed": 33
+       },
+       "calibration": {
+        "keep_rate_kept": 0.9551282051282052,
+        "removal_rate_removed": 0.9629629629629629,
+        "n_kept": 156,
+        "n_removed": 27
+       }
+      },
+      "0.9": {
+       "all": {
+        "keep_rate_kept": 0.95625,
+        "removal_rate_removed": 1.0,
+        "n_kept": 160,
+        "n_removed": 40
+       },
+       "A4C/A5C pairs": {
+        "keep_rate_kept": 0.45454545454545453,
+        "removal_rate_removed": 1.0,
+        "n_kept": 11,
+        "n_removed": 29
+       },
+       "other pairs": {
+        "keep_rate_kept": 0.9932885906040269,
+        "removal_rate_removed": 1.0,
+        "n_kept": 149,
+        "n_removed": 11
+       },
+       "middle 10-40 samples": {
+        "keep_rate_kept": 0.9635036496350365,
+        "removal_rate_removed": 1.0,
+        "n_kept": 137,
+        "n_removed": 23
+       },
+       "removed at a splice": {
+        "keep_rate_kept": null,
+        "removal_rate_removed": 1.0,
+        "n_kept": 0,
+        "n_removed": 7
+       },
+       "removed inside a clip": {
+        "keep_rate_kept": null,
+        "removal_rate_removed": 1.0,
+        "n_kept": 0,
+        "n_removed": 33
+       },
+       "calibration": {
+        "keep_rate_kept": 0.9038461538461539,
+        "removal_rate_removed": 1.0,
+        "n_kept": 156,
+        "n_removed": 27
+       }
+      }
+     }
+    },
+    "Q1": {
+     "C": 1.0,
+     "cv_neg_log_loss": {
+      "0.001": -0.309904146194458,
+      "0.01": -0.18458416759967805,
+      "0.1": -0.12046328485012055,
+      "1.0": -0.11379305571317673,
+      "10.0": -0.126038558781147
+     },
+     "thresholds": {
+      "0.95": 0.8510631918907166,
+      "0.9": 0.9841660261154175
+     },
+     "held_out_auc": 0.99015625,
+     "held_out_average_precision_removed": 0.9555738557758137,
+     "points": {
+      "0.95": {
+       "all": {
+        "keep_rate_kept": 0.96875,
+        "removal_rate_removed": 0.95,
+        "n_kept": 160,
+        "n_removed": 40
+       },
+       "A4C/A5C pairs": {
+        "keep_rate_kept": 0.7272727272727273,
+        "removal_rate_removed": 0.9310344827586207,
+        "n_kept": 11,
+        "n_removed": 29
+       },
+       "other pairs": {
+        "keep_rate_kept": 0.9865771812080537,
+        "removal_rate_removed": 1.0,
+        "n_kept": 149,
+        "n_removed": 11
+       },
+       "middle 10-40 samples": {
+        "keep_rate_kept": 0.9781021897810219,
+        "removal_rate_removed": 0.9565217391304348,
+        "n_kept": 137,
+        "n_removed": 23
+       },
+       "removed at a splice": {
+        "keep_rate_kept": null,
+        "removal_rate_removed": 0.8571428571428571,
+        "n_kept": 0,
+        "n_removed": 7
+       },
+       "removed inside a clip": {
+        "keep_rate_kept": null,
+        "removal_rate_removed": 0.9696969696969697,
+        "n_kept": 0,
+        "n_removed": 33
+       },
+       "calibration": {
+        "keep_rate_kept": 0.9551282051282052,
+        "removal_rate_removed": 1.0,
+        "n_kept": 156,
+        "n_removed": 27
+       }
+      },
+      "0.9": {
+       "all": {
+        "keep_rate_kept": 0.91875,
+        "removal_rate_removed": 1.0,
+        "n_kept": 160,
+        "n_removed": 40
+       },
+       "A4C/A5C pairs": {
+        "keep_rate_kept": 0.2727272727272727,
+        "removal_rate_removed": 1.0,
+        "n_kept": 11,
+        "n_removed": 29
+       },
+       "other pairs": {
+        "keep_rate_kept": 0.9664429530201343,
+        "removal_rate_removed": 1.0,
+        "n_kept": 149,
+        "n_removed": 11
+       },
+       "middle 10-40 samples": {
+        "keep_rate_kept": 0.927007299270073,
+        "removal_rate_removed": 1.0,
+        "n_kept": 137,
+        "n_removed": 23
+       },
+       "removed at a splice": {
+        "keep_rate_kept": null,
+        "removal_rate_removed": 1.0,
+        "n_kept": 0,
+        "n_removed": 7
+       },
+       "removed inside a clip": {
+        "keep_rate_kept": null,
+        "removal_rate_removed": 1.0,
+        "n_kept": 0,
+        "n_removed": 33
+       },
+       "calibration": {
+        "keep_rate_kept": 0.9038461538461539,
+        "removal_rate_removed": 1.0,
+        "n_kept": 156,
+        "n_removed": 27
+       }
+      }
+     }
+    },
+    "Q0+sim": {
+     "C": 10.0,
+     "cv_neg_log_loss": {
+      "0.001": -0.4045608818531036,
+      "0.01": -0.21156460642814637,
+      "0.1": -0.143781878054142,
+      "1.0": -0.12258493304252624,
+      "10.0": -0.12097356915473938
+     },
+     "thresholds": {
+      "0.95": 0.653016209602356,
+      "0.9": 0.9612581729888916
+     },
+     "held_out_auc": 0.99734375,
+     "held_out_average_precision_removed": 0.9899587137780841,
+     "points": {
+      "0.95": {
+       "all": {
+        "keep_rate_kept": 0.98125,
+        "removal_rate_removed": 0.95,
+        "n_kept": 160,
+        "n_removed": 40
+       },
+       "A4C/A5C pairs": {
+        "keep_rate_kept": 0.8181818181818182,
+        "removal_rate_removed": 0.9310344827586207,
+        "n_kept": 11,
+        "n_removed": 29
+       },
+       "other pairs": {
+        "keep_rate_kept": 0.9932885906040269,
+        "removal_rate_removed": 1.0,
+        "n_kept": 149,
+        "n_removed": 11
+       },
+       "middle 10-40 samples": {
+        "keep_rate_kept": 0.9854014598540146,
+        "removal_rate_removed": 0.9565217391304348,
+        "n_kept": 137,
+        "n_removed": 23
+       },
+       "removed at a splice": {
+        "keep_rate_kept": null,
+        "removal_rate_removed": 1.0,
+        "n_kept": 0,
+        "n_removed": 7
+       },
+       "removed inside a clip": {
+        "keep_rate_kept": null,
+        "removal_rate_removed": 0.9393939393939394,
+        "n_kept": 0,
+        "n_removed": 33
+       },
+       "calibration": {
+        "keep_rate_kept": 0.9551282051282052,
+        "removal_rate_removed": 0.9629629629629629,
+        "n_kept": 156,
+        "n_removed": 27
+       }
+      },
+      "0.9": {
+       "all": {
+        "keep_rate_kept": 0.94375,
+        "removal_rate_removed": 1.0,
+        "n_kept": 160,
+        "n_removed": 40
+       },
+       "A4C/A5C pairs": {
+        "keep_rate_kept": 0.36363636363636365,
+        "removal_rate_removed": 1.0,
+        "n_kept": 11,
+        "n_removed": 29
+       },
+       "other pairs": {
+        "keep_rate_kept": 0.9865771812080537,
+        "removal_rate_removed": 1.0,
+        "n_kept": 149,
+        "n_removed": 11
+       },
+       "middle 10-40 samples": {
+        "keep_rate_kept": 0.948905109489051,
+        "removal_rate_removed": 1.0,
+        "n_kept": 137,
+        "n_removed": 23
+       },
+       "removed at a splice": {
+        "keep_rate_kept": null,
+        "removal_rate_removed": 1.0,
+        "n_kept": 0,
+        "n_removed": 7
+       },
+       "removed inside a clip": {
+        "keep_rate_kept": null,
+        "removal_rate_removed": 1.0,
+        "n_kept": 0,
+        "n_removed": 33
+       },
+       "calibration": {
+        "keep_rate_kept": 0.9038461538461539,
+        "removal_rate_removed": 1.0,
+        "n_kept": 156,
+        "n_removed": 27
+       }
+      }
+     }
+    }
+   },
+   "Q1 - Q0": {
+    "0.95": {
+     "bootstrap": {
+      "removal": {
+       "delta": 0.0,
+       "ci95": [
+        -0.07317073170731714,
+        0.06976744186046513
+       ]
+      },
+      "keep": {
+       "delta": -0.006249999999999978,
+       "ci95": [
+        -0.028739784731911522,
+        0.012989135047958568
+       ]
+      }
+     },
+     "subgroup_removal": {
+      "all": 0.0,
+      "A4C/A5C pairs": 0.0,
+      "other pairs": 0.0,
+      "middle 10-40 samples": 0.0
+     },
+     "splice_removed_delta": -0.1428571428571429,
+     "inside_removed_delta": 0.030303030303030276
+    },
+    "0.9": {
+     "bootstrap": {
+      "removal": {
+       "delta": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "keep": {
+       "delta": -0.03750000000000009,
+       "ci95": [
+        -0.07362477868818701,
+        -0.00588064295485635
+       ]
+      }
+     },
+     "subgroup_removal": {
+      "all": 0.0,
+      "A4C/A5C pairs": 0.0,
+      "other pairs": 0.0,
+      "middle 10-40 samples": 0.0
+     },
+     "splice_removed_delta": 0.0,
+     "inside_removed_delta": 0.0
+    }
+   },
+   "Q0+sim - Q0": {
+    "0.95": {
+     "bootstrap": {
+      "removal": {
+       "delta": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "keep": {
+       "delta": 0.006249999999999978,
+       "ci95": [
+        0.0,
+        0.019867549668874163
+       ]
+      }
+     },
+     "subgroup_removal": {
+      "all": 0.0,
+      "A4C/A5C pairs": 0.0,
+      "other pairs": 0.0,
+      "middle 10-40 samples": 0.0
+     },
+     "splice_removed_delta": 0.0,
+     "inside_removed_delta": 0.0
+    },
+    "0.9": {
+     "bootstrap": {
+      "removal": {
+       "delta": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "keep": {
+       "delta": -0.012500000000000067,
+       "ci95": [
+        -0.03205128205128205,
+        0.0
+       ]
+      }
+     },
+     "subgroup_removal": {
+      "all": 0.0,
+      "A4C/A5C pairs": 0.0,
+      "other pairs": 0.0,
+      "middle 10-40 samples": 0.0
+     },
+     "splice_removed_delta": 0.0,
+     "inside_removed_delta": 0.0
+    }
+   },
+   "Q1 - Q0+sim": {
+    "0.95": {
+     "bootstrap": {
+      "removal": {
+       "delta": 0.0,
+       "ci95": [
+        -0.07317073170731714,
+        0.06976744186046513
+       ]
+      },
+      "keep": {
+       "delta": -0.012499999999999956,
+       "ci95": [
+        -0.038461538461538436,
+        0.011112662942271834
+       ]
+      }
+     },
+     "subgroup_removal": {
+      "all": 0.0,
+      "A4C/A5C pairs": 0.0,
+      "other pairs": 0.0,
+      "middle 10-40 samples": 0.0
+     },
+     "splice_removed_delta": -0.1428571428571429,
+     "inside_removed_delta": 0.030303030303030276
+    },
+    "0.9": {
+     "bootstrap": {
+      "removal": {
+       "delta": 0.0,
+       "ci95": [
+        0.0,
+        0.0
+       ]
+      },
+      "keep": {
+       "delta": -0.025000000000000022,
+       "ci95": [
+        -0.06081493078444302,
+        0.00653702270381834
+       ]
+      }
+     },
+     "subgroup_removal": {
+      "all": 0.0,
+      "A4C/A5C pairs": 0.0,
+      "other pairs": 0.0,
+      "middle 10-40 samples": 0.0
+     },
+     "splice_removed_delta": 0.0,
+     "inside_removed_delta": 0.0
+    }
+   }
+  }
+ },
+ "composition": {
+  "inputs": {
+   "protocol": "a897483b776e8cff1ba8b92774c6a82537758bcba6abd362f2d8603f37997593",
+   "b_feature_manifest_s0": "010af824ca3736352898da123350596c7bc7867103a71ce787830c9aecabc0a0",
+   "b_feature_manifest_s1": "297df54359d4e562f4d409154ce157f6f6cf9d1596d8a6eecc9ec096ca413705",
+   "b_feature_manifest_s2": "427b0fac64c5990c377aa207a064098091f3d8f692f31c8c212cf88473af04a4"
+  },
+  "seeds": {
+   "0": {
+    "cache_key": "ebe798a624df",
+    "composition": {
+     "train": {
+      "kept": {
+       "candidates": 449,
+       "recordings": 470,
+       "sessions": 216,
+       "from_streams": 449,
+       "from_natives": 0,
+       "at_splice": 449,
+       "crossing_recordings": 449,
+       "len_mid_quartiles": [
+        16.0,
+        23.0,
+        35.0
+       ],
+       "len_mid_10_40": 383,
+       "conf_mid_median": 0.9847100281715393,
+       "a4c_a5c_pairs": 57,
+       "class_pairs": {
+        "PLAX>PSAX": 19,
+        "PLAX>A4C": 17,
+        "PLAX>A5C": 12,
+        "PLAX>SC4C": 26,
+        "PSAX>PLAX": 24,
+        "PSAX>A4C": 25,
+        "PSAX>A5C": 22,
+        "PSAX>SC4C": 20,
+        "A4C>PLAX": 16,
+        "A4C>PSAX": 35,
+        "A4C>A5C": 29,
+        "A4C>SC4C": 22,
+        "A5C>PLAX": 22,
+        "A5C>PSAX": 20,
+        "A5C>A4C": 28,
+        "A5C>SC4C": 20,
+        "SC4C>PLAX": 22,
+        "SC4C>PSAX": 26,
+        "SC4C>A4C": 18,
+        "SC4C>A5C": 26
+       }
+      },
+      "removed": {
+       "candidates": 130,
+       "recordings": 75,
+       "sessions": 56,
+       "from_streams": 61,
+       "from_natives": 69,
+       "at_splice": 47,
+       "crossing_recordings": 53,
+       "len_mid_quartiles": [
+        7.0,
+        12.0,
+        17.0
+       ],
+       "len_mid_10_40": 78,
+       "conf_mid_median": 0.8297709748148918,
+       "a4c_a5c_pairs": 93,
+       "class_pairs": {
+        "PLAX>PSAX": 23,
+        "PLAX>SC4C": 3,
+        "PSAX>PLAX": 2,
+        "A4C>PSAX": 2,
+        "A4C>A5C": 53,
+        "A5C>PLAX": 1,
+        "A5C>PSAX": 6,
+        "A5C>A4C": 40
+       }
+      },
+      "other": {
+       "candidates": 90,
+       "recordings": 100,
+       "sessions": 78,
+       "from_streams": 75,
+       "from_natives": 15,
+       "at_splice": 74,
+       "crossing_recordings": 74,
+       "len_mid_quartiles": [
+        13.0,
+        25.0,
+        37.75
+       ],
+       "len_mid_10_40": 67,
+       "conf_mid_median": 0.8957786132429454,
+       "a4c_a5c_pairs": 53,
+       "class_pairs": {
+        "PLAX>A5C": 2,
+        "PSAX>PLAX": 4,
+        "PSAX>A4C": 3,
+        "PSAX>A5C": 2,
+        "PSAX>SC4C": 1,
+        "A4C>PLAX": 2,
+        "A4C>PSAX": 5,
+        "A4C>A5C": 26,
+        "A4C>SC4C": 3,
+        "A5C>PLAX": 2,
+        "A5C>PSAX": 9,
+        "A5C>A4C": 27,
+        "A5C>SC4C": 2,
+        "SC4C>A5C": 2
+       }
+      }
+     },
+     "calibration": {
+      "kept": {
+       "candidates": 157,
+       "recordings": 168,
+       "sessions": 76,
+       "from_streams": 157,
+       "from_natives": 0,
+       "at_splice": 157,
+       "crossing_recordings": 157,
+       "len_mid_quartiles": [
+        15.0,
+        23.0,
+        35.0
+       ],
+       "len_mid_10_40": 136,
+       "conf_mid_median": 0.9885577926268945,
+       "a4c_a5c_pairs": 13,
+       "class_pairs": {
+        "PLAX>PSAX": 3,
+        "PLAX>A4C": 14,
+        "PLAX>A5C": 7,
+        "PLAX>SC4C": 8,
+        "PSAX>PLAX": 4,
+        "PSAX>A4C": 4,
+        "PSAX>A5C": 5,
+        "PSAX>SC4C": 5,
+        "A4C>PLAX": 11,
+        "A4C>PSAX": 8,
+        "A4C>A5C": 8,
+        "A4C>SC4C": 8,
+        "A5C>PLAX": 10,
+        "A5C>PSAX": 15,
+        "A5C>A4C": 5,
+        "A5C>SC4C": 8,
+        "SC4C>PLAX": 10,
+        "SC4C>PSAX": 11,
+        "SC4C>A4C": 7,
+        "SC4C>A5C": 6
+       }
+      },
+      "removed": {
+       "candidates": 25,
+       "recordings": 17,
+       "sessions": 13,
+       "from_streams": 8,
+       "from_natives": 17,
+       "at_splice": 5,
+       "crossing_recordings": 6,
+       "len_mid_quartiles": [
+        8.0,
+        12.0,
+        17.0
+       ],
+       "len_mid_10_40": 15,
+       "conf_mid_median": 0.8474307116121054,
+       "a4c_a5c_pairs": 18,
+       "class_pairs": {
+        "PLAX>PSAX": 6,
+        "PSAX>PLAX": 1,
+        "A4C>A5C": 11,
+        "A5C>A4C": 7
+       }
+      },
+      "other": {
+       "candidates": 15,
+       "recordings": 17,
+       "sessions": 13,
+       "from_streams": 10,
+       "from_natives": 5,
+       "at_splice": 10,
+       "crossing_recordings": 10,
+       "len_mid_quartiles": [
+        11.5,
+        22.0,
+        41.5
+       ],
+       "len_mid_10_40": 10,
+       "conf_mid_median": 0.8930081041420207,
+       "a4c_a5c_pairs": 10,
+       "class_pairs": {
+        "PSAX>PLAX": 1,
+        "A4C>PLAX": 2,
+        "A4C>PSAX": 1,
+        "A4C>A5C": 5,
+        "A4C>SC4C": 1,
+        "A5C>A4C": 5
+       }
+      }
+     },
+     "held_out": {
+      "kept": {
+       "candidates": 159,
+       "recordings": 163,
+       "sessions": 73,
+       "from_streams": 159,
+       "from_natives": 0,
+       "at_splice": 159,
+       "crossing_recordings": 159,
+       "len_mid_quartiles": [
+        15.0,
+        24.0,
+        36.0
+       ],
+       "len_mid_10_40": 136,
+       "conf_mid_median": 0.9980806946754456,
+       "a4c_a5c_pairs": 11,
+       "class_pairs": {
+        "PLAX>PSAX": 6,
+        "PLAX>A4C": 2,
+        "PLAX>A5C": 5,
+        "PLAX>SC4C": 10,
+        "PSAX>PLAX": 10,
+        "PSAX>A4C": 6,
+        "PSAX>A5C": 8,
+        "PSAX>SC4C": 7,
+        "A4C>PLAX": 11,
+        "A4C>PSAX": 12,
+        "A4C>A5C": 5,
+        "A4C>SC4C": 13,
+        "A5C>PLAX": 7,
+        "A5C>PSAX": 10,
+        "A5C>A4C": 6,
+        "A5C>SC4C": 4,
+        "SC4C>PLAX": 12,
+        "SC4C>PSAX": 6,
+        "SC4C>A4C": 13,
+        "SC4C>A5C": 6
+       }
+      },
+      "removed": {
+       "candidates": 50,
+       "recordings": 30,
+       "sessions": 23,
+       "from_streams": 17,
+       "from_natives": 33,
+       "at_splice": 10,
+       "crossing_recordings": 12,
+       "len_mid_quartiles": [
+        9.0,
+        14.0,
+        17.75
+       ],
+       "len_mid_10_40": 35,
+       "conf_mid_median": 0.7768998995204182,
+       "a4c_a5c_pairs": 40,
+       "class_pairs": {
+        "PLAX>PSAX": 3,
+        "PLAX>SC4C": 1,
+        "PSAX>A5C": 2,
+        "A4C>PSAX": 4,
+        "A4C>A5C": 19,
+        "A5C>A4C": 21
+       }
+      },
+      "other": {
+       "candidates": 35,
+       "recordings": 37,
+       "sessions": 29,
+       "from_streams": 23,
+       "from_natives": 12,
+       "at_splice": 22,
+       "crossing_recordings": 22,
+       "len_mid_quartiles": [
+        16.5,
+        24.0,
+        38.0
+       ],
+       "len_mid_10_40": 29,
+       "conf_mid_median": 0.8472743229619388,
+       "a4c_a5c_pairs": 23,
+       "class_pairs": {
+        "PLAX>A4C": 1,
+        "PSAX>A4C": 2,
+        "A4C>PLAX": 1,
+        "A4C>PSAX": 2,
+        "A4C>A5C": 11,
+        "A4C>SC4C": 2,
+        "A5C>PSAX": 3,
+        "A5C>A4C": 12,
+        "SC4C>A4C": 1
+       }
+      }
+     }
+    },
+    "sufficiency": {
+     "kept": {
+      "candidates": 159,
+      "sessions": 73
+     },
+     "removed": {
+      "candidates": 50,
+      "sessions": 23
+     },
+     "ok": true
+    }
+   },
+   "1": {
+    "cache_key": "49ef2810d941",
+    "composition": {
+     "train": {
+      "kept": {
+       "candidates": 450,
+       "recordings": 474,
+       "sessions": 216,
+       "from_streams": 450,
+       "from_natives": 0,
+       "at_splice": 450,
+       "crossing_recordings": 450,
+       "len_mid_quartiles": [
+        16.0,
+        23.0,
+        34.75
+       ],
+       "len_mid_10_40": 384,
+       "conf_mid_median": 0.9816416737945399,
+       "a4c_a5c_pairs": 58,
+       "class_pairs": {
+        "PLAX>PSAX": 19,
+        "PLAX>A4C": 18,
+        "PLAX>A5C": 11,
+        "PLAX>SC4C": 26,
+        "PSAX>PLAX": 23,
+        "PSAX>A4C": 24,
+        "PSAX>A5C": 22,
+        "PSAX>SC4C": 20,
+        "A4C>PLAX": 16,
+        "A4C>PSAX": 35,
+        "A4C>A5C": 30,
+        "A4C>SC4C": 22,
+        "A5C>PLAX": 24,
+        "A5C>PSAX": 20,
+        "A5C>A4C": 28,
+        "A5C>SC4C": 20,
+        "SC4C>PLAX": 22,
+        "SC4C>PSAX": 26,
+        "SC4C>A4C": 18,
+        "SC4C>A5C": 26
+       }
+      },
+      "removed": {
+       "candidates": 110,
+       "recordings": 62,
+       "sessions": 53,
+       "from_streams": 55,
+       "from_natives": 55,
+       "at_splice": 43,
+       "crossing_recordings": 47,
+       "len_mid_quartiles": [
+        7.25,
+        12.0,
+        16.0
+       ],
+       "len_mid_10_40": 64,
+       "conf_mid_median": 0.8650023229420185,
+       "a4c_a5c_pairs": 82,
+       "class_pairs": {
+        "PLAX>PSAX": 13,
+        "PLAX>SC4C": 3,
+        "PSAX>PLAX": 3,
+        "A4C>PSAX": 2,
+        "A4C>A5C": 43,
+        "A5C>PLAX": 2,
+        "A5C>PSAX": 5,
+        "A5C>A4C": 39
+       }
+      },
+      "other": {
+       "candidates": 85,
+       "recordings": 94,
+       "sessions": 74,
+       "from_streams": 74,
+       "from_natives": 11,
+       "at_splice": 72,
+       "crossing_recordings": 73,
+       "len_mid_quartiles": [
+        12.0,
+        23.0,
+        35.0
+       ],
+       "len_mid_10_40": 65,
+       "conf_mid_median": 0.9064320596781644,
+       "a4c_a5c_pairs": 46,
+       "class_pairs": {
+        "PLAX>PSAX": 1,
+        "PLAX>A5C": 2,
+        "PSAX>PLAX": 5,
+        "PSAX>A4C": 3,
+        "PSAX>A5C": 2,
+        "A4C>PLAX": 2,
+        "A4C>PSAX": 5,
+        "A4C>A5C": 26,
+        "A4C>SC4C": 3,
+        "A5C>PLAX": 2,
+        "A5C>PSAX": 9,
+        "A5C>A4C": 20,
+        "A5C>SC4C": 2,
+        "SC4C>A5C": 3
+       }
+      }
+     },
+     "calibration": {
+      "kept": {
+       "candidates": 159,
+       "recordings": 169,
+       "sessions": 76,
+       "from_streams": 159,
+       "from_natives": 0,
+       "at_splice": 159,
+       "crossing_recordings": 159,
+       "len_mid_quartiles": [
+        15.0,
+        23.0,
+        35.0
+       ],
+       "len_mid_10_40": 138,
+       "conf_mid_median": 0.9854159832000733,
+       "a4c_a5c_pairs": 14,
+       "class_pairs": {
+        "PLAX>PSAX": 3,
+        "PLAX>A4C": 14,
+        "PLAX>A5C": 7,
+        "PLAX>SC4C": 8,
+        "PSAX>PLAX": 4,
+        "PSAX>A4C": 4,
+        "PSAX>A5C": 5,
+        "PSAX>SC4C": 5,
+        "A4C>PLAX": 11,
+        "A4C>PSAX": 8,
+        "A4C>A5C": 8,
+        "A4C>SC4C": 9,
+        "A5C>PLAX": 10,
+        "A5C>PSAX": 15,
+        "A5C>A4C": 6,
+        "A5C>SC4C": 8,
+        "SC4C>PLAX": 10,
+        "SC4C>PSAX": 11,
+        "SC4C>A4C": 7,
+        "SC4C>A5C": 6
+       }
+      },
+      "removed": {
+       "candidates": 28,
+       "recordings": 17,
+       "sessions": 14,
+       "from_streams": 9,
+       "from_natives": 19,
+       "at_splice": 6,
+       "crossing_recordings": 8,
+       "len_mid_quartiles": [
+        6.75,
+        14.0,
+        17.25
+       ],
+       "len_mid_10_40": 15,
+       "conf_mid_median": 0.8573879301548004,
+       "a4c_a5c_pairs": 22,
+       "class_pairs": {
+        "PLAX>PSAX": 5,
+        "PSAX>PLAX": 1,
+        "A4C>A5C": 13,
+        "A5C>A4C": 9
+       }
+      },
+      "other": {
+       "candidates": 14,
+       "recordings": 15,
+       "sessions": 14,
+       "from_streams": 8,
+       "from_natives": 6,
+       "at_splice": 8,
+       "crossing_recordings": 8,
+       "len_mid_quartiles": [
+        17.0,
+        22.0,
+        43.25
+       ],
+       "len_mid_10_40": 9,
+       "conf_mid_median": 0.8973946635883038,
+       "a4c_a5c_pairs": 9,
+       "class_pairs": {
+        "PSAX>PLAX": 1,
+        "A4C>PLAX": 2,
+        "A4C>PSAX": 1,
+        "A4C>A5C": 4,
+        "A4C>SC4C": 1,
+        "A5C>A4C": 5
+       }
+      }
+     },
+     "held_out": {
+      "kept": {
+       "candidates": 158,
+       "recordings": 161,
+       "sessions": 72,
+       "from_streams": 158,
+       "from_natives": 0,
+       "at_splice": 158,
+       "crossing_recordings": 158,
+       "len_mid_quartiles": [
+        15.0,
+        24.0,
+        36.0
+       ],
+       "len_mid_10_40": 136,
+       "conf_mid_median": 0.9981023199828989,
+       "a4c_a5c_pairs": 10,
+       "class_pairs": {
+        "PLAX>PSAX": 6,
+        "PLAX>A4C": 2,
+        "PLAX>A5C": 5,
+        "PLAX>SC4C": 10,
+        "PSAX>PLAX": 10,
+        "PSAX>A4C": 6,
+        "PSAX>A5C": 8,
+        "PSAX>SC4C": 7,
+        "A4C>PLAX": 11,
+        "A4C>PSAX": 12,
+        "A4C>A5C": 5,
+        "A4C>SC4C": 13,
+        "A5C>PLAX": 7,
+        "A5C>PSAX": 10,
+        "A5C>A4C": 5,
+        "A5C>SC4C": 4,
+        "SC4C>PLAX": 12,
+        "SC4C>PSAX": 6,
+        "SC4C>A4C": 13,
+        "SC4C>A5C": 6
+       }
+      },
+      "removed": {
+       "candidates": 46,
+       "recordings": 28,
+       "sessions": 22,
+       "from_streams": 16,
+       "from_natives": 30,
+       "at_splice": 9,
+       "crossing_recordings": 12,
+       "len_mid_quartiles": [
+        8.25,
+        14.0,
+        17.0
+       ],
+       "len_mid_10_40": 30,
+       "conf_mid_median": 0.7996459627435322,
+       "a4c_a5c_pairs": 38,
+       "class_pairs": {
+        "PLAX>PSAX": 2,
+        "PLAX>SC4C": 1,
+        "PSAX>A5C": 2,
+        "A4C>PSAX": 3,
+        "A4C>A5C": 19,
+        "A5C>A4C": 19
+       }
+      },
+      "other": {
+       "candidates": 32,
+       "recordings": 32,
+       "sessions": 27,
+       "from_streams": 20,
+       "from_natives": 12,
+       "at_splice": 19,
+       "crossing_recordings": 19,
+       "len_mid_quartiles": [
+        14.5,
+        23.5,
+        38.0
+       ],
+       "len_mid_10_40": 26,
+       "conf_mid_median": 0.8632795441186409,
+       "a4c_a5c_pairs": 19,
+       "class_pairs": {
+        "PLAX>A4C": 1,
+        "PSAX>A4C": 2,
+        "A4C>PLAX": 1,
+        "A4C>PSAX": 1,
+        "A4C>A5C": 8,
+        "A4C>SC4C": 2,
+        "A5C>PSAX": 3,
+        "A5C>A4C": 11,
+        "SC4C>PLAX": 1,
+        "SC4C>A4C": 2
+       }
+      }
+     }
+    },
+    "sufficiency": {
+     "kept": {
+      "candidates": 158,
+      "sessions": 72
+     },
+     "removed": {
+      "candidates": 46,
+      "sessions": 22
+     },
+     "ok": true
+    }
+   },
+   "2": {
+    "cache_key": "e83275fd433d",
+    "composition": {
+     "train": {
+      "kept": {
+       "candidates": 453,
+       "recordings": 471,
+       "sessions": 217,
+       "from_streams": 453,
+       "from_natives": 0,
+       "at_splice": 453,
+       "crossing_recordings": 453,
+       "len_mid_quartiles": [
+        16.0,
+        23.0,
+        34.0
+       ],
+       "len_mid_10_40": 387,
+       "conf_mid_median": 0.9828204402217159,
+       "a4c_a5c_pairs": 56,
+       "class_pairs": {
+        "PLAX>PSAX": 19,
+        "PLAX>A4C": 17,
+        "PLAX>A5C": 13,
+        "PLAX>SC4C": 26,
+        "PSAX>PLAX": 24,
+        "PSAX>A4C": 24,
+        "PSAX>A5C": 22,
+        "PSAX>SC4C": 20,
+        "A4C>PLAX": 16,
+        "A4C>PSAX": 35,
+        "A4C>A5C": 28,
+        "A4C>SC4C": 22,
+        "A5C>PLAX": 23,
+        "A5C>PSAX": 20,
+        "A5C>A4C": 28,
+        "A5C>SC4C": 23,
+        "SC4C>PLAX": 22,
+        "SC4C>PSAX": 26,
+        "SC4C>A4C": 18,
+        "SC4C>A5C": 27
+       }
+      },
+      "removed": {
+       "candidates": 123,
+       "recordings": 71,
+       "sessions": 58,
+       "from_streams": 57,
+       "from_natives": 66,
+       "at_splice": 43,
+       "crossing_recordings": 48,
+       "len_mid_quartiles": [
+        7.0,
+        12.0,
+        19.0
+       ],
+       "len_mid_10_40": 78,
+       "conf_mid_median": 0.8202515244483948,
+       "a4c_a5c_pairs": 91,
+       "class_pairs": {
+        "PLAX>PSAX": 20,
+        "PLAX>SC4C": 1,
+        "PSAX>PLAX": 2,
+        "A4C>PSAX": 2,
+        "A4C>A5C": 56,
+        "A5C>PSAX": 7,
+        "A5C>A4C": 35
+       }
+      },
+      "other": {
+       "candidates": 86,
+       "recordings": 99,
+       "sessions": 77,
+       "from_streams": 72,
+       "from_natives": 14,
+       "at_splice": 70,
+       "crossing_recordings": 71,
+       "len_mid_quartiles": [
+        13.25,
+        25.0,
+        38.0
+       ],
+       "len_mid_10_40": 65,
+       "conf_mid_median": 0.9083963811759523,
+       "a4c_a5c_pairs": 50,
+       "class_pairs": {
+        "PLAX>A5C": 2,
+        "PSAX>PLAX": 4,
+        "PSAX>A4C": 3,
+        "PSAX>A5C": 2,
+        "PSAX>SC4C": 1,
+        "A4C>PLAX": 2,
+        "A4C>PSAX": 3,
+        "A4C>A5C": 22,
+        "A4C>SC4C": 3,
+        "A5C>PLAX": 2,
+        "A5C>PSAX": 9,
+        "A5C>A4C": 28,
+        "A5C>SC4C": 2,
+        "SC4C>A5C": 3
+       }
+      }
+     },
+     "calibration": {
+      "kept": {
+       "candidates": 156,
+       "recordings": 164,
+       "sessions": 74,
+       "from_streams": 156,
+       "from_natives": 0,
+       "at_splice": 156,
+       "crossing_recordings": 156,
+       "len_mid_quartiles": [
+        14.75,
+        22.5,
+        34.0
+       ],
+       "len_mid_10_40": 136,
+       "conf_mid_median": 0.9873701064123048,
+       "a4c_a5c_pairs": 11,
+       "class_pairs": {
+        "PLAX>PSAX": 3,
+        "PLAX>A4C": 14,
+        "PLAX>A5C": 7,
+        "PLAX>SC4C": 8,
+        "PSAX>PLAX": 4,
+        "PSAX>A4C": 4,
+        "PSAX>A5C": 6,
+        "PSAX>SC4C": 5,
+        "A4C>PLAX": 10,
+        "A4C>PSAX": 8,
+        "A4C>A5C": 7,
+        "A4C>SC4C": 7,
+        "A5C>PLAX": 11,
+        "A5C>PSAX": 15,
+        "A5C>A4C": 4,
+        "A5C>SC4C": 9,
+        "SC4C>PLAX": 10,
+        "SC4C>PSAX": 11,
+        "SC4C>A4C": 7,
+        "SC4C>A5C": 6
+       }
+      },
+      "removed": {
+       "candidates": 27,
+       "recordings": 20,
+       "sessions": 17,
+       "from_streams": 8,
+       "from_natives": 19,
+       "at_splice": 6,
+       "crossing_recordings": 7,
+       "len_mid_quartiles": [
+        7.0,
+        11.0,
+        16.0
+       ],
+       "len_mid_10_40": 14,
+       "conf_mid_median": 0.839726597070694,
+       "a4c_a5c_pairs": 20,
+       "class_pairs": {
+        "PLAX>PSAX": 6,
+        "PSAX>PLAX": 1,
+        "A4C>A5C": 13,
+        "A5C>A4C": 7
+       }
+      },
+      "other": {
+       "candidates": 13,
+       "recordings": 15,
+       "sessions": 14,
+       "from_streams": 8,
+       "from_natives": 5,
+       "at_splice": 8,
+       "crossing_recordings": 8,
+       "len_mid_quartiles": [
+        17.0,
+        22.0,
+        41.0
+       ],
+       "len_mid_10_40": 8,
+       "conf_mid_median": 0.87669099796386,
+       "a4c_a5c_pairs": 11,
+       "class_pairs": {
+        "A4C>PLAX": 1,
+        "A4C>A5C": 3,
+        "A4C>SC4C": 1,
+        "A5C>A4C": 8
+       }
+      }
+     },
+     "held_out": {
+      "kept": {
+       "candidates": 160,
+       "recordings": 164,
+       "sessions": 73,
+       "from_streams": 160,
+       "from_natives": 0,
+       "at_splice": 160,
+       "crossing_recordings": 160,
+       "len_mid_quartiles": [
+        15.0,
+        24.0,
+        36.25
+       ],
+       "len_mid_10_40": 137,
+       "conf_mid_median": 0.9978415682988289,
+       "a4c_a5c_pairs": 11,
+       "class_pairs": {
+        "PLAX>PSAX": 6,
+        "PLAX>A4C": 2,
+        "PLAX>A5C": 5,
+        "PLAX>SC4C": 10,
+        "PSAX>PLAX": 10,
+        "PSAX>A4C": 6,
+        "PSAX>A5C": 9,
+        "PSAX>SC4C": 7,
+        "A4C>PLAX": 11,
+        "A4C>PSAX": 12,
+        "A4C>A5C": 5,
+        "A4C>SC4C": 13,
+        "A5C>PLAX": 7,
+        "A5C>PSAX": 10,
+        "A5C>A4C": 6,
+        "A5C>SC4C": 4,
+        "SC4C>PLAX": 12,
+        "SC4C>PSAX": 6,
+        "SC4C>A4C": 13,
+        "SC4C>A5C": 6
+       }
+      },
+      "removed": {
+       "candidates": 40,
+       "recordings": 26,
+       "sessions": 20,
+       "from_streams": 13,
+       "from_natives": 27,
+       "at_splice": 7,
+       "crossing_recordings": 11,
+       "len_mid_quartiles": [
+        7.0,
+        13.0,
+        17.25
+       ],
+       "len_mid_10_40": 23,
+       "conf_mid_median": 0.7572877322408287,
+       "a4c_a5c_pairs": 29,
+       "class_pairs": {
+        "PLAX>PSAX": 2,
+        "PLAX>SC4C": 1,
+        "PSAX>A5C": 4,
+        "A4C>PSAX": 4,
+        "A4C>A5C": 16,
+        "A5C>A4C": 13
+       }
+      },
+      "other": {
+       "candidates": 27,
+       "recordings": 23,
+       "sessions": 20,
+       "from_streams": 17,
+       "from_natives": 10,
+       "at_splice": 15,
+       "crossing_recordings": 15,
+       "len_mid_quartiles": [
+        12.5,
+        22.0,
+        31.0
+       ],
+       "len_mid_10_40": 24,
+       "conf_mid_median": 0.8141845627264543,
+       "a4c_a5c_pairs": 15,
+       "class_pairs": {
+        "PLAX>A4C": 1,
+        "PSAX>A4C": 2,
+        "A4C>PLAX": 1,
+        "A4C>PSAX": 1,
+        "A4C>A5C": 4,
+        "A4C>SC4C": 1,
+        "A5C>PLAX": 1,
+        "A5C>PSAX": 5,
+        "A5C>A4C": 11
+       }
+      }
+     }
+    },
+    "sufficiency": {
+     "kept": {
+      "candidates": 160,
+      "sessions": 73
+     },
+     "removed": {
+      "candidates": 40,
+      "sessions": 20
+     },
+     "ok": true
+    }
+   }
+  },
+  "partition": {
+   "train": {
+    "sessions": 301,
+    "clips_by_class": {
+     "PLAX": 678,
+     "PSAX": 559,
+     "A4C": 526,
+     "A5C": 131,
+     "SC4C": 116
+    },
+    "streams": 900
+   },
+   "calibration": {
+    "sessions": 100,
+    "clips_by_class": {
+     "PLAX": 220,
+     "PSAX": 178,
+     "A4C": 156,
+     "A5C": 42,
+     "SC4C": 33
+    },
+    "streams": 300
+   },
+   "held_out": {
+    "sessions": 101,
+    "clips_by_class": {
+     "PLAX": 222,
+     "A5C": 44,
+     "A4C": 176,
+     "PSAX": 237,
+     "SC4C": 46
+    },
+    "streams": 300
+   }
+  },
+  "seconds": 83.10426688194275
+ },
+ "sufficiency": {
+  "0": {
+   "train": {
+    "kept": {
+     "candidates": 449,
+     "sessions": 216
+    },
+    "removed": {
+     "candidates": 130,
+     "sessions": 56
+    },
+    "ok": true
+   },
+   "calibration": {
+    "kept": {
+     "candidates": 157,
+     "sessions": 76
+    },
+    "ok": true
+   },
+   "held_out": {
+    "kept": {
+     "candidates": 159,
+     "sessions": 73
+    },
+    "removed": {
+     "candidates": 50,
+     "sessions": 23
+    },
+    "ok": true
+   },
+   "ok": true
+  },
+  "1": {
+   "train": {
+    "kept": {
+     "candidates": 450,
+     "sessions": 216
+    },
+    "removed": {
+     "candidates": 110,
+     "sessions": 53
+    },
+    "ok": true
+   },
+   "calibration": {
+    "kept": {
+     "candidates": 159,
+     "sessions": 76
+    },
+    "ok": true
+   },
+   "held_out": {
+    "kept": {
+     "candidates": 158,
+     "sessions": 72
+    },
+    "removed": {
+     "candidates": 46,
+     "sessions": 22
+    },
+    "ok": true
+   },
+   "ok": true
+  },
+  "2": {
+   "train": {
+    "kept": {
+     "candidates": 453,
+     "sessions": 217
+    },
+    "removed": {
+     "candidates": 123,
+     "sessions": 58
+    },
+    "ok": true
+   },
+   "calibration": {
+    "kept": {
+     "candidates": 156,
+     "sessions": 74
+    },
+    "ok": true
+   },
+   "held_out": {
+    "kept": {
+     "candidates": 160,
+     "sessions": 73
+    },
+    "removed": {
+     "candidates": 40,
+     "sessions": 20
+    },
+    "ok": true
+   },
+   "ok": true
+  }
+ },
+ "decision": {
+  "extra_value": false,
+  "per_seed": [
+   {
+    "removal_above_zero": false,
+    "keep_within_2_points": true,
+    "splice_control_not_negative": false
+   },
+   {
+    "removal_above_zero": false,
+    "keep_within_2_points": true,
+    "splice_control_not_negative": true
+   },
+   {
+    "removal_above_zero": false,
+    "keep_within_2_points": true,
+    "splice_control_not_negative": false
+   }
+  ]
+ }
+}
