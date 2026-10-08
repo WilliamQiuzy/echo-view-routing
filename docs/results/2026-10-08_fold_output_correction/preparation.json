@@ -1,0 +1,428 @@
+{
+ "inputs_sha256": {
+  "protocol": "a897483b776e8cff1ba8b92774c6a82537758bcba6abd362f2d8603f37997593",
+  "manifest": "037b20e0f3451545505c7b80dfc0c1894265e406066c86137df3518174c10433",
+  "session_folds": "23c5ce9445f3ceaccf6c91a1976f90499874a514974c23bd3568c7abf8eeb591",
+  "library_config": "ab3dd0530eea697c9512684601935707abaa63dab96c2355d44a1b46eb5dde8a",
+  "library_models": "bf7c067d89b02a40658fdf1e7992fd25878b1ff1bf43fd6083b0e492d34e2441",
+  "banks_f0": "b31c25ef474c90199ce907b2c138156148eca27cf5bdfdbe1d7a0bc91da6052e",
+  "banks_f1": "8c78aaa51bbd514333aa5a31d2d1467157b53fd18568b7a69aa6753ddb3f15a2",
+  "banks_f2": "8d6cfad5f069e8106ce33c807b9599e4d83ee7a69b88719de8e155e7822a4df8",
+  "fold_model_0": "c1c5abce69dd0391e6180fd80b33deeccc347c80f2467fd9bd36168b6ea1c79a",
+  "fold_run_manifest_0": "12efd257e29eb325313dd1cae767ab2d6c5896d18ce58d69c702ecbd3a4ab1fe",
+  "fold_model_1": "5e312ad1ca44c5eb9553f18d95f7561811df580c53ada254d8ed0ef6f94674b3",
+  "fold_run_manifest_1": "3a858bb1adaf8bb339847a529afe2b177e16174fea1483c664bcce4b5d9e5c93",
+  "fold_model_2": "f5375407b7ac113b8ee5ac527f0f5b0bfdcfefa2ebfb0874831c1405f2f58f2d",
+  "fold_run_manifest_2": "18858742a150c3bb8dd4445878cdee0b11d362d0052f7af51f50ddcbb5c78044",
+  "b0_v3": "beb36d80df31b42926e546a703ecdc93eabe8801a1021b65a9819fcd786d9809"
+ },
+ "class_order": [
+  "PLAX",
+  "PSAX",
+  "A4C",
+  "A5C",
+  "SC4C"
+ ],
+ "training_lists": {
+  "0": {
+   "clips": 2244,
+   "sessions": 339,
+   "digest": "cfa773df28bd0a2282c243181055be5e688b347a2b1f4674d40e2a3461e9fcd5",
+   "epochs_logged": 30,
+   "final_epoch": 29
+  },
+  "1": {
+   "clips": 2242,
+   "sessions": 331,
+   "digest": "59d29aadacb09e376a9e6a5d3255a6f19aa5fccb64a8a3cc7e1057d58079fb80",
+   "epochs_logged": 30,
+   "final_epoch": 29
+  },
+  "2": {
+   "clips": 2242,
+   "sessions": 334,
+   "digest": "58f526cca7df0bebbdd2e32194bae8dc10ac7d535594523fbd805c70eba9bc8b",
+   "epochs_logged": 30,
+   "final_epoch": 29
+  }
+ },
+ "caches": {
+  "0": {
+   "clips": 1120,
+   "T-in cache": "5e312ad1ca44-seen-fold0",
+   "T-out cache": "c1c5abce69dd",
+   "frame alignment": "identical"
+  },
+  "1": {
+   "clips": 1122,
+   "T-in cache": "f5375407b7ac-seen-fold1",
+   "T-out cache": "5e312ad1ca44",
+   "frame alignment": "identical"
+  },
+  "2": {
+   "clips": 1122,
+   "T-in cache": "c1c5abce69dd-seen-fold2",
+   "T-out cache": "f5375407b7ac",
+   "frame alignment": "identical"
+  }
+ },
+ "streams": {
+  "per fold": {
+   "0": 500,
+   "1": 500,
+   "2": 500
+  },
+  "total": 1500,
+  "fragments": 8875,
+  "fragment variants": {
+   "gamma090": 4402,
+   "orig": 4473
+  }
+ },
+ "natives": {
+  "clips": 3364,
+  "variants": {
+   "gamma090": 1713,
+   "orig": 1651
+  },
+  "sessions": 502
+ },
+ "seen_unseen": "checked on every training recording for every arm",
+ "plans": {
+  "0": {
+   "sha256": "c197586e4caab55335bb7e5c3aa8e838f9545c72ab8a03e0df05cacbfa89c98b",
+   "class_weight": [
+    0.7513699531555176,
+    1.0,
+    0.9964779019355774,
+    1.3209511041641235,
+    1.4341633319854736
+   ],
+   "pos_weight": 35.63536071777344,
+   "updates": 18750
+  },
+  "1": {
+   "sha256": "70261f0c73ee611c8a50dbe5ab9a2fe43210a6b9a1be8d9194d2fd4e2fec560d",
+   "class_weight": [
+    0.724312424659729,
+    1.0,
+    0.996941328048706,
+    1.3075246810913086,
+    1.3673553466796875
+   ],
+   "pos_weight": 35.303951263427734,
+   "updates": 18750
+  },
+  "2": {
+   "sha256": "eb40ef66eca64da7401d1e4bb5fade7c68f27ffb7a580535170f948532d0c7d4",
+   "class_weight": [
+    0.7214223742485046,
+    0.9804163575172424,
+    1.0,
+    1.2843761444091797,
+    1.3696978092193604
+   ],
+   "pos_weight": 35.10482406616211,
+   "updates": 18750
+  }
+ },
+ "paired_batches": {
+  "0": {
+   "updates": 25,
+   "sequences": 200,
+   "T-in differs from T-out": 200,
+   "probability rows finite and summing to 1": true
+  },
+  "1": {
+   "updates": 25,
+   "sequences": 200,
+   "T-in differs from T-out": 200,
+   "probability rows finite and summing to 1": true
+  },
+  "2": {
+   "updates": 25,
+   "sequences": 200,
+   "T-in differs from T-out": 200,
+   "probability rows finite and summing to 1": true
+  }
+ },
+ "input_description": {
+  "0": {
+   "T-in": {
+    "generator model": 1,
+    "sample error": 0.0002181691247054717,
+    "samples": 68754,
+    "clip confusion": [
+     [
+      373,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      324,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      286,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      72,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      65
+     ]
+    ],
+    "clips correct": 1120,
+    "mean confidence": 0.9998465260756867,
+    "mean true-class probability": 0.9998025832963842
+   },
+   "T-out": {
+    "generator model": 0,
+    "sample error": 0.03724874189138087,
+    "samples": 68754,
+    "clip confusion": [
+     [
+      372,
+      0,
+      1,
+      0,
+      0
+     ],
+     [
+      0,
+      324,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      1,
+      282,
+      2,
+      1
+     ],
+     [
+      0,
+      1,
+      25,
+      46,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      65
+     ]
+    ],
+    "clips correct": 1089,
+    "mean confidence": 0.9936664115637541,
+    "mean true-class probability": 0.9592101059122876
+   }
+  },
+  "1": {
+   "T-in": {
+    "generator model": 2,
+    "sample error": 0.00017342794791380632,
+    "samples": 69193,
+    "clip confusion": [
+     [
+      374,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      325,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      286,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      72,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      65
+     ]
+    ],
+    "clips correct": 1122,
+    "mean confidence": 0.9998208656774272,
+    "mean true-class probability": 0.9997716361188633
+   },
+   "T-out": {
+    "generator model": 1,
+    "sample error": 0.04192620640816268,
+    "samples": 69193,
+    "clip confusion": [
+     [
+      374,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      325,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      1,
+      285,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      33,
+      39,
+      0
+     ],
+     [
+      0,
+      1,
+      0,
+      0,
+      64
+     ]
+    ],
+    "clips correct": 1087,
+    "mean confidence": 0.9920548376446314,
+    "mean true-class probability": 0.9561580946520587
+   }
+  },
+  "2": {
+   "T-in": {
+    "generator model": 0,
+    "sample error": 0.0002727259678183358,
+    "samples": 69667,
+    "clip confusion": [
+     [
+      373,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      325,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      286,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      73,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      65
+     ]
+    ],
+    "clips correct": 1122,
+    "mean confidence": 0.9998930805825932,
+    "mean true-class probability": 0.9998113169283366
+   },
+   "T-out": {
+    "generator model": 2,
+    "sample error": 0.03611465973847015,
+    "samples": 69667,
+    "clip confusion": [
+     [
+      371,
+      0,
+      2,
+      0,
+      0
+     ],
+     [
+      0,
+      325,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      2,
+      280,
+      4,
+      0
+     ],
+     [
+      0,
+      0,
+      32,
+      41,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      65
+     ]
+    ],
+    "clips correct": 1082,
+    "mean confidence": 0.9918619257243559,
+    "mean true-class probability": 0.9539249143527626
+   }
+  }
+ },
+ "seconds": 19.47005343437195
+}
