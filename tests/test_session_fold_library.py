@@ -113,3 +113,9 @@ def test_written_summaries_carry_no_ids():
              "mid_videos": ["sessA_1"], "reason": None, "group": "session:sessA"}]
     text = json.dumps({"recognition": sfl.recognition_table(items), "composition": sfl.describe(rows)})
     assert "sessA" not in text and "sessB" not in text                     # key names such as "sessions" are fine
+
+
+def test_own_view_sources_leave_out_the_neighbours():
+    rows = [{"cat": "kept", "y": 3, "mid_videos": ["a_1", "b_1"]}, {"cat": "kept", "y": 2, "mid_videos": ["c_1"]}, {"cat": "removed", "y": 3, "mid_videos": ["d_1"]}]
+    labels = {"a_1": 2, "b_1": 3, "c_1": 2, "d_1": 2}                      # a_1 is the A4C neighbour of the A5C middle on b_1
+    assert sfl.own_view_sources(rows, labels) == {"middles": 2, "recordings of the middle's view": 2, "their sessions": 2, "middles over two or more recordings": 1}

@@ -12,6 +12,8 @@ test split take no part. Session hold-out, not patient hold-out. No segment-leve
                  recordings and sessions.
   --library      Table 2: streams inside each fold with symmetric contrast, the fixed J0 (kappa 8) candidates, their
                  categories, sources, joins, lengths, confidence and concentration on recordings.
+  --diagnose     Reporting only, added after the fact-check: the recordings of the middle's own view behind the correct
+                 middles (without the neighbouring fragments a decoded middle runs into), from the saved candidate lists.
 
   python scripts/session_fold_library.py --config configs/experiments/session_fold_library_v1.yaml \
       --out docs/results/2026-10-07_session_fold_library --folds
@@ -133,6 +135,14 @@ def concentration(rows: list[dict]) -> dict:
         return {"largest recording share": None, "effective recordings": None, "most candidates on one recording": 0}
     shares = [x / total for x in w.values()]
     return {"largest recording share": max(shares), "effective recordings": 1 / sum(s * s for s in shares), "most candidates on one recording": max(Counter(v for r in rows for v in r["mid_videos"]).values())}
+
+
+def own_view_sources(rows: list[dict], labels: dict[str, int]) -> dict:
+    """Correct middles: the recordings of the middle's own view under them, their sessions, and how many middles also
+    run into a neighbouring recording."""
+    kept = [r for r in rows if r["cat"] == "kept"]; own = {v for r in kept for v in r["mid_videos"] if labels[v] == r["y"]}
+    return {"middles": len(kept), "recordings of the middle's view": len(own), "their sessions": len({session_of(v) for v in own}),
+            "middles over two or more recordings": sum(len(r["mid_videos"]) > 1 for r in kept)}
 
 
 def quartiles(values: list[float]) -> list[float] | None:
@@ -310,6 +320,17 @@ def run_library(cfg: dict, sf: dict, paths, out_dir: Path, _) -> None:
     (out_dir / "composition.json").write_text(json.dumps(res, indent=1)); (out_dir / "report_tables.md").write_text(tables_md(out_dir, res))
 
 
+def run_diagnose(cfg: dict, sf: dict, paths, out_dir: Path, _) -> None:
+    """Reporting only: own-view sources of the correct middles per fold and pooled; nothing is rebuilt or rescored."""
+    root = paths.repo_root; proto = check_inputs(sf, root); labels = train_labels(root, sf, proto)
+    models = json.loads((out_dir / "models.json").read_text()); res, pooled = {"correct middles, own-view sources": {}}, []
+    for k in models:
+        rows = json.loads((root / "runs" / NS / f"library_f{k}.json").read_text()); pooled += rows
+        res["correct middles, own-view sources"][k] = {g: own_view_sources([r for r in rows if test(r)], labels) for g, test in GROUPS.items()}
+    res["correct middles, own-view sources"]["pooled"] = {g: own_view_sources([r for r in pooled if test(r)], labels) for g, test in GROUPS.items()}
+    (out_dir / "diagnostics.json").write_text(json.dumps(res, indent=1)); print(json.dumps(res, indent=1))
+
+
 # ----------------------------------------------------------------------------------------------- report
 def tables_md(out_dir: Path, comp: dict) -> str:
     rec = json.loads((out_dir / "recognition.json").read_text()); t1, t2 = [], []
@@ -335,7 +356,7 @@ def tables_md(out_dir: Path, comp: dict) -> str:
     return "\n".join(["# Session-fold prediction library: tables\n", "## Table 1: recognition (orig variant)\n", tab(t1), "## Table 2: candidates\n", tab(t2)])
 
 
-STEPS = {"folds": run_folds, "train": run_train, "predict": run_predict, "recognition": run_recognition, "library": run_library}
+STEPS = {"folds": run_folds, "train": run_train, "predict": run_predict, "recognition": run_recognition, "library": run_library, "diagnose": run_diagnose}
 
 
 def main() -> None:
