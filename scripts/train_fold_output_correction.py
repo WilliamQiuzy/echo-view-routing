@@ -72,7 +72,8 @@ class CalibratorHead:
         return LinearCalibrator(self.n_classes, self.clamp_min)
 
     def loss(self, model: nn.Module, batch: dict) -> tuple[torch.Tensor, dict[str, float]]:
-        loss = F.cross_entropy(model(batch["x"]), batch["labels"], weight=self.class_weight.to(batch["x"].device), ignore_index=PAD_LABEL)
+        labels = batch["labels"].masked_fill(batch["valid"] == 0, PAD_LABEL)          # the valid mask, whatever the padding label
+        loss = F.cross_entropy(model(batch["x"]), labels, weight=self.class_weight.to(batch["x"].device), ignore_index=PAD_LABEL)
         return loss, {"ce": float(loss.detach())}
 
     @torch.no_grad()
@@ -224,7 +225,9 @@ def smoke(s: Setup, device) -> dict:
     rep["input_shape"] = list(batch["x"].shape); rep["input_rows_sum_to_one"] = bool(torch.allclose(batch["x"].sum(1)[batch["valid"] > 0], torch.ones(1, device=device), atol=1e-3))
     torch.manual_seed(1); l1, _ = s.head.loss(model, batch); alt = dict(batch); lab = batch["labels"].clone(); lab[batch["valid"] == 0] = -7; alt["labels"] = lab
     torch.manual_seed(1); l2, _ = s.head.loss(model, alt)
-    rep["padding_label_loss_diff"] = abs(float(l1) - float(l2)); rep["padded_positions"] = int((batch["valid"] == 0).sum()); rep["loss_first"] = float(l1)
+    torch.manual_seed(1); l3, _ = s.head.loss(model, batch)                     # the same input twice: the device's numerical noise
+    rep["padding_label_loss_diff"] = abs(float(l1) - float(l2)); rep["same_input_loss_diff"] = abs(float(l1) - float(l3))
+    rep["padded_positions"] = int((batch["valid"] == 0).sum()); rep["loss_first"] = float(l1)
     model.zero_grad(); l1.backward()
     grads = {n: (float(p.grad.abs().max()) if p.grad is not None else None) for n, p in model.named_parameters()}
     rep["zero_or_missing_gradients"] = [n for n, g in grads.items() if g is None or g == 0.0 or not np.isfinite(g)]; rep["parameters"] = sum(p.numel() for p in model.parameters())
@@ -241,7 +244,7 @@ def smoke(s: Setup, device) -> dict:
     rep["estimated_minutes_per_run"] = (rep["seconds_per_update"] * int(tr["updates_per_epoch"]) + rep["seconds_per_epoch_of_batches"]) * int(tr["epochs"]) / 60
     p_ok = s.arm != "P-out" or (rep["p_out"]["identity_max_abs"] <= 1e-6 and rep["p_out"]["neighbour_change_max_abs"] == 0.0)
     rep["ok"] = bool(rep["reproducibility"]["loss_max_abs"] <= 1e-6 and rep["reproducibility"]["params_max_abs"] <= 1e-6 and rep["resume_params_max_abs"] <= 1e-6
-                     and rep["resume_optimizer_bound"] and rep["padding_label_loss_diff"] == 0.0 and rep["padded_positions"] > 0 and not rep["zero_or_missing_gradients"]
+                     and rep["resume_optimizer_bound"] and rep["padding_label_loss_diff"] <= 1e-6 and rep["padded_positions"] > 0 and not rep["zero_or_missing_gradients"]
                      and rep["input_shape"][1] == 5 and rep["input_rows_sum_to_one"] and p_ok)
     return rep
 

@@ -84,9 +84,9 @@ def test_p_out_starts_at_the_identity_and_reads_no_neighbour():
     alt = p.copy(); alt[5] = alt[5][::-1]; q2 = head.probs(model, alt, "cpu"); keep = np.arange(12) != 5
     assert np.array_equal(q2[keep], q[keep])
     seqs = [pf.Seq("a", True, p, np.full(12, 2), np.zeros(0, int)), pf.Seq("b", True, p[:7], np.full(7, 3), np.zeros(0, int))]
-    batch = collate(seqs); l1, _ = head.loss(model, batch); alt_b = dict(batch); lab = batch["labels"].clone(); lab[batch["valid"] == 0] = PAD_LABEL
-    l2, _ = head.loss(model, alt_b)
-    assert torch.isfinite(l1) and float(l1) == float(l2)
+    batch = collate(seqs); l1, _ = head.loss(model, batch); alt_b = dict(batch); lab = batch["labels"].clone(); lab[batch["valid"] == 0] = -7; alt_b["labels"] = lab
+    l2, _ = head.loss(model, alt_b)                                                    # any padding label is masked by valid
+    assert torch.isfinite(l1) and float(l1) == float(l2) and PAD_LABEL == -100
 
 
 def test_resumed_temporal_optimizer_is_bound(tmp_path):
