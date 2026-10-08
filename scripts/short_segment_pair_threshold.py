@@ -11,6 +11,9 @@ Exploratory reuse of the development set; nothing enters the full system and the
                 frozen pipelines and the committed thresholds (recomputed and checked). Both rules per seed and half,
                 the A4C/A5C decisions that change, the candidates outside the binary task, Q1 - Q0 under the pair rule
                 and the fixed decision.
+  --diagnose    Reporting only, added after the fact-check: hindsight overlap diagnostics that read the labels and set no
+                threshold (the lowest calibration scores behind each pair threshold, and how many wrong A4C/A5C
+                candidates score below the lowest correct one on the library's held-out part and the validation halves).
 
   python scripts/short_segment_pair_threshold.py --config configs/experiments/short_segment_pair_threshold_v1.yaml \
       --out docs/results/2026-10-07_short_segment_pair_threshold --thresholds
@@ -406,6 +409,56 @@ def tables_md(res: dict, th: dict) -> str:
                       "## Decision\n", "```\n" + json.dumps(res["decision"], indent=1) + "\n```\n"])
 
 
+# ----------------------------------------------------------------------------------------------- diagnose
+def overlap(correct: np.ndarray, wrong: np.ndarray) -> dict:
+    """Hindsight: wrong candidates scoring below the lowest-scoring correct one. It reads the labels and sets no threshold."""
+    correct, wrong = np.asarray(correct, float), np.asarray(wrong, float)
+    if correct.size == 0:
+        return {"lowest correct score": None, "wrong below it": None, "wrong": int(wrong.size)}
+    lo = float(correct.min())
+    return {"lowest correct score": lo, "wrong below it": int((wrong < lo).sum()), "wrong": int(wrong.size)}
+
+
+def calibration_spread(rows: list[dict], scores: np.ndarray) -> dict:
+    """The lowest two scores behind a pair threshold, and how far the candidates share streams or recordings."""
+    s = np.sort(np.asarray(scores, float)); vids = [set(r["mid_videos"]) for r in rows]
+    share = sum(any(vids[i] & vids[j] for j in range(len(vids)) if j != i) for i in range(len(vids)))
+    return {"n": int(s.size), "lowest": float(s[0]) if s.size else None, "second lowest": float(s[1]) if s.size > 1 else None,
+            "groups": len({r["group"] for r in rows}), "sharing a recording with another": int(share)}
+
+
+def seed_diagnose(meta: list[dict], lib_scores: dict, rows: list[dict], val_scores: dict, pair: frozenset) -> dict:
+    out = {}
+    for m, s in lib_scores.items():
+        def pick(part: str, cat: str) -> list[int]:
+            return [i for i, r in enumerate(meta) if r["part"] == part and r["cat"] == cat and in_pair(r, pair)]
+        cal = pick("calibration", "kept"); v = np.asarray(val_scores[m], float)
+        vc = [i for i, r in enumerate(rows) if r["cat"] == "kept" and in_pair(r, pair)]; vw = [i for i, r in enumerate(rows) if r["cat"] == "removed" and in_pair(r, pair)]
+        out[m] = {"calibration": calibration_spread([meta[i] for i in cal], s[cal]),
+                  "held-out, hindsight": overlap(s[pick("held_out", "kept")], s[pick("held_out", "removed")]),
+                  "validation halves, hindsight": overlap(v[vc], v[vw])}
+    return out
+
+
+def run_diagnose(cfg: dict, pt: dict, paths, out_dir: Path) -> None:
+    root = paths.repo_root; st = cfg["short_segment_transfer"]; tr.check_probe(st, root); inputs = check_transfer(pt, root); pair = pair_of(pt["pair_threshold"]["pair"])
+    th = json.loads((out_dir / "thresholds.json").read_text()); res = {"note": "hindsight overlap diagnostics: they read the labels and set no threshold; not a result", "seeds": {}}
+    for seed in seeds_of(cfg):
+        arrays, meta = tr.library(st, root, seed); pipes = frozen(inputs["rebuild"], root, seed, pt["models"]); rows = []
+        for h in HALVES:
+            path = root / "runs" / tr.NS / f"candidates_s{seed}_{h}.json"
+            if sha256_file(path) != pt["transfer"]["candidates"][seed][h]:
+                raise SystemExit(f"seed {seed} {h}: the saved candidate list changed")
+            rows += json.loads(path.read_text())
+        val = {m: np.concatenate([np.asarray(json.loads((root / "runs" / NS / f"scores_s{seed}_{h}.json").read_text())[m], float) for h in HALVES]) for m in pt["models"]}
+        lib = {m: p.predict_proba(sp.design(arrays, m))[:, 1] for m, p in pipes.items()}
+        res["seeds"][str(seed)] = seed_diagnose(meta, lib, rows, val, pair)
+        for m in pt["models"]:
+            if abs(res["seeds"][str(seed)][m]["calibration"]["lowest"] - th["seeds"][str(seed)][m]["pair threshold"]) > 1e-9:
+                raise SystemExit(f"seed {seed} {m}: the lowest calibration score is not the committed pair threshold")
+    (out_dir / "diagnostics.json").write_text(json.dumps(res, indent=1)); print(json.dumps(res, indent=1)); print(f"wrote {out_dir / 'diagnostics.json'}")
+
+
 def check_out(out: str, pt: dict) -> None:
     """Only this round's own results directory; earlier rounds' results are never written."""
     if Path(out) != Path(pt["results_dir"]):
@@ -416,10 +469,10 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--config", required=True); ap.add_argument("--out", required=True)
     step = ap.add_mutually_exclusive_group(required=True)
-    for name in ("--thresholds", "--apply"):
+    for name in ("--thresholds", "--apply", "--diagnose"):
         step.add_argument(name, action="store_true")
     a = ap.parse_args(); a.set = []; cfg = load_cfg(a); pt = cfg["short_segment_pair_threshold"]; paths = load_paths(); check_out(a.out, pt)
-    (run_thresholds if a.thresholds else run_apply)(cfg, pt, paths, paths.repo_root / a.out)
+    (run_thresholds if a.thresholds else run_apply if a.apply else run_diagnose)(cfg, pt, paths, paths.repo_root / a.out)
 
 
 if __name__ == "__main__":

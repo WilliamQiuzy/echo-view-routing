@@ -170,3 +170,24 @@ def test_only_this_rounds_results_directory_is_written():
     pt.check_out("docs/results/2026-10-07_short_segment_pair_threshold", p)
     with pytest.raises(SystemExit):
         pt.check_out("docs/results/2026-10-07_short_segment_transfer", p)
+
+
+def test_hindsight_overlap_and_calibration_spread():
+    assert pt.overlap(np.array([0.3, 0.6]), np.array([0.1, 0.2, 0.5])) == {"lowest correct score": 0.3, "wrong below it": 2, "wrong": 3}
+    assert pt.overlap(np.zeros(0), np.array([0.1]))["wrong below it"] is None
+    rows = [{"group": "g1", "mid_videos": ["a_1"]}, {"group": "g1", "mid_videos": ["a_1", "b_1"]}, {"group": "g2", "mid_videos": ["c_1"]}]
+    assert pt.calibration_spread(rows, np.array([0.5, 0.001, 0.02])) == {"n": 3, "lowest": 0.001, "second lowest": 0.02, "groups": 2, "sharing a recording with another": 2}
+
+
+def test_diagnose_reads_only_the_pair_and_the_right_parts():
+    meta = [{"part": "calibration", "cat": "kept", "x": 2, "y": 3, "group": "g1", "mid_videos": ["a_1"]},
+            {"part": "calibration", "cat": "kept", "x": 3, "y": 2, "group": "g2", "mid_videos": ["b_1"]},
+            {"part": "calibration", "cat": "kept", "x": 0, "y": 1, "group": "g3", "mid_videos": ["c_1"]},      # another pair: ignored
+            {"part": "held_out", "cat": "kept", "x": 2, "y": 3, "group": "g4", "mid_videos": ["d_1"]},
+            {"part": "held_out", "cat": "removed", "x": 2, "y": 3, "group": "g5", "mid_videos": ["e_1"]},
+            {"part": "train", "cat": "kept", "x": 2, "y": 3, "group": "g6", "mid_videos": ["f_1"]}]            # train: ignored
+    rows = [_row("kept", 2, 3, ["v_1"]), _row("removed", 2, 3, ["w_1"]), _row("removed", 2, 3, ["w_2"]), _row("removed", 0, 1, ["z_1"])]
+    out = pt.seed_diagnose(meta, {"Q0": np.array([0.2, 0.01, 0.0001, 0.3, 0.1, 0.0])}, rows, {"Q0": np.array([0.4, 0.3, 0.5, 0.0])}, PAIR)["Q0"]
+    assert (out["calibration"]["n"], out["calibration"]["lowest"], out["calibration"]["second lowest"]) == (2, 0.01, 0.2)
+    assert out["held-out, hindsight"] == {"lowest correct score": 0.3, "wrong below it": 1, "wrong": 1}
+    assert out["validation halves, hindsight"] == {"lowest correct score": 0.4, "wrong below it": 1, "wrong": 2}
