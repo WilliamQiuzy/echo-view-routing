@@ -171,19 +171,22 @@ def run_keys(fo: dict) -> list[tuple[str, int]]:
     return [(arm, int(s)) for s in fo["training"]["seeds"] for arm in pf.ARMS]
 
 
-def expected_identity(cfg: dict, fo: dict, root: Path, keys: dict, arm: str, seed: int) -> str:
+def expected_identity(cfg: dict, root: Path, keys: dict, arm: str, seed: int, ctx, content_of: dict) -> str:
+    """The trainer's identity; the cache-content digests depend on the arm's input caches only, so they are computed
+    once per distinct set of caches (content_of is filled on first use)."""
     plan = root / "runs" / NS / "plans" / f"plan_s{seed}.json"; init = root / "runs" / NS / "inits" / ("p_out_identity.pt" if arm == "P-out" else f"asrf_init_s{seed}.pt")
-    input_keys = {str(k): pf.arm_cache_key(arm, k, keys) for k in range(pf.N_FOLDS)}
-    ctx = pf.load_context(cfg, fo, root); paths = load_paths()
-    content = {k: pf.cache_digest(paths.cache_root, key, [v for v, _ in ctx.clips if ctx.fold_of_clip[v] == int(k)]) for k, key in input_keys.items()}
-    return tf.identity(cfg, arm, seed, input_keys, content, sha256_file(plan), sha256_file(init), root)
+    input_keys = {str(k): pf.arm_cache_key(arm, k, keys) for k in range(pf.N_FOLDS)}; marker = json.dumps(input_keys, sort_keys=True)
+    if marker not in content_of:
+        cache_root = load_paths().cache_root
+        content_of[marker] = {k: pf.cache_digest(cache_root, key, [v for v, _ in ctx.clips if ctx.fold_of_clip[v] == int(k)]) for k, key in input_keys.items()}
+    return tf.identity(cfg, arm, seed, input_keys, content_of[marker], sha256_file(plan), sha256_file(init), root)
 
 
 def verify(cfg: dict, fo: dict, root: Path) -> dict:
-    keys = {int(k): m["cache_key"] for k, m in fo["inputs"]["fold_models"].items()}; runs = {}
+    keys = {int(k): m["cache_key"] for k, m in fo["inputs"]["fold_models"].items()}; runs = {}; ctx = pf.load_context(cfg, fo, root); content_of: dict = {}
     for arm, seed in run_keys(fo):
         key = f"{arm}_s{seed}"; man_path = root / "runs" / NS / "train" / key / "run_manifest.json"
-        if tf.finished_run(man_path, expected_identity(cfg, fo, root, keys, arm, seed)) is not True:
+        if tf.finished_run(man_path, expected_identity(cfg, root, keys, arm, seed, ctx, content_of)) is not True:
             raise SystemExit(f"{key}: not a finished run of the current identity")
         runs[key] = json.loads(man_path.read_text())
         if runs[key]["epochs"] != int(fo["training"]["epochs"]) or runs[key]["updates"] != int(fo["training"]["total_updates"]):
@@ -266,7 +269,9 @@ def run_extract_aux(cfg: dict, fo: dict, paths) -> None:
         raise SystemExit("the validation clips are not all in the manifest's validation split")
     device = torch.device("cuda"); torch.cuda.set_per_process_memory_fraction(gpu_memory_fraction())
     for k, m in fo["inputs"]["fold_models"].items():
-        model, _ = load_checkpoint(root / m["checkpoint"]); key = f"{m['cache_key']}-validation"
+        model, meta = load_checkpoint(root / m["checkpoint"]); key = f"{m['cache_key']}-validation"
+        if tuple(meta["classes"]) != pf.CLASSES:
+            raise SystemExit(f"fold model {k}: class order {meta['classes']}")
         for variant in pf.VARIANTS:
             extract_split(model, device, rows, "family5_index", paths.cache_root, key, variant, cfg["sampling"]["target_hz"], cfg["preprocess"]["image_size"],
                           cfg["features"]["batch_size"], cfg["features"]["num_workers"], meta={"ckpt": m["checkpoint"], "task": cfg["task"], "classes": list(pf.CLASSES), "use": "auxiliary evaluation"})
@@ -274,16 +279,30 @@ def run_extract_aux(cfg: dict, fo: dict, paths) -> None:
 
 
 def freeze(paths, runs: dict, config: str) -> dict:
+    """Freeze every final model; a failure is recorded for that model and never discards the results."""
     out = {}
     for key, man in runs.items():
         dest = paths.repo_root / "models_frozen" / NS / key
-        if not dest.exists():
-            files = [man["final_checkpoint"], str(paths.repo_root / "runs" / NS / "train" / key / "run_manifest.json"), man["plan"], man["init"], str(paths.repo_root / config)]
-            subprocess.run([sys.executable, "scripts/freeze_model.py", NS, key, *[x for f in files for x in ("--file", f)], "--meta", f"identity={man['identity']}",
-                            "--meta", f"arm={man['arm']}", "--meta", f"seed={man['seed']}", "--notes", "Fold-output correction round (2026-10-08); final epoch."],
-                           cwd=paths.repo_root, check=True, capture_output=True)
-        out[key] = str(dest)
+        try:
+            if not dest.exists():
+                files = [man["final_checkpoint"], str(paths.repo_root / "runs" / NS / "train" / key / "run_manifest.json"), man["plan"], man["init"], str(paths.repo_root / config)]
+                subprocess.run([sys.executable, "scripts/freeze_model.py", NS, key, *[x for f in files for x in ("--file", f)], "--meta", f"identity={man['identity']}",
+                                "--meta", f"arm={man['arm']}", "--meta", f"seed={man['seed']}", "--notes", "Fold-output correction round (2026-10-08); final epoch."],
+                               cwd=paths.repo_root, check=True, capture_output=True)
+            out[key] = str(dest) if sha256_file(dest / "final.pt") == man["final_sha256"] else f"frozen copy differs from {man['final_sha256'][:12]}"
+        except (subprocess.CalledProcessError, OSError) as e:
+            out[key] = f"not frozen: {type(e).__name__}"
     return out
+
+
+def write_atomic(path: Path, text: str) -> None:
+    tmp = path.with_suffix(path.suffix + ".tmp"); tmp.write_text(text); tmp.replace(path)
+
+
+def write_outputs(res: dict, out_dir: Path, ids: set) -> None:
+    pf.assert_no_ids(json.loads(json.dumps(res, default=str)), ids, "summary")
+    out_dir.mkdir(parents=True, exist_ok=True); write_atomic(out_dir / "summary.json", json.dumps(res, indent=1, default=str))
+    write_atomic(out_dir / "report_tables.md", tables_md(res))
 
 
 def run_evaluate(a, cfg: dict, fo: dict, paths, out_dir: Path) -> None:
@@ -308,17 +327,17 @@ def run_evaluate(a, cfg: dict, fo: dict, paths, out_dir: Path) -> None:
         else:
             res["auxiliary"][enc] = block
         print(f"{enc}: done", flush=True)
+    ids = set(labels) | {session_of(v) for v in labels} | set(man.index[man.split == "train"]) | {session_of(v) for v in man.index[man.split == "train"]}
+    res["references"] = "pending"; res["frozen"] = "pending"; res["seconds"] = time.time() - t0; write_outputs(res, out_dir, ids)   # nothing is lost below
     try:
         inp_e1, seqs = validation(cfg, {"inputs": {"protocol": fo["inputs"]["protocol"], "feature_manifest": {"path": "models_frozen/e1_echoviewclip_probe/v1/feature_manifest.json"}}}, paths)
         refs = references({**cfg, "center_supervision": {"inputs": {"protocol": fo["inputs"]["protocol"]}}}, paths, inp_e1, seqs)
         res["references"] = {k: {h: v[h]["metrics"] for h in HALVES} for k, v in refs.items()}
-    except SystemExit as e:                                 # reported, never replaced by another row
-        res["references"] = {"not reproduced": str(e)}
+    except (SystemExit, Exception) as e:  # noqa: BLE001 - any failure is reported with its cause, never replaced by another row
+        res["references"] = {"not reproduced": f"{type(e).__name__}: {e}"}
+    write_outputs(res, out_dir, ids)
     res["frozen"] = {} if a.no_freeze else freeze(paths, runs, a.config); res["seconds"] = time.time() - t0
-    ids = set(labels) | {session_of(v) for v in labels} | set(man.index[man.split == "train"]) | {session_of(v) for v in man.index[man.split == "train"]}
-    pf.assert_no_ids(json.loads(json.dumps(res, default=str)), ids, "summary")
-    out_dir.mkdir(parents=True, exist_ok=True); (out_dir / "summary.json").write_text(json.dumps(res, indent=1, default=str))
-    (out_dir / "report_tables.md").write_text(tables_md(res)); print(json.dumps(res["decision"], indent=1, default=str))
+    write_outputs(res, out_dir, ids); print(json.dumps(res["decision"], indent=1, default=str))
 
 
 def run_dry(cfg: dict, fo: dict, paths) -> None:
