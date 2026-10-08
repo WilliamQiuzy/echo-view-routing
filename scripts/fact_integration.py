@@ -12,6 +12,8 @@ configs/experiments/fact_integration_v1.yaml). Training data only; the developme
            against ASRF on the same batches.
   --gradient-detail  (GPU, post-hoc diagnostic added after --model) the gradient size of the parameters without
            gradient at initialisation, at update 0 and after replaying the first 100 overfit updates.
+  --loss-floor  (CPU, post-hoc) the floor of the update block's token-to-frame attention loss on the overfit set,
+           against the logged term at the last update.
 Writes data_checks.json, model_checks.json and overfit_curves.png to the results directory (counts only); sequence ids
 stay in runs/fact_integration_v1/ on the server.
 
@@ -499,6 +501,28 @@ def run_gradient_detail(cfg: dict, fi: dict, paths, out_dir: Path) -> None:
     print(json.dumps(res, indent=1))
 
 
+def run_loss_floor(cfg: dict, fi: dict, paths, out_dir: Path) -> None:
+    """Post-hoc, added after --model: the floor of the update block's token-to-frame attention loss on the overfit set.
+    Each matched token's attention over the T frames is scored against every frame of its segment, so the loss of one
+    video cannot fall below sum(L ln L) / T over its segment lengths L (a uniform attention inside each segment). The
+    official total averages its blocks, so this block adds that floor divided by the number of blocks."""
+    data = TrainOnly(cfg, fi, paths); root = paths.repo_root
+    details = json.loads((root / fi["outputs"]["server_dir"] / "data_details.json").read_text())
+    checks = json.loads((out_dir / "model_checks.json").read_text()); n_blocks = len(checks["config"]["block"])
+    by_id = {s.seq_id: s for s in data.streams}; floors = []
+    for row in details["overfit_set"]:
+        if row["kind"] == "single_view_native":
+            lens = [min(256, data.store.get(row["seq_id"].rsplit("@", 1)[0], "orig").n)]
+        else:
+            lens = [g.length for g in labels_to_segments(by_id[row["seq_id"]].labels)]
+        floors.append(float(sum(n * np.log(n) for n in lens) / sum(lens)))
+    last = checks["overfit"]["log"][-1]
+    res = {"update_block_floor_per_video": {"min": min(floors), "median": float(np.median(floors)), "max": max(floors)},
+           "blocks": n_blocks, "floor_contribution_to_official_total": float(np.mean(floors) / n_blocks),
+           "logged_at_update": last["update"], "logged_f2a_contribution": last["eval_f2a"], "logged_official_total": last["eval_total"]}
+    assert_no_ids(res, data.ids(), "loss_floor"); write_json(out_dir / "loss_floor.json", res, data); print(json.dumps(res, indent=1))
+
+
 def write_json(path: Path, res: dict, data: TrainOnly) -> None:
     text = json.dumps(res, indent=1, default=str)
     if any(sess in text for sess in {session_of(v) for v in data.labels}):
@@ -510,10 +534,10 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--config", required=True); step = ap.add_mutually_exclusive_group(required=True)
     step.add_argument("--data", action="store_true"); step.add_argument("--model", action="store_true")
-    step.add_argument("--gradient-detail", action="store_true")
+    step.add_argument("--gradient-detail", action="store_true"); step.add_argument("--loss-floor", action="store_true")
     a = ap.parse_args(); a.set = []; cfg = load_cfg(a); fi = cfg["fact_integration"]; paths = load_paths()
     out_dir = paths.repo_root / fi["outputs"]["results_dir"]
-    (run_data if a.data else run_model if a.model else run_gradient_detail)(cfg, fi, paths, out_dir)
+    (run_data if a.data else run_model if a.model else run_gradient_detail if a.gradient_detail else run_loss_floor)(cfg, fi, paths, out_dir)
 
 
 if __name__ == "__main__":
