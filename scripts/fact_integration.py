@@ -10,6 +10,8 @@ configs/experiments/fact_integration_v1.yaml). Training data only; the developme
   --model  (GPU) parameter counts; inference label isolation (initial and overfit model); each loss term's gradient
            path at initialisation; the 16-sequence overfit check; the token flow of one stream; measured training cost
            against ASRF on the same batches.
+  --gradient-detail  (GPU, post-hoc diagnostic added after --model) the gradient size of the parameters without
+           gradient at initialisation, at update 0 and after replaying the first 100 overfit updates.
 Writes data_checks.json, model_checks.json and overfit_curves.png to the results directory (counts only); sequence ids
 stay in runs/fact_integration_v1/ on the server.
 
@@ -449,6 +451,54 @@ def run_model(cfg: dict, fi: dict, paths, out_dir: Path) -> None:
     print(json.dumps({k: res[k] for k in ("isolation_initial", "isolation_overfit")} | {"outcome": res["overfit"]["outcome"]}, indent=1, default=str))
 
 
+def gradient_sizes(model, seqs: list[Seq], device, seed: int, watch: list[str]) -> dict:
+    """The official total's gradient on one batch: the largest absolute entry of each watched parameter, the query, key
+    and value rows of the input block's first self-attention projection, and the median over all parameters."""
+    seed_everything(seed); model.train(); model.zero_grad(set_to_none=True)
+    xs, labs = zip(*(as_input(s, device) for s in seqs)); loss, _ = model(list(xs), list(labs), compute_loss=True); loss.backward()
+    big = {n: (float(p.grad.abs().max()) if p.grad is not None else 0.0) for n, p in model.named_parameters()}
+    w = model.block_list[0].action_branch.layers[0].self_attn.in_proj_weight.grad; d = w.shape[1]
+    rows = {k: float(w[i * d:(i + 1) * d].abs().max()) for i, k in enumerate(("query", "key", "value"))}
+    model.zero_grad(set_to_none=True)
+    return {"loss": float(loss), "watched": {n: big[n] for n in watch}, "in_proj_weight_rows": rows, "median_over_parameters": float(np.median(list(big.values())))}
+
+
+def run_gradient_detail(cfg: dict, fi: dict, paths, out_dir: Path) -> None:
+    """Post-hoc diagnostic, added after the model step: the gradient size of the parameters that had none at
+    initialisation, at update 0 and after replaying the first 100 overfit updates (same seed, sequences, batches and
+    order; the replay is checked against the logged evaluation loss at update 100)."""
+    t0 = time.time(); root = paths.repo_root
+    torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False; torch.set_float32_matmul_precision("highest")
+    torch.backends.cudnn.deterministic = True; torch.backends.cudnn.benchmark = False; torch.use_deterministic_algorithms(True)
+    device = torch.device("cuda"); torch.cuda.set_per_process_memory_fraction(gpu_memory_fraction())
+    data = TrainOnly(cfg, fi, paths); details = json.loads((root / fi["outputs"]["server_dir"] / "data_details.json").read_text())
+    checks = json.loads((out_dir / "model_checks.json").read_text()); watch = checks["gradient_paths_initial"]["official_total"]["zero_gradient_parameters"]
+    rule = token_rule([s.labels for s in data.streams], int(fi["training_data"]["native_per_epoch"]), float(fi["fact"]["token_ratio"]))
+    fa = fi["fact"]; head = FACTHead(root / fa["repo"], int(fi["inputs"]["feature_dim"]), rule, base_config=fa["base_config"])
+    by_id = {s.seq_id: s for s in data.streams}; seqs = []
+    for row in details["overfit_set"]:
+        if row["kind"] == "single_view_native":
+            vid = row["seq_id"].rsplit("@", 1)[0]; vf = data.store.get(vid, "orig"); seqs.append(native_seq(vid, data.labels[vid], vf, 0, min(256, vf.n), row["seq_id"]))
+        else:
+            seqs.append(by_id[row["seq_id"]])
+    oc = fi["checks"]["overfit"]; seed = int(oc["seed"]); n_updates = 100
+    seed_everything(seed); res = {"update_0": gradient_sizes(head.build().to(device), seqs[:8], device, seed, watch)}
+    seed_everything(seed); model = head.build().to(device)     # the overfit check's start: same seed, then build
+    opt = torch.optim.AdamW(model.parameters(), lr=float(oc["optimizer"]["lr"]), weight_decay=float(oc["optimizer"]["weight_decay"]))
+    batches = [seqs[:8], seqs[8:16]]
+    for step in range(n_updates):
+        model.train(); loss, _ = head.loss(model, collate(batches[step % 2], device))
+        opt.zero_grad(set_to_none=True); loss.backward(); torch.nn.utils.clip_grad_norm_(model.parameters(), float(oc["optimizer"]["grad_clip"])); opt.step()
+    model.eval()
+    with torch.no_grad():
+        replay = float(term_losses(head, model, seqs, device)["total"])
+    logged = next(r["eval_total"] for r in checks["overfit"]["log"] if r["update"] == n_updates)
+    res["replay_check"] = {"update": n_updates, "eval_total_replayed": replay, "eval_total_logged": logged, "abs_difference": abs(replay - logged)}
+    res[f"update_{n_updates}"] = gradient_sizes(model, seqs[:8], device, seed, watch); res["seconds"] = time.time() - t0
+    assert_no_ids(res, data.ids(), "gradient_detail"); write_json(out_dir / "gradient_detail.json", res, data)
+    print(json.dumps(res, indent=1))
+
+
 def write_json(path: Path, res: dict, data: TrainOnly) -> None:
     text = json.dumps(res, indent=1, default=str)
     if any(sess in text for sess in {session_of(v) for v in data.labels}):
@@ -460,9 +510,10 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--config", required=True); step = ap.add_mutually_exclusive_group(required=True)
     step.add_argument("--data", action="store_true"); step.add_argument("--model", action="store_true")
+    step.add_argument("--gradient-detail", action="store_true")
     a = ap.parse_args(); a.set = []; cfg = load_cfg(a); fi = cfg["fact_integration"]; paths = load_paths()
     out_dir = paths.repo_root / fi["outputs"]["results_dir"]
-    (run_data if a.data else run_model)(cfg, fi, paths, out_dir)
+    (run_data if a.data else run_model if a.model else run_gradient_detail)(cfg, fi, paths, out_dir)
 
 
 if __name__ == "__main__":
