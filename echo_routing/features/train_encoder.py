@@ -189,3 +189,46 @@ def train(cfg: TrainConfig, manifest: pd.DataFrame, ontology: LabelOntology, out
             if bad_epochs >= cfg.patience:
                 print(f"early stop at epoch {epoch} (best cine macro-F1 {best_score:.4f})", flush=True); break
     return out_dir / "best.pt"
+
+
+def train_fixed_epochs(cfg: TrainConfig, train_recs: list[VideoRecord], classes: list[str], out_dir: Path,
+                       resume: Path | None = None, pretrained: bool = True) -> Path:
+    """The B0 recipe of `train` on the given records for exactly cfg.epochs epochs, with no validation data, early
+    stopping or checkpoint selection. last.pt is saved every epoch (resumable) and returned."""
+    out_dir = Path(out_dir); out_dir.mkdir(parents=True, exist_ok=True)
+    if not train_recs:
+        raise RuntimeError("no training records")
+    num_classes = len(classes); device = setup_device(cfg.seed)
+    train_ds = EpochFrameDataset(train_recs, cfg.frames_per_video, cfg.image_size, cfg.videos_per_epoch, cfg.seed, augment=True)
+    train_dl = DataLoader(train_ds, batch_size=cfg.batch_size, shuffle=True, drop_last=True,
+                          **train_loader_kwargs(cfg.num_workers, device.type == "cuda"))
+    model = FrameEncoder(num_classes, cfg.backbone, pretrained=pretrained).to(device)
+    opt = torch.optim.AdamW(model.parameters(), lr=cfg.lr, weight_decay=cfg.weight_decay)
+    sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, T_max=cfg.epochs)
+    weights = class_weights(train_recs, num_classes).to(device)
+    init_sha = param_digest(model); start_epoch = 0
+    if resume and Path(resume).is_file():
+        model, meta = load_checkpoint(resume, map_location=str(device)); model.to(device)
+        opt = torch.optim.AdamW(model.parameters(), lr=cfg.lr, weight_decay=cfg.weight_decay); opt.load_state_dict(meta["optimizer"])
+        sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, T_max=cfg.epochs); sched.load_state_dict(meta["scheduler"])
+        start_epoch, init_sha = int(meta["epoch"]) + 1, meta.get("init_sha256", init_sha)
+    else:
+        (out_dir / "init_digest.txt").write_text(f"seed {cfg.seed}\ninit_sha256 {init_sha}\n")
+        (out_dir / "train_log.jsonl").unlink(missing_ok=True)  # a fresh run starts a fresh log
+    log_path = out_dir / "train_log.jsonl"
+    for epoch in range(start_epoch, cfg.epochs):
+        train_ds.resample(epoch); model.train(); t0 = time.time(); losses = []
+        for x, y, _, _ in train_dl:
+            x, y = x.to(device, non_blocking=True), y.to(device, non_blocking=True)
+            with torch.autocast(device_type=device.type, dtype=torch.bfloat16, enabled=cfg.amp and device.type == "cuda"):
+                loss = F.cross_entropy(model(x).float(), y, weight=weights)
+            opt.zero_grad(set_to_none=True); loss.backward(); opt.step(); losses.append(loss.item())
+        sched.step()
+        rec = {"epoch": epoch, "train_loss": float(np.mean(losses)), "seconds": time.time() - t0, "lr": sched.get_last_lr()[0],
+               "n_train_records": len(train_recs), "n_samples": len(train_ds), "init_sha256": init_sha}
+        with log_path.open("a") as fh: fh.write(json.dumps(rec) + "\n")
+        print(json.dumps({k: rec[k] for k in ("epoch", "train_loss", "seconds")}), flush=True)
+        save_checkpoint(out_dir / "last.pt", model, {"epoch": epoch, "optimizer": opt.state_dict(), "scheduler": sched.state_dict(), "classes": list(classes),
+                                                     "task": cfg.task, "image_size": cfg.image_size, "config": cfg.__dict__, "init_sha256": init_sha,
+                                                     "selection": "none: the last epoch is kept"})
+    return out_dir / "last.pt"

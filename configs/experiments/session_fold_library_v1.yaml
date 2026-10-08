@@ -1,0 +1,65 @@
+# Session-fold prediction library (docs/superpowers/plans/2026-10-07-session-fold-library.md): predictions on the EV9V
+# training recordings from encoders that did not train on the recordings' sessions. Fixed and committed before the
+# folds are written and before any model is trained.
+#
+# Training split only: both validation halves and the test split take no part in training, selection or evaluation.
+# Three B0 models (ResNet-18 + five-class head from ImageNet, the B0 v3 recipe), one per fold, each trained on the other
+# two folds for 30 epochs with the last weights kept; no validation, early stopping or checkpoint selection. Session
+# hold-out, not patient hold-out. The three folds are three training sets, not three seeds. No segment-level
+# discriminator is trained, and building the library is not a model contribution. Public labels are unchanged and no
+# recording is filtered by its predictions. Constructed streams are not real continuous scans.
+#
+# Inherits b0_frame_encoder_v3.yaml (and base.yaml), so the training recipe, the 224 letterbox input in numeric frame
+# order, the 10 Hz sampling and the stream settings (recipes, multi) are the same values.
+extends: b0_frame_encoder_v3.yaml
+run_name: session_fold_library_v1
+experiment: session_fold_library_v1
+seed: 0
+
+session_fold_library:
+  results_dir: docs/results/2026-10-07_session_fold_library   # the only results directory written
+  inputs:                        # every sha256 is checked before use
+    protocol: {path: runs/20261002-051140-model_development_protocol-fa45e7f4-s0/protocol.json,
+               sha256: a897483b776e8cff1ba8b92774c6a82537758bcba6abd362f2d8603f37997593}
+    manifest: {path: data/manifests/ev9v_native.csv, sha256: 037b20e0f3451545505c7b80dfc0c1894265e406066c86137df3518174c10433}
+  folds:
+    n: 3
+    rule: "sklearn StratifiedGroupKFold(n_splits=3, shuffle=True, random_state=20261008) over the protocol's 3,364 training clips sorted by id; y = family5 class of the clip, groups = session (the clip id without its last '_k'); fold k = the k-th split's test part"
+    seed: 20261008
+    chosen_because: "of the rules compared on the session composition alone (no prediction existed), it balanced the clips of all five classes best (within 1.4%) while keeping A4C and A5C source sessions within 2 and 3 of each other"
+  training:
+    model: "B0: echo_routing.features.encoder.FrameEncoder, resnet18 with a five-class head, ImageNet initialisation (IMAGENET1K_V1); never started from B0, E1 or L1 weights"
+    recipe: "the B0 v3 values of this config via echo_routing.features.train_encoder.train_fixed_epochs: AdamW lr 3e-4, weight decay 1e-4, cosine over 30 epochs, batch 64, bf16 autocast, class-weighted cross entropy (inverse class frequency of the training clips), class-balanced cine draws with replacement (one draw per training cine per epoch), 16 spaced frames per draw, gamma augmentation 0.9-1.1, 224 letterbox input in numeric frame order"
+    epochs: 30
+    keep: last
+    seed: 0                      # one fixed seed for all folds
+    validation: none             # no data is evaluated during training
+    train_on: "the clips of the two other folds"
+  prediction:
+    variants: [orig, gamma090]
+    what: "model k on every clip of fold k at 10 Hz: probabilities, logits and 512-d features into the feature cache under model k's checkpoint hash; one cache per model, never mixed"
+  recognition:                   # table 1, orig variant
+    sample: "per-sample argmax"
+    clip: "clip majority vote of the per-sample argmax, ties to the lower class index"
+    focus: ["A4C->A5C", "A5C->A4C"]
+  streams:                       # built inside each held-out fold, so no stream crosses folds
+    builder: "echo_routing.compose.recipe_builder.make_multi_recipes with the base multi settings: 4-8 fragments of 10-40 samples, p_same_next 0.35 (same-view joins kept as the splice control), reuse across streams, never within a stream"
+    n_streams: 500               # about three per session, as in the short-segment probe
+    seeds: {0: 202610081, 1: 202610082, 2: 202610083}
+    contrast: "symmetric: every stream fragment and every native clip takes gamma090 with probability 0.5 and orig otherwise (edit_prob 0.5 for fragments; a seeded draw per native clip), so contrast cannot mark a candidate's source"
+    native_contrast_seeds: {0: 202610084, 1: 202610085, 2: 202610086}
+    natives: "every clip of the fold once"
+  generator:                     # fixed; no decoding parameter is searched
+    decoder: "J0: echo_routing.temporal.joint_decoding.joint_viterbi with lambda 0 on model k's probabilities"
+    kappa: 8.0
+    eps: 1.0e-6
+  candidates:
+    pattern: "three consecutive decoded runs whose outer runs share a class X that the middle run's class Y differs from"
+    tolerance_samples: 5
+    categories: "the short-segment probe's: (a) correct short segment, (b) wrong fragment, (c) outside the binary task with its reason"
+    joins: "within 5 samples of the middle: none, verified same-view (the reference view is the same on both sides of every such join) or view-change"
+  tables:
+    recognition: "per fold and pooled: sample- and clip-level confusion and macro-F1; for A4C->A5C and A5C->A4C the samples, the clips voted wrong, and the recordings and sessions involved"
+    composition: "per fold and pooled, for all pairs, A4C/A5C pairs and other pairs: candidates of (a), (b) and (c) with recordings, sessions, source (native or stream), join type, contrast, middle length and confidence quartiles, and how far they rest on few recordings (largest recording share, effective number of recordings); reasons of (c)"
+    independence: "repeated splicing and augmentation add no independent cases; counts of recordings and sessions are the units"
+  saved: "per-sample probabilities and features (feature cache per model), the fold of every session and the banks and candidate lists (server only, with ids), and the model versions (checkpoint sha256, cache key, training log)"
