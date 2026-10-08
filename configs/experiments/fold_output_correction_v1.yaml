@@ -1,0 +1,133 @@
+# Fold-output correction (docs/superpowers/plans/2026-10-08-fold-output-correction.md): does the same temporal model,
+# trained on a visual encoder's in-sample predictions (T-in) or on its session-held-out predictions (T-out), recognise
+# and segment differently? P-out is a per-frame linear calibration control on the held-out predictions. Fixed and
+# committed before any new development-set metric exists.
+#
+# Training reads the EV9V training split only. The three session-fold B0 encoders are frozen and no encoder is
+# retrained. The main evaluation uses the frozen B0 v3 on the protocol's two validation halves; a fixed auxiliary
+# evaluation uses each of the three fold encoders, never to choose one. The test split and EchoNet-Pediatric are not
+# read. Session hold-out is not patient hold-out; constructed streams are spliced, not real scans; native clips carry
+# the public clip label, not expert frame labels. The result covers this B0 input, this ASRF recipe and this
+# construction only; it says nothing directly about L1 or real continuous scans.
+#
+# Inherits model_development_v2.yaml for the protocol keys (10 Hz, 0.5 s boundary tolerance), the validation banks
+# and the audited B3 values; every parameter of this round sits under fold_output_correction.
+extends: model_development_v2.yaml
+run_name: fold_output_correction_v1
+experiment: fold_output_correction_v1
+
+fold_output_correction:
+  results_dir: docs/results/2026-10-08_fold_output_correction   # the only results directory written
+  inputs:                        # every sha256 is checked before use
+    protocol: {path: runs/20261002-051140-model_development_protocol-fa45e7f4-s0/protocol.json,
+               sha256: a897483b776e8cff1ba8b92774c6a82537758bcba6abd362f2d8603f37997593}
+    manifest: {path: data/manifests/ev9v_native.csv, sha256: 037b20e0f3451545505c7b80dfc0c1894265e406066c86137df3518174c10433}
+    session_folds: {path: runs/session_fold_library_v1/folds.json, sha256: 23c5ce9445f3ceaccf6c91a1976f90499874a514974c23bd3568c7abf8eeb591}
+    library_config: {path: configs/experiments/session_fold_library_v1.yaml, sha256: ab3dd0530eea697c9512684601935707abaa63dab96c2355d44a1b46eb5dde8a}
+    library_models: {path: docs/results/2026-10-07_session_fold_library/models.json, sha256: bf7c067d89b02a40658fdf1e7992fd25878b1ff1bf43fd6083b0e492d34e2441}
+    banks:                       # the session-fold library's 500 streams per fold and its fixed native contrast choices
+      0: {path: runs/session_fold_library_v1/banks_f0.json, sha256: b31c25ef474c90199ce907b2c138156148eca27cf5bdfdbe1d7a0bc91da6052e}
+      1: {path: runs/session_fold_library_v1/banks_f1.json, sha256: 8c78aaa51bbd514333aa5a31d2d1467157b53fd18568b7a69aa6753ddb3f15a2}
+      2: {path: runs/session_fold_library_v1/banks_f2.json, sha256: 8d6cfad5f069e8106ce33c807b9599e4d83ee7a69b88719de8e155e7822a4df8}
+    fold_models:                 # frozen; model k trained on the two folds other than k (30 epochs, last weights)
+      0: {checkpoint: models_frozen/session_fold_b0_v1/fold0/last.pt, sha256: c1c5abce69dd0391e6180fd80b33deeccc347c80f2467fd9bd36168b6ea1c79a,
+          run_manifest: {path: models_frozen/session_fold_b0_v1/fold0/run_manifest.json, sha256: 12efd257e29eb325313dd1cae767ab2d6c5896d18ce58d69c702ecbd3a4ab1fe},
+          cache_key: c1c5abce69dd}
+      1: {checkpoint: models_frozen/session_fold_b0_v1/fold1/last.pt, sha256: 5e312ad1ca44c5eb9553f18d95f7561811df580c53ada254d8ed0ef6f94674b3,
+          run_manifest: {path: models_frozen/session_fold_b0_v1/fold1/run_manifest.json, sha256: 3a858bb1adaf8bb339847a529afe2b177e16174fea1483c664bcce4b5d9e5c93},
+          cache_key: 5e312ad1ca44}
+      2: {checkpoint: models_frozen/session_fold_b0_v1/fold2/last.pt, sha256: f5375407b7ac113b8ee5ac527f0f5b0bfdcfefa2ebfb0874831c1405f2f58f2d,
+          run_manifest: {path: models_frozen/session_fold_b0_v1/fold2/run_manifest.json, sha256: 18858742a150c3bb8dd4445878cdee0b11d362d0052f7af51f50ddcbb5c78044},
+          cache_key: f5375407b7ac}
+    b0_v3:                       # the deployment encoder of the main evaluation (its selected epoch is 0)
+      checkpoint: {path: models_frozen/b0_frame_encoder/v3_s0/best.pt, sha256: beb36d80df31b42926e546a703ecdc93eabe8801a1021b65a9819fcd786d9809}
+      cache_key: beb36d80df31
+      epoch: 0
+
+  arms:
+    T-in: "the official ASRF on in-sample probabilities: the clips of fold k are read by model (k + 1) % 3, which trained on fold k"
+    T-out: "the same ASRF on held-out probabilities: the clips of fold k are read by model k, which never trained on fold k"
+    P-out: "a per-frame log-probability linear calibrator on the held-out probabilities (the T-out inputs)"
+  interpretation: "T-in and T-out differ in the program that generates their inputs (different trained models); the comparison is not a causal on/off switch of memory in one set of weights"
+  input: "five-class softmax probabilities [T, 5] in the frozen ontology's class order (PLAX, PSAX, A4C, A5C, SC4C); no 512-d features, no raw logits, no log, no temperature, no other normalisation as ASRF input"
+  no_fusion: "the three folds' probabilities are never fused; one stream reads one encoder"
+  t_in_caches: "model j predicts fold (j + 2) % 3 in orig and gamma090 at 10 Hz (224 letterbox, numeric frame order) into new caches named <cache_key_j>-seen-fold<k>; the T-out caches are never written"
+  pairing: "per update the three arms share every source recording, frame index, time, variant, label, sequence length and semantic boundary; only the probabilities differ. For fold k, T-out and P-out read model k (session unseen) and T-in reads model (k + 1) % 3 (session seen), both verified against the training lists"
+  input_description: "per fold, in-sample and held-out per-sample error rate, clip-level confusion and confidence; description only, never used to choose a model or filter a recording"
+
+  training_data:
+    streams: "the 500 complete constructed streams of each fold from the session-fold library (banks_f{k}.json), 1,500 in all, never redrawn; each uses the recordings of one fold only"
+    natives: "1,500 native windows per epoch from all 3,364 training clips by the TrainData.epoch_batches rule (numpy default_rng([seed, epoch]); stream order, then window picks without replacement, then a uniform start; at most 256 samples), each clip read in the library's fixed contrast variant instead of the hard-coded orig; short clips are padded with a valid mask, never repeated"
+    no_candidates: "no X-Y-X filtering and no keep/remove classifier; every native window and stream enters with all its reference labels"
+
+  asrf:
+    repo: third_party/asrf
+    commit: 9623f1e8d9a1171333a4eeb65d190997b6c44a95
+    model: {in_channel: 5, n_classes: 5, n_features: 64, n_layers: 10, n_stages: 4, n_stages_asb: 4, n_stages_brb: 4}
+    loss: "ASRFHead's exact official losses: weighted CE plus Gaussian-similarity TMSE (similarity input = these five-class probabilities, detached) + lambda_b x BoundaryRegressionLoss with pos_weight; no change to the smoothing weight"
+    lambda_b: 0.1
+    boundary: "semantic: 1 at the first valid sample and where the reference class changes (a same-class join is not a boundary); padding excluded by the mask (official adapter)"
+    boundary_th: 0.5
+    decoding: "official refinement_with_boundary at boundary_th 0.5"
+  p_out:
+    formula: "logits_t = W @ log(clamp(p_t, min=1e-6)) + b; q_t = softmax(logits_t); 30 parameters, no neighbouring frame"
+    init: "W = I_5, b = 0 (the output equals the clamped, renormalised input)"
+    clamp_min: 1.0e-6
+    loss: "class-weighted cross entropy with the same class weights and valid mask as T-out; no boundary or smoothing loss"
+    decoding: "the fixed B3 of evaluation.fixed_b3 on q"
+
+  training:
+    seeds: [0, 1, 2]
+    epochs: 50
+    streams_per_epoch: 1500
+    native_windows_per_epoch: 1500
+    native_window: 256
+    streams_per_batch: 4
+    natives_per_batch: 4
+    updates_per_epoch: 375
+    total_updates: 18750
+    optimizer: AdamW
+    lr: 3.0e-4
+    weight_decay: 1.0e-4
+    grad_clip: 1.0
+    warmup_epochs: 2             # linear warm-up per update, then cosine to 0 (echo_routing.temporal.dev_train.lr_factor)
+    schedule: cosine_after_warmup
+    precision: fp32
+    tf32: false
+    checkpoint: final            # the epoch-50 weights; no epoch is ever chosen
+    early_stopping: false
+    validation_during_training: false
+    init: "T-in and T-out of a seed load one saved ASRF initial state (seed_everything(seed), then build); P-out starts from the fixed identity"
+    batches: "one saved plan per seed: per update the source digest of every sequence; every arm checks it"
+    rng: "seeded with the seed right before the first update; restored on resume"
+    weights: "median-frequency class weights and boundary pos_weight from the seed's epoch-0 batch labels (official rules), computed once, identical for the three arms"
+    queue: "seed 0: T-in, T-out, P-out; seed 1: T-in, T-out, P-out; seed 2: T-in, T-out, P-out (nine runs, one GPU job at a time)"
+    no_additions: "no extra epoch, seed or hyperparameter after any curve or seed-0 result"
+
+  evaluation:                    # only after the nine final weights are fixed
+    main_encoder: "the frozen B0 v3 (beb36d80df31) on the protocol's selection and calibration halves: native clips, pair streams and multi streams"
+    main_metric: "multi-stream segment F1@50 (pair streams supplementary)"
+    fixed_b3: {half_window: 9, threshold: 0.31007912515352554, nms_radius: 5, require_label_change: true,
+               labels: "labels_from_boundaries: each interval takes its mean-probability argmax"}
+    baseline: "the uncalibrated B0 v3 probabilities + the same fixed B3; reported apart from the historical strongest E0 + B3"
+    raw_argmax: "the per-sample argmax of every system's probabilities reported beside its full-system result"
+    references: "the archived E0 + B3 (historical strongest), E1 + ASRF and B7 + B3 rows, reproduced on this protocol with their own settings; a row that does not reproduce is reported with its input or version problem"
+    auxiliary: "each frozen fold encoder (0, 1, 2) extracts both validation halves and feeds every final T-in, T-out and P-out model and the same fixed-B3 baseline; three full tables, no vote, ensemble or choice; it cannot turn a failed main result into a success"
+  metrics: "per system, seed and half: multi-stream segment F1@50, boundary precision and recall (0.5 s), native macro-F1 and per-class recall, native extra label switches, stream false cuts and same-class join cuts"
+  errors: "fixed and new: A5C->A4C and A4C->A5C; reference segments unmatched <-> matched; reference view changes found <-> lost; frozen visual head right but temporal output wrong and the reverse; each with distinct source recordings and sessions"
+  comparisons:
+    primary: "T-out - T-in multi-stream segment F1@50 for the same encoder, half and seed"
+    secondary: ["T-out - (P-out + fixed B3)", "T-out - (uncalibrated B0 v3 + fixed B3)"]
+    bootstrap: {draws: 2000, seed: 20261002, units: "native clips by session, streams by whole stream; the same resampling indices for both systems; per training seed"}
+    consistent_positive: "in one half, the lower 95% bound is above zero in all three seeds; all upper bounds below zero is consistent negative; otherwise no consistent difference detected (never called equivalence)"
+    both_halves: "consistent positive in each half separately; halves are never pooled; one half only is written as 'one half only'"
+    note: "the bootstrap ignores the reuse of recordings across streams; intervals are approximate and exploratory; seeds share cases and are not pooled into three times the sample"
+  constraints: {boundary_recall_min: 0.95, native_macro_f1_min: {selection: 0.973, calibration: 0.980}}
+  goal: {selection_min: 0.944409687184662, calibration_min: 0.9821421709894332, calibration_sensitivity: 0.9738935784747763}
+  decision:
+    - {observation: "the primary comparison is not consistent positive in both halves", conclusion: "not supported in both halves; each half reported as positive, negative or uncertain", action: "the round ends; no automatic search"}
+    - {observation: "consistent positive in both halves, but not better than both simple controls", conclusion: "held-out inputs help relative to T-in; not shown better than the simple controls", action: "the round ends; no new-model claim"}
+    - {observation: "better than T-in and both simple controls in both halves, but a system constraint fails", conclusion: "a comparative gain, not usable under the current standard", action: "the round ends; the failed constraint is named"}
+    - {observation: "comparisons and constraints met, but the final goal is not", conclusion: "a local success with B0; the final goal is not reached", action: "the lead decides whether to start a transfer experiment to a stronger encoder"}
+    - {observation: "comparisons, constraints and the final goal met", conclusion: "the goal is reached under this development protocol; independent validation is still needed", action: "freeze the models and commit the results; opening test is decided separately"}
+  never: "no epoch, decoding parameter or threshold is chosen on the development halves; no failed constraint is repaired by another epoch; the auxiliary results never reverse the main table; no claim that L1 is fixed or that real scans work"
