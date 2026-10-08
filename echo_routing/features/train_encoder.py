@@ -128,6 +128,15 @@ def param_digest(model: torch.nn.Module) -> str:
     return hashlib.sha256(b"".join(p.detach().cpu().numpy().tobytes() for p in model.parameters())).hexdigest()
 
 
+def resume_state(path: Path, device, cfg: TrainConfig) -> tuple[FrameEncoder, torch.optim.Optimizer, Any, dict[str, Any]]:
+    """Model, optimizer and scheduler of a checkpoint. The optimizer and scheduler are built for the loaded model, so
+    resumed training updates the loaded weights."""
+    model, meta = load_checkpoint(path, map_location=str(device)); model.to(device)
+    opt = torch.optim.AdamW(model.parameters(), lr=cfg.lr, weight_decay=cfg.weight_decay); opt.load_state_dict(meta["optimizer"])
+    sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, T_max=cfg.epochs); sched.load_state_dict(meta["scheduler"])
+    return model, opt, sched, meta
+
+
 def train(cfg: TrainConfig, manifest: pd.DataFrame, ontology: LabelOntology, out_dir: Path,
           resume: Path | None = None, val_clip_ids: list[str] | None = None) -> Path:
     out_dir = Path(out_dir); out_dir.mkdir(parents=True, exist_ok=True)
@@ -157,8 +166,7 @@ def train(cfg: TrainConfig, manifest: pd.DataFrame, ontology: LabelOntology, out
     (out_dir / "init_digest.txt").write_text(f"seed {cfg.seed}\ninit_sha256 {init_sha}\n")
     start_epoch, best_score, bad_epochs = 0, -1.0, 0
     if resume and Path(resume).is_file():
-        model, meta = load_checkpoint(resume, map_location=str(device)); model.to(device)
-        opt.load_state_dict(meta["optimizer"]); sched.load_state_dict(meta["scheduler"])
+        model, opt, sched, meta = resume_state(resume, device, cfg)
         start_epoch, best_score = int(meta["epoch"]) + 1, float(meta.get("best_score", -1.0))
     log_path = out_dir / "train_log.jsonl"
     for epoch in range(start_epoch, cfg.epochs):
@@ -208,9 +216,7 @@ def train_fixed_epochs(cfg: TrainConfig, train_recs: list[VideoRecord], classes:
     weights = class_weights(train_recs, num_classes).to(device)
     init_sha = param_digest(model); start_epoch = 0
     if resume and Path(resume).is_file():
-        model, meta = load_checkpoint(resume, map_location=str(device)); model.to(device)
-        opt = torch.optim.AdamW(model.parameters(), lr=cfg.lr, weight_decay=cfg.weight_decay); opt.load_state_dict(meta["optimizer"])
-        sched = torch.optim.lr_scheduler.CosineAnnealingLR(opt, T_max=cfg.epochs); sched.load_state_dict(meta["scheduler"])
+        model, opt, sched, meta = resume_state(resume, device, cfg)
         start_epoch, init_sha = int(meta["epoch"]) + 1, meta.get("init_sha256", init_sha)
     else:
         (out_dir / "init_digest.txt").write_text(f"seed {cfg.seed}\ninit_sha256 {init_sha}\n")
