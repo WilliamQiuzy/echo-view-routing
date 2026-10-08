@@ -1,0 +1,517 @@
+{
+ "what": "per seed and model, the A4C/A5C threshold from the library's calibration part (probe rule, keep >= 95% of correct A4C/A5C); other pairs keep the original threshold",
+ "keep_rate": 0.95,
+ "seeds": {
+  "0": {
+   "Q0": {
+    "original threshold": 0.6817760467529297,
+    "pair threshold": 0.001107284682802856,
+    "pair vs original": "lower",
+    "calibration": {
+     "pair rule": {
+      "threshold": 0.001107284682802856,
+      "n": 13,
+      "kept": 13,
+      "keeps_all": true,
+      "keep_lower_bound_95": 0.7941833348134494
+     },
+     "correct by direction": {
+      "A4C -> A5C -> A4C": 8,
+      "A5C -> A4C -> A5C": 5
+     },
+     "at the original threshold": {
+      "kept": {
+       "n": 13,
+       "kept": 7,
+       "wrongly_removed": 6,
+       "recordings": 20,
+       "sessions": 17
+      },
+      "removed": {
+       "n": 18,
+       "missed": 1,
+       "removed": 17,
+       "recordings": 12,
+       "sessions": 10
+      }
+     },
+     "at the pair threshold": {
+      "kept": {
+       "n": 13,
+       "kept": 13,
+       "wrongly_removed": 0,
+       "recordings": 20,
+       "sessions": 17
+      },
+      "removed": {
+       "n": 18,
+       "missed": 14,
+       "removed": 4,
+       "recordings": 12,
+       "sessions": 10
+      }
+     }
+    },
+    "held-out, supplementary": {
+     "original": {
+      "kept": {
+       "n": 11,
+       "kept": 8,
+       "wrongly_removed": 3,
+       "recordings": 18,
+       "sessions": 18
+      },
+      "removed": {
+       "n": 40,
+       "missed": 0,
+       "removed": 40,
+       "recordings": 22,
+       "sessions": 17
+      }
+     },
+     "pair": {
+      "kept": {
+       "n": 11,
+       "kept": 11,
+       "wrongly_removed": 0,
+       "recordings": 18,
+       "sessions": 18
+      },
+      "removed": {
+       "n": 40,
+       "missed": 31,
+       "removed": 9,
+       "recordings": 22,
+       "sessions": 17
+      }
+     }
+    }
+   },
+   "Q1": {
+    "original threshold": 0.8267518877983093,
+    "pair threshold": 0.0019422901095822453,
+    "pair vs original": "lower",
+    "calibration": {
+     "pair rule": {
+      "threshold": 0.0019422901095822453,
+      "n": 13,
+      "kept": 13,
+      "keeps_all": true,
+      "keep_lower_bound_95": 0.7941833348134494
+     },
+     "correct by direction": {
+      "A4C -> A5C -> A4C": 8,
+      "A5C -> A4C -> A5C": 5
+     },
+     "at the original threshold": {
+      "kept": {
+       "n": 13,
+       "kept": 7,
+       "wrongly_removed": 6,
+       "recordings": 20,
+       "sessions": 17
+      },
+      "removed": {
+       "n": 18,
+       "missed": 1,
+       "removed": 17,
+       "recordings": 12,
+       "sessions": 10
+      }
+     },
+     "at the pair threshold": {
+      "kept": {
+       "n": 13,
+       "kept": 13,
+       "wrongly_removed": 0,
+       "recordings": 20,
+       "sessions": 17
+      },
+      "removed": {
+       "n": 18,
+       "missed": 12,
+       "removed": 6,
+       "recordings": 12,
+       "sessions": 10
+      }
+     }
+    },
+    "held-out, supplementary": {
+     "original": {
+      "kept": {
+       "n": 11,
+       "kept": 9,
+       "wrongly_removed": 2,
+       "recordings": 18,
+       "sessions": 18
+      },
+      "removed": {
+       "n": 40,
+       "missed": 4,
+       "removed": 36,
+       "recordings": 22,
+       "sessions": 17
+      }
+     },
+     "pair": {
+      "kept": {
+       "n": 11,
+       "kept": 11,
+       "wrongly_removed": 0,
+       "recordings": 18,
+       "sessions": 18
+      },
+      "removed": {
+       "n": 40,
+       "missed": 31,
+       "removed": 9,
+       "recordings": 22,
+       "sessions": 17
+      }
+     }
+    }
+   }
+  },
+  "1": {
+   "Q0": {
+    "original threshold": 0.5684086084365845,
+    "pair threshold": 0.00437942473217845,
+    "pair vs original": "lower",
+    "calibration": {
+     "pair rule": {
+      "threshold": 0.00437942473217845,
+      "n": 14,
+      "kept": 14,
+      "keeps_all": true,
+      "keep_lower_bound_95": 0.8073638243498648
+     },
+     "correct by direction": {
+      "A4C -> A5C -> A4C": 8,
+      "A5C -> A4C -> A5C": 6
+     },
+     "at the original threshold": {
+      "kept": {
+       "n": 14,
+       "kept": 7,
+       "wrongly_removed": 7,
+       "recordings": 21,
+       "sessions": 17
+      },
+      "removed": {
+       "n": 22,
+       "missed": 0,
+       "removed": 22,
+       "recordings": 13,
+       "sessions": 11
+      }
+     },
+     "at the pair threshold": {
+      "kept": {
+       "n": 14,
+       "kept": 14,
+       "wrongly_removed": 0,
+       "recordings": 21,
+       "sessions": 17
+      },
+      "removed": {
+       "n": 22,
+       "missed": 14,
+       "removed": 8,
+       "recordings": 13,
+       "sessions": 11
+      }
+     }
+    },
+    "held-out, supplementary": {
+     "original": {
+      "kept": {
+       "n": 10,
+       "kept": 8,
+       "wrongly_removed": 2,
+       "recordings": 16,
+       "sessions": 16
+      },
+      "removed": {
+       "n": 38,
+       "missed": 1,
+       "removed": 37,
+       "recordings": 22,
+       "sessions": 18
+      }
+     },
+     "pair": {
+      "kept": {
+       "n": 10,
+       "kept": 10,
+       "wrongly_removed": 0,
+       "recordings": 16,
+       "sessions": 16
+      },
+      "removed": {
+       "n": 38,
+       "missed": 27,
+       "removed": 11,
+       "recordings": 22,
+       "sessions": 18
+      }
+     }
+    }
+   },
+   "Q1": {
+    "original threshold": 0.5873585343360901,
+    "pair threshold": 0.027033207938075066,
+    "pair vs original": "lower",
+    "calibration": {
+     "pair rule": {
+      "threshold": 0.027033207938075066,
+      "n": 14,
+      "kept": 14,
+      "keeps_all": true,
+      "keep_lower_bound_95": 0.8073638243498648
+     },
+     "correct by direction": {
+      "A4C -> A5C -> A4C": 8,
+      "A5C -> A4C -> A5C": 6
+     },
+     "at the original threshold": {
+      "kept": {
+       "n": 14,
+       "kept": 7,
+       "wrongly_removed": 7,
+       "recordings": 21,
+       "sessions": 17
+      },
+      "removed": {
+       "n": 22,
+       "missed": 1,
+       "removed": 21,
+       "recordings": 13,
+       "sessions": 11
+      }
+     },
+     "at the pair threshold": {
+      "kept": {
+       "n": 14,
+       "kept": 14,
+       "wrongly_removed": 0,
+       "recordings": 21,
+       "sessions": 17
+      },
+      "removed": {
+       "n": 22,
+       "missed": 14,
+       "removed": 8,
+       "recordings": 13,
+       "sessions": 11
+      }
+     }
+    },
+    "held-out, supplementary": {
+     "original": {
+      "kept": {
+       "n": 10,
+       "kept": 8,
+       "wrongly_removed": 2,
+       "recordings": 16,
+       "sessions": 16
+      },
+      "removed": {
+       "n": 38,
+       "missed": 1,
+       "removed": 37,
+       "recordings": 22,
+       "sessions": 18
+      }
+     },
+     "pair": {
+      "kept": {
+       "n": 10,
+       "kept": 10,
+       "wrongly_removed": 0,
+       "recordings": 16,
+       "sessions": 16
+      },
+      "removed": {
+       "n": 38,
+       "missed": 27,
+       "removed": 11,
+       "recordings": 22,
+       "sessions": 18
+      }
+     }
+    }
+   }
+  },
+  "2": {
+   "Q0": {
+    "original threshold": 0.6280428767204285,
+    "pair threshold": 0.0004891586140729487,
+    "pair vs original": "lower",
+    "calibration": {
+     "pair rule": {
+      "threshold": 0.0004891586140729487,
+      "n": 11,
+      "kept": 11,
+      "keeps_all": true,
+      "keep_lower_bound_95": 0.7615958096191474
+     },
+     "correct by direction": {
+      "A4C -> A5C -> A4C": 7,
+      "A5C -> A4C -> A5C": 4
+     },
+     "at the original threshold": {
+      "kept": {
+       "n": 11,
+       "kept": 6,
+       "wrongly_removed": 5,
+       "recordings": 16,
+       "sessions": 14
+      },
+      "removed": {
+       "n": 20,
+       "missed": 0,
+       "removed": 20,
+       "recordings": 14,
+       "sessions": 13
+      }
+     },
+     "at the pair threshold": {
+      "kept": {
+       "n": 11,
+       "kept": 11,
+       "wrongly_removed": 0,
+       "recordings": 16,
+       "sessions": 14
+      },
+      "removed": {
+       "n": 20,
+       "missed": 15,
+       "removed": 5,
+       "recordings": 14,
+       "sessions": 13
+      }
+     }
+    },
+    "held-out, supplementary": {
+     "original": {
+      "kept": {
+       "n": 11,
+       "kept": 8,
+       "wrongly_removed": 3,
+       "recordings": 18,
+       "sessions": 18
+      },
+      "removed": {
+       "n": 29,
+       "missed": 2,
+       "removed": 27,
+       "recordings": 19,
+       "sessions": 15
+      }
+     },
+     "pair": {
+      "kept": {
+       "n": 11,
+       "kept": 11,
+       "wrongly_removed": 0,
+       "recordings": 18,
+       "sessions": 18
+      },
+      "removed": {
+       "n": 29,
+       "missed": 26,
+       "removed": 3,
+       "recordings": 19,
+       "sessions": 15
+      }
+     }
+    }
+   },
+   "Q1": {
+    "original threshold": 0.8510631918907166,
+    "pair threshold": 0.004912596195936203,
+    "pair vs original": "lower",
+    "calibration": {
+     "pair rule": {
+      "threshold": 0.004912596195936203,
+      "n": 11,
+      "kept": 11,
+      "keeps_all": true,
+      "keep_lower_bound_95": 0.7615958096191474
+     },
+     "correct by direction": {
+      "A4C -> A5C -> A4C": 7,
+      "A5C -> A4C -> A5C": 4
+     },
+     "at the original threshold": {
+      "kept": {
+       "n": 11,
+       "kept": 6,
+       "wrongly_removed": 5,
+       "recordings": 16,
+       "sessions": 14
+      },
+      "removed": {
+       "n": 20,
+       "missed": 0,
+       "removed": 20,
+       "recordings": 14,
+       "sessions": 13
+      }
+     },
+     "at the pair threshold": {
+      "kept": {
+       "n": 11,
+       "kept": 11,
+       "wrongly_removed": 0,
+       "recordings": 16,
+       "sessions": 14
+      },
+      "removed": {
+       "n": 20,
+       "missed": 12,
+       "removed": 8,
+       "recordings": 14,
+       "sessions": 13
+      }
+     }
+    },
+    "held-out, supplementary": {
+     "original": {
+      "kept": {
+       "n": 11,
+       "kept": 8,
+       "wrongly_removed": 3,
+       "recordings": 18,
+       "sessions": 18
+      },
+      "removed": {
+       "n": 29,
+       "missed": 2,
+       "removed": 27,
+       "recordings": 19,
+       "sessions": 15
+      }
+     },
+     "pair": {
+      "kept": {
+       "n": 11,
+       "kept": 11,
+       "wrongly_removed": 0,
+       "recordings": 18,
+       "sessions": 18
+      },
+      "removed": {
+       "n": 29,
+       "missed": 24,
+       "removed": 5,
+       "recordings": 19,
+       "sessions": 15
+      }
+     }
+    }
+   }
+  }
+ },
+ "seconds": 0.2839372158050537
+}
