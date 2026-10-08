@@ -1,0 +1,72 @@
+# FACT integration (docs/superpowers/plans/2026-10-08-fact-integration.md): the official FACT (Frame-Action
+# Cross-Attention Temporal Modeling, CVPR 2024) on the frozen E1 512-d per-frame features, with implementation checks
+# on the EV9V training split only. Fixed before any check runs. No development-set feature, label or metric is read,
+# no formal multi-seed training is started and no module of our own is added. The test split and EchoNet-Pediatric are
+# not read. FACT is prior work; integrating it is not a contribution of this project.
+#
+# Inherits model_development_v2.yaml for the protocol keys (10 Hz), the recipe settings of the 1,500-stream training
+# bank and the label order. Every parameter of this stage sits under fact_integration.
+extends: model_development_v2.yaml
+run_name: fact_integration_v1
+experiment: fact_integration_v1
+
+fact_integration:
+  inputs:                        # every sha256 is checked before use
+    protocol: {path: runs/20261002-051140-model_development_protocol-fa45e7f4-s0/protocol.json,
+               sha256: a897483b776e8cff1ba8b92774c6a82537758bcba6abd362f2d8603f37997593}
+    e1_feature_manifest: {path: models_frozen/e1_echoviewclip_probe/v1/feature_manifest.json,
+                          sha256: 56f59166ba3f1b428867e4ec9a7e6dfd800cb5bccd79db8191d3c916421f17c3}
+    e1_cache_key: 16efc85be645   # cache_v2: E1 features (fp16, read as fp32), probe probabilities and logits
+    frame_order: numeric-2026-09-30
+    feature_dim: 512
+    variants: [orig, gamma090]
+    input: "224 x 224 (short side 256, centre crop 224), 10 Hz samples in numeric frame order"
+  fact:
+    source: https://github.com/ZijiaLewisLu/CVPR2024-FACT
+    repo: third_party/fact
+    commit: 7bd81bda2b84618a3e23876a2637a82f24881122
+    dependency: "yacs 0.1.8, the repository's pinned requirement, installed with --no-deps into the project .venv"
+    base_config: breakfast.yaml  # the example base of DATASET_SETUP_GUIDE.md and utils/gen_config.py
+    alternative_base_config: gtea.yaml   # the guide's tip for small datasets; parameter count and cost only, never trained here
+    trans: false                 # transcript-free: inference sees no class order, segment count or boundary
+    match: o2o                   # one-to-one token-segment matching
+    token_ratio: 1.5             # utils/gen_config.py default
+    ntoken_rule: "int(token_ratio x the longest training transcript); a transcript is the label runs of a sequence (a same-view join is one run)"
+    average_transcript_rule: "one epoch's training sequences: the 1,500 bank streams once plus 1,500 native windows of one run each"
+    bg_class: []                 # five views, no background class
+    class_weight: none           # official train.py passes none; the null-class weight follows utils/train_tools.compute_null_weight
+    inference_labels: "a constant dummy sequence of zeros, never the reference labels"
+  training_data:                 # the shared recipe's batches (TrainData.epoch_batches), unchanged
+    streams_per_batch: 4
+    natives_per_batch: 4
+    native_window: 256
+    native_per_epoch: 1500
+    updates_per_epoch: 375
+  checks:
+    alignment: "every bank stream's fragments, features, frame indices, labels, joins and source records against independently loaded cache files; every training clip; the seed-0 epoch-0 native windows; the collated and unpadded seed-0 epoch-0 batches against their sequences; the official transcript parse against our segments"
+    determinism: "fp32, TF32 off, cuDNN deterministic; torch.use_deterministic_algorithms on for the isolation check"
+    isolation:
+      sequences: "the 16 overfit sequences and the first 200 bank streams"
+      label_variants: [reference, zeros, random, time_reversed, single_sample]
+      models: [initial, overfit]
+      rule: "identical predicted labels and final-block logits (maximum absolute difference 0) for every variant"
+    overfit:
+      set: "five native windows (the first training clip of each class in protocol order, its first 256 samples, orig); then in bank order and without repeats the first three streams with a same-view join, the first three with an A4C->A5C->A4C run, the first three other streams with one class in two separate runs, and the first two streams with the longest transcript"
+      updates: 1000
+      batches: "the 16 sequences in two fixed batches of 8, alternating"
+      optimizer: {name: AdamW, lr: 3.0e-4, weight_decay: 1.0e-4, grad_clip: 1.0, schedule: constant}
+      regularisation: "the official training mode of the base config (channel masking and temporal masking) stays on"
+      seed: 0
+      log_every: 50
+      purpose: "implementation only; never a generalisation result"
+    gradient_paths: "each loss term alone at initialisation on the first overfit batch; zero-gradient parameters of the official total loss at initialisation and after the overfit"
+    cost:
+      plan: "seed 0, epoch 0 of the shared batch plan"
+      warmup_updates: 5
+      timed_updates: 100
+      settings: "the planned training settings: fp32, TF32 off, cuDNN deterministic"
+      compare: "ASRF (ASRFHead, in_dim 512, official class weights of the same epoch-0 labels) on the same batches"
+  outputs:
+    results_dir: docs/results/2026-10-08_fact_integration   # counts and digests only
+    server_dir: runs/fact_integration_v1                     # sequence ids and per-sequence details
+  never: "no development-set feature, label or metric; no test split; no EchoNet-Pediatric; no formal multi-seed training; no module of our own"
