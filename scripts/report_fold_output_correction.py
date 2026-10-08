@@ -315,8 +315,38 @@ def run_evaluate(a, cfg: dict, fo: dict, paths, out_dir: Path) -> None:
     except SystemExit as e:                                 # reported, never replaced by another row
         res["references"] = {"not reproduced": str(e)}
     res["frozen"] = {} if a.no_freeze else freeze(paths, runs, a.config); res["seconds"] = time.time() - t0
+    ids = set(labels) | {session_of(v) for v in labels} | set(man.index[man.split == "train"]) | {session_of(v) for v in man.index[man.split == "train"]}
+    pf.assert_no_ids(json.loads(json.dumps(res, default=str)), ids, "summary")
     out_dir.mkdir(parents=True, exist_ok=True); (out_dir / "summary.json").write_text(json.dumps(res, indent=1, default=str))
     (out_dir / "report_tables.md").write_text(tables_md(res)); print(json.dumps(res["decision"], indent=1, default=str))
+
+
+def run_dry(cfg: dict, fo: dict, paths) -> None:
+    """Code check on training data only, on the CPU: ten training clips and six library streams of fold 0, read through
+    B0 v3, go through every system (initial states of seed 0 standing in for all seeds), comparison, verdict, change
+    table and the decision; no development-set data is read and no metric is printed."""
+    from echo_routing.compose.recipe_builder import recipe_from_dict
+    from echo_routing.compose.stream_assembler import render
+    from echo_routing.temporal.dev_data import EvalSet, native_seq
+    root = paths.repo_root; ctx = pf.load_context(cfg, fo, root); store = FeatureStore(paths.cache_root, fo["inputs"]["b0_v3"]["cache_key"]); device = torch.device("cpu")
+    clips = [v for c in range(5) for v in [x for x, y in ctx.clips if y == c][:2]]
+    streams = [render(recipe_from_dict(r), store.get) for r in ctx.banks[0]["recipes"][:6]]
+    ev = EvalSet("train-subset", tuple(native_seq(v, ctx.labels[v], store.get(v, "orig")) for v in clips), tuple(streams[:2]), tuple(streams[2:]))
+    halves = {h: ev for h in HALVES}; plan = json.loads((root / "runs" / NS / "plans" / "plan_s0.json").read_text()); models = {}
+    for arm in pf.ARMS:
+        head = tf.make_head(fo, root, arm, plan, device); init = root / "runs" / NS / "inits" / ("p_out_identity.pt" if arm == "P-out" else "asrf_init_s0.pt")
+        model = tf.new_model(head, init, device); model.eval()
+        for seed in fo["training"]["seeds"]:
+            models[f"{arm}_s{seed}"] = (arm, head, model)
+    out = evaluate_encoder(cfg, fo, models, halves, device); tol = float(cfg["selection"]["boundary_tolerance_s"]) * float(cfg["protocol"]["hz"])
+    comp = comparisons(fo, out, halves, tol); ver = verdicts(fo, comp)
+    vis = {f"{k}|{h}": visual_vs_system(halves[h], out["_head"][h]["preds"], out[k][h]["preds"]) for k in out if not k.startswith("_") for h in HALVES}
+    dec = decide(ver["T-out - T-in"], {n: ver[n] for n in ("T-out - (P-out + B3)", "T-out - (B0 + B3)")}, [{h: out[f"T-out_s{s}"][h]["row"] for h in HALVES} for s in fo["training"]["seeds"]], fo)
+    record = {"systems": strip(out), "comparisons": comp, "verdicts": ver, "visual_vs_system": vis, "decision": dec}
+    ids = {v for v, _ in ctx.clips} | {session_of(v) for v, _ in ctx.clips}; pf.assert_no_ids(json.loads(json.dumps(record, default=str)), ids, "dry run")
+    md = tables_md({"main": {"systems": strip(out), "comparisons": comp}, "auxiliary": {}, "decision": dec})
+    print(json.dumps({"dry_run": "ok (training data only, no metric)", "systems": sorted(k for k in out if not k.startswith("_")), "comparisons": len(comp),
+                      "visual_vs_system": len(vis), "decision_keys": sorted(dec), "tables_md_lines": md.count("\n")}, indent=1))
 
 
 def tables_md(res: dict) -> str:
@@ -342,11 +372,14 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--config", required=True); ap.add_argument("--out", required=True); ap.add_argument("--no-freeze", action="store_true")
     step = ap.add_mutually_exclusive_group(required=True); step.add_argument("--extract-aux", action="store_true"); step.add_argument("--evaluate", action="store_true")
+    step.add_argument("--dry-run", action="store_true")
     a = ap.parse_args(); a.set = []; cfg = load_cfg(a); fo = cfg["fold_output_correction"]; pf.check_out(a.out, fo); paths = load_paths()
     torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False; torch.set_float32_matmul_precision("highest")
     torch.backends.cudnn.deterministic = True; torch.backends.cudnn.benchmark = False
     if a.extract_aux:
         run_extract_aux(cfg, fo, paths)
+    elif a.dry_run:
+        run_dry(cfg, fo, paths)
     else:
         run_evaluate(a, cfg, fo, paths, paths.repo_root / a.out)
 
