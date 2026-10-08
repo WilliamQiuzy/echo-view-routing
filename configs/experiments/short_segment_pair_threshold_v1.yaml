@@ -1,0 +1,47 @@
+# Pair-conditional thresholds for the frozen short-segment discriminators: a post-hoc decision calibration check
+# (docs/superpowers/plans/2026-10-07-short-segment-pair-threshold.md). Fixed and committed before any new threshold is
+# computed; the new thresholds are committed before they are applied to the validation halves.
+#
+# The six frozen pipelines of short_segment_transfer_v1, the same candidate generator, features and candidates. No
+# retraining, no new C, no change of kappa or lambda, public labels unchanged. Two fixed decision rules are compared;
+# no threshold grid is swept. Exploratory reuse of the development set: the A4C/A5C keep problem was seen on these
+# halves before this rule was set. The final goal, the sealed test split and the need for real-scan evidence are
+# unchanged, and nothing enters the full system (no removal, merge or system change is carried out).
+#
+# Inherits short_segment_transfer_v1.yaml (and through it short_segment_probe_v1.yaml), so the probe pins, the original
+# thresholds, the generator and the feature definitions are the same values.
+extends: short_segment_transfer_v1.yaml
+run_name: short_segment_pair_threshold_v1
+experiment: short_segment_pair_threshold_v1
+
+short_segment_pair_threshold:
+  results_dir: docs/results/2026-10-07_short_segment_pair_threshold   # the only results directory written; earlier rounds are read only
+  transfer:                      # read only; every sha256 is checked before use
+    rebuild: {path: docs/results/2026-10-07_short_segment_transfer/rebuild.json, sha256: b0e956dec4bb140d50702bd236fd3806f4793e363b4ae9c3ddb612e4d46f95ad}
+    summary: {path: docs/results/2026-10-07_short_segment_transfer/summary.json, sha256: f183085ad26ab056647a6c9ce1314cb95304db2ae2bd124d893b0a54be2f5165}
+    candidates:                  # the server's saved lists (they carry ids); the regenerated candidates must equal them
+      0: {selection: 22472dc8cab50a65965490d41cc21c1d35a7b1927bb856f84089742be431a3c1, calibration: b37bf3edbb0e02dd7e2d5b243fed7c056976788faffd32163ddd679f07eed2ef}
+      1: {selection: c41d0e0a88b038e9020268940b09191170015a0677c6e43a5b766d2503de2570, calibration: dba44f59a83d265d89f30bdbf34655ccaf66bb776707a692e0092492b9f296d0}
+      2: {selection: 1f169ae5237f7be3a8e5709e29e836934811771bcc7c67b09565307cff689a4d, calibration: 866094dab922ef24989b18824a9ceb59353ce4a0a0fdb64b608d4d49b8007d5d}
+  models: [Q0, Q1]
+  rules:
+    original: "the probe's 0.95 threshold for every candidate (kept when the score is at or above it)"
+    pair: "the A4C/A5C threshold for a candidate whose predicted pair is A4C/A5C, in either direction; the original 0.95 threshold for every other pair. Only the decoded classes decide; reference labels are never read"
+  pair_threshold:
+    pair: [A4C, A5C]             # unordered: A4C -> A5C -> A4C and A5C -> A4C -> A5C share one threshold
+    keep_rate: 0.95
+    where: "the calibration part of the original training library (short_segment_probe_v1): correct candidates (a) whose predicted pair is A4C/A5C"
+    rule: "the highest threshold that keeps at least 95% of them (scripts.short_segment_probe.threshold_for); below 20 such candidates this keeps all of them"
+    per: "seed and model (Q0 and Q1 by the same rule)"
+    never: "chosen or adjusted on either validation half"
+    reported: "the calibration counts behind each threshold (correct and wrong A4C/A5C candidates and their sessions, the empirical keep, a one-sided 95% lower bound for the keep rate) and the original threshold for comparison"
+  supplementary: "the library's held-out part under both rules (A4C/A5C keep and removal); not part of the decision"
+  halves: [selection, calibration]
+  report: "per seed and half and pooled, under both rules: correct A4C/A5C middles kept / wrongly removed and wrong ones removed / missed, with distinct recordings and sessions; the A4C/A5C candidates whose decision changes (correct rescued or lost, wrong let through or newly removed), counted and listed without ids; candidates outside the binary task counted separately and never treated as safe to remove"
+  bootstrap: {draws: 2000, seed: 20261002, units: "constructed stream for stream candidates, session for native candidates; the two halves pooled per seed"}
+  decision:                      # the transfer check's practical standard and aggregation: per seed the halves are pooled; 'most seeds' = at least 2 of 3
+    standard: {keep_aa_min: 0.90, removal_aa_min: 0.50}
+    per_model: "under the pair rule: meets when, in most seeds, K_aa >= 0.90 and R_aa >= 0.50 in the same seed; else keeps correct but lets wrong through when, in most seeds, K_aa >= 0.90 while R_aa < 0.50; else keep not reached"
+    outcome: "a model meets -> supports 'the current operating point was unsuitable' for that model; a full-system experiment is planned next to see whether the local gain reaches segment F1 (not run here; no claim over the baselines); no model meets -> the threshold check of these two discriminators ends and no further thresholds are tried"
+    q1_vs_q0: "only with both models under the pair rule: Q1 - Q0 for K_aa, R_aa, K_all and R_all with the bootstrap; a change of threshold rule is never attributed to the visual features"
+  limitation: "post hoc and exploratory: the rule was set after the A4C/A5C keep problem was seen on these validation halves; with fewer than 20 calibration candidates an empirical 95% keep means keeping all, which guarantees no true keep rate"
