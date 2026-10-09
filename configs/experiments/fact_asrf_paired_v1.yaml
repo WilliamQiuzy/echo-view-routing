@@ -78,7 +78,8 @@ fact_asrf_paired:
     padding: "labels outside the valid mask changed, shapes and valid samples kept: the loss must not change; FACT also compares the unpadded inputs"
     timing: {warmup_updates: 5, timed_updates: 100, plan: "seed 0, epoch 0"}
     fact_overfit:
-      updates: 1000
+      updates: 2000              # 1,000 in the task sheet; raised on 2026-10-09 by the user's decision after the diagnostic
+                                 # (fact_overfit_extension.json: all requirements met from update 1,500); check length only
       batches: "the 16 fixed sequences in two fixed batches of 8, alternating"
       lr: 1.0e-4                 # constant; Adam with the arm's betas, eps, weight decay and clip
       requirements: "every sequence's predicted transcript equals the reference, segment F1@50 is 1 for all 16, and the matching is one-to-one with every matched token predicting its segment's view; the total loss need not approach zero"
