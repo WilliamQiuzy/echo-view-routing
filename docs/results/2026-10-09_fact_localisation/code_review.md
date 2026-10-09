@@ -42,3 +42,12 @@ Both findings were fixed before the run, in the commit that adds this record.
    kept on the server, but no partial summary was written.
    *Fix.* A stop for the budget now writes `summary.json` and `report_tables.md` for the finished seeds, marked as
    partial, and then exits with the reason.
+
+## Note added after the fact-check (2026-10-09)
+
+The review confirmed that the label column was read only for the allowlisted training rows. It did not notice that the
+filter read every other index column for every row. That included the raw view name (`raw_label`) and the file path of
+the other splits' rows. They were never used. The independent fact-check of the first run found this. c062220 narrowed
+the read to the id, the split and the sample count for every row, plus the class label for the kept rows. The
+preparation, the check and the run were then repeated under a new run identity, and every per-sequence record equals
+the first run's.

@@ -1,0 +1,110 @@
+{
+ "what": "Post hoc training-set diagnostic of the frozen FACT, ASRF and E1 of the paired FACT-ASRF round. No training and no development-set result. Conditions B and C of the intervention use the reference partition; they are diagnostics, never model results.",
+ "identity": "1bdea50968984e605d1e9b3a6b93ca28bc2ce3ed46341dd130110626a6686fc2",
+ "rows": {
+  "index_rows": 3885,
+  "training_rows_kept": 3364,
+  "rows_dropped_before_label_parsing": 521,
+  "columns_read_for_every_row": [
+   "video_id",
+   "split",
+   "n_samples"
+  ],
+  "columns_read_for_kept_rows": [
+   "video_id",
+   "label_index"
+  ]
+ },
+ "inputs_sha256": {
+  "protocol": "a897483b776e8cff1ba8b92774c6a82537758bcba6abd362f2d8603f37997593",
+  "e1_feature_manifest": "56f59166ba3f1b428867e4ec9a7e6dfd800cb5bccd79db8191d3c916421f17c3"
+ },
+ "bank_digest_equals_protocol": true,
+ "training_clips": 3364,
+ "training_sessions": 502,
+ "bank_streams": 1500,
+ "bank_recordings": 2873,
+ "bank_sessions": 499,
+ "token_rule": {
+  "max_transcript": 8,
+  "average_transcript": 2.654333333333333,
+  "token_ratio": 1.5,
+  "ntoken": 12
+ },
+ "seeds": {
+  "0": {
+   "batches": 375,
+   "batch_digests_equal_plan": true,
+   "streams": 1500,
+   "streams_are_the_bank_once_each": true,
+   "native_windows": 1500,
+   "native_recordings": 1500,
+   "native_sessions": 442,
+   "stream_samples": 191366,
+   "native_samples": 90271,
+   "native_window_length": {
+    "min": 9,
+    "median": 40.0,
+    "max": 256
+   },
+   "native_windows_short": 109,
+   "stream_reference_runs": 6463,
+   "stream_short_runs": 1726,
+   "stream_xyx_middles": 873,
+   "stream_a4c_a5c_xyx_middles": 99,
+   "seconds_epoch_build": 0.7826752662658691
+  },
+  "1": {
+   "batches": 375,
+   "batch_digests_equal_plan": true,
+   "streams": 1500,
+   "streams_are_the_bank_once_each": true,
+   "native_windows": 1500,
+   "native_recordings": 1500,
+   "native_sessions": 456,
+   "stream_samples": 191366,
+   "native_samples": 90341,
+   "native_window_length": {
+    "min": 9,
+    "median": 41.0,
+    "max": 256
+   },
+   "native_windows_short": 123,
+   "stream_reference_runs": 6463,
+   "stream_short_runs": 1726,
+   "stream_xyx_middles": 873,
+   "stream_a4c_a5c_xyx_middles": 99,
+   "seconds_epoch_build": 0.5200021266937256
+  },
+  "2": {
+   "batches": 375,
+   "batch_digests_equal_plan": true,
+   "streams": 1500,
+   "streams_are_the_bank_once_each": true,
+   "native_windows": 1500,
+   "native_recordings": 1500,
+   "native_sessions": 456,
+   "stream_samples": 191366,
+   "native_samples": 90054,
+   "native_window_length": {
+    "min": 9,
+    "median": 41.5,
+    "max": 256
+   },
+   "native_windows_short": 112,
+   "stream_reference_runs": 6463,
+   "stream_short_runs": 1726,
+   "stream_xyx_middles": 873,
+   "stream_a4c_a5c_xyx_middles": 99,
+   "seconds_epoch_build": 0.3561100959777832
+  }
+ },
+ "across_seeds": {
+  "native_recordings": 2798,
+  "native_sessions": 496,
+  "native_recordings_in_two_or_more_seeds": 1407,
+  "all_recordings": 3274,
+  "all_sessions": 501
+ },
+ "build_seconds": 5.354389905929565
+}
