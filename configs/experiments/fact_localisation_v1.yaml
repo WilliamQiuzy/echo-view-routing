@@ -1,0 +1,62 @@
+# FACT short-segment localisation (docs/superpowers/plans/2026-10-09-fact-localisation.md): a post hoc, inference-only
+# diagnostic of the frozen FACT, ASRF and E1 of the paired FACT-ASRF round on its training sequences. Fixed before any
+# diagnostic runs. No training, no optimiser, no backward; no development half, no test split, no EchoNet-Pediatric.
+# Conditions B and C of the intervention read the reference partition; they are diagnostics, never model results.
+#
+# Inherits model_development_v2.yaml for the protocol keys (10 Hz, the 0.5 s boundary tolerance).
+extends: model_development_v2.yaml
+run_name: fact_localisation_v1
+experiment: fact_localisation_v1
+
+fact_localisation:
+  source:                        # the paired round; every sha256 is checked before use
+    config: {path: configs/experiments/fact_asrf_paired_v1.yaml,
+             sha256: 5caffd566fd560593c5d60e829446fe0ecc97debd59cbd5c627ce13aec421ab2}
+    summary: {path: docs/results/2026-10-08_fact_asrf_training/summary.json,
+              sha256: 32c2665f485981d8b38d9c63c283027b1fd02568d04c36816d162fe88066bafa}
+    monitor_set: {path: runs/fact_integration_v1/data_details.json,
+                  sha256: 5fb823f0cf072fa3457897f9503397cfa4b357efeab27809f322f2cbeb2019b1}
+    plans:                       # runs/fact_asrf_paired_v1/plans/plan_s{seed}.json
+      0: de3bf27c5949bab18ee72499557e2afcdc6b9ee0289df41dca2a3f0dae24f4a7
+      1: 41668f307581f04efe88ae91fa4bfbe08746cb619097c66d6742e5354728d8cc
+      2: 6e9cbba70df87ef1cf43dd2ec94749a76c5debbd6dc5a09cd92e493f06058e4c
+    frozen:                      # models_frozen/fact_asrf_paired_v1/{key}/final.pt
+      FACT_s0: 7422d286933da1aeade27322a2734535a8d6600149c52e06004161583e4f6efe
+      FACT_s1: c793447bd97f29258cfafb814d1d9e5ddf7133b35c959c5e5c1cf66597b6efc4
+      FACT_s2: e3387203a161d15bbaee115d6c0341d5d72cadc558a75cd066dff22175517c00
+      ASRF_s0: b7d25d305ae19d0c14243943979fd9d1caa0e9ef0c411f7e264dcc36b94e97a4
+      ASRF_s1: 1665b7e116270a9742a94bb2e2c4d399423832c9255ec7b767f793348da6c187
+      ASRF_s2: 4199cecee651afb3106c614a6fba079508571ef76780b98103fe54cccf5a583a
+  data:
+    rows: "the cache index's metadata is read, then filtered to protocol['train']['clips'] in the original row order; labels, the training bank and features come from the filtered rows only (the index itself lists other splits' rows)"
+    seeds: [0, 1, 2]
+    epoch: 49                    # the last training epoch: its 375 actual batches, 1,500 bank streams and 1,500 native windows
+    batch_check: "every batch digest of epoch 49 equals the seed's saved plan"
+    monitor: "the 16 fixed training sequences; the last epoch's monitor values of every run are reproduced"
+    selection: "every sequence of the epoch; nothing is chosen by prediction, error or score"
+  stages:                        # one ordinary forward per sequence and model
+    E1: "argmax of the cached E1 probe probabilities"
+    FACT_i: "argmax of the input block's frame branch"
+    FACT_u: "argmax of the update block's frame branch (its runs form the partition entering U)"
+    FACT_U: "argmax of the last (U) block's frame branch"
+    FACT_final: "the official output (Block._eval of the last block)"
+    ASRF_frame: "argmax of ASRF's last stage"
+    ASRF_final: "ASRF's official refinement output"
+  units:
+    reference_segment: "a run of one reference view; per stage: one-to-one class-aware match at IoU 0.5, the largest IoU with any predicted segment, the largest IoU with a same-class one, the argmax class counts inside it, and whether each inner end has a predicted change within the 0.5 s tolerance"
+    groups: {short_max_samples: 16, xyx: "middles of reference runs X, Y, X", a4c_a5c_xyx: "middles with {X, Y} = {A4C, A5C}"}
+    sources: "distinct source recordings and sessions of the reference segments, reported beside every count"
+  intervention:                  # the last U block only, frozen weights, the same inputs to U
+    A: "the original partition: runs of the u block's argmax (official temporal_downsample)"
+    B: "A's boundaries plus every reference class change strictly inside an A interval; none removed"
+    C: "per A interval [s, e) of length L where B adds k, the points s + floor(j L / (k + 1)), j = 1..k"
+    segment_action: "the u block's argmax at the interval's first sample; never a reference label"
+    order: [A, B, C, A]          # the second A must reproduce the first bit for bit
+    natives: "one reference label, so B = C = A; checked on the fixed 16 and in tests, then A's outputs reused"
+    downstream: "the official averaging, GRU, class projection, cross-attention, upsampling, frame branch and Block._eval, unchanged"
+  determinism: "FACT under torch.use_deterministic_algorithms(True); ASRF under its training setting; fp32, TF32 off, cuDNN deterministic"
+  budget: {gpu_hours_max: 1.0, check: "the fixed 16 are timed first and the full run is projected; progress is saved per seed"}
+  outputs:
+    results_dir: docs/results/2026-10-09_fact_localisation   # counts and digests only
+    server_dir: runs/fact_localisation_v1                     # per-sequence predictions, partitions and identities
+  never: "no training, optimiser or backward; no development half, test or EchoNet-Pediatric; no edit of the official code, the formal adapter or earlier results; reference-informed conditions are never reported as model results"
