@@ -244,7 +244,22 @@ def by_own_share(units: list[dict]) -> dict:
         us = [u for u in units if u["kind"] == "stream" and g in u["groups"]]
         for name, pick in (("minority in every interval", lambda u: u["own_share"] < 0.5), ("majority of an interval", lambda u: u["own_share"] >= 0.5)):
             sel = [u for u in us if pick(u)]
-            out.setdefault(g, {})[name] = {**sources(sel), "matched": {c: sum(u["m"][INTERVENTION[c][0]]["matched"] for u in sel) for c in "ABC"}}
+            out.setdefault(g, {})[name] = {**sources(sel), "matched": {c: sum(u["m"][INTERVENTION[c][0]]["matched"] for u in sel) for c in "ABC"},
+                                           "matched_by_U_frame_branch": {c: sum(u["m"][INTERVENTION[c][1]]["matched"] for u in sel) for c in "ABC"}}
+    return out
+
+
+def changes_inside_intervals(recs: list[dict]) -> dict:
+    """Added after the run (summary only): partition intervals entering U inside which the official output (A) or the
+    U block's frame branch changes its label. The official decode gives every frame of one interval the same token and
+    mixes in the frame branch at weight 0.1, so it can change inside an interval only where the frame branch outweighs."""
+    out = {}
+    for kind, rs in (("stream", [r for r in recs if not r["native"]]), ("native", [r for r in recs if r["native"]])):
+        n, final, frame = 0, 0, 0
+        for r in rs:
+            for s, e in r["partition_A"]:
+                n += 1; final += int(len(set(r["stages"]["FACT_final"][s:e])) > 1); frame += int(len(set(r["stages"]["FACT_U"][s:e])) > 1)
+        out[kind] = {"intervals": n, "official_output_changes_inside": final, "U_frame_branch_changes_inside": frame}
     return out
 
 
@@ -289,7 +304,8 @@ def seed_summary(recs: list[dict], units: list[dict], tol: float, short_max: int
             "tokens": token_summary(kinds), "logit_argmax_mismatches": sum(r["logit_argmax_mismatches"] for r in recs),
             "unmatched_at_FACT_final_with_its_view_among_U_tokens": {gk: [sum(u["view_among_U_tokens"] for u in us if not u["m"]["FACT_final"]["matched"]),
                                                                           sum(not u["m"]["FACT_final"]["matched"] for u in us)] for gk, us in groups.items()},
-            "partition_entering_U": {**partition_mixing(kinds["stream"], short_max), "by_own_share": by_own_share(units)},
+            "partition_entering_U": {**partition_mixing(kinds["stream"], short_max), "by_own_share": by_own_share(units),
+                                     "changes_inside_intervals": changes_inside_intervals(recs)},
             "intervention": intervention(kinds["stream"], kinds["native"], units, tol)}
 
 
@@ -340,7 +356,11 @@ def tables_md(res: dict) -> str:
             part += [{"seed": seed, "group": g, "reference run in the partition entering U": c, **v} for c, v in cats.items()]
         for g, cats in s["partition_entering_U"]["by_own_share"].items():
             share += [{"seed": seed, "group": g, "place": c, "segments": v["segments"], "rec/ses": f"{v['recordings']}/{v['sessions']}",
-                       "matched A/B/C": f"{v['matched']['A']}/{v['matched']['B']}/{v['matched']['C']}"} for c, v in cats.items()]
+                       "matched A/B/C": f"{v['matched']['A']}/{v['matched']['B']}/{v['matched']['C']}",
+                       "U frame branch A/B/C": "/".join(str(v["matched_by_U_frame_branch"][c]) for c in "ABC")} for c, v in cats.items()]
+        share += [{"seed": seed, "group": f"{k} intervals", "place": "changes inside an interval", "segments": v["intervals"],
+                   "matched A/B/C": f"official output {v['official_output_changes_inside']}", "U frame branch A/B/C": f"{v['U_frame_branch_changes_inside']}"}
+                  for k, v in s["partition_entering_U"]["changes_inside_intervals"].items()]
         o = s["intervention"]
         for label in ("official_output", "U_frame_branch"):
             iv += [{"seed": seed, "readout": label, "condition": c, **{k: r[k] for k in ("segment_f1_50", "boundary_recall", "boundary_precision")},

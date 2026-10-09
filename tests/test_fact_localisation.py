@@ -199,6 +199,8 @@ def test_own_share_separates_absorbed_runs_from_slightly_long_intervals():
                       "C": {"final": [0] * 24, "U": [0] * 24}}, 5, 16)
     s = ft.by_own_share(us)["xyx"]
     assert s["minority in every interval"]["segments"] == 1 and s["minority in every interval"]["matched"] == {"A": 0, "B": 1, "C": 0}
+    rec = {"native": False, "partition_A": [[0, 3], [3, 6]], "stages": {"FACT_final": [1, 1, 2, 0, 0, 0], "FACT_U": [1, 1, 1, 0, 3, 0]}}
+    assert ft.changes_inside_intervals([rec])["stream"] == {"intervals": 2, "official_output_changes_inside": 1, "U_frame_branch_changes_inside": 1}
 
 
 def test_fit_table_pools_over_sequences():
