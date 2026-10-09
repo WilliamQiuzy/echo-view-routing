@@ -119,3 +119,15 @@ def test_asrf_padding_labels_have_no_effect():
     alt = dict(batch); lab = batch["labels"].clone(); lab[batch["valid"] == 0] = -7; alt["labels"] = lab
     seed_everything(1); l1, _ = head.loss(model, batch); seed_everything(1); l2, _ = head.loss(model, alt)
     assert abs(float(l1) - float(l2)) <= 1e-6
+
+
+def test_smoke_stamp_tracks_config_plan_and_initial_state(tmp_path):
+    fa = {**FA, "outputs": {**FA["outputs"], "server_dir": str(tmp_path)}}
+    (tmp_path / "plans").mkdir(); (tmp_path / "inits").mkdir()
+    (tmp_path / "plans" / "plan_s0.json").write_text("{}"); (tmp_path / "inits" / "FACT_s0.pt").write_bytes(b"x")
+    stamp = tr.smoke_stamp(fa, ROOT, "FACT", 0)
+    assert stamp == tr.smoke_stamp(fa, ROOT, "FACT", 0)
+    other = {**fa, "arms": {**fa["arms"], "FACT": {**fa["arms"]["FACT"], "optimizer": {**fa["arms"]["FACT"]["optimizer"], "lr": 2e-4}}}}
+    assert tr.smoke_stamp(other, ROOT, "FACT", 0) != stamp
+    (tmp_path / "plans" / "plan_s0.json").write_text('{"x": 1}')
+    assert tr.smoke_stamp(fa, ROOT, "FACT", 0) != stamp

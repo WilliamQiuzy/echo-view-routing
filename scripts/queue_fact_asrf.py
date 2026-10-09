@@ -18,6 +18,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from scripts._common import load_cfg  # noqa: E402
+from scripts.train_fact_asrf import smoke_stamp  # noqa: E402
 
 from echo_routing.config import load_paths  # noqa: E402
 
@@ -42,7 +43,9 @@ def main() -> None:
     server = root / fa["outputs"]["server_dir"]; cap = float(fa["budget"]["formal_training_gpu_hours_max"]); order = list(fa["queue"])
     smoke = {}
     for arm in ("FACT", "ASRF"):
-        rep = json.loads((server / "smoke" / f"{arm}_s{int(fa['smoke']['seed'])}.json").read_text())
+        seed = int(fa["smoke"]["seed"]); rep = json.loads((server / "smoke" / f"{arm}_s{seed}.json").read_text())
+        if rep.get("stamp") != smoke_stamp(fa, root, arm, seed):
+            raise SystemExit(f"{arm}: the smoke report was produced from another configuration, code, plan or initial state; rerun the smoke")
         if not rep["ok"]:
             raise SystemExit(f"{arm}: the smoke checks did not pass")
         smoke[arm] = float(rep["timing"]["estimated_hours_per_run"])
@@ -56,7 +59,8 @@ def main() -> None:
         row = {"run": key, "spent_hours": round(sum(done.values()), 3), "projected_total_hours": round(proj, 3), "cap_hours": cap}
         if proj > cap:
             status.write_text(json.dumps({**row, "state": "stopped: the projected training hours exceed the cap"}, indent=1))
-            print(json.dumps({**row, "state": "stopped over budget"}), flush=True); raise SystemExit(2)
+            print(json.dumps({**row, "state": "stopped over budget"}), flush=True)
+            raise SystemExit(f"{key}: the projected training hours {proj:.2f} exceed the cap of {cap} h; finished runs and resume states are kept")
         print(json.dumps({**row, "state": "starting", "time": time.strftime("%Y-%m-%dT%H:%M:%S")}), flush=True)
         status.write_text(json.dumps({**row, "state": "running"}, indent=1))
         rc = subprocess.run([sys.executable, "-u", "scripts/train_fact_asrf.py", "--config", a.config, "--arm", arm, "--seed", seed], cwd=root).returncode

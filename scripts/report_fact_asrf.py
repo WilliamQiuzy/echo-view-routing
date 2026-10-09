@@ -313,7 +313,10 @@ def run_evaluate(cfg: dict, fa: dict, paths, config: str) -> None:
                 "cost": {"training_hours": {k: r["manifest"]["minutes"] / 60 for k, r in runs.items()}, "decode_seconds_per_sequence": ev["decode_seconds_per_sequence"]},
                 "seconds": time.time() - t0})
     assert_no_ids(json.loads(json.dumps(res, default=str)), ids, "summary")
-    write_atomic(out_dir / "summary.json", json.dumps(res, indent=1, default=str)); write_atomic(out_dir / "report_tables.md", tables_md(res))
+    tables = tables_md(res); sessions = {session_of(v) for v in ids}
+    if any(s in tables for s in sessions):
+        raise SystemExit("a session id appears in the report tables")
+    write_atomic(out_dir / "summary.json", json.dumps(res, indent=1, default=str)); write_atomic(out_dir / "report_tables.md", tables)
     print(json.dumps(res["decision"], indent=1, default=str))
 
 

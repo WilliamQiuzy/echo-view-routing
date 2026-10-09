@@ -255,6 +255,16 @@ def identity(ctx: Ctx, arm: str, seed: int, head, plan_sha: str, init_sha: str) 
     return hashlib.sha256(json.dumps(payload, sort_keys=True, default=str).encode()).hexdigest()
 
 
+def smoke_stamp(fa: dict, root: Path, arm: str, seed: int) -> str:
+    """What a smoke report was produced from: the arm's training configuration and smoke settings, the code, the seed's
+    plan and the arm's initial state. The queue recomputes it before trusting a report's verdict and timing."""
+    server = root / fa["outputs"]["server_dir"]
+    payload = {"config": {k: fa[k] for k in TRAINING_KEYS}, "arm_config": fa["arms"][arm], "smoke": fa["smoke"], "arm": arm, "seed": int(seed),
+               "code": {c: sha256_file(root / c) for c in CODE}, "plan_sha256": sha256_file(server / "plans" / f"plan_s{seed}.json"),
+               "init_sha256": sha256_file(server / "inits" / f"{arm}_s{seed}.pt")}
+    return hashlib.sha256(json.dumps(payload, sort_keys=True, default=str).encode()).hexdigest()
+
+
 def finished_run(manifest: Path, ident: str):
     """True: finished with this identity and an intact final checkpoint; False: finished otherwise; None: not finished."""
     if not manifest.is_file():
@@ -481,7 +491,8 @@ def main() -> None:
     if a.arm is None or a.seed not in [int(s) for s in ctx.fa["seeds"]]:
         raise SystemExit("--arm and one of the round's seeds are required (or --prepare)")
     if a.smoke:
-        rep = smoke(ctx, a.arm, a.seed, device); out = ctx.server / "smoke" / f"{a.arm}_s{a.seed}.json"; out.parent.mkdir(parents=True, exist_ok=True)
+        rep = smoke(ctx, a.arm, a.seed, device); rep["stamp"] = smoke_stamp(ctx.fa, ctx.root, a.arm, a.seed)
+        out = ctx.server / "smoke" / f"{a.arm}_s{a.seed}.json"; out.parent.mkdir(parents=True, exist_ok=True)
         assert_no_ids(rep, ctx.data.ids(), "smoke"); text = json.dumps(rep, indent=1, default=str); out.write_text(text)
         (ctx.root / ctx.fa["outputs"]["results_dir"] / f"smoke_{a.arm}.json").write_text(text)
         print(json.dumps({k: v for k, v in rep.items() if k not in ("overfit", "gradient_paths_initial")}, indent=1, default=str))
