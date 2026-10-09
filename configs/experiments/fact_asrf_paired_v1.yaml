@@ -1,15 +1,15 @@
-# DRAFT for the next stage (docs/results/2026-10-08_fact_integration/README.md): the official FACT and the official ASRF
-# trained on the same frozen E1 512-d features under one recipe, three seeds each, then compared with B3 and the
-# historical strongest configuration. Nothing here has been run. The lead decides the open items before any training.
+# FACT and ASRF trained on the same frozen E1 512-d features, three seeds each, then evaluated once against B3 and the
+# archived references (docs/superpowers/plans/2026-10-08-fact-asrf-training.md, the lead's four decisions). Fixed before
+# any preparation, smoke check or training; the earlier draft of this file is kept in git (a0f4fe1).
 #
-# FACT is prior work (Lu and Elhamifar, CVPR 2024) and ASRF is prior work (Ishikawa et al., WACV 2021); integrating
-# them is not a contribution of this project. The question is the lead's: does learning the frame-to-segment
-# correspondence during training improve the trade-off between keeping short segments, judging the view and avoiding
-# false cuts? Training reads the EV9V training split only. The test split and EchoNet-Pediatric are not read.
+# FACT is prior work (Lu and Elhamifar, CVPR 2024) and ASRF is prior work (Ishikawa et al., WACV 2021); training them is
+# not a contribution of this project. The comparison is between two complete trained systems with their own optimisers;
+# a difference cannot be attributed to cross-attention or to the matching loss alone. Training reads the EV9V training
+# split only. The development halves are built by the report entry alone, after all six runs have their final weights.
+# The test split and EchoNet-Pediatric are not read.
 extends: model_development_v2.yaml
 run_name: fact_asrf_paired_v1
 experiment: fact_asrf_paired_v1
-status: "draft, awaiting the lead's decision on the open items; no training, no development-set metric"
 
 fact_asrf_paired:
   inputs:                        # as in fact_integration_v1.yaml; every sha256 is checked before use
@@ -18,62 +18,112 @@ fact_asrf_paired:
     e1_feature_manifest: {path: models_frozen/e1_echoviewclip_probe/v1/feature_manifest.json,
                           sha256: 56f59166ba3f1b428867e4ec9a7e6dfd800cb5bccd79db8191d3c916421f17c3}
     e1_cache_key: 16efc85be645
-    input: "224 x 224 (short side 256, centre crop 224), 10 Hz samples in numeric frame order; no encoder fine-tuning"
+    frame_order: numeric-2026-09-30
+    feature_dim: 512
+    variants: [orig, gamma090]
+    input: "short side 256, centre crop 224; 10 Hz samples in numeric frame order; no encoder fine-tuning"
+    integration_alignment:       # reused when every input and the bank digest are unchanged
+      data_checks: {path: docs/results/2026-10-08_fact_integration/data_checks.json,
+                    sha256: 554348aef2272a2506eb19163cf764b0b1cf473ab31b287c563b8c171e569e83}
+      monitor_set: runs/fact_integration_v1/data_details.json   # the 16 fixed training sequences (server only)
+  seeds: [0, 1, 2]
+  queue: [FACT_s0, ASRF_s0, FACT_s1, ASRF_s1, FACT_s2, ASRF_s2]   # one GPU job at a time
+  data:                          # the shared batch plan (TrainData.epoch_batches), one per seed, identical for both arms
+    streams_per_batch: 4
+    natives_per_batch: 4
+    native_window: 256
+    native_per_epoch: 1500
+    epochs: 50
+    updates_per_epoch: 375
+    total_updates: 18750
   arms:
     FACT:
-      code: "echo_routing.temporal.fact_head.FACTHead on third_party/fact at 7bd81bda2b84618a3e23876a2637a82f24881122"
-      config: "configs/default.py + breakfast.yaml; trans false; one-to-one matching; ntoken 12 (int(1.5 x 8), the training bank's longest transcript); average transcript 2.654; no background class; no class weights; official null-class weight"
-      decoding: "the official Block._eval: each frame takes the class of the non-null token it attends most (a2f), mixed with the frame branch at mwt 0.1; a dummy label sequence is passed"
+      repo: third_party/fact
+      commit: 7bd81bda2b84618a3e23876a2637a82f24881122
+      base_config: gtea.yaml     # configs/default.py + gtea.yaml; official channel masking, temporal masking and dropout kept
+      dataset_overrides:         # only the fields fixed by the integration stage
+        n_classes: 5
+        bg_class: []
+        trans: false
+        match: o2o
+        token_ratio: 1.5
+        expected_ntoken: 12      # int(1.5 x the longest training transcript, 8)
+        expected_average_transcript: 2.654333333333333   # one epoch's training sequences
+        null_weight: "utils/train_tools.compute_null_weight (official)"
+      optimizer: {name: Adam, lr: 1.0e-4, betas: [0.9, 0.999], eps: 1.0e-8, weight_decay: 0.0, grad_clip: 10.0}
+      schedule: {name: step, decay_at_completed_updates: 11719, factor: 0.1}   # ceil(18750 x 250 / 400); no warm-up
+      determinism: "fp32, TF32 off, cuDNN deterministic, torch.use_deterministic_algorithms(True)"
+      decoding: "official Block._eval of the last block (mwt from gtea.yaml), with a dummy label sequence; no search"
     ASRF:
-      code: "echo_routing.temporal.dev_heads.ASRFHead on third_party/asrf at 9623f1e8d9a1171333a4eeb65d190997b6c44a95"
+      repo: third_party/asrf
+      commit: 9623f1e8d9a1171333a4eeb65d190997b6c44a95
       model: {in_channel: 512, n_classes: 5, n_features: 64, n_layers: 10, n_stages: 4, n_stages_asb: 4, n_stages_brb: 4}
-      loss: "official CE with median-frequency class weights + Gaussian-similarity TMSE at weight 1 (gstmse_weight is passed as True, as the official train.py does; the 0.15 belongs to the plain TMSE, which is off) + 0.1 x boundary regression with pos_weight, the weights from the seed's epoch-0 batch labels"
-      decoding: "official refinement_with_boundary at boundary_th 0.5"
-  seeds: [0, 1, 2]
-  training:                      # the shared recipe of the earlier rounds, identical for both arms
-    batches: "TrainData.epoch_batches(seed, epoch): 4 bank streams + 4 native windows (at most 256 samples) per update; one plan per seed, shared by both arms and checked update by update"
-    epochs: 50
-    updates_per_epoch: 375       # 18,750 updates per run
-    optimizer: {name: AdamW, lr: 3.0e-4, weight_decay: 1.0e-4, grad_clip: 1.0}
-    schedule: "2 warm-up epochs, linear per update, then cosine to 0 (echo_routing.temporal.dev_train.lr_factor)"
-    precision: "fp32, TF32 off, cuDNN deterministic"
-    init: "one saved initial state per arm and seed (seed_everything(seed), then build)"
-    rng: "seeded right before the first update and restored on resume"
-    resume: "after every epoch: weights, optimiser, scheduler, RNG, epoch records"
-    smoke: "before the queue: same-state reproducibility, resume (3 + 3 updates against 6), padding without effect, finite gradients except FACT's documented structural zeros, the plan, timing and memory"
-    queue: "seed 0: FACT, ASRF; seed 1: FACT, ASRF; seed 2: FACT, ASRF; one GPU job at a time"
-  checkpoint_rule: "the final weights after 50 epochs; no early stopping and no development-set reading during training"
-  evaluation:                    # once, after all six runs and their final weights are fixed
+      loss: "official CE with median-frequency class weights + Gaussian-similarity TMSE at weight 1 (the official train.py passes gstmse_weight=True; plain TMSE is off) + lambda_b x boundary regression with pos_weight"
+      lambda_b: 0.1
+      boundary_th: 0.5
+      weights: "median-frequency class weights and pos_weight from the seed's epoch-0 batch labels (official rules), stored in the seed's plan"
+      optimizer: {name: AdamW, lr: 3.0e-4, betas: [0.9, 0.999], eps: 1.0e-8, weight_decay: 1.0e-4, grad_clip: 1.0}
+      schedule: {name: warmup_cosine, warmup_updates: 750}   # echo_routing.temporal.dev_train.lr_factor
+      determinism: "fp32, TF32 off, cuDNN deterministic; torch.use_deterministic_algorithms is unavailable for its CE (nll_loss2d)"
+      decoding: "official refinement_with_boundary at boundary_th 0.5; no search"
+  init: "one initial state per arm and seed (seed_everything(seed), then build); arms share the seed number and the plan, never weights; no overfit weight is loaded"
+  rng: "seed_everything(seed) right before the first update; Python, NumPy, torch CPU and CUDA states saved and restored on resume"
+  checkpoint: "the weights after update 18,750; no development-set reading during training, no epoch choice, no extra training after any curve"
+  monitor: "the 16 fixed training sequences of the integration stage, decoded after every epoch: frame accuracy, segment F1@50, exact transcripts; a fit diagnostic only"
+  smoke:
+    seed: 0
+    tolerance: 1.0e-6            # reproducibility, resume and padding (the project's smoke tolerance)
+    reproducibility_updates: 6
+    resume: "3 + 3 updates against 6"
+    padding: "labels outside the valid mask changed, shapes and valid samples kept: the loss must not change; FACT also compares the unpadded inputs"
+    timing: {warmup_updates: 5, timed_updates: 100, plan: "seed 0, epoch 0"}
+    fact_overfit:
+      updates: 1000
+      batches: "the 16 fixed sequences in two fixed batches of 8, alternating"
+      lr: 1.0e-4                 # constant; Adam with the arm's betas, eps, weight decay and clip
+      requirements: "every sequence's predicted transcript equals the reference, segment F1@50 is 1 for all 16, and the matching is one-to-one with every matched token predicting its segment's view; the total loss need not approach zero"
+    fact_isolation: "the integration stage's check on the GTEA initial and overfit models: five label sequences, the 16 fixed sequences and the first 200 bank streams; identical predictions and logits"
+    fact_gradients: "each loss term alone at initialisation; zero-gradient parameters of the official total at initialisation and after the overfit, with their largest gradients"
+  budget:
+    formal_training_gpu_hours_max: 13
+    covers: "the six formal runs (updates, per-epoch monitor and saves); checks and evaluation are recorded separately"
+    rule: "the queue starts a run only when the hours spent plus the projected hours of the remaining runs stay within the cap; otherwise it stops with progress saved and reports; no backbone change and no shortened arm"
+  evaluation:                    # once, after all six runs completed 18,750 updates and their final weights are frozen
     halves: [selection, calibration]
     units: "native clips, pair streams and multi streams of the protocol"
-    systems: ["FACT (3 seeds)", "ASRF (3 seeds)", "E1 + B3 (archived settings, reproduced)", "E0 + B3 (historical strongest, archived settings, reproduced)", "E1 + ASRF (historical, seeds 0-2, reproduced)"]
-    primary: "FACT - ASRF, multi-stream segment F1@50, per seed and half"
-    secondary: ["FACT - (E1 + B3)", "FACT - (E0 + B3)"]
-    bootstrap: {draws: 2000, seed: 20261002}   # native clips by session, streams by stream (approximate)
-    consistent: "all three seeds' 95% intervals exclude zero on the same side; each half judged on its own; otherwise no consistent difference is detected, which is not equality"
-    mechanism:                   # the lead's question; reported for every system, never part of the decision
-      short_segments: "recall of multi-stream reference segments of at most 16 samples (the training bank's lower quartile of segment length) and of the middle runs of X->Y->X reference patterns, A4C/A5C patterns separately"
-      class_judgment: "native macro-F1, per-class recall, A4C read as A5C and A5C read as A4C (clips, recordings, sessions)"
-      false_cuts: "native internal cuts per clip, cuts at same-view joins of multi streams, boundary precision"
-      changes: "FACT against ASRF: clips fixed and new, reference segments matched by one only, true view changes found by one only, with distinct recordings and sessions"
-      diagnostic: "FACT's frame-branch argmax beside its full decoding, and the number of non-null tokens against the reference segment count"
-  constraints:                   # unchanged
+    systems: ["FACT (3 seeds)", "ASRF (3 seeds)"]
+    references:                  # reproduced with their stored settings, never re-tuned; never used to pick a model of this round
+      - "E1 + B3 (archived settings)"
+      - "E0 + B3 (historical strongest on selection)"
+      - "B7 + B3"
+      - "E1 + ASRF (historical, seeds 0-2)"
+      - "G1 + ASRF (geometry round; calibration three-seed mean 0.9738935784747763, docs/results/2026-10-04_geometry_pretraining/report.json goals/G1 ASRF/calibration)"
+    primary: "FACT - ASRF, multi-stream segment F1@50, paired by seed, per half"
+    secondary: ["FACT - (E1 + B3)", "FACT - (E0 + B3)", "FACT - (B7 + B3)"]
+    bootstrap: {draws: 2000, seed: 20261002}   # native clips by session, streams by stream; reused recordings not modelled
+    consistent: "all three seeds' 95% intervals exclude zero strictly on the same side within one half; otherwise no consistent difference is detected, which is not equality"
+    mechanism:                   # reported, never a gate
+      totals: "segment F1@50, boundary precision and recall, native macro-F1 against ASRF and B3"
+      short_segments: "recall of multi-stream reference segments of at most 16 samples and of X->Y->X middles; A4C/A5C separately; misses split into wrong view and no matching segment; distinct source recordings and sessions"
+      false_cuts: "native internal label switches per clip and cuts at same-view joins; native labels are clip-level labels"
+      a4c_a5c: "A5C read as A4C and A4C read as A5C, fixed and new, deduplicated to recordings and sessions"
+      readouts: "FACT's frame-branch argmax beside its official output (a readout of the trained system, not an ablation)"
+      tokens: "non-null tokens against the reference segment count; outputs where one token covers separate intervals"
+  constraints:
     boundary_recall_min: 0.95
     native_macro_f1_min: {selection: 0.973, calibration: 0.980}
-    rule: "every seed and half; a failure is reported with its values and is never repaired by another epoch or decoding setting"
-  goal:                          # unchanged
+    rule: "every seed and half of FACT; a failure is reported with its values and never repaired by another epoch or decoding setting"
+  goal:
     selection_min: 0.944409687184662
     calibration_min: 0.9821421709894332
-    calibration_sensitivity: "0.9738935784747763 + 0.01, reported beside the goal"
-  decision:                      # draft, for the lead to confirm
-    - {observation: "FACT - ASRF not consistent positive in both halves", action: "the comparison ends; each half reported as positive, negative or uncertain"}
-    - {observation: "consistent positive in both halves, but not better than E1 + B3 in both halves", action: "FACT helps against ASRF only; no new-model claim"}
-    - {observation: "better than ASRF and E1 + B3 in both halves, but a constraint fails", action: "a comparative gain that is not usable; the failed constraint is named"}
-    - {observation: "comparisons and constraints met, goal not met", action: "a local success; the lead decides the next step"}
-    - {observation: "comparisons, constraints and goal met", action: "the goal is reached under the development protocol; independent validation is still needed; opening test is decided separately"}
-  open_items:                    # for the lead
-    - "optimiser: the shared recipe above, or FACT's official Breakfast settings (Adam 1e-4, no weight decay, clip 10, x0.1 at epoch 80 of 150, 4 videos per batch) for the FACT arm only"
-    - "checkpoint rule: final weights (above), or the calibration-half feasibility rule of the L1 + ASRF round for both arms"
-    - "base config: breakfast.yaml (118.6 M parameters, four blocks iuUU, MS-TCN++ frame branches with 512 maps, above) or gtea.yaml, the small-dataset option named in the help of utils/gen_config.py (10.2 M parameters, three blocks iuU, MS-TCN with 128 maps, dropout 0.2, channel masking 0.5, stronger temporal masking)"
-    - "budget: about 13 h of training for the six runs on the L40S with the shared recipe and the Breakfast base (measured per update: FACT 0.724 s, about 3.8 h a run; ASRF 0.090 s, about 0.5 h a run), plus smoke checks and one evaluation; the optimiser and base-config items would change this figure"
+    calibration_sensitivity: 0.9838935784747763   # 0.9738935784747763 + 0.01, reported beside the goal
+  decision:
+    - {observation: "FACT - ASRF is not consistent positive in both halves", action: "the comparison of this GTEA configuration ends; each half is reported as positive, negative or uncertain; segment-token methods in general are not rejected and Breakfast is not run automatically"}
+    - {observation: "consistent positive against ASRF in both halves, but not consistent positive against E1 + B3 in both halves", action: "the gain over ASRF is reported; the goal is not met"}
+    - {observation: "both comparisons hold, but a constraint fails", action: "the gains and their costs are reported; no other epoch or decoding setting repairs it"}
+    - {observation: "comparisons and constraints hold, but the final goal is not met", action: "local progress is reported; any further study is decided separately"}
+    - {observation: "comparisons, constraints and the final goal are met", action: "only the development-protocol goal is claimed, with the sensitivity target beside it; test is not opened"}
+  outputs:
+    results_dir: docs/results/2026-10-08_fact_asrf_training   # counts and digests only
+    server_dir: runs/fact_asrf_paired_v1                       # plans, initial states, run manifests, predictions
   never: "no development-set reading during training; no threshold, decoding or epoch search; no encoder fine-tuning; no module of our own; no test split; no EchoNet-Pediatric"

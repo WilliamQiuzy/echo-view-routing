@@ -113,6 +113,10 @@ output-head replacement or larger budget was started.
   and 4 stages per branch.
 - The loss is the official one. It combines cross-entropy, the Gaussian-similarity smoothing term (0.15) and the
   boundary loss with weight 0.1. Decoding uses the official refinement with boundaries at threshold 0.5.
+- **Note added 2026-10-08.** The weight 0.15 above, and the same text in `configs/experiments/l1_asrf_integration_v1.yaml`,
+  is a recording error. The official `train.py` passes `gstmse_weight=True`, and the project's `ASRFHead` copies it, so
+  the Gaussian-similarity term entered every ASRF run at weight 1. The 0.15 is the weight of the plain smoothing term,
+  which is off. The code and the trained models are unchanged, and no result here changes.
 - Each update reads 4 constructed training streams and 4 native windows of at most 256 samples. One epoch is 375
   updates, which cover the 1,500 training streams in a new order plus 1,500 native windows.
 - Training runs 50 epochs (18,750 updates) with no early stopping.
