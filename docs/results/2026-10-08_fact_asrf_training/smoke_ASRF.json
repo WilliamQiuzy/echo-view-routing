@@ -1,0 +1,46 @@
+{
+ "arm": "ASRF",
+ "seed": 0,
+ "reproducibility": {
+  "loss_max_abs": 2.384185791015625e-07,
+  "params_max_abs": 1.4901161193847656e-08
+ },
+ "resume_bound": true,
+ "resume": {
+  "completed_before": 3,
+  "params_max_abs": 7.450580596923828e-09,
+  "lr_after": 2.8e-06,
+  "lr_after_continuous": 2.8e-06
+ },
+ "optimizer": {
+  "class": "AdamW",
+  "lr": 0.0003,
+  "betas": [
+   0.9,
+   0.999
+  ],
+  "eps": 1e-08,
+  "weight_decay": 0.0001,
+  "grad_clip": 1.0
+ },
+ "optimizer_matches_config": true,
+ "padding": {
+  "loss_diff": 0.0,
+  "padded_positions": 831
+ },
+ "zero_or_missing_gradients": [],
+ "parameters": 1191768,
+ "timing": {
+  "timed_updates": 100,
+  "mean_s": 0.10727159023284911,
+  "median_s": 0.1104273796081543,
+  "p90_s": 0.1251391887664795,
+  "max_s": 0.22570443153381348,
+  "peak_gpu_memory_mb": 249.68408203125,
+  "monitor_s": 0.4219682216644287,
+  "save_s": 0.07225513458251953,
+  "estimated_hours_per_run": 0.5655704124106301
+ },
+ "ok": true,
+ "stamp": "0e17d42c313da9b39dfe39c3f130c8af374504a0c9d9d5927e7a57f0adc23357"
+}
