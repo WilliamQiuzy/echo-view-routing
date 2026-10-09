@@ -179,7 +179,7 @@ def test_segment_measures_describe_misses_without_a_single_cause():
 
 
 def test_units_count_distinct_recordings_and_sessions_and_the_direction_of_changes():
-    rec = {"seq_id": "q", "native": False, "ref": [0] * 10 + [1] * 4 + [0] * 10, "tokens": {"U": [0, 1] + [5] * 10},
+    rec = {"seq_id": "q", "native": False, "ref": [0] * 10 + [1] * 4 + [0] * 10, "tokens": {"U": [0, 1] + [5] * 10}, "partition_A": [[0, 24]],
            "frags": [["p1_1", 0, 6], ["p1_2", 6, 10], ["p1_3", 10, 14], ["p2_1", 14, 24]], "stages": {n: [0] * 24 for n in ft.STAGES},
            "B": {"final": [0] * 10 + [1] * 4 + [0] * 10, "U": [0] * 24}, "C": {"final": [0] * 24, "U": [0] * 24}}
     us = ft.units_of(rec, 5, 16)
@@ -187,6 +187,18 @@ def test_units_count_distinct_recordings_and_sessions_and_the_direction_of_chang
     assert us[1]["groups"] == ["all", "short", "xyx"] and ft.sources(us) == {"segments": 3, "recordings": 4, "sessions": 2}
     assert ft.changes(us, "B_final", "FACT_final") == {"fixed": {"segments": 3, "recordings": 4, "sessions": 2}, "new": {"segments": 0, "recordings": 0, "sessions": 0}}
     assert ft.changes(us, "FACT_final", "B_final")["new"]["segments"] == 3                # new = matched by the second only
+
+
+def test_own_share_separates_absorbed_runs_from_slightly_long_intervals():
+    t = labels_to_segments(np.array([0] * 10 + [1] * 4 + [0] * 10))[1]                  # the middle run [10, 14)
+    assert ft.own_share(t, [(0, 24)]) == pytest.approx(4 / 24)                          # absorbed: minority everywhere
+    assert ft.own_share(t, [(0, 10), (10, 16), (16, 24)]) == pytest.approx(4 / 6)       # own interval two samples too long
+    assert ft.own_share(t, [(0, 12), (12, 24)]) == pytest.approx(2 / 12)                # split between two neighbours
+    us = ft.units_of({"seq_id": "q", "native": False, "ref": [0] * 10 + [1] * 4 + [0] * 10, "tokens": {"U": [5] * 12}, "partition_A": [[0, 24]],
+                      "frags": [["p1_1", 0, 24]], "stages": {n: [0] * 24 for n in ft.STAGES}, "B": {"final": [0] * 10 + [1] * 4 + [0] * 10, "U": [0] * 24},
+                      "C": {"final": [0] * 24, "U": [0] * 24}}, 5, 16)
+    s = ft.by_own_share(us)["xyx"]
+    assert s["minority in every interval"]["segments"] == 1 and s["minority in every interval"]["matched"] == {"A": 0, "B": 1, "C": 0}
 
 
 def test_fit_table_pools_over_sequences():

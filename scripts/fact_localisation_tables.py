@@ -101,15 +101,22 @@ def readout(rec: dict, name: str) -> np.ndarray:
     return np.asarray(rec[cond]["final" if part == "final" else "U"])
 
 
+def own_share(t, part: list) -> float:
+    """The largest share of one interval of the partition entering U that a reference run fills. Below one half, the run
+    is the minority in every interval it touches, so the U block averages it with more samples of other runs."""
+    return max((min(e, t.end) - max(s, t.start)) / (e - s) for s, e in part if s < t.end and t.start < e)
+
+
 def units_of(rec: dict, tol: float, short_max: int) -> list[dict]:
-    """One unit per reference run: its groups, distinct source recordings and sessions, and its measures per readout."""
+    """One unit per reference run: its groups, distinct source recordings and sessions, its share of the partition
+    entering U, and its measures per readout."""
     ref = np.asarray(rec["ref"]); true = labels_to_segments(ref); per = {n: segment_measures(ref, readout(rec, n), tol) for n in READOUTS}
-    active = {c for c in rec["tokens"]["U"] if c != N_CLASSES}; out = []
+    active = {c for c in rec["tokens"]["U"] if c != N_CLASSES}; part = [tuple(i) for i in rec["partition_A"]]; out = []
     for k, t in enumerate(true):
         src = sorted({v for v, a, b in rec["frags"] if a < t.end and t.start < b})
         out.append({"kind": "native" if rec["native"] else "stream", "seq": rec["seq_id"], "k": k, "label": t.label, "length": t.length,
                     "groups": unit_groups(true, k, short_max), "recordings": src, "sessions": sorted({session_of(v) for v in src}),
-                    "view_among_U_tokens": t.label in active, "m": {n: per[n][k] for n in READOUTS}})
+                    "view_among_U_tokens": t.label in active, "own_share": own_share(t, part), "m": {n: per[n][k] for n in READOUTS}})
     return out
 
 
@@ -227,6 +234,20 @@ def partition_mixing(streams: list[dict], short_max: int) -> dict:
                                for g, v in cats.items()}}
 
 
+def by_own_share(units: list[dict]) -> dict:
+    """Added after the run (summary only): constructed-stream reference runs that are the minority in every interval of
+    the partition entering U (own share below one half) or the majority of at least one, with distinct sources and the
+    runs the official output matches under A, B and C. The exact-alignment categories above put a run inside an own-view
+    interval a few samples too long together with a run absorbed by a neighbour; this split separates the two."""
+    out = {}
+    for g in GROUPS:
+        us = [u for u in units if u["kind"] == "stream" and g in u["groups"]]
+        for name, pick in (("minority in every interval", lambda u: u["own_share"] < 0.5), ("majority of an interval", lambda u: u["own_share"] >= 0.5)):
+            sel = [u for u in us if pick(u)]
+            out.setdefault(g, {})[name] = {**sources(sel), "matched": {c: sum(u["m"][INTERVENTION[c][0]]["matched"] for u in sel) for c in "ABC"}}
+    return out
+
+
 def changes(units: list[dict], x: str, y: str) -> dict:
     """Reference runs matched under x but not y (fixed) and under y but not x (new errors), with distinct sources."""
     return {"fixed": sources([u for u in units if u["m"][x]["matched"] and not u["m"][y]["matched"]]),
@@ -268,7 +289,8 @@ def seed_summary(recs: list[dict], units: list[dict], tol: float, short_max: int
             "tokens": token_summary(kinds), "logit_argmax_mismatches": sum(r["logit_argmax_mismatches"] for r in recs),
             "unmatched_at_FACT_final_with_its_view_among_U_tokens": {gk: [sum(u["view_among_U_tokens"] for u in us if not u["m"]["FACT_final"]["matched"]),
                                                                           sum(not u["m"]["FACT_final"]["matched"] for u in us)] for gk, us in groups.items()},
-            "partition_entering_U": partition_mixing(kinds["stream"], short_max), "intervention": intervention(kinds["stream"], kinds["native"], units, tol)}
+            "partition_entering_U": {**partition_mixing(kinds["stream"], short_max), "by_own_share": by_own_share(units)},
+            "intervention": intervention(kinds["stream"], kinds["native"], units, tol)}
 
 
 def across_seeds(units_by_seed: dict) -> dict:
@@ -298,7 +320,7 @@ def tables_md(res: dict) -> str:
     """The generated tables of report_tables.md (a subset of summary.json)."""
     parts = ["# FACT short-segment localisation: tables\n", WHAT + "\n",
              "Recompute: `python scripts/diagnose_fact_localisation.py --config configs/experiments/fact_localisation_v1.yaml --run`\n"]
-    fit, grp, first, trans, part, iv, chg, tok = [], [], [], [], [], [], [], []
+    fit, grp, first, trans, part, share, iv, chg, tok = [], [], [], [], [], [], [], [], []
     for seed, s in res["seeds"].items():
         for kind, per in s["fit"].items():
             fit += [{"seed": seed, "kind": kind, "readout": n, "frame error": r["frame_error"], "segment F1@50 (pooled)": r["segment_f1_50"],
@@ -316,6 +338,9 @@ def tables_md(res: dict) -> str:
                       for p, v in s["transitions"][gk].items()]
         for g, cats in s["partition_entering_U"]["reference_runs"].items():
             part += [{"seed": seed, "group": g, "reference run in the partition entering U": c, **v} for c, v in cats.items()]
+        for g, cats in s["partition_entering_U"]["by_own_share"].items():
+            share += [{"seed": seed, "group": g, "place": c, "segments": v["segments"], "rec/ses": f"{v['recordings']}/{v['sessions']}",
+                       "matched A/B/C": f"{v['matched']['A']}/{v['matched']['B']}/{v['matched']['C']}"} for c, v in cats.items()]
         o = s["intervention"]
         for label in ("official_output", "U_frame_branch"):
             iv += [{"seed": seed, "readout": label, "condition": c, **{k: r[k] for k in ("segment_f1_50", "boundary_recall", "boundary_precision")},
@@ -331,6 +356,7 @@ def tables_md(res: dict) -> str:
               "## Reference runs matched (one to one, class-aware, IoU 0.5), by group\n", md_table(grp),
               "## Earliest unmatched readout along E1 -> FACT i -> u -> U -> final\n", md_table(first),
               "## Lost and recovered between readouts\n", md_table(trans), "## Reference runs in the partition entering U (constructed streams)\n", md_table(part),
+              "### By the largest share of one interval a run fills (added after the run; summary only)\n", md_table(share),
               "## Intervention at the last U block (constructed streams; B and C use the reference partition)\n", md_table(iv), "### Cuts\n", md_table(cuts),
               "### Matched, fixed and new reference runs by group\n", md_table(chg), "## Tokens\n", md_table(tok),
               "## Across seeds\n", "```\n" + json.dumps(res.get("across_seeds", {}), indent=1) + "\n```\n", "## Cost\n", "```\n" + json.dumps(res.get("cost", {}), indent=1) + "\n```\n"]
