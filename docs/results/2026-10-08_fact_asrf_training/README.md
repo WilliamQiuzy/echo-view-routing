@@ -1,8 +1,7 @@
 # Paired FACT and ASRF training on frozen E1 features (2026-10-08)
 
-**Status (2026-10-09).** The configuration, code, preparation and smoke checks are done. One requirement of the FACT
-overfit check was not met at its fixed length, so the queue has not started and the lead's decision is awaited
-(section "Checks before the queue"). No formal training has started.
+**Status (2026-10-09).** Every check passed after the user's decision to lengthen the FACT overfit check from 1,000
+to 2,000 updates (section "Checks before the queue"). The six formal runs start next. Results will be added here.
 
 This round trains the official FACT (Lu and Elhamifar, CVPR 2024) and the official ASRF (Ishikawa et al., WACV 2021) on
 the same frozen E1 512-d per-frame features, three seeds each. Both systems then go through one evaluation on the two
@@ -77,9 +76,21 @@ The lead fixed four decisions (`docs/superpowers/plans/2026-10-08-fact-asrf-trai
   1,500 onward (`fact_overfit_extension.json`). The failure at 1,000 updates is therefore too few updates for this small
   check, not an implementation error.
 - **Implementation review.** It found no critical or high issue. Its medium note, that the queue trusted smoke reports
-  without a stamp, was fixed in a06d037. The ASRF smoke was rerun on that code. The FACT smoke is rerun once the lead
-  decides.
+  without a stamp, was fixed in a06d037.
+- **The decision (a086346).** The task sheet only names the auto-start condition, that every check passes. So the user
+  chose how to proceed. The FACT overfit check was lengthened from 1,000 to 2,000 updates. No training setting, plan or
+  initial state changed, and the run identities do not cover the smoke settings.
+- **Smoke rerun (code a06d037, config a086346, both reports stamped).** Both passed (`smoke_FACT.json`,
+  `smoke_ASRF.json`).
+  - **FACT.** The rerun and the 3 + 3 resume differ by 0, and padding labels change nothing. Isolation again found no
+    change in 864 comparisons on each model. After 2,000 updates every requirement was met. All 16 transcripts were
+    right, segment F1@50 was 1 for all 16, the matching was one to one, the non-null tokens equalled the segments, and
+    every matched token had its segment's view. The loss at update 2,000 equals the diagnostic's at the same update.
+    One update took 0.666 s on average (median 0.656, 90th percentile 0.764, slowest 0.874) on the shared GPU, or
+    3.48 h per run.
+  - **ASRF.** The rerun differs by 2.4e-7 in the loss and the resume by 1.5e-8 in the weights. One update took 0.097 s,
+    or 0.51 h per run.
 - **Shared GPU.** Since 01:18 server time, a preprocessing job of another project (FastSAM, in
   `/home/william/hli-echo-segmentation`) has shared the GPU. Timings after that may be slower.
-- **Budget.** The estimate is 3 x 3.11 h + 3 x 0.47 to 0.57 h, about 10.7 to 11.0 h, within the 13 h cap. The queue
-  checks the projection again before every run.
+- **Budget.** With the rerun's timings the projection is 3 x 3.48 h + 3 x 0.51 h = 11.96 h, within the 13 h cap. The
+  queue checks the projection again before every run, using the finished runs' actual hours.
