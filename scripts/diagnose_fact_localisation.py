@@ -67,7 +67,8 @@ CHECKS = ("official_partition_is_u_runs", "ordinary_equals_official", "A_equals_
 ATTRS = ("frame_clogit", "action_clogit", "seg_clogit", "f2a_attn", "a2f_attn", "f2a_attn_logit", "a2f_attn_logit")
 CODE = ("scripts/train_fact_asrf.py", "scripts/fact_integration.py", "scripts/train_l1_asrf.py", "echo_routing/temporal/fact_head.py",
         "echo_routing/temporal/dev_heads.py", "echo_routing/temporal/dev_data.py", "echo_routing/compose/stream_assembler.py",
-        "echo_routing/compose/banks.py", "echo_routing/compose/recipe_builder.py", "echo_routing/features/cache.py")
+        "echo_routing/compose/banks.py", "echo_routing/compose/recipe_builder.py", "echo_routing/features/cache.py",
+        "echo_routing/temporal/segments.py", "echo_routing/temporal/dev_run.py")
 
 
 # ----------------------------------------------------------------------------------------------- training rows and context
@@ -472,12 +473,14 @@ INFERENCE = (allowlist_rows, TrainRows, Diag, load_round, frozen, check_blocks, 
 
 
 def identity(ctx: Diag) -> str:
-    """The run identity: this round's config, the inputs, the imported code and the source of every function that shapes
-    the saved records (the summary code is left out, so a report fix does not orphan finished inference)."""
+    """The run identity: this round's config, the inputs, the imported code, the source of every function that shapes
+    the saved records and the constants they use (the summary code is left out, so a report fix does not orphan finished
+    inference)."""
     src = hashlib.sha256("".join(inspect.getsource(f) for f in INFERENCE).encode()).hexdigest()
     payload = {"config": ctx.fl, "hz_tol": [ctx.cfg["protocol"]["hz"], ctx.cfg["selection"]["boundary_tolerance_s"]],
                "inputs": {"protocol": ctx.data.proto_sha, "manifest": ctx.data.fman_sha, "bank": ctx.data.bank_digest},
-               "code": {c: sha256_file(ctx.root / c) for c in CODE}, "inference_source": src}
+               "code": {c: sha256_file(ctx.root / c) for c in CODE}, "inference_source": src,
+               "inference_constants": {"N_CLASSES": N_CLASSES, "BLOCKS": BLOCKS, "BLOCK_TYPES": BLOCK_TYPES, "CHECKS": CHECKS, "ATTRS": ATTRS}}
     return hashlib.sha256(json.dumps(payload, sort_keys=True, default=str).encode()).hexdigest()
 
 
@@ -586,7 +589,7 @@ def run_check(ctx: Diag, ident: str, device, t_cuda: float, built: float) -> Non
 
 def summarise(ctx: Diag, ident: str, done: dict, check: dict, spent: float) -> dict:
     t0 = time.time(); res = {"what": WHAT, "identity": ident, "seeds": {}}; units_by_seed = {}
-    for seed in ctx.seeds:
+    for seed in sorted(done):
         recs, meta = done[seed]; units = [u for r in recs for u in units_of(r, ctx.tol, ctx.short_max)]; units_by_seed[seed] = units
         res["seeds"][seed] = {"run": {k: meta[k] for k in ("sequences", "streams", "natives", "checks_passed", "weights_unchanged", "B_C_executed", "gpu_seconds", "wall_seconds")},
                               **seed_summary(recs, units, ctx.tol, ctx.short_max)}
@@ -595,8 +598,8 @@ def summarise(ctx: Diag, ident: str, done: dict, check: dict, spent: float) -> d
     res["check"] = {"monitor_reproduced": {k: v["reproduced"] for k, v in check["monitor"].items()}, "fact": check["fact"], "passed": check["passed"],
                     "weights_unchanged": check["weights_unchanged"], "projection": check["projection"]}
     res["cost"] = {"cap_hours": float(ctx.fl["budget"]["gpu_hours_max"]), "check_gpu_held_seconds": check["gpu_seconds"],
-                   "run_wall_seconds_per_seed": {s: done[s][1]["wall_seconds"] for s in ctx.seeds},
-                   "inference_seconds_per_seed": {s: done[s][1]["gpu_seconds"] for s in ctx.seeds},
+                   "run_wall_seconds_per_seed": {s: done[s][1]["wall_seconds"] for s in sorted(done)},
+                   "inference_seconds_per_seed": {s: done[s][1]["gpu_seconds"] for s in sorted(done)},
                    "gpu_held_hours_before_this_summary": spent / 3600, "summary_seconds": time.time() - t0,
                    "gpu_held_hours_total": (spent + time.time() - t0) / 3600}
     return res
@@ -607,20 +610,24 @@ def run_all(ctx: Diag, ident: str, device, t_cuda: float, built: float) -> None:
     path = ctx.out / "check.json"; check = json.loads(path.read_text()) if path.is_file() else {}
     if not check.get("ok") or check.get("identity") != ident:
         raise SystemExit("--check has not passed for the current identity; no full run")
-    cap = float(ctx.fl["budget"]["gpu_hours_max"]) * 3600; spent = float(check["gpu_seconds"]) + built; done = {}
+    cap = float(ctx.fl["budget"]["gpu_hours_max"]) * 3600; spent = float(check["gpu_seconds"]) + built; done, stopped = {}, None
     for seed in ctx.seeds:
         got = load_seed(ctx, seed, ident)
         if got is None:
             need = float(check["projection"]["per_seed_seconds"][str(seed)])
             if spent + need > cap:
-                raise SystemExit(f"budget: {spent / 3600:.2f} h held and {need / 3600:.2f} h projected for seed {seed} exceed the cap; finished seeds kept")
+                stopped = f"budget: {spent / 3600:.2f} h held and {need / 3600:.2f} h projected for seed {seed} exceed the cap; finished seeds kept"
+                break
             run_seed(ctx, seed, device, ident); got = load_seed(ctx, seed, ident)
         done[seed] = got; spent += float(got[1]["wall_seconds"])
-    res = summarise(ctx, ident, done, check, spent)
-    write_json(ctx.results / "summary.json", res, ctx.data); tables = tables_md(res)
-    if any(x in tables for x in ctx.data.ids()):
-        raise SystemExit("an id appears in the report tables")
-    write_atomic(ctx.results / "report_tables.md", tables); print(json.dumps(res["cost"], indent=1))
+    if done:   # a stop for the budget still reports the finished seeds, marked as partial
+        res = {**summarise(ctx, ident, done, check, spent), "stopped": stopped}
+        write_json(ctx.results / "summary.json", res, ctx.data); tables = tables_md(res)
+        if any(x in tables for x in ctx.data.ids()):
+            raise SystemExit("an id appears in the report tables")
+        write_atomic(ctx.results / "report_tables.md", (f"**Partial: {stopped}**\n\n" if stopped else "") + tables); print(json.dumps(res["cost"], indent=1))
+    if stopped:
+        raise SystemExit(stopped)
 
 
 def main() -> None:

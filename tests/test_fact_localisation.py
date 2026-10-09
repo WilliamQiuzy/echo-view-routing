@@ -54,6 +54,8 @@ def test_the_context_never_takes_the_full_label_path():
     src = inspect.getsource(dl.TrainRows) + inspect.getsource(dl.Diag); module = inspect.getsource(dl)
     assert "TrainOnly(" not in src and "read_index(" not in src and "check_index(" not in src and "tr.Ctx(" not in module
     assert "backward(" not in module and "optim." not in module   # inference only
+    assert {"echo_routing/temporal/segments.py", "echo_routing/temporal/dev_run.py"} <= set(dl.CODE)   # the identity covers what builds A and B
+    assert "inference_constants" in inspect.getsource(dl.identity)
 
 
 # ----------------------------------------------------------------------------------------------- partitions
