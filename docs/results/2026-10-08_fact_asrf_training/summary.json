@@ -1,0 +1,5487 @@
+{
+ "runs": {
+  "FACT_s0": {
+   "identity": "601ebfc6273ef9e24ba321cc1a5abde187f824d64fcbe066b66353cfbbe9cdc7",
+   "arm": "FACT",
+   "seed": 0,
+   "completed_updates": 18750,
+   "final_sha256": "7422d286933da1aeade27322a2734535a8d6600149c52e06004161583e4f6efe",
+   "plan_sha256": "de3bf27c5949bab18ee72499557e2afcdc6b9ee0289df41dca2a3f0dae24f4a7",
+   "init_sha256": "52ba46733482696dcf40cf22d809853dba26f66da402338bfa076fa5aabbd8bd",
+   "parameters": 10215424,
+   "minutes": 190.12707003355027
+  },
+  "ASRF_s0": {
+   "identity": "fe00a37677169eb107dd44cf74ea2a29dba8b997465407fb31f6b4c54db88cb3",
+   "arm": "ASRF",
+   "seed": 0,
+   "completed_updates": 18750,
+   "final_sha256": "b7d25d305ae19d0c14243943979fd9d1caa0e9ef0c411f7e264dcc36b94e97a4",
+   "plan_sha256": "de3bf27c5949bab18ee72499557e2afcdc6b9ee0289df41dca2a3f0dae24f4a7",
+   "init_sha256": "ad354c2cfff8d78830603631e21ef6365ec371a28171f187ea40bfe938ebadaf",
+   "parameters": 1191768,
+   "minutes": 24.707642451922098
+  },
+  "FACT_s1": {
+   "identity": "55d7e6bfcf28fb9674d57862fc7ecbb757fcc0c070878252fa48a12e1c51aeca",
+   "arm": "FACT",
+   "seed": 1,
+   "completed_updates": 18750,
+   "final_sha256": "c793447bd97f29258cfafb814d1d9e5ddf7133b35c959c5e5c1cf66597b6efc4",
+   "plan_sha256": "41668f307581f04efe88ae91fa4bfbe08746cb619097c66d6742e5354728d8cc",
+   "init_sha256": "048357d7312ff0aa486c0c2cf695cef6492c5321fe2595a7621fcf18e42018eb",
+   "parameters": 10215424,
+   "minutes": 177.77942984104158
+  },
+  "ASRF_s1": {
+   "identity": "c9560317ec274b2e179072049237eaa0418264e87203ef77d1ce7b73c6f24b27",
+   "arm": "ASRF",
+   "seed": 1,
+   "completed_updates": 18750,
+   "final_sha256": "1665b7e116270a9742a94bb2e2c4d399423832c9255ec7b767f793348da6c187",
+   "plan_sha256": "41668f307581f04efe88ae91fa4bfbe08746cb619097c66d6742e5354728d8cc",
+   "init_sha256": "91883a77997ca018383c5bf0a5633a428c485fb8531137634e9b48130716e9cc",
+   "parameters": 1191768,
+   "minutes": 22.768639441331228
+  },
+  "FACT_s2": {
+   "identity": "a2047ebdeeaa4cc31ff9fbfa7e76014579c9b748ac45a627e89a3ca680b0b356",
+   "arm": "FACT",
+   "seed": 2,
+   "completed_updates": 18750,
+   "final_sha256": "e3387203a161d15bbaee115d6c0341d5d72cadc558a75cd066dff22175517c00",
+   "plan_sha256": "6e9cbba70df87ef1cf43dd2ec94749a76c5debbd6dc5a09cd92e493f06058e4c",
+   "init_sha256": "7bb0b6851d3fad23e3d2bb66c45bbdcc0001f72dbeabf14307616b6ee87d2ff3",
+   "parameters": 10215424,
+   "minutes": 167.78613696893055
+  },
+  "ASRF_s2": {
+   "identity": "c21eeeb3777f04f18e44ef5d9efa768f75747e9f8b041493f805be0e90243333",
+   "arm": "ASRF",
+   "seed": 2,
+   "completed_updates": 18750,
+   "final_sha256": "4199cecee651afb3106c614a6fba079508571ef76780b98103fe54cccf5a583a",
+   "plan_sha256": "6e9cbba70df87ef1cf43dd2ec94749a76c5debbd6dc5a09cd92e493f06058e4c",
+   "init_sha256": "690661b48a2b69c28103a60724c9e9975e34b5a4c22846d1a0d638bcac18ef7d",
+   "parameters": 1191768,
+   "minutes": 22.59960253238678
+  }
+ },
+ "frozen": {
+  "FACT_s0": "/home/william/echo-view-routing/models_frozen/fact_asrf_paired_v1/FACT_s0",
+  "ASRF_s0": "/home/william/echo-view-routing/models_frozen/fact_asrf_paired_v1/ASRF_s0",
+  "FACT_s1": "/home/william/echo-view-routing/models_frozen/fact_asrf_paired_v1/FACT_s1",
+  "ASRF_s1": "/home/william/echo-view-routing/models_frozen/fact_asrf_paired_v1/ASRF_s1",
+  "FACT_s2": "/home/william/echo-view-routing/models_frozen/fact_asrf_paired_v1/FACT_s2",
+  "ASRF_s2": "/home/william/echo-view-routing/models_frozen/fact_asrf_paired_v1/ASRF_s2"
+ },
+ "references": {
+  "E0 + B3": {
+   "selection": {
+    "native_macro_f1": 0.9650312221231043,
+    "segment_f1_50_multi": 0.934409687184662,
+    "boundary_recall_multi": 0.9607329842931938,
+    "boundary_precision_multi": 0.994579945799458,
+    "boundary_f1_multi": 0.9773635153129161,
+    "native_internal_cuts_per_clip": 0.014084507042253521,
+    "same_class_cut_rate_multi": 0.004347826086956522,
+    "segment_f1_50_pairs": 0.9927710843373494,
+    "boundary_recall_pairs": 1.0,
+    "native_recall": {
+     "PLAX": 1.0,
+     "PSAX": 1.0,
+     "A4C": 1.0,
+     "A5C": 0.7272727272727273,
+     "SC4C": 1.0
+    },
+    "native_precision": {
+     "PLAX": 1.0,
+     "PSAX": 1.0,
+     "A4C": 0.9666666666666667,
+     "A5C": 1.0,
+     "SC4C": 1.0
+    },
+    "native_confusion": [
+     [
+      105,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      68,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      87,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      3,
+      8,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      13
+     ]
+    ],
+    "A4C read as A5C": 0,
+    "A5C read as A4C": 3,
+    "SC4C read as PLAX": 0
+   },
+   "calibration": {
+    "native_macro_f1": 0.965990117909637,
+    "segment_f1_50_multi": 0.9339805825242719,
+    "boundary_recall_multi": 0.9547738693467337,
+    "boundary_precision_multi": 0.9693877551020408,
+    "boundary_f1_multi": 0.9620253164556962,
+    "native_internal_cuts_per_clip": 0.03375527426160337,
+    "same_class_cut_rate_multi": 0.01990049751243781,
+    "segment_f1_50_pairs": 0.9588235294117647,
+    "boundary_recall_pairs": 0.896551724137931,
+    "native_recall": {
+     "PLAX": 1.0,
+     "PSAX": 0.9859154929577465,
+     "A4C": 1.0,
+     "A5C": 0.7777777777777778,
+     "SC4C": 1.0
+    },
+    "native_precision": {
+     "PLAX": 0.9876543209876543,
+     "PSAX": 1.0,
+     "A4C": 0.9384615384615385,
+     "A5C": 1.0,
+     "SC4C": 1.0
+    },
+    "native_confusion": [
+     [
+      80,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      1,
+      70,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      61,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      4,
+      14,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      7
+     ]
+    ],
+    "A4C read as A5C": 0,
+    "A5C read as A4C": 4,
+    "SC4C read as PLAX": 0
+   }
+  },
+  "E1 + B3": {
+   "selection": {
+    "native_macro_f1": 0.977968717413973,
+    "segment_f1_50_multi": 0.8939544103072349,
+    "boundary_recall_multi": 0.9554973821989529,
+    "boundary_precision_multi": 0.9431524547803618,
+    "boundary_f1_multi": 0.9492847854356307,
+    "native_internal_cuts_per_clip": 0.045774647887323945,
+    "same_class_cut_rate_multi": 0.0391304347826087,
+    "segment_f1_50_pairs": 0.9571428571428572,
+    "boundary_recall_pairs": 0.9857142857142858,
+    "native_recall": {
+     "PLAX": 0.9904761904761905,
+     "PSAX": 1.0,
+     "A4C": 1.0,
+     "A5C": 0.9090909090909091,
+     "SC4C": 0.9230769230769231
+    },
+    "native_precision": {
+     "PLAX": 0.9904761904761905,
+     "PSAX": 0.9855072463768116,
+     "A4C": 0.9886363636363636,
+     "A5C": 1.0,
+     "SC4C": 1.0
+    },
+    "native_confusion": [
+     [
+      104,
+      1,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      68,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      87,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      1,
+      10,
+      0
+     ],
+     [
+      1,
+      0,
+      0,
+      0,
+      12
+     ]
+    ],
+    "A4C read as A5C": 0,
+    "A5C read as A4C": 1,
+    "SC4C read as PLAX": 1
+   },
+   "calibration": {
+    "native_macro_f1": 0.9856102003642988,
+    "segment_f1_50_multi": 0.958930276981853,
+    "boundary_recall_multi": 0.9773869346733668,
+    "boundary_precision_multi": 0.9511002444987775,
+    "boundary_f1_multi": 0.9640644361833953,
+    "native_internal_cuts_per_clip": 0.06751054852320675,
+    "same_class_cut_rate_multi": 0.01990049751243781,
+    "segment_f1_50_pairs": 0.962536023054755,
+    "boundary_recall_pairs": 0.9310344827586207,
+    "native_recall": {
+     "PLAX": 1.0,
+     "PSAX": 1.0,
+     "A4C": 0.9836065573770492,
+     "A5C": 0.9444444444444444,
+     "SC4C": 1.0
+    },
+    "native_precision": {
+     "PLAX": 1.0,
+     "PSAX": 1.0,
+     "A4C": 0.9836065573770492,
+     "A5C": 0.9444444444444444,
+     "SC4C": 1.0
+    },
+    "native_confusion": [
+     [
+      80,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      71,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      60,
+      1,
+      0
+     ],
+     [
+      0,
+      0,
+      1,
+      17,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      7
+     ]
+    ],
+    "A4C read as A5C": 1,
+    "A5C read as A4C": 1,
+    "SC4C read as PLAX": 0
+   }
+  },
+  "B7 + B3": {
+   "selection": {
+    "native_macro_f1": 0.9566353840806396,
+    "segment_f1_50_multi": 0.8798449612403101,
+    "boundary_recall_multi": 0.9554973821989529,
+    "boundary_precision_multi": 0.8902439024390244,
+    "boundary_f1_multi": 0.9217171717171717,
+    "native_internal_cuts_per_clip": 0.06338028169014084,
+    "same_class_cut_rate_multi": 0.05652173913043478,
+    "segment_f1_50_pairs": 0.9665071770334929,
+    "boundary_recall_pairs": 1.0,
+    "native_recall": {
+     "PLAX": 0.9904761904761905,
+     "PSAX": 1.0,
+     "A4C": 0.9885057471264368,
+     "A5C": 0.8181818181818182,
+     "SC4C": 0.9230769230769231
+    },
+    "native_precision": {
+     "PLAX": 0.9904761904761905,
+     "PSAX": 0.9855072463768116,
+     "A4C": 0.9772727272727273,
+     "A5C": 0.9,
+     "SC4C": 1.0
+    },
+    "native_confusion": [
+     [
+      104,
+      1,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      68,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      86,
+      1,
+      0
+     ],
+     [
+      0,
+      0,
+      2,
+      9,
+      0
+     ],
+     [
+      1,
+      0,
+      0,
+      0,
+      12
+     ]
+    ],
+    "A4C read as A5C": 1,
+    "A5C read as A4C": 2,
+    "SC4C read as PLAX": 1
+   },
+   "calibration": {
+    "native_macro_f1": 0.9926596980255518,
+    "segment_f1_50_multi": 0.9721421709894332,
+    "boundary_recall_multi": 0.9748743718592965,
+    "boundary_precision_multi": 0.9627791563275434,
+    "boundary_f1_multi": 0.968789013732834,
+    "native_internal_cuts_per_clip": 0.04219409282700422,
+    "same_class_cut_rate_multi": 0.03482587064676617,
+    "segment_f1_50_pairs": 0.9647058823529412,
+    "boundary_recall_pairs": 0.8793103448275862,
+    "native_recall": {
+     "PLAX": 1.0,
+     "PSAX": 1.0,
+     "A4C": 1.0,
+     "A5C": 0.9444444444444444,
+     "SC4C": 1.0
+    },
+    "native_precision": {
+     "PLAX": 1.0,
+     "PSAX": 1.0,
+     "A4C": 0.9838709677419355,
+     "A5C": 1.0,
+     "SC4C": 1.0
+    },
+    "native_confusion": [
+     [
+      80,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      71,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      61,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      1,
+      17,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      7
+     ]
+    ],
+    "A4C read as A5C": 0,
+    "A5C read as A4C": 1,
+    "SC4C read as PLAX": 0
+   }
+  },
+  "E1 + ASRF s0": {
+   "selection": {
+    "native_macro_f1": 0.947674046567578,
+    "segment_f1_50_multi": 0.91,
+    "boundary_recall_multi": 0.9424083769633508,
+    "boundary_precision_multi": 0.9523809523809523,
+    "boundary_f1_multi": 0.9473684210526315,
+    "native_internal_cuts_per_clip": 0.045774647887323945,
+    "same_class_cut_rate_multi": 0.030434782608695653,
+    "segment_f1_50_pairs": 0.9784172661870504,
+    "boundary_recall_pairs": 1.0,
+    "native_recall": {
+     "PLAX": 0.9904761904761905,
+     "PSAX": 1.0,
+     "A4C": 0.9770114942528736,
+     "A5C": 0.8181818181818182,
+     "SC4C": 0.9230769230769231
+    },
+    "native_precision": {
+     "PLAX": 0.9904761904761905,
+     "PSAX": 0.9855072463768116,
+     "A4C": 0.9770114942528736,
+     "A5C": 0.8181818181818182,
+     "SC4C": 1.0
+    },
+    "native_confusion": [
+     [
+      104,
+      1,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      68,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      85,
+      2,
+      0
+     ],
+     [
+      0,
+      0,
+      2,
+      9,
+      0
+     ],
+     [
+      1,
+      0,
+      0,
+      0,
+      12
+     ]
+    ],
+    "A4C read as A5C": 2,
+    "A5C read as A4C": 2,
+    "SC4C read as PLAX": 1
+   },
+   "calibration": {
+    "native_macro_f1": 0.9929417020326111,
+    "segment_f1_50_multi": 0.9758454106280193,
+    "boundary_recall_multi": 0.9773869346733668,
+    "boundary_precision_multi": 0.9798488664987406,
+    "boundary_f1_multi": 0.9786163522012579,
+    "native_internal_cuts_per_clip": 0.0379746835443038,
+    "same_class_cut_rate_multi": 0.014925373134328358,
+    "segment_f1_50_pairs": 0.9681159420289855,
+    "boundary_recall_pairs": 0.9482758620689655,
+    "native_recall": {
+     "PLAX": 1.0,
+     "PSAX": 1.0,
+     "A4C": 0.9836065573770492,
+     "A5C": 1.0,
+     "SC4C": 1.0
+    },
+    "native_precision": {
+     "PLAX": 1.0,
+     "PSAX": 1.0,
+     "A4C": 1.0,
+     "A5C": 0.9473684210526315,
+     "SC4C": 1.0
+    },
+    "native_confusion": [
+     [
+      80,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      71,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      60,
+      1,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      18,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      7
+     ]
+    ],
+    "A4C read as A5C": 1,
+    "A5C read as A4C": 0,
+    "SC4C read as PLAX": 0
+   }
+  },
+  "E1 + ASRF s1": {
+   "selection": {
+    "native_macro_f1": 0.9663626568079124,
+    "segment_f1_50_multi": 0.9089108910891089,
+    "boundary_recall_multi": 0.9502617801047121,
+    "boundary_precision_multi": 0.9355670103092784,
+    "boundary_f1_multi": 0.9428571428571428,
+    "native_internal_cuts_per_clip": 0.007042253521126761,
+    "same_class_cut_rate_multi": 0.05652173913043478,
+    "segment_f1_50_pairs": 0.9686746987951808,
+    "boundary_recall_pairs": 0.9857142857142858,
+    "native_recall": {
+     "PLAX": 0.9904761904761905,
+     "PSAX": 1.0,
+     "A4C": 1.0,
+     "A5C": 0.8181818181818182,
+     "SC4C": 0.9230769230769231
+    },
+    "native_precision": {
+     "PLAX": 0.9904761904761905,
+     "PSAX": 0.9855072463768116,
+     "A4C": 0.9775280898876404,
+     "A5C": 1.0,
+     "SC4C": 1.0
+    },
+    "native_confusion": [
+     [
+      104,
+      1,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      68,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      87,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      2,
+      9,
+      0
+     ],
+     [
+      1,
+      0,
+      0,
+      0,
+      12
+     ]
+    ],
+    "A4C read as A5C": 0,
+    "A5C read as A4C": 2,
+    "SC4C read as PLAX": 1
+   },
+   "calibration": {
+    "native_macro_f1": 0.9753184183354981,
+    "segment_f1_50_multi": 0.9643201542912246,
+    "boundary_recall_multi": 0.9723618090452262,
+    "boundary_precision_multi": 0.9699248120300752,
+    "boundary_f1_multi": 0.9711417816813049,
+    "native_internal_cuts_per_clip": 0.029535864978902954,
+    "same_class_cut_rate_multi": 0.029850746268656716,
+    "segment_f1_50_pairs": 0.9736070381231672,
+    "boundary_recall_pairs": 0.9137931034482759,
+    "native_recall": {
+     "PLAX": 1.0,
+     "PSAX": 0.9859154929577465,
+     "A4C": 0.9836065573770492,
+     "A5C": 0.8888888888888888,
+     "SC4C": 1.0
+    },
+    "native_precision": {
+     "PLAX": 0.9876543209876543,
+     "PSAX": 1.0,
+     "A4C": 0.967741935483871,
+     "A5C": 0.9411764705882353,
+     "SC4C": 1.0
+    },
+    "native_confusion": [
+     [
+      80,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      1,
+      70,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      60,
+      1,
+      0
+     ],
+     [
+      0,
+      0,
+      2,
+      16,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      7
+     ]
+    ],
+    "A4C read as A5C": 1,
+    "A5C read as A4C": 2,
+    "SC4C read as PLAX": 0
+   }
+  },
+  "E1 + ASRF s2": {
+   "selection": {
+    "native_macro_f1": 0.9663626568079124,
+    "segment_f1_50_multi": 0.9071146245059288,
+    "boundary_recall_multi": 0.9528795811518325,
+    "boundary_precision_multi": 0.9333333333333333,
+    "boundary_f1_multi": 0.9430051813471503,
+    "native_internal_cuts_per_clip": 0.02112676056338028,
+    "same_class_cut_rate_multi": 0.05652173913043478,
+    "segment_f1_50_pairs": 0.9711538461538461,
+    "boundary_recall_pairs": 1.0,
+    "native_recall": {
+     "PLAX": 0.9904761904761905,
+     "PSAX": 1.0,
+     "A4C": 1.0,
+     "A5C": 0.8181818181818182,
+     "SC4C": 0.9230769230769231
+    },
+    "native_precision": {
+     "PLAX": 0.9904761904761905,
+     "PSAX": 0.9855072463768116,
+     "A4C": 0.9775280898876404,
+     "A5C": 1.0,
+     "SC4C": 1.0
+    },
+    "native_confusion": [
+     [
+      104,
+      1,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      68,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      87,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      2,
+      9,
+      0
+     ],
+     [
+      1,
+      0,
+      0,
+      0,
+      12
+     ]
+    ],
+    "A4C read as A5C": 0,
+    "A5C read as A4C": 2,
+    "SC4C read as PLAX": 1
+   },
+   "calibration": {
+    "native_macro_f1": 0.9753184183354981,
+    "segment_f1_50_multi": 0.9643888354186718,
+    "boundary_recall_multi": 0.9773869346733668,
+    "boundary_precision_multi": 0.970074812967581,
+    "boundary_f1_multi": 0.9737171464330413,
+    "native_internal_cuts_per_clip": 0.046413502109704644,
+    "same_class_cut_rate_multi": 0.03482587064676617,
+    "segment_f1_50_pairs": 0.9825581395348837,
+    "boundary_recall_pairs": 0.9655172413793104,
+    "native_recall": {
+     "PLAX": 1.0,
+     "PSAX": 0.9859154929577465,
+     "A4C": 0.9836065573770492,
+     "A5C": 0.8888888888888888,
+     "SC4C": 1.0
+    },
+    "native_precision": {
+     "PLAX": 0.9876543209876543,
+     "PSAX": 1.0,
+     "A4C": 0.967741935483871,
+     "A5C": 0.9411764705882353,
+     "SC4C": 1.0
+    },
+    "native_confusion": [
+     [
+      80,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      1,
+      70,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      60,
+      1,
+      0
+     ],
+     [
+      0,
+      0,
+      2,
+      16,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      7
+     ]
+    ],
+    "A4C read as A5C": 1,
+    "A5C read as A4C": 2,
+    "SC4C read as PLAX": 0
+   }
+  }
+ },
+ "decision": {
+  "primary": {
+   "selection": "no consistent difference detected",
+   "calibration": "no consistent difference detected"
+  },
+  "versus_E1_B3": {
+   "selection": "no consistent difference detected",
+   "calibration": "no consistent difference detected"
+  },
+  "consistent_over_ASRF_both_halves": false,
+  "consistent_over_E1_B3_both_halves": false,
+  "constraints_met": false,
+  "constraint_failures": [
+   {
+    "seed": 0,
+    "half": "selection",
+    "boundary_recall": 0.9476439790575916,
+    "native_macro_f1": 0.9886353840806397
+   },
+   {
+    "seed": 2,
+    "half": "selection",
+    "boundary_recall": 0.9397905759162304,
+    "native_macro_f1": 0.9663626568079124
+   }
+  ],
+  "mean_segment_f1_FACT": {
+   "selection": 0.9051440188441351,
+   "calibration": 0.9643867954993187
+  },
+  "goal_met": false,
+  "goal_margin": {
+   "selection": -0.039265668340526916,
+   "calibration": -0.017755375490114522
+  },
+  "calibration_sensitivity_margin": -0.019506782975457604,
+  "observation": "FACT - ASRF is not consistent positive in both halves",
+  "action": "the comparison of this GTEA configuration ends; each half is reported as positive, negative or uncertain; segment-token methods in general are not rejected and Breakfast is not run automatically"
+ },
+ "systems": {
+  "FACT_s0": {
+   "selection": {
+    "row": {
+     "segment_f1_50_multi": 0.9062191510365252,
+     "boundary_precision_multi": 0.9258312020460358,
+     "boundary_recall_multi": 0.9476439790575916,
+     "boundary_f1_multi": 0.9366106080206986,
+     "native_macro_f1": 0.9886353840806397,
+     "native_internal_cuts_per_clip": 0.0,
+     "same_class_cut_rate_multi": 0.05217391304347826,
+     "segment_f1_50_pairs": 0.9711538461538461,
+     "boundary_recall_pairs": 0.9857142857142858,
+     "native_recall": {
+      "PLAX": 0.9904761904761905,
+      "PSAX": 1.0,
+      "A4C": 1.0,
+      "A5C": 1.0,
+      "SC4C": 0.9230769230769231
+     },
+     "native_confusion": [
+      [
+       104,
+       1,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       68,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       87,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       0,
+       11,
+       0
+      ],
+      [
+       1,
+       0,
+       0,
+       0,
+       12
+      ]
+     ],
+     "A5C read as A4C": 0,
+     "A4C read as A5C": 0
+    },
+    "frame_argmax": {
+     "segment_f1_50_multi": 0.9001956947162426,
+     "boundary_precision_multi": 0.9075,
+     "boundary_recall_multi": 0.9502617801047121,
+     "boundary_f1_multi": 0.928388746803069,
+     "native_macro_f1": 0.977968717413973,
+     "native_internal_cuts_per_clip": 0.007042253521126761,
+     "same_class_cut_rate_multi": 0.05217391304347826,
+     "segment_f1_50_pairs": 0.9783132530120482,
+     "boundary_recall_pairs": 0.9857142857142858,
+     "native_recall": {
+      "PLAX": 0.9904761904761905,
+      "PSAX": 1.0,
+      "A4C": 1.0,
+      "A5C": 0.9090909090909091,
+      "SC4C": 0.9230769230769231
+     },
+     "native_confusion": [
+      [
+       104,
+       1,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       68,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       87,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       1,
+       10,
+       0
+      ],
+      [
+       1,
+       0,
+       0,
+       0,
+       12
+      ]
+     ],
+     "A5C read as A4C": 1,
+     "A4C read as A5C": 0
+    }
+   },
+   "calibration": {
+    "row": {
+     "segment_f1_50_multi": 0.9673704414587332,
+     "boundary_precision_multi": 0.9678217821782178,
+     "boundary_recall_multi": 0.9824120603015075,
+     "boundary_f1_multi": 0.9750623441396509,
+     "native_macro_f1": 0.9856102003642988,
+     "native_internal_cuts_per_clip": 0.03375527426160337,
+     "same_class_cut_rate_multi": 0.024875621890547265,
+     "segment_f1_50_pairs": 0.976878612716763,
+     "boundary_recall_pairs": 0.9310344827586207,
+     "native_recall": {
+      "PLAX": 1.0,
+      "PSAX": 1.0,
+      "A4C": 0.9836065573770492,
+      "A5C": 0.9444444444444444,
+      "SC4C": 1.0
+     },
+     "native_confusion": [
+      [
+       80,
+       0,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       71,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       60,
+       1,
+       0
+      ],
+      [
+       0,
+       0,
+       1,
+       17,
+       0
+      ],
+      [
+       0,
+       0,
+       0,
+       0,
+       7
+      ]
+     ],
+     "A5C read as A4C": 1,
+     "A4C read as A5C": 1
+    },
+    "frame_argmax": {
+     "segment_f1_50_multi": 0.9617590822179732,
+     "boundary_precision_multi": 0.9558823529411765,
+     "boundary_recall_multi": 0.9798994974874372,
+     "boundary_f1_multi": 0.967741935483871,
+     "native_macro_f1": 0.9856102003642988,
+     "native_internal_cuts_per_clip": 0.02531645569620253,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.976878612716763,
+     "boundary_recall_pairs": 0.9310344827586207,
+     "native_recall": {
+      "PLAX": 1.0,
+      "PSAX": 1.0,
+      "A4C": 0.9836065573770492,
+      "A5C": 0.9444444444444444,
+      "SC4C": 1.0
+     },
+     "native_confusion": [
+      [
+       80,
+       0,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       71,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       60,
+       1,
+       0
+      ],
+      [
+       0,
+       0,
+       1,
+       17,
+       0
+      ],
+      [
+       0,
+       0,
+       0,
+       0,
+       7
+      ]
+     ],
+     "A5C read as A4C": 1,
+     "A4C read as A5C": 1
+    }
+   }
+  },
+  "ASRF_s0": {
+   "selection": {
+    "row": {
+     "segment_f1_50_multi": 0.8778550148957299,
+     "boundary_precision_multi": 0.9272727272727272,
+     "boundary_recall_multi": 0.9345549738219895,
+     "boundary_f1_multi": 0.9308996088657105,
+     "native_macro_f1": 0.930354087619147,
+     "native_internal_cuts_per_clip": 0.01056338028169014,
+     "same_class_cut_rate_multi": 0.06521739130434782,
+     "segment_f1_50_pairs": 0.963855421686747,
+     "boundary_recall_pairs": 0.9857142857142858,
+     "native_recall": {
+      "PLAX": 0.9904761904761905,
+      "PSAX": 1.0,
+      "A4C": 0.9885057471264368,
+      "A5C": 0.6363636363636364,
+      "SC4C": 0.9230769230769231
+     },
+     "native_confusion": [
+      [
+       104,
+       1,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       68,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       86,
+       1,
+       0
+      ],
+      [
+       0,
+       0,
+       4,
+       7,
+       0
+      ],
+      [
+       1,
+       0,
+       0,
+       0,
+       12
+      ]
+     ],
+     "A5C read as A4C": 4,
+     "A4C read as A5C": 1
+    },
+    "frame_argmax": {
+     "segment_f1_50_multi": 0.8565891472868217,
+     "boundary_precision_multi": 0.8804878048780488,
+     "boundary_recall_multi": 0.9450261780104712,
+     "boundary_f1_multi": 0.9116161616161617,
+     "native_macro_f1": 0.953666606203744,
+     "native_internal_cuts_per_clip": 0.09859154929577464,
+     "same_class_cut_rate_multi": 0.07391304347826087,
+     "segment_f1_50_pairs": 0.9640287769784173,
+     "boundary_recall_pairs": 1.0,
+     "native_recall": {
+      "PLAX": 0.9904761904761905,
+      "PSAX": 1.0,
+      "A4C": 1.0,
+      "A5C": 0.7272727272727273,
+      "SC4C": 0.9230769230769231
+     },
+     "native_confusion": [
+      [
+       104,
+       1,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       68,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       87,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       3,
+       8,
+       0
+      ],
+      [
+       1,
+       0,
+       0,
+       0,
+       12
+      ]
+     ],
+     "A5C read as A4C": 3,
+     "A4C read as A5C": 0
+    }
+   },
+   "calibration": {
+    "row": {
+     "segment_f1_50_multi": 0.9721421709894332,
+     "boundary_precision_multi": 0.9751861042183623,
+     "boundary_recall_multi": 0.9874371859296482,
+     "boundary_f1_multi": 0.9812734082397003,
+     "native_macro_f1": 0.9856102003642988,
+     "native_internal_cuts_per_clip": 0.004219409282700422,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9737609329446064,
+     "boundary_recall_pairs": 0.9482758620689655,
+     "native_recall": {
+      "PLAX": 1.0,
+      "PSAX": 1.0,
+      "A4C": 0.9836065573770492,
+      "A5C": 0.9444444444444444,
+      "SC4C": 1.0
+     },
+     "native_confusion": [
+      [
+       80,
+       0,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       71,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       60,
+       1,
+       0
+      ],
+      [
+       0,
+       0,
+       1,
+       17,
+       0
+      ],
+      [
+       0,
+       0,
+       0,
+       0,
+       7
+      ]
+     ],
+     "A5C read as A4C": 1,
+     "A4C read as A5C": 1
+    },
+    "frame_argmax": {
+     "segment_f1_50_multi": 0.9565217391304348,
+     "boundary_precision_multi": 0.9404761904761905,
+     "boundary_recall_multi": 0.992462311557789,
+     "boundary_f1_multi": 0.9657701711491442,
+     "native_macro_f1": 0.9856102003642988,
+     "native_internal_cuts_per_clip": 0.05063291139240506,
+     "same_class_cut_rate_multi": 0.03980099502487562,
+     "segment_f1_50_pairs": 0.9684813753581661,
+     "boundary_recall_pairs": 0.9482758620689655,
+     "native_recall": {
+      "PLAX": 1.0,
+      "PSAX": 1.0,
+      "A4C": 0.9836065573770492,
+      "A5C": 0.9444444444444444,
+      "SC4C": 1.0
+     },
+     "native_confusion": [
+      [
+       80,
+       0,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       71,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       60,
+       1,
+       0
+      ],
+      [
+       0,
+       0,
+       1,
+       17,
+       0
+      ],
+      [
+       0,
+       0,
+       0,
+       0,
+       7
+      ]
+     ],
+     "A5C read as A4C": 1,
+     "A4C read as A5C": 1
+    }
+   }
+  },
+  "FACT_s1": {
+   "selection": {
+    "row": {
+     "segment_f1_50_multi": 0.8983218163869694,
+     "boundary_precision_multi": 0.928388746803069,
+     "boundary_recall_multi": 0.9502617801047121,
+     "boundary_f1_multi": 0.9391979301423027,
+     "native_macro_f1": 0.977968717413973,
+     "native_internal_cuts_per_clip": 0.0,
+     "same_class_cut_rate_multi": 0.043478260869565216,
+     "segment_f1_50_pairs": 0.9711538461538461,
+     "boundary_recall_pairs": 0.9857142857142858,
+     "native_recall": {
+      "PLAX": 0.9904761904761905,
+      "PSAX": 1.0,
+      "A4C": 1.0,
+      "A5C": 0.9090909090909091,
+      "SC4C": 0.9230769230769231
+     },
+     "native_confusion": [
+      [
+       104,
+       1,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       68,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       87,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       1,
+       10,
+       0
+      ],
+      [
+       1,
+       0,
+       0,
+       0,
+       12
+      ]
+     ],
+     "A5C read as A4C": 1,
+     "A4C read as A5C": 0
+    },
+    "frame_argmax": {
+     "segment_f1_50_multi": 0.904621435594887,
+     "boundary_precision_multi": 0.9189873417721519,
+     "boundary_recall_multi": 0.9502617801047121,
+     "boundary_f1_multi": 0.9343629343629344,
+     "native_macro_f1": 0.9663626568079124,
+     "native_internal_cuts_per_clip": 0.0035211267605633804,
+     "same_class_cut_rate_multi": 0.05217391304347826,
+     "segment_f1_50_pairs": 0.973621103117506,
+     "boundary_recall_pairs": 0.9857142857142858,
+     "native_recall": {
+      "PLAX": 0.9904761904761905,
+      "PSAX": 1.0,
+      "A4C": 1.0,
+      "A5C": 0.8181818181818182,
+      "SC4C": 0.9230769230769231
+     },
+     "native_confusion": [
+      [
+       104,
+       1,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       68,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       87,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       2,
+       9,
+       0
+      ],
+      [
+       1,
+       0,
+       0,
+       0,
+       12
+      ]
+     ],
+     "A5C read as A4C": 2,
+     "A4C read as A5C": 0
+    }
+   },
+   "calibration": {
+    "row": {
+     "segment_f1_50_multi": 0.960538979788258,
+     "boundary_precision_multi": 0.9675810473815462,
+     "boundary_recall_multi": 0.9748743718592965,
+     "boundary_f1_multi": 0.9712140175219024,
+     "native_macro_f1": 0.9856102003642988,
+     "native_internal_cuts_per_clip": 0.029535864978902954,
+     "same_class_cut_rate_multi": 0.029850746268656716,
+     "segment_f1_50_pairs": 0.9797101449275363,
+     "boundary_recall_pairs": 0.9310344827586207,
+     "native_recall": {
+      "PLAX": 1.0,
+      "PSAX": 1.0,
+      "A4C": 0.9836065573770492,
+      "A5C": 0.9444444444444444,
+      "SC4C": 1.0
+     },
+     "native_confusion": [
+      [
+       80,
+       0,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       71,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       60,
+       1,
+       0
+      ],
+      [
+       0,
+       0,
+       1,
+       17,
+       0
+      ],
+      [
+       0,
+       0,
+       0,
+       0,
+       7
+      ]
+     ],
+     "A5C read as A4C": 1,
+     "A4C read as A5C": 1
+    },
+    "frame_argmax": {
+     "segment_f1_50_multi": 0.9607655502392345,
+     "boundary_precision_multi": 0.9582309582309583,
+     "boundary_recall_multi": 0.9798994974874372,
+     "boundary_f1_multi": 0.968944099378882,
+     "native_macro_f1": 0.9856102003642988,
+     "native_internal_cuts_per_clip": 0.029535864978902954,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.976878612716763,
+     "boundary_recall_pairs": 0.9310344827586207,
+     "native_recall": {
+      "PLAX": 1.0,
+      "PSAX": 1.0,
+      "A4C": 0.9836065573770492,
+      "A5C": 0.9444444444444444,
+      "SC4C": 1.0
+     },
+     "native_confusion": [
+      [
+       80,
+       0,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       71,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       60,
+       1,
+       0
+      ],
+      [
+       0,
+       0,
+       1,
+       17,
+       0
+      ],
+      [
+       0,
+       0,
+       0,
+       0,
+       7
+      ]
+     ],
+     "A5C read as A4C": 1,
+     "A4C read as A5C": 1
+    }
+   }
+  },
+  "ASRF_s1": {
+   "selection": {
+    "row": {
+     "segment_f1_50_multi": 0.8875621890547264,
+     "boundary_precision_multi": 0.9373368146214099,
+     "boundary_recall_multi": 0.9397905759162304,
+     "boundary_f1_multi": 0.938562091503268,
+     "native_macro_f1": 0.953666606203744,
+     "native_internal_cuts_per_clip": 0.007042253521126761,
+     "same_class_cut_rate_multi": 0.04782608695652174,
+     "segment_f1_50_pairs": 0.9685230024213075,
+     "boundary_recall_pairs": 0.9714285714285714,
+     "native_recall": {
+      "PLAX": 0.9904761904761905,
+      "PSAX": 1.0,
+      "A4C": 1.0,
+      "A5C": 0.7272727272727273,
+      "SC4C": 0.9230769230769231
+     },
+     "native_confusion": [
+      [
+       104,
+       1,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       68,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       87,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       3,
+       8,
+       0
+      ],
+      [
+       1,
+       0,
+       0,
+       0,
+       12
+      ]
+     ],
+     "A5C read as A4C": 3,
+     "A4C read as A5C": 0
+    },
+    "frame_argmax": {
+     "segment_f1_50_multi": 0.8688046647230321,
+     "boundary_precision_multi": 0.8918918918918919,
+     "boundary_recall_multi": 0.9502617801047121,
+     "boundary_f1_multi": 0.9201520912547528,
+     "native_macro_f1": 0.953666606203744,
+     "native_internal_cuts_per_clip": 0.017605633802816902,
+     "same_class_cut_rate_multi": 0.07391304347826087,
+     "segment_f1_50_pairs": 0.9523809523809523,
+     "boundary_recall_pairs": 0.9857142857142858,
+     "native_recall": {
+      "PLAX": 0.9904761904761905,
+      "PSAX": 1.0,
+      "A4C": 1.0,
+      "A5C": 0.7272727272727273,
+      "SC4C": 0.9230769230769231
+     },
+     "native_confusion": [
+      [
+       104,
+       1,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       68,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       87,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       3,
+       8,
+       0
+      ],
+      [
+       1,
+       0,
+       0,
+       0,
+       12
+      ]
+     ],
+     "A5C read as A4C": 3,
+     "A4C read as A5C": 0
+    }
+   },
+   "calibration": {
+    "row": {
+     "segment_f1_50_multi": 0.9720885466794995,
+     "boundary_precision_multi": 0.9775561097256857,
+     "boundary_recall_multi": 0.9849246231155779,
+     "boundary_f1_multi": 0.981226533166458,
+     "native_macro_f1": 0.9856102003642988,
+     "native_internal_cuts_per_clip": 0.004219409282700422,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9707602339181286,
+     "boundary_recall_pairs": 0.9310344827586207,
+     "native_recall": {
+      "PLAX": 1.0,
+      "PSAX": 1.0,
+      "A4C": 0.9836065573770492,
+      "A5C": 0.9444444444444444,
+      "SC4C": 1.0
+     },
+     "native_confusion": [
+      [
+       80,
+       0,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       71,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       60,
+       1,
+       0
+      ],
+      [
+       0,
+       0,
+       1,
+       17,
+       0
+      ],
+      [
+       0,
+       0,
+       0,
+       0,
+       7
+      ]
+     ],
+     "A5C read as A4C": 1,
+     "A4C read as A5C": 1
+    },
+    "frame_argmax": {
+     "segment_f1_50_multi": 0.9657794676806084,
+     "boundary_precision_multi": 0.9516908212560387,
+     "boundary_recall_multi": 0.9899497487437185,
+     "boundary_f1_multi": 0.9704433497536946,
+     "native_macro_f1": 0.9856102003642988,
+     "native_internal_cuts_per_clip": 0.03375527426160337,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9710982658959537,
+     "boundary_recall_pairs": 0.9482758620689655,
+     "native_recall": {
+      "PLAX": 1.0,
+      "PSAX": 1.0,
+      "A4C": 0.9836065573770492,
+      "A5C": 0.9444444444444444,
+      "SC4C": 1.0
+     },
+     "native_confusion": [
+      [
+       80,
+       0,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       71,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       60,
+       1,
+       0
+      ],
+      [
+       0,
+       0,
+       1,
+       17,
+       0
+      ],
+      [
+       0,
+       0,
+       0,
+       0,
+       7
+      ]
+     ],
+     "A5C read as A4C": 1,
+     "A4C read as A5C": 1
+    }
+   }
+  },
+  "FACT_s2": {
+   "selection": {
+    "row": {
+     "segment_f1_50_multi": 0.9108910891089109,
+     "boundary_precision_multi": 0.9252577319587629,
+     "boundary_recall_multi": 0.9397905759162304,
+     "boundary_f1_multi": 0.9324675324675324,
+     "native_macro_f1": 0.9663626568079124,
+     "native_internal_cuts_per_clip": 0.0,
+     "same_class_cut_rate_multi": 0.034782608695652174,
+     "segment_f1_50_pairs": 0.983132530120482,
+     "boundary_recall_pairs": 0.9857142857142858,
+     "native_recall": {
+      "PLAX": 0.9904761904761905,
+      "PSAX": 1.0,
+      "A4C": 1.0,
+      "A5C": 0.8181818181818182,
+      "SC4C": 0.9230769230769231
+     },
+     "native_confusion": [
+      [
+       104,
+       1,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       68,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       87,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       2,
+       9,
+       0
+      ],
+      [
+       1,
+       0,
+       0,
+       0,
+       12
+      ]
+     ],
+     "A5C read as A4C": 2,
+     "A4C read as A5C": 0
+    },
+    "frame_argmax": {
+     "segment_f1_50_multi": 0.9013806706114399,
+     "boundary_precision_multi": 0.9209183673469388,
+     "boundary_recall_multi": 0.9450261780104712,
+     "boundary_f1_multi": 0.9328165374677002,
+     "native_macro_f1": 0.977968717413973,
+     "native_internal_cuts_per_clip": 0.007042253521126761,
+     "same_class_cut_rate_multi": 0.034782608695652174,
+     "segment_f1_50_pairs": 0.9783132530120482,
+     "boundary_recall_pairs": 0.9857142857142858,
+     "native_recall": {
+      "PLAX": 0.9904761904761905,
+      "PSAX": 1.0,
+      "A4C": 1.0,
+      "A5C": 0.9090909090909091,
+      "SC4C": 0.9230769230769231
+     },
+     "native_confusion": [
+      [
+       104,
+       1,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       68,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       87,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       1,
+       10,
+       0
+      ],
+      [
+       1,
+       0,
+       0,
+       0,
+       12
+      ]
+     ],
+     "A5C read as A4C": 1,
+     "A4C read as A5C": 0
+    }
+   },
+   "calibration": {
+    "row": {
+     "segment_f1_50_multi": 0.9652509652509652,
+     "boundary_precision_multi": 0.9723618090452262,
+     "boundary_recall_multi": 0.9723618090452262,
+     "boundary_f1_multi": 0.9723618090452262,
+     "native_macro_f1": 0.9929417020326111,
+     "native_internal_cuts_per_clip": 0.03375527426160337,
+     "same_class_cut_rate_multi": 0.024875621890547265,
+     "segment_f1_50_pairs": 0.9534883720930233,
+     "boundary_recall_pairs": 0.896551724137931,
+     "native_recall": {
+      "PLAX": 1.0,
+      "PSAX": 1.0,
+      "A4C": 0.9836065573770492,
+      "A5C": 1.0,
+      "SC4C": 1.0
+     },
+     "native_confusion": [
+      [
+       80,
+       0,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       71,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       60,
+       1,
+       0
+      ],
+      [
+       0,
+       0,
+       0,
+       18,
+       0
+      ],
+      [
+       0,
+       0,
+       0,
+       0,
+       7
+      ]
+     ],
+     "A5C read as A4C": 0,
+     "A4C read as A5C": 1
+    },
+    "frame_argmax": {
+     "segment_f1_50_multi": 0.9674329501915708,
+     "boundary_precision_multi": 0.9630541871921182,
+     "boundary_recall_multi": 0.9824120603015075,
+     "boundary_f1_multi": 0.972636815920398,
+     "native_macro_f1": 0.9929417020326111,
+     "native_internal_cuts_per_clip": 0.04219409282700422,
+     "same_class_cut_rate_multi": 0.029850746268656716,
+     "segment_f1_50_pairs": 0.9623188405797102,
+     "boundary_recall_pairs": 0.9137931034482759,
+     "native_recall": {
+      "PLAX": 1.0,
+      "PSAX": 1.0,
+      "A4C": 0.9836065573770492,
+      "A5C": 1.0,
+      "SC4C": 1.0
+     },
+     "native_confusion": [
+      [
+       80,
+       0,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       71,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       60,
+       1,
+       0
+      ],
+      [
+       0,
+       0,
+       0,
+       18,
+       0
+      ],
+      [
+       0,
+       0,
+       0,
+       0,
+       7
+      ]
+     ],
+     "A5C read as A4C": 0,
+     "A4C read as A5C": 1
+    }
+   }
+  },
+  "ASRF_s2": {
+   "selection": {
+    "row": {
+     "segment_f1_50_multi": 0.8824701195219123,
+     "boundary_precision_multi": 0.9424083769633508,
+     "boundary_recall_multi": 0.9424083769633508,
+     "boundary_f1_multi": 0.9424083769633508,
+     "native_macro_f1": 0.953666606203744,
+     "native_internal_cuts_per_clip": 0.01056338028169014,
+     "same_class_cut_rate_multi": 0.06521739130434782,
+     "segment_f1_50_pairs": 0.9686746987951808,
+     "boundary_recall_pairs": 0.9857142857142858,
+     "native_recall": {
+      "PLAX": 0.9904761904761905,
+      "PSAX": 1.0,
+      "A4C": 1.0,
+      "A5C": 0.7272727272727273,
+      "SC4C": 0.9230769230769231
+     },
+     "native_confusion": [
+      [
+       104,
+       1,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       68,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       87,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       3,
+       8,
+       0
+      ],
+      [
+       1,
+       0,
+       0,
+       0,
+       12
+      ]
+     ],
+     "A5C read as A4C": 3,
+     "A4C read as A5C": 0
+    },
+    "frame_argmax": {
+     "segment_f1_50_multi": 0.8732943469785575,
+     "boundary_precision_multi": 0.9034653465346535,
+     "boundary_recall_multi": 0.9554973821989529,
+     "boundary_f1_multi": 0.9287531806615776,
+     "native_macro_f1": 0.9663626568079124,
+     "native_internal_cuts_per_clip": 0.05985915492957746,
+     "same_class_cut_rate_multi": 0.0782608695652174,
+     "segment_f1_50_pairs": 0.9592326139088729,
+     "boundary_recall_pairs": 0.9857142857142858,
+     "native_recall": {
+      "PLAX": 0.9904761904761905,
+      "PSAX": 1.0,
+      "A4C": 1.0,
+      "A5C": 0.8181818181818182,
+      "SC4C": 0.9230769230769231
+     },
+     "native_confusion": [
+      [
+       104,
+       1,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       68,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       87,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       2,
+       9,
+       0
+      ],
+      [
+       1,
+       0,
+       0,
+       0,
+       12
+      ]
+     ],
+     "A5C read as A4C": 2,
+     "A4C read as A5C": 0
+    }
+   },
+   "calibration": {
+    "row": {
+     "segment_f1_50_multi": 0.9662487945998072,
+     "boundary_precision_multi": 0.9799498746867168,
+     "boundary_recall_multi": 0.9824120603015075,
+     "boundary_f1_multi": 0.9811794228356336,
+     "native_macro_f1": 0.9856102003642988,
+     "native_internal_cuts_per_clip": 0.004219409282700422,
+     "same_class_cut_rate_multi": 0.029850746268656716,
+     "segment_f1_50_pairs": 0.9795918367346939,
+     "boundary_recall_pairs": 0.9482758620689655,
+     "native_recall": {
+      "PLAX": 1.0,
+      "PSAX": 1.0,
+      "A4C": 0.9836065573770492,
+      "A5C": 0.9444444444444444,
+      "SC4C": 1.0
+     },
+     "native_confusion": [
+      [
+       80,
+       0,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       71,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       60,
+       1,
+       0
+      ],
+      [
+       0,
+       0,
+       1,
+       17,
+       0
+      ],
+      [
+       0,
+       0,
+       0,
+       0,
+       7
+      ]
+     ],
+     "A5C read as A4C": 1,
+     "A4C read as A5C": 1
+    },
+    "frame_argmax": {
+     "segment_f1_50_multi": 0.9545454545454546,
+     "boundary_precision_multi": 0.9425837320574163,
+     "boundary_recall_multi": 0.9899497487437185,
+     "boundary_f1_multi": 0.9656862745098039,
+     "native_macro_f1": 0.9856102003642988,
+     "native_internal_cuts_per_clip": 0.046413502109704644,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.976878612716763,
+     "boundary_recall_pairs": 0.9482758620689655,
+     "native_recall": {
+      "PLAX": 1.0,
+      "PSAX": 1.0,
+      "A4C": 0.9836065573770492,
+      "A5C": 0.9444444444444444,
+      "SC4C": 1.0
+     },
+     "native_confusion": [
+      [
+       80,
+       0,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       71,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       60,
+       1,
+       0
+      ],
+      [
+       0,
+       0,
+       1,
+       17,
+       0
+      ],
+      [
+       0,
+       0,
+       0,
+       0,
+       7
+      ]
+     ],
+     "A5C read as A4C": 1,
+     "A4C read as A5C": 1
+    }
+   }
+  },
+  "E1 + B3": {
+   "selection": {
+    "row": {
+     "segment_f1_50_multi": 0.8939544103072349,
+     "boundary_precision_multi": 0.9431524547803618,
+     "boundary_recall_multi": 0.9554973821989529,
+     "boundary_f1_multi": 0.9492847854356307,
+     "native_macro_f1": 0.977968717413973,
+     "native_internal_cuts_per_clip": 0.045774647887323945,
+     "same_class_cut_rate_multi": 0.0391304347826087,
+     "segment_f1_50_pairs": 0.9571428571428572,
+     "boundary_recall_pairs": 0.9857142857142858,
+     "native_recall": {
+      "PLAX": 0.9904761904761905,
+      "PSAX": 1.0,
+      "A4C": 1.0,
+      "A5C": 0.9090909090909091,
+      "SC4C": 0.9230769230769231
+     },
+     "native_confusion": [
+      [
+       104,
+       1,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       68,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       87,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       1,
+       10,
+       0
+      ],
+      [
+       1,
+       0,
+       0,
+       0,
+       12
+      ]
+     ],
+     "A5C read as A4C": 1,
+     "A4C read as A5C": 0
+    }
+   },
+   "calibration": {
+    "row": {
+     "segment_f1_50_multi": 0.958930276981853,
+     "boundary_precision_multi": 0.9511002444987775,
+     "boundary_recall_multi": 0.9773869346733668,
+     "boundary_f1_multi": 0.9640644361833953,
+     "native_macro_f1": 0.9856102003642988,
+     "native_internal_cuts_per_clip": 0.06751054852320675,
+     "same_class_cut_rate_multi": 0.01990049751243781,
+     "segment_f1_50_pairs": 0.962536023054755,
+     "boundary_recall_pairs": 0.9310344827586207,
+     "native_recall": {
+      "PLAX": 1.0,
+      "PSAX": 1.0,
+      "A4C": 0.9836065573770492,
+      "A5C": 0.9444444444444444,
+      "SC4C": 1.0
+     },
+     "native_confusion": [
+      [
+       80,
+       0,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       71,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       60,
+       1,
+       0
+      ],
+      [
+       0,
+       0,
+       1,
+       17,
+       0
+      ],
+      [
+       0,
+       0,
+       0,
+       0,
+       7
+      ]
+     ],
+     "A5C read as A4C": 1,
+     "A4C read as A5C": 1
+    }
+   }
+  },
+  "E0 + B3": {
+   "selection": {
+    "row": {
+     "native_macro_f1": 0.9650312221231043,
+     "segment_f1_50_multi": 0.934409687184662,
+     "boundary_recall_multi": 0.9607329842931938,
+     "boundary_precision_multi": 0.994579945799458,
+     "boundary_f1_multi": 0.9773635153129161,
+     "native_internal_cuts_per_clip": 0.014084507042253521,
+     "same_class_cut_rate_multi": 0.004347826086956522,
+     "segment_f1_50_pairs": 0.9927710843373494,
+     "boundary_recall_pairs": 1.0,
+     "native_recall": {
+      "PLAX": 1.0,
+      "PSAX": 1.0,
+      "A4C": 1.0,
+      "A5C": 0.7272727272727273,
+      "SC4C": 1.0
+     },
+     "native_precision": {
+      "PLAX": 1.0,
+      "PSAX": 1.0,
+      "A4C": 0.9666666666666667,
+      "A5C": 1.0,
+      "SC4C": 1.0
+     },
+     "native_confusion": [
+      [
+       105,
+       0,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       68,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       87,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       3,
+       8,
+       0
+      ],
+      [
+       0,
+       0,
+       0,
+       0,
+       13
+      ]
+     ],
+     "A4C read as A5C": 0,
+     "A5C read as A4C": 3,
+     "SC4C read as PLAX": 0
+    }
+   },
+   "calibration": {
+    "row": {
+     "native_macro_f1": 0.965990117909637,
+     "segment_f1_50_multi": 0.9339805825242719,
+     "boundary_recall_multi": 0.9547738693467337,
+     "boundary_precision_multi": 0.9693877551020408,
+     "boundary_f1_multi": 0.9620253164556962,
+     "native_internal_cuts_per_clip": 0.03375527426160337,
+     "same_class_cut_rate_multi": 0.01990049751243781,
+     "segment_f1_50_pairs": 0.9588235294117647,
+     "boundary_recall_pairs": 0.896551724137931,
+     "native_recall": {
+      "PLAX": 1.0,
+      "PSAX": 0.9859154929577465,
+      "A4C": 1.0,
+      "A5C": 0.7777777777777778,
+      "SC4C": 1.0
+     },
+     "native_precision": {
+      "PLAX": 0.9876543209876543,
+      "PSAX": 1.0,
+      "A4C": 0.9384615384615385,
+      "A5C": 1.0,
+      "SC4C": 1.0
+     },
+     "native_confusion": [
+      [
+       80,
+       0,
+       0,
+       0,
+       0
+      ],
+      [
+       1,
+       70,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       61,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       4,
+       14,
+       0
+      ],
+      [
+       0,
+       0,
+       0,
+       0,
+       7
+      ]
+     ],
+     "A4C read as A5C": 0,
+     "A5C read as A4C": 4,
+     "SC4C read as PLAX": 0
+    }
+   }
+  },
+  "B7 + B3": {
+   "selection": {
+    "row": {
+     "native_macro_f1": 0.9566353840806396,
+     "segment_f1_50_multi": 0.8798449612403101,
+     "boundary_recall_multi": 0.9554973821989529,
+     "boundary_precision_multi": 0.8902439024390244,
+     "boundary_f1_multi": 0.9217171717171717,
+     "native_internal_cuts_per_clip": 0.06338028169014084,
+     "same_class_cut_rate_multi": 0.05652173913043478,
+     "segment_f1_50_pairs": 0.9665071770334929,
+     "boundary_recall_pairs": 1.0,
+     "native_recall": {
+      "PLAX": 0.9904761904761905,
+      "PSAX": 1.0,
+      "A4C": 0.9885057471264368,
+      "A5C": 0.8181818181818182,
+      "SC4C": 0.9230769230769231
+     },
+     "native_precision": {
+      "PLAX": 0.9904761904761905,
+      "PSAX": 0.9855072463768116,
+      "A4C": 0.9772727272727273,
+      "A5C": 0.9,
+      "SC4C": 1.0
+     },
+     "native_confusion": [
+      [
+       104,
+       1,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       68,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       86,
+       1,
+       0
+      ],
+      [
+       0,
+       0,
+       2,
+       9,
+       0
+      ],
+      [
+       1,
+       0,
+       0,
+       0,
+       12
+      ]
+     ],
+     "A4C read as A5C": 1,
+     "A5C read as A4C": 2,
+     "SC4C read as PLAX": 1
+    }
+   },
+   "calibration": {
+    "row": {
+     "native_macro_f1": 0.9926596980255518,
+     "segment_f1_50_multi": 0.9721421709894332,
+     "boundary_recall_multi": 0.9748743718592965,
+     "boundary_precision_multi": 0.9627791563275434,
+     "boundary_f1_multi": 0.968789013732834,
+     "native_internal_cuts_per_clip": 0.04219409282700422,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9647058823529412,
+     "boundary_recall_pairs": 0.8793103448275862,
+     "native_recall": {
+      "PLAX": 1.0,
+      "PSAX": 1.0,
+      "A4C": 1.0,
+      "A5C": 0.9444444444444444,
+      "SC4C": 1.0
+     },
+     "native_precision": {
+      "PLAX": 1.0,
+      "PSAX": 1.0,
+      "A4C": 0.9838709677419355,
+      "A5C": 1.0,
+      "SC4C": 1.0
+     },
+     "native_confusion": [
+      [
+       80,
+       0,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       71,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       61,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       1,
+       17,
+       0
+      ],
+      [
+       0,
+       0,
+       0,
+       0,
+       7
+      ]
+     ],
+     "A4C read as A5C": 0,
+     "A5C read as A4C": 1,
+     "SC4C read as PLAX": 0
+    }
+   }
+  }
+ },
+ "comparisons": {
+  "s0|FACT - ASRF|selection": {
+   "bootstrap": {
+    "native macro-F1": {
+     "delta": 0.058281296461492715,
+     "ci95": [
+      0.011737373737373777,
+      0.12436111111111121
+     ]
+    },
+    "native cuts per clip": {
+     "delta": -0.01056338028169014,
+     "ci95": [
+      -0.03137254901960784,
+      0.0
+     ]
+    },
+    "multi segment F1@50": {
+     "delta": 0.02836413614079525,
+     "ci95": [
+      0.006059118453500223,
+      0.052849900407015225
+     ]
+    },
+    "multi boundary recall": {
+     "delta": 0.01308900523560208,
+     "ci95": [
+      -0.012954209003431846,
+      0.038676174568504
+     ]
+    },
+    "multi boundary F1": {
+     "delta": 0.005710999154988072,
+     "ci95": [
+      -0.01616836854170677,
+      0.026105865085095162
+     ]
+    },
+    "same-class cut rate": {
+     "delta": -0.013043478260869566,
+     "ci95": [
+      -0.04546614100185529,
+      0.018266934774412456
+     ]
+    }
+   },
+   "native_changes": {
+    "A5C read as A4C": {
+     "fixed": 4,
+     "fixed_sessions": 3,
+     "new": 0,
+     "new_sessions": 0
+    },
+    "A4C read as A5C": {
+     "fixed": 1,
+     "fixed_sessions": 1,
+     "new": 0,
+     "new_sessions": 0
+    },
+    "all clips": {
+     "fixed": 5,
+     "fixed_sessions": 4,
+     "new": 0,
+     "new_sessions": 0
+    }
+   },
+   "segment_changes": {
+    "matched by a only": {
+     "segments": 23,
+     "recordings": 17,
+     "sessions": 13
+    },
+    "matched by b only": {
+     "segments": 6,
+     "recordings": 8,
+     "sessions": 6
+    }
+   },
+   "boundary_changes": {
+    "found by a only": {
+     "changes": 11,
+     "recordings": 18,
+     "sessions": 15
+    },
+    "found by b only": {
+     "changes": 6,
+     "recordings": 9,
+     "sessions": 8
+    }
+   }
+  },
+  "s0|FACT - ASRF|calibration": {
+   "bootstrap": {
+    "native macro-F1": {
+     "delta": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ]
+    },
+    "native cuts per clip": {
+     "delta": 0.02953586497890295,
+     "ci95": [
+      0.005404678872420808,
+      0.05833896396396394
+     ]
+    },
+    "multi segment F1@50": {
+     "delta": -0.004771729530700042,
+     "ci95": [
+      -0.02136810054777858,
+      0.010736486277981024
+     ]
+    },
+    "multi boundary recall": {
+     "delta": -0.005025125628140725,
+     "ci95": [
+      -0.01526814924443062,
+      0.0048323943162893014
+     ]
+    },
+    "multi boundary F1": {
+     "delta": -0.006211064100049457,
+     "ci95": [
+      -0.018126637608037652,
+      0.004016486202507918
+     ]
+    },
+    "same-class cut rate": {
+     "delta": -0.009950248756218905,
+     "ci95": [
+      -0.034482758620689655,
+      0.010696624690932088
+     ]
+    }
+   },
+   "native_changes": {
+    "A5C read as A4C": {
+     "fixed": 0,
+     "fixed_sessions": 0,
+     "new": 0,
+     "new_sessions": 0
+    },
+    "A4C read as A5C": {
+     "fixed": 0,
+     "fixed_sessions": 0,
+     "new": 0,
+     "new_sessions": 0
+    },
+    "all clips": {
+     "fixed": 0,
+     "fixed_sessions": 0,
+     "new": 0,
+     "new_sessions": 0
+    }
+   },
+   "segment_changes": {
+    "matched by a only": {
+     "segments": 5,
+     "recordings": 8,
+     "sessions": 8
+    },
+    "matched by b only": {
+     "segments": 7,
+     "recordings": 6,
+     "sessions": 5
+    }
+   },
+   "boundary_changes": {
+    "found by a only": {
+     "changes": 1,
+     "recordings": 2,
+     "sessions": 2
+    },
+    "found by b only": {
+     "changes": 3,
+     "recordings": 6,
+     "sessions": 5
+    }
+   }
+  },
+  "s1|FACT - ASRF|selection": {
+   "bootstrap": {
+    "native macro-F1": {
+     "delta": 0.02430211121022896,
+     "ci95": [
+      0.0,
+      0.0696428378423135
+     ]
+    },
+    "native cuts per clip": {
+     "delta": -0.007042253521126761,
+     "ci95": [
+      -0.027030084383025562,
+      0.0
+     ]
+    },
+    "multi segment F1@50": {
+     "delta": 0.010759627332243005,
+     "ci95": [
+      -0.013571871499725963,
+      0.037662240489227936
+     ]
+    },
+    "multi boundary recall": {
+     "delta": 0.010471204188481686,
+     "ci95": [
+      -0.015503875968992165,
+      0.03804867545735332
+     ]
+    },
+    "multi boundary F1": {
+     "delta": 0.0006358386390347137,
+     "ci95": [
+      -0.02145129660839399,
+      0.022325528530395208
+     ]
+    },
+    "same-class cut rate": {
+     "delta": -0.004347826086956524,
+     "ci95": [
+      -0.031111111111111107,
+      0.025002615062761493
+     ]
+    }
+   },
+   "native_changes": {
+    "A5C read as A4C": {
+     "fixed": 2,
+     "fixed_sessions": 2,
+     "new": 0,
+     "new_sessions": 0
+    },
+    "A4C read as A5C": {
+     "fixed": 0,
+     "fixed_sessions": 0,
+     "new": 0,
+     "new_sessions": 0
+    },
+    "all clips": {
+     "fixed": 2,
+     "fixed_sessions": 2,
+     "new": 0,
+     "new_sessions": 0
+    }
+   },
+   "segment_changes": {
+    "matched by a only": {
+     "segments": 20,
+     "recordings": 19,
+     "sessions": 13
+    },
+    "matched by b only": {
+     "segments": 11,
+     "recordings": 14,
+     "sessions": 12
+    }
+   },
+   "boundary_changes": {
+    "found by a only": {
+     "changes": 10,
+     "recordings": 16,
+     "sessions": 13
+    },
+    "found by b only": {
+     "changes": 6,
+     "recordings": 9,
+     "sessions": 8
+    }
+   }
+  },
+  "s1|FACT - ASRF|calibration": {
+   "bootstrap": {
+    "native macro-F1": {
+     "delta": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ]
+    },
+    "native cuts per clip": {
+     "delta": 0.02531645569620253,
+     "ci95": [
+      0.00390625,
+      0.0594059405940594
+     ]
+    },
+    "multi segment F1@50": {
+     "delta": -0.011549566891241536,
+     "ci95": [
+      -0.02890912449095195,
+      0.003899274568349947
+     ]
+    },
+    "multi boundary recall": {
+     "delta": -0.01005025125628145,
+     "ci95": [
+      -0.023376623376623384,
+      0.002597571699134198
+     ]
+    },
+    "multi boundary F1": {
+     "delta": -0.01001251564455563,
+     "ci95": [
+      -0.02005666739194564,
+      -0.00014685868257324416
+     ]
+    },
+    "same-class cut rate": {
+     "delta": -0.004975124378109454,
+     "ci95": [
+      -0.022323930973734783,
+      0.010695187165775395
+     ]
+    }
+   },
+   "native_changes": {
+    "A5C read as A4C": {
+     "fixed": 0,
+     "fixed_sessions": 0,
+     "new": 0,
+     "new_sessions": 0
+    },
+    "A4C read as A5C": {
+     "fixed": 0,
+     "fixed_sessions": 0,
+     "new": 0,
+     "new_sessions": 0
+    },
+    "all clips": {
+     "fixed": 0,
+     "fixed_sessions": 0,
+     "new": 0,
+     "new_sessions": 0
+    }
+   },
+   "segment_changes": {
+    "matched by a only": {
+     "segments": 6,
+     "recordings": 8,
+     "sessions": 8
+    },
+    "matched by b only": {
+     "segments": 12,
+     "recordings": 10,
+     "sessions": 7
+    }
+   },
+   "boundary_changes": {
+    "found by a only": {
+     "changes": 2,
+     "recordings": 4,
+     "sessions": 4
+    },
+    "found by b only": {
+     "changes": 6,
+     "recordings": 9,
+     "sessions": 7
+    }
+   }
+  },
+  "s2|FACT - ASRF|selection": {
+   "bootstrap": {
+    "native macro-F1": {
+     "delta": 0.012696050604168452,
+     "ci95": [
+      0.0,
+      0.04843542714192393
+     ]
+    },
+    "native cuts per clip": {
+     "delta": -0.01056338028169014,
+     "ci95": [
+      -0.0309743088426974,
+      0.0
+     ]
+    },
+    "multi segment F1@50": {
+     "delta": 0.02842096958699858,
+     "ci95": [
+      0.004005099323697143,
+      0.0535754689741361
+     ]
+    },
+    "multi boundary recall": {
+     "delta": -0.002617801047120394,
+     "ci95": [
+      -0.029891304347826053,
+      0.022536802737327884
+     ]
+    },
+    "multi boundary F1": {
+     "delta": -0.009940844495818335,
+     "ci95": [
+      -0.03151587733718135,
+      0.010299547651957721
+     ]
+    },
+    "same-class cut rate": {
+     "delta": -0.03043478260869565,
+     "ci95": [
+      -0.06607929515418502,
+      0.003909808324898766
+     ]
+    }
+   },
+   "native_changes": {
+    "A5C read as A4C": {
+     "fixed": 1,
+     "fixed_sessions": 1,
+     "new": 0,
+     "new_sessions": 0
+    },
+    "A4C read as A5C": {
+     "fixed": 0,
+     "fixed_sessions": 0,
+     "new": 0,
+     "new_sessions": 0
+    },
+    "all clips": {
+     "fixed": 1,
+     "fixed_sessions": 1,
+     "new": 0,
+     "new_sessions": 0
+    }
+   },
+   "segment_changes": {
+    "matched by a only": {
+     "segments": 25,
+     "recordings": 22,
+     "sessions": 14
+    },
+    "matched by b only": {
+     "segments": 8,
+     "recordings": 12,
+     "sessions": 10
+    }
+   },
+   "boundary_changes": {
+    "found by a only": {
+     "changes": 10,
+     "recordings": 16,
+     "sessions": 11
+    },
+    "found by b only": {
+     "changes": 11,
+     "recordings": 16,
+     "sessions": 14
+    }
+   }
+  },
+  "s2|FACT - ASRF|calibration": {
+   "bootstrap": {
+    "native macro-F1": {
+     "delta": 0.007331501668312312,
+     "ci95": [
+      0.0,
+      0.02684376523863813
+     ]
+    },
+    "native cuts per clip": {
+     "delta": 0.02953586497890295,
+     "ci95": [
+      0.0,
+      0.06801052631578942
+     ]
+    },
+    "multi segment F1@50": {
+     "delta": -0.000997829348841961,
+     "ci95": [
+      -0.013068500483454404,
+      0.010717739662338015
+     ]
+    },
+    "multi boundary recall": {
+     "delta": -0.01005025125628134,
+     "ci95": [
+      -0.02750172305764419,
+      0.005596522781774337
+     ]
+    },
+    "multi boundary F1": {
+     "delta": -0.008817613790407464,
+     "ci95": [
+      -0.020533248846818192,
+      0.0013722584914645265
+     ]
+    },
+    "same-class cut rate": {
+     "delta": -0.004975124378109451,
+     "ci95": [
+      -0.02242916836526702,
+      0.010989010989010988
+     ]
+    }
+   },
+   "native_changes": {
+    "A5C read as A4C": {
+     "fixed": 1,
+     "fixed_sessions": 1,
+     "new": 0,
+     "new_sessions": 0
+    },
+    "A4C read as A5C": {
+     "fixed": 0,
+     "fixed_sessions": 0,
+     "new": 0,
+     "new_sessions": 0
+    },
+    "all clips": {
+     "fixed": 1,
+     "fixed_sessions": 1,
+     "new": 0,
+     "new_sessions": 0
+    }
+   },
+   "segment_changes": {
+    "matched by a only": {
+     "segments": 7,
+     "recordings": 8,
+     "sessions": 6
+    },
+    "matched by b only": {
+     "segments": 8,
+     "recordings": 7,
+     "sessions": 5
+    }
+   },
+   "boundary_changes": {
+    "found by a only": {
+     "changes": 3,
+     "recordings": 6,
+     "sessions": 5
+    },
+    "found by b only": {
+     "changes": 7,
+     "recordings": 11,
+     "sessions": 7
+    }
+   }
+  },
+  "s0|FACT - (E1 + B3)|selection": {
+   "bootstrap": {
+    "native macro-F1": {
+     "delta": 0.010666666666666713,
+     "ci95": [
+      0.0,
+      0.0318882185330353
+     ]
+    },
+    "native cuts per clip": {
+     "delta": -0.045774647887323945,
+     "ci95": [
+      -0.08429929266136163,
+      -0.01746535029428518
+     ]
+    },
+    "multi segment F1@50": {
+     "delta": 0.012264740729290291,
+     "ci95": [
+      -0.006689911033197662,
+      0.033394261210208005
+     ]
+    },
+    "multi boundary recall": {
+     "delta": -0.007853403141361293,
+     "ci95": [
+      -0.02439190084835633,
+      0.005377070619006096
+     ]
+    },
+    "multi boundary F1": {
+     "delta": -0.012674177414932042,
+     "ci95": [
+      -0.029724794715407968,
+      0.003249777233637849
+     ]
+    },
+    "same-class cut rate": {
+     "delta": 0.01304347826086956,
+     "ci95": [
+      -0.004629629629629629,
+      0.031496949705611114
+     ]
+    }
+   },
+   "native_changes": {
+    "A5C read as A4C": {
+     "fixed": 1,
+     "fixed_sessions": 1,
+     "new": 0,
+     "new_sessions": 0
+    },
+    "A4C read as A5C": {
+     "fixed": 0,
+     "fixed_sessions": 0,
+     "new": 0,
+     "new_sessions": 0
+    },
+    "all clips": {
+     "fixed": 1,
+     "fixed_sessions": 1,
+     "new": 0,
+     "new_sessions": 0
+    }
+   },
+   "segment_changes": {
+    "matched by a only": {
+     "segments": 15,
+     "recordings": 12,
+     "sessions": 10
+    },
+    "matched by b only": {
+     "segments": 7,
+     "recordings": 9,
+     "sessions": 8
+    }
+   },
+   "boundary_changes": {
+    "found by a only": {
+     "changes": 3,
+     "recordings": 5,
+     "sessions": 4
+    },
+    "found by b only": {
+     "changes": 6,
+     "recordings": 9,
+     "sessions": 6
+    }
+   }
+  },
+  "s0|FACT - (E1 + B3)|calibration": {
+   "bootstrap": {
+    "native macro-F1": {
+     "delta": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ]
+    },
+    "native cuts per clip": {
+     "delta": -0.03375527426160337,
+     "ci95": [
+      -0.07608954451345756,
+      0.0044464555052790245
+     ]
+    },
+    "multi segment F1@50": {
+     "delta": 0.00844016447688023,
+     "ci95": [
+      -0.008876858588737943,
+      0.02443593058091966
+     ]
+    },
+    "multi boundary recall": {
+     "delta": 0.005025125628140725,
+     "ci95": [
+      -0.010127224828118026,
+      0.020674519279170498
+     ]
+    },
+    "multi boundary F1": {
+     "delta": 0.010997907956255548,
+     "ci95": [
+      -0.003697309300756524,
+      0.025284332456068502
+     ]
+    },
+    "same-class cut rate": {
+     "delta": 0.004975124378109454,
+     "ci95": [
+      -0.015081145523536047,
+      0.02643230077150782
+     ]
+    }
+   },
+   "native_changes": {
+    "A5C read as A4C": {
+     "fixed": 0,
+     "fixed_sessions": 0,
+     "new": 0,
+     "new_sessions": 0
+    },
+    "A4C read as A5C": {
+     "fixed": 0,
+     "fixed_sessions": 0,
+     "new": 0,
+     "new_sessions": 0
+    },
+    "all clips": {
+     "fixed": 0,
+     "fixed_sessions": 0,
+     "new": 0,
+     "new_sessions": 0
+    }
+   },
+   "segment_changes": {
+    "matched by a only": {
+     "segments": 10,
+     "recordings": 13,
+     "sessions": 12
+    },
+    "matched by b only": {
+     "segments": 8,
+     "recordings": 7,
+     "sessions": 7
+    }
+   },
+   "boundary_changes": {
+    "found by a only": {
+     "changes": 6,
+     "recordings": 12,
+     "sessions": 10
+    },
+    "found by b only": {
+     "changes": 4,
+     "recordings": 8,
+     "sessions": 7
+    }
+   }
+  },
+  "s0|FACT - (E0 + B3)|selection": {
+   "bootstrap": {
+    "native macro-F1": {
+     "delta": 0.02360416195753534,
+     "ci95": [
+      -0.01833185677416876,
+      0.07117798172647041
+     ]
+    },
+    "native cuts per clip": {
+     "delta": -0.014084507042253521,
+     "ci95": [
+      -0.036148221919937815,
+      0.0
+     ]
+    },
+    "multi segment F1@50": {
+     "delta": -0.028190536148136824,
+     "ci95": [
+      -0.0545811695551109,
+      1.2610152348047863e-05
+     ]
+    },
+    "multi boundary recall": {
+     "delta": -0.013089005235602191,
+     "ci95": [
+      -0.03342153638465625,
+      0.0030006246653575216
+     ]
+    },
+    "multi boundary F1": {
+     "delta": -0.04075290729221748,
+     "ci95": [
+      -0.05815425163408206,
+      -0.023996547186613003
+     ]
+    },
+    "same-class cut rate": {
+     "delta": 0.047826086956521734,
+     "ci95": [
+      0.018431065826745023,
+      0.07792356725842964
+     ]
+    }
+   },
+   "native_changes": {
+    "A5C read as A4C": {
+     "fixed": 3,
+     "fixed_sessions": 3,
+     "new": 0,
+     "new_sessions": 0
+    },
+    "A4C read as A5C": {
+     "fixed": 0,
+     "fixed_sessions": 0,
+     "new": 0,
+     "new_sessions": 0
+    },
+    "all clips": {
+     "fixed": 3,
+     "fixed_sessions": 3,
+     "new": 2,
+     "new_sessions": 2
+    }
+   }
+  },
+  "s0|FACT - (E0 + B3)|calibration": {
+   "bootstrap": {
+    "native macro-F1": {
+     "delta": 0.019620082454661847,
+     "ci95": [
+      -0.013323293334820505,
+      0.05226080393035959
+     ]
+    },
+    "native cuts per clip": {
+     "delta": 0.0,
+     "ci95": [
+      -0.03608247422680412,
+      0.034223388110119275
+     ]
+    },
+    "multi segment F1@50": {
+     "delta": 0.033389858934461336,
+     "ci95": [
+      0.007257497868973578,
+      0.05873126511224813
+     ]
+    },
+    "multi boundary recall": {
+     "delta": 0.027638190954773822,
+     "ci95": [
+      0.0072271903844494945,
+      0.05011964660172169
+     ]
+    },
+    "multi boundary F1": {
+     "delta": 0.01303702768395465,
+     "ci95": [
+      -0.0035873662213889404,
+      0.030632736623908974
+     ]
+    },
+    "same-class cut rate": {
+     "delta": 0.004975124378109454,
+     "ci95": [
+      -0.020410779696493984,
+      0.03125703828828825
+     ]
+    }
+   },
+   "native_changes": {
+    "A5C read as A4C": {
+     "fixed": 3,
+     "fixed_sessions": 3,
+     "new": 0,
+     "new_sessions": 0
+    },
+    "A4C read as A5C": {
+     "fixed": 0,
+     "fixed_sessions": 0,
+     "new": 1,
+     "new_sessions": 1
+    },
+    "all clips": {
+     "fixed": 4,
+     "fixed_sessions": 4,
+     "new": 1,
+     "new_sessions": 1
+    }
+   }
+  },
+  "s0|FACT - (B7 + B3)|selection": {
+   "bootstrap": {
+    "native macro-F1": {
+     "delta": 0.03200000000000003,
+     "ci95": [
+      0.0,
+      0.07131892127961575
+     ]
+    },
+    "native cuts per clip": {
+     "delta": -0.06338028169014084,
+     "ci95": [
+      -0.09849950745848578,
+      -0.02408686127910858
+     ]
+    },
+    "multi segment F1@50": {
+     "delta": 0.026374189796215086,
+     "ci95": [
+      0.0057711116123742275,
+      0.04825047872265358
+     ]
+    },
+    "multi boundary recall": {
+     "delta": -0.007853403141361293,
+     "ci95": [
+      -0.02740677321156773,
+      0.009858436582574466
+     ]
+    },
+    "multi boundary F1": {
+     "delta": 0.014893436303526908,
+     "ci95": [
+      -0.004734928821772502,
+      0.034803484693680914
+     ]
+    },
+    "same-class cut rate": {
+     "delta": -0.004347826086956524,
+     "ci95": [
+      -0.038965273856578206,
+      0.028692465321563658
+     ]
+    }
+   },
+   "native_changes": {
+    "A5C read as A4C": {
+     "fixed": 2,
+     "fixed_sessions": 2,
+     "new": 0,
+     "new_sessions": 0
+    },
+    "A4C read as A5C": {
+     "fixed": 1,
+     "fixed_sessions": 1,
+     "new": 0,
+     "new_sessions": 0
+    },
+    "all clips": {
+     "fixed": 3,
+     "fixed_sessions": 3,
+     "new": 0,
+     "new_sessions": 0
+    }
+   }
+  },
+  "s0|FACT - (B7 + B3)|calibration": {
+   "bootstrap": {
+    "native macro-F1": {
+     "delta": -0.007049497661252957,
+     "ci95": [
+      -0.02477896727896726,
+      0.0
+     ]
+    },
+    "native cuts per clip": {
+     "delta": -0.008438818565400845,
+     "ci95": [
+      -0.04036192153374121,
+      0.015567254139009673
+     ]
+    },
+    "multi segment F1@50": {
+     "delta": -0.004771729530700042,
+     "ci95": [
+      -0.023359977918497882,
+      0.013828162478274987
+     ]
+    },
+    "multi boundary recall": {
+     "delta": 0.007537688442211032,
+     "ci95": [
+      -0.010259067357512919,
+      0.025511835168850222
+     ]
+    },
+    "multi boundary F1": {
+     "delta": 0.006273330406816879,
+     "ci95": [
+      -0.006117843842465734,
+      0.020050125313283207
+     ]
+    },
+    "same-class cut rate": {
+     "delta": -0.009950248756218905,
+     "ci95": [
+      -0.034482758620689655,
+      0.010696624690932088
+     ]
+    }
+   },
+   "native_changes": {
+    "A5C read as A4C": {
+     "fixed": 0,
+     "fixed_sessions": 0,
+     "new": 0,
+     "new_sessions": 0
+    },
+    "A4C read as A5C": {
+     "fixed": 0,
+     "fixed_sessions": 0,
+     "new": 1,
+     "new_sessions": 1
+    },
+    "all clips": {
+     "fixed": 0,
+     "fixed_sessions": 0,
+     "new": 1,
+     "new_sessions": 1
+    }
+   }
+  },
+  "s1|FACT - (E1 + B3)|selection": {
+   "bootstrap": {
+    "native macro-F1": {
+     "delta": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ]
+    },
+    "native cuts per clip": {
+     "delta": -0.045774647887323945,
+     "ci95": [
+      -0.08429929266136163,
+      -0.01746535029428518
+     ]
+    },
+    "multi segment F1@50": {
+     "delta": 0.004367406079734515,
+     "ci95": [
+      -0.01762399858364373,
+      0.027062709707418524
+     ]
+    },
+    "multi boundary recall": {
+     "delta": -0.005235602094240788,
+     "ci95": [
+      -0.0234375,
+      0.010810810810810811
+     ]
+    },
+    "multi boundary F1": {
+     "delta": -0.010086855293327979,
+     "ci95": [
+      -0.028958323382111205,
+      0.007943922252689296
+     ]
+    },
+    "same-class cut rate": {
+     "delta": 0.0043478260869565175,
+     "ci95": [
+      -0.013955118452510323,
+      0.023148148148148147
+     ]
+    }
+   },
+   "native_changes": {
+    "A5C read as A4C": {
+     "fixed": 0,
+     "fixed_sessions": 0,
+     "new": 0,
+     "new_sessions": 0
+    },
+    "A4C read as A5C": {
+     "fixed": 0,
+     "fixed_sessions": 0,
+     "new": 0,
+     "new_sessions": 0
+    },
+    "all clips": {
+     "fixed": 0,
+     "fixed_sessions": 0,
+     "new": 0,
+     "new_sessions": 0
+    }
+   },
+   "segment_changes": {
+    "matched by a only": {
+     "segments": 14,
+     "recordings": 12,
+     "sessions": 9
+    },
+    "matched by b only": {
+     "segments": 10,
+     "recordings": 13,
+     "sessions": 10
+    }
+   },
+   "boundary_changes": {
+    "found by a only": {
+     "changes": 4,
+     "recordings": 6,
+     "sessions": 5
+    },
+    "found by b only": {
+     "changes": 6,
+     "recordings": 10,
+     "sessions": 8
+    }
+   }
+  },
+  "s1|FACT - (E1 + B3)|calibration": {
+   "bootstrap": {
+    "native macro-F1": {
+     "delta": 0.0,
+     "ci95": [
+      0.0,
+      0.0
+     ]
+    },
+    "native cuts per clip": {
+     "delta": -0.03797468354430379,
+     "ci95": [
+      -0.08333333333333333,
+      0.004832096147048418
+     ]
+    },
+    "multi segment F1@50": {
+     "delta": 0.0016087028064050157,
+     "ci95": [
+      -0.015012148847562426,
+      0.017359533047457524
+     ]
+    },
+    "multi boundary recall": {
+     "delta": -0.002512562814070307,
+     "ci95": [
+      -0.019561100723908126,
+      0.01446584367024745
+     ]
+    },
+    "multi boundary F1": {
+     "delta": 0.007149581338507072,
+     "ci95": [
+      -0.00827515667042392,
+      0.022607038698104202
+     ]
+    },
+    "same-class cut rate": {
+     "delta": 0.009950248756218905,
+     "ci95": [
+      -0.01435579223408171,
+      0.03587501437277222
+     ]
+    }
+   },
+   "native_changes": {
+    "A5C read as A4C": {
+     "fixed": 0,
+     "fixed_sessions": 0,
+     "new": 0,
+     "new_sessions": 0
+    },
+    "A4C read as A5C": {
+     "fixed": 0,
+     "fixed_sessions": 0,
+     "new": 0,
+     "new_sessions": 0
+    },
+    "all clips": {
+     "fixed": 0,
+     "fixed_sessions": 0,
+     "new": 0,
+     "new_sessions": 0
+    }
+   },
+   "segment_changes": {
+    "matched by a only": {
+     "segments": 8,
+     "recordings": 10,
+     "sessions": 9
+    },
+    "matched by b only": {
+     "segments": 11,
+     "recordings": 10,
+     "sessions": 7
+    }
+   },
+   "boundary_changes": {
+    "found by a only": {
+     "changes": 5,
+     "recordings": 10,
+     "sessions": 9
+    },
+    "found by b only": {
+     "changes": 6,
+     "recordings": 10,
+     "sessions": 8
+    }
+   }
+  },
+  "s1|FACT - (E0 + B3)|selection": {
+   "bootstrap": {
+    "native macro-F1": {
+     "delta": 0.012937495290868628,
+     "ci95": [
+      -0.02254561420608281,
+      0.061484767930940154
+     ]
+    },
+    "native cuts per clip": {
+     "delta": -0.014084507042253521,
+     "ci95": [
+      -0.036148221919937815,
+      0.0
+     ]
+    },
+    "multi segment F1@50": {
+     "delta": -0.0360878707976926,
+     "ci95": [
+      -0.06390986461889685,
+      -0.00777922893895781
+     ]
+    },
+    "multi boundary recall": {
+     "delta": -0.010471204188481686,
+     "ci95": [
+      -0.032258064516129004,
+      0.00826503356011138
+     ]
+    },
+    "multi boundary F1": {
+     "delta": -0.038165585170613414,
+     "ci95": [
+      -0.0570377739003365,
+      -0.020480239688801704
+     ]
+    },
+    "same-class cut rate": {
+     "delta": 0.03913043478260869,
+     "ci95": [
+      0.012654272151898733,
+      0.06926716141001854
+     ]
+    }
+   },
+   "native_changes": {
+    "A5C read as A4C": {
+     "fixed": 2,
+     "fixed_sessions": 2,
+     "new": 0,
+     "new_sessions": 0
+    },
+    "A4C read as A5C": {
+     "fixed": 0,
+     "fixed_sessions": 0,
+     "new": 0,
+     "new_sessions": 0
+    },
+    "all clips": {
+     "fixed": 2,
+     "fixed_sessions": 2,
+     "new": 2,
+     "new_sessions": 2
+    }
+   }
+  },
+  "s1|FACT - (E0 + B3)|calibration": {
+   "bootstrap": {
+    "native macro-F1": {
+     "delta": 0.019620082454661847,
+     "ci95": [
+      -0.013323293334820505,
+      0.05226080393035959
+     ]
+    },
+    "native cuts per clip": {
+     "delta": -0.004219409282700419,
+     "ci95": [
+      -0.04048582995951417,
+      0.032970063025210064
+     ]
+    },
+    "multi segment F1@50": {
+     "delta": 0.026558397263986122,
+     "ci95": [
+      0.0025675938621687712,
+      0.05135227969508882
+     ]
+    },
+    "multi boundary recall": {
+     "delta": 0.02010050251256279,
+     "ci95": [
+      -0.002464291902864124,
+      0.04404335568424264
+     ]
+    },
+    "multi boundary F1": {
+     "delta": 0.009188701066206173,
+     "ci95": [
+      -0.009353810230867485,
+      0.028136428325971376
+     ]
+    },
+    "same-class cut rate": {
+     "delta": 0.009950248756218905,
+     "ci95": [
+      -0.015961736444749484,
+      0.038461538461538464
+     ]
+    }
+   },
+   "native_changes": {
+    "A5C read as A4C": {
+     "fixed": 3,
+     "fixed_sessions": 3,
+     "new": 0,
+     "new_sessions": 0
+    },
+    "A4C read as A5C": {
+     "fixed": 0,
+     "fixed_sessions": 0,
+     "new": 1,
+     "new_sessions": 1
+    },
+    "all clips": {
+     "fixed": 4,
+     "fixed_sessions": 4,
+     "new": 1,
+     "new_sessions": 1
+    }
+   }
+  },
+  "s1|FACT - (B7 + B3)|selection": {
+   "bootstrap": {
+    "native macro-F1": {
+     "delta": 0.021333333333333315,
+     "ci95": [
+      0.0,
+      0.06062149884646255
+     ]
+    },
+    "native cuts per clip": {
+     "delta": -0.06338028169014084,
+     "ci95": [
+      -0.09849950745848578,
+      -0.02408686127910858
+     ]
+    },
+    "multi segment F1@50": {
+     "delta": 0.01847685514665931,
+     "ci95": [
+      -0.003071256858860358,
+      0.04019256412267622
+     ]
+    },
+    "multi boundary recall": {
+     "delta": -0.005235602094240788,
+     "ci95": [
+      -0.021505376344086006,
+      0.010668817204301108
+     ]
+    },
+    "multi boundary F1": {
+     "delta": 0.01748075842513097,
+     "ci95": [
+      -0.0003842630159935578,
+      0.03472106107375176
+     ]
+    },
+    "same-class cut rate": {
+     "delta": -0.013043478260869566,
+     "ci95": [
+      -0.0480811403508772,
+      0.021743897787948104
+     ]
+    }
+   },
+   "native_changes": {
+    "A5C read as A4C": {
+     "fixed": 1,
+     "fixed_sessions": 1,
+     "new": 0,
+     "new_sessions": 0
+    },
+    "A4C read as A5C": {
+     "fixed": 1,
+     "fixed_sessions": 1,
+     "new": 0,
+     "new_sessions": 0
+    },
+    "all clips": {
+     "fixed": 2,
+     "fixed_sessions": 2,
+     "new": 0,
+     "new_sessions": 0
+    }
+   }
+  },
+  "s1|FACT - (B7 + B3)|calibration": {
+   "bootstrap": {
+    "native macro-F1": {
+     "delta": -0.007049497661252957,
+     "ci95": [
+      -0.02477896727896726,
+      0.0
+     ]
+    },
+    "native cuts per clip": {
+     "delta": -0.012658227848101264,
+     "ci95": [
+      -0.05098139255702281,
+      0.02978882184820578
+     ]
+    },
+    "multi segment F1@50": {
+     "delta": -0.011603191201175256,
+     "ci95": [
+      -0.03001763110127437,
+      0.005818584906873466
+     ]
+    },
+    "multi boundary recall": {
+     "delta": 0.0,
+     "ci95": [
+      -0.018716577540107027,
+      0.02030456852791873
+     ]
+    },
+    "multi boundary F1": {
+     "delta": 0.002425003789068403,
+     "ci95": [
+      -0.011856883698218443,
+      0.017915569392829084
+     ]
+    },
+    "same-class cut rate": {
+     "delta": -0.004975124378109454,
+     "ci95": [
+      -0.03167600373482726,
+      0.02051282051282051
+     ]
+    }
+   },
+   "native_changes": {
+    "A5C read as A4C": {
+     "fixed": 0,
+     "fixed_sessions": 0,
+     "new": 0,
+     "new_sessions": 0
+    },
+    "A4C read as A5C": {
+     "fixed": 0,
+     "fixed_sessions": 0,
+     "new": 1,
+     "new_sessions": 1
+    },
+    "all clips": {
+     "fixed": 0,
+     "fixed_sessions": 0,
+     "new": 1,
+     "new_sessions": 1
+    }
+   }
+  },
+  "s2|FACT - (E1 + B3)|selection": {
+   "bootstrap": {
+    "native macro-F1": {
+     "delta": -0.011606060606060509,
+     "ci95": [
+      -0.04250079113924049,
+      0.0
+     ]
+    },
+    "native cuts per clip": {
+     "delta": -0.045774647887323945,
+     "ci95": [
+      -0.08429929266136163,
+      -0.01746535029428518
+     ]
+    },
+    "multi segment F1@50": {
+     "delta": 0.01693667880167604,
+     "ci95": [
+      -0.005762042802233533,
+      0.04061164757514165
+     ]
+    },
+    "multi boundary recall": {
+     "delta": -0.015706806282722474,
+     "ci95": [
+      -0.03674540682414695,
+      0.002703441146064063
+     ]
+    },
+    "multi boundary F1": {
+     "delta": -0.016817252968098217,
+     "ci95": [
+      -0.03642314976457481,
+      0.000700066076608056
+     ]
+    },
+    "same-class cut rate": {
+     "delta": -0.004347826086956524,
+     "ci95": [
+      -0.02415458937198068,
+      0.013392857142857144
+     ]
+    }
+   },
+   "native_changes": {
+    "A5C read as A4C": {
+     "fixed": 0,
+     "fixed_sessions": 0,
+     "new": 1,
+     "new_sessions": 1
+    },
+    "A4C read as A5C": {
+     "fixed": 0,
+     "fixed_sessions": 0,
+     "new": 0,
+     "new_sessions": 0
+    },
+    "all clips": {
+     "fixed": 0,
+     "fixed_sessions": 0,
+     "new": 1,
+     "new_sessions": 1
+    }
+   },
+   "segment_changes": {
+    "matched by a only": {
+     "segments": 18,
+     "recordings": 12,
+     "sessions": 10
+    },
+    "matched by b only": {
+     "segments": 9,
+     "recordings": 12,
+     "sessions": 11
+    }
+   },
+   "boundary_changes": {
+    "found by a only": {
+     "changes": 3,
+     "recordings": 5,
+     "sessions": 5
+    },
+    "found by b only": {
+     "changes": 9,
+     "recordings": 15,
+     "sessions": 12
+    }
+   }
+  },
+  "s2|FACT - (E1 + B3)|calibration": {
+   "bootstrap": {
+    "native macro-F1": {
+     "delta": 0.007331501668312312,
+     "ci95": [
+      0.0,
+      0.02684376523863813
+     ]
+    },
+    "native cuts per clip": {
+     "delta": -0.03375527426160337,
+     "ci95": [
+      -0.08187680020947892,
+      0.011242412501614325
+     ]
+    },
+    "multi segment F1@50": {
+     "delta": 0.006320688269112251,
+     "ci95": [
+      -0.009242299304708417,
+      0.020972978357821002
+     ]
+    },
+    "multi boundary recall": {
+     "delta": -0.005025125628140614,
+     "ci95": [
+      -0.024814315881453445,
+      0.0141886389086837
+     ]
+    },
+    "multi boundary F1": {
+     "delta": 0.008297372861830854,
+     "ci95": [
+      -0.007130883455280068,
+      0.023124470762700987
+     ]
+    },
+    "same-class cut rate": {
+     "delta": 0.004975124378109454,
+     "ci95": [
+      -0.015081145523536047,
+      0.02643230077150782
+     ]
+    }
+   },
+   "native_changes": {
+    "A5C read as A4C": {
+     "fixed": 1,
+     "fixed_sessions": 1,
+     "new": 0,
+     "new_sessions": 0
+    },
+    "A4C read as A5C": {
+     "fixed": 0,
+     "fixed_sessions": 0,
+     "new": 0,
+     "new_sessions": 0
+    },
+    "all clips": {
+     "fixed": 1,
+     "fixed_sessions": 1,
+     "new": 0,
+     "new_sessions": 0
+    }
+   },
+   "segment_changes": {
+    "matched by a only": {
+     "segments": 9,
+     "recordings": 11,
+     "sessions": 10
+    },
+    "matched by b only": {
+     "segments": 11,
+     "recordings": 10,
+     "sessions": 8
+    }
+   },
+   "boundary_changes": {
+    "found by a only": {
+     "changes": 6,
+     "recordings": 12,
+     "sessions": 10
+    },
+    "found by b only": {
+     "changes": 8,
+     "recordings": 13,
+     "sessions": 9
+    }
+   }
+  },
+  "s2|FACT - (E0 + B3)|selection": {
+   "bootstrap": {
+    "native macro-F1": {
+     "delta": 0.0013314346848081193,
+     "ci95": [
+      -0.031219878491937365,
+      0.04048567175137503
+     ]
+    },
+    "native cuts per clip": {
+     "delta": -0.014084507042253521,
+     "ci95": [
+      -0.036148221919937815,
+      0.0
+     ]
+    },
+    "multi segment F1@50": {
+     "delta": -0.023518598075751074,
+     "ci95": [
+      -0.05240700579869053,
+      0.0056091322777513325
+     ]
+    },
+    "multi boundary recall": {
+     "delta": -0.020942408376963373,
+     "ci95": [
+      -0.045457422324511,
+      0.0
+     ]
+    },
+    "multi boundary F1": {
+     "delta": -0.04489598284538365,
+     "ci95": [
+      -0.0655202077142027,
+      -0.026010237186003465
+     ]
+    },
+    "same-class cut rate": {
+     "delta": 0.030434782608695653,
+     "ci95": [
+      0.00456466740713316,
+      0.05936480756686233
+     ]
+    }
+   },
+   "native_changes": {
+    "A5C read as A4C": {
+     "fixed": 1,
+     "fixed_sessions": 1,
+     "new": 0,
+     "new_sessions": 0
+    },
+    "A4C read as A5C": {
+     "fixed": 0,
+     "fixed_sessions": 0,
+     "new": 0,
+     "new_sessions": 0
+    },
+    "all clips": {
+     "fixed": 1,
+     "fixed_sessions": 1,
+     "new": 2,
+     "new_sessions": 2
+    }
+   }
+  },
+  "s2|FACT - (E0 + B3)|calibration": {
+   "bootstrap": {
+    "native macro-F1": {
+     "delta": 0.02695158412297416,
+     "ci95": [
+      -0.007426255933656245,
+      0.06489717114801725
+     ]
+    },
+    "native cuts per clip": {
+     "delta": 0.0,
+     "ci95": [
+      -0.041336376617195275,
+      0.04425545430649256
+     ]
+    },
+    "multi segment F1@50": {
+     "delta": 0.03127038272669336,
+     "ci95": [
+      0.007409888140562043,
+      0.05738473865367667
+     ]
+    },
+    "multi boundary recall": {
+     "delta": 0.017587939698492483,
+     "ci95": [
+      -0.007595418621088518,
+      0.043360760113625246
+     ]
+    },
+    "multi boundary F1": {
+     "delta": 0.010336492589529955,
+     "ci95": [
+      -0.007299010550682236,
+      0.028697739962229855
+     ]
+    },
+    "same-class cut rate": {
+     "delta": 0.004975124378109454,
+     "ci95": [
+      -0.020410779696493984,
+      0.03125703828828825
+     ]
+    }
+   },
+   "native_changes": {
+    "A5C read as A4C": {
+     "fixed": 4,
+     "fixed_sessions": 4,
+     "new": 0,
+     "new_sessions": 0
+    },
+    "A4C read as A5C": {
+     "fixed": 0,
+     "fixed_sessions": 0,
+     "new": 1,
+     "new_sessions": 1
+    },
+    "all clips": {
+     "fixed": 5,
+     "fixed_sessions": 5,
+     "new": 1,
+     "new_sessions": 1
+    }
+   }
+  },
+  "s2|FACT - (B7 + B3)|selection": {
+   "bootstrap": {
+    "native macro-F1": {
+     "delta": 0.009727272727272807,
+     "ci95": [
+      0.0,
+      0.038059695796994336
+     ]
+    },
+    "native cuts per clip": {
+     "delta": -0.06338028169014084,
+     "ci95": [
+      -0.09849950745848578,
+      -0.02408686127910858
+     ]
+    },
+    "multi segment F1@50": {
+     "delta": 0.031046127868600837,
+     "ci95": [
+      0.007868838831680148,
+      0.05575875709826804
+     ]
+    },
+    "multi boundary recall": {
+     "delta": -0.015706806282722474,
+     "ci95": [
+      -0.035533295643178475,
+      0.0025316455696202667
+     ]
+    },
+    "multi boundary F1": {
+     "delta": 0.010750360750360732,
+     "ci95": [
+      -0.010452856784541286,
+      0.03102419663856418
+     ]
+    },
+    "same-class cut rate": {
+     "delta": -0.021739130434782608,
+     "ci95": [
+      -0.05727241110385093,
+      0.012553619774269534
+     ]
+    }
+   },
+   "native_changes": {
+    "A5C read as A4C": {
+     "fixed": 0,
+     "fixed_sessions": 0,
+     "new": 0,
+     "new_sessions": 0
+    },
+    "A4C read as A5C": {
+     "fixed": 1,
+     "fixed_sessions": 1,
+     "new": 0,
+     "new_sessions": 0
+    },
+    "all clips": {
+     "fixed": 1,
+     "fixed_sessions": 1,
+     "new": 0,
+     "new_sessions": 0
+    }
+   }
+  },
+  "s2|FACT - (B7 + B3)|calibration": {
+   "bootstrap": {
+    "native macro-F1": {
+     "delta": 0.00028200400705935547,
+     "ci95": [
+      -0.0225543565543567,
+      0.02425536973924057
+     ]
+    },
+    "native cuts per clip": {
+     "delta": -0.008438818565400845,
+     "ci95": [
+      -0.047393875633273415,
+      0.03302212550818302
+     ]
+    },
+    "multi segment F1@50": {
+     "delta": -0.00689120573846802,
+     "ci95": [
+      -0.022408855378226213,
+      0.00957576197991252
+     ]
+    },
+    "multi boundary recall": {
+     "delta": -0.002512562814070307,
+     "ci95": [
+      -0.023593687274187123,
+      0.019756771697070248
+     ]
+    },
+    "multi boundary F1": {
+     "delta": 0.003572795312392185,
+     "ci95": [
+      -0.010600808544104934,
+      0.01852978277717068
+     ]
+    },
+    "same-class cut rate": {
+     "delta": -0.009950248756218905,
+     "ci95": [
+      -0.034482758620689655,
+      0.010696624690932088
+     ]
+    }
+   },
+   "native_changes": {
+    "A5C read as A4C": {
+     "fixed": 1,
+     "fixed_sessions": 1,
+     "new": 0,
+     "new_sessions": 0
+    },
+    "A4C read as A5C": {
+     "fixed": 0,
+     "fixed_sessions": 0,
+     "new": 1,
+     "new_sessions": 1
+    },
+    "all clips": {
+     "fixed": 1,
+     "fixed_sessions": 1,
+     "new": 1,
+     "new_sessions": 1
+    }
+   }
+  }
+ },
+ "verdicts": {
+  "FACT - ASRF": {
+   "selection": "no consistent difference detected",
+   "calibration": "no consistent difference detected"
+  },
+  "FACT - (E1 + B3)": {
+   "selection": "no consistent difference detected",
+   "calibration": "no consistent difference detected"
+  },
+  "FACT - (E0 + B3)": {
+   "selection": "no consistent difference detected",
+   "calibration": "consistent positive"
+  },
+  "FACT - (B7 + B3)": {
+   "selection": "no consistent difference detected",
+   "calibration": "no consistent difference detected"
+  }
+ },
+ "mechanism": {
+  "FACT_s0": {
+   "selection": {
+    "short segments": {
+     "segments": 141,
+     "matched": 127,
+     "wrong view": 5,
+     "no segment at IoU 0.5": 9,
+     "taken by another reference": 0,
+     "recall": 0.900709219858156,
+     "missed_recordings": 11,
+     "missed_sessions": 9
+    },
+    "short A4C or A5C segments": {
+     "segments": 65,
+     "matched": 54,
+     "wrong view": 2,
+     "no segment at IoU 0.5": 9,
+     "taken by another reference": 0,
+     "recall": 0.8307692307692308,
+     "missed_recordings": 10,
+     "missed_sessions": 8
+    },
+    "X-Y-X middles": {
+     "segments": 69,
+     "matched": 60,
+     "wrong view": 1,
+     "no segment at IoU 0.5": 8,
+     "taken by another reference": 0,
+     "recall": 0.8695652173913043,
+     "missed_recordings": 10,
+     "missed_sessions": 10
+    },
+    "A4C/A5C X-Y-X middles": {
+     "segments": 7,
+     "matched": 1,
+     "wrong view": 0,
+     "no segment at IoU 0.5": 6,
+     "taken by another reference": 0,
+     "recall": 0.14285714285714285,
+     "missed_recordings": 7,
+     "missed_sessions": 7
+    }
+   },
+   "calibration": {
+    "short segments": {
+     "segments": 134,
+     "matched": 124,
+     "wrong view": 5,
+     "no segment at IoU 0.5": 5,
+     "taken by another reference": 0,
+     "recall": 0.9253731343283582,
+     "missed_recordings": 6,
+     "missed_sessions": 5
+    },
+    "short A4C or A5C segments": {
+     "segments": 67,
+     "matched": 58,
+     "wrong view": 4,
+     "no segment at IoU 0.5": 5,
+     "taken by another reference": 0,
+     "recall": 0.8656716417910447,
+     "missed_recordings": 5,
+     "missed_sessions": 4
+    },
+    "X-Y-X middles": {
+     "segments": 80,
+     "matched": 79,
+     "wrong view": 1,
+     "no segment at IoU 0.5": 0,
+     "taken by another reference": 0,
+     "recall": 0.9875,
+     "missed_recordings": 1,
+     "missed_sessions": 1
+    },
+    "A4C/A5C X-Y-X middles": {
+     "segments": 7,
+     "matched": 7,
+     "wrong view": 0,
+     "no segment at IoU 0.5": 0,
+     "taken by another reference": 0,
+     "recall": 1.0,
+     "missed_recordings": 0,
+     "missed_sessions": 0
+    }
+   }
+  },
+  "ASRF_s0": {
+   "selection": {
+    "short segments": {
+     "segments": 141,
+     "matched": 125,
+     "wrong view": 6,
+     "no segment at IoU 0.5": 10,
+     "taken by another reference": 0,
+     "recall": 0.8865248226950354,
+     "missed_recordings": 14,
+     "missed_sessions": 9
+    },
+    "short A4C or A5C segments": {
+     "segments": 65,
+     "matched": 53,
+     "wrong view": 3,
+     "no segment at IoU 0.5": 9,
+     "taken by another reference": 0,
+     "recall": 0.8153846153846154,
+     "missed_recordings": 12,
+     "missed_sessions": 8
+    },
+    "X-Y-X middles": {
+     "segments": 69,
+     "matched": 60,
+     "wrong view": 4,
+     "no segment at IoU 0.5": 5,
+     "taken by another reference": 0,
+     "recall": 0.8695652173913043,
+     "missed_recordings": 9,
+     "missed_sessions": 8
+    },
+    "A4C/A5C X-Y-X middles": {
+     "segments": 7,
+     "matched": 4,
+     "wrong view": 0,
+     "no segment at IoU 0.5": 3,
+     "taken by another reference": 0,
+     "recall": 0.5714285714285714,
+     "missed_recordings": 4,
+     "missed_sessions": 4
+    }
+   },
+   "calibration": {
+    "short segments": {
+     "segments": 134,
+     "matched": 127,
+     "wrong view": 5,
+     "no segment at IoU 0.5": 2,
+     "taken by another reference": 0,
+     "recall": 0.9477611940298507,
+     "missed_recordings": 7,
+     "missed_sessions": 6
+    },
+    "short A4C or A5C segments": {
+     "segments": 67,
+     "matched": 61,
+     "wrong view": 4,
+     "no segment at IoU 0.5": 2,
+     "taken by another reference": 0,
+     "recall": 0.9104477611940298,
+     "missed_recordings": 6,
+     "missed_sessions": 5
+    },
+    "X-Y-X middles": {
+     "segments": 80,
+     "matched": 79,
+     "wrong view": 1,
+     "no segment at IoU 0.5": 0,
+     "taken by another reference": 0,
+     "recall": 0.9875,
+     "missed_recordings": 3,
+     "missed_sessions": 3
+    },
+    "A4C/A5C X-Y-X middles": {
+     "segments": 7,
+     "matched": 7,
+     "wrong view": 0,
+     "no segment at IoU 0.5": 0,
+     "taken by another reference": 0,
+     "recall": 1.0,
+     "missed_recordings": 0,
+     "missed_sessions": 0
+    }
+   }
+  },
+  "FACT_s1": {
+   "selection": {
+    "short segments": {
+     "segments": 141,
+     "matched": 127,
+     "wrong view": 6,
+     "no segment at IoU 0.5": 8,
+     "taken by another reference": 0,
+     "recall": 0.900709219858156,
+     "missed_recordings": 11,
+     "missed_sessions": 9
+    },
+    "short A4C or A5C segments": {
+     "segments": 65,
+     "matched": 56,
+     "wrong view": 2,
+     "no segment at IoU 0.5": 7,
+     "taken by another reference": 0,
+     "recall": 0.8615384615384616,
+     "missed_recordings": 8,
+     "missed_sessions": 7
+    },
+    "X-Y-X middles": {
+     "segments": 69,
+     "matched": 60,
+     "wrong view": 2,
+     "no segment at IoU 0.5": 7,
+     "taken by another reference": 0,
+     "recall": 0.8695652173913043,
+     "missed_recordings": 9,
+     "missed_sessions": 9
+    },
+    "A4C/A5C X-Y-X middles": {
+     "segments": 7,
+     "matched": 3,
+     "wrong view": 0,
+     "no segment at IoU 0.5": 4,
+     "taken by another reference": 0,
+     "recall": 0.42857142857142855,
+     "missed_recordings": 4,
+     "missed_sessions": 4
+    }
+   },
+   "calibration": {
+    "short segments": {
+     "segments": 134,
+     "matched": 123,
+     "wrong view": 6,
+     "no segment at IoU 0.5": 5,
+     "taken by another reference": 0,
+     "recall": 0.917910447761194,
+     "missed_recordings": 8,
+     "missed_sessions": 6
+    },
+    "short A4C or A5C segments": {
+     "segments": 67,
+     "matched": 57,
+     "wrong view": 5,
+     "no segment at IoU 0.5": 5,
+     "taken by another reference": 0,
+     "recall": 0.8507462686567164,
+     "missed_recordings": 7,
+     "missed_sessions": 5
+    },
+    "X-Y-X middles": {
+     "segments": 80,
+     "matched": 77,
+     "wrong view": 1,
+     "no segment at IoU 0.5": 2,
+     "taken by another reference": 0,
+     "recall": 0.9625,
+     "missed_recordings": 3,
+     "missed_sessions": 3
+    },
+    "A4C/A5C X-Y-X middles": {
+     "segments": 7,
+     "matched": 5,
+     "wrong view": 0,
+     "no segment at IoU 0.5": 2,
+     "taken by another reference": 0,
+     "recall": 0.7142857142857143,
+     "missed_recordings": 2,
+     "missed_sessions": 2
+    }
+   }
+  },
+  "ASRF_s1": {
+   "selection": {
+    "short segments": {
+     "segments": 141,
+     "matched": 123,
+     "wrong view": 6,
+     "no segment at IoU 0.5": 12,
+     "taken by another reference": 0,
+     "recall": 0.8723404255319149,
+     "missed_recordings": 15,
+     "missed_sessions": 10
+    },
+    "short A4C or A5C segments": {
+     "segments": 65,
+     "matched": 51,
+     "wrong view": 3,
+     "no segment at IoU 0.5": 11,
+     "taken by another reference": 0,
+     "recall": 0.7846153846153846,
+     "missed_recordings": 13,
+     "missed_sessions": 9
+    },
+    "X-Y-X middles": {
+     "segments": 69,
+     "matched": 60,
+     "wrong view": 3,
+     "no segment at IoU 0.5": 6,
+     "taken by another reference": 0,
+     "recall": 0.8695652173913043,
+     "missed_recordings": 10,
+     "missed_sessions": 9
+    },
+    "A4C/A5C X-Y-X middles": {
+     "segments": 7,
+     "matched": 3,
+     "wrong view": 0,
+     "no segment at IoU 0.5": 4,
+     "taken by another reference": 0,
+     "recall": 0.42857142857142855,
+     "missed_recordings": 5,
+     "missed_sessions": 5
+    }
+   },
+   "calibration": {
+    "short segments": {
+     "segments": 134,
+     "matched": 128,
+     "wrong view": 4,
+     "no segment at IoU 0.5": 2,
+     "taken by another reference": 0,
+     "recall": 0.9552238805970149,
+     "missed_recordings": 6,
+     "missed_sessions": 5
+    },
+    "short A4C or A5C segments": {
+     "segments": 67,
+     "matched": 61,
+     "wrong view": 4,
+     "no segment at IoU 0.5": 2,
+     "taken by another reference": 0,
+     "recall": 0.9104477611940298,
+     "missed_recordings": 6,
+     "missed_sessions": 5
+    },
+    "X-Y-X middles": {
+     "segments": 80,
+     "matched": 79,
+     "wrong view": 1,
+     "no segment at IoU 0.5": 0,
+     "taken by another reference": 0,
+     "recall": 0.9875,
+     "missed_recordings": 3,
+     "missed_sessions": 3
+    },
+    "A4C/A5C X-Y-X middles": {
+     "segments": 7,
+     "matched": 7,
+     "wrong view": 0,
+     "no segment at IoU 0.5": 0,
+     "taken by another reference": 0,
+     "recall": 1.0,
+     "missed_recordings": 0,
+     "missed_sessions": 0
+    }
+   }
+  },
+  "FACT_s2": {
+   "selection": {
+    "short segments": {
+     "segments": 141,
+     "matched": 128,
+     "wrong view": 5,
+     "no segment at IoU 0.5": 8,
+     "taken by another reference": 0,
+     "recall": 0.9078014184397163,
+     "missed_recordings": 9,
+     "missed_sessions": 8
+    },
+    "short A4C or A5C segments": {
+     "segments": 65,
+     "matched": 55,
+     "wrong view": 2,
+     "no segment at IoU 0.5": 8,
+     "taken by another reference": 0,
+     "recall": 0.8461538461538461,
+     "missed_recordings": 8,
+     "missed_sessions": 7
+    },
+    "X-Y-X middles": {
+     "segments": 69,
+     "matched": 59,
+     "wrong view": 1,
+     "no segment at IoU 0.5": 9,
+     "taken by another reference": 0,
+     "recall": 0.855072463768116,
+     "missed_recordings": 12,
+     "missed_sessions": 12
+    },
+    "A4C/A5C X-Y-X middles": {
+     "segments": 7,
+     "matched": 3,
+     "wrong view": 0,
+     "no segment at IoU 0.5": 4,
+     "taken by another reference": 0,
+     "recall": 0.42857142857142855,
+     "missed_recordings": 4,
+     "missed_sessions": 4
+    }
+   },
+   "calibration": {
+    "short segments": {
+     "segments": 134,
+     "matched": 125,
+     "wrong view": 4,
+     "no segment at IoU 0.5": 5,
+     "taken by another reference": 0,
+     "recall": 0.9328358208955224,
+     "missed_recordings": 7,
+     "missed_sessions": 5
+    },
+    "short A4C or A5C segments": {
+     "segments": 67,
+     "matched": 59,
+     "wrong view": 4,
+     "no segment at IoU 0.5": 4,
+     "taken by another reference": 0,
+     "recall": 0.8805970149253731,
+     "missed_recordings": 6,
+     "missed_sessions": 4
+    },
+    "X-Y-X middles": {
+     "segments": 80,
+     "matched": 78,
+     "wrong view": 0,
+     "no segment at IoU 0.5": 2,
+     "taken by another reference": 0,
+     "recall": 0.975,
+     "missed_recordings": 2,
+     "missed_sessions": 2
+    },
+    "A4C/A5C X-Y-X middles": {
+     "segments": 7,
+     "matched": 6,
+     "wrong view": 0,
+     "no segment at IoU 0.5": 1,
+     "taken by another reference": 0,
+     "recall": 0.8571428571428571,
+     "missed_recordings": 1,
+     "missed_sessions": 1
+    }
+   }
+  },
+  "ASRF_s2": {
+   "selection": {
+    "short segments": {
+     "segments": 141,
+     "matched": 125,
+     "wrong view": 6,
+     "no segment at IoU 0.5": 10,
+     "taken by another reference": 0,
+     "recall": 0.8865248226950354,
+     "missed_recordings": 14,
+     "missed_sessions": 10
+    },
+    "short A4C or A5C segments": {
+     "segments": 65,
+     "matched": 54,
+     "wrong view": 3,
+     "no segment at IoU 0.5": 8,
+     "taken by another reference": 0,
+     "recall": 0.8307692307692308,
+     "missed_recordings": 11,
+     "missed_sessions": 8
+    },
+    "X-Y-X middles": {
+     "segments": 69,
+     "matched": 60,
+     "wrong view": 4,
+     "no segment at IoU 0.5": 5,
+     "taken by another reference": 0,
+     "recall": 0.8695652173913043,
+     "missed_recordings": 9,
+     "missed_sessions": 8
+    },
+    "A4C/A5C X-Y-X middles": {
+     "segments": 7,
+     "matched": 4,
+     "wrong view": 0,
+     "no segment at IoU 0.5": 3,
+     "taken by another reference": 0,
+     "recall": 0.5714285714285714,
+     "missed_recordings": 4,
+     "missed_sessions": 4
+    }
+   },
+   "calibration": {
+    "short segments": {
+     "segments": 134,
+     "matched": 125,
+     "wrong view": 5,
+     "no segment at IoU 0.5": 4,
+     "taken by another reference": 0,
+     "recall": 0.9328358208955224,
+     "missed_recordings": 9,
+     "missed_sessions": 7
+    },
+    "short A4C or A5C segments": {
+     "segments": 67,
+     "matched": 60,
+     "wrong view": 4,
+     "no segment at IoU 0.5": 3,
+     "taken by another reference": 0,
+     "recall": 0.8955223880597015,
+     "missed_recordings": 7,
+     "missed_sessions": 6
+    },
+    "X-Y-X middles": {
+     "segments": 80,
+     "matched": 79,
+     "wrong view": 1,
+     "no segment at IoU 0.5": 0,
+     "taken by another reference": 0,
+     "recall": 0.9875,
+     "missed_recordings": 3,
+     "missed_sessions": 3
+    },
+    "A4C/A5C X-Y-X middles": {
+     "segments": 7,
+     "matched": 7,
+     "wrong view": 0,
+     "no segment at IoU 0.5": 0,
+     "taken by another reference": 0,
+     "recall": 1.0,
+     "missed_recordings": 0,
+     "missed_sessions": 0
+    }
+   }
+  },
+  "E1 + B3": {
+   "selection": {
+    "short segments": {
+     "segments": 141,
+     "matched": 129,
+     "wrong view": 6,
+     "no segment at IoU 0.5": 6,
+     "taken by another reference": 0,
+     "recall": 0.9148936170212766,
+     "missed_recordings": 10,
+     "missed_sessions": 7
+    },
+    "short A4C or A5C segments": {
+     "segments": 65,
+     "matched": 56,
+     "wrong view": 3,
+     "no segment at IoU 0.5": 6,
+     "taken by another reference": 0,
+     "recall": 0.8615384615384616,
+     "missed_recordings": 9,
+     "missed_sessions": 6
+    },
+    "X-Y-X middles": {
+     "segments": 69,
+     "matched": 63,
+     "wrong view": 2,
+     "no segment at IoU 0.5": 4,
+     "taken by another reference": 0,
+     "recall": 0.9130434782608695,
+     "missed_recordings": 6,
+     "missed_sessions": 5
+    },
+    "A4C/A5C X-Y-X middles": {
+     "segments": 7,
+     "matched": 5,
+     "wrong view": 0,
+     "no segment at IoU 0.5": 2,
+     "taken by another reference": 0,
+     "recall": 0.7142857142857143,
+     "missed_recordings": 2,
+     "missed_sessions": 2
+    }
+   },
+   "calibration": {
+    "short segments": {
+     "segments": 134,
+     "matched": 125,
+     "wrong view": 5,
+     "no segment at IoU 0.5": 4,
+     "taken by another reference": 0,
+     "recall": 0.9328358208955224,
+     "missed_recordings": 8,
+     "missed_sessions": 6
+    },
+    "short A4C or A5C segments": {
+     "segments": 67,
+     "matched": 59,
+     "wrong view": 4,
+     "no segment at IoU 0.5": 4,
+     "taken by another reference": 0,
+     "recall": 0.8805970149253731,
+     "missed_recordings": 7,
+     "missed_sessions": 5
+    },
+    "X-Y-X middles": {
+     "segments": 80,
+     "matched": 80,
+     "wrong view": 0,
+     "no segment at IoU 0.5": 0,
+     "taken by another reference": 0,
+     "recall": 1.0,
+     "missed_recordings": 0,
+     "missed_sessions": 0
+    },
+    "A4C/A5C X-Y-X middles": {
+     "segments": 7,
+     "matched": 7,
+     "wrong view": 0,
+     "no segment at IoU 0.5": 0,
+     "taken by another reference": 0,
+     "recall": 1.0,
+     "missed_recordings": 0,
+     "missed_sessions": 0
+    }
+   }
+  }
+ },
+ "tokens": {
+  "FACT_s0": {
+   "selection": {
+    "multi_streams": 120,
+    "tokens_equal_segments": 77,
+    "fewer_tokens": 10,
+    "more_tokens": 33,
+    "mean_tokens_minus_segments": 0.25,
+    "sequences": 541,
+    "outputs_with_a_token_on_separate_intervals": 4
+   },
+   "calibration": {
+    "multi_streams": 120,
+    "tokens_equal_segments": 81,
+    "fewer_tokens": 5,
+    "more_tokens": 34,
+    "mean_tokens_minus_segments": 0.30833333333333335,
+    "sequences": 472,
+    "outputs_with_a_token_on_separate_intervals": 2
+   }
+  },
+  "FACT_s1": {
+   "selection": {
+    "multi_streams": 120,
+    "tokens_equal_segments": 73,
+    "fewer_tokens": 10,
+    "more_tokens": 37,
+    "mean_tokens_minus_segments": 0.2916666666666667,
+    "sequences": 541,
+    "outputs_with_a_token_on_separate_intervals": 6
+   },
+   "calibration": {
+    "multi_streams": 120,
+    "tokens_equal_segments": 81,
+    "fewer_tokens": 7,
+    "more_tokens": 32,
+    "mean_tokens_minus_segments": 0.26666666666666666,
+    "sequences": 472,
+    "outputs_with_a_token_on_separate_intervals": 6
+   }
+  },
+  "FACT_s2": {
+   "selection": {
+    "multi_streams": 120,
+    "tokens_equal_segments": 82,
+    "fewer_tokens": 10,
+    "more_tokens": 28,
+    "mean_tokens_minus_segments": 0.175,
+    "sequences": 541,
+    "outputs_with_a_token_on_separate_intervals": 5
+   },
+   "calibration": {
+    "multi_streams": 120,
+    "tokens_equal_segments": 92,
+    "fewer_tokens": 3,
+    "more_tokens": 25,
+    "mean_tokens_minus_segments": 0.20833333333333334,
+    "sequences": 472,
+    "outputs_with_a_token_on_separate_intervals": 1
+   }
+  }
+ },
+ "cost": {
+  "training_hours": {
+   "FACT_s0": 3.168784500559171,
+   "ASRF_s0": 0.4117940408653683,
+   "FACT_s1": 2.962990497350693,
+   "ASRF_s1": 0.37947732402218715,
+   "FACT_s2": 2.7964356161488424,
+   "ASRF_s2": 0.37666004220644633
+  },
+  "decode_seconds_per_sequence": {
+   "FACT_s0": 0.02131463074690492,
+   "ASRF_s0": 0.01099023861191006,
+   "FACT_s1": 0.017921656071850298,
+   "ASRF_s1": 0.008009264346292328,
+   "FACT_s2": 0.01793006095139954,
+   "ASRF_s2": 0.00783650975145341
+  }
+ },
+ "seconds": 244.85022473335266,
+ "references_g1": {
+  "schema": "scripts.report_model_development_round2.metrics on the stored rows",
+  "G1 + ASRF s0": {
+   "selection": {
+    "native_macro_f1": 0.9176851578362957,
+    "native_recall": {
+     "PLAX": [
+      104,
+      105
+     ],
+     "PSAX": [
+      68,
+      68
+     ],
+     "A4C": [
+      81,
+      87
+     ],
+     "A5C": [
+      9,
+      11
+     ],
+     "SC4C": [
+      12,
+      13
+     ]
+    },
+    "segment_f1_50_multi": 0.9038076152304609,
+    "boundary_recall_multi": 0.9319371727748691,
+    "boundary_f1_multi": 0.9393139841688655,
+    "cuts_per_clip": 0.04225352112676056,
+    "cuts_per_min": 0.4328223624887286,
+    "same_class_cut_rate": 0.034782608695652174,
+    "multi_sample_error": 0.06857830358933226
+   },
+   "calibration": {
+    "native_macro_f1": 0.9861403508771929,
+    "native_recall": {
+     "PLAX": [
+      80,
+      80
+     ],
+     "PSAX": [
+      71,
+      71
+     ],
+     "A4C": [
+      59,
+      61
+     ],
+     "A5C": [
+      18,
+      18
+     ],
+     "SC4C": [
+      7,
+      7
+     ]
+    },
+    "segment_f1_50_multi": 0.9718719689621726,
+    "boundary_recall_multi": 0.9723618090452262,
+    "boundary_f1_multi": 0.9785082174462706,
+    "cuts_per_clip": 0.03375527426160337,
+    "cuts_per_min": 0.3351253229072122,
+    "same_class_cut_rate": 0.014925373134328358,
+    "multi_sample_error": 0.02584943371085946
+   }
+  },
+  "G1 + ASRF s1": {
+   "selection": {
+    "native_macro_f1": 0.9531602709584677,
+    "native_recall": {
+     "PLAX": [
+      104,
+      105
+     ],
+     "PSAX": [
+      68,
+      68
+     ],
+     "A4C": [
+      83,
+      87
+     ],
+     "A5C": [
+      11,
+      11
+     ],
+     "SC4C": [
+      12,
+      13
+     ]
+    },
+    "segment_f1_50_multi": 0.92,
+    "boundary_recall_multi": 0.9476439790575916,
+    "boundary_f1_multi": 0.9526315789473684,
+    "cuts_per_clip": 0.04225352112676056,
+    "cuts_per_min": 0.4328223624887286,
+    "same_class_cut_rate": 0.030434782608695653,
+    "multi_sample_error": 0.04886037029610324
+   },
+   "calibration": {
+    "native_macro_f1": 0.9861403508771929,
+    "native_recall": {
+     "PLAX": [
+      80,
+      80
+     ],
+     "PSAX": [
+      71,
+      71
+     ],
+     "A4C": [
+      59,
+      61
+     ],
+     "A5C": [
+      18,
+      18
+     ],
+     "SC4C": [
+      7,
+      7
+     ]
+    },
+    "segment_f1_50_multi": 0.973963355834137,
+    "boundary_recall_multi": 0.9824120603015075,
+    "boundary_f1_multi": 0.9811794228356336,
+    "cuts_per_clip": 0.05063291139240506,
+    "cuts_per_min": 0.5026879843608183,
+    "same_class_cut_rate": 0.01990049751243781,
+    "multi_sample_error": 0.02131912058627583
+   }
+  },
+  "G1 + ASRF s2": {
+   "selection": {
+    "native_macro_f1": 0.953666606203744,
+    "native_recall": {
+     "PLAX": [
+      104,
+      105
+     ],
+     "PSAX": [
+      68,
+      68
+     ],
+     "A4C": [
+      87,
+      87
+     ],
+     "A5C": [
+      8,
+      11
+     ],
+     "SC4C": [
+      12,
+      13
+     ]
+    },
+    "segment_f1_50_multi": 0.9152542372881356,
+    "boundary_recall_multi": 0.9476439790575916,
+    "boundary_f1_multi": 0.9488859764089121,
+    "cuts_per_clip": 0.017605633802816902,
+    "cuts_per_min": 0.18034265103697023,
+    "same_class_cut_rate": 0.02608695652173913,
+    "multi_sample_error": 0.06617204732303994
+   },
+   "calibration": {
+    "native_macro_f1": 0.9856102003642988,
+    "native_recall": {
+     "PLAX": [
+      80,
+      80
+     ],
+     "PSAX": [
+      71,
+      71
+     ],
+     "A4C": [
+      60,
+      61
+     ],
+     "A5C": [
+      17,
+      18
+     ],
+     "SC4C": [
+      7,
+      7
+     ]
+    },
+    "segment_f1_50_multi": 0.9758454106280193,
+    "boundary_recall_multi": 0.9798994974874372,
+    "boundary_f1_multi": 0.9811320754716981,
+    "cuts_per_clip": 0.029535864978902954,
+    "cuts_per_min": 0.2932346575438107,
+    "same_class_cut_rate": 0.01990049751243781,
+    "multi_sample_error": 0.021185876082611577
+   }
+  }
+ }
+}
