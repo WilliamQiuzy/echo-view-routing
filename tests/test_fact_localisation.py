@@ -24,7 +24,7 @@ HAS_FACT = (ROOT / "third_party/fact/.git").exists()
 
 # ----------------------------------------------------------------------------------------------- allowlist
 def write_index(path: Path, rows: list) -> None:
-    path.write_text("video_id,split,label_index,n_samples,extra\n" + "".join(f"{v},{s},{lab},{n},x\n" for v, s, lab, n in rows))
+    path.write_text("video_id,split,raw_label,label_index,n_samples,path\n" + "".join(f"{v},{s},view_{lab},{lab},{n},/x/{v}.avi\n" for v, s, lab, n in rows))
 
 
 def test_allowlist_filters_rows_before_labels_are_parsed(tmp_path):
@@ -32,7 +32,9 @@ def test_allowlist_filters_rows_before_labels_are_parsed(tmp_path):
     write_index(p, [("a_1", "train", 0, 30), ("v_1", "validation", "garbage", 20), ("b_1", "train", 3, 25), ("t_1", "train", 99, 10)])
     rows, info = dl.allowlist_rows(p, ("b_1", "a_1"))
     assert rows["video_id"].tolist() == ["a_1", "b_1"] and rows["label_index"].tolist() == [0, 3]   # the index's own row order
-    assert info == {"index_rows": 4, "training_rows_kept": 2, "rows_dropped_before_label_parsing": 2}   # labels outside never parsed
+    assert info["index_rows"] == 4 and info["training_rows_kept"] == 2 and info["rows_dropped_before_label_parsing"] == 2
+    assert list(rows.columns) == ["video_id", "split", "n_samples", "label_index"]          # no raw view name, no path
+    assert info["columns_read_for_every_row"] == ["video_id", "split", "n_samples"] and info["columns_read_for_kept_rows"] == ["video_id", "label_index"]
 
 
 @pytest.mark.parametrize("rows, clips", [
@@ -199,8 +201,14 @@ def test_own_share_separates_absorbed_runs_from_slightly_long_intervals():
                       "C": {"final": [0] * 24, "U": [0] * 24}}, 5, 16)
     s = ft.by_own_share(us)["xyx"]
     assert s["minority in every interval"]["segments"] == 1 and s["minority in every interval"]["matched"] == {"A": 0, "B": 1, "C": 0}
-    rec = {"native": False, "partition_A": [[0, 3], [3, 6]], "stages": {"FACT_final": [1, 1, 2, 0, 0, 0], "FACT_U": [1, 1, 1, 0, 3, 0]}}
-    assert ft.changes_inside_intervals([rec])["stream"] == {"intervals": 2, "official_output_changes_inside": 1, "U_frame_branch_changes_inside": 1}
+    rec = {"native": False, "partition_A": [[0, 3], [3, 6]], "stages": {"FACT_final": [1, 1, 2, 0, 0, 0], "FACT_U": [1, 1, 1, 0, 3, 0]},
+           "tokens": {"U": [1, 3] + [5] * 10}, "assign": [0, 0, 0, 1, 1, 1]}
+    c = ft.changes_inside_intervals([rec])["stream"]   # interval 2 is labelled 0 against its token's class 3 on every frame
+    assert (c["intervals"], c["official_output_changes_inside"], c["U_frame_branch_changes_inside"]) == (2, 1, 1)
+    assert c["label_differs_from_the_assigned_token_class_on_every_frame"] == 1 and c["label_differs_from_the_assigned_token_class_on_some_frames"] == 2
+    assert us[0]["U_tokens_of_view"] == 0 and us[0]["runs_of_view"] == 2 and us[1]["runs_of_view"] == 1
+    m = ft.partition_mixing([{"ref": [0] * 10 + [1] * 4 + [0] * 10, "partition_A": [[0, 10], [10, 16], [16, 24]], "frags": [["p1_1", 0, 24]]}], 16)
+    assert m["reference_changes_on_a_boundary"]["all"] == [1, 2]                         # the change at 10 is a boundary, 14 is not
 
 
 def test_fit_table_pools_over_sequences():

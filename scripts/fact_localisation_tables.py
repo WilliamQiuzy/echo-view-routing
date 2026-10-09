@@ -108,15 +108,18 @@ def own_share(t, part: list) -> float:
 
 
 def units_of(rec: dict, tol: float, short_max: int) -> list[dict]:
-    """One unit per reference run: its groups, distinct source recordings and sessions, its share of the partition
-    entering U, and its measures per readout."""
+    """One unit per reference run: its groups, distinct source recordings and sessions, the non-null U tokens of its
+    view and the reference runs of its view in the sequence, its share of the partition entering U, and its measures per
+    readout."""
     ref = np.asarray(rec["ref"]); true = labels_to_segments(ref); per = {n: segment_measures(ref, readout(rec, n), tol) for n in READOUTS}
-    active = {c for c in rec["tokens"]["U"] if c != N_CLASSES}; part = [tuple(i) for i in rec["partition_A"]]; out = []
+    active = [c for c in rec["tokens"]["U"] if c != N_CLASSES]; part = [tuple(i) for i in rec["partition_A"]]; out = []
+    runs_of_view = Counter(g.label for g in true)
     for k, t in enumerate(true):
         src = sorted({v for v, a, b in rec["frags"] if a < t.end and t.start < b})
         out.append({"kind": "native" if rec["native"] else "stream", "seq": rec["seq_id"], "k": k, "label": t.label, "length": t.length,
                     "groups": unit_groups(true, k, short_max), "recordings": src, "sessions": sorted({session_of(v) for v in src}),
-                    "view_among_U_tokens": t.label in active, "own_share": own_share(t, part), "m": {n: per[n][k] for n in READOUTS}})
+                    "view_among_U_tokens": t.label in active, "U_tokens_of_view": active.count(t.label), "runs_of_view": runs_of_view[t.label],
+                    "own_share": own_share(t, part), "m": {n: per[n][k] for n in READOUTS}})
     return out
 
 
@@ -213,9 +216,15 @@ def partition_mixing(streams: list[dict], short_max: int) -> dict:
     how many reference runs each interval covers and how mixed its reference views are; and per reference run whether
     it has its own interval(s), lies inside a larger interval, or has an end inside an interval while spanning several.
     This describes the grouping; it does not show a cause."""
-    cover, minority, cats = Counter(), [], {g: {} for g in GROUPS}
+    cover, minority, cats, on = Counter(), [], {g: {} for g in GROUPS}, Counter()
     for r in streams:
         ref = np.asarray(r["ref"]); true = labels_to_segments(ref); part = [tuple(i) for i in r["partition_A"]]; bounds = {s for s, _ in part} | {ref.size}
+        for c in boundaries_from_labels(ref).tolist():   # added after the run (summary only)
+            pair = {int(ref[c - 1]), int(ref[c])} == {A4C, A5C}; on["all"] += int(c in bounds); on["all_n"] += 1
+            on["a4c_a5c"] += int(pair and c in bounds); on["a4c_a5c_n"] += int(pair)
+        for k, t in enumerate(true):
+            if xyx_middle((A4C, A5C))(true, k):
+                on["middle_ends"] += int(t.start in bounds) + int(t.end in bounds); on["middle_ends_n"] += 2
         for s, e in part:
             cover[min(sum(1 for t in true if t.start < e and s < t.end), 4)] += 1; cnt = np.bincount(ref[s:e], minlength=N_CLASSES)
             if (cnt > 0).sum() > 1:
@@ -230,6 +239,8 @@ def partition_mixing(streams: list[dict], short_max: int) -> dict:
                 d["segments"] += 1; d["recordings"] |= src; d["sessions"] |= {session_of(v) for v in src}
     return {"intervals": sum(cover.values()), "intervals_by_reference_runs_covered": {("4 or more" if k == 4 else str(k)): v for k, v in sorted(cover.items())},
             "mixed_intervals": len(minority), "minority_share_of_mixed_median": float(np.median(minority)) if minority else None,
+            "reference_changes_on_a_boundary": {"all": [on["all"], on["all_n"]], "A4C_A5C": [on["a4c_a5c"], on["a4c_a5c_n"]],
+                                                "A4C_A5C_middle_ends": [on["middle_ends"], on["middle_ends_n"]]},
             "reference_runs": {g: {c: {"segments": d["segments"], "recordings": len(d["recordings"]), "sessions": len(d["sessions"])} for c, d in v.items()}
                                for g, v in cats.items()}}
 
@@ -251,15 +262,26 @@ def by_own_share(units: list[dict]) -> dict:
 
 def changes_inside_intervals(recs: list[dict]) -> dict:
     """Added after the run (summary only): partition intervals entering U inside which the official output (A) or the
-    U block's frame branch changes its label. The official decode gives every frame of one interval the same token and
-    mixes in the frame branch at weight 0.1, so it can change inside an interval only where the frame branch outweighs."""
+    U block's frame branch changes its label, and those whose official label differs from the class of the token the
+    decode assigned (on every frame or on some). The official decode gives every frame of one interval the same token and
+    mixes in the frame branch at weight 0.1, so the label can leave the token's class only where the frame branch
+    outweighs it."""
     out = {}
     for kind, rs in (("stream", [r for r in recs if not r["native"]]), ("native", [r for r in recs if r["native"]])):
-        n, final, frame = 0, 0, 0
+        c = Counter()
         for r in rs:
+            fin, tok = r["stages"]["FACT_final"], r["tokens"]["U"]
             for s, e in r["partition_A"]:
-                n += 1; final += int(len(set(r["stages"]["FACT_final"][s:e])) > 1); frame += int(len(set(r["stages"]["FACT_U"][s:e])) > 1)
-        out[kind] = {"intervals": n, "official_output_changes_inside": final, "U_frame_branch_changes_inside": frame}
+                c["intervals"] += 1; c["official_output_changes_inside"] += int(len(set(fin[s:e])) > 1)
+                c["U_frame_branch_changes_inside"] += int(len(set(r["stages"]["FACT_U"][s:e])) > 1)
+                if r["assign"] is None:
+                    c["intervals_decoded_by_the_frame_branch_fallback"] += 1; continue
+                differ = [fin[i] != tok[r["assign"][i]] for i in range(s, e)]
+                c["label_differs_from_the_assigned_token_class_on_every_frame"] += int(all(differ))
+                c["label_differs_from_the_assigned_token_class_on_some_frames"] += int(any(differ))
+        out[kind] = {k: c[k] for k in ("intervals", "official_output_changes_inside", "U_frame_branch_changes_inside",
+                                       "label_differs_from_the_assigned_token_class_on_every_frame",
+                                       "label_differs_from_the_assigned_token_class_on_some_frames", "intervals_decoded_by_the_frame_branch_fallback")}
     return out
 
 
@@ -304,6 +326,9 @@ def seed_summary(recs: list[dict], units: list[dict], tol: float, short_max: int
             "tokens": token_summary(kinds), "logit_argmax_mismatches": sum(r["logit_argmax_mismatches"] for r in recs),
             "unmatched_at_FACT_final_with_its_view_among_U_tokens": {gk: [sum(u["view_among_U_tokens"] for u in us if not u["m"]["FACT_final"]["matched"]),
                                                                           sum(not u["m"]["FACT_final"]["matched"] for u in us)] for gk, us in groups.items()},
+            "unmatched_at_FACT_final_with_as_many_U_tokens_of_its_view_as_runs_of_it": {   # added after the run (summary only)
+                gk: [sum(u["U_tokens_of_view"] >= u["runs_of_view"] for u in us if not u["m"]["FACT_final"]["matched"]),
+                     sum(not u["m"]["FACT_final"]["matched"] for u in us)] for gk, us in groups.items()},
             "partition_entering_U": {**partition_mixing(kinds["stream"], short_max), "by_own_share": by_own_share(units),
                                      "changes_inside_intervals": changes_inside_intervals(recs)},
             "intervention": intervention(kinds["stream"], kinds["native"], units, tol)}
@@ -336,7 +361,7 @@ def tables_md(res: dict) -> str:
     """The generated tables of report_tables.md (a subset of summary.json)."""
     parts = ["# FACT short-segment localisation: tables\n", WHAT + "\n",
              "Recompute: `python scripts/diagnose_fact_localisation.py --config configs/experiments/fact_localisation_v1.yaml --run`\n"]
-    fit, grp, first, trans, part, share, iv, chg, tok = [], [], [], [], [], [], [], [], []
+    fit, grp, first, trans, part, share, on, iv, chg, tok = [], [], [], [], [], [], [], [], [], []
     for seed, s in res["seeds"].items():
         for kind, per in s["fit"].items():
             fit += [{"seed": seed, "kind": kind, "readout": n, "frame error": r["frame_error"], "segment F1@50 (pooled)": r["segment_f1_50"],
@@ -359,8 +384,11 @@ def tables_md(res: dict) -> str:
                        "matched A/B/C": f"{v['matched']['A']}/{v['matched']['B']}/{v['matched']['C']}",
                        "U frame branch A/B/C": "/".join(str(v["matched_by_U_frame_branch"][c]) for c in "ABC")} for c, v in cats.items()]
         share += [{"seed": seed, "group": f"{k} intervals", "place": "changes inside an interval", "segments": v["intervals"],
-                   "matched A/B/C": f"official output {v['official_output_changes_inside']}", "U frame branch A/B/C": f"{v['U_frame_branch_changes_inside']}"}
+                   "matched A/B/C": f"official output {v['official_output_changes_inside']} (label off its token's class on every frame: "
+                                    f"{v['label_differs_from_the_assigned_token_class_on_every_frame']})",
+                   "U frame branch A/B/C": f"{v['U_frame_branch_changes_inside']}"}
                   for k, v in s["partition_entering_U"]["changes_inside_intervals"].items()]
+        on += [{"seed": seed, **{k: f"{a}/{n}" for k, (a, n) in s["partition_entering_U"]["reference_changes_on_a_boundary"].items()}}]
         o = s["intervention"]
         for label in ("official_output", "U_frame_branch"):
             iv += [{"seed": seed, "readout": label, "condition": c, **{k: r[k] for k in ("segment_f1_50", "boundary_recall", "boundary_precision")},
@@ -377,6 +405,7 @@ def tables_md(res: dict) -> str:
               "## Earliest unmatched readout along E1 -> FACT i -> u -> U -> final\n", md_table(first),
               "## Lost and recovered between readouts\n", md_table(trans), "## Reference runs in the partition entering U (constructed streams)\n", md_table(part),
               "### By the largest share of one interval a run fills (added after the run; summary only)\n", md_table(share),
+              "### Reference changes on a partition boundary (added after the run; summary only)\n", md_table(on),
               "## Intervention at the last U block (constructed streams; B and C use the reference partition)\n", md_table(iv), "### Cuts\n", md_table(cuts),
               "### Matched, fixed and new reference runs by group\n", md_table(chg), "## Tokens\n", md_table(tok),
               "## Across seeds\n", "```\n" + json.dumps(res.get("across_seeds", {}), indent=1) + "\n```\n", "## Cost\n", "```\n" + json.dumps(res.get("cost", {}), indent=1) + "\n```\n"]

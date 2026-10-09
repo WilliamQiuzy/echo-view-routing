@@ -62,6 +62,7 @@ from echo_routing.temporal.segments import boundaries_from_labels, labels_to_seg
 NS, SRC = "fact_localisation_v1", "fact_asrf_paired_v1"
 ARMS = ("FACT", "ASRF")
 BLOCK_TYPES = ("InputBlock", "UpdateBlock", "UpdateBlockTDU")   # gtea.yaml: the blocks i, u, U
+META_COLUMNS = ("video_id", "split", "n_samples")                  # the only index columns read for every row
 CHECKS = ("official_partition_is_u_runs", "ordinary_equals_official", "A_equals_ordinary", "B_inputs_equal_A", "C_inputs_equal_A",
           "B_equals_A_without_cuts", "C_equals_A_without_cuts", "B_partition_used", "C_partition_used", "A_repeats", "input_unchanged")
 ATTRS = ("frame_clogit", "action_clogit", "seg_clogit", "f2a_attn", "a2f_attn", "f2a_attn_logit", "a2f_attn_logit")
@@ -73,13 +74,14 @@ CODE = ("scripts/train_fact_asrf.py", "scripts/fact_integration.py", "scripts/tr
 
 # ----------------------------------------------------------------------------------------------- training rows and context
 def allowlist_rows(index_csv: Path, clips: tuple[str, ...]) -> tuple[pd.DataFrame, dict]:
-    """The index rows of the allowlisted clips in the file's own row order, checked before any label is parsed: no clip
-    repeated in the allowlist or the index, none missing, none outside the training split or without samples. Then the
-    label column is parsed for the kept rows only (their ids must line up) and must lie in 0..4."""
+    """The index rows of the allowlisted clips in the file's own row order. For every row only the id, the split and the
+    sample count are read, and the rows are checked: no clip repeated in the allowlist or the index, none missing, none
+    outside the training split or without samples. Then label_index is read for the kept rows only (their ids must line
+    up) and must lie in 0..4. No other column (the raw view name, the file path) is read for any row."""
     allow = set(clips)
     if len(allow) != len(clips):
         raise SystemExit("the training allowlist repeats a clip")
-    meta = pd.read_csv(index_csv, dtype={"video_id": str}, usecols=lambda c: c != "label_index")
+    meta = pd.read_csv(index_csv, dtype={"video_id": str}, usecols=list(META_COLUMNS))
     keep = meta["video_id"].isin(allow).to_numpy(); rows = meta.loc[keep]
     if rows["video_id"].duplicated().any():
         raise SystemExit("a training clip has more than one index row")
@@ -95,14 +97,15 @@ def allowlist_rows(index_csv: Path, clips: tuple[str, ...]) -> tuple[pd.DataFram
     if not pd.api.types.is_integer_dtype(lab) or lab.min() < 0 or lab.max() >= N_CLASSES:
         raise SystemExit("an allowlisted clip has no integer label in 0..4")
     return rows.assign(label_index=lab.to_numpy()), {"index_rows": int(len(meta)), "training_rows_kept": int(len(rows)),
-                                                     "rows_dropped_before_label_parsing": int((~keep).sum())}
+                                                     "rows_dropped_before_label_parsing": int((~keep).sum()),
+                                                     "columns_read_for_every_row": list(META_COLUMNS), "columns_read_for_kept_rows": ["video_id", "label_index"]}
 
 
 class TrainRows:
-    """The training split from the protocol's allowlist. The cache index's metadata is read and filtered to
-    protocol['train']['clips'] in the index's row order; label_index is parsed afterwards, for the kept rows only. Labels,
-    the bank and the clip list come from those rows, and no feature of another split is loaded. The index itself also
-    lists the rows of other splits (their metadata is read; their labels are not parsed)."""
+    """The training split from the protocol's allowlist. The cache index's id, split and sample-count columns are read
+    for every row and filtered to protocol['train']['clips'] in the index's row order; label_index is read afterwards,
+    for the kept rows only, and no other column is read. Labels, the bank and the clip list come from the kept rows, and
+    no feature of another split is loaded. The index itself also lists the rows of other splits."""
 
     def __init__(self, cfg: dict, fa: dict, paths) -> None:
         root, inp = paths.repo_root, fa["inputs"]
@@ -480,7 +483,8 @@ def identity(ctx: Diag) -> str:
     payload = {"config": ctx.fl, "hz_tol": [ctx.cfg["protocol"]["hz"], ctx.cfg["selection"]["boundary_tolerance_s"]],
                "inputs": {"protocol": ctx.data.proto_sha, "manifest": ctx.data.fman_sha, "bank": ctx.data.bank_digest},
                "code": {c: sha256_file(ctx.root / c) for c in CODE}, "inference_source": src,
-               "inference_constants": {"N_CLASSES": N_CLASSES, "BLOCKS": BLOCKS, "BLOCK_TYPES": BLOCK_TYPES, "CHECKS": CHECKS, "ATTRS": ATTRS}}
+               "inference_constants": {"N_CLASSES": N_CLASSES, "BLOCKS": BLOCKS, "BLOCK_TYPES": BLOCK_TYPES, "CHECKS": CHECKS, "ATTRS": ATTRS,
+                                       "META_COLUMNS": META_COLUMNS}}
     return hashlib.sha256(json.dumps(payload, sort_keys=True, default=str).encode()).hexdigest()
 
 
