@@ -70,3 +70,11 @@ def test_token_runs_flag_a_token_on_separate_intervals():
     ev = SimpleNamespace(multi=[stream([2] * 5 + [3] * 5, [5, 5])])
     t = rp.token_table(ev, {"r1": {"tokens_used": 3, "separate_intervals": True}, "n1": {"tokens_used": 1, "separate_intervals": False}})
     assert (t["more_tokens"], t["outputs_with_a_token_on_separate_intervals"], t["sequences"]) == (1, 1, 2)
+
+
+def test_tables_render_at_every_stage():
+    first = rp.tables_md({"runs": {}, "frozen": {}, "references": "pending", "decision": "pending"})
+    assert "## Decision" in first and "pending" in first
+    row = {"segment_f1_50_multi": 0.9, "boundary_recall_multi": 0.95, "native_macro_f1": 0.97}
+    partial = rp.tables_md({"systems": {"G1-like": {h: {"row": row} for h in ("selection", "calibration")}}, "comparisons": {}, "decision": "not computed"})
+    assert "G1-like" in partial and "not computed" in partial

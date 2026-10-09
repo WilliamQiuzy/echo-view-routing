@@ -186,14 +186,13 @@ def freeze(paths, runs: dict, config: str) -> dict:
     return out
 
 
-def reference_systems(cfg: dict, fa: dict, paths) -> tuple:
-    """The archived reference rows reproduced with their stored settings, the development halves on E1 and the E1 + B3
-    predictions (recomputed exactly as the reference does and checked against its rows)."""
+def reference_systems(cfg: dict, fa: dict, paths, inp_e1, seqs: dict) -> tuple:
+    """The archived reference rows reproduced with their stored settings on the halves built once, the E1 + B3 predictions
+    (recomputed exactly as the reference does and checked against its rows) and the G1 + ASRF rows."""
     from scripts.ev9v_complementarity import decode
-    from scripts.report_center_supervision import check_rows, evaluate, references, validation
+    from scripts.report_center_supervision import check_rows, evaluate, references
     from scripts.report_model_development_round2 import metrics, read
     root = paths.repo_root; inp = fa["inputs"]
-    inp_e1, seqs = validation(cfg, {"inputs": {"protocol": inp["protocol"], "feature_manifest": inp["e1_feature_manifest"]}}, paths)
     refs = references({**cfg, "center_supervision": {"inputs": {"protocol": inp["protocol"]}}}, paths, inp_e1, seqs)
     e1 = root / "runs/20261002-144641-md_simple_decoders-38bbcf7c-s0"; params = json.loads((e1 / "selected.json").read_text())["selected"]["b3"]["main"]; e1_preds = {}
     for h in HALVES:
@@ -207,17 +206,18 @@ def reference_systems(cfg: dict, fa: dict, paths) -> tuple:
     g1_cal = float(np.mean([g1[f"G1 + ASRF s{k}"]["calibration"]["segment_f1_50_multi"] for k in (0, 1, 2)]))
     if abs(g1_cal - 0.9738935784747763) > 1e-12:
         raise SystemExit(f"G1 + ASRF calibration mean {g1_cal} does not reproduce 0.9738935784747763")
-    return inp_e1, refs, e1_preds, g1
+    return refs, e1_preds, g1
 
 
-def evaluate_round(cfg: dict, fa: dict, runs: dict, inp_e1, refs: dict, e1_preds: dict, device) -> dict:
-    """Every system on both halves: rows, tables, predictions and the FACT readouts; decode time per sequence."""
+def evaluate_round(cfg: dict, runs: dict, inp_e1, device) -> dict:
+    """FACT and ASRF on both halves: rows, tables, predictions and the FACT readouts; decode time per sequence. Each arm
+    decodes under the determinism setting it trained and was smoke-tested with."""
     from echo_routing.evaluate.dev_metrics import evaluate_predictions
     hz, tol_s = float(cfg["protocol"]["hz"]), float(cfg["selection"]["boundary_tolerance_s"]); out, cost = {}, {}
     for h in HALVES:
         ev = inp_e1.halves[h]; seqs = ev.sequences()
         for key, r in runs.items():
-            torch.cuda.synchronize(); t0 = time.time()
+            torch.use_deterministic_algorithms(r["arm"] == "FACT"); torch.cuda.synchronize(); t0 = time.time()
             if r["arm"] == "FACT":
                 o = fact_outputs(r["head"], r["model"], seqs, device); full = {k: v["labels"] for k, v in o.items()}; frame = {k: v["frame_labels"] for k, v in o.items()}
             else:
@@ -226,19 +226,26 @@ def evaluate_round(cfg: dict, fa: dict, runs: dict, inp_e1, refs: dict, e1_preds
             torch.cuda.synchronize(); cost.setdefault(key, []).append((time.time() - t0) / len(seqs))
             mf, tf_ = evaluate_predictions(full, ev, hz, tol_s); mr, _ = evaluate_predictions(frame, ev, hz, tol_s)
             out.setdefault(key, {})[h] = {"row": summary(mf), "frame_argmax": summary(mr), "tables": tf_, "preds": full, "tokens": o}
-        mb, tb = evaluate_predictions(e1_preds[h], ev, hz, tol_s)
-        out.setdefault("E1 + B3", {})[h] = {"row": summary(mb), "tables": tb, "preds": e1_preds[h]}
-        for name in ("E0 + B3", "B7 + B3"):
-            out.setdefault(name, {})[h] = {"row": refs[name][h]["metrics"], "tables": refs[name][h]["tables"], "preds": None}
     return {"systems": out, "decode_seconds_per_sequence": {k: float(np.mean(v)) for k, v in cost.items()}}
 
 
-def comparisons(fa: dict, systems: dict, inp_e1, tol: float) -> dict:
+def add_references(cfg: dict, systems: dict, refs: dict, e1_preds: dict, inp_e1) -> None:
+    """E1 + B3 (with predictions), E0 + B3 and B7 + B3 (rows and tables) beside the round's systems."""
+    from echo_routing.evaluate.dev_metrics import evaluate_predictions
+    hz, tol_s = float(cfg["protocol"]["hz"]), float(cfg["selection"]["boundary_tolerance_s"])
+    for h in HALVES:
+        mb, tb = evaluate_predictions(e1_preds[h], inp_e1.halves[h], hz, tol_s)
+        systems.setdefault("E1 + B3", {})[h] = {"row": summary(mb), "tables": tb, "preds": e1_preds[h]}
+        for name in ("E0 + B3", "B7 + B3"):
+            systems.setdefault(name, {})[h] = {"row": refs[name][h]["metrics"], "tables": refs[name][h]["tables"], "preds": None}
+
+
+def comparisons(fa: dict, systems: dict, inp_e1, tol: float, names) -> dict:
     from scripts.report_model_development import paired_bootstrap
     out = {}
     for seed in [int(s) for s in fa["seeds"]]:
-        for name, other in COMPARE.items():
-            kb = f"ASRF_s{seed}" if other == "ASRF" else other
+        for name in names:
+            other = COMPARE[name]; kb = f"ASRF_s{seed}" if other == "ASRF" else other
             for h in HALVES:
                 A, B = systems[f"FACT_s{seed}"][h], systems[kb][h]
                 c = {"bootstrap": paired_bootstrap(A["tables"], B["tables"]), "native_changes": native_changes(A["tables"]["native"], B["tables"]["native"])}
@@ -249,9 +256,9 @@ def comparisons(fa: dict, systems: dict, inp_e1, tol: float) -> dict:
     return out
 
 
-def verdicts(fa: dict, comp: dict) -> dict:
+def verdicts(fa: dict, comp: dict, names) -> dict:
     seeds = [int(s) for s in fa["seeds"]]
-    return {name: {h: consistency([comp[f"s{s}|{name}|{h}"]["bootstrap"]["multi segment F1@50"] for s in seeds]) for h in HALVES} for name in COMPARE}
+    return {name: {h: consistency([comp[f"s{s}|{name}|{h}"]["bootstrap"]["multi segment F1@50"] for s in seeds]) for h in HALVES} for name in names}
 
 
 def plot_curves(runs: dict, path: Path) -> None:
@@ -275,49 +282,68 @@ def strip(systems: dict) -> dict:
 
 def tables_md(res: dict) -> str:
     rows = []
-    for name, per in res["systems"].items():
+    for name, per in res.get("systems", {}).items():
         for h in HALVES:
             r = per[h]["row"]
-            rows.append({"system": name, "half": h, "segment F1@50": r["segment_f1_50_multi"], "boundary P": r["boundary_precision_multi"], "boundary R": r["boundary_recall_multi"],
-                         "native macro-F1": r["native_macro_f1"], "cuts per clip": r["native_internal_cuts_per_clip"], "same-class cut rate": r["same_class_cut_rate_multi"],
+            rows.append({"system": name, "half": h, "segment F1@50": r["segment_f1_50_multi"], "boundary P": r.get("boundary_precision_multi"), "boundary R": r["boundary_recall_multi"],
+                         "native macro-F1": r["native_macro_f1"], "cuts per clip": r.get("native_internal_cuts_per_clip"), "same-class cut rate": r.get("same_class_cut_rate_multi"),
                          "A5C read as A4C": r.get("A5C read as A4C"), "A4C read as A5C": r.get("A4C read as A5C"),
                          "frame-branch segment F1@50": per[h].get("frame_argmax", {}).get("segment_f1_50_multi")})
     comp = []
-    for k, c in res["comparisons"].items():
+    for k, c in res.get("comparisons", {}).items():
         b = c["bootstrap"]["multi segment F1@50"]
         comp.append({"comparison": k, "d segment F1@50": f"{b['delta']:+.4f} [{b['ci95'][0]:+.4f}, {b['ci95'][1]:+.4f}]",
                      "native fixed/new": f"{c['native_changes']['all clips']['fixed']}/{c['native_changes']['all clips']['new']}"})
-    return "\n".join(["# Paired FACT-ASRF round: tables\n", "Recompute: `python scripts/report_fact_asrf.py --config configs/experiments/fact_asrf_paired_v1.yaml --evaluate`\n",
-                      "## Systems\n", md_table(rows, list(dict.fromkeys(x for r in rows for x in r))), "## Comparisons\n", md_table(comp),
-                      "## Verdicts\n", "```\n" + json.dumps(res["verdicts"], indent=1) + "\n```\n", "## Decision\n", "```\n" + json.dumps(res["decision"], indent=1, default=str) + "\n```\n"])
+    parts = ["# Paired FACT-ASRF round: tables\n", "Recompute: `python scripts/report_fact_asrf.py --config configs/experiments/fact_asrf_paired_v1.yaml --evaluate`\n"]
+    if rows:
+        parts += ["## Systems\n", md_table(rows, list(dict.fromkeys(x for r in rows for x in r)))]
+    if comp:
+        parts += ["## Comparisons\n", md_table(comp)]
+    return "\n".join(parts + ["## Verdicts\n", "```\n" + json.dumps(res.get("verdicts", "pending"), indent=1) + "\n```\n",
+                               "## Decision\n", "```\n" + json.dumps(res.get("decision", "pending"), indent=1, default=str) + "\n```\n"])
+
+
+def write(res: dict, out_dir: Path, ids: set) -> None:
+    """Every write goes through both id guards; called after each stage so that nothing finished is lost."""
+    assert_no_ids(json.loads(json.dumps(res, default=str)), ids, "summary")
+    tables = tables_md(res)
+    if any(s in tables for s in {session_of(v) for v in ids}):
+        raise SystemExit("a session id appears in the report tables")
+    write_atomic(out_dir / "summary.json", json.dumps(res, indent=1, default=str)); write_atomic(out_dir / "report_tables.md", tables)
 
 
 def run_evaluate(cfg: dict, fa: dict, paths, config: str) -> None:
     import scripts.train_fact_asrf as tr
-    t0 = time.time(); device = torch.device("cuda"); torch.cuda.set_per_process_memory_fraction(gpu_memory_fraction())
-    tr.determinism("FACT")   # deterministic decoding for every system; only ASRF's training loss lacks a deterministic kernel
+    from scripts.report_center_supervision import validation
+    t0 = time.time(); device = torch.device("cuda"); torch.cuda.set_per_process_memory_fraction(gpu_memory_fraction()); tr.determinism("FACT")
     ctx = tr.Ctx(cfg, paths); runs = verify_runs(ctx, fa, device); print("six runs verified", flush=True)
     out_dir = paths.repo_root / fa["outputs"]["results_dir"]; out_dir.mkdir(parents=True, exist_ok=True)
-    ids = ctx.data.ids(); tol = float(cfg["selection"]["boundary_tolerance_s"]) * float(cfg["protocol"]["hz"])
+    ids = ctx.data.ids(); tol = float(cfg["selection"]["boundary_tolerance_s"]) * float(cfg["protocol"]["hz"]); max_len = 16
     res = {"runs": {k: {x: r["manifest"][x] for x in ("identity", "arm", "seed", "completed_updates", "final_sha256", "plan_sha256", "init_sha256", "parameters", "minutes")}
-                    for k, r in runs.items()}, "frozen": freeze(paths, runs, config)}
-    plot_curves(runs, out_dir / "training_curves.png")
-    inp_e1, refs, e1_preds, g1 = reference_systems(cfg, fa, paths); print("references reproduced", flush=True)
-    ev = evaluate_round(cfg, fa, runs, inp_e1, refs, e1_preds, device); systems = ev["systems"]
-    comp = comparisons(fa, systems, inp_e1, tol); ver = verdicts(fa, comp); max_len = 16
-    fact_rows = [{h: systems[f"FACT_s{s}"][h]["row"] for h in HALVES} for s in fa["seeds"]]
-    res.update({"systems": strip(systems), "comparisons": comp, "verdicts": ver, "decision": decide(ver["FACT - ASRF"], ver["FACT - (E1 + B3)"], fact_rows, fa),
-                "mechanism": {k: {h: mechanism(inp_e1.halves[h], systems[k][h]["preds"], max_len) for h in HALVES} for k in systems if systems[k]["selection"]["preds"] is not None},
+                    for k, r in runs.items()}, "frozen": freeze(paths, runs, config), "references": "pending", "decision": "pending"}
+    write(res, out_dir, ids); plot_curves(runs, out_dir / "training_curves.png")                     # stage 1: runs and frozen weights
+    inp = fa["inputs"]; inp_e1, seqs = validation(cfg, {"inputs": {"protocol": inp["protocol"], "feature_manifest": inp["e1_feature_manifest"]}}, paths)
+    ev = evaluate_round(cfg, runs, inp_e1, device); systems = ev["systems"]; first = ("FACT - ASRF",)
+    comp = comparisons(fa, systems, inp_e1, tol, first)
+    res.update({"systems": strip(systems), "comparisons": comp, "verdicts": verdicts(fa, comp, first),
+                "mechanism": {k: {h: mechanism(inp_e1.halves[h], systems[k][h]["preds"], max_len) for h in HALVES} for k in systems},
                 "tokens": {k: {h: token_table(inp_e1.halves[h], systems[k][h]["tokens"]) for h in HALVES} for k in systems if k.startswith("FACT")},
-                "references": {**{k: {h: v[h]["metrics"] for h in HALVES} for k, v in refs.items()}, **g1},
                 "cost": {"training_hours": {k: r["manifest"]["minutes"] / 60 for k, r in runs.items()}, "decode_seconds_per_sequence": ev["decode_seconds_per_sequence"]},
                 "seconds": time.time() - t0})
-    assert_no_ids(json.loads(json.dumps(res, default=str)), ids, "summary")
-    tables = tables_md(res); sessions = {session_of(v) for v in ids}
-    if any(s in tables for s in sessions):
-        raise SystemExit("a session id appears in the report tables")
-    write_atomic(out_dir / "summary.json", json.dumps(res, indent=1, default=str)); write_atomic(out_dir / "report_tables.md", tables)
-    print(json.dumps(res["decision"], indent=1, default=str))
+    write(res, out_dir, ids); print("FACT and ASRF evaluated", flush=True)                          # stage 2: the round's own systems
+    try:
+        refs, e1_preds, g1 = reference_systems(cfg, fa, paths, inp_e1, seqs); add_references(cfg, systems, refs, e1_preds, inp_e1)
+    except (SystemExit, Exception) as e:  # noqa: BLE001 - a reproduction failure is reported with its cause; the decision then stays open
+        res.update({"references": {"not reproduced": f"{type(e).__name__}: {e}"}, "decision": "not computed: the references did not reproduce",
+                    "seconds": time.time() - t0})
+        write(res, out_dir, ids); print(json.dumps(res["references"], indent=1)); return
+    rest = tuple(n for n in COMPARE if n not in first); comp.update(comparisons(fa, systems, inp_e1, tol, rest)); ver = verdicts(fa, comp, tuple(COMPARE))
+    fact_rows = [{h: systems[f"FACT_s{s}"][h]["row"] for h in HALVES} for s in fa["seeds"]]
+    res["mechanism"]["E1 + B3"] = {h: mechanism(inp_e1.halves[h], systems["E1 + B3"][h]["preds"], max_len) for h in HALVES}
+    res.update({"systems": strip(systems), "comparisons": comp, "verdicts": ver, "decision": decide(ver["FACT - ASRF"], ver["FACT - (E1 + B3)"], fact_rows, fa),
+                "references": {k: {h: v[h]["metrics"] for h in HALVES} for k, v in refs.items()},
+                "references_g1": {"schema": "scripts.report_model_development_round2.metrics on the stored rows", **g1}, "seconds": time.time() - t0})
+    write(res, out_dir, ids); print(json.dumps(res["decision"], indent=1, default=str))            # stage 3: references, comparisons, decision
 
 
 def main() -> None:
