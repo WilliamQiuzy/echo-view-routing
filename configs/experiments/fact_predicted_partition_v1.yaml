@@ -1,0 +1,122 @@
+# Predicted-partition FACT (docs/superpowers/plans/2026-10-09-fact-predicted-partition.md, the lead's task sheet):
+# a frozen boundary head trained on the training split only, then two paired FACT groups trained from the paired
+# round's initial states on its batch plans. In the last U block the Uniform group refines the official partition on a
+# fixed 8-sample grid, and the Predicted group adds the frozen head's cuts. Fixed before any head or FACT metric exists.
+# Reference labels supervise the head and FACT and are used in evaluation; they never build a partition in a forward
+# pass. The test split and EchoNet-Pediatric are not read. FACT is prior work (Lu and Elhamifar, CVPR 2024); the
+# refinement is an extension of it, and no gain or novelty is claimed in advance.
+#
+# Inherits model_development_v2.yaml for the protocol keys (10 Hz, the 0.5 s boundary tolerance).
+extends: model_development_v2.yaml
+run_name: fact_predicted_partition_v1
+experiment: fact_predicted_partition_v1
+
+fact_predicted_partition:
+  source:                        # every sha256 is checked before use
+    config: {path: configs/experiments/fact_asrf_paired_v1.yaml,
+             sha256: 5caffd566fd560593c5d60e829446fe0ecc97debd59cbd5c627ce13aec421ab2}
+    summary: {path: docs/results/2026-10-08_fact_asrf_training/summary.json,
+              sha256: 32c2665f485981d8b38d9c63c283027b1fd02568d04c36816d162fe88066bafa}
+    monitor_set: {path: runs/fact_integration_v1/data_details.json,
+                  sha256: 5fb823f0cf072fa3457897f9503397cfa4b357efeab27809f322f2cbeb2019b1}
+    plans:                       # runs/fact_asrf_paired_v1/plans/plan_s{seed}.json: 50 epochs x 375 batch digests
+      0: de3bf27c5949bab18ee72499557e2afcdc6b9ee0289df41dca2a3f0dae24f4a7
+      1: 41668f307581f04efe88ae91fa4bfbe08746cb619097c66d6742e5354728d8cc
+      2: 6e9cbba70df87ef1cf43dd2ec94749a76c5debbd6dc5a09cd92e493f06058e4c
+    fact_inits:                  # runs/fact_asrf_paired_v1/inits/FACT_s{seed}.pt: both groups start here
+      0: 52ba46733482696dcf40cf22d809853dba26f66da402338bfa076fa5aabbd8bd
+      1: 048357d7312ff0aa486c0c2cf695cef6492c5321fe2595a7621fcf18e42018eb
+      2: 7bb0b6851d3fad23e3d2bb66c45bbdcc0001f72dbeabf14307616b6ee87d2ff3
+    frozen:                      # models_frozen/fact_asrf_paired_v1/{key}/final.pt: Original FACT and the paired ASRF
+      FACT_s0: 7422d286933da1aeade27322a2734535a8d6600149c52e06004161583e4f6efe
+      FACT_s1: c793447bd97f29258cfafb814d1d9e5ddf7133b35c959c5e5c1cf66597b6efc4
+      FACT_s2: e3387203a161d15bbaee115d6c0341d5d72cadc558a75cd066dff22175517c00
+      ASRF_s0: b7d25d305ae19d0c14243943979fd9d1caa0e9ef0c411f7e264dcc36b94e97a4
+      ASRF_s1: 1665b7e116270a9742a94bb2e2c4d399423832c9255ec7b767f793348da6c187
+      ASRF_s2: 4199cecee651afb3106c614a6fba079508571ef76780b98103fe54cccf5a583a
+  data:
+    rows: "the cache index's video_id, split and n_samples are read for every row and filtered to protocol['train']['clips'] in the index's order; label_index is read for the kept rows only; no other column (scripts/diagnose_fact_localisation.TrainRows)"
+    batches: "TrainData.epoch_batches of the source round (4 bank streams + 4 native windows per update); every batch digest must equal the source plan"
+  seeds: [0, 1, 2]
+  groups:
+    Uniform: {policy: uniform, grid_samples: 8}    # the official runs, each also cut at s + 8, s + 16, ... < e
+    Predicted: {policy: predicted}                 # the official runs plus the frozen head's cuts inside them
+  queue: [Uniform_s0, Predicted_s0, Uniform_s1, Predicted_s1, Uniform_s2, Predicted_s2]   # one GPU job at a time
+  partition:
+    base: "the runs of the u block's argmax in the actual forward pass (official), never the reference labels"
+    segments: "half-open [s, e) as the official closed Segment(action = u argmax at s, start = s, end = e - 1); adjacent intervals of one class stay separate"
+    same_rule_for_every_sequence: "native windows and constructed streams follow one rule; nothing reads is_native, file names, reference run counts or labels"
+    output: "the official decode of the last block, then runs of equal labels; the added intervals need not become output segments"
+  head:
+    input: "the raw E1 512-d features that enter FACT (before FACT's channel and time masking); one unpadded sequence at a time"
+    features: "[x_(t-1), x_t, x_t - x_(t-1)] (1,536-d), x_(-1) = x_0"
+    layers: "Linear(1536, 64) - ReLU - Conv1d(64, 64, 3, padding 1) - ReLU - Conv1d(64, 1, 1); no dropout, normalisation or residual"
+    hidden: 64
+    target: "z_t = 1[y_t != y_(t-1)] for t >= 1; position 0 and padding are never scored; same-view joins and native windows are 0; no weak negatives, no soft targets"
+    loss: "BCEWithLogitsLoss with pos_weight; mean over a sequence's scored positions, then over the update's sequences"
+    pos_weight: "valid negatives / positives of the seed's epoch-0 batches, computed once; no positive or a non-finite ratio stops the run"
+    data: {epochs: 20, updates_per_epoch: 375, total_updates: 7500, plan: "the source plan's epochs 0-19 of the seed"}
+    optimizer: {name: AdamW, lr: 3.0e-4, betas: [0.9, 0.999], eps: 1.0e-8, weight_decay: 1.0e-4, grad_clip: 1.0}
+    schedule: {name: warmup_cosine, warmup_updates: 375}   # echo_routing.temporal.dev_train.lr_factor, to 0 at 7,500
+    init: "seed_everything(seed), then build; the initial state is saved before any update"
+    checkpoint: "the weights after update 7,500, then frozen (eval mode, requires_grad false, outside the FACT module tree)"
+    decode: {threshold: 0.5, nms_radius: 2,
+             rule: "sigmoid of the logit in float64; position 0 is never a candidate (it neither becomes a cut nor suppresses one); echo_routing.temporal.segments.non_max_suppression, ties keep the earlier position"}
+    determinism: "fp32, TF32 off, cuDNN deterministic, torch.use_deterministic_algorithms(True)"
+    training_report: "on the seed's epoch-49 training sequences only: boundary precision and recall (one to one, 0.5 s), cuts per native window, cuts at same-view joins, A4C/A5C change recall; no gate on these"
+    launch_check: "each head must propose at least one valid cut (0 < t < T) on its seed's epoch-49 training sequences; otherwise the launch stops and is reported"
+  fact:
+    init: "runs/fact_asrf_paired_v1/inits/FACT_s{seed}.pt (the source round's initial state, not a trained model)"
+    data: {epochs: 50, updates_per_epoch: 375, total_updates: 18750}
+    trainable: "every FACT parameter (official rules); E1 and the head are frozen"
+    recipe: "the source round's FACT arm: Adam 1e-4, weight decay 0, clip 10, 1e-5 after 11,719 completed updates, official augmentation, final weights"
+    determinism: "fp32, TF32 off, cuDNN deterministic, torch.use_deterministic_algorithms(True)"
+    monitor: "the 16 fixed training sequences after every epoch (frame accuracy, segment F1@50, exact transcripts, U intervals); a fit diagnostic only"
+  smoke:
+    seed: 0
+    tolerance: 1.0e-6
+    reproducibility_updates: 6
+    resume: "3 + 3 updates against 6"
+    isolation_label_variants: [reference, zeros, random, time_reversed, single_sample]
+    fit: {updates: 2000, lr: 1.0e-4, log_every: 50, batches: "the fixed 16 in two batches of 8, alternating"}
+    timing: {warmup_updates: 5, timed_updates: 100, plan: "seed 0, epoch 0"}
+    hard_checks: "finite numbers; gradients, updates, freezing and resume right; label isolation; no performance gate on the fit"
+  budget:
+    gpu_hours_max: 24.0          # head training, the six formal runs, the GPU checks and the evaluation; CPU work is counted apart
+    evaluation_allowance_hours: 1.5
+  evaluation:
+    systems: [Original FACT, Uniform-refinement FACT, Predicted-refinement FACT, ASRF, Boundary head + frame classifier]
+    references: ["E1 + B3", "E0 + B3", "B7 + B3 (official EchoViewCLIP posteriors)", "G1 + ASRF (calibration reference)"]
+    head_frame_classifier: "the seed's head cuts (same threshold and NMS) split the sequence; each interval takes the argmax of the mean frozen E1 probabilities; equal neighbours merged; no FACT output, no u boundary"
+    primary: "Predicted-refinement - Uniform-refinement, multi segment F1@50"
+    comparisons: ["Predicted - Uniform", "Predicted - Original FACT", "Uniform - Original FACT", "Predicted - ASRF", "Uniform - ASRF",
+                  "Predicted - (E1 + B3)", "Predicted - (E0 + B3)", "Predicted - (B7 + B3)", "Predicted - (Boundary head + frame classifier)"]
+    bootstrap: {draws: 2000, seed: 20261002, units: "native clips by session, streams by stream"}
+    consistent: "all three seeds' 95% intervals in a half exclude zero strictly on the same side"
+    units: {short_max_samples: 16, xyx: "middles of reference runs X, Y, X", a4c_a5c_xyx: "middles with {X, Y} = {A4C, A5C}"}
+    stage_tracking: "Original, Uniform and Predicted: the i, u and U frame-branch argmax and the official output on the 16 fixed training sequences and every development sequence"
+    position_control: "the Predicted models, frozen: in every official run, the head's k cuts inside it moved to s + floor(j (e - s) / (k + 1)); every development sequence; weights and the inputs to U checked unchanged"
+    case_figure: "every A4C/A5C X -> Y -> X middle of the development multi streams, all systems' stage tracks; no selection by outcome"
+    server_outputs: "per-sequence frame probabilities, partitions and predictions of every system"
+  goal:
+    selection_min: 0.944409687184662
+    calibration_min: 0.9821421709894332
+    calibration_sensitivity: 0.9838935784747763
+  constraints: {boundary_recall_min: 0.95, native_macro_f1_min: {selection: 0.973, calibration: 0.980}}
+  decision_rules:                # how the rows below are read; fixed before any evaluation
+    consistent_beat: "the comparison is consistent positive (all three seeds' 95% intervals above zero) in both halves"
+    position_control_stable: "the segment F1@50 difference (head positions - even positions) has the same sign in all three seeds in both halves"
+    losses_at_i_u: "for a new group, most multi-stream reference runs that its official output misses were first unmatched at its i or u block, in every seed and half"
+    stable_reduction: "for a new group, fewer such runs first unmatched at i or u than Original FACT of the same seed, in every seed and half"
+    full_system_gain: "the new group consistently beats Original FACT"
+    goal: "a group's three-seed mean segment F1@50 reaches the goal in both halves and every seed meets every constraint in both halves"
+  decision:
+    - "Uniform consistently beats Original FACT and Predicted does not consistently beat Uniform: evidence for a finer partition; no claim that learning boundaries adds value; whether Uniform meets the goal is judged on its own"
+    - "Predicted consistently beats Uniform and Original FACT, and the position control has a stable direction: support for predictable positions, with their cost; without a consistent advantage over Boundary head + frame classifier, no claim that FACT's tokens are needed; the goal still needs the baselines and every constraint"
+    - "the losses still arise at i/u, and the new policies neither reduce them stably nor give a full-system gain: the round ends, and no further module is stacked on the last U block"
+    - "an interval includes zero or seeds or halves disagree: uncertain; no new threshold, epoch, grid or best-seed report"
+  outputs:
+    results_dir: docs/results/2026-10-09_fact_predicted_partition   # counts and digests only
+    server_dir: runs/fact_predicted_partition_v1                     # plans, heads, smoke, train, evaluation records
+    checkpoint_dir: checkpoints/fact_predicted_partition_v1
+  never: "no test split, no EchoNet-Pediatric, no change to the official checkout or the formal adapter, no reference partition in a forward pass, no threshold, grid, epoch or seed search, no push"
