@@ -82,6 +82,8 @@ def test_decision_rows_follow_the_fixed_readings():
     assert not d["position_control_stable_direction"] and FP["decision"][1] not in d["rows_that_apply"] and d["groups"]["Uniform"]["constraint_failures"]
     d = pt.decide(FP, {n: verdict((False, False)) for n in names}, rows(0.9), iu(9, 8), pos)
     assert FP["decision"][2] in d["rows_that_apply"] and not d["groups"]["Predicted"]["full_system_gain"] and not d["groups"]["Uniform"]["goal_met"]
+    none = iu(9, 8); none["Predicted"][0]["selection"] = (0, 0)                  # no miss in one seed and half: the reading is met
+    assert pt.decide(FP, {n: verdict((False, False)) for n in names}, rows(0.9), none, pos)["groups"]["Predicted"]["losses_at_i_u"]
 
 
 def test_queue_projection_counts_everything_before_and_after():

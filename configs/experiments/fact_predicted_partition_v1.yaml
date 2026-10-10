@@ -106,14 +106,14 @@ fact_predicted_partition:
   decision_rules:                # how the rows below are read; fixed before any evaluation
     consistent_beat: "the comparison is consistent positive (all three seeds' 95% intervals above zero) in both halves"
     position_control_stable: "the segment F1@50 difference (head positions - even positions) has the same sign in all three seeds in both halves"
-    losses_at_i_u: "for a new group, most multi-stream reference runs that its official output misses were first unmatched at its i or u block, in every seed and half"
+    losses_at_i_u: "for a new group, most multi-stream reference runs that its official output misses were first unmatched at its i or u block, in every seed and half (a seed and half without any miss counts as meeting it)"
     stable_reduction: "for a new group, fewer such runs first unmatched at i or u than Original FACT of the same seed, in every seed and half"
     full_system_gain: "the new group consistently beats Original FACT"
     goal: "a group's three-seed mean segment F1@50 reaches the goal in both halves and every seed meets every constraint in both halves"
   decision:
     - "Uniform consistently beats Original FACT and Predicted does not consistently beat Uniform: evidence for a finer partition; no claim that learning boundaries adds value; whether Uniform meets the goal is judged on its own"
     - "Predicted consistently beats Uniform and Original FACT, and the position control has a stable direction: support for predictable positions, with their cost; without a consistent advantage over Boundary head + frame classifier, no claim that FACT's tokens are needed; the goal still needs the baselines and every constraint"
-    - "the losses still arise at i/u, and the new policies neither reduce them stably nor give a full-system gain: the round ends, and no further module is stacked on the last U block"
+    - "the losses still arise at i/u for both new groups, and neither new group achieves both a stable reduction of them and a full-system gain: the round ends, and no further module is stacked on the last U block"
     - "an interval includes zero or seeds or halves disagree: uncertain; no new threshold, epoch, grid or best-seed report"
   outputs:
     results_dir: docs/results/2026-10-09_fact_predicted_partition   # counts and digests only

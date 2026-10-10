@@ -134,7 +134,7 @@ def decide(fp: dict, verdicts: dict, rows: dict, iu: dict, position: dict) -> di
     groups = {}
     for name, comp in (("Uniform", "Uniform - Original FACT"), ("Predicted", "Predicted - Original FACT")):
         mean, fails = means(rows, name, seeds), constraint_failures(rows, name, seeds, c)
-        at_iu = all(iu[name][s][h][1] and iu[name][s][h][0] > iu[name][s][h][1] / 2 for s in seeds for h in HALVES)
+        at_iu = all(iu[name][s][h][1] == 0 or iu[name][s][h][0] > iu[name][s][h][1] / 2 for s in seeds for h in HALVES)   # no miss: met
         reduced = all(iu[name][s][h][0] < iu["Original FACT"][s][h][0] for s in seeds for h in HALVES)
         groups[name] = {"mean_segment_f1_50": mean, "constraint_failures": fails,
                         "goal_met": not fails and mean["selection"] >= float(g["selection_min"]) and mean["calibration"] >= float(g["calibration_min"]),
