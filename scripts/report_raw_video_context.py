@@ -171,11 +171,21 @@ def per_sample(W: dict, logits: np.ndarray, seqs_h: list[dict]) -> dict:
     return out
 
 
-def save_outputs(path: Path, ident: str, W: dict, orders: np.ndarray, logits: np.ndarray, probs: dict, seqs_h: list[dict]) -> None:
+def save_outputs(path: Path, ident: str, W: dict, orders: np.ndarray, logits: np.ndarray, probs: dict, seqs_h: list[dict], seconds: float) -> None:
     path.parent.mkdir(parents=True, exist_ok=True); ids = [q["id"] for q in seqs_h]
     np.savez(path, identity=ident, sequence_ids=np.asarray(ids), seq=W["seq"], centre=W["centre"], marker=W["marker"], order=orders.astype(np.int8),
              logits=logits.astype(np.float32), sample_offsets=np.cumsum([0, *[len(probs[i]) for i in ids]]),
-             sample_probs=np.concatenate([probs[i] for i in ids]).astype(np.float32))
+             sample_probs=np.concatenate([probs[i] for i in ids]).astype(np.float32), seconds=seconds)
+
+
+def cached_logits(path: Path, ident: str, W: dict, orders: np.ndarray, seqs_h: list[dict]) -> tuple[np.ndarray | None, float]:
+    """Saved logits of a model, reused only when the run identity, sequences, centres, markers and slot orders all match."""
+    if not path.is_file():
+        return None, 0.0
+    with np.load(path) as z:
+        same = (str(z["identity"]) == ident and z["sequence_ids"].tolist() == [q["id"] for q in seqs_h] and np.array_equal(z["seq"], W["seq"])
+                and np.array_equal(z["centre"], W["centre"]) and np.array_equal(z["marker"], W["marker"]) and np.array_equal(z["order"], orders.astype(np.int8)))
+        return (z["logits"].astype(np.float32), float(z["seconds"])) if same else (None, 0.0)
 
 
 # ----------------------------------------------------------------------------------------------- systems
@@ -396,8 +406,8 @@ def run_evaluate(ctx, workers: int) -> None:
     if sha256_file(ctx.root / pin["path"]) != pin["sha256"]:
         raise SystemExit("the E1 feature manifest differs from its pin")
     inputs, seqs = rcs.validation(cfg, {"inputs": {"protocol": rv["source"]["protocol"], "feature_manifest": pin}}, paths)   # development data from here on
-    dev_ids = {q["id"] for h in HALVES for q in seqs[h]} | {r[0] for h in HALVES for q in seqs[h] for r in q["refs"]}
-    ids |= dev_ids | {session_of(v) for v in dev_ids}
+    dev_rec = {r[0] for h in HALVES for q in seqs[h] for r in q["refs"]}            # recordings (native sequence ids are recordings)
+    ids |= dev_rec | {session_of(v) for v in dev_rec} | {q["id"] for h in HALVES for q in seqs[h]}
     refs = sorted({r for h in HALVES for q in seqs[h] for r in q["refs"]}); at = {r: i for i, r in enumerate(refs)}
     from scripts.prepare_raw_video_context import frame_dirs
     from scripts.train_joint_visual_temporal import FramePaths
@@ -405,11 +415,15 @@ def run_evaluate(ctx, workers: int) -> None:
     t1 = time.time(); frames = decode_frames(refs, fp, workers); t_dec = time.time() - t1; print(f"{len(refs)} frames decoded ({t_dec:.0f} s)", flush=True)
     stride = 5; W = {h: half_windows(seqs[h], at, stride) for h in HALVES}; systems, rec_models, cost = {}, {h: {} for h in HALVES}, {}
     for key, r in runs.items():
-        model = load_model(ctx, r, device); probs = {}; secs = 0.0
+        model = None; probs = {}; secs = 0.0
         for h in HALVES:
-            orders = slot_orders(r["group"], r["seed"], W[h], seqs[h]); logits, sec = model_logits(model, W[h], orders, frames, device); secs += sec
-            probs[h] = per_sample(W[h], logits, seqs[h]); rec_models[h][key] = {"logits": logits}
-            save_outputs(ctx.out / "evaluation" / h / f"{key}.npz", r["manifest"]["identity"], W[h], orders, logits, probs[h], seqs[h])
+            orders = slot_orders(r["group"], r["seed"], W[h], seqs[h]); path = ctx.out / "evaluation" / h / f"{key}.npz"
+            logits, sec = cached_logits(path, r["manifest"]["identity"], W[h], orders, seqs[h])
+            if logits is None:
+                model = model if model is not None else load_model(ctx, r, device)
+                logits, sec = model_logits(model, W[h], orders, frames, device)
+                save_outputs(path, r["manifest"]["identity"], W[h], orders, logits, per_sample(W[h], logits, seqs[h]), seqs[h], sec)
+            secs += sec; probs[h] = per_sample(W[h], logits, seqs[h]); rec_models[h][key] = {"logits": logits}
         systems[key] = system_rows(cfg, probs, inputs); n_win = sum(len(W[h]["seq"]) for h in HALVES); n_smp = sum(len(q["labels"]) for h in HALVES for q in seqs[h])
         cost[key] = {"windows": n_win, "ms_per_window": 1000 * secs / n_win, "ms_per_sample": 1000 * secs / n_smp}
         print(f"{key}: B3 {systems[key]['b3_choice']['status']} | sel {systems[key]['b3']['selection']['row']['segment_f1_50_multi']:.4f} "

@@ -130,3 +130,7 @@ def test_evaluation_windows_orders_and_mapping():
 def test_tables_render_partial_results():
     md = rt.tables_md({"recognition": {"ordered_s0": {"selection": rt.recognition(np.array([2, 3]), np.array([0.1, 0.9]), np.array([2, 3]))}}})
     assert "Native window recognition" in md and "pending" in md
+    row = {"segment_f1_50_multi": 0.9, "boundary_recall_multi": 0.95, "native_macro_f1": 0.97}
+    md = rt.tables_md({"systems": {"ordered_s0": {"argmax": {"selection": row}, "b3": {"selection": row}, "b3_choice": {"status": "feasible", "params": {"half_window": 9}}},
+                                   "E1 + B3": {"row": {"selection": row}}}})
+    assert md.count("| ordered_s0 |") == 2 and "| E1 + B3 |" in md and "feasible" not in md.split("## Systems")[1].split("##")[0]

@@ -221,7 +221,7 @@ def tables_md(res: dict) -> str:
     sys_rows = [{"system": k, "half": h, "row": row, "segment F1@50": r.get("segment_f1_50_multi"), "boundary P": r.get("boundary_precision_multi"),
                  "boundary R": r.get("boundary_recall_multi"), "native macro-F1": r.get("native_macro_f1"), "switches per clip": r.get("native_internal_cuts_per_clip"),
                  "same-view join cuts": r.get("same_class_cut_rate_multi"), "A5C read as A4C": r.get("A5C read as A4C"), "A4C read as A5C": r.get("A4C read as A5C")}
-                for k, per in res.get("systems", {}).items() for row, by in per.items() for h, r in by.items()]
+                for k, per in res.get("systems", {}).items() for row, by in per.items() if row in ("argmax", "b3", "row") for h, r in by.items()]
     if sys_rows:
         parts += ["## Systems\n", md_table(sys_rows)]
     sc = [{"comparison": k, "segment F1@50": ci(v["bootstrap"]["multi segment F1@50"]), "native macro-F1": ci(v["bootstrap"]["native macro-F1"]),
