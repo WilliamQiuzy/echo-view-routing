@@ -221,11 +221,11 @@ def reference_c(ctx, cfg: dict, paths, inputs, seqs: dict, frames: np.ndarray, a
         model.head.load_state_dict(st["head"]); model.eval()
         with torch.no_grad():
             feats = np.concatenate([model.encoder(torch.from_numpy(frames[i:i + 256]).to(device)).float().cpu().numpy() for i in range(0, len(frames), 256)])
-        params = stored[key]["rows"]["b3_choice"]["params"]; name = f"C + B3 s{seed}"; out[name] = {}
+        params = stored[key]["b3_choice"]["params"]; name = f"C + B3 s{seed}"; out[name] = {}          # report.json keeps each model's rows directly
         for h in HALVES:
             probs = {q["id"]: rcs.windows_of(model, feats, at, q, int(cs["window"]["stride"]), device)["prob"] for q in seqs[h]}
             preds = decode(params, probs); m, t = rcs.evaluate(cfg, preds, inputs.halves[h]); row = summary(m)
-            want = stored[key]["rows"][f"b3|{h}"]; diff = {f: (row[f], want[f]) for f in FLAT if row[f] != want[f]}
+            want = stored[key][f"b3|{h}"]; diff = {f: (row[f], want[f]) for f in FLAT if row[f] != want[f]}
             out[name][h] = {"row": row, "tables": t, "preds": preds, "stored_setting": params, "differing_fields": diff}
         del model, feats; torch.cuda.empty_cache()
     return out
