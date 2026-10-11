@@ -1,0 +1,157 @@
+# Target-anchored video readout (docs/superpowers/plans/2026-10-11-target-patch-readout.md). Fixed before any training
+# metric exists. The three groups continue training the same seed's Ordered context model of the raw-video context round
+# from its full final weights and differ only in the readout of the final normalised tokens: the CLS token (Continued CLS),
+# the mean of all patch tokens (Global patches) or the patch tokens of the target's time slots (Target patches). The input
+# (16 frames in true order, the target marker), the windows, the loss, the optimiser and the inference stride stay as in
+# the source round. Labels serve only the loss and the evaluation. The test split and EchoNet-Pediatric are not read. This
+# is a readout adaptation and a mechanism comparison of an existing video model; no novelty is claimed in advance.
+#
+# Inherits model_development_v2.yaml only for the protocol keys, the two development halves and the decoding grid.
+extends: model_development_v2.yaml
+run_name: target_patch_readout_v1
+experiment: target_patch_readout_v1
+
+target_patch_readout:
+  task_sheet: {path: docs/superpowers/plans/2026-10-11-target-patch-readout.md,
+               sha256: 7e0d80814c185271839042a12cfa1eb95e6e8c60c61eefcac0ff6dc956bbccc6}
+  source:
+    config: {path: configs/experiments/raw_video_context_v1.yaml,
+             sha256: 832694f4ea1ec4c7d1811b59c0a6803495645e9ff8be1db80fe28d2c049af485}
+    report:
+      summary: {path: docs/results/2026-10-10_raw_video_context/summary.json, sha256: a521d47e5a5618e7000fcd877ac58dc7ebc16f488a48b229f20bccfb18f333ab}
+      readme: {path: docs/results/2026-10-10_raw_video_context/README.md, sha256: cf812d22549c9227ea81ac48d728ef90f5edd9aa4a0affaa9ec0eacb3939e172}
+      tables: {path: docs/results/2026-10-10_raw_video_context/report_tables.md, sha256: 87e41e4c45420f2f5184dba42ae81afad3f26a6398e1f34af1a80584cab0272c}
+    weights:                     # the Ordered context model of each seed; every group of the seed starts from it
+      0: {path: models_frozen/raw_video_context_v1/ordered_s0/final.pt, sha256: 80f13a42e628fe2647634b79e59d5b8486fee5c3e0ae45f70bcc667c41258505}
+      1: {path: models_frozen/raw_video_context_v1/ordered_s1/final.pt, sha256: 74276323ababf78fcb578be28d3172f3c220b3b7e66c2ff96a2072f39210c26f}
+      2: {path: models_frozen/raw_video_context_v1/ordered_s2/final.pt, sha256: 923eb3afb0d846b1361897dbb63bb5aecf22401ce4b305b44fe990d48edc7f2c}
+    manifests:                   # the source round's frozen training windows (read only)
+      index: {path: runs/raw_video_context_v1/manifests/index.json, sha256: 50b6123a1efd1389ff19514468ca99f64ee4007d5152db3c601b8be3b7c04643}
+      files:
+        0: {path: runs/raw_video_context_v1/manifests/RV_s0.npz, sha256: ee54951de6a974e30c688b9cdc1d13e0e8fb1057c9092d9efacfb9b2fce05f8b}
+        1: {path: runs/raw_video_context_v1/manifests/RV_s1.npz, sha256: 1e8c5b4afb54fd277be6dd45739fa631a359a5e7cc9d7afa644cf081592ef712}
+        2: {path: runs/raw_video_context_v1/manifests/RV_s2.npz, sha256: b112ccc84e89e3079e22c31aaa88ec2b650369d5ab1d152ae23a83b0e8dac245}
+      image_order: "Ordered context only (order_ordered and digest_ordered); the other orders of the source manifests are not used"
+    ordered_outputs:             # the source round's saved per-window outputs of the three Ordered models, for the fixed reference
+      selection:
+        0: {path: runs/raw_video_context_v1/evaluation/selection/ordered_s0.npz, sha256: 98706faa4efdeae4e1b7640f65b24dbbd4878f0f354611aec6679233a0f3a0dc}
+        1: {path: runs/raw_video_context_v1/evaluation/selection/ordered_s1.npz, sha256: b5d6a13c20e2be1d922b88eafc20b17f4dacfbebcbf83149715575c9e69c9aa1}
+        2: {path: runs/raw_video_context_v1/evaluation/selection/ordered_s2.npz, sha256: 86f6f90d869a05cc4a886257a3f35b9bb2ec1e696c4508e0cbfb9ebf840bfe3d}
+      calibration:
+        0: {path: runs/raw_video_context_v1/evaluation/calibration/ordered_s0.npz, sha256: d79008575f59aad1a6a9911906bff3752bb0d0e54bacfceb23232562f703400d}
+        1: {path: runs/raw_video_context_v1/evaluation/calibration/ordered_s1.npz, sha256: 37fb569093916aaf00d455fe92d8efe2397a6f1913c57d55d798c59acd2915ac}
+        2: {path: runs/raw_video_context_v1/evaluation/calibration/ordered_s2.npz, sha256: 306f1abf7bfda0edad8dd21aa5980f89efa246aaa38c718db374df68de89315f}
+    environment: {torch: 2.14.0+cu130, torchvision: 0.29.0+cu130, cuda: "13.0", cudnn: 92400,
+                  torchvision_mvit_sha256: 76ca465f2be0bb7ff914ca434264ceb6736402856d164e5810491d5ba77d4210}   # the server's mvit.py
+  readouts: [cls, global_patches, target_patches]
+  names: {cls: Continued CLS, global_patches: Global patches, target_patches: Target patches}
+  primary: target_patches
+  readout:
+    hook: >-
+      a forward hook on encoder.norm, registered inside the wrapper's forward and removed in finally, replaces token 0 of
+      the norm output X (B, 1 + T'H'W', 768) of a clone of X before the original x[:, 0], dropout, 512-d projection and
+      five-class head run; nothing is detached; Continued CLS registers no replacement and equals the source model
+    grid: >-
+      T', H', W' come from the positional-encoding grid and the query-pool stride of every block; the expected grid is
+      (8, 7, 7) and every query time stride is 1; anything else stops the round
+    token_order: "tokens 1.. are reshaped to (T', H', W'), the order of conv_proj's flatten(2) and of every Pool's reshape"
+    global_patches: "P = patch tokens averaged over H' and W' (B, T', 768); the readout is P averaged over T'"
+    target_patches: "sum over t of w[t] P[t]"
+    weights: >-
+      w comes from the input marker's single 1 position among the 16 slots, convolved with a fixed all-ones kernel of the
+      RGB stem's temporal geometry (kernel 3, stride 2, padding 1, dilation 1) and normalised to sum 1 (slot 8 -> slot 4;
+      slot 9 -> slots 4 and 5 at 0.5 each); no parameter, no label, no boundary and no mixed/pure flag is read
+    parameters: "none added: every group has exactly the source model's parameters"
+  training:
+    start: >-
+      every run strictly loads its seed's Ordered final weights (encoder with the 512-d projection, marker stem,
+      five-class head); nothing is reinitialised; a new optimiser and a new update count start at 0
+    seeds: [0, 1, 2]
+    total_updates: 3750
+    batch_windows: 8
+    windows: "the source manifests' update rows (4 native and 4 mixed-view windows), Ordered image order, the same frames, gammas, markers and targets for the three groups of a seed"
+    loss: "cross-entropy of the five-class target, batch mean; nothing else"
+    optimiser: {name: AdamW, lr_encoder: 1.0e-5, lr_new: 1.0e-4, weight_decay: 1.0e-4, grad_clip: 1.0, betas: [0.9, 0.999], eps: 1.0e-8}
+    param_groups: "group 0 = every encoder parameter including the 512-d projection; group 1 = marker stem and five-class head"
+    warmup_updates: 375
+    schedule: "new parameters 1e-4 x lr_factor(u, 375, 3750); encoder 0 for u < 375, then 1e-5 x the same factor"
+    freeze: "for u < 375 the encoder has requires_grad False and lr 0, with autograd through it; afterwards everything trains"
+    model_rng: "torch.manual_seed(seed) before the first update; the data order is the manifest's"
+    checkpoint: "final weights after 3,750 updates; no development data during training; no epoch choice"
+    resume: "full model, optimiser, update count and CPU and CUDA RNG after every epoch; every run records whether it was interrupted"
+  determinism: {precision: fp32, tf32: false, cudnn_deterministic: true, cudnn_benchmark: false,
+                deterministic_algorithms: "torch.use_deterministic_algorithms(True, warn_only=True) with CUBLAS_WORKSPACE_CONFIG=:4096:8"}
+  identity: >-
+    SHA256 over the training sections of this config and of the source config, the readout, the seed, the source weights,
+    the manifest and its pixel digests, the environment, the total updates, and the readout module, the model module and
+    the training scripts in full
+  checks:
+    windows: "16 training windows of the seed-0 manifest by manifest order and coverage (as in the source round)"
+    cls_parity_max_abs: 0.0          # Continued CLS against the source model, eval, same input
+    readout_recompute_max_abs: 1.0e-5  # Global and Target patches recomputed by hand (768-d and 512-d), fp32
+    smoke: {updates: 100, lr_new: 1.0e-4, encoder: frozen, batches: "windows 0-7 and 8-15 alternately", gate: "finite values, updated marker and head, unchanged encoder; no score gate"}
+    reproducibility: {updates: 6, loss_abs: 1.0e-4, params_abs: 1.0e-5}
+    resume: {loss_abs: 1.0e-4, params_abs: 1.0e-5}
+    boundary: {warmup: 3, total: 8, resume_at: 2, adam_step_bound: 2.1,
+               rule: "the source round's recorded rule: exact state round-trip, losses within 1e-4, parameter drift within adam_step_bound x each group's summed learning rate; tolerances are not raised from observed values"}
+    timing: {warmup_updates: 5, timed_updates: 20, state: "encoder unfrozen, batch 8 from the formal manifest, decoding and hooks included"}
+  budget:
+    gpu_hours_max: 12.0             # checks, nine trainings, freezing and the evaluation; an own ledger
+    evaluation_allowance_hours: 2.0
+    rule: "the queue projects spent + remaining runs x measured hours + the evaluation allowance before every run and stops above the cap"
+  queue: [cls_s0, global_patches_s0, target_patches_s0, cls_s1, global_patches_s1, target_patches_s1, cls_s2, global_patches_s2, target_patches_s2]
+  evaluation:
+    after: "all nine runs complete and frozen; only then are development frames loaded"
+    windows: "the source round's: window_centres(n, 5), window_frames(c, n, 16, 16), the marker at the middle target slot, Ordered order"
+    mapping: "every 10 Hz sample takes the nearest centre's output; native clips are scored by the per-sample majority"
+    primary_metric: >-
+      mixed windows of the constructed streams (at least two reference views among the 16 frames) whose requested
+      sample's reference view covers exactly 8 of the 16 frames: five-class argmax accuracy at the requested sample;
+      the primary comparison is Target patches - Global patches
+    also: ["Target patches - Continued CLS on the same subset", "all mixed windows and the <= 7, 9-11 and 12-15 of 16 bins",
+           "mixed windows whose two views are A4C and A5C", "windows whose marker is not at slot 8"]
+    bootstrap_primary: "paired, resampling the source sessions of the requested samples, 2,000 draws, seed 20261002"
+    bootstrap_sensitivity: "paired, resampling whole constructed streams, 2,000 draws, seed 20261002"
+    stream_conflict: "if the stream-resampled verdict is consistent in the opposite direction to the session verdict in a half, that half is called uncertain"
+    not_estimable: "a subset with no window, or with fewer than 2 resampling units, has no interval and is reported as not estimable; fewer than 10 units is flagged"
+    reported_with_mixed: "windows, source recordings and sessions per target class, the share of the largest reference run, fixed and new windows with recordings and sessions"
+    native: "A4C/A5C balanced accuracy, per-class recall, margin AUC, all native window accuracy (session-paired); A4C->A5C and A5C->A4C separately; native macro-F1 and label switches"
+    rows: ["direct argmax", "B3", "fixed Ordered B3 setting (sensitivity only)"]
+    b3: {half_window: [5, 7, 9, 11, 15], quantile: [0.80, 0.85, 0.90, 0.95, 0.97, 0.99, 0.995, 0.999], nms_radius: 5}
+    b3_rule: >-
+      per model, once, on the calibration half: thresholds are quantiles of that model's own calibration native B3
+      scores; among settings with native macro-F1 >= 0.980 and multi boundary recall >= 0.95 the highest segment F1@50
+      wins, ties to the earlier grid entry; then frozen and applied once to selection; no feasible setting fails the
+      model's B3 row and the diagnostic 9 / 0.95 is reported without passing anything
+    fixed_ordered_setting: {half_window: 9, nms_radius: 5, thresholds: {0: 0.29269428317686846, 1: 0.2845063773784935, 2: 0.30845250187026374},
+                            use: "each seed's three groups decoded with that seed's Ordered numeric setting; a sensitivity only, never a goal or a selection"}
+    primary_system: "Target patches + B3"
+    comparisons:
+      within: ["Target patches - Global patches", "Target patches - Continued CLS", "Global patches - Continued CLS"]
+      practical: ["Target patches - Ordered", "Continued CLS - Ordered", "Global patches - Ordered"]
+      references: ["Target patches - (E1 + B3)", "Target patches - (E0 + B3)", "Target patches - (B7 + B3)", "Target patches - Original FACT", "Target patches - paired ASRF", "Target patches - historical E1 + ASRF"]
+      pairing: "Ordered, Original FACT, the paired ASRF and the historical E1 + ASRF pair by seed; single references serve every seed; G1 + ASRF is reported from its stored rows"
+    ordered_reference: "the source round's saved per-window outputs of Ordered with their stored B3 settings; their stored rows must be reproduced exactly"
+    bootstrap: "existing paired bootstrap: native clips by session, streams by stream; 2,000 draws, seed 20261002"
+    consistent: "all three seeds' 95% intervals strictly exclude zero on the same side in a half; anything else is no consistent difference detected (not equality)"
+    units: ">= 16-sample short segments, X-Y-X middles, A4C/A5C middles, same-view join cuts, boundary precision and recall, matched boundary offsets"
+  goal:
+    selection_min: 0.944409687184662
+    calibration_min: 0.9821421709894332
+    calibration_sensitivity: 0.9838935784747763
+    boundary_recall_min: 0.95
+    native_macro_f1_min: {selection: 0.973, calibration: 0.980}
+    rule: "three-seed mean multi segment F1@50 of the system at or above both minimums, and in every seed and half a feasible B3 setting, boundary recall >= 0.95 and native macro-F1 at or above the floor; no rounding"
+  decision_rules:                # fixed readings of the task sheet's Task 4, applied once after the evaluation
+    target_position: "Target - Global patches consistent positive on the primary mixed metric in both halves, and Target - Continued CLS consistent positive in both halves -> 'with this recipe, the target-position readout improves cross-view target recognition'"
+    target_position_one_half: "the same in one half only -> stated for that half, not as an overall mechanism"
+    patch_not_position: "Target - Continued CLS consistent positive in a half while Target - Global patches is not -> the gain cannot be assigned to the target position (patch readout or optimisation may explain it); this comparison ends without adding attention or a gate"
+    tradeoff: "a target-position gain while native recognition is consistently worse or the B3 system does not improve -> a context-robustness versus native-recognition trade-off; this comparison ends without an auxiliary loss"
+    no_gain: "no consistent mechanism or system gain -> this readout and training-budget configuration ends; target-conditioned models in general are not rejected"
+    goal_and_baselines: "meeting the old goal and beating the new strong baselines are judged apart; the goal uses the unchanged numbers"
+    beats_existing: "claiming the new method beats existing models needs consistent positive B3 differences of Target patches against Continued CLS and against the frozen Ordered model; meeting the goal alone does not show it"
+  outputs:
+    root: runs/target_patch_readout_v1
+    checkpoints: checkpoints/target_patch_readout_v1
+    frozen: models_frozen/target_patch_readout_v1/{cls,global_patches,target_patches}_s{seed}
+    results_dir: docs/results/2026-10-11_target_patch_readout
