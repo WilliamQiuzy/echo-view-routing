@@ -1,0 +1,177 @@
+# Target-conditioned raw-video recognition (docs/superpowers/plans/2026-10-10-raw-video-recognition.md). Fixed before
+# any training metric exists. One EchoPrime-initialised MViTv2-S is trained under three input conditions that differ
+# only in the RGB frames: Target-only (the target frame repeated), Shuffled context (the same 16 frames, the target slots
+# kept, the others permuted) and Ordered context (true time order). A zero-initialised target-marker branch tells the
+# global readout which frame position to answer for; it never reads a label. Labels serve only the training loss and
+# the evaluation. The test split and EchoNet-Pediatric are not read. This is a model comparison with an explicit input
+# control; no novelty or mechanism is claimed in advance.
+#
+# Inherits model_development_v2.yaml only for the protocol keys (10 Hz, the 0.5 s boundary tolerance), the two
+# development halves and the decoding grid (decode_grids.b3, checked against evaluation.b3 below).
+extends: model_development_v2.yaml
+run_name: raw_video_context_v1
+experiment: raw_video_context_v1
+
+raw_video_context:
+  task_sheet: {path: docs/superpowers/plans/2026-10-10-raw-video-recognition.md,
+               sha256: e9857e91190e9e76292eff756bf324984b06e1d556cc89378be5d439fa94f85d}
+  source:
+    echoprime:
+      repo: third_party/EchoPrime
+      commit: 03874a5f203695f38968068c21584656d475b6b1
+      loader: {path: third_party/EchoPrime/load_for_finetuning.py,
+               sha256: c1a049b854bc602316ae264a4992a949e9fad1c7adfadd6baf8dfe09a1d455ae}
+      checkpoint: {path: third_party/EchoPrime/model_data/weights/echo_prime_encoder.pt,
+                   sha256: 7ca32e8bfde248bd6d8c7e46fdb7440385169af4dc2f416b5de840bdc2e64f3b}
+    environment:                 # recorded and fixed; the environment is not upgraded during the round
+      torch: 2.14.0+cu130
+      torchvision: 0.29.0+cu130
+      cuda: "13.0"
+      cudnn: 92400
+      torchvision_mvit_sha256: 76ca465f2be0bb7ff914ca434264ceb6736402856d164e5810491d5ba77d4210   # torchvision/models/video/mvit.py
+    protocol: {path: runs/20261002-051140-model_development_protocol-fa45e7f4-s0/protocol.json,
+               sha256: a897483b776e8cff1ba8b92774c6a82537758bcba6abd362f2d8603f37997593}
+    sc_manifests:                # the centre-supervision round's S/C window lists (one per seed, shared by S and C then)
+      config: {path: configs/experiments/ev9v_center_supervision_v1.yaml,
+               sha256: 3048b6a024f6362d75522e80ac31276a0124c0000616a4f1e8fd4c84d4d6669b}
+      index: {path: runs/center_supervision_v1/manifests/index.json,
+              sha256: 8e2148b46d5cf028943f7000cffdfe114f31ed9320a5f6f14343359bfc1227a1}
+      files:
+        0: {path: runs/center_supervision_v1/manifests/SC_s0.npz, sha256: 3df87fe8fea5b8995faed3ed7c3634f9b53c2da901dc2bc90107d896a56606f3}
+        1: {path: runs/center_supervision_v1/manifests/SC_s1.npz, sha256: 805ed2c28fc4bd0ab854a26cd810dee7e85ef00a45b4981877ca48ddaed89ec0}
+        2: {path: runs/center_supervision_v1/manifests/SC_s2.npz, sha256: 6e7f889b3c7a18057d9b7e0e8a4fd4a3da633feab0469b13072b1f5557b27e0c}
+      used: "vid, frame, gamma, s, c, target, kind, seq and repeats of every window; the old C weights, N manifests and initial states are not used"
+    frame_manifest_columns: [video_id, frames_dir]   # data/manifests/ev9v_native.csv: only these columns, only allowlisted rows
+  classes: [PLAX, PSAX, A4C, A5C, SC4C]
+  model:
+    encoder: >-
+      torchvision.models.video.mvit_v2_s() with its default arguments (stochastic depth 0.2 rising linearly over the 16
+      blocks, head dropout 0.5 before the projection, attention dropout 0), head[-1] replaced by Linear(768, 512) and
+      the EchoPrime encoder checkpoint loaded strictly, exactly as load_for_finetuning.py builds it. The 512-d
+      projection is kept and trained with the encoder; the old MViTClip (which replaces the projection) is not used,
+      and no V4/V4c checkpoint is loaded.
+    classifier: "Linear(512, 5) on the projection output; weight N(0, 0.02^2) from torch.Generator().manual_seed(seed), bias 0"
+    marker_stem: >-
+      Conv3d(1, 96, kernel (3, 7, 7), stride (2, 4, 4), padding (1, 3, 3), dilation 1, no bias), all weights 0;
+      its output is added to the RGB conv_proj output by a forward hook registered inside TargetMViT.forward and
+      removed in finally; the official repository and torchvision are not modified
+    init: "per seed one saved initial state of the classifier and the marker stem (init_s{seed}.pt), shared by the three groups"
+  inputs:
+    frames: "echo_routing.temporal.joint_visual.load_frame_u8: gamma lookup table, short side 256, centre crop 224 (a project adaptation, not EchoPrime's full preprocessing)"
+    tensor: "RGB (B, 3, 16, 224, 224) fp32 = (pixel - mean) / std on 0-255 pixels, no division by 255"
+    mean: [29.110628, 28.076836, 29.096405]
+    std: [47.989223, 46.456997, 47.20083]
+    marker: "(B, 1, 16, 224, 224) 0/1; the whole plane of the marker slot is 1, every other value 0"
+    marker_slot: "the middle (sorted index len // 2) of the window positions whose sample index equals the requested sample c; read from s and c only"
+    target_slots: "all positions with s == c; they keep their frames in every group"
+    window: "16 samples by echo_routing.evaluate.window_target.window_frames(c, n, 16, 16): clamped at sequence ends, repeats in short sequences unchanged"
+  groups:
+    Target-only: "the window's target frame (and its gamma) copied to all 16 slots; marker at the original marker slot"
+    Shuffled context: "the same 16 frames as Ordered; all target slots kept; the other slots permuted among themselves (image and gamma move together); marker unchanged"
+    Ordered context: "the 16 frames in true time order; marker unchanged"
+    model_inputs: "rgb and marker only; no frame number, recording name, label, is_native flag or view share enters the model"
+  permutation:
+    training: "numpy default_rng([20261010, seed, update_index, window_index]).permutation(number of non-target slots), applied to the non-target slots in ascending order; generated once when the manifests are written; never resampled or chosen by labels or predictions"
+    inference: "numpy default_rng(int.from_bytes(SHA256(f'{seed}|{sequence_id}|{centre}')[:8], 'big')), the same permutation rule; centre = the window's requested sample index on the 10 Hz axis; seed = the model seed; the sequence id only fixes the order and is never a model input"
+    report: "the share of windows and non-target slots whose shuffled pixels equal the ordered ones (repeated frames, identity permutations)"
+  data:
+    allowlist: "protocol['train']['clips']; every recording of the SC manifests must be in it, otherwise the preparation stops"
+    labels: "target = the public reference class of the requested sample c (the SC manifest's target); no window majority; the other frame labels never enter the forward pass"
+    updates: "manifest row u feeds update u: 4 native and 4 mixed-view windows in the stored order; 10 epochs x 375 updates"
+    pairing: "within a seed the three groups share the requested targets, labels, batches, initial state and (Ordered/Shuffled) the multiset of images; Target-only sees fewer distinct images by design"
+  training:
+    seeds: [0, 1, 2]
+    total_updates: 3750
+    batch_windows: 8
+    loss: "cross-entropy of the five-class target, batch mean; no auxiliary, boundary, contrastive or distillation loss; no class weights; no label smoothing"
+    optimiser: {name: AdamW, lr_encoder: 1.0e-5, lr_new: 1.0e-4, weight_decay: 1.0e-4, grad_clip: 1.0, betas: [0.9, 0.999], eps: 1.0e-8}
+    param_groups: "group 0 = every encoder parameter including the 512-d projection; group 1 = classifier and marker stem; both exist from update 0"
+    warmup_updates: 375
+    schedule: >-
+      new parameters: 1e-4 x lr_factor(u, 375, 3750) (echo_routing.temporal.dev_train.lr_factor: linear warm-up
+      (u + 1) / 375, then cosine to 0); encoder: 0 for u < 375, then 1e-5 x the same factor
+    freeze: >-
+      for u < 375 every encoder parameter has requires_grad False and lr 0; from u = 375 all are trainable. The encoder
+      forward is never wrapped in no_grad, so the marker stem learns through the frozen trunk
+    checkpoint: "final weights after 3,750 updates; no development data during training, no early stopping, no epoch choice"
+    model_rng: "torch.manual_seed(seed) before the first update (dropout and stochastic depth); restored from the resume state"
+    resume: "after every epoch: full model, optimiser, update count, CPU and CUDA RNG states and log; an interrupted run continues only under the same identity"
+  determinism:
+    precision: fp32
+    tf32: false
+    cudnn_deterministic: true
+    cudnn_benchmark: false
+    deterministic_algorithms: "torch.use_deterministic_algorithms(True, warn_only=True) with CUBLAS_WORKSPACE_CONFIG=:4096:8; operators without a deterministic CUDA kernel are listed in the check record"
+  identity: "SHA256 over the config section, group, seed, manifest and initial-state digests, checkpoint digest, torchvision MViT digest, environment versions, total updates and the sources of the model, input and training functions"
+  checks:
+    windows: >-
+      16 training windows of the seed-0 manifest chosen by manifest order alone: the first native window with repeats,
+      the first windows whose marker is at slot 0 and at slot 15 (native and mixed), the first window with two target
+      slots, the first native and mixed windows with the marker at slot 8, then the first remaining windows in order
+    parity_max_abs: 1.0e-4   # source three-channel encoder against the new model with the zero marker branch, same tensor, fp32
+    reproducibility: {updates: 6, loss_abs: 1.0e-4, params_abs: 1.0e-5}
+    resume: {updates: "3 + 3 against 6", loss_abs: 1.0e-4, params_abs: 1.0e-5}
+    boundary: {warmup: 3, total: 8, resume_at: 2, note: "short schedule across the unfreeze boundary: lr per update, frozen encoder before, changing encoder after, resume equal to one go"}
+    fit: {updates: 300, lr_new: 1.0e-4, encoder: frozen, batches: "windows 0-7 and 8-15 alternately", gate: "finite values, updated new parameters, unchanged encoder, correct targets; no score gate"}
+    timing: {warmup_updates: 5, timed_updates: 50, state: "encoder unfrozen, batch 8 from the formal manifest, decoding and marker included"}
+  budget:
+    gpu_hours_max: 24.0          # checks, nine trainings and the evaluation
+    evaluation_allowance_hours: 2.0
+    rule: "the queue projects spent + remaining runs x measured hours per run + evaluation allowance before every run and stops (state saved) above the cap"
+  queue: [target_only_s0, shuffled_s0, ordered_s0, target_only_s1, shuffled_s1, ordered_s1, target_only_s2, shuffled_s2, ordered_s2]
+  evaluation:
+    after: "all nine runs complete and frozen; only then are development frames loaded"
+    halves: [selection, calibration]
+    centres: "window_centres(n, 5) on every native clip and constructed stream; each model reads its own group's input"
+    saved: "per window logits, marker slot, permutation and centre, and the mapped per-sample outputs, on the server only"
+    mapping: "every 10 Hz sample takes the nearest centre's output (nearest_centre); native clips are scored by the per-sample majority"
+    native_recognition:
+      primary: "Ordered - Shuffled: five-class argmax balanced accuracy (mean of the A4C and A5C recalls) on native A4C/A5C windows"
+      also: ["AUC of logit(A5C) - logit(A4C) on native A4C/A5C windows (A5C positive)", "five-class accuracy on all native windows",
+             "Ordered - Target-only and Shuffled - Target-only", "E1 at the same requested samples (the frozen E1 probe on frame c), descriptive"]
+      bootstrap: "native windows resampled by session, paired, 2,000 draws, seed 20261002"
+      pixels: "the target frame of every window must be the frame E1's cache used for sample c"
+    mixed_windows: "windows of constructed streams with at least two reference labels: target accuracy, by the target class's share of the 16 frames (<= 7, 8, 9-11, 12-15), fixed and new errors with recordings and sessions"
+    rows: ["direct argmax", "B3"]
+    b3: {half_window: [5, 7, 9, 11, 15], quantile: [0.80, 0.85, 0.90, 0.95, 0.97, 0.99, 0.995, 0.999], nms_radius: 5}
+    b3_rule: >-
+      per model, once, on the calibration half: thresholds are quantiles of that model's own calibration native B3
+      scores; among settings with native macro-F1 >= 0.980 and multi boundary recall >= 0.95 the highest segment F1@50
+      wins, ties to the earlier grid entry; then frozen and applied once to selection. No feasible setting: the model's
+      B3 row fails, and the diagnostic setting 9 / 0.95 is reported without passing anything
+    working_points: "each model's chosen setting is reported; system differences are not attributed to the encoder alone when the settings differ"
+    references: >-
+      E0 + B3, E1 + B3, B7 + B3 (official EchoViewCLIP), historical E1 + ASRF s0-2, the paired ASRF s0-2 and Original
+      FACT s0-2 (models_frozen/fact_asrf_paired_v1), the centre-supervision C + B3 s0-2 (models_frozen/center_supervision_v1,
+      its stored B3 settings) and G1 + ASRF (stored rows, calibration mean 0.9738935784747763); each reproduced with its
+      own stored setting before use; no old seed or encoder is reselected
+    primary_system: "Ordered context + B3"
+    comparisons:
+      within: ["Ordered - Shuffled", "Ordered - Target-only", "Shuffled - Target-only"]
+      references: ["Ordered - (E1 + B3)", "Ordered - (E0 + B3)", "Ordered - (B7 + B3)", "Ordered - (C + B3)", "Ordered - Original FACT", "Ordered - paired ASRF", "Ordered - historical E1 + ASRF"]
+      pairing: "seeded references pair by seed; single references serve every seed"
+    bootstrap: "existing paired bootstrap: native clips by session, streams by stream (approximate: streams reuse recordings); 2,000 draws, seed 20261002"
+    consistent: "all three seeds' 95% intervals strictly exclude zero on the same side in a half; anything else is no consistent difference detected (not equality)"
+    units: ">= 16-sample short segments, A4C/A5C X-Y-X middles, label switches per native clip, same-view join cuts, native macro-F1 and per-class recall, boundary precision and recall, matched boundary offsets, errors at sequence ends (samples whose nearest window is clamped), fixed and new errors with source recordings and sessions"
+  goal:
+    selection_min: 0.944409687184662
+    calibration_min: 0.9821421709894332
+    calibration_sensitivity: 0.9838935784747763
+    boundary_recall_min: 0.95
+    native_macro_f1_min: {selection: 0.973, calibration: 0.980}
+    rule: "three-seed mean multi segment F1@50 of the system at or above both minimums, and in every seed and half a feasible B3 setting, boundary recall >= 0.95 and native macro-F1 at or above the floor"
+  decision_rules:                # fixed readings of the task sheet's Task 4, applied once after the evaluation
+    order_gain: "Ordered - Shuffled balanced accuracy consistent positive in both halves -> 'a recognition gain related to time order'; never a claim about outflow-tract motion, cardiac phase or probe movement"
+    order_gain_one_half: "consistent positive in one half only -> reported for that half, not as the round's claim"
+    multiframe_gain: "Ordered - Target-only and Shuffled - Target-only both consistent positive in both halves, and Ordered - Shuffled not consistent positive in both -> 'a gain under multi-frame input, no added value of order shown'; not equivalence; repeated frames differ from the pretraining input distribution"
+    ranking_only: "a consistent AUC gain without a consistent balanced-accuracy gain and without a consistent system gain -> 'ranking improved, no usable system gain'; no threshold search"
+    recognition_vs_system: "a consistent recognition gain with a system that is consistently worse than its comparator -> class errors, context swallowing short segments, extra cuts and boundary shifts are separated; the round ends without a new temporal head or decoding search"
+    no_gain: "no consistent mechanism gain and no consistent system gain -> this model, input and budget comparison ends; video models in general are not rejected; the FACT refinement route stays closed"
+    goal_met: "only 'the current development protocol goal is met'; no real continuous scanning or external patient generalisation; the test split is not opened"
+    system_gain: "Ordered + B3 consistent positive against a comparator in both halves"
+    control_wins: "if a control group beats Ordered, it is reported as it is; the primary candidate is not renamed"
+  outputs:
+    root: runs/raw_video_context_v1
+    checkpoints: checkpoints/raw_video_context_v1
+    frozen: models_frozen/raw_video_context_v1/{target_only,shuffled,ordered}_s{seed}
+    results_dir: docs/results/2026-10-10_raw_video_context
