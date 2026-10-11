@@ -1,0 +1,353 @@
+{
+ "config": "configs/experiments/raw_video_context_v1.yaml",
+ "sources": {
+  "task_sheet": "e9857e91190e9e76292eff756bf324984b06e1d556cc89378be5d439fa94f85d",
+  "protocol": "a897483b776e8cff1ba8b92774c6a82537758bcba6abd362f2d8603f37997593",
+  "sc_index": "8e2148b46d5cf028943f7000cffdfe114f31ed9320a5f6f14343359bfc1227a1",
+  "sc_config": "3048b6a024f6362d75522e80ac31276a0124c0000616a4f1e8fd4c84d4d6669b",
+  "echoprime_loader": "c1a049b854bc602316ae264a4992a949e9fad1c7adfadd6baf8dfe09a1d455ae",
+  "echoprime_checkpoint": "7ca32e8bfde248bd6d8c7e46fdb7440385169af4dc2f416b5de840bdc2e64f3b",
+  "sc_s0": "3df87fe8fea5b8995faed3ed7c3634f9b53c2da901dc2bc90107d896a56606f3",
+  "sc_s1": "805ed2c28fc4bd0ab854a26cd810dee7e85ef00a45b4981877ca48ddaed89ec0",
+  "sc_s2": "6e7f889b3c7a18057d9b7e0e8a4fd4a3da633feab0469b13072b1f5557b27e0c",
+  "echoprime_commit": "03874a5f203695f38968068c21584656d475b6b1",
+  "environment": {
+   "torch": "2.14.0+cu130",
+   "torchvision": "0.29.0+cu130",
+   "cuda": "13.0",
+   "cudnn": 92400,
+   "torchvision_mvit_sha256": "76ca465f2be0bb7ff914ca434264ceb6736402856d164e5810491d5ba77d4210"
+  },
+  "torchvision_file": "mvit.py",
+  "torchvision_version": "0.29.0+cu130"
+ },
+ "allowlist_clips": 3364,
+ "frames_digested": 258214,
+ "seeds": {
+  "0": {
+   "files": {
+    "manifest": {
+     "file": "RV_s0.npz",
+     "sha256": "ee54951de6a974e30c688b9cdc1d13e0e8fb1057c9092d9efacfb9b2fce05f8b"
+    },
+    "init": {
+     "file": "init_s0.pt",
+     "sha256": "20c19a61e90e8fde1929ef11c7909591328fa4ce9c23dee53a1e64f0e7da1457"
+    }
+   },
+   "source_sc_sha256": "3df87fe8fea5b8995faed3ed7c3634f9b53c2da901dc2bc90107d896a56606f3",
+   "epoch_digests": {
+    "Target-only": [
+     "971dec1c1458ae3b628e747644b3e358170134cb6d0d9c753515c0613eba37a9",
+     "688d88856bfd910f364997c315bddce958347a7c3a9a13135dd90e19bd8df612",
+     "7be97936c452c9be39f46be084471363b59a1d9549d37011c4c6de48d1827d4e",
+     "cfd84e1c7efce2d1500f920dfe5d430f910e4292abb83b09f94bd0319d3e4888",
+     "c216d4077e9eb6e323428fbcb30ea90ff98d69c2bd93ae9ee907d436cb950f05",
+     "30a68683cca3064b5c5ca8613b8740b787cd65107ea355c58cd52379de19a9fe",
+     "c9b4b0b80a401aa59e865a5278ed0cf7a94d877b951062f6705b128ce4e42cdc",
+     "0b5e974c897a31505f0b1c092ef688bb7c3b01d53d8aac1dca1c82d16eaff051",
+     "69a3ae2cdde9d557f9837e2850c7ec67e1e207ebbfeadd990cacec21537aa26c",
+     "88c2414e71e83893c6913de5bdb71e6dcb1dddaa4ae0e0385cd6bea7618bcd47"
+    ],
+    "Shuffled context": [
+     "fc8fb1310ecdde30b4c15b4e523652ab897a0c309df0f6df2ddaaa1e71f63b19",
+     "da69c2e372223dd4ff874a7e2abeee2cf158f803f5e4b000213d0e83ec08f5c0",
+     "750dfb5dc78f538721c73ddf99ce32c872b0062abf98d56ff81f0d10752911e1",
+     "c2084f39c75c6a59e79c6ee143077b5e7b192817ee9dd3afd0818f8db555eab0",
+     "5638829626fb4675e8b8651a7ff0c74a38db97051cdbaaed0847ff9222a7050b",
+     "bb7f98c8adb1e55f5c2cf2d0d90510104cc615419aa40c2b63211b263b2233db",
+     "0e917b4f34b8d72926e37d87ad65ed0f25b151953307ed69e834a2c041933061",
+     "5e9cb2b39f8ed71368508425237c9ff19044e81a4c4a1cd1cf437bbd7915f2f0",
+     "fd1138786fd0e8cfe00e043e6daaa32826f8a1f6baeffbd4c4cd50467e810ef6",
+     "ba250d408258d9e0f9e5772537d8447ecc65c72a8c3d446c9ef281c9358b5f4f"
+    ],
+    "Ordered context": [
+     "735a5a3436781bd111b519ccc166affad3242bb9333316bfb3d3e31991bc9a0b",
+     "05341209e415aa34a228c8a366a5cfbb8611613b844cf113973049ea7653784f",
+     "8fa68a488fc224dc423ca8d733e53a9e49ae467aca90c0904321b61daf4c7749",
+     "6f56906fb1abe3f19395a6ffa692dfa260b217b609db2d21f934bb9770212dc3",
+     "2082c5c3d574f0acb1ad471ea76abb46746dd83280ff7c5f910912222e6f0c76",
+     "2c51ff736b883363954f4714e948845d7c5141a90169718595e49fcefb8f2b0d",
+     "5a3619ad73a551ef96358c958d66733f0b811e4cc49b3156fa554803ff1b0365",
+     "e056169ef73294282ce75b88e58de674990c1f859d772997650fe59e8f4e2c50",
+     "10f7d6484399aa5ccc4397ec1384ecf1746fcd479b14ab5a617ab658119cd755",
+     "5b29050f4843391a246d209db4e1245649db4d4cf5f2777623f8ce92a0c05f76"
+    ]
+   },
+   "windows": 30000,
+   "native_windows": 15000,
+   "mixed_windows": 15000,
+   "marker_slot_counts": [
+    545,
+    477,
+    518,
+    503,
+    455,
+    480,
+    476,
+    471,
+    22608,
+    486,
+    512,
+    457,
+    487,
+    492,
+    534,
+    499
+   ],
+   "shuffle": {
+    "windows": 30000,
+    "identity_permutations": 0,
+    "windows_with_unchanged_pixels": 0,
+    "share_windows_unchanged": 0.0,
+    "nontarget_slots": 449640,
+    "nontarget_slots_with_unchanged_pixels": 30600,
+    "share_nontarget_slots_unchanged": 0.06805444355484387,
+    "windows_with_two_or_more_target_slots": 360
+   },
+   "distinct_frames_per_group": {
+    "Target-only": {
+     "manifest": 25505,
+     "per_window_mean": 1.0,
+     "per_window_min": 1,
+     "per_window_max": 1
+    },
+    "Shuffled context": {
+     "manifest": 164500,
+     "per_window_mean": 15.8677,
+     "per_window_min": 9,
+     "per_window_max": 16
+    },
+    "Ordered context": {
+     "manifest": 164500,
+     "per_window_mean": 15.8677,
+     "per_window_min": 9,
+     "per_window_max": 16
+    }
+   },
+   "windows_with_repeated_samples": 1044,
+   "classifier_init": {
+    "weight_std": 0.020150076597929,
+    "bias_abs_max": 0.0,
+    "marker_abs_max": 0.0
+   }
+  },
+  "1": {
+   "files": {
+    "manifest": {
+     "file": "RV_s1.npz",
+     "sha256": "1e8c5b4afb54fd277be6dd45739fa631a359a5e7cc9d7afa644cf081592ef712"
+    },
+    "init": {
+     "file": "init_s1.pt",
+     "sha256": "878811631dafa1c7d93dfda794bbbf9f9eb9104dd4a2c48613238827636f1494"
+    }
+   },
+   "source_sc_sha256": "805ed2c28fc4bd0ab854a26cd810dee7e85ef00a45b4981877ca48ddaed89ec0",
+   "epoch_digests": {
+    "Target-only": [
+     "23fa6e3323cea94d7dd6720180ffb03022849309268eccd83c16f8f9bacf8973",
+     "015a44017ad0bcc496cd79f67b305741982b10dc763c976403348808448c24c8",
+     "edb0cf629900b30febeda6e2f9bc9a9d456c6ddcea5ccae914a44ce524c3e4c9",
+     "2d753094e9a102224deb4438b36e664a92c236348f6ab9e8beb02e15b7b23e6a",
+     "80583c38160300940f2cb0760d223460e32258f1b52eee3924b9e53943a04b98",
+     "c0086e69765031856cc61800502f30ab7b9a72c474ba0a739b6472234c524a3c",
+     "a06f3de351feb6e10474a5243d8f24fc5665b5a641a257d6bf73e59cdc1db8bf",
+     "4b90286c73092afbf9a25556cc9c22ee39ab9b30d4532e5d8b27f2053ef4888f",
+     "831c0830336004e24c9a60bc76c74ab85437ead5f03ba9adfc51cdf5cb6fc5e0",
+     "2deadfd3837dc67da43655cd04af8126f0e3771d08719154ee7b8658bf9a54f4"
+    ],
+    "Shuffled context": [
+     "13ca0da206e6d697915bd5a3ec47dfbbad3234ec35a6453d5f1b1d589623d361",
+     "151cc8788b7b8f81f6701a3a2b94cceb298fe5cf644389e4d41e082770cb288b",
+     "419ef4b219ca305ce8d7173a39b60c4021cbf67dbb997e730748e0c863fa6e9f",
+     "e1613c2d2ec50a3e4a5b8b685a3ce7efd3aee71ad688ac7864e8c201f2958774",
+     "da16934f08ef8f8e64c0945c62563115592a2c6b5a61f2f1b0a1ef428ff6cd75",
+     "0dde8959ac7e24f799793b3ee12c5b1c24269fd322bdc2707814733b2cc30352",
+     "10f92433f6948ee4a1ff7a87a7b7afd7f4e3b76b88b1f13ac73c479be7db80e8",
+     "385ee177edb147adbf490123446ae352d481158240c01d9a5804b1647113e609",
+     "112bcc4be9fd97bfcf86cc02615e8d8a10471a705cb144b3c7b662a369629249",
+     "e637959eab7a90ffd927362d37658a2b5676a8fe37b5e96f11bb8bf83eaa64d8"
+    ],
+    "Ordered context": [
+     "39259e66754a1789cbde0f67c3ad8c8628e4e55eaaf3557efb4324c2de7503e4",
+     "68e8536ef3e3cbd4d966787fb470d6fc3c5d851790d3f1c24b59e7d4d0ee0818",
+     "b56523ab7699b75c4de3e7b5f83ddebbaa20b1c9814eee14fc8383eebe6fb6c6",
+     "e938be08b1ddf230c8451eb3509868dd51b0e392abee45f74458e1848562b91b",
+     "83e3a9b23456ed68dba5aa3b948ac7af3467f6423b100db140cfbf607c1a60bf",
+     "6f0d32afee969845a6ed778d1f8736c2e10294dfa56f90dbfca65de403fa4d05",
+     "dfe0c870f017e24013af6642e6561f712e4903e0408b473241834f3f3a6d28cf",
+     "dcce72f0c0933c21568f41469f43c3fe9c3506cdd0c93ddc3f557a70c4f0fd7a",
+     "370de157d33058e7378349ca1ae7a91823988402593f304bb3a133cbf41ea453",
+     "6b43e61fa9958cf6b662f50afaf79b740a0079c502128a86873bcbcf90922ae4"
+    ]
+   },
+   "windows": 30000,
+   "native_windows": 15000,
+   "mixed_windows": 15000,
+   "marker_slot_counts": [
+    513,
+    501,
+    493,
+    512,
+    461,
+    436,
+    476,
+    489,
+    22673,
+    510,
+    492,
+    464,
+    520,
+    464,
+    524,
+    472
+   ],
+   "shuffle": {
+    "windows": 30000,
+    "identity_permutations": 0,
+    "windows_with_unchanged_pixels": 0,
+    "share_windows_unchanged": 0.0,
+    "nontarget_slots": 449659,
+    "nontarget_slots_with_unchanged_pixels": 30416,
+    "share_nontarget_slots_unchanged": 0.0676423689951719,
+    "windows_with_two_or_more_target_slots": 341
+   },
+   "distinct_frames_per_group": {
+    "Target-only": {
+     "manifest": 25657,
+     "per_window_mean": 1.0,
+     "per_window_min": 1,
+     "per_window_max": 1
+    },
+    "Shuffled context": {
+     "manifest": 166500,
+     "per_window_mean": 15.873166666666666,
+     "per_window_min": 9,
+     "per_window_max": 16
+    },
+    "Ordered context": {
+     "manifest": 166500,
+     "per_window_mean": 15.873166666666666,
+     "per_window_min": 9,
+     "per_window_max": 16
+    }
+   },
+   "windows_with_repeated_samples": 1013,
+   "classifier_init": {
+    "weight_std": 0.020626770332455635,
+    "bias_abs_max": 0.0,
+    "marker_abs_max": 0.0
+   }
+  },
+  "2": {
+   "files": {
+    "manifest": {
+     "file": "RV_s2.npz",
+     "sha256": "b112ccc84e89e3079e22c31aaa88ec2b650369d5ab1d152ae23a83b0e8dac245"
+    },
+    "init": {
+     "file": "init_s2.pt",
+     "sha256": "a1d377b99e5dfcd9341f7991d4063f02ddef6a9495295b3f623c0f82801e81e2"
+    }
+   },
+   "source_sc_sha256": "6e7f889b3c7a18057d9b7e0e8a4fd4a3da633feab0469b13072b1f5557b27e0c",
+   "epoch_digests": {
+    "Target-only": [
+     "40062bb6ced36a1f05ece3e6f8f0e57c2921ac44af35fd15fbe0d7814d25e5a7",
+     "e8b37ab1710ef4df585611c967736e5dc97fa4937a5c5726b537658ea1d79098",
+     "847ecce656eb649e2666c452b765cb2b130e1aaa4e4bb466a0d6d43792238d7c",
+     "f6a64f3bbe8635346f61d0d477f614c0edd4642574210c76464c12e0ae2aa8e1",
+     "5f2d6887770796fbaecb9ab3b563ed2e5e315359a19cffc10d8ba750edfc2a96",
+     "a8216cf0fd03b834e2d86774614123701d9207dd22bc1d1c592fd7efb89bb21c",
+     "5c70eda60be9b4ca6da2e20ffd34cafc27615818595e8950b1f353cf7b7a5604",
+     "99a6af16b92fc41b955f90c3178ec2914c97b53c6e25f0a57f9164beada8831c",
+     "79e7e90412e3f300a0ed624cb6b7217237b6167fd7f050983e44ed6e40a7c7c4",
+     "d946540098a43b4232d58f44aab7c9e726c22e2a06e8934c71e75aa1b6ffb9d3"
+    ],
+    "Shuffled context": [
+     "08bd508d19564b5c407065ef2ccfc95c9183240496dd2b19fe3469f1b14682c6",
+     "57879209764b43783008c1a941c4783da3dbac14d6ed17c576e2b3957de788de",
+     "4ce95e28f9e41e7fd660c2d680f09565e74e52e3104c9f145ca3eb502d5c34b3",
+     "e9b977a45f7afcfcf8468a6cd24fcbc7b878f42eaff7ab7be5b2f484e35d5569",
+     "02a9770825eb6afd12aef790145fb10f17ba2e87b04893d7d00ad0eabf5f0d9b",
+     "5af89773c200ae6e192dd3502212d607d3685dc78b599c5dcbd7c7678e0fe5e0",
+     "c312e3681101dbf54279b6cbcb70ac6bb0c0ac0c239e3a0776fab4ca9664e135",
+     "6153add5bfbd13b184cb54e24c36c31e2e83b01c6e496187a30ea1a4b4b662d2",
+     "dedd9a612bfcc3fbd8d81c40bf1378c81382316010c8cf91584c2a78a2a4024b",
+     "73560136051ee1a3dcd44dc1c90cd7797a529c47e082f10de97784d56ca6fb2a"
+    ],
+    "Ordered context": [
+     "d281c6d97193f135b5102a9b6d6783cfa1e56164e8195450d25854a6e6225aff",
+     "3574d0f7f3ebd3f5a6270f39428d23fca095efe821192b6a6ab038cfc86e74ee",
+     "46d60480de5e781a6a92bf3e35a3ef920c5c8c84c0cc651189537f502ec3ab29",
+     "325f2160aac7ed490c24330a36c9e35e8cc4926af1c57ad84a4d5e01a5e015a6",
+     "6a03c9f36db9833973beb4d1482800b2ee0997d634d6321bb268328dcb3943d0",
+     "d4dd2d4f67aa0c6499c2f9655a3873a95f4dae3c806b19f26a46b5bf12e5a00a",
+     "c3d732e700185333dd59243be882505603116cc5bc5b2bf248d3fd660b368758",
+     "6a731c348978794eb43f4aa4ab19bc5eb3e5fe59353c042d97967b2264c3bf85",
+     "3efdf422eeb0976b76362147ba3af8cbeddaeec9566849337d281845a5ddd488",
+     "aabb3fb8bb292ea66779271ac55c7d8913b61edaafaea847dc3277cb0dab288b"
+    ]
+   },
+   "windows": 30000,
+   "native_windows": 15000,
+   "mixed_windows": 15000,
+   "marker_slot_counts": [
+    490,
+    452,
+    509,
+    487,
+    489,
+    497,
+    542,
+    459,
+    22633,
+    500,
+    471,
+    493,
+    498,
+    449,
+    542,
+    489
+   ],
+   "shuffle": {
+    "windows": 30000,
+    "identity_permutations": 0,
+    "windows_with_unchanged_pixels": 0,
+    "share_windows_unchanged": 0.0,
+    "nontarget_slots": 449603,
+    "nontarget_slots_with_unchanged_pixels": 30817,
+    "share_nontarget_slots_unchanged": 0.06854269210837116,
+    "windows_with_two_or_more_target_slots": 397
+   },
+   "distinct_frames_per_group": {
+    "Target-only": {
+     "manifest": 25511,
+     "per_window_mean": 1.0,
+     "per_window_min": 1,
+     "per_window_max": 1
+    },
+    "Shuffled context": {
+     "manifest": 164698,
+     "per_window_mean": 15.862833333333333,
+     "per_window_min": 9,
+     "per_window_max": 16
+    },
+    "Ordered context": {
+     "manifest": 164698,
+     "per_window_mean": 15.862833333333333,
+     "per_window_min": 9,
+     "per_window_max": 16
+    }
+   },
+   "windows_with_repeated_samples": 1107,
+   "classifier_init": {
+    "weight_std": 0.020016837865114212,
+    "bias_abs_max": 0.0,
+    "marker_abs_max": 0.0
+   }
+  }
+ },
+ "seconds": 153.06021285057068
+}

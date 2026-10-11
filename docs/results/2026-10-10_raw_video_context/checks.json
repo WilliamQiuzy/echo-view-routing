@@ -1,0 +1,642 @@
+{
+ "windows": [
+  {
+   "u": 1,
+   "w": 0,
+   "reason": "native, repeated samples",
+   "kind": 0,
+   "marker": 2,
+   "target_slots": 2,
+   "repeats": 6
+  },
+  {
+   "u": 1,
+   "w": 2,
+   "reason": "native, marker at slot 0",
+   "kind": 0,
+   "marker": 0,
+   "target_slots": 1,
+   "repeats": 0
+  },
+  {
+   "u": 6,
+   "w": 1,
+   "reason": "native, marker at slot 15",
+   "kind": 0,
+   "marker": 15,
+   "target_slots": 1,
+   "repeats": 0
+  },
+  {
+   "u": 50,
+   "w": 5,
+   "reason": "mixed, marker at slot 0",
+   "kind": 1,
+   "marker": 0,
+   "target_slots": 1,
+   "repeats": 0
+  },
+  {
+   "u": 23,
+   "w": 7,
+   "reason": "mixed, marker at slot 15",
+   "kind": 1,
+   "marker": 15,
+   "target_slots": 1,
+   "repeats": 0
+  },
+  {
+   "u": 35,
+   "w": 1,
+   "reason": "two or more target slots",
+   "kind": 0,
+   "marker": 10,
+   "target_slots": 2,
+   "repeats": 4
+  },
+  {
+   "u": 0,
+   "w": 1,
+   "reason": "native, marker at slot 8",
+   "kind": 0,
+   "marker": 8,
+   "target_slots": 1,
+   "repeats": 0
+  },
+  {
+   "u": 0,
+   "w": 4,
+   "reason": "mixed, marker at slot 8",
+   "kind": 1,
+   "marker": 8,
+   "target_slots": 1,
+   "repeats": 0
+  },
+  {
+   "u": 0,
+   "w": 0,
+   "reason": "next in manifest order",
+   "kind": 0,
+   "marker": 3,
+   "target_slots": 1,
+   "repeats": 0
+  },
+  {
+   "u": 0,
+   "w": 2,
+   "reason": "next in manifest order",
+   "kind": 0,
+   "marker": 8,
+   "target_slots": 1,
+   "repeats": 0
+  },
+  {
+   "u": 0,
+   "w": 3,
+   "reason": "next in manifest order",
+   "kind": 0,
+   "marker": 6,
+   "target_slots": 1,
+   "repeats": 0
+  },
+  {
+   "u": 0,
+   "w": 5,
+   "reason": "next in manifest order",
+   "kind": 1,
+   "marker": 8,
+   "target_slots": 1,
+   "repeats": 0
+  },
+  {
+   "u": 0,
+   "w": 6,
+   "reason": "next in manifest order",
+   "kind": 1,
+   "marker": 8,
+   "target_slots": 1,
+   "repeats": 0
+  },
+  {
+   "u": 0,
+   "w": 7,
+   "reason": "next in manifest order",
+   "kind": 1,
+   "marker": 8,
+   "target_slots": 1,
+   "repeats": 0
+  },
+  {
+   "u": 1,
+   "w": 1,
+   "reason": "next in manifest order",
+   "kind": 0,
+   "marker": 8,
+   "target_slots": 1,
+   "repeats": 0
+  },
+  {
+   "u": 1,
+   "w": 3,
+   "reason": "next in manifest order",
+   "kind": 0,
+   "marker": 8,
+   "target_slots": 1,
+   "repeats": 0
+  }
+ ],
+ "inputs": {
+  "windows": 16,
+  "failures": {
+   "multiset": 0,
+   "target_slots_moved": 0,
+   "target_only_slot": 0,
+   "marker_slot": 0,
+   "marker_plane": 0,
+   "targets": 0,
+   "digest": 0
+  },
+  "ok": true
+ },
+ "strict_load": {
+  "tensors": 397,
+  "all_equal": true,
+  "parameters": 34623872,
+  "projection": [
+   512,
+   768
+  ],
+  "ok": true
+ },
+ "parity": {
+  "max_abs": 0.0,
+  "windows": 8,
+  "ok": true
+ },
+ "isolation": {
+  "forward_parameters": [
+   "rgb",
+   "marker"
+  ],
+  "inputs_unchanged": true,
+  "outputs_unchanged": true,
+  "ok": true
+ },
+ "marker_branch": {
+  "marker_grad_abs_max": [
+   0.00847095437347889,
+   0.005752690136432648
+  ],
+  "marker_grad_difference_between_slots": 0.0074177151545882225,
+  "encoder_parameters_with_grad_while_frozen": 0,
+  "output_change_with_nonzero_marker_weights": 0.007588028907775879,
+  "ok": true
+ },
+ "hook_hygiene": {
+  "hooks_after_forward": 0,
+  "exception_raised": true,
+  "hooks_after_exception": 0,
+  "block_restored": true,
+  "repeat_forwards_equal": true,
+  "plain_encoder_vs_source_max_abs": 0.0,
+  "ok": true
+ },
+ "repro_resume": {
+  "Target-only": {
+   "losses": [
+    1.4381227493286133,
+    1.602906346321106,
+    1.3853987455368042,
+    1.6780105829238892,
+    1.707925796508789,
+    1.7474546432495117
+   ],
+   "reproducibility": {
+    "loss_max_abs": 1.1920928955078125e-07,
+    "params_max_abs": 2.823185241140891e-09
+   },
+   "resume": {
+    "loss_max_abs": 1.1920928955078125e-07,
+    "params_max_abs": 2.4224391381721944e-09
+   },
+   "encoder_unchanged_in_warmup": true,
+   "new_parameters_changed": true,
+   "marker_changed": true,
+   "lrs": [
+    [
+     0.0,
+     2.6666666666666667e-07
+    ],
+    [
+     0.0,
+     5.333333333333333e-07
+    ],
+    [
+     0.0,
+     8.000000000000001e-07
+    ],
+    [
+     0.0,
+     1.0666666666666667e-06
+    ],
+    [
+     0.0,
+     1.3333333333333334e-06
+    ],
+    [
+     0.0,
+     1.6000000000000001e-06
+    ]
+   ],
+   "ok": true
+  },
+  "Shuffled context": {
+   "losses": [
+    1.7510981559753418,
+    1.511798620223999,
+    1.5500473976135254,
+    1.8975443840026855,
+    1.7611631155014038,
+    1.9271633625030518
+   ],
+   "reproducibility": {
+    "loss_max_abs": 1.1920928955078125e-07,
+    "params_max_abs": 3.134346115984954e-10
+   },
+   "resume": {
+    "loss_max_abs": 2.384185791015625e-07,
+    "params_max_abs": 3.938794179703109e-09
+   },
+   "encoder_unchanged_in_warmup": true,
+   "new_parameters_changed": true,
+   "marker_changed": true,
+   "lrs": [
+    [
+     0.0,
+     2.6666666666666667e-07
+    ],
+    [
+     0.0,
+     5.333333333333333e-07
+    ],
+    [
+     0.0,
+     8.000000000000001e-07
+    ],
+    [
+     0.0,
+     1.0666666666666667e-06
+    ],
+    [
+     0.0,
+     1.3333333333333334e-06
+    ],
+    [
+     0.0,
+     1.6000000000000001e-06
+    ]
+   ],
+   "ok": true
+  },
+  "Ordered context": {
+   "losses": [
+    1.6812185049057007,
+    1.598555088043213,
+    1.5799074172973633,
+    1.6769943237304688,
+    1.792049527168274,
+    1.8942954540252686
+   ],
+   "reproducibility": {
+    "loss_max_abs": 2.384185791015625e-07,
+    "params_max_abs": 9.313225746154785e-10
+   },
+   "resume": {
+    "loss_max_abs": 0.0,
+    "params_max_abs": 9.313225746154785e-10
+   },
+   "encoder_unchanged_in_warmup": true,
+   "new_parameters_changed": true,
+   "marker_changed": true,
+   "lrs": [
+    [
+     0.0,
+     2.6666666666666667e-07
+    ],
+    [
+     0.0,
+     5.333333333333333e-07
+    ],
+    [
+     0.0,
+     8.000000000000001e-07
+    ],
+    [
+     0.0,
+     1.0666666666666667e-06
+    ],
+    [
+     0.0,
+     1.3333333333333334e-06
+    ],
+    [
+     0.0,
+     1.6000000000000001e-06
+    ]
+   ],
+   "ok": true
+  }
+ },
+ "boundary": {
+  "schedule": {
+   "warmup": 3,
+   "total": 8,
+   "resume_after": 2
+  },
+  "lrs": [
+   [
+    0.0,
+    3.3333333333333335e-05
+   ],
+   [
+    0.0,
+    6.666666666666667e-05
+   ],
+   [
+    0.0,
+    0.0001
+   ],
+   [
+    1e-05,
+    0.0001
+   ],
+   [
+    9.045084971874738e-06,
+    9.045084971874738e-05
+   ],
+   [
+    6.545084971874738e-06,
+    6.545084971874738e-05
+   ],
+   [
+    3.4549150281252635e-06,
+    3.4549150281252636e-05
+   ],
+   [
+    9.549150281252633e-07,
+    9.549150281252633e-06
+   ]
+  ],
+  "lrs_expected": [
+   [
+    0.0,
+    3.3333333333333335e-05
+   ],
+   [
+    0.0,
+    6.666666666666667e-05
+   ],
+   [
+    0.0,
+    0.0001
+   ],
+   [
+    1e-05,
+    0.0001
+   ],
+   [
+    9.045084971874738e-06,
+    9.045084971874738e-05
+   ],
+   [
+    6.545084971874738e-06,
+    6.545084971874738e-05
+   ],
+   [
+    3.4549150281252635e-06,
+    3.4549150281252636e-05
+   ],
+   [
+    9.549150281252633e-07,
+    9.549150281252633e-06
+   ]
+  ],
+  "encoder_unchanged_after_update": [
+   true,
+   true,
+   true,
+   false,
+   false,
+   false,
+   false,
+   false
+  ],
+  "first_unfrozen_update_grads": {
+   "none": 0,
+   "nonfinite": 0,
+   "all_zero": 4,
+   "all_zero_names": [
+    "blocks.15.attn.rel_pos_h",
+    "blocks.15.attn.rel_pos_w",
+    "blocks.15.attn.rel_pos_t",
+    "blocks.15.attn.pool_q.pool.weight"
+   ],
+   "projection_abs_max": 0.002506082411855459
+  },
+  "state_roundtrip": {
+   "weights": true,
+   "optimiser": true,
+   "rng": true,
+   "optimiser_parameter_states": 400,
+   "ok": true
+  },
+  "resume": {
+   "loss_max_abs": 1.1920928955078125e-07,
+   "params_max_abs": 1.4978926628828049e-05,
+   "by_group": {
+    "encoder": {
+     "max_abs": 1.4978926628828049e-05,
+     "elements_over_1e-6": 121
+    },
+    "new": {
+     "max_abs": 1.2495729606598616e-07,
+     "elements_over_1e-6": 0
+    }
+   }
+  },
+  "repeat_unfrozen": {
+   "loss_max_abs": 2.384185791015625e-07,
+   "params_max_abs": 1.1160969734191895e-05,
+   "by_group": {
+    "encoder": {
+     "max_abs": 1.1160969734191895e-05,
+     "elements_over_1e-6": 209
+    },
+    "new": {
+     "max_abs": 1.2172677088528872e-07,
+     "elements_over_1e-6": 0
+    }
+   }
+  },
+  "parameter_bound": {
+   "encoder": 6.300000000000001e-05,
+   "new": 0.0010500000000000002
+  },
+  "parameters_within_bound": true,
+  "losses": [
+   1.6812185049057007,
+   1.6011137962341309,
+   1.5822479724884033,
+   1.654435396194458,
+   1.7980835437774658,
+   1.836611270904541,
+   1.5187156200408936,
+   1.5785441398620605
+  ],
+  "ok": true
+ },
+ "fit": {
+  "Target-only": {
+   "group": "Target-only",
+   "updates": 300,
+   "loss_first10": 1.5622220158576965,
+   "loss_last10": 0.8208142638206481,
+   "losses_every_25": [
+    1.6676430702209473,
+    1.4554572105407715,
+    1.3583110570907593,
+    1.4551162719726562,
+    1.116250991821289,
+    1.198995590209961,
+    1.0307292938232422,
+    1.132833480834961,
+    0.8356552720069885,
+    1.1687731742858887,
+    0.8405327200889587,
+    0.8852456212043762
+   ],
+   "grad_norm_first10": 8.348900604248048,
+   "grad_norm_last10": 5.080448579788208,
+   "accuracy_16": 0.9375,
+   "macro_f1_present_classes_16": 0.9492063492063492,
+   "classes_present": 5,
+   "marker_abs_max": 0.025708960369229317,
+   "encoder_unchanged": true,
+   "new_parameters_changed": true,
+   "seconds": 111.24915504455566,
+   "ok": true
+  },
+  "Shuffled context": {
+   "group": "Shuffled context",
+   "updates": 300,
+   "loss_first10": 1.6752182483673095,
+   "loss_last10": 0.4862431526184082,
+   "losses_every_25": [
+    1.798405408859253,
+    1.391188144683838,
+    1.3719178438186646,
+    1.3227441310882568,
+    1.0875722169876099,
+    0.9473434686660767,
+    0.9839373826980591,
+    0.9028838872909546,
+    0.6844668388366699,
+    0.7542300224304199,
+    0.548139214515686,
+    0.5060067176818848
+   ],
+   "grad_norm_first10": 8.915375709533691,
+   "grad_norm_last10": 5.14174256324768,
+   "accuracy_16": 1.0,
+   "macro_f1_present_classes_16": 1.0,
+   "classes_present": 5,
+   "marker_abs_max": 0.02959234081208706,
+   "encoder_unchanged": true,
+   "new_parameters_changed": true,
+   "seconds": 111.7516176700592,
+   "ok": true
+  },
+  "Ordered context": {
+   "group": "Ordered context",
+   "updates": 300,
+   "loss_first10": 1.6300636410713196,
+   "loss_last10": 0.5667002201080322,
+   "losses_every_25": [
+    1.7492495775222778,
+    1.378507137298584,
+    1.3612685203552246,
+    1.3828327655792236,
+    1.1103885173797607,
+    1.0916436910629272,
+    0.9801561832427979,
+    0.9892631769180298,
+    0.6976470947265625,
+    0.8965890407562256,
+    0.6111352443695068,
+    0.5416711568832397
+   ],
+   "grad_norm_first10": 8.692849731445312,
+   "grad_norm_last10": 4.757026791572571,
+   "accuracy_16": 1.0,
+   "macro_f1_present_classes_16": 1.0,
+   "classes_present": 5,
+   "marker_abs_max": 0.03150656446814537,
+   "encoder_unchanged": true,
+   "new_parameters_changed": true,
+   "seconds": 111.22330355644226,
+   "ok": true
+  }
+ },
+ "timing": {
+  "Target-only": {
+   "group": "Target-only",
+   "seconds_per_update_mean": 0.4565498495101929,
+   "seconds_per_update_median": 0.4565567970275879,
+   "seconds_per_update_max": 0.459644079208374,
+   "peak_gpu_memory_mb": 12373.9072265625,
+   "hours_per_run": 0.4755727599064509
+  },
+  "Shuffled context": {
+   "group": "Shuffled context",
+   "seconds_per_update_mean": 0.45683536052703855,
+   "seconds_per_update_median": 0.4563767910003662,
+   "seconds_per_update_max": 0.46564388275146484,
+   "peak_gpu_memory_mb": 12373.9072265625,
+   "hours_per_run": 0.47587016721566516
+  },
+  "Ordered context": {
+   "group": "Ordered context",
+   "seconds_per_update_mean": 0.4563118839263916,
+   "seconds_per_update_median": 0.4560713768005371,
+   "seconds_per_update_max": 0.46394968032836914,
+   "peak_gpu_memory_mb": 12373.9072265625,
+   "hours_per_run": 0.47532487908999127
+  }
+ },
+ "nondeterministic_operator_warnings": [
+  "max_pool3d_with_indices_backward_cuda does not have a deterministic implementation, but you set 'torch.use_deterministic_algorithms(True, warn_only=True)'. You can file an issue at https://github.com/pytorch/pytorch/issues to help us prioritize adding deterministic support for this operation. (Trigg"
+ ],
+ "budget": {
+  "check_hours": 0.13613846878210703,
+  "hours_per_run_max": 0.47587016721566516,
+  "runs": 9,
+  "evaluation_allowance_hours": 2.0,
+  "projected_total_hours": 6.418969973723094,
+  "cap_hours": 24.0,
+  "ok": true
+ },
+ "ok": true,
+ "identities": {
+  "target_only_s0": "9ae6bbe6bdb2116d7e8d78fcdcbc81e376a8bda5df48e30a1b193ecee601dcee",
+  "shuffled_s0": "21e34e334efca20548aabb96c9259090af59290abc3d226f6249946e8678d8b1",
+  "ordered_s0": "b792d61db1e1cc6d2b9aac3d3ff95e565be81d15d8bd23cceb51aac238d7dabc",
+  "target_only_s1": "93d4a40e5285661e38cfddc3758788162458c29712ac0fa1676fe6d49ecf485a",
+  "shuffled_s1": "202f0992f5a661a5ece1798503fbaf80700fa3c4c802e62a401b102617db78db",
+  "ordered_s1": "4688186f86c45b4d5cac952c763b13aebef8c09f95d8c017064262182965ac94",
+  "target_only_s2": "1696f482dddfdb4f7adc3cd63e3a34e17affe960ad17b7992af43241b3ada18e",
+  "shuffled_s2": "75ce0024eac8efdcbbbf5c28cb4e82099771e4ecb69b45c5d03ccdf78f59741e",
+  "ordered_s2": "73a4add54b3e619b51be44d473f5449c1509772d3ac4a94b80718cab1508480f"
+ },
+ "code": "3462645a45db3e624bb009f22b3e233f55009972e7a50fa81a2af59748c09285",
+ "seconds": 490.1614353656769
+}
