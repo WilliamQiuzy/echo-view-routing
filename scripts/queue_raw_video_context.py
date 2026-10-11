@@ -54,7 +54,8 @@ def main() -> None:
     if foreign:
         raise SystemExit(f"the status file belongs to other identities ({foreign})")
     status.setdefault("jobs", {}); status.setdefault("failed_attempt_hours", 0.0)
-    status["check_hours"] = float(check["budget"]["check_hours"]); status["cap_hours"] = float(b["gpu_hours_max"])
+    ledger = [json.loads(x) for x in (ctx.out / "checks" / "ledger.jsonl").read_text().splitlines() if x.strip()]
+    status["check_hours"] = float(sum(x["hours"] for x in ledger)); status["check_attempts"] = len(ledger); status["cap_hours"] = float(b["gpu_hours_max"])
     for k in idents:
         status["jobs"].setdefault(k, {"state": "pending", "identity": idents[k]})
     write(status_path, status)

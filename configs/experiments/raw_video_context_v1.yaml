@@ -102,7 +102,7 @@ raw_video_context:
     cudnn_deterministic: true
     cudnn_benchmark: false
     deterministic_algorithms: "torch.use_deterministic_algorithms(True, warn_only=True) with CUBLAS_WORKSPACE_CONFIG=:4096:8; operators without a deterministic CUDA kernel are listed in the check record"
-  identity: "SHA256 over the config section, group, seed, manifest and initial-state digests, checkpoint digest, torchvision MViT digest, environment versions, total updates and the sources of the model, input and training functions"
+  identity: "SHA256 over the training sections of this config (task_sheet, source, classes, model, inputs, groups, permutation, data, training, determinism), group, seed, manifest and initial-state digests, checkpoint digest, torchvision MViT digest, environment versions, total updates, the model module and the training script in full, and the shared frame, path and schedule functions"
   checks:
     windows: >-
       16 training windows of the seed-0 manifest chosen by manifest order alone: the first native window with repeats,
@@ -111,7 +111,21 @@ raw_video_context:
     parity_max_abs: 1.0e-4   # source three-channel encoder against the new model with the zero marker branch, same tensor, fp32
     reproducibility: {updates: 6, loss_abs: 1.0e-4, params_abs: 1.0e-5}
     resume: {updates: "3 + 3 against 6", loss_abs: 1.0e-4, params_abs: 1.0e-5}
-    boundary: {warmup: 3, total: 8, resume_at: 2, note: "short schedule across the unfreeze boundary: lr per update, frozen encoder before, changing encoder after, resume equal to one go"}
+    boundary:
+      warmup: 3
+      total: 8
+      resume_at: 2
+      adam_step_bound: 2.1
+      note: >-
+        short schedule across the unfreeze boundary: the learning rate of every update, a frozen encoder before and a
+        changing one after, finite gradients at the first unfrozen update (encoder and projection), an exact state
+        round-trip (weights, optimiser moments and step counts, CPU and CUDA RNG), losses of the resumed and the
+        repeated run within 1e-4 of one go, and parameter differences within adam_step_bound x the summed learning rate
+        of each optimiser group (two Adam trajectories that differ only by the sign of near-zero gradient elements). The
+        first check run (2026-10-11) found that max_pool3d_with_indices_backward_cuda (the pooled skip connection of
+        three MViT blocks) has no deterministic CUDA kernel: after unfreezing, two identical runs differed by 2.04e-5 in
+        parameters and 4.8e-7 in loss, as did the resumed run. The operator and this tolerance are recorded as the task
+        sheet asks; the 6-update formal-schedule check keeps 1e-5.
     fit: {updates: 300, lr_new: 1.0e-4, encoder: frozen, batches: "windows 0-7 and 8-15 alternately", gate: "finite values, updated new parameters, unchanged encoder, correct targets; no score gate"}
     timing: {warmup_updates: 5, timed_updates: 50, state: "encoder unfrozen, batch 8 from the formal manifest, decoding and marker included"}
   budget:
@@ -140,6 +154,29 @@ raw_video_context:
       wins, ties to the earlier grid entry; then frozen and applied once to selection. No feasible setting: the model's
       B3 row fails, and the diagnostic setting 9 / 0.95 is reported without passing anything
     working_points: "each model's chosen setting is reported; system differences are not attributed to the encoder alone when the settings differ"
+    reference_inputs:            # every sha256 is checked before use
+      e1_feature_manifest: {path: models_frozen/e1_echoviewclip_probe/v1/feature_manifest.json,
+                            sha256: 56f59166ba3f1b428867e4ec9a7e6dfd800cb5bccd79db8191d3c916421f17c3}
+      center_supervision:
+        config: {path: configs/experiments/ev9v_center_supervision_v1.yaml, sha256: 3048b6a024f6362d75522e80ac31276a0124c0000616a4f1e8fd4c84d4d6669b}
+        report: {path: docs/results/2026-10-05_center_supervision_training/report.json, sha256: 09998dcefaa6d4b124bee11dfe89c02ac303406e6b9cad31969022d1aa800b13}
+        frozen:                  # models_frozen/center_supervision_v1/C_s{k}/{final.pt, init_s{k}.pt}
+          C_s0: {final: 05fa4ff74dd540310881c4d37e188ee04ec929ff7bab48b7b64dcd2d419745a2, init: f26d05a0524d45739a57c202ef58af3c0830a37185879f8d2e005a83ff5101c5}
+          C_s1: {final: 5c48f173b482fd37b3e3f8444ff2df2ce2edbdc6f0d3a7bc49b467ce9fc09d07, init: 09172a113237c864ef9cfe93ab24ec7fc19faea4ec208630adf9bc3548a63d90}
+          C_s2: {final: 370b7861c3655bc589e233b6d30eb236879a55fb53246e13f1e8d47d97e592f7, init: 3d655b8b81bd08c68ec03a0b2dc727f7d9f3014b450587e44b62f50293967a19}
+        setting: "each C model's stored B3 setting (report.json b3_choice); its stored B3 rows must be reproduced"
+      fact_asrf:
+        config: {path: configs/experiments/fact_asrf_paired_v1.yaml, sha256: 5caffd566fd560593c5d60e829446fe0ecc97debd59cbd5c627ce13aec421ab2}
+        summary: {path: docs/results/2026-10-08_fact_asrf_training/summary.json, sha256: 32c2665f485981d8b38d9c63c283027b1fd02568d04c36816d162fe88066bafa}
+        frozen:                  # models_frozen/fact_asrf_paired_v1/{key}/final.pt
+          FACT_s0: 7422d286933da1aeade27322a2734535a8d6600149c52e06004161583e4f6efe
+          FACT_s1: c793447bd97f29258cfafb814d1d9e5ddf7133b35c959c5e5c1cf66597b6efc4
+          FACT_s2: e3387203a161d15bbaee115d6c0341d5d72cadc558a75cd066dff22175517c00
+          ASRF_s0: b7d25d305ae19d0c14243943979fd9d1caa0e9ef0c411f7e264dcc36b94e97a4
+          ASRF_s1: 1665b7e116270a9742a94bb2e2c4d399423832c9255ec7b767f793348da6c187
+          ASRF_s2: 4199cecee651afb3106c614a6fba079508571ef76780b98103fe54cccf5a583a
+        setting: "official decoding; the stored rows of the paired round must be reproduced"
+      stored_runs: "E0 + B3, E1 + B3, B7 + B3 and the historical E1 + ASRF s0-2 reproduce their stored rows (scripts/report_center_supervision.references); G1 + ASRF from runs/geometry/downstream/G1_s{k}_status.json with calibration mean 0.9738935784747763"
     references: >-
       E0 + B3, E1 + B3, B7 + B3 (official EchoViewCLIP), historical E1 + ASRF s0-2, the paired ASRF s0-2 and Original
       FACT s0-2 (models_frozen/fact_asrf_paired_v1), the centre-supervision C + B3 s0-2 (models_frozen/center_supervision_v1,

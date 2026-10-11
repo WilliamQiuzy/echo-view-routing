@@ -195,6 +195,7 @@ def run_updates(ctx, upd: Updates, us: list[int], warmup: int, total: int, devic
         enc_grads = [p.grad for p in model.encoder_parameters()]
         s["encoder_grads"] = {"none": sum(g is None for g in enc_grads), "nonfinite": sum(g is not None and not bool(torch.isfinite(g).all()) for g in enc_grads),
                               "all_zero": sum(g is not None and float(g.abs().max()) == 0.0 for g in enc_grads),
+                              "all_zero_names": [n for n, q in model.encoder.named_parameters() if q.grad is not None and float(q.grad.abs().max()) == 0.0],
                               "projection_abs_max": None if model.encoder.head[-1].weight.grad is None else float(model.encoder.head[-1].weight.grad.abs().max())}
         s["encoder_digest"] = params_digest(model.encoder.named_parameters()); recs.append(s)
     return {"model": model, "opt": opt, "records": recs, "encoder_start": enc0}
@@ -203,6 +204,30 @@ def run_updates(ctx, upd: Updates, us: list[int], warmup: int, total: int, devic
 def max_diff(a: torch.nn.Module, b: torch.nn.Module) -> float:
     sb = b.state_dict()
     return max(float((v.float() - sb[k].float()).abs().max()) for k, v in a.state_dict().items())
+
+
+def group_diff(a: tm.TargetMViT, b: tm.TargetMViT) -> dict:
+    """Largest parameter difference per optimiser group and the number of elements that differ by more than 1e-6."""
+    out = {}
+    for name, pa, pb in (("encoder", a.encoder_parameters(), b.encoder_parameters()), ("new", a.new_parameters(), b.new_parameters())):
+        d = [(x.detach() - y.detach()).abs() for x, y in zip(pa, pb)]
+        out[name] = {"max_abs": max(float(v.max()) for v in d), "elements_over_1e-6": int(sum(int((v > 1e-6).sum()) for v in d))}
+    return out
+
+
+def state_roundtrip(ctx, run: dict, tmp: Path, device) -> dict:
+    """A resume file restores the weights, the optimiser state (moments and step counts) and the RNG states bit for bit."""
+    saved_cpu, saved_cuda = torch.get_rng_state(), torch.cuda.get_rng_state_all()
+    tr.save_resume(tmp, run["model"], run["opt"], 0, "check", [])
+    init, _ = ctx.init(SEED); model = tr.make_model(ctx, init, device); opt = tr.make_optimizer(model, ctx.o)
+    torch.manual_seed(12345); torch.cuda.manual_seed_all(12345)          # disturbed on purpose; the resume must restore both
+    tr.load_resume(tmp, model, opt, "check"); tmp.unlink(missing_ok=True)
+    a, b = run["model"].state_dict(), model.state_dict(); sa, sb = run["opt"].state_dict(), opt.state_dict()
+    weights = a.keys() == b.keys() and all(torch.equal(a[k], b[k]) for k in a)
+    optim = (sa["param_groups"] == sb["param_groups"] and sa["state"].keys() == sb["state"].keys()
+             and all(torch.equal(torch.as_tensor(sa["state"][i][f]).cpu(), torch.as_tensor(sb["state"][i][f]).cpu()) for i in sa["state"] for f in sa["state"][i]))
+    rng = torch.equal(torch.get_rng_state(), saved_cpu) and all(torch.equal(x, y) for x, y in zip(torch.cuda.get_rng_state_all(), saved_cuda))
+    return {"weights": bool(weights), "optimiser": bool(optim), "rng": bool(rng), "optimiser_parameter_states": len(sa["state"]), "ok": bool(weights and optim and rng)}
 
 
 def repro_resume(ctx, upd: Updates, device, tmp: Path) -> dict:
@@ -234,13 +259,17 @@ def boundary(ctx, upd: Updates, device, tmp: Path) -> dict:
     want = [tr.schedule(u, w, t, ctx.o) for u in us]; got = [(r["lr_encoder"], r["lr_new"]) for r in d["records"]]
     frozen = [r["encoder_digest"] == d["encoder_start"] for r in d["records"]]
     g = d["records"][w]["encoder_grads"]; le = [r["loss"] for r in half["records"] + e["records"]]; ld = [r["loss"] for r in d["records"]]
-    res = {"loss_max_abs": max(abs(x - y) for x, y in zip(ld, le)), "params_max_abs": max_diff(d["model"], e["model"])}
-    rep = {"loss_max_abs": max(abs(x - y) for x, y in zip(ld, [r["loss"] for r in f["records"]])), "params_max_abs": max_diff(d["model"], f["model"])}
+    res = {"loss_max_abs": max(abs(x - y) for x, y in zip(ld, le)), "params_max_abs": max_diff(d["model"], e["model"]), "by_group": group_diff(d["model"], e["model"])}
+    rep = {"loss_max_abs": max(abs(x - y) for x, y in zip(ld, [r["loss"] for r in f["records"]])), "params_max_abs": max_diff(d["model"], f["model"]),
+           "by_group": group_diff(d["model"], f["model"])}
+    trip = state_roundtrip(ctx, d, tmp, device)
+    bound = {"encoder": float(b["adam_step_bound"]) * sum(x[0] for x in want), "new": float(b["adam_step_bound"]) * sum(x[1] for x in want)}
+    within = all(x["by_group"][grp]["max_abs"] <= bound[grp] for x in (res, rep) for grp in bound)
     ok = (got == want and all(frozen[:w]) and not any(frozen[w:]) and g["none"] == 0 and g["nonfinite"] == 0 and (g["projection_abs_max"] or 0) > 0
-          and res["loss_max_abs"] <= float(c["resume"]["loss_abs"]) and res["params_max_abs"] <= float(c["resume"]["params_abs"])
-          and rep["loss_max_abs"] <= float(c["reproducibility"]["loss_abs"]) and rep["params_max_abs"] <= float(c["reproducibility"]["params_abs"]))
+          and trip["ok"] and res["loss_max_abs"] <= float(c["resume"]["loss_abs"]) and rep["loss_max_abs"] <= float(c["reproducibility"]["loss_abs"]) and within)
     return {"schedule": {"warmup": w, "total": t, "resume_after": k}, "lrs": got, "lrs_expected": want, "encoder_unchanged_after_update": frozen,
-            "first_unfrozen_update_grads": g, "resume": res, "repeat_unfrozen": rep, "losses": ld, "ok": bool(ok)}
+            "first_unfrozen_update_grads": g, "state_roundtrip": trip, "resume": res, "repeat_unfrozen": rep, "parameter_bound": bound,
+            "parameters_within_bound": within, "losses": ld, "ok": bool(ok)}
 
 
 def fit(ctx, inp: dict, group: str, device) -> dict:
@@ -340,6 +369,8 @@ def run_checks(ctx, device, workers: int) -> None:
     ids = {str(v) for v in m["videos"].tolist()}; ids |= {session_of(v) for v in ids}; assert_no_ids(rec, ids, "check")
     for p in (out / "check.json", res_dir / "checks.json"):
         p.write_text(json.dumps(rec, indent=1, default=str))
+    with (out / "ledger.jsonl").open("a") as fh:          # every check attempt's GPU time counts against the budget
+        fh.write(json.dumps({"finished": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "hours": (time.time() - t0) / 3600, "ok": rec["ok"], "code": rec["code"]}) + "\n")
     print(json.dumps({k: (v.get("ok") if isinstance(v, dict) and "ok" in v else None) for k, v in rec.items() if isinstance(v, dict)}, indent=1))
     print(json.dumps(rec["budget"], indent=1)); print(f"check ok: {rec['ok']}")
     if not rec["ok"]:

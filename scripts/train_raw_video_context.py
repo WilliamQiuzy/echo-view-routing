@@ -31,7 +31,6 @@ import inspect  # noqa: E402
 import json  # noqa: E402
 import sys  # noqa: E402
 import time  # noqa: E402
-import warnings  # noqa: E402
 from pathlib import Path  # noqa: E402
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -47,11 +46,13 @@ from torch.utils.data import DataLoader, Dataset  # noqa: E402
 import echo_routing.vit.target_mvit as tm  # noqa: E402
 from echo_routing.config import gpu_memory_fraction, load_paths  # noqa: E402
 from echo_routing.evaluate.complementarity import sha256_file  # noqa: E402
+from echo_routing.ingest.frames import list_frame_paths  # noqa: E402
 from echo_routing.temporal.dev_train import lr_factor  # noqa: E402
 from echo_routing.temporal.joint_visual import crop_uint8, gamma_lut, load_frame_u8  # noqa: E402
 
 GROUP_OF = {v: k for k, v in tm.KEYS.items()}          # target_only -> Target-only, ...
 WINDOWS = 8
+TRAINING_KEYS = ("task_sheet", "source", "classes", "model", "inputs", "groups", "permutation", "data", "training", "determinism")   # sections a run identity covers
 
 
 # ----------------------------------------------------------------------------------------------- context
@@ -101,15 +102,15 @@ def make_model(ctx: Ctx, init: dict, device) -> tm.TargetMViT:
 
 
 def code_digest() -> str:
-    """Sources of the model, the input functions and the training step (unrelated edits elsewhere do not count)."""
-    h = hashlib.sha256(Path(tm.__file__).read_bytes())
-    for fn in (load_frame_u8, crop_uint8, gamma_lut, lr_factor, window_inputs, make_optimizer, schedule, apply_schedule, train_step, save_resume, load_resume):
+    """The model module and this training script in full, plus the shared frame, path and schedule functions they call."""
+    h = hashlib.sha256(Path(tm.__file__).read_bytes()); h.update(Path(__file__).read_bytes())
+    for fn in (load_frame_u8, crop_uint8, gamma_lut, lr_factor, FramePaths, list_frame_paths, frame_dirs):
         h.update(inspect.getsource(fn).encode())
     return h.hexdigest()
 
 
 def identity(ctx: Ctx, group: str, seed: int, manifest_sha: str, init_sha: str) -> str:
-    payload = {"experiment": ctx.cfg.get("experiment"), "raw_video_context": ctx.rv, "group": group, "seed": int(seed),
+    payload = {"experiment": ctx.cfg.get("experiment"), "raw_video_context": {k: ctx.rv[k] for k in TRAINING_KEYS}, "group": group, "seed": int(seed),
                "manifest_sha256": manifest_sha, "init_sha256": init_sha, "checkpoint_sha256": ctx.rv["source"]["echoprime"]["checkpoint"]["sha256"],
                "environment": environment(), "total_updates": ctx.total, "code": code_digest()}
     return hashlib.sha256(json.dumps(payload, sort_keys=True, default=str).encode()).hexdigest()
