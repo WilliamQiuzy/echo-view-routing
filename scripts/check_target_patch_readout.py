@@ -62,11 +62,11 @@ def pairing(ctx, device) -> dict:
             m = tr.make_model(state, r, "cpu")
             ok &= list(m.state_dict()) == keys and sum(p.numel() for p in m.parameters()) == n and params_digest(m.named_parameters()) == params_digest(base.named_parameters())
         out[str(s)] = {"same_start_no_new_parameters": bool(ok), "parameters": int(n), "marker_abs_max": float(state["marker_stem.weight"].abs().max())}
-    m = tr.make_model(ctx.source_state(SEED)[0], "target_patches", device).eval(); shape = {}
-    h = m.encoder.norm.register_forward_hook(lambda _m, _i, o: shape.__setitem__("x", list(o.shape)))
+    state = ctx.source_state(SEED)[0]; m = tr.make_model(state, "target_patches", "cpu"); base = source_model(state, device); shape = {}
+    h = base.encoder.norm.register_forward_hook(lambda _m, _i, o: shape.__setitem__("x", list(o.shape)))   # the plain source path
     try:
         with torch.no_grad():
-            m(torch.zeros(2, 3, 16, 224, 224, device=device), tm.marker_planes(torch.tensor([8, 9], device=device)))
+            base(torch.zeros(2, 3, 16, 224, 224, device=device), tm.marker_planes(torch.tensor([8, 9], device=device)))
     finally:
         h.remove()
     return {"seeds": out, "grid": list(m.grid), "query_strides": [list(x) for x in m.query_strides], "stem_time": list(m.stem_time),
@@ -276,7 +276,20 @@ def token_figure(inp: tuple, k: int, path: Path) -> None:
 
 # ----------------------------------------------------------------------------------------------- main
 def run_checks(ctx, device, workers: int) -> None:
-    t0 = time.time(); out = ctx.out / "checks"; out.mkdir(parents=True, exist_ok=True); res_dir = ctx.root / ctx.tp["outputs"]["results_dir"]; res_dir.mkdir(parents=True, exist_ok=True)
+    """Every attempt, finished or not, adds its GPU hours to the round's check ledger."""
+    t0 = time.time(); ledger = ctx.out / "checks" / "ledger.jsonl"; ledger.parent.mkdir(parents=True, exist_ok=True); ok = False
+    try:
+        ok = checks(ctx, device, workers, t0, ledger)
+    finally:
+        with ledger.open("a") as fh:
+            fh.write(json.dumps({"finished": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "hours": (time.time() - t0) / 3600, "ok": ok,
+                                 "code": tr.code_digest()}) + "\n")
+    if not ok:
+        raise SystemExit("a hard check failed; see check.json")
+
+
+def checks(ctx, device, workers: int, t0: float, ledger_path: Path) -> bool:
+    out = ctx.out / "checks"; res_dir = ctx.root / ctx.tp["outputs"]["results_dir"]; res_dir.mkdir(parents=True, exist_ok=True)
     m, _ = ctx.manifest(SEED); fp = ctx.frame_paths(); rec: dict = {}
     with warnings.catch_warnings(record=True) as caught:
         warnings.simplefilter("always")
@@ -290,7 +303,7 @@ def run_checks(ctx, device, workers: int) -> None:
         rec["boundary"] = {r: boundary(ctx, upd, r, device, out / "tmp_resume.pt") for r in tp.READOUTS}; print("reproducibility, resume and boundary done", flush=True)
         rec["timing"] = {r: timing(ctx, m, fp, r, device, workers) for r in tp.READOUTS}
     rec["nondeterministic_operator_warnings"] = sorted({str(w.message).split("\n")[0][:300] for w in caught if "determinis" in str(w.message).lower()})
-    ledger_path = out / "ledger.jsonl"; earlier = [json.loads(x) for x in ledger_path.read_text().splitlines() if x.strip()] if ledger_path.is_file() else []
+    earlier = [json.loads(x) for x in ledger_path.read_text().splitlines() if x.strip()] if ledger_path.is_file() else []
     spent = (time.time() - t0) / 3600; hours = max(t["hours_per_run"] for t in rec["timing"].values()); b = ctx.tp["budget"]
     rec["budget"] = {"check_hours_this_run": spent, "check_hours_earlier": float(sum(x["hours"] for x in earlier)), "hours_per_run_max": hours, "runs": len(ctx.tp["queue"]),
                      "evaluation_allowance_hours": float(b["evaluation_allowance_hours"]), "cap_hours": float(b["gpu_hours_max"])}
@@ -304,9 +317,6 @@ def run_checks(ctx, device, workers: int) -> None:
     ids = {str(v) for v in m["videos"].tolist()}; ids |= {session_of(v) for v in ids}; assert_no_ids(rec, ids, "check")
     for p in (out / "check.json", res_dir / "checks.json"):
         p.write_text(json.dumps(rec, indent=1, default=str))
-    with ledger_path.open("a") as fh:
-        fh.write(json.dumps({"finished": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "hours": spent, "ok": rec["ok"], "code": rec["code"]}) + "\n")
     print(json.dumps({k: v.get("ok") for k, v in rec.items() if isinstance(v, dict) and "ok" in v}, indent=1)); print(json.dumps(rec["budget"], indent=1))
     print(f"check ok: {rec['ok']}")
-    if not rec["ok"]:
-        raise SystemExit("a hard check failed; see check.json")
+    return rec["ok"]
