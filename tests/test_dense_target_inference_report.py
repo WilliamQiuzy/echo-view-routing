@@ -218,11 +218,14 @@ def _res():
     ver = {f"{r}|{n}": {h: dict.fromkeys(METRICS, NONE) for h in HALVES} for r in ("b3", "argmax") for n in NAMES}
     boot = {m: {"delta": 0.001, "ci95": [-0.002, 0.004]} for m in METRICS}
     y = np.array([0, 1, 2]); recs = np.array(["r_1", "r_1", "q_1"])
+    seg = {k: {"segments": 1, "recordings": 1, "sessions": 1} for k in ("matched by a only", "matched by b only")}
+    bnd = {k: {"changes": 2, "recordings": 2, "sessions": 1} for k in ("found by a only", "found by b only")}
     return {
         "counts": {h: {"sequences": {"native": 3, "pairs": 2, "multi": 4}, "samples": 900, "old_windows": 190, "new_windows": 710} for h in HALVES},
         "systems": {f"{c}|s{s}": {"argmax": {h: _sysrow(0.9) for h in HALVES}, "b3": {h: _sysrow(0.96) for h in HALVES}, "feasible": True}
                     for c in CONDS for s in range(3)},
-        "comparisons": {f"s{s}|{r}|{n}|{h}": {"bootstrap": boot} for s in range(3) for r in ("b3", "argmax") for n in NAMES for h in HALVES},
+        "comparisons": {f"s{s}|{r}|{n}|{h}": {"bootstrap": boot, "segment_changes": seg, "boundary_changes": bnd}
+                        for s in range(3) for r in ("b3", "argmax") for n in NAMES for h in HALVES},
         "verdicts": ver,
         "offsets": {f"{c}|{r}|s{s}|{h}": dtt.offset_stats([1, -2, 0], 10.0) for c in CONDS for r in ("b3", "argmax") for s in range(3) for h in HALVES},
         "mechanism": {f"{c}|b3|s{s}|{h}": mech for c in CONDS for s in range(3) for h in HALVES},
