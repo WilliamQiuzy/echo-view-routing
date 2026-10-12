@@ -1,0 +1,235 @@
+# Dense target-time inference and remaining-error audit (docs/superpowers/plans/2026-10-12-dense-target-inference.md).
+# Fixed before any dense output exists. An implementation check of the existing frozen Ordered context models of the
+# raw-video context round: the same weights, inputs and B3 numbers, with the target requested at every 10 Hz sample
+# instead of every fifth. No weight, readout, optimiser, training step or threshold search is added; no novelty or
+# mechanism is claimed. Labels and reference boundaries serve only the report and its diagnostics. The test split and
+# EchoNet-Pediatric are not read.
+#
+# Inherits model_development_v2.yaml only for the protocol keys (10 Hz, the 0.5 s boundary tolerance) and the two
+# development halves.
+extends: model_development_v2.yaml
+run_name: dense_target_inference_v1
+experiment: dense_target_inference_v1
+
+dense_target_inference:
+  task_sheet: {path: docs/superpowers/plans/2026-10-12-dense-target-inference.md,
+               sha256: c52eb02736d246f9c503ab06fee573983e40ca89e280b6b4fb387102e0c01d0d}
+  source:
+    config: {path: configs/experiments/raw_video_context_v1.yaml,
+             sha256: 832694f4ea1ec4c7d1811b59c0a6803495645e9ff8be1db80fe28d2c049af485}
+    report:
+      summary: {path: docs/results/2026-10-10_raw_video_context/summary.json, sha256: a521d47e5a5618e7000fcd877ac58dc7ebc16f488a48b229f20bccfb18f333ab}
+      readme: {path: docs/results/2026-10-10_raw_video_context/README.md, sha256: cf812d22549c9227ea81ac48d728ef90f5edd9aa4a0affaa9ec0eacb3939e172}
+    models:                      # the three frozen Ordered context models; no seed is chosen, no continued or patch weights
+      0:
+        final: {path: models_frozen/raw_video_context_v1/ordered_s0/final.pt, sha256: 80f13a42e628fe2647634b79e59d5b8486fee5c3e0ae45f70bcc667c41258505}
+        init: {path: models_frozen/raw_video_context_v1/ordered_s0/init_s0.pt, sha256: 20c19a61e90e8fde1929ef11c7909591328fa4ce9c23dee53a1e64f0e7da1457}
+        run_manifest: {path: models_frozen/raw_video_context_v1/ordered_s0/run_manifest.json, sha256: a2a7502363be9c529477a28d3be903f8a30040053610165eded01e2033f0ab31}
+        identity: b792d61db1e1cc6d2b9aac3d3ff95e565be81d15d8bd23cceb51aac238d7dabc
+      1:
+        final: {path: models_frozen/raw_video_context_v1/ordered_s1/final.pt, sha256: 74276323ababf78fcb578be28d3172f3c220b3b7e66c2ff96a2072f39210c26f}
+        init: {path: models_frozen/raw_video_context_v1/ordered_s1/init_s1.pt, sha256: 878811631dafa1c7d93dfda794bbbf9f9eb9104dd4a2c48613238827636f1494}
+        run_manifest: {path: models_frozen/raw_video_context_v1/ordered_s1/run_manifest.json, sha256: 2e16235df525018f8d3c0235b3adb68e189710cb0b45fb3a96066af59f8a1e8a}
+        identity: 4688186f86c45b4d5cac952c763b13aebef8c09f95d8c017064262182965ac94
+      2:
+        final: {path: models_frozen/raw_video_context_v1/ordered_s2/final.pt, sha256: 923eb3afb0d846b1361897dbb63bb5aecf22401ce4b305b44fe990d48edc7f2c}
+        init: {path: models_frozen/raw_video_context_v1/ordered_s2/init_s2.pt, sha256: a1d377b99e5dfcd9341f7991d4063f02ddef6a9495295b3f623c0f82801e81e2}
+        run_manifest: {path: models_frozen/raw_video_context_v1/ordered_s2/run_manifest.json, sha256: 9bf9a298db5c7bcb4143b3fe31a0822bdb746010793c49da920f83594cbaac9f}
+        identity: 73a4add54b3e619b51be44d473f5449c1509772d3ac4a94b80718cab1508480f
+    outputs:                     # the source round's saved stride-5 windows (logits, centres, markers, orders, per-sample probabilities); read only
+      selection:
+        0: {path: runs/raw_video_context_v1/evaluation/selection/ordered_s0.npz, sha256: 98706faa4efdeae4e1b7640f65b24dbbd4878f0f354611aec6679233a0f3a0dc}
+        1: {path: runs/raw_video_context_v1/evaluation/selection/ordered_s1.npz, sha256: b5d6a13c20e2be1d922b88eafc20b17f4dacfbebcbf83149715575c9e69c9aa1}
+        2: {path: runs/raw_video_context_v1/evaluation/selection/ordered_s2.npz, sha256: 86f6f90d869a05cc4a886257a3f35b9bb2ec1e696c4508e0cbfb9ebf840bfe3d}
+      calibration:
+        0: {path: runs/raw_video_context_v1/evaluation/calibration/ordered_s0.npz, sha256: d79008575f59aad1a6a9911906bff3752bb0d0e54bacfceb23232562f703400d}
+        1: {path: runs/raw_video_context_v1/evaluation/calibration/ordered_s1.npz, sha256: 37fb569093916aaf00d455fe92d8efe2397a6f1913c57d55d798c59acd2915ac}
+        2: {path: runs/raw_video_context_v1/evaluation/calibration/ordered_s2.npz, sha256: 306f1abf7bfda0edad8dd21aa5980f89efa246aaa38c718db374df68de89315f}
+    protocol: {path: runs/20261002-051140-model_development_protocol-fa45e7f4-s0/protocol.json,
+               sha256: a897483b776e8cff1ba8b92774c6a82537758bcba6abd362f2d8603f37997593}
+    e1_feature_manifest: {path: models_frozen/e1_echoviewclip_probe/v1/feature_manifest.json,
+                          sha256: 56f59166ba3f1b428867e4ec9a7e6dfd800cb5bccd79db8191d3c916421f17c3}   # supplies the native clips' 10 Hz frame indices
+    window_plans: {path: data/window_plans/beb36d80df31_protocol_a897483b776e/plans.json,
+                   sha256: 51517ea886bffe235918ad9bd250f4811efae39ee0d27fc29b648dde0fac26ba}       # every sequence's frame references must agree
+    echoprime_checkpoint: {path: third_party/EchoPrime/model_data/weights/echo_prime_encoder.pt,
+                           sha256: 7ca32e8bfde248bd6d8c7e46fdb7440385169af4dc2f416b5de840bdc2e64f3b}   # builds the architecture as the source evaluation did; final.pt then loads strictly
+    environment: {torch: 2.14.0+cu130, torchvision: 0.29.0+cu130, cuda: "13.0", cudnn: 92400,
+                  torchvision_mvit_sha256: 76ca465f2be0bb7ff914ca434264ceb6736402856d164e5810491d5ba77d4210}
+    inherited: >-
+      the five classes, the two development halves, the protocol, the source frames and gamma, the 224 x 224 geometry,
+      the 0-255 normalisation, the 16-sample window, the marker, fp32 and the environment come from the source
+      configuration and are not changed; the models stay in eval mode and no parameter is updated
+  conditions:                    # one model output per 10 Hz sample, three ways
+    Sparse: >-
+      the saved stride-5 window logits of the source round, softmax in float32, every sample taking its nearest centre
+      (echo_routing.evaluate.window_target.nearest_centre: argmin of |sample - centre|, ties to the earlier centre); it
+      must reproduce the saved per-sample probabilities and every stored system row exactly
+    Interpolated: >-
+      the same saved window probabilities, interpolated per sequence and class with numpy.interp(arange(n), old centres,
+      old probabilities[:, k]): linear between centres, the first and last value held outside them, constant with a
+      single centre; cast to float32 once; no second softmax, renormalisation or calibration. Checks: no negative value,
+      every row sum within 1 +- 1e-6, the old centres' rows unchanged. A new argmax class between centres is possible
+      and is not assumed safe or better
+    Dense: >-
+      a 16-frame window requested at every sample c (centres numpy.arange(n)), each sample taking its own window's
+      softmax; the saved logits and probabilities are reused unchanged at the old centres and only the other centres
+      are inferred, so the three conditions share every old observation
+  windows:
+    old_centres: "echo_routing.temporal.windowed.window_centres(n, 5): usually 2, 7, 12, ... with the last sample added by its rule; never 0, 5, 10, ..."
+    dense_centres: "numpy.arange(n); every old centre is one of them"
+    frames: "echo_routing.evaluate.window_target.window_frames(c, n, 16, 16): clamped at sequence ends, repeats in short sequences unchanged"
+    marker: "echo_routing.vit.target_mvit.marker_slot(s, c): the middle target slot, read from s and c only"
+    image_order: "Ordered context (time order)"
+    streams: >-
+      the per-sample frame references of a constructed stream are assembled from its recipe first (stream_plan, as
+      scripts/report_center_supervision.validation builds them and B7's window plans confirm); the 16-frame windows are
+      then taken on that 10 Hz axis, so windows cross joins with each fragment's own gamma. Recordings are never encoded
+      separately and spliced afterwards
+    inputs: "the forward receives the RGB frames and the marker only; labels, reference boundaries, the is_native flag, ids and frame numbers never enter the model or the choice of centres"
+    coverage: "every native clip, pair stream and multi stream of both halves; never only near errors, never a subset"
+  inference:
+    batch_windows: 32
+    order: "new windows in sequence order, then centre order; fixed before any output"
+    mode: "model.eval(), every parameter requires_grad False, torch.inference_mode(); no optimiser, loss or update exists"
+    model: "tm.build_model(EchoPrime checkpoint, the frozen init state), then the frozen final.pt loaded strictly, exactly as the source evaluation built it"
+    hashes: "the frozen final.pt sha256 and a digest of the in-memory state before and after inference must be equal"
+    saved: >-
+      per model and half, on the server only: every centre's logits, its provenance (reused or new), the windows'
+      centres, markers and frame-reference indices, and the per-sample probabilities of the three conditions
+    cache: >-
+      a saved file is reused only when its inference identity, sequences, centres, markers, reference indices and the
+      pixel digest all equal the current ones; batches are never picked and runs are never repeated to choose outputs
+    gpu: "ECHO_GPU_MEM_FRACTION from the environment (0.6), one GPU job at a time"
+  determinism: {precision: fp32, tf32: false, cudnn_deterministic: true, cudnn_benchmark: false,
+                deterministic_algorithms: "torch.use_deterministic_algorithms(True, warn_only=True) with CUBLAS_WORKSPACE_CONFIG=:4096:8"}
+  b3_fixed:                      # the source round's chosen settings, inherited as numbers; no quantile is recomputed, no setting searched
+    half_window: 9
+    nms_radius: 5
+    require_label_change: true
+    thresholds: {0: 0.29269428317686846, 1: 0.2845063773784935, 2: 0.30845250187026374}
+    rule: "each seed's three conditions are decoded with that seed's numbers; there is no calibration selection step in this round"
+  identity:
+    inference: >-
+      SHA256 over the sections task_sheet, source, conditions, windows, inference and determinism, the seed and its
+      final, init, run-manifest and saved-output digests, the environment, and the full files of this round's entry
+      script and the modules that build its windows, frames and model (target_mvit, window_target, windowed,
+      joint_visual, ingest.frames, report_raw_video_context, report_center_supervision, prepare_raw_video_context,
+      train_joint_visual_temporal). It keys the saved outputs, so a change of the report code alone never repeats inference
+    run: >-
+      SHA256 over the inference identities, every section of this configuration, the environment, the pixel digest of
+      all decoded frames, and the full files of the tables module and every module the report calls. A run starts only
+      after a passed check with the same run identity
+  checks:
+    parity_windows: >-
+      selection half, every seed: the first 8 old windows of the first native clip and the first 8 old windows of the
+      first multi stream, in sequence order, chosen without reading any prediction or label; re-inferred and compared
+      with the saved logits
+    parity_max_abs: 1.0e-4       # logits, fp32; argmax must also agree; a larger difference is a fault to find, never a tolerance to raise
+    sparse_reproduction: "every seed and half: per-sample probabilities bit-equal to the saved ones; every stored argmax and B3 row equal field by field"
+    alignment: >-
+      for every sequence and every dense centre: the window has 16 slots inside the sequence, the target slots contain
+      c, the marker is marker_slot(s, c), the reference at the marker slot is the sequence's 10 Hz reference of c, and
+      at an old centre the window equals the saved one (centre, marker); native clips: the target frame is the frame
+      E1's cache used for sample c; constructed streams: every sample's recording and gamma equal its recipe
+      fragment's; short sequences and clamped ends are counted and their repeats checked
+    timing: {warmup_batches: 1, timed_batches: 10, windows: "the first new windows of seed 0's selection half in the fixed order, batch 32"}
+  budget:
+    gpu_hours_max: 4.0           # checks, inference, report and the fact-check's re-decode; an own ledger
+    reserve_hours: 2.0           # evaluation and fact-check reserve
+    rule: >-
+      the check projects ledger hours + all new windows of three seeds and two halves x the measured seconds per
+      window + frame decoding + B3 decoding + the reserve; above 4 hours nothing runs and the state is reported. No seed
+      is dropped, no subset is run and the batch is not changed to fit
+  evaluation:
+    after: "all three seeds and both halves are inferred before any result is computed"
+    rows: ["direct argmax", "B3 with the fixed numbers"]
+    axis: "every condition is scored on the same full 10 Hz axis of every sequence; window accuracies of different window counts are never compared"
+    primary: "Dense - Sparse, multi-stream segment F1@50 with B3, per half over the three seeds"
+    also: ["Dense - Interpolated and Interpolated - Sparse with B3", "the same three differences for direct argmax (secondary)"]
+    bootstrap: "the existing paired bootstrap: native clips by session, streams by stream (approximate: streams reuse recordings and the seeds share cases); 2,000 draws, seed 20261002"
+    consistent: "all three seeds' 95% intervals strictly exclude zero on the same side in a half; anything else is no consistent difference detected (not equality)"
+    sparse_first: "Dense differences are reported only after every Sparse row reproduces its stored row exactly"
+    boundary_tolerance: "0.5 s = 5 samples for boundary recall and precision, as in every earlier round; not changed after results"
+    metrics: >-
+      segment F1@50 (multi and pairs), boundary precision, recall and F1, matched boundary offsets (one-to-one within
+      5 samples: absolute mean, median and 90th percentile in samples and seconds, signed mean, exact share),
+      reference segments of at most 16 samples, A4C/A5C X-Y-X middles, same-view join cuts, native label switches per
+      clip, native per-class recall and macro-F1, A4C->A5C and A5C->A4C clips, fixed and new errors with source
+      recordings and sessions, per-sample accuracy on the 10 Hz axis
+    native_stages: >-
+      per native clip and condition: the per-sample argmax majority (raw), the label of the clip's mean probability, and
+      the B3 per-sample majority (decode; the scored label). Raw right and decode wrong, raw wrong and decode right, and
+      both wrong are listed with true -> predicted classes and distinct recordings and sessions, per seed and as the
+      union over seeds; fixed and new clips between conditions per class pair, A4C->A5C first
+    sampling: >-
+      per sample on the 10 Hz axis and per seed and half: Sparse argmax right and Dense argmax wrong, the reverse, and
+      both wrong, by sequence kind, with distinct source recordings and sessions of the samples' frames; old centres
+      must agree in all three conditions
+    units:
+      function: "echo_routing.evaluate.failure_units.unit_outcomes(pred, stream_units(recipe), iou=0.5, hit=5, near=10)"
+      hit: 5                     # samples, 0.5 s: the main boundary tolerance
+      near: 10                   # samples, 1 s: a diagnostic matching range only; a change matched within near but beyond hit is never a main-metric hit
+      scope: "every reference unit of every multi stream (primary) and pair stream (reported apart), both halves, every condition with B3"
+      causes: "label, missed_cut, extra_cut, boundary_shift in the fixed order of failure_units; unmatched predicted segments are counted (and whether they lie inside their host unit)"
+      flags: >-
+        reported beside the cause for every unit, not exclusive: both edge changes matched within hit; an edge matched
+        within near but beyond hit; an edge without a match within near; extra changes inside the unit; the
+        condition's own argmax majority over the unit equals the reference class; the condition's mean probability over
+        the unit has the reference class; the Dense argmax majority over the unit equals the reference class
+      attribution: >-
+        four non-exclusive readings of a wrong unit (unmatched) or a wrong native clip: raw classification (the Dense
+        argmax majority over the reference interval is not the reference class), sampling position (the condition's own
+        argmax majority is not the reference class while Dense's is), decoding loss (the condition's own argmax majority
+        is the reference class but the decoded output fails it), interval mismatch (a wrong unit whose cause is
+        boundary_shift, or one with an edge matched only beyond hit); co-occurring readings are counted in every
+        reading they meet and never forced into one mechanism
+      dedup: "every count is also given as distinct source recordings and sessions (a unit's fragments; a native clip is its own recording)"
+      limits: "reference intervals serve these diagnostics only, never inference or repair; the counts are not oracle-reachable scores; a mean score that does not support a label does not show that the visual features carry no information"
+    cases: >-
+      on the server only: per-source probability curves of the three conditions with the B3 output and the reference,
+      for every native clip a condition's B3 gets wrong in a seed and half below the native floor, and on the
+      calibration half for every wrong native clip and every unmatched multi unit of Sparse or Dense with B3; the
+      repository keeps the numbers of cases and of distinct recordings and sessions only. Public labels are not
+      changed; no AI reading is expert review
+    cost: "milliseconds per new window, new windows, frame and B3 decoding seconds, check, run and fact-check GPU hours"
+  goal:
+    selection_min: 0.944409687184662
+    calibration_min: 0.9821421709894332
+    calibration_sensitivity: 0.9838935784747763
+    boundary_recall_min: 0.95
+    native_macro_f1_min: {selection: 0.973, calibration: 0.980}
+    feasibility: >-
+      the fixed numbers are rechecked per condition and seed: on the calibration half the B3 row must reach native
+      macro-F1 >= 0.980 and boundary recall >= 0.95 (the source round's rule), otherwise that seed's B3 row fails; it
+      is not assumed to stay feasible
+    rule: "three-seed mean multi segment F1@50 at or above both minimums, and in every seed and half a feasible setting, boundary recall >= 0.95 and native macro-F1 at or above the floor"
+  decision_rules:                # fixed readings of the task sheet's Task 4, applied once after the evaluation
+    dense_system_gain: >-
+      Dense - Sparse B3 segment F1@50 consistent positive in both halves and Dense meeting every constraint ->
+      'an implementation gain of denser target requests with the same trained model'; never a new architecture or an
+      order mechanism
+    goal_met: "only together with dense_system_gain and Dense's goal met -> 'the old development protocol goal is met'; the test split stays sealed"
+    offset_only: >-
+      Dense's mean absolute matched boundary offset below Sparse's in every seed and half, without dense_system_gain ->
+      'finer localisation only; not evidence that the remaining loss comes from the grid'; this configuration ends
+      without any stride, interpolation or decoding search
+    interpolation_close: >-
+      in a half where Dense - Interpolated B3 segment F1@50 is not consistent positive -> neither equivalence nor a gain
+      wholly from new observations is claimed; Dense and Interpolated are reported by cost and counts and the primary
+      condition is not changed
+    dense_costs: >-
+      Dense - Sparse with B3 consistent positive in native label switches per clip or same-class cut rate, or consistent
+      negative in native macro-F1, in a half -> real gains and costs are both reported; Sparse stays the fixed reference;
+      no threshold is retuned
+    native_localisation: >-
+      per half and condition, over the union of seeds (distinct recordings): if more than half of the B3-wrong native
+      clips have a right raw majority -> evidence for decoding research only; if more than half have a wrong raw majority
+      -> evidence for recognition research only; otherwise mixed. Localisation only, never a trigger for training or a
+      module; the report states which part sampling changes and which part stays unexplained
+    end: >-
+      the round ends at the report: no training, dense temporal head, ASRF or FACT retraining, distillation, expert
+      pseudo-labels or external data; the paper stays paused; the patch-readout and FACT-refinement configurations stay
+      closed
+  outputs:
+    root: runs/dense_target_inference_v1
+    results_dir: docs/results/2026-10-12_dense_target_inference
