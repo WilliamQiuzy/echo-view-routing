@@ -209,10 +209,14 @@ dense_target_inference:
       'an implementation gain of denser target requests with the same trained model'; never a new architecture or an
       order mechanism
     goal_met: "only together with dense_system_gain and Dense's goal met -> 'the old development protocol goal is met'; the test split stays sealed"
+    gain_without_constraints: >-
+      Dense - Sparse B3 segment F1@50 consistent positive in both halves while Dense misses a constraint -> 'a
+      segmentation gain that does not meet the constraints'; not a system gain
     offset_only: >-
-      Dense's mean absolute matched boundary offset below Sparse's in every seed and half, without dense_system_gain ->
-      'finer localisation only; not evidence that the remaining loss comes from the grid'; this configuration ends
-      without any stride, interpolation or decoding search
+      Dense's mean absolute matched boundary offset (B3) below Sparse's in every seed and half, while no half has
+      Dense - Sparse B3 segment F1@50 or native macro-F1 consistent positive -> 'finer localisation only; not
+      evidence that the remaining loss comes from the grid'; this configuration ends without any stride, interpolation
+      or decoding search
     interpolation_close: >-
       in a half where Dense - Interpolated B3 segment F1@50 is not consistent positive -> neither equivalence nor a gain
       wholly from new observations is claimed; Dense and Interpolated are reported by cost and counts and the primary
@@ -222,10 +226,13 @@ dense_target_inference:
       negative in native macro-F1, in a half -> real gains and costs are both reported; Sparse stays the fixed reference;
       no threshold is retuned
     native_localisation: >-
-      per half and condition, over the union of seeds (distinct recordings): if more than half of the B3-wrong native
-      clips have a right raw majority -> evidence for decoding research only; if more than half have a wrong raw majority
-      -> evidence for recognition research only; otherwise mixed. Localisation only, never a trigger for training or a
-      module; the report states which part sampling changes and which part stays unexplained
+      per half and condition, over the union of seeds by distinct recordings, each B3-wrong native clip falls in one
+      stage by its own raw majority: decoding (the condition's argmax majority is right), sampling (it is wrong while
+      the Dense argmax majority is right) or recognition (both are wrong); a recording wrong in several seeds counts in
+      every stage it meets. More than half of the wrong recordings in decoding -> evidence for decoding research only;
+      in recognition -> evidence for recognition research only; in sampling -> a sampling effect; otherwise mixed.
+      Localisation only, never a trigger for training or a module; the report states which part sampling changes and
+      which part stays unexplained
     end: >-
       the round ends at the report: no training, dense temporal head, ASRF or FACT retraining, distillation, expert
       pseudo-labels or external data; the paper stays paused; the patch-readout and FACT-refinement configurations stay
