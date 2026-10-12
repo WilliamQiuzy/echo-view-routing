@@ -481,7 +481,7 @@ def _offsets(res: dict) -> list[str]:
             rows.append([c, s, both(lambda h: o[h]["matched"], str), both(lambda h: o[h]["mean_abs"], f4), both(lambda h: o[h]["median_abs"], f3),
                          both(lambda h: o[h]["p90_abs"], f3), both(lambda h: o[h]["mean_abs_s"], f4), both(lambda h: o[h]["p90_abs_s"], f3),
                          both(lambda h: o[h]["mean_signed"], f4), both(lambda h: o[h]["exact_share"], f3)])
-    return table(["Condition (B3)", "Seed", "Matched changes", "Mean |offset| (samples)", "Median", "90th percentile", "Mean |offset| (s)",
+    return table(["Condition (B3)", "Seed", "Matched changes", "Mean absolute offset (samples)", "Median", "90th percentile", "Mean absolute offset (s)",
                   "90th percentile (s)", "Signed mean", "Exact share"], rows)
 
 

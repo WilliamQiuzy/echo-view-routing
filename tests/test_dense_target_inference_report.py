@@ -250,4 +250,7 @@ def test_tables_render_every_section_without_ids():
         assert head in md
     assert "| Sparse | 0 |" in md and "Dense - Sparse" in md and "pending" not in md
     assert "x_1" not in md and "r_1" not in md                 # counts only, never a recording
+    for block in md.split("\n\n"):                            # every table row has its header's number of columns
+        rows = [x for x in block.splitlines() if x.startswith("|")]
+        assert len({x.count("|") for x in rows}) <= 1, rows[0][:80]
     assert "pending" in dtt.tables_md({})                      # missing sections render as pending, not as a crash

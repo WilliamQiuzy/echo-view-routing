@@ -187,6 +187,8 @@ class Ctx:
                        "nms_radius": int(self.dt["b3_fixed"]["nms_radius"])} for s in self.seeds}
         if not bool(self.dt["b3_fixed"]["require_label_change"]):
             raise SystemExit("B3 keeps the persistent label change of the source round")
+        if int(self.dt["inference"]["batch_windows"]) != BATCH:
+            raise SystemExit(f"the configured batch {self.dt['inference']['batch_windows']} differs from the code's {BATCH}")
 
     def verify_sources(self) -> dict:
         """Every pin, the frozen models' identities and final digests, the inherited B3 numbers and the environment."""
@@ -454,8 +456,9 @@ def now() -> str:
 
 
 def projection(ctx: Ctx, s_per_window: float, new_windows: int, decode_s: float, b3_s: float, elapsed_s: float) -> dict:
-    """Ledger hours + this job so far + all remaining new windows + frame and B3 decoding + the reserve, against the cap."""
-    b = ctx.dt["budget"]; n_decodes = len(CONDITIONS) * len(ctx.seeds) * len(HALVES) * 2
+    """Ledger hours + this job so far + all remaining new windows + frame and B3 decoding + the reserve, against the cap.
+    The report decodes B3 once per condition, seed and half."""
+    b = ctx.dt["budget"]; n_decodes = len(CONDITIONS) * len(ctx.seeds) * len(HALVES)
     parts = {"spent": ledger_hours(ctx) + elapsed_s / 3600, "inference": new_windows * s_per_window / 3600, "frame_decoding": decode_s / 3600,
              "b3_decoding": n_decodes * b3_s / 3600, "reserve": float(b["reserve_hours"])}
     total = sum(parts.values())
