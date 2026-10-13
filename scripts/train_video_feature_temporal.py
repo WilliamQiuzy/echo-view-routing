@@ -302,10 +302,18 @@ def check_head(ctx: Ctx, head_name: str, seed: int, data: TrainSet, plan: dict, 
     st = {"model": {k: v.clone() for k, v in c[0].state_dict().items()}, "opt": c[1].state_dict(), "sched": c[2].state_dict(), "rng": rng_state()}
     d = run_updates(ctx, head, state, b0[3:6], device, seed, resume=st)
     rep["resume"] = {"loss_max_abs": max(abs(x - y) for x, y in zip(a[3][3:], d[3])), "params_max_abs": max_diff(a[0].state_dict(), d[0].state_dict())}
+    # padding: on the CPU, where every operator is deterministic, a changed padding label must leave the normalised loss
+    # bit-identical; on the GPU the official 2-d cross-entropy has no deterministic kernel, so the same input is also
+    # evaluated twice there and both GPU differences are recorded beside the exact CPU check
+    cpu_head = make_head(ctx, head_name, plan, "cpu"); cm = new_model(cpu_head, state, "cpu"); cm.train(); cb = normalise(dd.collate(b0[0], "cpu"))
+    alt = dict(cb); lab = cb["labels"].clone(); lab[cb["valid"] == 0] = -7; alt["labels"] = lab; na = normalise(alt)
+    rep["normalised_inputs_equal"] = all(torch.equal(cb[k], na[k]) for k in cb)
+    torch.manual_seed(1); c1, _ = cpu_head.loss(cm, cb); torch.manual_seed(1); c2, _ = cpu_head.loss(cm, na)
+    rep["padding_label_loss_diff"] = abs(float(c1) - float(c2)); rep["padded_positions"] = int((cb["valid"] == 0).sum())
     model = new_model(head, state, device); model.train(); batch = normalise(dd.collate(b0[0], device))
-    torch.manual_seed(1); l1, _ = head.loss(model, batch); alt = dict(batch); lab = batch["labels"].clone(); lab[batch["valid"] == 0] = -7; alt["labels"] = lab
-    torch.manual_seed(1); l2, _ = head.loss(model, normalise(alt))
-    rep["padding_label_loss_diff"] = abs(float(l1) - float(l2)); rep["padded_positions"] = int((batch["valid"] == 0).sum())
+    torch.manual_seed(1); l1, _ = head.loss(model, batch); torch.manual_seed(1); l1b, _ = head.loss(model, batch)
+    g = dict(batch); gl = batch["labels"].clone(); gl[batch["valid"] == 0] = -7; g["labels"] = gl; torch.manual_seed(1); l2, _ = head.loss(model, normalise(g))
+    rep["gpu_same_input_loss_diff"] = abs(float(l1) - float(l1b)); rep["gpu_padding_label_loss_diff"] = abs(float(l1) - float(l2))
     model.zero_grad(); l1.backward()
     grads = {n: (float(p.grad.abs().max()) if p.grad is not None else None) for n, p in model.named_parameters()}
     rep["zero_or_missing_gradients"] = [n for n, g in grads.items() if g is None or g == 0.0 or not np.isfinite(g)]
@@ -340,7 +348,7 @@ def check_head(ctx: Ctx, head_name: str, seed: int, data: TrainSet, plan: dict, 
                      "hours_per_run": (per * ctx.total + per_epoch * int(ctx.vt["data"]["epochs"])) / 3600}
     tol = float(ctx.vt["checks"]["reproducibility"]["tolerance"])
     rep["ok"] = bool(rep["reproducibility"]["loss_max_abs"] <= tol and rep["reproducibility"]["params_max_abs"] <= tol and rep["resume"]["loss_max_abs"] <= tol
-                     and rep["resume"]["params_max_abs"] <= tol and rep["padding_label_loss_diff"] == 0.0 and rep["padded_positions"] > 0
+                     and rep["resume"]["params_max_abs"] <= tol and rep["padding_label_loss_diff"] == 0.0 and rep["normalised_inputs_equal"] and rep["padded_positions"] > 0
                      and not rep["zero_or_missing_gradients"] and rep["inference_isolation"] and rep["smoke"]["finite"] and rep["smoke"]["weights_changed"])
     return rep
 
