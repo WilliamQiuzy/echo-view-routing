@@ -1,0 +1,201 @@
+{
+ "started": "2026-10-13T02:29:11Z",
+ "environment": {
+  "torch": "2.14.0+cu130",
+  "torchvision": "0.29.0+cu130",
+  "cuda": "13.0",
+  "cudnn": 92400,
+  "torchvision_mvit_sha256": "76ca465f2be0bb7ff914ca434264ceb6736402856d164e5810491d5ba77d4210"
+ },
+ "bank_digest": "228062c5f9acef9dec180e02a4aa422888c74943c004b3f6f2fcf025e32556b2",
+ "sequences": {
+  "natives": 3364,
+  "bank_streams": 1500
+ },
+ "samples": 398980,
+ "windows_per_model": 81710,
+ "unique_frames": 267417,
+ "plans": {
+  "0": {
+   "sha256": "767401a23ccda2c6b40b8bb84507cfb963ea02b3f297aeb3358da931d7856ae0",
+   "updates_compared": 18750,
+   "updates_equal": 18750,
+   "class_weight_equal": true,
+   "pos_weight_equal": true,
+   "class_weight": [
+    0.7340099215507507,
+    0.9876950979232788,
+    1.0,
+    1.2529417276382446,
+    1.4164437055587769
+   ],
+   "pos_weight": 35.36091995239258
+  },
+  "1": {
+   "sha256": "746180b8c68e95f1ea84c6ea9167bc5a870d28c61200716bc737adba6ecf5875",
+   "updates_compared": 18750,
+   "updates_equal": 18750,
+   "class_weight_equal": true,
+   "pos_weight_equal": true,
+   "class_weight": [
+    0.7071829438209534,
+    0.9867828488349915,
+    1.0,
+    1.238273024559021,
+    1.3496942520141602
+   ],
+   "pos_weight": 35.03654479980469
+  },
+  "2": {
+   "sha256": "723d5b0f1adf74fd8bb9ffd9a6d4c4e7ba1d2ab7acc074b7aa5248eb538ae05a",
+   "updates_compared": 18750,
+   "updates_equal": 18750,
+   "class_weight_equal": true,
+   "pos_weight_equal": true,
+   "class_weight": [
+    0.7019960880279541,
+    0.9644149541854858,
+    1.0,
+    1.2127519845962524,
+    1.3475383520126343
+   ],
+   "pos_weight": 34.841644287109375
+  }
+ },
+ "inits": {
+  "linear_s0": {
+   "path": "runs/video_feature_temporal_v1/inits/linear_s0.pt",
+   "sha256": "711730a22e14fd369bbec7ab11b58b82072879e9b625cdbaef1ecff39026d0df",
+   "parameters": 2565
+  },
+  "mstcn_s0": {
+   "path": "runs/video_feature_temporal_v1/inits/mstcn_s0.pt",
+   "sha256": "d628ca32abc60a23868391cba1705975a0b260452f1df8c91cac60e880f7a172",
+   "parameters": 695764
+  },
+  "asrf_s0": {
+   "path": "runs/video_feature_temporal_v1/inits/asrf_s0.pt",
+   "sha256": "54a1c46da0c426ecd385f26fd565f71f891729bf4c0e108340a71cd0884f9e4e",
+   "parameters": 1191768,
+   "equals_paired_asrf_init": true
+  },
+  "linear_s1": {
+   "path": "runs/video_feature_temporal_v1/inits/linear_s1.pt",
+   "sha256": "0860cbba4b33ea1cae04d3a58b902cb907436aa3351aabc2f341621d4e260115",
+   "parameters": 2565
+  },
+  "mstcn_s1": {
+   "path": "runs/video_feature_temporal_v1/inits/mstcn_s1.pt",
+   "sha256": "dfe1cc8ba65bb7a600e59656036da152adef524db4a5697d0d7e1cb2e2579e61",
+   "parameters": 695764
+  },
+  "asrf_s1": {
+   "path": "runs/video_feature_temporal_v1/inits/asrf_s1.pt",
+   "sha256": "5dc498772651d14937fbf7a2303501e3b95b3285b696e7e52ba33b8e10acba4f",
+   "parameters": 1191768,
+   "equals_paired_asrf_init": true
+  },
+  "linear_s2": {
+   "path": "runs/video_feature_temporal_v1/inits/linear_s2.pt",
+   "sha256": "0a51430a50c804f020963cbd43ed95742d39e3c943e40c724712fe87da9e27a4",
+   "parameters": 2565
+  },
+  "mstcn_s2": {
+   "path": "runs/video_feature_temporal_v1/inits/mstcn_s2.pt",
+   "sha256": "cc019bf7a4cdaa75bcffd4f1f1e5ddac47605af4d6c4cd64c51f832433b822db",
+   "parameters": 695764
+  },
+  "asrf_s2": {
+   "path": "runs/video_feature_temporal_v1/inits/asrf_s2.pt",
+   "sha256": "8e27c5c74363293f9409484deadb497d2ab182f176051c5cf5d227b67338390b",
+   "parameters": 1191768,
+   "equals_paired_asrf_init": true
+  }
+ },
+ "timing": {
+  "windows_timed": 320,
+  "seconds_per_window": {
+   "0": 0.015848110616207122,
+   "1": 0.01587633267045021,
+   "2": 0.01591457948088646
+  },
+  "decode_seconds_per_frame": 0.0007774250413314926,
+  "frames_timed": 1724
+ },
+ "projection": {
+  "spent": 0.008390282723638747,
+  "training_features": 1.1390225618371521,
+  "reserve": 2.0,
+  "total_before_training": 3.1474128445607907,
+  "cap": 8.0,
+  "left_for_checks_and_training": 4.85258715543921
+ },
+ "parity": {
+  "0": {
+   "windows": 350,
+   "max_abs": 4.9221797304710435e-06,
+   "argmax_equal": true
+  },
+  "1": {
+   "windows": 350,
+   "max_abs": 7.286821304575142e-06,
+   "argmax_equal": true
+  },
+  "2": {
+   "windows": 350,
+   "max_abs": 5.337921566983539e-06,
+   "argmax_equal": true
+  }
+ },
+ "norms": {
+  "0": {
+   "mean": 32.06087875366211,
+   "std": 0.9104335904121399,
+   "p01": 29.704282760620117,
+   "p50": 32.038238525390625,
+   "p99": 34.28379821777344
+  },
+  "1": {
+   "mean": 32.32181167602539,
+   "std": 1.3454502820968628,
+   "p01": 29.49411392211914,
+   "p50": 32.21826934814453,
+   "p99": 35.008697509765625
+  },
+  "2": {
+   "mean": 32.02649688720703,
+   "std": 1.0563710927963257,
+   "p01": 29.562854766845703,
+   "p50": 32.005271911621094,
+   "p99": 34.054622650146484
+  }
+ },
+ "extraction_seconds": {
+  "decode": 202.4830207824707,
+  "encode": 4013.5399317741394
+ },
+ "features": {
+  "0": {
+   "path": "runs/video_feature_temporal_v1/features/train/ordered_s0.npz",
+   "identity": "085079336bff489151d10df7fcf7b8cd321eab1eb49b3d6a3f564b7e47f7b4b3"
+  },
+  "1": {
+   "path": "runs/video_feature_temporal_v1/features/train/ordered_s1.npz",
+   "identity": "acd787641442def6a412e479a8bff809de93c3247b89270b3ae76d57c60549a1"
+  },
+  "2": {
+   "path": "runs/video_feature_temporal_v1/features/train/ordered_s2.npz",
+   "identity": "62a5dbc12c4514b9ee9737267db94fc45a72dbadeb230a45d2da069a0686ea8b"
+  }
+ },
+ "sequence_file": {
+  "path": "runs/video_feature_temporal_v1/features/train/sequences.npz",
+  "sha256": "3a9fa10387e1a03e85587d6b1742db86f2c4f28a6e94ac2bf3a8960b2bd6ef3b"
+ },
+ "source_state_unchanged": {
+  "0": true,
+  "1": true,
+  "2": true
+ },
+ "finished": "2026-10-13T03:40:06Z"
+}
