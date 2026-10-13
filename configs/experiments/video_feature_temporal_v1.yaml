@@ -203,25 +203,32 @@ video_feature_temporal:
     boundary_recall_min: 0.95
     native_macro_f1_min: {selection: 0.973, calibration: 0.980}
     rule: "three-seed mean multi segment F1@50 at or above both minimums, and in every seed and half boundary recall >= 0.95 and native macro-F1 at or above the floor (Linear + B3 also needs a feasible calibration setting)"
-  decision_rules:                # the task sheet's Task 4, applied once after the evaluation
+  decision_rules:                # the task sheet's Task 4, applied once after the evaluation; conditions fixed before any development output
     system_gain: >-
-      ASRF consistently above both Linear + B3 and frozen Ordered + B3 in segment F1@50 in both halves, with every seed
-      and half meeting the constraints -> 'a system gain of this whole temporal integration'; never attributed to the
-      boundary loss alone and never called a new architecture
+      ASRF - (Linear + B3) and ASRF - (frozen Ordered + B3) are both consistent positive in multi segment F1@50 in both
+      halves, and ASRF has no constraint failure in any seed and half -> 'a system gain of this whole temporal
+      integration'; never attributed to the boundary loss alone and never called a new architecture
     selection_only: >-
-      fixes on selection only (decoding-loss units) without improvement of calibration classification or the native
-      constraints -> 'local progress; the overall goal is not met'; this configuration ends without visual fine-tuning or
-      a loss remedy
+      ASRF - (frozen Ordered + B3) segment F1@50 is consistent positive on selection but not on calibration, and its
+      calibration native macro-F1 difference is not consistent positive -> 'local progress; the overall goal is not
+      met'; this configuration ends without visual fine-tuning or a loss remedy
     linear_explains: >-
-      Linear + B3 fixes the same kind of cases and the temporal heads add no consistent system gain over it -> 'class
-      re-calibration can explain part of the result; no temporal gain detected'; not called a temporal mechanism
+      ASRF - (Linear + B3) segment F1@50 is consistent positive in neither half, and more than half of the units and
+      native clips ASRF fixes against frozen Ordered + B3 (pooled over seeds and halves, each seed against its own
+      Linear + B3) are also fixed by Linear + B3 -> 'class re-calibration can explain part of the result; no temporal
+      gain detected'; not called a temporal mechanism
     tradeoff: >-
-      a temporal head recovers units but newly misreads native recordings or adds cuts that offset them -> the trade-off
-      is reported and this configuration ends; no source-logit residual or gate is added and no official threshold is retuned
+      for ASRF or MS-TCN in a half: it fixes at least one unit or native clip against frozen Ordered + B3 (pooled over
+      seeds), it newly misses at least one native clip or has a consistent positive difference in native label switches
+      or same-view join cuts against frozen Ordered + B3, and its segment F1@50 difference against frozen Ordered + B3
+      is not consistent positive -> the trade-off is reported and this configuration ends; no source-logit residual or
+      gate is added and no official threshold is retuned
     no_gain: >-
-      no consistent gain -> this video-feature temporal recipe ends; temporal models in general are not rejected; if
-      MS-TCN leads the primary candidate, it is reported as it is without changing the primary candidate or searching
+      ASRF - (Linear + B3) and ASRF - (frozen Ordered + B3) segment F1@50 are consistent positive in neither half ->
+      this video-feature temporal recipe ends; temporal models in general are not rejected; a half where ASRF - MS-TCN is
+      consistent negative is reported as MS-TCN leading, without changing the primary candidate or searching
     goal: "the goal is unchanged; meeting it only means the repeated development protocol is met; the test split is not opened"
+    several: "the readings are not exclusive; every one that applies is reported"
   outputs:
     root: runs/video_feature_temporal_v1
     checkpoints: checkpoints/video_feature_temporal_v1
