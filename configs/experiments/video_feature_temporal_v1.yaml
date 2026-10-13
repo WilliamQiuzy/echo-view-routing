@@ -1,0 +1,229 @@
+# Frozen video features with matched temporal training (docs/superpowers/plans/2026-10-12-video-feature-temporal-training.md).
+# Fixed before any feature of this round exists. The three frozen Ordered context models of the raw-video context round
+# give 512-d window features (stride 5, nearest centre to the 10 Hz axis); three heads per seed train on exactly the same
+# inputs and batches: a linear class read-out with the change-point decoder, the official MS-TCN and the official ASRF
+# (primary candidate). The video weights never change. Existing methods; no architecture is claimed. Labels and joins
+# serve the training losses and the report only. The test split and EchoNet-Pediatric are not read.
+#
+# Inherits model_development_v2.yaml only for the protocol keys (10 Hz, the 0.5 s boundary tolerance), the development
+# halves, the recipe settings of the fixed training bank and the decoding grid.
+extends: model_development_v2.yaml
+run_name: video_feature_temporal_v1
+experiment: video_feature_temporal_v1
+
+video_feature_temporal:
+  task_sheet: {path: docs/superpowers/plans/2026-10-12-video-feature-temporal-training.md,
+               sha256: c1d01ce5a1b324bf2bb65381a390e1e4e7d0e85113e55759c833562dfc49ba9d}
+  stop_record:                   # the dense round's closing record is kept unchanged; its readings stay in force
+    readme: {path: docs/results/2026-10-12_dense_target_inference/README.md, sha256: eabe7a1236cdcf27dda2df21ec2fd87acf6faee32a66b13c3826f7e772ae1da2}
+    summary: {path: docs/results/2026-10-12_dense_target_inference/summary.json, sha256: 3e230eee2baa54f36c7f86c717843d6ff9f6e32f4a705310614b0134d6dcb4ae}
+    closed: ["dense requests, stride, interpolation and decoding searches on old outputs", "the patch-readout configuration", "the FACT refinement configuration"]
+  source:
+    config: {path: configs/experiments/raw_video_context_v1.yaml, sha256: 832694f4ea1ec4c7d1811b59c0a6803495645e9ff8be1db80fe28d2c049af485}
+    report:
+      summary: {path: docs/results/2026-10-10_raw_video_context/summary.json, sha256: a521d47e5a5618e7000fcd877ac58dc7ebc16f488a48b229f20bccfb18f333ab}
+      readme: {path: docs/results/2026-10-10_raw_video_context/README.md, sha256: cf812d22549c9227ea81ac48d728ef90f5edd9aa4a0affaa9ec0eacb3939e172}
+    models:                      # the three frozen Ordered context models; encoder, marker stem, projection and source classifier stay frozen and in eval mode
+      0:
+        final: {path: models_frozen/raw_video_context_v1/ordered_s0/final.pt, sha256: 80f13a42e628fe2647634b79e59d5b8486fee5c3e0ae45f70bcc667c41258505}
+        init: {path: models_frozen/raw_video_context_v1/ordered_s0/init_s0.pt, sha256: 20c19a61e90e8fde1929ef11c7909591328fa4ce9c23dee53a1e64f0e7da1457}
+        run_manifest: {path: models_frozen/raw_video_context_v1/ordered_s0/run_manifest.json, sha256: a2a7502363be9c529477a28d3be903f8a30040053610165eded01e2033f0ab31}
+        identity: b792d61db1e1cc6d2b9aac3d3ff95e565be81d15d8bd23cceb51aac238d7dabc
+      1:
+        final: {path: models_frozen/raw_video_context_v1/ordered_s1/final.pt, sha256: 74276323ababf78fcb578be28d3172f3c220b3b7e66c2ff96a2072f39210c26f}
+        init: {path: models_frozen/raw_video_context_v1/ordered_s1/init_s1.pt, sha256: 878811631dafa1c7d93dfda794bbbf9f9eb9104dd4a2c48613238827636f1494}
+        run_manifest: {path: models_frozen/raw_video_context_v1/ordered_s1/run_manifest.json, sha256: 2e16235df525018f8d3c0235b3adb68e189710cb0b45fb3a96066af59f8a1e8a}
+        identity: 4688186f86c45b4d5cac952c763b13aebef8c09f95d8c017064262182965ac94
+      2:
+        final: {path: models_frozen/raw_video_context_v1/ordered_s2/final.pt, sha256: 923eb3afb0d846b1361897dbb63bb5aecf22401ce4b305b44fe990d48edc7f2c}
+        init: {path: models_frozen/raw_video_context_v1/ordered_s2/init_s2.pt, sha256: a1d377b99e5dfcd9341f7991d4063f02ddef6a9495295b3f623c0f82801e81e2}
+        run_manifest: {path: models_frozen/raw_video_context_v1/ordered_s2/run_manifest.json, sha256: 9bf9a298db5c7bcb4143b3fe31a0822bdb746010793c49da920f83594cbaac9f}
+        identity: 73a4add54b3e619b51be44d473f5449c1509772d3ac4a94b80718cab1508480f
+    outputs:                     # the source round's saved stride-5 development outputs: the frozen Ordered + B3 reference and the development parity check
+      selection:
+        0: {path: runs/raw_video_context_v1/evaluation/selection/ordered_s0.npz, sha256: 98706faa4efdeae4e1b7640f65b24dbbd4878f0f354611aec6679233a0f3a0dc}
+        1: {path: runs/raw_video_context_v1/evaluation/selection/ordered_s1.npz, sha256: b5d6a13c20e2be1d922b88eafc20b17f4dacfbebcbf83149715575c9e69c9aa1}
+        2: {path: runs/raw_video_context_v1/evaluation/selection/ordered_s2.npz, sha256: 86f6f90d869a05cc4a886257a3f35b9bb2ec1e696c4508e0cbfb9ebf840bfe3d}
+      calibration:
+        0: {path: runs/raw_video_context_v1/evaluation/calibration/ordered_s0.npz, sha256: d79008575f59aad1a6a9911906bff3752bb0d0e54bacfceb23232562f703400d}
+        1: {path: runs/raw_video_context_v1/evaluation/calibration/ordered_s1.npz, sha256: 37fb569093916aaf00d455fe92d8efe2397a6f1913c57d55d798c59acd2915ac}
+        2: {path: runs/raw_video_context_v1/evaluation/calibration/ordered_s2.npz, sha256: 306f1abf7bfda0edad8dd21aa5980f89efa246aaa38c718db374df68de89315f}
+    protocol: {path: runs/20261002-051140-model_development_protocol-fa45e7f4-s0/protocol.json,
+               sha256: a897483b776e8cff1ba8b92774c6a82537758bcba6abd362f2d8603f37997593}
+    e1_feature_manifest: {path: models_frozen/e1_echoviewclip_probe/v1/feature_manifest.json,
+                          sha256: 56f59166ba3f1b428867e4ec9a7e6dfd800cb5bccd79db8191d3c916421f17c3}
+    e1_cache_key: 16efc85be645   # used only for the 10 Hz frame indices, the sample counts and the bank metadata; its features and predictions never replace the video features
+    frame_manifest: {path: data/manifests/ev9v_native.csv, sha256: 037b20e0f3451545505c7b80dfc0c1894265e406066c86137df3518174c10433}   # only video_id and frames_dir of the needed recordings
+    window_plans: {path: data/window_plans/beb36d80df31_protocol_a897483b776e/plans.json,
+                   sha256: 51517ea886bffe235918ad9bd250f4811efae39ee0d27fc29b648dde0fac26ba}
+    echoprime_checkpoint: {path: third_party/EchoPrime/model_data/weights/echo_prime_encoder.pt,
+                           sha256: 7ca32e8bfde248bd6d8c7e46fdb7440385169af4dc2f416b5de840bdc2e64f3b}
+    environment: {torch: 2.14.0+cu130, torchvision: 0.29.0+cu130, cuda: "13.0", cudnn: 92400,
+                  torchvision_mvit_sha256: 76ca465f2be0bb7ff914ca434264ceb6736402856d164e5810491d5ba77d4210}
+    paired_asrf:                 # the paired FACT-ASRF round's ASRF plans and initial states (same 512-d ASRF structure); compared, reused only when identical
+      config: {path: configs/experiments/fact_asrf_paired_v1.yaml, sha256: 5caffd566fd560593c5d60e829446fe0ecc97debd59cbd5c627ce13aec421ab2}
+      summary: {path: docs/results/2026-10-08_fact_asrf_training/summary.json, sha256: 32c2665f485981d8b38d9c63c283027b1fd02568d04c36816d162fe88066bafa}
+      plans:
+        0: {path: runs/fact_asrf_paired_v1/plans/plan_s0.json, sha256: de3bf27c5949bab18ee72499557e2afcdc6b9ee0289df41dca2a3f0dae24f4a7}
+        1: {path: runs/fact_asrf_paired_v1/plans/plan_s1.json, sha256: 41668f307581f04efe88ae91fa4bfbe08746cb619097c66d6742e5354728d8cc}
+        2: {path: runs/fact_asrf_paired_v1/plans/plan_s2.json, sha256: 6e9cbba70df87ef1cf43dd2ec94749a76c5debbd6dc5a09cd92e493f06058e4c}
+      inits:
+        0: {path: runs/fact_asrf_paired_v1/inits/ASRF_s0.pt, sha256: ad354c2cfff8d78830603631e21ef6365ec371a28171f187ea40bfe938ebadaf}
+        1: {path: runs/fact_asrf_paired_v1/inits/ASRF_s1.pt, sha256: 91883a77997ca018383c5bf0a5633a428c485fb8531137634e9b48130716e9cc}
+        2: {path: runs/fact_asrf_paired_v1/inits/ASRF_s2.pt, sha256: 690661b48a2b69c28103a60724c9e9975e34b5a4c22846d1a0d638bcac18ef7d}
+  features:
+    encoder: "model.embed(rgb, marker) of each frozen Ordered model: the 512-d projection output; no L2 or variance normalisation; no patch token"
+    windows: "window_centres(n, 5) with its 2, 7, 12, ... offsets and end rule; window_frames(c, n, 16, 16); marker_slot(s, c); Ordered (time) order; load_frame_u8 (gamma, short side 256, centre crop 224) and the 0-255 normalisation of the source round"
+    mapping: "every 10 Hz sample takes its nearest centre's window feature (nearest_centre, ties to the earlier centre); (T, 512) float32"
+    natives: "the whole orig recording, frame indices from the numeric E1 cache; training crops of at most 256 samples are slices of the whole recording's features, never encoded again"
+    streams: "the per-sample references (recording, frame index, gamma) of a constructed stream are assembled from its recipe first; windows are then taken on the whole stream, so they cross joins; recordings are never encoded separately and spliced"
+    coordinates: "seed k's heads read only Ordered_s{k}'s features; the three encoders' coordinates are never mixed"
+    identity: "the model's final sha256, every sequence's reference digest (recording, frame index, gamma per sample), centres and markers, and the code that builds them key the cache"
+    deduplication: none
+    parity: "16 fixed training sequences (the first 8 training clips and the first 8 bank streams in list order): the frozen source classifier on the stored window features against the source forward on the same inputs, max |logit difference| <= 1e-4 and argmax equal"
+    storage: "runs/video_feature_temporal_v1/features/{train,development}/ordered_s{k}.npz: sequence ids, sample offsets, window centres, window features and the (T, 512) sample features, float32; labels and joins live in a separate file of the split; nothing is written to an old feature cache"
+    checks: "the source model's complete state digest before and after; embedding norm statistics and sample counts are reported as checks only and never add a normalisation"
+    model_input: "the heads receive the features and the valid-length mask only; probabilities, references, bank cells and ids never enter a forward pass"
+  data:
+    clips: "protocol['train']['clips'] (3,364 recordings), in protocol order"
+    index: "the E1 cache index is read as video_id, split and n_samples first; label_index is then read for the training rows only; raw_label, path and other splits' labels are never read"
+    bank: "multi_bank of the training rows in their original relative order; its recipe digest must equal protocol['train']['multi_bank']['digest'] (1,500 streams)"
+    seeds: [0, 1, 2]
+    epochs: 50
+    updates_per_epoch: 375
+    total_updates: 18750
+    streams_per_batch: 4
+    natives_per_batch: 4
+    native_window: 256
+    native_per_epoch: 1500
+    batches: >-
+      the rule of TrainData.epoch_batches in a float32 adapter: default_rng([seed, epoch]); the bank in a fresh
+      permutation; 1,500 training clips drawn with the same RNG and protocol order; a crop of min(256, n) samples at an
+      RNG start; 375 updates of 4 streams and 4 crops. Every update's structure digest (train_l1_asrf.batch_digest: ids,
+      lengths, labels, joins) is compared with the paired ASRF plan of the seed. The three heads of a seed read
+      bit-identical arrays, lengths, labels, joins and batches
+    check_sequences: "the first 8 training clips (whole, at most 256 samples from sample 0) and the first 8 bank streams, in list order"
+  heads:
+    order: [linear, mstcn, asrf]
+    names: {linear: Linear + change-point, mstcn: MS-TCN, asrf: ASRF}
+    primary: asrf
+    linear:
+      model: "Linear(512, 5) applied at every position of (B, 512, T) as (B, T, 512); initial weight and bias are an independent copy of the seed's frozen source classifier"
+      loss: "masked cross-entropy with the seed's ASRF class weights (the same weights as ASRF), padding ignored"
+      inference: "per-sample softmax probabilities; B3 chosen once on calibration from the 40-setting grid, then frozen and applied to selection"
+    mstcn:
+      repo: third_party/ms-tcn
+      commit: 33ed91c0c7576650a2367efc602553af4c5295b1
+      model: {num_stages: 4, num_layers: 10, num_f_maps: 64, in_dim: 512, num_classes: 5}
+      loss: "the official per-stage cross-entropy (unweighted) plus 0.15 x clamped TMSE (MSTCNHead)"
+      inference: "the official last-stage argmax"
+      input_note: "512-d input is a task adaptation; no zero padding to 2,048; no weight of another input size is loaded"
+    asrf:
+      repo: third_party/asrf
+      commit: 9623f1e8d9a1171333a4eeb65d190997b6c44a95
+      model: {in_channel: 512, n_classes: 5, n_features: 64, n_layers: 10, n_stages: 4, n_stages_asb: 4, n_stages_brb: 4}
+      loss: "the official weighted cross-entropy plus Gaussian-similarity TMSE at weight 1 (gstmse_weight=True) plus 0.1 x boundary regression with pos_weight (ASRFHead); the official library is not changed"
+      lambda_b: 0.1
+      boundary_th: 0.5
+      inference: "the official refinement_with_boundary at boundary_th 0.5 (primary output); the frame branch argmax is reported as a diagnostic"
+    weights: "ASRF class weights (median frequency) and boundary pos_weight by the official rules on the seed's epoch-0 batch labels, fixed in the seed's plan; Linear uses the same class weights; MS-TCN keeps its official unweighted loss"
+    init: >-
+      Linear copies the source classifier; MS-TCN and ASRF are built after seed_everything(seed). The seed's ASRF state is
+      compared with the paired round's ASRF_s{seed}.pt and reused when every tensor is equal, otherwise its own digest is
+      recorded; initial states are never chosen by results, and equal starting weights across structures are not claimed
+  training:
+    optimiser: {name: AdamW, lr: 3.0e-4, weight_decay: 1.0e-4, betas: [0.9, 0.999], eps: 1.0e-8, grad_clip: 1.0}
+    schedule: {name: warmup_cosine, warmup_updates: 750}
+    augmentation: none
+    normalisation: none
+    dropout: "the official networks' own dropout is kept"
+    checkpoint: "the final weights after 18,750 updates; no early stopping, no epoch choice, no development data during training"
+    rng: "seed_everything(seed) right before the first update; Python, NumPy, torch CPU and CUDA states saved and restored on resume"
+    resume: "after every epoch: parameters, optimiser, scheduler, completed updates, RNG states and records; a run continues only under the same identity"
+    determinism: "fp32, TF32 off, cuDNN deterministic, benchmark off, torch.use_deterministic_algorithms(True, warn_only=True); operators without a deterministic CUDA kernel (ASRF's 2-d cross-entropy) are recorded"
+    source_frozen: "the source video model never enters an optimiser or a backward pass; its state digest is equal before and after"
+    queue: [linear_s0, mstcn_s0, asrf_s0, linear_s1, mstcn_s1, asrf_s1, linear_s2, mstcn_s2, asrf_s2]
+    monitor: "after every epoch: the mean loss terms, gradient norm and learning rate, and the accuracy of the 16 check sequences (training fit, not generalisation)"
+  checks:
+    batches: "for every seed: the three heads' inputs of every update are the same arrays (features, lengths, labels, joins); every update's structure digest equals the paired ASRF plan where it exists"
+    labels: "only valid labels supervise; replacing padding labels leaves each head's loss unchanged; replacing labels, joins and ids of the same lengths leaves every inference output unchanged; ground-truth boundaries enter the training loss only"
+    smoke: {updates: 100, batches: "check sequences 0-7 and 8-15 alternately", gate: "finite losses, finite gradients and changed weights; no score threshold; the recipe is not tuned to the fit"}
+    reproducibility: {updates: 6, resume: "3 + 3 against 6", tolerance: 1.0e-6, rule: "loss and parameter differences within 1e-6; a larger difference is located and reported, never answered by a raised tolerance or another precision"}
+    timing: {warmup_updates: 5, timed_updates: 50, batch: "the formal batches of epoch 0", includes: "the monitor and the epoch saving, estimated"}
+  budget:
+    gpu_hours_max: 8.0           # training features, checks, nine trainings, development features, evaluation and fact-check
+    reserve_hours: 2.0           # development extraction, report and fact-check
+    rule: >-
+      the preparation projects all training windows x three source models from a timed extraction; the check projects
+      the ledger hours + nine runs x measured hours per run + the reserve; the queue repeats the projection before every
+      run. Above the cap nothing new starts and the state is reported; no group is cut and no control is dropped
+  evaluation:
+    after: "all nine runs finished and frozen; only then are development features built and development labels read"
+    development_features: "every native clip, pair stream and multi stream of both halves as its own whole sequence (streams assembled first); float32 Seq objects built directly, never EvalSet.sequences()"
+    parity: "the source classifier on the development window features against the source round's saved window logits: max |difference| <= 1e-4 and argmax equal"
+    frozen_reference: "frozen Ordered + B3: the source round's saved per-sample probabilities with its stored B3 settings; its stored rows must be reproduced exactly"
+    linear_b3:
+      grid: {half_window: [5, 7, 9, 11, 15], quantile: [0.80, 0.85, 0.90, 0.95, 0.97, 0.99, 0.995, 0.999], nms_radius: 5}
+      rule: "once on calibration: thresholds are quantiles of the seed's Linear calibration native B3 scores; among settings with native macro-F1 >= 0.980 and multi boundary recall >= 0.95, the highest segment F1@50, ties to the earlier grid entry; no feasible setting fails the row (the diagnostic setting 9 / 0.95 is shown); then frozen and applied once to selection"
+    mstcn: "the official last-stage argmax; no decoder, threshold or epoch choice is added"
+    asrf: "the official refinement_with_boundary at boundary_th 0.5; its frame branch argmax is a diagnostic only"
+    primary: "ASRF - (Linear + B3), multi-stream segment F1@50, per half over the three seeds"
+    also: ["ASRF - MS-TCN", "MS-TCN - (Linear + B3)", "ASRF - (frozen Ordered + B3)", "MS-TCN - (frozen Ordered + B3)"]
+    bootstrap: "the existing paired bootstrap: native clips by session, streams by stream (approximate), 2,000 draws, seed 20261002"
+    consistent: "all three seeds' 95% intervals strictly exclude zero on the same side in a half; anything else is no consistent difference detected (not equality); seeds are not extra cases"
+    tolerance: "the 0.5 s boundary tolerance and class-aware IoU 0.5 throughout, on the same 10 Hz axis"
+    references: >-
+      E0 + B3, E1 + B3 and B7 + B3, the historical E1 + ASRF s0-2, the paired ASRF s0-2 and Original FACT s0-2 (their
+      frozen weights and official decoding) and G1 + ASRF (stored rows), each with its own inputs and stored setting and
+      reproduced before use; an old E1 head is never applied to the video features. When this round's ASRF plans and
+      initial states equal the paired round's, ASRF - paired ASRF is reported as a whole-input replacement (precision,
+      pretraining and context all differ, so no single cause is named)
+    metrics: >-
+      native macro-F1, per-class recall, A4C read as A5C and the reverse with fixed and new clips, native label switches
+      per clip, multi segment F1@50, boundary precision and recall, reference segments of at most 16 samples, A4C/A5C
+      X-Y-X middles, cuts at same-view joins; every case also as distinct source recordings and sessions
+    diagnostic_list: >-
+      frozen before any new output: per seed and half, the multi-stream reference units that frozen Ordered + B3 leaves
+      unmatched while its own argmax majority over the unit names the reference class (the dense round's decoding-loss
+      units of Sparse). Each new system reports how many it fixes and how many units Ordered + B3 matched it newly
+      misses. The list is never used for sampling, training or a setting
+    asrf_decomposition: >-
+      for every unit ASRF leaves unmatched and every native clip it gets wrong: whether a boundary peak (the official
+      argrelmax of the boundary probability at threshold 0.5) lies within 5 samples of each reference edge (proposed),
+      whether a proposed edge has no refined label change within 5 samples (merged by refinement), whether the frame
+      branch majority names the reference class, and whether the source classifier's majority does. Readings, not
+      exclusive: source right but ASRF class branch wrong; class branch right but refinement wrong; edge not proposed;
+      proposed but merged. Reference intervals serve these diagnostics only and never enter inference
+    linear_vs_temporal: "the cases a temporal head fixes relative to frozen Ordered + B3 are checked against Linear + B3; gains Linear also reaches are not credited to temporal modelling"
+    cases: "distinct source recordings and sessions; no id or medium leaves the server"
+  goal:
+    selection_min: 0.944409687184662
+    calibration_min: 0.9821421709894332
+    calibration_sensitivity: 0.9838935784747763
+    boundary_recall_min: 0.95
+    native_macro_f1_min: {selection: 0.973, calibration: 0.980}
+    rule: "three-seed mean multi segment F1@50 at or above both minimums, and in every seed and half boundary recall >= 0.95 and native macro-F1 at or above the floor (Linear + B3 also needs a feasible calibration setting)"
+  decision_rules:                # the task sheet's Task 4, applied once after the evaluation
+    system_gain: >-
+      ASRF consistently above both Linear + B3 and frozen Ordered + B3 in segment F1@50 in both halves, with every seed
+      and half meeting the constraints -> 'a system gain of this whole temporal integration'; never attributed to the
+      boundary loss alone and never called a new architecture
+    selection_only: >-
+      fixes on selection only (decoding-loss units) without improvement of calibration classification or the native
+      constraints -> 'local progress; the overall goal is not met'; this configuration ends without visual fine-tuning or
+      a loss remedy
+    linear_explains: >-
+      Linear + B3 fixes the same kind of cases and the temporal heads add no consistent system gain over it -> 'class
+      re-calibration can explain part of the result; no temporal gain detected'; not called a temporal mechanism
+    tradeoff: >-
+      a temporal head recovers units but newly misreads native recordings or adds cuts that offset them -> the trade-off
+      is reported and this configuration ends; no source-logit residual or gate is added and no official threshold is retuned
+    no_gain: >-
+      no consistent gain -> this video-feature temporal recipe ends; temporal models in general are not rejected; if
+      MS-TCN leads the primary candidate, it is reported as it is without changing the primary candidate or searching
+    goal: "the goal is unchanged; meeting it only means the repeated development protocol is met; the test split is not opened"
+  outputs:
+    root: runs/video_feature_temporal_v1
+    checkpoints: checkpoints/video_feature_temporal_v1
+    frozen: models_frozen/video_feature_temporal_v1/{linear,mstcn,asrf}_s{seed}
+    results_dir: docs/results/2026-10-12_video_feature_temporal
