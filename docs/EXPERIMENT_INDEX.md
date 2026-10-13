@@ -1,0 +1,166 @@
+# Echocardiography experiment history and decisions
+
+Maintained for the project lead, research team, Codex and Claude. Last reviewed on 2026-10-12.
+
+This is the starting point for choosing a model or proposing another experiment. It records the question, input condition, scoped finding and stopping decision. The linked result reports retain the complete tables, configurations, checks and limitations. A closed configuration is not a rejection of every method in its model family.
+
+The historical [experiment ledger](EXPERIMENT_LEDGER.md) has 46 dated rows and stops at 2026-10-01. Later rounds are recorded below. This index covers the 46 result READMEs currently present, the two earlier baseline result directories, and the separate Pediatric boundary diagnosis. Do not infer that later experiments did not happen because they are absent from the old ledger.
+
+## Current model selection position
+
+The task remains five-family echocardiographic view recognition and temporal segmentation. No completed system has satisfied every current development goal and constraint.
+
+The working strong video reference is **Frozen Ordered MViTv2-S with the simple change-point decoder**, from V01. Its three-seed mean segment F1@50 is **0.9544 / 0.9817** on selection / calibration. This is a useful positive result, but calibration misses the required mean and seed 2 misses the selection native classification floor. It is not an overall winner on every endpoint or a clinically validated model.
+
+| Condition | Multi-stream segment F1@50, selection / calibration | Consequence for selection |
+|---|---|---|
+| Frozen Ordered, Sparse, simple decoder | 0.9544 / 0.9817 | Keep as the fixed strong video reference. Full goal not met. |
+| Same models, Dense requests, same decoder numbers | 0.9588 / 0.9792 | Finer boundary placement; no consistent full-system gain, with an extra native-floor failure. |
+| Continued CLS from V02 | 0.9442 / 0.9776 | No consistent improvement over the frozen reference. |
+| Global patches from V02 | 0.9261 / 0.9663 | No qualifying system gain. |
+| Target patches from V02 | 0.9230 / 0.9640 | No qualifying system gain; the readout configuration is closed. |
+
+The current numerical goals are three-seed mean multi-stream segment F1@50 at least **0.944409687184662 / 0.9821421709894332**, boundary recall at least **0.95** in every seed and half, and native macro-F1 at least **0.973 / 0.980** in every seed. Calibration sensitivity uses **0.9838935784747763**. Use the unrounded JSON values to assess a floor. Passing these old numerical goals does not itself prove a new model beats the now stronger video reference.
+
+**Active task A01:** [Video-feature temporal training](superpowers/plans/2026-10-12-video-feature-temporal-training.md). The task was dispatched and its configuration exists. There is no completed result report at this review; formal training is not confirmed by the registry. The runtime ledger and logs must establish progress. It freezes the Ordered video encoders and compares Linear + change-point, MS-TCN and ASRF under matched data and an eight-GPU-hour cap.
+
+## Record types
+
+- **Positive, scoped:** the stated comparison supports a gain under its protocol. This does not imply the full goal was met.
+- **Local or uncertain:** some improvements or directions were observed, without the required consistent full-system gain.
+- **Closed configuration:** the stated configuration completed and its stopping rule applied. Reopening needs a dated task with a substantive changed condition and matched controls.
+- **Diagnostic:** attribution, sensitivity, implementation or data work. Reference-assisted repairs are not deployable results.
+- **Not trained:** a start condition failed. The proposed method's benefit remains untested.
+- **Historical or superseded:** a result is retained for provenance but cannot be used as current ranking evidence without its correction.
+- **Resource:** acquisition or pipeline verification, not a trained model result.
+- **Pending:** a task or implementation exists without a completed comparison.
+
+“No consistent difference detected” means the round's rule was not met. It is not equivalence. In the recent three-seed studies, consistency requires all three per-seed 95% intervals in a half to exclude zero on the same side.
+
+## Historical baselines and evaluation corrections
+
+| Record and condition | Scoped finding and decision | Evidence |
+|---|---|---|
+| H01, 2026-09-13 to 09-17. Initial ResNet, smoothing/HMM/change-point, MS-TCN, ASFormer, STFM, EchoViewCLIP and EchoPrime ladder. | **Historical.** Preserve the implementations and run provenance. Frame-derived rankings and scores predate the ordering correction and cannot be carried into the current comparison unchanged. | [Initial ladder](results/2026-09-13_ladder/ladder.md); [five-model ladder](results/2026-09-17_five_baselines/five_baselines.md); [ledger](EXPERIMENT_LEDGER.md). |
+| H02, 2026-09-25. ViT-S, factorised video ViT, centre/mixed supervision, MViT K400/EchoPrime and ViT router. | **Superseded for ranking.** Training and evaluation used the old frame path. V2c/V4c are neither valid positive evidence nor valid negative evidence for the corrected task. V01 is a distinct corrected-input comparison. | [ViT family](results/2026-09-25_vit_family/README.md); [later validity audit](results/2026-10-05_b7_window_target/README.md). |
+| H03, 2026-09-26 to 09-28. Multi-fragment calibration, routing scores and segment-level fusion. | **Historical.** These established confidence/coverage trade-offs under their old inputs. Do not reuse the pre-fix scores or treat bootstrap thresholds as formal deployment guarantees. | [Calibration](results/2026-09-26_multi_calibration/README.md); [routing scores](results/2026-09-26_routing_scores/README.md); [routing/fusion](results/2026-09-28_policy2_fusion/README.md). |
+| H04, 2026-09-28. Hard A5C clips, high-score frames and aggregation rules. | **Diagnostic/discovery.** A few hard clips motivated intermittent-evidence hypotheses. The cases do not establish prevalence or a physiological phase mechanism. Aggressive aggregation trades recovered A5C for new A4C errors. | [A5C analysis](results/2026-09-28_a5c_analysis/README.md). |
+| H05, 2026-09-30. EV9V/MIMIC inventory, candidate screening and blinded expert pilot. | **Diagnostic.** The ordering defect was discovered. Curated EV9V clips and R-gated MIMIC loops do not provide a validated continuous-scan transition benchmark. The prepared pilot is not an expert annotation result. | [Real-video round](results/2026-09-30_realvideo_round1/README.md). |
+| H06, 2026-09-30. Numeric frame ordering, cache versioning and phase checks. | **Correction/diagnostic.** Corrected order and position-based sampling change the sampled images too. Recognition scores cannot simply be retained. Cycle coverage and independently interpretable change cases were limited. | [Frame-order fix and checks](results/2026-09-30_frame_order_fix/README.md). |
+| H07, 2026-09-30. Phase-matched two-window detection versus matched pooling and phase scrambling. | **Closed configuration.** No evidence that the gain comes from phase correspondence. The conditional EchoPrime replication was not triggered. This does not show physiological phase is universally useless. | [Problem A](results/2026-09-30_problem_a/README.md). |
+| H08, 2026-09-30 to 10-01. Corrected model ladder, fixed-image order decomposition and pooling ablations. | **Audit.** Tuned simple change-point detection reproduces much of the pooling gain. Shuffling can make smoothers look better. A single numeric-order STFM seed is not proof of multi-seed improvement or of an error in the authors' published scores. | [Corrected audit](results/2026-09-30_audit/README.md). |
+| H09, 2026-10-01. Permutations, corrected ASFormer and MS-TCN training/test-order seed matrix; external Pediatric check. | **Positive audit finding, EV9V scope.** Shuffled tests flatter smoothers and hide MS-TCN's consistent internal-cut advantage. Pair-stream ranking varies by seed. Pediatric transfer failed the frozen replication rule, so it does not replicate the mechanism. | [Mechanism and seed matrix](results/2026-10-01_external_mechanism/README.md). |
+
+## Model development and visual readout experiments
+
+| Record and condition | Scoped finding and decision | Evidence |
+|---|---|---|
+| R01, 2026-10-02. E0 features; M0 MS-TCN, M1 ASRF, local attention M2/M3, boundary-path M4 and pooled M5. | **Local gain, no strong-baseline win.** Pooling M5 reduces M4 fragmentation and raises segment F1, with a boundary-recall cost. M5 does not consistently beat ASRF or the tuned simple baseline. The path term's advantage does not persist under segment decoding. | [Round 1](results/2026-10-02_model_development/README.md). |
+| R02, 2026-10-02. Frozen E1 features and paired last-ViT-block joint fine-tuning for M5/ASRF. | **No consistent system gain.** Recognition improved with E1, but segmentation did not improve consistently. Joint fine-tuning did not beat the strongest configurations. Relabelling M5's own intervals recovered some classification evidence; it did not establish a complete solution. | [Round 2](results/2026-10-02_model_development_round2/README.md). |
+| R03, 2026-10-02. Frozen classifier for labels, temporal module learning boundaries only, on E0/E1. | **Closed M5 modification configuration.** Separation of classification and boundaries did not beat the strong baselines; E1 produced too many cuts. Neighbour replacements support context-dependent errors, without proving attention is the sole mixing mechanism. | [Round 3](results/2026-10-02_model_development_round3/README.md); [neighbour check](results/2026-10-02_model_development_round3/neighbor_check.md). |
+| R04, 2026-10-03. Shared B3/ASRF failures and clip concentration. | **Diagnostic.** Common errors were dominated by A4C/A5C and a small set of reused source clips. Wrong whole-clip mean scores do not establish wrong public labels. Reference-assisted repairs are diagnostic, not achievable system scores. | [Failure analysis](results/2026-10-03_failure_analysis/README.md). |
+| R05, 2026-10-03. A4C/A5C segment decisions from probability means or 17 distribution statistics, frozen E1/ASRF. | **Closed configuration.** Statistics added no consistent value over a mean-only classifier and increased false fragments. This classifier read five-class probabilities, not 512-dimensional visual features. Cardiac-phase causation was not established. | [Evidence pooling](results/2026-10-03_evidence_pooling/README.md). |
+| R06, 2026-10-03. Actual short spans; V0 frozen visual features versus V1 final-ViT-block fine-tuning. | **Closed configuration.** Neither improved classification/full-system performance consistently enough to beat ASRF and the stronger baseline. This does not prove visual features cannot separate A4C/A5C. | [Span classifier](results/2026-10-03_span_classifier/README.md). |
+| R07, 2026-10-04. P0/P1 global readouts versus P2 frozen last-layer patch attention; later fixed calibration-threshold check. | **Closed readout and score search.** P2 did not add consistent gains. P1's calibration AUC gain did not become better accuracy/segmentation, including the later threshold check. Many altered A5C spans came from the same four clips. Do not infer that all local information is useless or that including a global token guarantees a P1 fallback. | [Local readout](results/2026-10-04_local_readout/README.md); [threshold check](results/2026-10-04_local_readout/threshold_check/README.md). |
+| R08, 2026-10-04. In-sample training-library check for cross-recording supervised contrast. | **Not trained.** The required start condition failed; C0/C1 were not run. The observed class clustering describes fitted training data. Supervised contrast's benefit remains untested. | [Training-library gate](results/2026-10-04_training_library/README.md). |
+| R09, 2026-10-05. E0/B7 complementarity, fixed equal-weight fusion and conditional distillation gate. | **Fusion closed; student not trained.** The fusion did not beat the strongest configuration. No distillation experiment was executed; its ineffectiveness was not proved. | [Complementarity](results/2026-10-05_ev9v_complementarity/README.md). |
+| R10, 2026-10-05. B7 centre-target mismatch and paired context replacement. | **Diagnostic; proposed training not run.** Position-free pooling cannot distinguish the requested centre. Mixed contexts reduce centre accuracy, but repairing those windows alone could not meet selection goals or fix native classification. | [Window-target audit](results/2026-10-05_b7_window_target/README.md). |
+| R11, 2026-10-05. E1 image embeddings plus temporal Transformer; native, share-target and centre-target N/S/C supervision. | **Local gain, no qualifying system gain.** Centre supervision improves mixed-window target decisions, but native A5C classification declines and the full goal is missed. These are image embeddings plus a temporal Transformer, not V01's raw-patch video encoder. | [Centre-supervision training](results/2026-10-05_center_supervision_training/README.md). |
+| R12, 2026-10-06. Sampling, trained frame head and temporal readout decomposition of N/S/C. | **Diagnostic.** C removes many per-sample errors while flipping a few whole clips. Its most consistent regression occurs at the temporal window readout; the sampled grid is not the main demonstrated cause in that diagnostic. | [Recognition diagnosis](results/2026-10-06_center_recognition_diagnostic/README.md). |
+| R13, 2026-10-06. Z versus target-logit residual R, with previous C as reference. | **Closed configuration.** Some whole-clip corrections traded against worse fragmentation. R did not beat the strong systems. Its extreme-context accuracy was below its own target-frame head and frozen E1, so it is not extra contextual information beyond the target frame. | [Target-logit residual](results/2026-10-06_target_logit_residual/README.md). |
+| R14, 2026-10-06. Exploratory fan224 preprocessing pilot. | **Input check only.** No classifier was trained or evaluated. A visually cleaner sector crop does not establish anatomical preservation, complete de-identification or model improvement. | [Fan224 pilot](results/2026-10-06_fan224_pilot/README.md). |
+| R15, 2026-10-06. Matched legacy versus fan input and frozen versus fine-tuned visual heads. | **Closed fan224 configuration.** Fan input was consistently worse; F1 had no qualifying gain. Legacy L1 had positive point estimates but no consistent complete win. Do not assume removing text or resizing to 224 improves the pretrained model. | [Fan224 model comparison](results/2026-10-06_fan224_visual_adaptation/README.md). |
+| R16, 2026-10-07. Matched E1/L1 frame features with official ASRF. | **Closed combination.** L1 + ASRF did not consistently beat matched ASRF or L1 + simple decoding. Classification and merges remained important losses; some native decisions were changed incorrectly. This is not an experiment with V01 video-context features. | [L1 and ASRF](results/2026-10-07_l1_asrf_integration/README.md). |
+| R17, 2026-10-07. Fixed L1 outputs; exact switch-cost decoder J0 versus boundary-informed J1, including authorised post-hoc κ expansion. | **Closed fixed-output decoding search.** Larger κ removes extra cuts but loses true changes. Neither decoder consistently beats L1 + simple decoding; J1 does not consistently beat J0. The boundary term gets no isolated credit. | [Joint decoding](results/2026-10-07_joint_boundary_decoding/README.md); [κ range check](results/2026-10-07_joint_decoding_kappa_check/README.md). |
+
+## Data resources and transfer
+
+| Record and condition | Scoped finding and decision | Evidence |
+|---|---|---|
+| D01, 2026-10-03. EchoSlicer reproduction, controlled 3D slices and artifact controls. | **Resource/diagnostic.** Known geometry offers supervision, but visibility/contrast cues and 3D acquisition effects complicate transfer. Classifier scores are checks, not view ground truth. Early claims about data access, smoothing, time units and minimum sample size were narrowed. | [3D feasibility and controls](results/2026-10-03_echoslicer_feasibility/README.md). |
+| D02, 2026-10-03. STACOM decoding, coordinates, temporal coverage and slice-pipeline verification. | **Resource.** Fifteen healthy volunteers were obtained and verified; each supplies one gated cycle. MRI-transferred landmarks have registration uncertainty. This is not a real 2D transition dataset. | [STACOM verification](results/2026-10-03_stacom_verification/README.md). |
+| D03, 2026-10-04. CETUS acquisition and ED/ES intake. | **Resource.** Forty-five cases were obtained, with 44 passing the phase-pair criteria. Only ED/ES volumes and LV masks are available. This supersedes earlier feasibility text saying CETUS was not downloaded; it does not supply full dynamic cycles or A4C/A5C labels. | [CETUS intake](results/2026-10-04_cetus_intake/README.md); [request and reply record](data_requests/2026-10-03_cetus_request.md). |
+| D04, 2026-10-04. E1 geometry pretraining: G0, same-plane time-consistency G1, and added tilt regression G2. | **Closed configuration.** G2 learns tilt on held-out 3D slices but adds no consistent 2D recognition/segmentation gain over G1; neither consistently beats G0. CETUS ED/ES availability does not automatically reopen this dynamic-slice hypothesis. | [Geometry pretraining](results/2026-10-04_geometry_pretraining/README.md). |
+| D05, 2026-10-05. Pediatric transfer, classifier-only D1 versus last-block D2 adaptation, then boundary diagnosis. | **Positive conventional adaptation; further use paused.** Two-class macro-F1 rises from .917 to about .991 with head training and .995 with further tuning. This uses target-domain labels; it is not unseen-population generalisation or a new contribution. ASRF's source-only boundary branch misses candidates; B3 already recovers most changes. Permission/version records remain unresolved; no further Pediatric training or derived export. | [Transfer](results/2026-10-05_pediatric_transfer/README.md); [boundary diagnosis](results/2026-10-05_pediatric_transfer/boundary_fault_localisation.md); [clarification draft](data_requests/2026-10-05_echonet_pediatric_clarification.md). |
+
+## Short-segment libraries and correction models
+
+| Record and condition | Scoped finding and decision | Evidence |
+|---|---|---|
+| S01, 2026-10-07. Q0 duration/probability/boundary statistics versus Q1 with frozen visual features, on training clips. | **Diagnostic/no integration.** Q0 was near ceiling; Q1 showed no added value. Positive segments were at artificial joins and most negatives were native; L1 had seen the clips. This cannot reject visual features on new recordings or real changes. | [Short-segment probe](results/2026-10-07_short_segment_probe/README.md). |
+| S02, 2026-10-07. Frozen Q0/Q1 transferred to development candidates. | **Not integrated.** High overall AUC/retention hides deletion of correct A4C/A5C short segments. Q1 has no consistent added value. Few shared recordings and wide uncertainty limit the class-pair conclusion. | [Transfer check](results/2026-10-07_short_segment_transfer/README.md). |
+| S03, 2026-10-07. Pair-specific thresholds preserving rare correct A4C/A5C candidates. | **Closed threshold check.** Correct segments are retained but too many wrong fragments pass. A tiny positive calibration set makes the threshold depend on one candidate; score separability versus poor threshold placement is not settled. | [Pair thresholds](results/2026-10-07_short_segment_pair_threshold/README.md). |
+| S04, 2026-10-07. Three session-held-out ResNet encoders and an out-of-fold candidate library. | **Diagnostic library.** Errors are dispersed: 419 wrong fragments from 150 clips/116 sessions, while only 42 correct A4C/A5C short middles exist and all are at constructed joins. These B0 errors do not describe L1 or MViT errors automatically. | [Session-fold library](results/2026-10-07_session_fold_library/README.md). |
+| S05, 2026-10-08. In-sample T-in versus out-of-fold T-out ASRF correction of class outputs; P-out simple calibrator. | **Closed configuration on B0.** T-out has no consistent main-encoder win and trades recovered A5C for new A4C errors. Auxiliary fold-encoder results differ. Do not generalise this input/encoder mismatch result to every calibration or temporal model. The old resume optimizer binding bug was fixed separately. | [Fold-output correction](results/2026-10-08_fold_output_correction/README.md). |
+
+## FACT segment-token experiments
+
+| Record and condition | Scoped finding and decision | Evidence |
+|---|---|---|
+| F01, 2026-10-08. Official FACT integration, label isolation, gradients and small-set fit. | **Implementation only.** Passing overfit and label-isolation checks establishes buildability, not generalisation or a token-model advantage. | [Integration](results/2026-10-08_fact_integration/README.md). |
+| F02, 2026-10-08. Official GTEA FACT versus ASRF on frozen E1 image features, three seeds. | **Closed configuration.** Selection point estimates favour FACT, but neither half has a consistent FACT − ASRF advantage. The full goal is missed. Model/optimizer/augmentation differences prevent attributing the comparison to cross-attention. | [Paired training](results/2026-10-08_fact_asrf_training/README.md). |
+| F03, 2026-10-09. Training-only FACT stage tracking and reference-boundary versus uniform partitions. | **Diagnostic.** Short runs can be lost before U. Reference partitions recover some runs, but they use ground-truth boundaries, alter multiple downstream operations and do not establish an achievable improvement or U as the sole cause. | [FACT localisation](results/2026-10-09_fact_localisation/README.md). |
+| F04, 2026-10-09 to 10-10. Predicted-boundary versus fixed subdivisions of final U; six FACT trainings and controls. | **Closed final-U refinement configuration.** The fixed decision is uncertain: predicted subdivisions do not consistently beat fixed subdivisions; neither consistently beats Original FACT. Extra cuts offset small short-run gains. Post-hoc readings of loss location disagree. | [Predicted partitions](results/2026-10-09_fact_predicted_partition/README.md). |
+
+## Raw-video models and their follow-ups
+
+| Record and condition | Scoped finding and decision | Evidence |
+|---|---|---|
+| V01, 2026-10-10 to 10-11. EchoPrime-initialised MViTv2-S, 16 RGB frames, learned target marker; repeated-target, shuffled-context and Ordered arms. | **Positive, scoped.** Multi-frame recognition gains and Ordered + simple-decoder gains over E1 occur consistently in both halves. Order beyond the same shuffled frames is not shown to add value. Target-only repetition differs from pretraining input. Mixed-view contexts can hurt centre recognition. Full goals remain unmet. | [Raw-video comparison](results/2026-10-10_raw_video_context/README.md). |
+| V02, 2026-10-11. Continued CLS, global patches and target-time patch readouts, from the same Ordered states. | **Closed readout/budget configuration.** No consistent primary target-readout advantage, and no complete system gain. Continued training improves some mixed-window decisions without improving segmentation. The frozen V01 positive result remains. | [Target patch readout](results/2026-10-11_target_patch_readout/README.md). |
+| V03, 2026-10-12. Same frozen Ordered models: Sparse, interpolated probabilities and Dense requests; inherited decoder numbers. | **Closed sampling configuration.** Dense gives finer offsets but no consistent system gain, and adds a native-floor failure. Interpolation lowers recall at the inherited working point. Native/calibration errors are mostly classification; selection also has decoder losses. Reference-assisted attribution is not a repair result. | [Dense inference](results/2026-10-12_dense_target_inference/README.md). |
+
+## Current authorised work and why it is different
+
+| Record and condition | Status and scope | Task |
+|---|---|---|
+| A01, 2026-10-12. Frozen V01 video-context features, Linear + change-point, MS-TCN and ASRF; nine final-weight runs. | **Pending comparison.** This is not R16 repeated on L1 or R03 repeated with a boundary-only head. The input is the stronger 16-frame video representation, extracted after whole-stream assembly. Head data/batches are matched; the linear control separates some classifier recalibration from the full temporal systems. No gain is claimed before completion. | [Authorised task](superpowers/plans/2026-10-12-video-feature-temporal-training.md); [configuration](../configs/experiments/video_feature_temporal_v1.yaml). |
+
+A01 must keep V01's video-plus-simple-decoder system as a strong reference. Beating a weaker historical encoder, or attaining an old numerical threshold, is not enough to claim it beats the current strong model. Its result entry must replace this pending status only after the report and verified run evidence exist.
+
+## Component names that must not be conflated
+
+| Report shorthand | What it identifies |
+|---|---|
+| B0 | A frame-classifier role. The checkpoint/version must be read; the old pre-fix checkpoint and v3 are different. |
+| E0 | The v3 ResNet-18 frame classifier and its own head used in model development. |
+| E1 | Frozen EchoViewCLIP stage-1 CLIP ViT-B/16 image features with this project's five-class probe. |
+| B7 | The documented EchoViewCLIP stage-1 video/window comparator. It is not E1 plus our temporal Transformer, and it does not establish every stage of the paper was reproduced. |
+| EchoPrime view baseline | The released view classifier comparator, not the MViTv2-S video encoder used in V01. |
+| Ordered in V01 | EchoPrime-initialised, task-trained video MViT with the preserved 512-d projection, target marker and five-class head. |
+| L1 | E1's image architecture with the legacy input and the specified final-block visual adaptation. It is not the V01 video model. |
+| B3 | The simple two-window change-point decoder and segment naming rule. Its actual window/threshold/config must be specified. |
+| M4/M5 | The earlier boundary-context/path model and its pooled-output variant. They are not names for every attention model. |
+
+## Corrections and limits that govern reuse
+
+1. **Frame ordering and sampled images.** Numeric ordering replaces the old lexicographic filename order. Sampling by position also changes the image set. “Clip/frame accuracy is unaffected” was withdrawn. Read H06/H08/H09 before using old scores.
+2. **Groups are sessions.** EV9V filename prefixes identify recording sessions, not verified patients. Cross-session or cross-split patient overlap cannot be assessed from those names. Old “patient” wording is superseded by the corrections in H09 and the manuscript records.
+3. **Actual training seeds.** Old MS-TCN/ASFormer `-s0` directory suffixes are wrapper config seeds. Independent training-seed evidence begins with the corrected matrix. Do not multiply the effective evidence because several filenames exist.
+4. **Resume bug and epoch 0.** The old frame trainer could restore a model while its optimizer still referenced the discarded one. E0 v3's epoch-0 checkpoint is after its first training epoch, not an untrained initialization; that saved weight predates any resume. Later affected training/selection remains unconfirmed. Changing validation scores alone is not proof weights resumed learning. See S05.
+5. **Rejected numerical claims stay rejected.** The earlier image-set/order decomposition, blanket “no learned-model advantage,” “parity,” and head-only speed claims were corrected. Use the revised source reports; do not repeat the old summaries.
+6. **Model scores are not anatomy labels.** Periodic score peaks do not establish cardiac phase or probe motion. Low mean scores do not establish a wrong public label or absent visual information. AI inspection does not replace expert annotation.
+7. **Repeated recordings are not new cases.** A recording reused in many streams or seeds does not become many independent patients. Report source/session counts and read the class-specific errors, not only aggregate F1/AUC.
+8. **Constructed joins are a proxy.** A known join between labelled clips is not a real continuous-scan transition. Expert-labelled real transition evidence is a separate requirement.
+9. **Development and historical test use.** The two current development halves were repeatedly inspected. The current test is sealed for these rounds, but H01–H09 used historical EV9V test results. Do not call a future test “never seen before” without checking its history. Pediatric folds were also inspected in earlier work.
+10. **Metrics must match the task.** Nine-class clip recognition, five-family classification, boundary F1 and class-aware segment F1 are different endpoints. A high boundary score can coexist with wrong view labels. Read class recalls, constraints and both halves.
+11. **Supervision and domain provenance matter.** Pediatric adaptation uses known target-domain labels; 3D angle learning is not a 2D view/transition result. Source-model pretraining and input pipelines can differ at once. Keep complete-system gains separate from a claimed physiological mechanism.
+12. **Administrative status is not a performance result.** An announced dataset is not an obtained one, a passed smoke test is not completed training, a queued task is not a finished comparison, and a theory/manuscript draft is not model evidence.
+
+## Check before another experiment
+
+Find the predecessor records by question, representation, supervision and decoder, not just the model name. Read their decisions and the linked corrected reports. A new task must state:
+
+- the specific unresolved question;
+- the predecessor record IDs and what they already tested;
+- the substantive changed condition and why it addresses the gap;
+- the matched controls, dataset/label/split/version, source weights, budget and fixed evaluation/stopping rules;
+- whether it is a correction, replication, new comparison or continuation.
+
+A new seed, larger grid or renamed run is not a new mechanism. A correction to invalid inputs can justify a repeat, but it must be recorded as a correction. A substantially changed representation can justify a new comparison, as in A01; do not describe that as proof the new combination works.
+
+## Update after a round
+
+Create a pending record before results. After completion, add the source README, result JSON/table, frozen-model/config identities and result commit references. State what was trained, what was only inferred/diagnosed, the scoped finding, the goal/constraint outcome and the closed scope. Preserve negative and uncertain results. Add dated corrections with links rather than silently erasing the original history.
+
+The detailed corrected result report and machine-readable outputs govern exact claims. This index governs navigation and duplicate checks. The append-only ledger and older narrative documents preserve history; chat memory helps locate records but does not override them.
