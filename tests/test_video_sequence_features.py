@@ -9,7 +9,6 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import numpy as np
-import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import echo_routing.temporal.video_sequence_features as vf  # noqa: E402
@@ -116,7 +115,7 @@ def _toy_training():
     rng = np.random.default_rng(3)
     lengths = {f"c_{k}": int(rng.integers(9, 400)) for k in range(30)}
     clips = [(v, int(rng.integers(0, 5))) for v in lengths]
-    stream_feats, streams = [], []
+    streams = []
     for k in range(10):
         n = int(rng.integers(48, 120)); lab = rng.integers(0, 5, n).astype(np.int64)
         streams.append(vf.Seq(f"multi_train_{k:04d}", False, rng.normal(size=(n, 3)).astype(np.float32), lab, np.array([n // 2]), None))

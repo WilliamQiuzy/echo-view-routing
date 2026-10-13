@@ -441,13 +441,13 @@ def run(ctx: Ctx, workers: int) -> None:
             rec["features"] = "reused: the saved training features carry this identity"
         else:
             ex = extract(ctx, data, models, device, workers)
+            bad = {s: p for s, p in ex["parity"].items() if p["max_abs"] > 1e-4 or not p["argmax_equal"]}
+            if bad:   # before anything is saved, so a failed parity never leaves a cache that a rerun would reuse
+                raise SystemExit(f"source parity failed: {bad}")
             for s in ctx.seeds:
                 save_features(ctx, "train", s, idents[s], ex["meta"], ex["features"][s])
             rec.update({"parity": ex["parity"], "norms": {s: ex["features"][s]["norms"] for s in ctx.seeds}, "extraction_seconds": ex["seconds"],
                         "features": {s: {"path": f"{ctx.vt['outputs']['root']}/features/train/ordered_s{s}.npz", "identity": idents[s]} for s in ctx.seeds}})
-            bad = {s: p for s, p in ex["parity"].items() if p["max_abs"] > 1e-4 or not p["argmax_equal"]}
-            if bad:
-                raise SystemExit(f"source parity failed: {bad}")
         seq_path = save_sequences(ctx, "train", data); rec["sequence_file"] = {"path": str(seq_path.relative_to(ctx.root)), "sha256": sha256_file(seq_path)}
         after = {s: model_digest(m) for s, m in models.items()}
         rec["source_state_unchanged"] = {s: before[s] == after[s] for s in ctx.seeds}
