@@ -44,12 +44,16 @@ def test_odd_marker_ties_go_to_the_nearer_slot_then_the_smaller_index():
 
 
 def test_clamped_ends():
-    s, m = window(0, 100)                       # the start clamps: c = 0 appears in the first slots
-    j = tt.selected_anchor(s, 0, m)
-    assert s[tt.ANCHORS[j]] == 0 and abs(tt.ANCHORS[j] - m) == min(abs(a - m) for a in tt.ANCHORS if s[a] == 0)
+    """For n >= 16 the window start is clamped, so no sample repeats: c = 0 sits at slot 0 (anchor 0, exact) and the last
+    sample at slot 15, whose nearest anchor is slot 14 (offset -1)."""
+    s, m = window(0, 100)
+    assert m == 0 and tt.selected_anchor(s, 0, m) == 0
     s, m = window(99, 100)
     j = tt.selected_anchor(s, 99, m)
-    assert s[tt.ANCHORS[j]] == 99
+    assert m == 15 and j == 7 and int(s[tt.ANCHORS[j]]) - 99 == -1
+    s, m = window(2, 9)                          # a short clip: samples repeat across the 16 slots
+    j = tt.selected_anchor(s, 2, m)
+    assert int(s[tt.ANCHORS[j]]) == 2
 
 
 def test_fully_repeated_slots_pick_the_anchor_nearest_the_marker():
@@ -135,13 +139,13 @@ def test_the_index_is_read_for_the_half_clips_only(tmp_path):
 def test_the_adapter_builds_one_half_and_never_reads_the_other(tmp_path):
     p = tmp_path / "index.csv"; write_index(p)
     rec = {"recipe_id": "r1", "cell": "multi", "fragments": [{"video_id": "c1", "label": 2, "variant": "orig", "start": 0, "end": 10},
-                                                            {"video_id": "c2", "label": 2, "variant": "orig", "start": 5, "end": 9},
+                                                            {"video_id": "c1", "label": 2, "variant": "orig", "start": 12, "end": 16},
                                                             {"video_id": "c2", "label": 0, "variant": "orig", "start": 9, "end": 15}]}
     proto = {"mapping_version": "family5_v1",
              "validation": {"calibration": {"clips": ["c1", "c2"], "banks": {"pairs": {"recipes": []}, "multi": {"recipes": [rec]}}},
                             "selection": "POISON: never parsed"}, "test_split": "POISON", "train": "POISON"}
     refs = {"c1": [["c1", k, 1.0] for k in range(30)], "c2": [["c2", k, 1.0] for k in range(25)],
-            "r1": [["c1", k, 1.0] for k in range(10)] + [["c2", k, 1.0] for k in range(5, 15)]}
+            "r1": [["c1", k, 1.0] for k in range(10)] + [["c1", k, 1.0] for k in range(12, 16)] + [["c2", k, 1.0] for k in range(9, 15)]}
     plans = {"streams": {k: {"n": len(v), "refs": v, "bank": "x"} for k, v in refs.items()} | {"other": "POISON"}}
     ev, seqs = tt.half_sets(proto, "calibration", p, plans)
     assert [q["id"] for q in seqs] == ["c1", "c2", "r1"] and [q["kind"] for q in seqs] == ["native", "native", "multi"]
@@ -155,6 +159,9 @@ def test_the_adapter_builds_one_half_and_never_reads_the_other(tmp_path):
     bad = json.loads(json.dumps(proto)); bad["validation"]["calibration"]["banks"]["multi"]["recipes"][0]["fragments"][0]["video_id"] = "o1"
     with pytest.raises(SystemExit):
         tt.half_sets(bad, "calibration", p, plans)          # a fragment outside the half's clips
+    bad = json.loads(json.dumps(proto)); bad["validation"]["calibration"]["banks"]["multi"]["recipes"][0]["fragments"][2]["label"] = 3
+    with pytest.raises(SystemExit):
+        tt.half_sets(bad, "calibration", p, plans)          # a fragment label that is not its clip's label
 
 
 def test_the_round_code_never_refers_to_validation_inputs_test_or_pediatric():
