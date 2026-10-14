@@ -1,0 +1,145 @@
+# Frozen trained time-token readout (docs/superpowers/plans/2026-10-14-trained-token-readout.md). Fixed before any code
+# or new metric of this round exists. Nothing is trained: the nine frozen A02 models' saved per-window outputs are read.
+# Each window keeps its request c and its Sparse input; a fixed position rule picks one of the 8 trained time anchors, and
+# that anchor's saved time logits replace the CLS logits as the window's prediction at c. Probabilities, the nearest-centre
+# mapping and B3 are A02's. Compared with the same weights' CLS output, the same token readout of the two other A02 arms,
+# and the frozen Ordered + change-point reference. No parameter, fusion, interpolation, calibration layer or new request.
+#
+# Inherits model_development_v2.yaml only for the protocol keys, the development halves and the decoding grid.
+extends: model_development_v2.yaml
+run_name: trained_token_readout_v1
+experiment: trained_token_readout_v1
+
+trained_token_readout:
+  task_sheet: {path: docs/superpowers/plans/2026-10-14-trained-token-readout.md,
+               sha256: 1f7ee62718005d85da3c0b026356ea7d1033bdeee2422c894f3a609d06d9bf06}
+  predecessors:                  # docs/EXPERIMENT_INDEX.md; their reports and stopping rules stay unchanged
+    A02: "trained the time tokens with aligned labels but inferred through CLS only; closed (no gain); the source of every prediction here"
+    V02: "replaced the readout and trained with the target CE; closed"
+    V03: "denser requests at inference; closed"
+    A01: "temporal heads on frozen 512-d window features; closed"
+    change: "read the already supervised time logits at the requested sample instead of the CLS logits, with the same frozen weights, inputs and requests"
+  source:
+    a02_config: {path: configs/experiments/video_dense_supervision_v1.yaml, sha256: 49f8782ad0d7702f65244dd6b637f2fc20dc5dd0aab40c2de4389d69f0eb1087}
+    a02_summary: {path: docs/results/2026-10-13_video_dense_supervision/summary.json, sha256: bea3ae472bfb6c45960e11ddbeec843ef587b9b4cead274cf899f8a44cae3915}
+    a02_readme: {path: docs/results/2026-10-13_video_dense_supervision/README.md, sha256: a5738431a20e0481142771cfe6cc75b4222bc99d3993d740592a9238887b9701}
+    a02_commits: {results: 05a5228, index: 13f286c}
+    predictions:                 # A02's saved per-window outputs (read only); identity, final weights and windows are checked too
+      calibration:
+        center_only_s0: {path: runs/video_dense_supervision_v1/evaluation/calibration/center_only_s0.npz, sha256: 2d44a2f84b71e6a544d96885ef6f08d382d64517c954afb2736523df4dd2e66a}
+        aligned_dense_s0: {path: runs/video_dense_supervision_v1/evaluation/calibration/aligned_dense_s0.npz, sha256: 1c7a2383c8185c824c24d46b39327d06516da916f76e2a38636c0e410bb77058}
+        shuffled_dense_s0: {path: runs/video_dense_supervision_v1/evaluation/calibration/shuffled_dense_s0.npz, sha256: 89d3bcd6ce169a8548242576edff523cb295e545d95bdcc312cacf8965cee35c}
+        center_only_s1: {path: runs/video_dense_supervision_v1/evaluation/calibration/center_only_s1.npz, sha256: ea38fa60f2d8a0bba6d057385747910dbca05d88d9ccbd82481e59e13a8da758}
+        aligned_dense_s1: {path: runs/video_dense_supervision_v1/evaluation/calibration/aligned_dense_s1.npz, sha256: 6b5e4242e97246a74fccd7a1eda294b45ff48cc58ad55ea158155135378b2730}
+        shuffled_dense_s1: {path: runs/video_dense_supervision_v1/evaluation/calibration/shuffled_dense_s1.npz, sha256: be84ba9ec3201c15a7a834307d1b1f1327cd053eb9f6b9a420ac2f1bb62298f7}
+        center_only_s2: {path: runs/video_dense_supervision_v1/evaluation/calibration/center_only_s2.npz, sha256: 44b627d245506931bb0ad5a391388701738d7ca9a298fa7cdf1f85572e4571bc}
+        aligned_dense_s2: {path: runs/video_dense_supervision_v1/evaluation/calibration/aligned_dense_s2.npz, sha256: f30bf78e93d56e86f14d1f5c10e043c10dc881a1ef5363946fd10f0d742b2e02}
+        shuffled_dense_s2: {path: runs/video_dense_supervision_v1/evaluation/calibration/shuffled_dense_s2.npz, sha256: e77c1e4c13c409c4176ad880fe4474b89ccc0bffcbb47d3f4a032748b9a7f21a}
+      selection:
+        center_only_s0: {path: runs/video_dense_supervision_v1/evaluation/selection/center_only_s0.npz, sha256: 8eabf236357cfbe5f5fa6034635600292ed9cba12b5e7f334fb4d2fbe9392eb4}
+        aligned_dense_s0: {path: runs/video_dense_supervision_v1/evaluation/selection/aligned_dense_s0.npz, sha256: b7275f9a245800fcd78547c019e1bec0db3762eb5443f59c63966120925a5840}
+        shuffled_dense_s0: {path: runs/video_dense_supervision_v1/evaluation/selection/shuffled_dense_s0.npz, sha256: 34915e7916017c155160ecd7e289558f26e230b98cddad2bad591e96b933fb30}
+        center_only_s1: {path: runs/video_dense_supervision_v1/evaluation/selection/center_only_s1.npz, sha256: 322eab0cd9c60a8bf24e3325dff1b819f6699a316a95ece3ca9a431466f1723b}
+        aligned_dense_s1: {path: runs/video_dense_supervision_v1/evaluation/selection/aligned_dense_s1.npz, sha256: 0e78306632e40cf5d92f9d576f1b63711a064dd84034a6d7ec8bef2668c63281}
+        shuffled_dense_s1: {path: runs/video_dense_supervision_v1/evaluation/selection/shuffled_dense_s1.npz, sha256: b42c8d0106a171685ea53f232ff740fd473d8dcc311ed15c07b5bd278d961890}
+        center_only_s2: {path: runs/video_dense_supervision_v1/evaluation/selection/center_only_s2.npz, sha256: d874295c6aa3ed9fe73d8e4d78260d6c8b9a6962030f73991cfc04011ad2ee10}
+        aligned_dense_s2: {path: runs/video_dense_supervision_v1/evaluation/selection/aligned_dense_s2.npz, sha256: 2196ae59e6e00b502bf171dd86b64a37677b2cb3e8185e01fbcf0da1b302d34f}
+        shuffled_dense_s2: {path: runs/video_dense_supervision_v1/evaluation/selection/shuffled_dense_s2.npz, sha256: 84b7502e92a4d6a7cd23cb3ecc6ea821f2744e72e82af0c50172c2a64df0cfd6}
+    final_weights:               # the nine frozen A02 final weights (A02 summary.runs final_sha256); never loaded for inference here
+      center_only_s0: {path: models_frozen/video_dense_supervision_v1/center_only_s0/final.pt, sha256: ba60a115709cf8fe6b754fa80fdb16ec658d427cdab48f4bb986c29e19b6cf65}
+      aligned_dense_s0: {path: models_frozen/video_dense_supervision_v1/aligned_dense_s0/final.pt, sha256: a0b732e5143e488bade2406d9a3866096892357adcd317134500c4009df9b37b}
+      shuffled_dense_s0: {path: models_frozen/video_dense_supervision_v1/shuffled_dense_s0/final.pt, sha256: 82906cc96050db7f7bee242ee399b79e0095f261dc33d7585c081895c1d05826}
+      center_only_s1: {path: models_frozen/video_dense_supervision_v1/center_only_s1/final.pt, sha256: 7cb381cffd7f291f66f99edb07975f828be4699022e4c219d37ff99e6b0016b1}
+      aligned_dense_s1: {path: models_frozen/video_dense_supervision_v1/aligned_dense_s1/final.pt, sha256: 7b0aabbe4722aa8f708de59fb125534cfb3d7005500a32790d9441c7b330d955}
+      shuffled_dense_s1: {path: models_frozen/video_dense_supervision_v1/shuffled_dense_s1/final.pt, sha256: 38a9a29ec95510fc03911da82a7fb75a23f8d70db8c5fb4dad21c73ef48fc0f9}
+      center_only_s2: {path: models_frozen/video_dense_supervision_v1/center_only_s2/final.pt, sha256: 15c4d0570f1226b562da586ca076cf2b34d31cd817e7d4ad892d0c64bd89c771}
+      aligned_dense_s2: {path: models_frozen/video_dense_supervision_v1/aligned_dense_s2/final.pt, sha256: e86859773a86de518c150efa2c9d8d6b4521d0826f0c37bbdd317fb4f1dae648}
+      shuffled_dense_s2: {path: models_frozen/video_dense_supervision_v1/shuffled_dense_s2/final.pt, sha256: f20437f0d73180bfacb18bc4433ea41b6f39a2723c871db7b6d313a02a6b408e}
+    protocol: {path: runs/20261002-051140-model_development_protocol-fa45e7f4-s0/protocol.json, sha256: a897483b776e8cff1ba8b92774c6a82537758bcba6abd362f2d8603f37997593}
+    clip_index: {path: cache_v2/features/16efc85be645/orig/index.csv, sha256: 60a35fd841a6ab674619d50a87d6630013e0236db4cfb23d159454d7a076de03}
+    window_plans: {path: data/window_plans/beb36d80df31_protocol_a897483b776e/plans.json, sha256: 51517ea886bffe235918ad9bd250f4811efae39ee0d27fc29b648dde0fac26ba}
+    ordered:                     # V01's saved Ordered outputs and stored rows (the frozen strong reference)
+      summary: {path: docs/results/2026-10-10_raw_video_context/summary.json, sha256: a521d47e5a5618e7000fcd877ac58dc7ebc16f488a48b229f20bccfb18f333ab}
+      outputs:
+        calibration:
+          0: {path: runs/raw_video_context_v1/evaluation/calibration/ordered_s0.npz, sha256: d79008575f59aad1a6a9911906bff3752bb0d0e54bacfceb23232562f703400d}
+          1: {path: runs/raw_video_context_v1/evaluation/calibration/ordered_s1.npz, sha256: 37fb569093916aaf00d455fe92d8efe2397a6f1913c57d55d798c59acd2915ac}
+          2: {path: runs/raw_video_context_v1/evaluation/calibration/ordered_s2.npz, sha256: 306f1abf7bfda0edad8dd21aa5980f89efa246aaa38c718db374df68de89315f}
+        selection:
+          0: {path: runs/raw_video_context_v1/evaluation/selection/ordered_s0.npz, sha256: 98706faa4efdeae4e1b7640f65b24dbbd4878f0f354611aec6679233a0f3a0dc}
+          1: {path: runs/raw_video_context_v1/evaluation/selection/ordered_s1.npz, sha256: b5d6a13c20e2be1d922b88eafc20b17f4dacfbebcbf83149715575c9e69c9aa1}
+          2: {path: runs/raw_video_context_v1/evaluation/selection/ordered_s2.npz, sha256: 86f6f90d869a05cc4a886257a3f35b9bb2ec1e696c4508e0cbfb9ebf840bfe3d}
+    environment: {python: 3.12.3, numpy: 2.5.2, pandas: 3.0.5, scipy: 1.18.1}
+  metadata:
+    adapter: >-
+      per development half, only that half's protocol entries (clips and pair/multi recipes) are used; the clip index is
+      read as video_id, split and n_samples first, and label_index is parsed only for the half's own clips; per-sample
+      frame references come from the pinned window plans of the half's sequences; streams take their labels, joins and
+      semantic boundaries from their recipes; no feature, probability, training label, other split's label, test or
+      Pediatric file is read; validation(), Inputs and A02's evaluate entry are not used
+    order: "native clips in protocol order, then pair streams, then multi streams (A02's order); the saved sequence ids must equal it"
+    windows: "window_centres(n, 5), window_frames(c, n, 16, 16) and the marker at the middle target slot; every window's seq, centre and marker must equal the saved ones"
+    calibrate_reads: [calibration]
+    selection_reads: [calibration, selection]
+  arms: [center_only, aligned_dense, shuffled_dense]
+  names: {center_only: CLS-only token readout, aligned_dense: Aligned token readout, shuffled_dense: Shuffled token readout}
+  cls_names: {center_only: CLS-only CLS, aligned_dense: Aligned CLS, shuffled_dense: Shuffled CLS}
+  primary: aligned_dense
+  selector:
+    anchors: [0, 2, 4, 6, 8, 10, 12, 14]
+    rule: "the unique j minimising (|s[a[j]] - c|, |a[j] - m|, j); only the window's sample positions s, request c and marker m enter; a window whose s[m] != c stops the round"
+    readout: "time_logits[i, j_i, :] -> five-class softmax (A02's helper) -> nearest-centre to the 10 Hz axis; the prediction stays at the request c"
+    forbidden: ["labels, confidence, attention, sensitivity, native or mixed flags or any score in the choice", "anchors 2j + 1", "interpolation, averaging tokens or windows, CLS fusion, temperature or threshold calibrators", "another anchor rule or arm picking"]
+    report: "per window the anchor offset s[a[j]] - c and whether the anchor's reference label differs from c's; exact (offset 0) and non-exact windows all stay in the main evaluation"
+  systems:
+    token: "the three arms' token readouts; B3 chosen once per seed on calibration from the 40-setting grid (A02's rule), committed before selection"
+    cls: "the three arms' A02 CLS outputs with A02's stored B3 settings (reproduced exactly, never chosen again)"
+    ordered: "V01's frozen Ordered + change-point with its stored settings (reproduced exactly)"
+    stored_rows: "E0/E1/B7 + B3, historical E1 + ASRF, paired ASRF, Original FACT, historical Continued CLS and A01's Linear + B3, MS-TCN and ASRF are listed from A02's summary; not recomputed"
+    sensitivity: ["direct argmax", "token probabilities decoded with the same seed and arm's A02 CLS numeric B3 setting (a fixed working point; never selects)"]
+  b3:
+    grid: {half_window: [5, 7, 9, 11, 15], quantile: [0.80, 0.85, 0.90, 0.95, 0.97, 0.99, 0.995, 0.999], nms_radius: 5}
+    rule: >-
+      once per token system on calibration: thresholds are quantiles of its own calibration native B3 scores; among
+      settings with native macro-F1 >= 0.980 and multi boundary recall >= 0.95 the highest segment F1@50, exact ties to
+      the earlier grid entry; no feasible setting fails the system (the 9 / 0.95 diagnostic never passes); the choices
+      and their identity are committed before any selection metric of a token system exists; selection applies them once
+  comparisons:
+    primary: "Aligned token - Aligned CLS, multi segment F1@50 with B3, per seed and half"
+    also: ["Aligned token - frozen Ordered + B3", "Aligned token - CLS-only token", "Aligned token - Shuffled token", "CLS-only token - CLS-only CLS", "Shuffled token - Shuffled CLS"]
+    bootstrap: "existing paired bootstrap: native clips by session, streams by stream (approximate; development halves reused); 2,000 draws, seed 20261002"
+    consistent: "all three seeds' 95% intervals strictly exclude zero on the same side in a half; anything else is no consistent difference detected (not equality); seeds are not extra cases"
+    classification: >-
+      the same windows and requests: each token readout against its own arm's CLS on native windows, all mixed windows,
+      8 of 16, 9-11 of 16, A4C/A5C pair windows, exact and non-exact anchors; all mixed windows use the target-session
+      bootstrap (primary) with the stream bootstrap as the sensitivity; a consistent opposite stream verdict makes that
+      half's classification reading uncertain; only all-mixed enters the readings, the rest is described
+  goal:
+    selection_min: 0.944409687184662
+    calibration_min: 0.9821421709894332
+    calibration_sensitivity: 0.9838935784747763
+    boundary_recall_min: 0.95
+    native_macro_f1_min: {selection: 0.973, calibration: 0.980}
+    rule: "three-seed means at or above both minimums, and in every seed and half a feasible B3 setting, boundary recall >= 0.95 and native macro-F1 at or above the floor; no rounding"
+  decision_rules:                # the task sheet's readings, applied once after the selection run; conditions fixed before any new metric
+    complete_progress: >-
+      Aligned token - Aligned CLS, - frozen Ordered + B3, - CLS-only token and - Shuffled token are all consistent
+      positive in multi segment F1@50 in both halves, and the aligned token system meets the goal and every constraint
+      -> 'this recipe exceeds these systems'; beating only the unsupervised or shuffled controls is not progress
+    useful_readout: >-
+      Aligned token - Aligned CLS is consistent positive in all-mixed same-target classification accuracy (session
+      bootstrap) in both halves and in multi segment F1@50 in both halves, and the aligned token system meets every
+      constraint -> 'the direct token readout has a usable gain'; the old goal and the strong reference are reported apart
+    labels_learned_no_usable_gain: >-
+      neither of the above -> the facts are reported as local, uncertain or no gain, and this configuration ends;
+      classification gains without segment gains, native or recall losses and one-half results are stated separately; an
+      interval containing zero is not equality and does not show that every token method fails
+    end: "no added training, loss, anchor rule, fusion, probability rule or threshold search; a next step needs a new question and task"
+    several: "the readings are not exclusive; every one that applies is reported"
+  budget:
+    cpu_wall_hours_max: 2.0      # every CPU stage, failed attempts included
+    gpu_hours_max: 0.25          # an optional fixed spot-check of at most 24 windows (8 per seed: 4 native, 4 multi, by window order)
+    ledger: runs/trained_token_readout_v1/ledger.jsonl
+  outputs:
+    root: runs/trained_token_readout_v1
+    results_dir: docs/results/2026-10-14_trained_token_readout
