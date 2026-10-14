@@ -2,9 +2,9 @@
 """Prepare the training labels of the video dense supervision round (docs/superpowers/plans/2026-10-13-video-dense-supervision.md,
 Task 1; configs/experiments/video_dense_supervision_v1.yaml). CPU only; nothing trains and no development data is read.
 
-1. Every pinned source is checked: the task sheet, the V01 and V02 configurations, the three V01 Ordered final weights, the
-   RV and SC manifests with their indexes, the reference summaries and saved outputs, A01's configuration and features, and
-   the server's environment including its torchvision MViT source.
+1. Every pinned training input is checked: the task sheet, the V01 and V02 configurations, the three V01 Ordered final
+   weights, the RV and SC manifests with their indexes, and the server's environment including its torchvision MViT source.
+   The evaluation references (saved development outputs, development features, result summaries) are not touched here.
 2. The model geometry is read from the network: the final token grid must be (8, 7, 7) with query time stride 1, the RGB
    stem's time kernel, stride, padding and dilation must be (3, 2, 1, 1), and the anchors j * stride - padding +
    (kernel - 1) * dilation / 2 must equal the configured [0, 2, ..., 14]. Each seed's source state loads strictly.
@@ -131,13 +131,12 @@ def label_summary(aligned: np.ndarray, shuffled: np.ndarray, perm: np.ndarray, k
 
 # ----------------------------------------------------------------------------------------------- the round's sources
 def source_pins(vd: dict) -> dict[str, dict]:
+    """The training inputs only: configurations, source weights and the RV/SC window lists. The evaluation references
+    (saved development outputs, A01's development features and the result summaries) are checked by the evaluation."""
     src = vd["source"]; out = {"raw_video_config": src["raw_video_config"], "readout_config": src["readout_config"],
-                               "rv_index": src["rv_manifests"]["index"], "sc_index": src["sc_manifests"]["index"], "a01_config": src["a01"]["config"]}
+                               "rv_index": src["rv_manifests"]["index"], "sc_index": src["sc_manifests"]["index"]}
     out |= {f"weights_s{k}": v for k, v in src["weights"].items()} | {f"rv_s{k}": v for k, v in src["rv_manifests"]["files"].items()}
-    out |= {f"sc_s{k}": v for k, v in src["sc_manifests"]["files"].items()} | {k: v for k, v in src["reports"].items()}
-    out |= {f"a01_features_s{k}": v for k, v in src["a01"]["features"].items()}
-    for name in ("ordered_outputs", "continued_cls_outputs"):
-        out |= {f"{name}_{h}_s{k}": v for h, per in src[name].items() for k, v in per.items()}
+    out |= {f"sc_s{k}": v for k, v in src["sc_manifests"]["files"].items()}
     return out
 
 
