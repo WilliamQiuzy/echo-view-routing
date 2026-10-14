@@ -1,10 +1,10 @@
 # Echocardiography experiment history and decisions
 
-Maintained for the project lead, research team, Codex and Claude. Last reviewed on 2026-10-13 (America/New_York). Entry A01 was updated on 2026-10-14 (UTC) after its fact-checked report.
+Maintained for the project lead, research team, Codex and Claude. Last reviewed on 2026-10-13 (America/New_York). Entry A01 was updated on 2026-10-14 (UTC) after its fact-checked report, and entry A02 on 2026-10-14 (UTC) after its fact-checked report.
 
 This is the starting point for choosing a model or proposing another experiment. It records the question, input condition, scoped finding and stopping decision. The linked result reports retain the complete tables, configurations, checks and limitations. A closed configuration is not a rejection of every method in its model family.
 
-The historical [experiment ledger](EXPERIMENT_LEDGER.md) has 46 dated rows and stops at 2026-10-01. Later rounds are recorded below. This index covers the 47 result READMEs currently present, the two earlier baseline result directories, and the separate Pediatric boundary diagnosis. Do not infer that later experiments did not happen because they are absent from the old ledger.
+The historical [experiment ledger](EXPERIMENT_LEDGER.md) has 46 dated rows and stops at 2026-10-01. Later rounds are recorded below. This index covers the 48 result READMEs currently present, the two earlier baseline result directories, and the separate Pediatric boundary diagnosis. Do not infer that later experiments did not happen because they are absent from the old ledger.
 
 ## Current model selection position
 
@@ -22,10 +22,15 @@ The working strong video reference is **Frozen Ordered MViTv2-S with the simple 
 | Frozen Ordered features, Linear + change-point (A01) | 0.9476 / 0.9760 | No consistent difference from the frozen reference; no constraint failure, but the calibration mean misses the goal. |
 | Frozen Ordered features, official ASRF (A01, primary) | 0.9449 / 0.9747 | No consistent difference from Linear + change-point or the frozen reference; five constraint failures. The recipe is closed. |
 | Frozen Ordered features, official MS-TCN (A01) | 0.9387 / 0.9679 | No consistent difference from the frozen reference; four constraint failures. |
+| Ordered continued with aligned time-token supervision (A02, primary) | 0.9515 / 0.9817 | No consistent difference from matched CLS continuation, the frozen reference or the shuffled control; no constraint failure, but the calibration mean misses the goal. The configuration is closed. |
+| Ordered continued with shuffled time-token supervision (A02 control) | 0.9463 / 0.9814 | No consistent difference from CLS continuation; no constraint failure; the calibration mean misses the goal. |
+| Ordered, CLS continuation (A02 control) | 0.9374 / 0.9786 | No consistent difference from the frozen reference; two constraint failures. |
 
 The current numerical goals are three-seed mean multi-stream segment F1@50 at least **0.944409687184662 / 0.9821421709894332**, boundary recall at least **0.95** in every seed and half, and native macro-F1 at least **0.973 / 0.980** in every seed. Calibration sensitivity uses **0.9838935784747763**. Use the unrounded JSON values to assess a floor. Passing these old numerical goals does not itself prove a new model beats the now stronger video reference.
 
 **Completed task A01:** [Video-feature temporal training](results/2026-10-12_video_feature_temporal/README.md), fact-checked on 2026-10-14 (UTC). With the Ordered video encoders frozen, neither ASRF nor MS-TCN shows a consistent segment F1@50 difference from Linear + change-point or from the frozen Ordered + change-point reference, and no system meets the goal. The configuration is closed under its trade-off and no-gain readings. The frozen Ordered model with the simple decoder remains the strong reference.
+
+**Completed task A02:** [Video token supervision](results/2026-10-13_video_dense_supervision/README.md), fact-checked on 2026-10-14 (UTC). Aligned class supervision of the final video-context time tokens shows no consistent segment F1@50 difference from matched CLS continuation, the frozen Ordered + change-point reference or the within-window shuffled control, and no system meets the goal. The time tokens learned the aligned labels, but no consistent change in the CLS decisions was detected. The configuration is closed under its no-gain reading. The frozen Ordered model with the simple decoder remains the strong reference.
 
 ## Record types
 
@@ -121,13 +126,13 @@ The current numerical goals are three-seed mean multi-stream segment F1@50 at le
 
 A01 kept V01's video-plus-simple-decoder system as the strong reference. Its selection-only gains over weaker E1-based systems do not show progress beyond that reference. The result entry replaced the pending status after the report and an independent fact-check had confirmed the run evidence.
 
-## Next authorised task A02 (pending)
+## Authorised work A02 and why it was different
 
-| Record and condition | Status and scope | Task |
+| Record and condition | Status and scope | Evidence |
 |---|---|---|
-| A02, 2026-10-13 (Eastern). Starting from V01 Ordered weights, preserve CLS inference and add aligned class supervision to the final video-context time tokens; compare matched CLS-only continuation and within-window label-permuted supervision. | **Pending comparison.** A new supervised objective on video-context tokens, with no new parameters, rather than A01's frozen-feature temporal heads or V02's replacement readouts. R11 already used image-frame auxiliary supervision; this does not claim dense supervision was never tried. Nine paired final-weight runs are authorised within an eight-GPU-hour cap after implementation/budget checks. No implementation, formal training or gain is confirmed by this entry. | [Authorised plan](superpowers/plans/2026-10-13-video-dense-supervision.md). |
+| A02, 2026-10-13 to 10-14. From each seed's V01 Ordered weights, three paired continuations: CLS continuation, and aligned or within-window shuffled class supervision (weight 0.5) of the 8 final time tokens at the stem-centre anchor slots; no new parameters; CLS + change-point inference; the same inputs, batches and RNG use per seed; nine final-weight runs of 3,750 updates. | **Closed configuration (no gain).** A new supervised objective on video-context tokens, not A01's frozen-feature temporal heads or V02's replacement readouts; R11's image-frame auxiliary supervision was earlier and different. Aligned − CLS continuation, aligned − frozen Ordered + change-point and aligned − shuffled show no consistent segment F1@50 difference in either half, and no consistent mixed-window CLS target accuracy difference against CLS continuation or shuffled; on selection the aligned − CLS continuation accuracy estimates are negative in all three seeds. The time logits learned the aligned anchor labels (development anchor accuracy on mixed windows 0.85 to 0.88, against 0.65 to 0.72 for the controls), but no consistent change in the CLS decisions was detected. Continued training itself raises mixed-window accuracy over frozen Ordered in both halves, as in V02, without a segment gain. "Aligned" means the anchor slot's label, not the frame that most drives the token. Goal not met: aligned 0.9515 / 0.9817 with no constraint failure, shuffled 0.9463 / 0.9814 with none, CLS continuation 0.9374 / 0.9786 with two. Aligned is consistent positive against E1 + change-point, Original FACT and historical E1 + ASRF in both halves and shows no segment difference from A01's systems. This configuration ends; dense supervision in general is not rejected. 5.44 of 8 GPU hours. | [Result report](results/2026-10-13_video_dense_supervision/README.md) with `summary.json`; [authorised task](superpowers/plans/2026-10-13-video-dense-supervision.md); [configuration](../configs/experiments/video_dense_supervision_v1.yaml) at 8ca5fc5; frozen models `models_frozen/video_dense_supervision_v1/{center_only,aligned_dense,shuffled_dense}_s{0,1,2}` from the source models `models_frozen/raw_video_context_v1/ordered_s{0,1,2}`; commits 8ca5fc5, 471f8bf, 56f5279, 3bc7c89, ef2c938, cd0d4c0, fab6e6b, f120f94 and 940e4f8 (configuration, tests, code and fixes), d235c0b (review, preparation and check records) and 05a5228 (results). |
 
-A02 must beat matched continuation and the frozen Ordered + simple-decoder reference to establish a complete model improvement. Beating the deliberately misaligned supervision control alone is insufficient. A01/V02/V03 stopping decisions and the strong reference remain unchanged. Update this pending record only from verified run evidence and the completed report.
+A02 kept matched CLS continuation and the frozen Ordered + simple-decoder system as its references; beating the deliberately misaligned control alone would not have counted. The result entry replaced the pending status after the report and an independent fact-check had confirmed the run evidence. The A01, V02 and V03 stopping decisions and the strong reference remain unchanged.
 
 ## Component names that must not be conflated
 
