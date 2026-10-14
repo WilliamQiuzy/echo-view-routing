@@ -141,3 +141,39 @@ def test_training_code_never_refers_to_development_test_or_pediatric_data():
     for mod in (tv, cv, qv, pd, vds):
         src = inspect.getsource(mod).lower()
         assert not any(b.lower() in src for b in banned), mod.__name__
+
+
+def test_a_queue_restart_charges_attempts_left_running(tmp_path):
+    """Review M1: an attempt that a killed queue left 'running' is charged at the next start, until its log's last write."""
+    import os
+    import time as _time
+    ctx = SimpleNamespace(out=tmp_path, ledger=tmp_path / "ledger.jsonl"); (tmp_path / "train" / "center_only_s0").mkdir(parents=True)
+    log = tmp_path / "job.log"; log.write_text("epoch 0\n"); end = _time.time(); os.utime(log, (end, end))
+    started = _time.strftime("%Y-%m-%dT%H:%M:%SZ", _time.gmtime(end - 1800))
+    status = {"jobs": {"center_only_s0": {"state": "running", "identity": "i0", "pid": 2 ** 22 + 12345, "log": str(log), "started": started},
+                       "aligned_dense_s0": {"state": "pending", "identity": "i1"}}}
+    qv.reconcile(ctx, status, {"center_only_s0": "i0", "aligned_dense_s0": "i1"})
+    line = json.loads(ctx.ledger.read_text().splitlines()[-1])
+    assert line["job"] == "train center_only_s0" and line["ok"] is False and line["hours"] == pytest.approx(0.5, abs=0.01)
+    assert status["jobs"]["center_only_s0"]["state"] == "interrupted" and status["jobs"]["aligned_dense_s0"]["state"] == "pending"
+
+
+def test_a_queue_restart_refuses_while_the_trainer_lives(tmp_path):
+    import os
+    ctx = SimpleNamespace(out=tmp_path, ledger=tmp_path / "ledger.jsonl")
+    status = {"jobs": {"center_only_s0": {"state": "running", "identity": "i0", "pid": os.getpid(), "log": "", "started": "2026-10-14T00:00:00Z"}}}
+    import scripts.queue_video_dense_supervision as q
+    original = q.alive; q.alive = lambda pid, script: True
+    try:
+        with pytest.raises(SystemExit):
+            q.reconcile(ctx, status, {"center_only_s0": "i0"})
+    finally:
+        q.alive = original
+    assert not ctx.ledger.exists()
+
+
+def test_a_stale_queue_lock_is_replaced(tmp_path):
+    import os
+    lock = tmp_path / "queue.lock"; lock.write_text(f"{2 ** 22 + 54321} 2026-10-14T00:00:00Z\n")
+    qv.acquire_lock(lock)
+    assert lock.read_text().split()[0] == str(os.getpid())

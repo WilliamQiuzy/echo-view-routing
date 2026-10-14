@@ -204,11 +204,14 @@ def train(ctx: Ctx, arm: str, seed: int, device, workers: int) -> None:
     model = make_model(state, device); opt = make_optimizer(model, ctx.o)
     start = {"encoder": params_digest(model.encoder.named_parameters()), "all": params_digest(model.named_parameters())}
     torch.manual_seed(seed); torch.cuda.manual_seed_all(seed)
-    resumes = json.loads((run_dir / "resumes.json").read_text()) if (run_dir / "resumes.json").is_file() else []
-    done, log = 0, []
-    if (ckpt / "resume.pt").is_file():
+    resumes, done, log = [], 0, []
+    if (ckpt / "resume.pt").is_file():                       # bookkeeping continues only with a resume of this identity
         done, log = load_resume(ckpt / "resume.pt", model, opt, ident)
+        resumes = json.loads((run_dir / "resumes.json").read_text()) if (run_dir / "resumes.json").is_file() else []
         resumes.append({"at_update": done, "time": now()}); (run_dir / "resumes.json").write_text(json.dumps(resumes))
+        (run_dir / "train_log.jsonl").write_text("".join(json.dumps(r) + "\n" for r in log))
+    else:
+        (run_dir / "resumes.json").unlink(missing_ok=True); (run_dir / "train_log.jsonl").unlink(missing_ok=True)
     print(f"[{key}] identity {ident[:12]}; lambda {lam}; start at update {done}/{ctx.total}", flush=True)
     fp = ctx.frame_paths(); upe = ctx.total // 10; digests = ctx.epoch_digests(seed); t0 = time.time(); acc = []; checked = 0; warm_end = None
     if torch.cuda.is_available():

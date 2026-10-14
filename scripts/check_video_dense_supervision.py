@@ -105,7 +105,7 @@ def equivalence(ctx, inp: tuple, device) -> dict:
         d_cls = max(d_cls, float((z_cls - want_cls).abs().max())); d_time = max(d_time, float((z_time - want_time).abs().max()))
         repeat &= bool(torch.equal(z_cls, again[0]) and torch.equal(z_time, again[1]))
     c = ctx.vd["checks"]
-    return {"cls_max_abs": d_cls, "time_max_abs": d_time, "labels_never_enter_the_forward": repeat,
+    return {"cls_max_abs": d_cls, "time_max_abs": d_time, "repeated_forward_identical": repeat,
             "ok": d_cls <= float(c["cls_parity_max_abs"]) and d_time <= float(c["time_recompute_max_abs"]) and repeat}
 
 
@@ -127,7 +127,8 @@ def hooks_and_grads(ctx, inp: tuple, device) -> dict:
     g = [p.grad for p in m.encoder_parameters()]
     unfrozen = {"projection": float(m.encoder.head[-1].weight.grad.abs().max()), "none": sum(x is None for x in g),
                 "nonfinite": sum(x is not None and not bool(torch.isfinite(x).all()) for x in g)}
-    ok = raised and clean and frozen["marker"] > 0 and frozen["head"] > 0 and frozen["encoder_with_grad"] == 0 and unfrozen["projection"] > 0 and unfrozen["nonfinite"] == 0
+    ok = (raised and clean and frozen["marker"] > 0 and frozen["head"] > 0 and frozen["encoder_with_grad"] == 0 and unfrozen["projection"] > 0
+          and unfrozen["none"] == 0 and unfrozen["nonfinite"] == 0)
     return {"exception_raised": raised, "hooks_clean": clean, "frozen": frozen, "unfrozen": unfrozen, "ok": bool(ok)}
 
 
