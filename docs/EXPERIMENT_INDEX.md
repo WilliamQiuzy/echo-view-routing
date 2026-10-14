@@ -145,6 +145,12 @@ A02 kept matched CLS continuation and the frozen Ordered + simple-decoder system
 
 A03 kept the same weights' CLS and the frozen Ordered + simple-decoder system as its references; beating the CLS-only control alone would not have counted. The same-target classification gain and the complete-system comparison were evaluated and are reported separately. The result entry replaced the pending status after the report and an independent fact-check had confirmed the run evidence. The A01, A02, V02 and V03 stopping decisions and the strong reference remain unchanged.
 
+## Authorised work A04 and why it is different
+
+| Record and condition | Status and scope | Evidence |
+|---|---|---|
+| A04, 2026-10-14. Retrospective CPU-only attribution of A03's local gains versus system losses, using saved A02/A03 predictions: actual segment matching, a four-cell mixed/pure readout diagnosis at one inherited numeric decoder, and matching frame-anchor predictions across overlapping windows. | **Pending diagnostic; no result yet.** No training, new inference, selector, decoder search or deployable fusion. Reference-conditioned readout combinations are diagnostic only and cannot pass a model goal. Anchor comparisons keep identical nominal frames/local RGB neighborhoods and separately report marker-triple equality, while context, token position and marker roles can change together; selected-output overlap support must be reported. This asks where A03's gains/losses occur, rather than repeating A03's readout comparison or V03's request-density comparison. All predecessor stopping decisions and the frozen Ordered reference remain unchanged. | [Authorised task](superpowers/plans/2026-10-14-token-stability-attribution.md). Configuration and result links will be added only after they exist and execution is verified. |
+
 ## Component names that must not be conflated
 
 | Report shorthand | What it identifies |
