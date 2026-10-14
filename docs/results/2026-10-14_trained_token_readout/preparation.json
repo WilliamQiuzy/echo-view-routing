@@ -1,0 +1,109 @@
+{
+ "config": "configs/experiments/trained_token_readout_v1.yaml",
+ "checked": {
+  "task_sheet": "1f7ee62718005d85da3c0b026356ea7d1033bdeee2422c894f3a609d06d9bf06",
+  "a02_config": "49f8782ad0d7702f65244dd6b637f2fc20dc5dd0aab40c2de4389d69f0eb1087",
+  "a02_summary": "bea3ae472bfb6c45960e11ddbeec843ef587b9b4cead274cf899f8a44cae3915",
+  "a02_readme": "a5738431a20e0481142771cfe6cc75b4222bc99d3993d740592a9238887b9701",
+  "protocol": "a897483b776e8cff1ba8b92774c6a82537758bcba6abd362f2d8603f37997593",
+  "clip_index": "60a35fd841a6ab674619d50a87d6630013e0236db4cfb23d159454d7a076de03",
+  "window_plans": "51517ea886bffe235918ad9bd250f4811efae39ee0d27fc29b648dde0fac26ba",
+  "final_center_only_s0": "ba60a115709cf8fe6b754fa80fdb16ec658d427cdab48f4bb986c29e19b6cf65",
+  "final_aligned_dense_s0": "a0b732e5143e488bade2406d9a3866096892357adcd317134500c4009df9b37b",
+  "final_shuffled_dense_s0": "82906cc96050db7f7bee242ee399b79e0095f261dc33d7585c081895c1d05826",
+  "final_center_only_s1": "7cb381cffd7f291f66f99edb07975f828be4699022e4c219d37ff99e6b0016b1",
+  "final_aligned_dense_s1": "7b0aabbe4722aa8f708de59fb125534cfb3d7005500a32790d9441c7b330d955",
+  "final_shuffled_dense_s1": "38a9a29ec95510fc03911da82a7fb75a23f8d70db8c5fb4dad21c73ef48fc0f9",
+  "final_center_only_s2": "15c4d0570f1226b562da586ca076cf2b34d31cd817e7d4ad892d0c64bd89c771",
+  "final_aligned_dense_s2": "e86859773a86de518c150efa2c9d8d6b4521d0826f0c37bbdd317fb4f1dae648",
+  "final_shuffled_dense_s2": "f20437f0d73180bfacb18bc4433ea41b6f39a2723c871db7b6d313a02a6b408e",
+  "selection_center_only_s0": "8eabf236357cfbe5f5fa6034635600292ed9cba12b5e7f334fb4d2fbe9392eb4",
+  "selection_aligned_dense_s0": "b7275f9a245800fcd78547c019e1bec0db3762eb5443f59c63966120925a5840",
+  "selection_shuffled_dense_s0": "34915e7916017c155160ecd7e289558f26e230b98cddad2bad591e96b933fb30",
+  "selection_center_only_s1": "322eab0cd9c60a8bf24e3325dff1b819f6699a316a95ece3ca9a431466f1723b",
+  "selection_aligned_dense_s1": "0e78306632e40cf5d92f9d576f1b63711a064dd84034a6d7ec8bef2668c63281",
+  "selection_shuffled_dense_s1": "b42c8d0106a171685ea53f232ff740fd473d8dcc311ed15c07b5bd278d961890",
+  "selection_center_only_s2": "d874295c6aa3ed9fe73d8e4d78260d6c8b9a6962030f73991cfc04011ad2ee10",
+  "selection_aligned_dense_s2": "2196ae59e6e00b502bf171dd86b64a37677b2cb3e8185e01fbcf0da1b302d34f",
+  "selection_shuffled_dense_s2": "84b7502e92a4d6a7cd23cb3ecc6ea821f2744e72e82af0c50172c2a64df0cfd6",
+  "calibration_center_only_s0": "2d44a2f84b71e6a544d96885ef6f08d382d64517c954afb2736523df4dd2e66a",
+  "calibration_aligned_dense_s0": "1c7a2383c8185c824c24d46b39327d06516da916f76e2a38636c0e410bb77058",
+  "calibration_shuffled_dense_s0": "89d3bcd6ce169a8548242576edff523cb295e545d95bdcc312cacf8965cee35c",
+  "calibration_center_only_s1": "ea38fa60f2d8a0bba6d057385747910dbca05d88d9ccbd82481e59e13a8da758",
+  "calibration_aligned_dense_s1": "6b5e4242e97246a74fccd7a1eda294b45ff48cc58ad55ea158155135378b2730",
+  "calibration_shuffled_dense_s1": "be84ba9ec3201c15a7a834307d1b1f1327cd053eb9f6b9a420ac2f1bb62298f7",
+  "calibration_center_only_s2": "44b627d245506931bb0ad5a391388701738d7ca9a298fa7cdf1f85572e4571bc",
+  "calibration_aligned_dense_s2": "f30bf78e93d56e86f14d1f5c10e043c10dc881a1ef5363946fd10f0d742b2e02",
+  "calibration_shuffled_dense_s2": "e77c1e4c13c409c4176ad880fe4474b89ccc0bffcbb47d3f4a032748b9a7f21a"
+ },
+ "environment": {
+  "python": "3.12.3",
+  "numpy": "2.5.2",
+  "pandas": "3.0.5",
+  "scipy": "1.18.1",
+  "torch": "2.14.0+cu130"
+ },
+ "code": "fa49ee2ce47a96fa8189925c3f89ffd5ddeea86c39563364f328c77c09792703",
+ "halves": {
+  "selection": {
+   "sequences": 541,
+   "native": 284,
+   "pairs": 137,
+   "multi": 120,
+   "windows": 7666,
+   "samples": 37287,
+   "positions": {
+    "windows": 7666,
+    "offset_counts": {
+     "-1": 1160,
+     "0": 6506
+    },
+    "exact": 6506,
+    "non_exact": 1160,
+    "anchor_counts": {
+     "0": 0,
+     "2": 535,
+     "4": 6,
+     "6": 513,
+     "8": 5762,
+     "10": 219,
+     "12": 198,
+     "14": 433
+    },
+    "label_differs": 0,
+    "label_differs_non_native": 0,
+    "non_exact_native": 596
+   }
+  },
+  "calibration": {
+   "sequences": 472,
+   "native": 237,
+   "pairs": 115,
+   "multi": 120,
+   "windows": 7021,
+   "samples": 34216,
+   "positions": {
+    "windows": 7021,
+    "offset_counts": {
+     "-1": 1017,
+     "0": 6004
+    },
+    "exact": 6004,
+    "non_exact": 1017,
+    "anchor_counts": {
+     "0": 0,
+     "2": 469,
+     "4": 3,
+     "6": 453,
+     "8": 5361,
+     "10": 187,
+     "12": 175,
+     "14": 373
+    },
+    "label_differs": 0,
+    "label_differs_non_native": 0,
+    "non_exact_native": 506
+   }
+  }
+ }
+}
