@@ -269,3 +269,40 @@ def test_a_record_is_written_once(tmp_path):
     tt.refuse_other([f], {"a": 1}, "record")
     with pytest.raises(SystemExit):
         tt.refuse_other([f], {"a": 2}, "record")
+
+
+def test_every_table_row_has_as_many_cells_as_its_header():
+    b = {m: {"delta": 0.01, "ci95": [-0.01, 0.02]} for m in tt.METRICS}
+    unit = {"segments": 4, "matched": 3, "wrong view": 1, "no segment at IoU 0.5": 0, "taken by another reference": 0, "recall": 0.75,
+            "missed_recordings": 1, "missed_sessions": 1}
+    boot = {"windows": 10, "units": 4, "few_units": True, "delta": 0.1, "ci95": [0.0, 0.2], "estimable": True}
+    ch = {"windows": 2, "recordings": 2, "sessions": 1, "few_units": True}
+    row = {"segment_f1_50_multi": 0.9, "native_macro_f1": 0.98, "native_recall": {c: 1.0 for c in tb.CLASSES}, "native_f1": {c: 1.0 for c in tb.CLASSES}}
+    res = {"systems": {"token_aligned_dense_s0": {"b3": {"selection": row}, "b3_choice": {"status": "feasible", "params": {"half_window": 7}, "n_feasible": 3}}},
+           "choices": {"token_aligned_dense_s0": {"status": "feasible", "params": {"half_window": 7, "threshold_quantile": 0.99, "threshold": 0.2}, "n_feasible": 3}},
+           "system_comparisons": {"s0|b3|token - CLS|selection": {"bootstrap": b, "diagnostic_setting": True, "native_changes": {"all clips": {"fixed": 1, "new": 0}},
+                                                                 "segment_changes": {"matched by a only": {"segments": 2}, "matched by b only": {"segments": 1}}}},
+           "verdicts": {"b3": {"token - CLS": {"multi segment F1@50": {"selection": tb.NONE, "calibration": tb.POS}}}},
+           "classification": {"accuracy": {"token_aligned_dense_s0": {"selection": {"native": 0.9, "all mixed": 0.8}}},
+                              "comparisons": {"token_aligned_dense_s0|all mixed|selection": {"session": boot, "stream": boot, "changes": {"fixed": ch, "new": ch}},
+                                              "token_aligned_dense_s0|offset split|selection": {"exact": {"windows": 5, "accuracy_token": 1.0, "accuracy_cls": 0.8},
+                                                                                                "non_exact": {"windows": 1, "accuracy_token": 0.0, "accuracy_cls": 1.0}}},
+                              "verdicts": {"token_aligned_dense|all mixed": {"selection": tb.NONE, "calibration": UNCERTAIN}}},
+           "positions": {"selection": {"windows": 6, "exact": 5, "non_exact": 1, "non_exact_native": 1, "label_differs": 0, "offset_counts": {"-1": 1, "0": 5},
+                                       "anchor_counts": {"8": 5, "6": 1}, "sample_split": {"token_aligned_dense_s0": {"b3": {
+                                           "exact": {"samples": 20, "accuracy_token": 1.0, "accuracy_cls": 1.0}, "non_exact": {"samples": 4, "accuracy_token": 0.5, "accuracy_cls": 1.0}}}}}},
+           "units": {"token_aligned_dense_s0|b3|selection": {g: unit for g in tb.UNIT_GROUPS}},
+           "goal": {"token_aligned_dense": {"mean_segment_f1": {"selection": 0.95, "calibration": 0.98}, "margin": {"selection": 0.01, "calibration": -0.002},
+                                            "calibration_sensitivity_margin": -0.004, "met": False,
+                                            "constraint_failures": [{"seed": 1, "half": "selection", "b3_feasible": True, "boundary_recall": 0.94, "native_macro_f1": 0.98}]}},
+           "stored_rows": {"E1 + B3": {"selection": row}}, "decision": {"applied": ["end"]}}
+    md = tb.tables_md(res)
+    header = None
+    for line in md.splitlines():
+        if not line.startswith("|"):
+            header = None; continue
+        n = line.count("|")
+        if header is None:
+            header = n
+        assert n == header, line
+    assert "| 0 | b3 | token - CLS | selection | diagnostic |" in md and "seed 1 selection recall 0.9400 native 0.9800" in md

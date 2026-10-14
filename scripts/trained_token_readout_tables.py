@@ -85,19 +85,88 @@ def offset_split(offsets: np.ndarray, correct_token: np.ndarray, correct_cls: np
 # ----------------------------------------------------------------------------------------------- markdown
 ROWS = ("argmax", "b3", "b3_at_cls_setting", "fixed_ordered_setting", "row")
 CLASSES = ("PLAX", "PSAX", "A4C", "A5C", "SC4C")
+UNIT_GROUPS = ("short segments", "short A4C or A5C segments", "X-Y-X middles", "A4C/A5C X-Y-X middles")
+STORED_COLS = ("segment F1@50", "boundary P", "boundary R", "boundary F1", "native macro-F1", "switches per clip", "same-view join cuts",
+               "A4C read as A5C", "A5C read as A4C")
+
+
+def _seed_split(key: str) -> dict:
+    """'token_aligned_dense_s0' -> readout and seed columns (markdown cells must not hold '|')."""
+    head, _, seed = key.rpartition("_s")
+    return {"readout": head, "seed": seed} if head and seed.isdigit() else {"readout": key, "seed": ""}
+
+
+def _row_cells(r: dict) -> dict:
+    return {"segment F1@50": r.get("segment_f1_50_multi"), "boundary P": r.get("boundary_precision_multi"), "boundary R": r.get("boundary_recall_multi"),
+            "boundary F1": r.get("boundary_f1_multi"), "native macro-F1": r.get("native_macro_f1"),
+            **{f"{c} recall": (r.get("native_recall") or {}).get(c) for c in CLASSES}, **{f"{c} F1": (r.get("native_f1") or {}).get(c) for c in CLASSES},
+            "switches per clip": r.get("native_internal_cuts_per_clip"), "same-view join cuts": r.get("same_class_cut_rate_multi"),
+            "A4C read as A5C": r.get("A4C read as A5C"), "A5C read as A4C": r.get("A5C read as A4C")}
 
 
 def _system_rows(sysd: dict) -> list[dict]:
-    out = []
-    for k, per in sysd.items():
-        for row in ROWS:
-            for h, r in per.get(row, {}).items():
-                out.append({"system": k, "row": row, "half": h, "segment F1@50": r.get("segment_f1_50_multi"), "boundary P": r.get("boundary_precision_multi"),
-                            "boundary R": r.get("boundary_recall_multi"), "boundary F1": r.get("boundary_f1_multi"), "native macro-F1": r.get("native_macro_f1"),
-                            **{f"{c} recall": (r.get("native_recall") or {}).get(c) for c in CLASSES}, **{f"{c} F1": (r.get("native_f1") or {}).get(c) for c in CLASSES},
-                            "switches per clip": r.get("native_internal_cuts_per_clip"), "same-view join cuts": r.get("same_class_cut_rate_multi"),
-                            "A4C read as A5C": r.get("A4C read as A5C"), "A5C read as A4C": r.get("A5C read as A4C")})
-    return out
+    return [{**_seed_split(k), "row": row, "half": h, **_row_cells(r)} for k, per in sysd.items() for row in ROWS for h, r in per.get(row, {}).items()]
+
+
+def _comparison_rows(sc: dict) -> list[dict]:
+    rows = []
+    for k, v in sc.items():
+        seed, row, name, half = k.split("|"); b = v["bootstrap"]; seg = v.get("segment_changes", {}); nat = v.get("native_changes", {}).get("all clips", {})
+        rows.append({"seed": seed.lstrip("s"), "row": row, "comparison": name, "half": half, "B3 setting": "diagnostic" if v.get("diagnostic_setting") else "",
+                     "segment F1@50": ci(b["multi segment F1@50"]), "native macro-F1": ci(b["native macro-F1"]), "boundary recall": ci(b["multi boundary recall"]),
+                     "boundary F1": ci(b["multi boundary F1"]), "switches per clip": ci(b["native cuts per clip"]), "same-view join cuts": ci(b["same-class cut rate"]),
+                     "segments matched by a only": seg.get("matched by a only", {}).get("segments"), "by b only": seg.get("matched by b only", {}).get("segments"),
+                     "native clips fixed": nat.get("fixed"), "native clips newly wrong": nat.get("new")})
+    return rows
+
+
+def _classification_rows(cmp: dict) -> tuple[list[dict], list[dict]]:
+    rows, split = [], []
+    for k, v in cmp.items():
+        key, subset, half = k.split("|")
+        if "session" in v:
+            rows.append({**_seed_split(key), "subset": subset, "half": half,
+                         "session bootstrap": ci(v["session"]) if v["session"]["estimable"] else "not estimable",
+                         "stream bootstrap": ci(v["stream"]) if v["stream"]["estimable"] else "not estimable", "windows": v["session"]["windows"],
+                         "sessions": v["session"]["units"], "fixed windows (rec./ses.)": "{windows} ({recordings}/{sessions})".format(**v["changes"]["fixed"]),
+                         "new errors (rec./ses.)": "{windows} ({recordings}/{sessions})".format(**v["changes"]["new"]),
+                         "fewer than 10 sessions": bool(v["session"]["few_units"] or v["changes"]["fixed"]["few_units"] or v["changes"]["new"]["few_units"])})
+        elif "exact" in v:
+            split.append({**_seed_split(key), "half": half, **{f"{e} {m}": v[e].get(m) for e in ("exact", "non_exact") for m in ("windows", "accuracy_token", "accuracy_cls")}})
+    return rows, split
+
+
+def _unit_rows(units: dict) -> list[dict]:
+    rows = []
+    for k, v in units.items():
+        key, row, half = k.split("|")
+        rows.append({**_seed_split(key), "row": row, "half": half,
+                     **{g: (f"{v[g]['matched']}/{v[g]['segments']}" if g in v else None) for g in UNIT_GROUPS},
+                     **{f"{g} missed rec./ses.": (f"{v[g]['missed_recordings']}/{v[g]['missed_sessions']}" if g in v else None) for g in UNIT_GROUPS}})
+    return rows
+
+
+def _goal_rows(goals: dict) -> list[dict]:
+    return [{"family": k, "mean selection": g["mean_segment_f1"]["selection"], "mean calibration": g["mean_segment_f1"]["calibration"],
+             "margin selection": g["margin"]["selection"], "margin calibration": g["margin"]["calibration"],
+             "calibration sensitivity margin": g["calibration_sensitivity_margin"],
+             "constraint failures": "; ".join(f"seed {f['seed']} {f['half']}" + ("" if f["b3_feasible"] else " (no feasible B3)") +
+                                              (f" recall {f['boundary_recall']:.4f}" if f["boundary_recall"] < 0.95 else "") +
+                                              f" native {f['native_macro_f1']:.4f}" for f in g["constraint_failures"]) or "none",
+             "met": g["met"]} for k, g in goals.items()]
+
+
+def _position_rows(pos: dict) -> tuple[list[dict], list[dict]]:
+    rows, split = [], []
+    for h, p in pos.items():
+        rows.append({"half": h, "windows": p["windows"], "exact": p["exact"], "non-exact": p["non_exact"], "non-exact native": p["non_exact_native"],
+                     "label differs": p["label_differs"], **{f"offset {k}": v for k, v in p["offset_counts"].items()},
+                     **{f"anchor slot {k}": v for k, v in p["anchor_counts"].items()}})
+        for key, by in p.get("sample_split", {}).items():
+            for row, s in by.items():
+                split.append({**_seed_split(key), "row": row, "half": h, **{f"{e} {m}": s[e].get(m) for e in ("exact", "non_exact")
+                                                                           for m in ("samples", "accuracy_token", "accuracy_cls")}})
+    return rows, split
 
 
 def tables_md(res: dict) -> str:
@@ -105,51 +174,43 @@ def tables_md(res: dict) -> str:
     parts = ["# Trained token readout round: tables\n"] + ([f"**Dry run.** {res['dry_run']}\n"] if res.get("dry_run") else []) + [
              "Recompute: `python scripts/trained_token_readout.py --config configs/experiments/trained_token_readout_v1.yaml --selection --choices-sha256 <sha>`\n",
              "Seeds are not extra cases. Development halves are reused, so the intervals are approximate. A consistent difference means "
-             "all three seeds' 95% intervals exclude zero on the same side in a half.\n"]
+             "all three seeds' 95% intervals exclude zero on the same side in a half. In a comparison 'a - b', a is the first system named.\n"]
     if res.get("systems"):
         parts += ["## Systems\n", md_table(_system_rows(res["systems"]))]
     if res.get("choices"):
-        rows = [{"system": k, "status": v["status"], "half_window": v["params"]["half_window"], "quantile": v["params"].get("threshold_quantile"),
+        rows = [{**_seed_split(k), "status": v["status"], "half_window": v["params"]["half_window"], "quantile": v["params"].get("threshold_quantile"),
                  "threshold": v["params"].get("threshold"), "feasible settings": v["n_feasible"]} for k, v in res["choices"].items()]
-        rows += [{"system": k, "status": v["b3_choice"]["status"], "half_window": v["b3_choice"]["params"]["half_window"],
+        rows += [{**_seed_split(k), "status": v["b3_choice"]["status"], "half_window": v["b3_choice"]["params"]["half_window"],
                   "quantile": v["b3_choice"]["params"].get("threshold_quantile"), "threshold": v["b3_choice"]["params"].get("threshold"),
                   "feasible settings": v["b3_choice"].get("n_feasible")} for k, v in res.get("systems", {}).items() if not k.startswith("token_") and "b3_choice" in v]
         parts += ["## B3 settings (token systems chosen once on calibration; CLS and Ordered stored)\n", md_table(rows)]
     if res.get("system_comparisons"):
-        rows = []
-        for k, v in res["system_comparisons"].items():
-            b = v["bootstrap"]; seg = v.get("segment_changes", {}); nat = v.get("native_changes", {}).get("all clips", {})
-            rows.append({"comparison": k, "B3 setting": "diagnostic" if v.get("diagnostic_setting") else "", "segment F1@50": ci(b["multi segment F1@50"]),
-                         "native macro-F1": ci(b["native macro-F1"]),
-                         "boundary recall": ci(b["multi boundary recall"]), "boundary F1": ci(b["multi boundary F1"]),
-                         "segments matched by a only": seg.get("matched by a only", {}).get("segments"), "by b only": seg.get("matched by b only", {}).get("segments"),
-                         "native clips fixed": nat.get("fixed"), "native clips newly wrong": nat.get("new")})
-        parts += ["## System comparisons (seed | row | comparison | half; paired bootstrap, native clips by session, streams by stream)\n", md_table(rows)]
+        parts += ["## System comparisons (paired bootstrap; native clips by session, streams by stream)\n", md_table(_comparison_rows(res["system_comparisons"]))]
     if res.get("verdicts"):
         rows = [{"row": r, "comparison": n, "metric": m, **{h: x[h] for h in HALVES}} for r, by in res["verdicts"].items() for n, mm in by.items() for m, x in mm.items()]
         parts += ["## System verdicts over seeds\n", md_table(rows)]
     cl = res.get("classification", {})
     if cl.get("accuracy"):
-        rows = [{"system": k, "half": h, **x} for k, by in cl["accuracy"].items() for h, x in by.items()]
+        rows = [{**_seed_split(k), "half": h, **x} for k, by in cl["accuracy"].items() for h, x in by.items()]
         parts += ["## Same-target window accuracy at the request\n", md_table(rows)]
     if cl.get("comparisons"):
-        rows = []
-        for k, v in cl["comparisons"].items():
-            if "session" not in v:
-                continue
-            rows.append({"comparison": k, "session bootstrap": ci(v["session"]) if v["session"]["estimable"] else "not estimable",
-                         "stream bootstrap": ci(v["stream"]) if v["stream"]["estimable"] else "not estimable", "windows": v["session"]["windows"],
-                         "sessions": v["session"]["units"], "fixed windows (rec./ses.)": "{windows} ({recordings}/{sessions})".format(**v["changes"]["fixed"]),
-                         "new errors (rec./ses.)": "{windows} ({recordings}/{sessions})".format(**v["changes"]["new"]),
-                         "fewer than 10 sessions": v["session"]["few_units"] or v["changes"]["fixed"]["few_units"] or v["changes"]["new"]["few_units"]})
-        parts += ["## Same-target classification, token readout minus its own arm's CLS (seed | subset | half)\n", md_table(rows)]
-        rows = [{"comparison": k, **{f"{e} {m}": v[e].get(m) for e in ("exact", "non_exact") for m in ("windows", "accuracy_token", "accuracy_cls")}}
-                for k, v in cl["comparisons"].items() if "exact" in v]
-        parts += ["## Same-target accuracy on exact and non-exact anchors\n", md_table(rows)]
+        rows, split = _classification_rows(cl["comparisons"])
+        parts += ["## Same-target classification, token readout minus its own arm's CLS\n", md_table(rows),
+                  "## Same-target accuracy on exact and non-exact anchors\n", md_table(split)]
     if cl.get("verdicts"):
-        parts += ["## Same-target classification verdicts over seeds\n", md_table([{"readout | subset": k, **v} for k, v in cl["verdicts"].items()])]
-    for key, title in (("positions", "Anchor positions and the per-sample split"), ("units", "Short segments and X-Y-X middles"), ("goal", "Goal and constraints"),
-                       ("decision", "Fixed readings"), ("stored_rows", "Stored rows of earlier systems (from A02's summary)"), ("post_hoc", "Post hoc additions"),
-                       ("identity", "Run identity"), ("run", "Stage record"), ("cost", "Cost")):
-        parts += [f"## {title}\n", "```\n" + json.dumps(res.get(key, "pending"), indent=1, default=str) + "\n```\n"]
+        rows = [{"readout": k.split("|")[0], "subset": k.split("|")[1], **v} for k, v in cl["verdicts"].items()]
+        parts += ["## Same-target classification verdicts over seeds\n", md_table(rows)]
+    if res.get("positions"):
+        rows, split = _position_rows(res["positions"])
+        parts += ["## Anchor positions\n", md_table(rows), "## Per-sample accuracy on samples served by exact and non-exact windows\n", md_table(split)]
+    if res.get("units"):
+        parts += ["## Short segments and X-Y-X middles (matched / reference segments)\n", md_table(_unit_rows(res["units"]))]
+    if res.get("goal"):
+        parts += ["## Goal and constraints\n", md_table(_goal_rows(res["goal"]))]
+    if res.get("stored_rows"):
+        rows = [{"system": k, "half": h, **{c: x for c, x in _row_cells(r).items() if c in STORED_COLS}} for k, by in res["stored_rows"].items() for h, r in by.items()]
+        parts += ["## Stored rows of earlier systems (from A02's summary; not recomputed)\n", md_table(rows)]
+    for key, title in (("decision", "Fixed readings"), ("post_hoc", "Post hoc additions"), ("identity", "Run identity"), ("run", "Stage record"), ("cost", "Cost")):
+        if key in res:
+            parts += [f"## {title}\n", "```\n" + json.dumps(res[key], indent=1, default=str) + "\n```\n"]
     return "\n".join(parts)
