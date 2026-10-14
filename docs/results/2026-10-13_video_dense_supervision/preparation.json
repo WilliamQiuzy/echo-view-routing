@@ -1,0 +1,166 @@
+{
+ "config": "configs/experiments/video_dense_supervision_v1.yaml",
+ "checked": {
+  "task_sheet": "b67dede565e49c7ca91c43b0a5109cf9251f35f46f65457cd992e71065495d8d",
+  "raw_video_config": "832694f4ea1ec4c7d1811b59c0a6803495645e9ff8be1db80fe28d2c049af485",
+  "readout_config": "bd54c4b67216c56da55749c45944a5af051df61153c822a555ab24b5fe77e664",
+  "rv_index": "50b6123a1efd1389ff19514468ca99f64ee4007d5152db3c601b8be3b7c04643",
+  "sc_index": "8e2148b46d5cf028943f7000cffdfe114f31ed9320a5f6f14343359bfc1227a1",
+  "weights_s0": "80f13a42e628fe2647634b79e59d5b8486fee5c3e0ae45f70bcc667c41258505",
+  "weights_s1": "74276323ababf78fcb578be28d3172f3c220b3b7e66c2ff96a2072f39210c26f",
+  "weights_s2": "923eb3afb0d846b1361897dbb63bb5aecf22401ce4b305b44fe990d48edc7f2c",
+  "rv_s0": "ee54951de6a974e30c688b9cdc1d13e0e8fb1057c9092d9efacfb9b2fce05f8b",
+  "rv_s1": "1e8c5b4afb54fd277be6dd45739fa631a359a5e7cc9d7afa644cf081592ef712",
+  "rv_s2": "b112ccc84e89e3079e22c31aaa88ec2b650369d5ab1d152ae23a83b0e8dac245",
+  "sc_s0": "3df87fe8fea5b8995faed3ed7c3634f9b53c2da901dc2bc90107d896a56606f3",
+  "sc_s1": "805ed2c28fc4bd0ab854a26cd810dee7e85ef00a45b4981877ca48ddaed89ec0",
+  "sc_s2": "6e7f889b3c7a18057d9b7e0e8a4fd4a3da633feab0469b13072b1f5557b27e0c"
+ },
+ "environment": {
+  "torch": "2.14.0+cu130",
+  "torchvision": "0.29.0+cu130",
+  "cuda": "13.0",
+  "cudnn": 92400,
+  "torchvision_mvit_sha256": "76ca465f2be0bb7ff914ca434264ceb6736402856d164e5810491d5ba77d4210"
+ },
+ "allowlist_clips": 3364,
+ "geometry": {
+  "grid": [
+   8,
+   7,
+   7
+  ],
+  "query_time_strides": [
+   1
+  ],
+  "stem_time": [
+   3,
+   2,
+   1,
+   1
+  ],
+  "anchors": [
+   0,
+   2,
+   4,
+   6,
+   8,
+   10,
+   12,
+   14
+  ]
+ },
+ "seeds": {
+  "0": {
+   "pairing": {
+    "windows": 30000,
+    "updates": 3750,
+    "windows_per_update": 8,
+    "mismatches": 0
+   },
+   "recordings": 3338,
+   "all_training_clips": true,
+   "aux_sha256": "ce543e46698a727d6548c1bee52c7c23e245a19cef570843541bc97437cbe1e3",
+   "source_state_strict_load": true,
+   "source_parameters": 34640549,
+   "learned_marker_abs_max": 0.023095479235053062,
+   "labels": {
+    "windows": 30000,
+    "native_windows": 15000,
+    "mixed_windows": 15000,
+    "identity_permutations": 0,
+    "identity_permutation_share": 0.0,
+    "mixed_windows_with_two_or_more_anchor_classes": 14135,
+    "mixed_windows_with_changed_labels": 13402,
+    "mixed_changed_window_share": 0.8934666666666666,
+    "native_windows_with_changed_labels": 0,
+    "changed_anchor_labels_mixed": 43419,
+    "changed_anchor_label_share_mixed": 0.361825,
+    "repeated_anchor_share": 0.0,
+    "windows_with_repeated_anchors": 0,
+    "anchor_label_counts": {
+     "0": 47422,
+     "1": 47237,
+     "2": 48590,
+     "3": 49299,
+     "4": 47452
+    }
+   }
+  },
+  "1": {
+   "pairing": {
+    "windows": 30000,
+    "updates": 3750,
+    "windows_per_update": 8,
+    "mismatches": 0
+   },
+   "recordings": 3338,
+   "all_training_clips": true,
+   "aux_sha256": "84a6d380e1f4c00fc2f9e347435600e53e2e5e636b123f4aad6a70d77a2fd315",
+   "source_state_strict_load": true,
+   "source_parameters": 34640549,
+   "learned_marker_abs_max": 0.027930747717618942,
+   "labels": {
+    "windows": 30000,
+    "native_windows": 15000,
+    "mixed_windows": 15000,
+    "identity_permutations": 1,
+    "identity_permutation_share": 3.3333333333333335e-05,
+    "mixed_windows_with_two_or_more_anchor_classes": 14154,
+    "mixed_windows_with_changed_labels": 13437,
+    "mixed_changed_window_share": 0.8958,
+    "native_windows_with_changed_labels": 0,
+    "changed_anchor_labels_mixed": 43165,
+    "changed_anchor_label_share_mixed": 0.35970833333333335,
+    "repeated_anchor_share": 0.0,
+    "windows_with_repeated_anchors": 0,
+    "anchor_label_counts": {
+     "0": 47804,
+     "1": 48052,
+     "2": 48707,
+     "3": 48029,
+     "4": 47408
+    }
+   }
+  },
+  "2": {
+   "pairing": {
+    "windows": 30000,
+    "updates": 3750,
+    "windows_per_update": 8,
+    "mismatches": 0
+   },
+   "recordings": 3330,
+   "all_training_clips": true,
+   "aux_sha256": "88c1c4fe5ecde44979080e05f398e55513350ed7e0c6c84498f4f2608b73296d",
+   "source_state_strict_load": true,
+   "source_parameters": 34640549,
+   "learned_marker_abs_max": 0.04164298623800278,
+   "labels": {
+    "windows": 30000,
+    "native_windows": 15000,
+    "mixed_windows": 15000,
+    "identity_permutations": 1,
+    "identity_permutation_share": 3.3333333333333335e-05,
+    "mixed_windows_with_two_or_more_anchor_classes": 14158,
+    "mixed_windows_with_changed_labels": 13444,
+    "mixed_changed_window_share": 0.8962666666666667,
+    "native_windows_with_changed_labels": 0,
+    "changed_anchor_labels_mixed": 43618,
+    "changed_anchor_label_share_mixed": 0.3634833333333333,
+    "repeated_anchor_share": 0.0,
+    "windows_with_repeated_anchors": 0,
+    "anchor_label_counts": {
+     "0": 47789,
+     "1": 47709,
+     "2": 48639,
+     "3": 48481,
+     "4": 47382
+    }
+   }
+  }
+ },
+ "index_sha256": "2bd1c53fa06643ec0e79729ad98e4fcfe2f3a8908eab8979684103ee58edd204",
+ "pixel_digests": "the RV manifests are pinned, so every window's pixel digest is the source's; training decodes every window and stops if its digest differs",
+ "seconds": 6.2055816650390625
+}
