@@ -269,6 +269,27 @@ def plot_curves(runs: dict, path: Path) -> None:
     fig.tight_layout(); fig.savefig(path, dpi=130); plt.close(fig)
 
 
+def token_schematic(path: Path) -> None:
+    """The round's token supervision without any frame: 16 input slots, the 8 anchors, the CLS output and the shared head."""
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    fig, ax = plt.subplots(figsize=(13, 4.4)); ax.set_xlim(0, 17); ax.set_ylim(0, 8); ax.axis("off")
+    for i in range(16):
+        anchor = i in vds.ANCHORS
+        ax.add_patch(plt.Rectangle((0.5 + i, 6.2), 0.85, 0.85, color="#4c72b0" if anchor else "#cfd8e3"))
+        ax.text(0.92 + i, 6.62, str(i), ha="center", va="center", fontsize=8, color="white" if anchor else "black")
+    ax.text(0.5, 7.4, "16 input frames (slots) of one window; blue: the stem-centre anchor slots 2j (j = 0..7)", fontsize=9)
+    for j, s in enumerate(vds.ANCHORS):
+        ax.annotate("", xy=(1.4 + 2 * j, 4.6), xytext=(0.92 + s, 6.1), arrowprops={"arrowstyle": "->", "color": "#4c72b0", "lw": 0.8})
+        ax.add_patch(plt.Rectangle((0.9 + 2 * j, 3.9), 1.0, 0.7, color="#dd8452", alpha=0.6)); ax.text(1.4 + 2 * j, 4.25, f"t{j}", ha="center", va="center", fontsize=8)
+    ax.text(0.5, 3.3, "final normalised tokens: the CLS token plus 8 time positions x 7 x 7; each time position's 49 tokens are averaged (after video interaction)", fontsize=9)
+    ax.add_patch(plt.Rectangle((0.5, 1.2), 7.5, 1.3, color="#8172b2", alpha=0.25)); ax.text(0.7, 1.85, "CLS token -> dropout -> 512-d projection -> five-class head\nthe system output (with B3), in every arm", fontsize=9, va="center")
+    ax.add_patch(plt.Rectangle((8.5, 1.2), 8.0, 1.3, color="#dd8452", alpha=0.25))
+    ax.text(8.7, 1.85, "8 time vectors -> the same dropout, projection and head -> 8 time logits\nloss weight 0 (CLS continuation) or 0.5 (aligned or shuffled labels)", fontsize=9, va="center")
+    fig.tight_layout(); fig.savefig(path, dpi=130); plt.close(fig)
+
+
 # ----------------------------------------------------------------------------------------------- main
 def run_evaluate(ctx, workers: int) -> None:
     t0, started, ok = time.time(), tv.now(), False
@@ -285,7 +306,7 @@ def evaluate(ctx, workers: int, t0: float) -> None:
     queue = json.loads((ctx.out / "queue_status.json").read_text()); train_ids = set(tv.allowlist(ctx.rv, ctx.root)); ids = train_ids | {session_of(v) for v in train_ids}
     res = {"runs": {k: {x: r["manifest"][x] for x in ("identity", "arm", "seed", "lambda", "updates", "final_sha256", "source_weights_sha256", "aux_sha256", "interrupted", "parameters")}
                     | {"frozen": r["frozen"], "epochs": r["manifest"]["epochs"]} for k, r in runs.items()}, "decision": "pending"}
-    res["reference_pins"] = check_reference_pins(ctx); write(res, out_dir, ids); plot_curves(runs, out_dir / "training_curves.png")
+    res["reference_pins"] = check_reference_pins(ctx); write(res, out_dir, ids); plot_curves(runs, out_dir / "training_curves.png"); token_schematic(out_dir / "token_supervision.png")
     pin = ctx.rv["evaluation"]["reference_inputs"]["e1_feature_manifest"]; pd.pinned(ctx.root, pin)
     inputs, seqs = rcs.validation(cfg, {"inputs": {"protocol": ctx.rv["source"]["protocol"], "feature_manifest": pin}}, paths)   # development data from here on
     dev_rec = {r[0] for h in HALVES for q in seqs[h] for r in q["refs"]}; ids |= dev_rec | {session_of(v) for v in dev_rec} | {q["id"] for h in HALVES for q in seqs[h]}

@@ -333,7 +333,7 @@ def checks(ctx, device, workers: int, t0: float) -> bool:
     rec["code"] = tv.code_digest(); rec["seconds"] = time.time() - t0
     mixed = [i for i, c in enumerate(chosen) if int(m["kind"][c["u"], c["w"]]) == 1]
     k = next((i for i in mixed if len(set(aux["aligned"][chosen[i]["u"], chosen[i]["w"]].tolist())) > 1), mixed[0])
-    token_figure(inp, aux["aligned"][chosen[k]["u"], chosen[k]["w"]], k, res_dir / "token_supervision.png")
+    token_figure(inp, aux["aligned"][chosen[k]["u"], chosen[k]["w"]], k, out / "token_supervision_frames.png")   # raw frames: server only
     ids = {str(v) for v in m["videos"].tolist()}; ids |= {session_of(v) for v in ids}; assert_no_ids(rec, ids, "check")
     for p in (out / "check.json", res_dir / "checks.json"):
         p.write_text(json.dumps(rec, indent=1, default=str))
