@@ -146,7 +146,8 @@ def test_the_adapter_builds_one_half_and_never_reads_the_other(tmp_path):
                             "selection": "POISON: never parsed"}, "test_split": "POISON", "train": "POISON"}
     refs = {"c1": [["c1", k, 1.0] for k in range(30)], "c2": [["c2", k, 1.0] for k in range(25)],
             "r1": [["c1", k, 1.0] for k in range(10)] + [["c1", k, 1.0] for k in range(12, 16)] + [["c2", k, 1.0] for k in range(9, 15)]}
-    plans = {"streams": {k: {"n": len(v), "refs": v, "bank": "x"} for k, v in refs.items()} | {"other": "POISON"}}
+    bank = {"c1": "native_calibration", "c2": "native_calibration", "r1": "multi_calibration"}
+    plans = {"streams": {k: {"n": len(v), "refs": v, "bank": bank[k]} for k, v in refs.items()} | {"other": "POISON"}}
     ev, seqs = tt.half_sets(proto, "calibration", p, plans)
     assert [q["id"] for q in seqs] == ["c1", "c2", "r1"] and [q["kind"] for q in seqs] == ["native", "native", "multi"]
     assert [s.seq_id for s in ev.natives] == ["c1", "c2"] and ev.natives[0].labels.tolist() == [2] * 30 and ev.natives[0].feat is None
@@ -162,6 +163,13 @@ def test_the_adapter_builds_one_half_and_never_reads_the_other(tmp_path):
     bad = json.loads(json.dumps(proto)); bad["validation"]["calibration"]["banks"]["multi"]["recipes"][0]["fragments"][2]["label"] = 3
     with pytest.raises(SystemExit):
         tt.half_sets(bad, "calibration", p, plans)          # a fragment label that is not its clip's label
+    other = json.loads(json.dumps(plans)); other["streams"]["r1"]["bank"] = "multi_selection"
+    with pytest.raises(SystemExit):
+        tt.half_sets(proto, "calibration", p, other)        # a plan of another half's bank
+    bad = json.loads(json.dumps(proto)); bad["validation"]["calibration"]["banks"]["multi"]["recipes"][0]["fragments"][0]["video_id"] = "o1"
+    with pytest.raises(SystemExit) as e:
+        tt.half_sets(bad, "calibration", p, plans)
+    assert not any(x in str(e.value) for x in ("r1", "c1", "c2", "o1"))   # error messages carry positions, not ids
 
 
 def test_the_round_code_never_refers_to_validation_inputs_test_or_pediatric():

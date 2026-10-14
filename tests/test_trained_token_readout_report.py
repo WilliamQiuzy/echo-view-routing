@@ -105,6 +105,16 @@ from types import SimpleNamespace  # noqa: E402
 
 import scripts.trained_token_readout as tt  # noqa: E402
 
+GRID = [{"order": k, "params": {"half_window": h, "threshold_quantile": q, "nms_radius": 5, "threshold": 0.1 + k / 100},
+         "native_macro_f1": 0.99, "boundary_recall_multi": 0.96, "segment_f1_50_multi": 0.95 if k == 3 else 0.90}
+        for k, (h, q) in enumerate((h, q) for h in (5, 7, 9, 11, 15) for q in (0.80, 0.85, 0.90, 0.95, 0.97, 0.99, 0.995, 0.999))]
+
+
+def test_native_or_recall_losses_are_stated_apart():
+    sysv = {c: v(N, N) for c in tb.SYS}
+    d = tb.decide(sysv, v(N, N), True, False, TT["decision_rules"], {"native macro-F1": v(NEG, N), "multi boundary recall": v(N, N)})
+    assert d["notes"]["native_or_recall_losses"] == {"native macro-F1": ["selection"]} and d["applied"] == ["labels_learned_no_usable_gain", "end"]
+
 
 def test_per_class_f1_comes_from_the_confusion_matrix():
     conf = np.diag([4, 3, 2, 1, 5]).astype(int); conf[2, 3] = 2           # two A4C clips read as A5C
@@ -121,65 +131,141 @@ def test_samples_take_the_offset_of_the_window_that_serves_them():
     off = np.array([0, 0, -1, 0, -1])
     a = {"q0": np.zeros(12, int), "q1": np.r_[np.ones(3, int), np.zeros(3, int)]}; b = {"q0": np.zeros(12, int), "q1": np.ones(6, int)}
     s = tt.sample_offset_split(seqs, served, off, a, b)
-    assert s["exact"] == {"windows": 12, "accuracy_token": 1.0, "accuracy_cls": 1.0}
-    assert s["non_exact"] == {"windows": 6, "accuracy_token": 0.5, "accuracy_cls": 1.0}
+    assert s["exact"] == {"samples": 12, "accuracy_token": 1.0, "accuracy_cls": 1.0}
+    assert s["non_exact"] == {"samples": 6, "accuracy_token": 0.5, "accuracy_cls": 1.0}
 
 
 def test_a_stored_row_that_is_not_reproduced_stops():
-    row = {f: 0.5 for f in tt.FLAT}
+    row = {f: 0.5 for f in tt.FLAT} | {"native_confusion": [[1, 0], [0, 1]], "A4C read as A5C": 0}
     tt.check_stored(row, dict(row), "x")
-    with pytest.raises(SystemExit):
-        tt.check_stored(row, row | {"segment_f1_50_multi": 0.4}, "x")
+    for bad in ({"segment_f1_50_multi": 0.4}, {"native_confusion": [[1, 0], [1, 0]]}, {"A4C read as A5C": 1}):
+        with pytest.raises(SystemExit):
+            tt.check_stored(row, row | bad, "x")
 
 
-def _ctx(tmp_path, grid):
+def _ctx(tmp_path, records=None):
     tmp_path.mkdir(parents=True, exist_ok=True); (tmp_path / "c.yaml").write_text("x: 1\n")
     preds = {"aligned_dense_s0": {"path": "p.npz", "sha256": "ab" * 32}}
     ctx = SimpleNamespace(results=tmp_path / "res", out=tmp_path / "out", root=tmp_path, config="c.yaml", src={"predictions": {"calibration": preds}},
-                          tt={"b3": {"grid": TT["b3"]["grid"]}})
+                          tt={"b3": {"grid": TT["b3"]["grid"]}, "goal": TT["goal"]}, ledger=tmp_path / "ledger.jsonl")
+    sysrec = records or {"token_aligned_dense_s0": {"status": "feasible", "params": GRID[3]["params"], "n_feasible": 40, "grid": GRID}}
     rec = {"half": "calibration", "code": tt.code_digest(), "config_sha256": tt.sha256_file(tmp_path / "c.yaml"),
-           "predictions": {"aligned_dense_s0": "ab" * 32}, "systems": {"token_aligned_dense_s0": {"status": "feasible", "params": grid[3]["params"], "grid": grid}}}
-    for p in (ctx.results / "choices.json", ctx.out / "calibration" / "choices.json"):
-        p.parent.mkdir(parents=True, exist_ok=True); p.write_text(json.dumps(rec))
+           "predictions": {"aligned_dense_s0": "ab" * 32}, "systems": sysrec,
+           "choices": {k: {x: r[x] for x in ("status", "params", "n_feasible")} for k, r in sysrec.items()}}
+    for f in (ctx.results / "choices.json", ctx.out / "calibration" / "choices.json"):
+        f.parent.mkdir(parents=True, exist_ok=True); f.write_text(json.dumps(rec))
+    ctx.choices_sha256 = tt.sha256_file(ctx.results / "choices.json")
     return ctx, rec
 
 
-def test_selection_runs_only_on_the_matching_committed_choices(tmp_path, monkeypatch):
-    grid = [{"order": k, "params": {"half_window": h, "threshold_quantile": q, "nms_radius": 5}} for k, (h, q) in
-            enumerate((h, q) for h in (5, 7, 9, 11, 15) for q in (0.80, 0.85, 0.90, 0.95, 0.97, 0.99, 0.995, 0.999))]
+def test_the_choices_are_rederived_from_their_own_grid(tmp_path):
+    ctx, rec = _ctx(tmp_path / "ok")
+    tt.load_choices(ctx, ctx.choices_sha256)
+    bad_setting = {"token_aligned_dense_s0": {"status": "feasible", "params": GRID[4]["params"], "n_feasible": 40, "grid": GRID}}
+    bad_count = {"token_aligned_dense_s0": {"status": "feasible", "params": GRID[3]["params"], "n_feasible": 39, "grid": GRID}}
+    none = [r | {"native_macro_f1": 0.97} for r in GRID]
+    diag = next(r for r in none if r["params"]["half_window"] == 9 and r["params"]["threshold_quantile"] == 0.95)
+    infeasible_ok = {"token_aligned_dense_s0": {"status": "infeasible (diagnostic setting shown)", "params": diag["params"], "n_feasible": 0, "grid": none}}
+    infeasible_bad = {"token_aligned_dense_s0": {"status": "infeasible (diagnostic setting shown)", "params": none[0]["params"], "n_feasible": 0, "grid": none}}
+    ctx2, _ = _ctx(tmp_path / "inf", infeasible_ok)
+    tt.load_choices(ctx2)
+    for name, recs in (("setting", bad_setting), ("count", bad_count), ("diag", infeasible_bad)):
+        ctx3, _ = _ctx(tmp_path / name, recs)
+        with pytest.raises(SystemExit):
+            tt.load_choices(ctx3)
+    ctx4, rec4 = _ctx(tmp_path / "summary")
+    rec4["choices"]["token_aligned_dense_s0"]["n_feasible"] = 1
+    for f in (ctx4.results / "choices.json", ctx4.out / "calibration" / "choices.json"):
+        f.write_text(json.dumps(rec4))
+    with pytest.raises(SystemExit):
+        tt.load_choices(ctx4)                                  # the short choice differs from its full record
+
+
+def test_selection_runs_only_on_the_committed_choices(tmp_path, monkeypatch):
     calls = []
-    monkeypatch.setattr(tt, "run_selection", lambda ctx, ch, data, out, final: calls.append((dict(data), final)))
-    ctx, rec = _ctx(tmp_path, grid)
+    monkeypatch.setattr(tt, "evaluate_all", lambda ctx, ch, data, sha: calls.append(dict(data)) or ({"identity": {"choices_sha256": sha}, "decision": {"applied": []}}, {}, set()))
+    monkeypatch.setattr(tt, "publish", lambda ctx, flat, per, out, final, extra, ids: calls.append(("publish", out.name, final)) or True)
+    ctx, rec = _ctx(tmp_path / "a")
     tt.stage_dry_run(ctx)
-    assert calls[-1] == ({"calibration": "calibration", "selection": "calibration"}, False) and not (ctx.out / "selection" / "done.json").exists()
+    assert calls[-2:] == [{"calibration": "calibration", "selection": "calibration"}, ("publish", "dry_run", False)]
     tt.stage_selection(ctx)
-    assert calls[-1] == ({"calibration": "calibration", "selection": "selection"}, True) and (ctx.out / "selection" / "done.json").is_file()
-    tt.stage_selection(ctx)                                    # a repeat with the same choices may only reproduce
-    for bad in ({"code": "0" * 64}, {"config_sha256": "0" * 64}, {"predictions": {"aligned_dense_s0": "cd" * 32}},
-                {"systems": {"token_aligned_dense_s0": {"status": "feasible", "params": grid[3]["params"], "grid": grid[:39]}}}):
-        ctx2, _ = _ctx(tmp_path / str(len(calls)) / str(sorted(bad)[0]), grid)
-        for p in (ctx2.results / "choices.json", ctx2.out / "calibration" / "choices.json"):
-            p.write_text(json.dumps(rec | bad))
+    assert calls[-2:] == [{"calibration": "calibration", "selection": "selection"}, ("publish", "selection", True)]
+    ctx.choices_sha256 = None
+    with pytest.raises(SystemExit):
+        tt.stage_selection(ctx)                                # no committed sha given
+    ctx.choices_sha256 = "0" * 64
+    with pytest.raises(SystemExit):
+        tt.stage_selection(ctx)                                # not the committed record
+    for k, bad in enumerate(({"code": "0" * 64}, {"config_sha256": "0" * 64}, {"predictions": {"aligned_dense_s0": "cd" * 32}})):
+        ctx2, _ = _ctx(tmp_path / f"b{k}")
+        for f in (ctx2.results / "choices.json", ctx2.out / "calibration" / "choices.json"):
+            f.write_text(json.dumps(rec | bad))
+        ctx2.choices_sha256 = tt.sha256_file(ctx2.results / "choices.json")
         with pytest.raises(SystemExit):
             tt.stage_selection(ctx2)
-    (ctx.out / "calibration" / "choices.json").write_text(json.dumps(rec | {"note": "other"}))
+    ctx3, _ = _ctx(tmp_path / "c")
+    (ctx3.out / "calibration" / "choices.json").write_text(json.dumps(rec | {"note": "other"}))
     with pytest.raises(SystemExit):
-        tt.stage_selection(ctx)                                # the two copies differ
-    (ctx.out / "calibration" / "choices.json").write_text((ctx.results / "choices.json").read_text())
-    (ctx.out / "selection" / "done.json").write_text(json.dumps({"choices_sha256": "0" * 64}))
+        tt.stage_selection(ctx3)                               # the two copies differ
+    ctx4, _ = _ctx(tmp_path / "d")
+    (ctx4.out / "selection").mkdir(parents=True); (ctx4.out / "selection" / "done.json").write_text(json.dumps({"choices_sha256": "0" * 64}))
     with pytest.raises(SystemExit):
-        tt.stage_selection(ctx)                                # an earlier run used other choices
+        tt.stage_selection(ctx4)                               # an earlier run used other choices
 
 
-def test_the_dry_run_never_reads_the_selection_half(monkeypatch, tmp_path):
+def test_publish_writes_once_and_never_overwrites(tmp_path, monkeypatch):
+    monkeypatch.setattr(tt, "position_figure", lambda path: Path(path).write_text("figure"))
+    saved = {"token_aligned_dense_s0": {"token_logits": np.zeros((2, 5), np.float32), "anchor": np.array([4, 4]), "offset": np.array([0, 0]),
+                                         "probs": {"q": np.full((3, 5), 0.2)}, "decoded": {"q": np.zeros(3, int)}}}
+    per = {h: {"seqs": [{"id": "q"}], "saved": saved} for h in tb.HALVES}
+    ctx = SimpleNamespace(results=tmp_path / "res", out=tmp_path / "out"); ctx.results.mkdir()
+    flat = {"identity": {"choices_sha256": "ab" * 32}, "systems": {}, "decision": {"applied": ["end"]}}
+    out = ctx.out / "selection"
+    assert tt.publish(ctx, flat, per, out, True, {"cost": {"cpu_hours_before_this_stage": 0.1}}, set())
+    assert (out / "done.json").is_file() and (out / "selection" / "token_aligned_dense_s0.npz").is_file()
+    stamp = {f: f.stat().st_mtime_ns for f in [*out.rglob("*"), *ctx.results.rglob("*")] if f.is_file()}
+    assert not tt.publish(ctx, flat, per, out, True, {"cost": {"cpu_hours_before_this_stage": 0.2}}, set())   # reproduced: nothing rewritten
+    assert stamp == {f: f.stat().st_mtime_ns for f in [*out.rglob("*"), *ctx.results.rglob("*")] if f.is_file()}
+    with pytest.raises(SystemExit):
+        tt.publish(ctx, flat | {"decision": {"applied": ["other"]}}, per, out, True, {}, set())
+    assert stamp == {f: f.stat().st_mtime_ns for f in [*out.rglob("*"), *ctx.results.rglob("*")] if f.is_file()}
+    assert json.loads((ctx.results / "summary.json").read_text())["cost"] == {"cpu_hours_before_this_stage": 0.1}
+    dry = ctx.out / "dry_run"
+    assert tt.publish(ctx, flat, per, dry, False, {}, set()) and (dry / "summary.json").is_file() and not (dry / "done.json").exists()
+
+
+def test_the_dry_run_reads_the_calibration_half_once(monkeypatch):
     read = []
-    def fake_half(ctx, h, *a):
-        read.append(h); raise RuntimeError("stop after the first half")
-    monkeypatch.setattr(tt, "half_systems", fake_half)
-    ctx = SimpleNamespace(a02=lambda: {"systems": {}}, root=tmp_path, src={"ordered": {"summary": {"path": "s.json", "sha256": "x"}}, "a02_config": {}})
-    monkeypatch.setattr(tt, "pinned", lambda root, pin: SimpleNamespace(read_text=lambda: json.dumps({"systems": {}}) if pin.get("path") == "s.json" else
-                                                                        "video_dense_supervision: {evaluation: {fixed_ordered_setting: {}}}"))
-    ctx.cfg = {"selection": {"boundary_tolerance_s": 1.0}, "protocol": {"hz": 10}}
-    with pytest.raises(RuntimeError):
-        tt.run_selection(ctx, {}, {"calibration": "calibration", "selection": "calibration"}, tmp_path / "dry", final=False)
-    assert read == ["calibration"]
+    monkeypatch.setattr(tt, "half_systems", lambda ctx, h, *a: read.append(h) or {"W": None, "meta": None, "logits": None, "offsets": None, "seqs": None})
+    monkeypatch.setattr(tt, "same_target", lambda *a: ({}, {})); monkeypatch.setattr(tt, "position_summary", lambda *a: {})
+    per = tt.read_halves(None, {"systems": {}}, {"calibration": "calibration", "selection": "calibration"}, {}, {}, {})
+    assert read == ["calibration"] and per["selection"] is per["calibration"]
+    read.clear(); tt.read_halves(None, {"systems": {}}, {"calibration": "calibration", "selection": "selection"}, {}, {}, {})
+    assert read == ["calibration", "selection"]
+
+
+def test_stages_need_the_records_of_this_code(tmp_path):
+    env = tt.environment()
+    ctx = SimpleNamespace(out=tmp_path, src={"environment": {k: env[k] for k in ("python", "numpy", "pandas", "scipy")}})
+    tt.preconditions(ctx, "prepare")
+    with pytest.raises(SystemExit):
+        tt.preconditions(ctx, "check")                         # no preparation yet
+    (tmp_path / "prepare.json").write_text(json.dumps({"code": tt.code_digest(), "environment": env}))
+    tt.preconditions(ctx, "check")
+    with pytest.raises(SystemExit):
+        tt.preconditions(ctx, "calibrate")                     # no passed check yet
+    (tmp_path / "check.json").write_text(json.dumps({"code": tt.code_digest(), "ok": True}))
+    tt.preconditions(ctx, "calibrate")
+    (tmp_path / "check.json").write_text(json.dumps({"code": "0" * 64, "ok": True}))
+    with pytest.raises(SystemExit):
+        tt.preconditions(ctx, "selection")                     # a check made by other code
+    ctx.src["environment"]["numpy"] = "0.0"
+    with pytest.raises(SystemExit):
+        tt.preconditions(ctx, "prepare")                       # another environment
+
+
+def test_a_record_is_written_once(tmp_path):
+    f = tmp_path / "r.json"; f.write_text(json.dumps({"a": 1}))
+    tt.refuse_other([f], {"a": 1}, "record")
+    with pytest.raises(SystemExit):
+        tt.refuse_other([f], {"a": 2}, "record")
