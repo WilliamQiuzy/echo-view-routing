@@ -10,6 +10,8 @@ Stages (each appends its wall-clock hours to the round's ledger, failed attempts
   --check      A02's CLS probabilities and every A02 CLS row (argmax, B3, fixed Ordered setting) and the frozen Ordered
                rows reproduced exactly from the saved outputs and the metadata only
   --calibrate  the calibration half only: every 40-setting B3 result and the single choice of each token system
+  --dry-run    a code check of the selection pipeline with the calibration half standing in for both halves (the
+               selection half is not read; nothing reaches the results)
   --selection  after the committed choices: the chosen settings applied once, the comparisons and the fixed readings
 
 The metadata adapter reads, for one half at a time, only that half's protocol entries, the clip index rows of that half's
@@ -35,6 +37,7 @@ import scripts.report_center_supervision as rcs  # noqa: E402
 import scripts.report_raw_video_context as rr  # noqa: E402
 import scripts.report_target_patch_readout as rtp  # noqa: E402
 import scripts.target_patch_readout_tables as pt  # noqa: E402
+import scripts.trained_token_readout_tables as tb  # noqa: E402
 from scripts._common import load_cfg  # noqa: E402
 from scripts.ev9v_complementarity import decode  # noqa: E402
 from scripts.prepare_fold_output_correction import assert_no_ids  # noqa: E402
@@ -51,7 +54,7 @@ from echo_routing.compose.stream_assembler import Stream  # noqa: E402
 from echo_routing.config import load_paths  # noqa: E402
 from echo_routing.evaluate.complementarity import sha256_file  # noqa: E402
 from echo_routing.evaluate.failure_units import session_of  # noqa: E402
-from echo_routing.evaluate.window_target import window_frames  # noqa: E402
+from echo_routing.evaluate.window_target import nearest_centre, window_frames  # noqa: E402
 from echo_routing.temporal.dev_data import EvalSet, Seq  # noqa: E402
 from echo_routing.temporal.windowed import window_centres  # noqa: E402
 
@@ -65,7 +68,11 @@ HELPER_FILES = ("scripts/report_center_supervision.py", "scripts/ev9v_complement
                 "scripts/report_raw_video_context.py", "scripts/report_target_patch_readout.py", "scripts/target_patch_readout_tables.py",
                 "scripts/raw_video_context_tables.py", "scripts/report_fold_output_correction.py", "scripts/report_model_development.py",
                 "echo_routing/evaluate/dev_metrics.py", "echo_routing/evaluate/complementarity.py", "echo_routing/evaluate/window_target.py",
-                "echo_routing/temporal/windowed.py", "echo_routing/compose/stream_assembler.py", "scripts/trained_token_readout_tables.py")
+                "echo_routing/temporal/windowed.py", "echo_routing/compose/stream_assembler.py", "scripts/trained_token_readout_tables.py",
+                "scripts/round4_failure_inventory.py", "scripts/report_fact_asrf.py", "scripts/prepare_fold_output_correction.py",
+                "scripts/report_fan224_visual.py", "echo_routing/evaluate/failure_units.py", "echo_routing/vit/target_mvit.py",
+                "echo_routing/compose/recipe_builder.py", "echo_routing/temporal/dev_data.py", "echo_routing/temporal/baselines/b3_js_divergence.py",
+                "echo_routing/temporal/segments.py")
 
 
 # ----------------------------------------------------------------------------------------------- the selector
@@ -365,22 +372,285 @@ def stage_calibrate(ctx: Ctx) -> None:
                                          "grid": [{k: v for k, v in r.items()} for r in ch["grid"]]}
         print(f"token_{key}: {ch['status']} {ch['params']}", flush=True)
     rec["choices"] = {k: {"status": v["status"], "params": v["params"], "n_feasible": v["n_feasible"]} for k, v in rec["systems"].items()}
+    a02 = ctx.a02()["systems"]                    # the source CLS controls: A02's stored choice and calibration row (reproduced in --check)
+    rec["cls_reference"] = {f"cls_{k}": {"b3_choice": a02[k]["b3_choice"], "calibration_b3_row": {f: a02[k]["b3"][h][f] for f in FLAT}}
+                            for k in ctx.src["predictions"][h]}
     write_json([ctx.out / "calibration" / "choices.json", ctx.results / "choices.json"], rec, ids_of(ctx, {h: seqs}), "choices")
 
 
+COMPARE = {"token - CLS": ("token_aligned_dense", "cls_aligned_dense"), "token - Ordered": ("token_aligned_dense", "ordered"),
+           "token - CLS-only token": ("token_aligned_dense", "token_center_only"), "token - Shuffled token": ("token_aligned_dense", "token_shuffled_dense"),
+           "CLS-only token - CLS-only CLS": ("token_center_only", "cls_center_only"), "Shuffled token - Shuffled CLS": ("token_shuffled_dense", "cls_shuffled_dense")}
+WITHIN = ("token - CLS", "CLS-only token - CLS-only CLS", "Shuffled token - Shuffled CLS")
+WITHIN_ROWS = {"argmax": "argmax", "b3": "b3", "b3_at_cls_setting": "b3"}   # token row -> the same arm's CLS row it is compared with
+METRICS = ("multi segment F1@50", "native macro-F1", "native cuts per clip", "multi boundary recall", "multi boundary F1", "same-class cut rate")
+SUBSETS = ("native", "all mixed", "8 of 16", "9-11 of 16", "A4C/A5C pair windows", "exact anchor", "non-exact anchor")
+TOKEN_FAMILIES = ("token_center_only", "token_aligned_dense", "token_shuffled_dense")
+FAMILIES = TOKEN_FAMILIES + ("cls_center_only", "cls_aligned_dense", "cls_shuffled_dense", "ordered")
+
+
+def with_f1(row: dict) -> dict:
+    """A summary row plus native per-class precision and F1 from its confusion matrix (rows: reference, columns: output)."""
+    conf = np.asarray(row["native_confusion"], float); tp = np.diag(conf); col, ref = conf.sum(0), conf.sum(1)
+    prec = {c: (float(tp[k] / col[k]) if col[k] else None) for k, c in enumerate(CLASS_ORDER)}
+    f1 = {c: (float(2 * tp[k] / (col[k] + ref[k])) if col[k] + ref[k] else None) for k, c in enumerate(CLASS_ORDER)}
+    return row | {"native_precision": prec, "native_f1": f1}
+
+
+def rows_of(cfg: dict, probs: dict, ev, decoders: dict) -> dict:
+    """decoders: row name -> B3 params, or None for the direct argmax."""
+    out = {}
+    for row, params in decoders.items():
+        preds = {k: v.argmax(1) for k, v in probs.items()} if params is None else decode(params, probs)
+        m, tbl = rcs.evaluate(cfg, preds, ev); out[row] = {"row": with_f1(summary(m)), "tables": tbl, "preds": preds}
+    return out
+
+
+def check_stored(got: dict, want: dict, what: str) -> None:
+    bad = {f: (got[f], want[f]) for f in FLAT if got[f] != want[f]}
+    if bad:
+        raise SystemExit(f"{what}: the stored row is not reproduced ({bad})")
+
+
+def sample_windows(W: dict, seqs_h: list[dict]) -> dict:
+    """Per sequence, the window row whose prediction each sample takes (the nearest-centre mapping of the probabilities)."""
+    out = {}
+    for qi, q in enumerate(seqs_h):
+        rows = np.flatnonzero(W["seq"] == qi); out[q["id"]] = rows[nearest_centre(len(q["labels"]), W["centre"][rows])]
+    return out
+
+
+def sample_offset_split(seqs_h: list[dict], served: dict, off: np.ndarray, preds_a: dict, preds_b: dict) -> dict:
+    """Per-sample accuracy of two outputs on samples served by an exact or a non-exact window (description only)."""
+    ids = [q["id"] for q in seqs_h]; y = np.concatenate([np.asarray(q["labels"]) for q in seqs_h])
+    o = np.concatenate([off[served[i]] for i in ids])
+    a = np.concatenate([np.asarray(preds_a[i]) for i in ids]) == y; b = np.concatenate([np.asarray(preds_b[i]) for i in ids]) == y
+    return tb.offset_split(o, a, b)
+
+
+def same_target(W: dict, meta: dict, logits: dict, offsets: np.ndarray) -> tuple[dict, dict]:
+    """Per system, window accuracy at the request on the fixed subsets; per token readout, the comparison with its own
+    arm's CLS (session bootstrap, stream sensitivity, changed windows with their sources) and the anchor-offset split."""
+    y = W["label"]; mix = pt.mixed_subsets(W["labels16"], y, meta["mixed"])
+    subs = {"native": np.flatnonzero(meta["kind"] == "native"), **{n: mix[n] for n in ("all mixed", "8 of 16", "9-11 of 16", "A4C/A5C pair windows")},
+            "exact anchor": np.flatnonzero(offsets == 0), "non-exact anchor": np.flatnonzero(offsets != 0)}
+    correct = {k: v.argmax(1) == y for k, v in logits.items()}
+    acc = {k: {n: (float(c[subs[n]].mean()) if subs[n].size else None) for n in SUBSETS} for k, c in correct.items()}
+    comp = {}
+    for k in logits:
+        if not k.startswith("token_"):
+            continue
+        a, b = correct[k], correct["cls_" + k[len("token_"):]]
+        for n in SUBSETS:
+            r = subs[n]
+            comp[f"{k}|{n}"] = {"session": pt.group_bootstrap(a[r], b[r], meta["session"][r]), "stream": pt.group_bootstrap(a[r], b[r], meta["stream"][r]),
+                                "changes": tb.changes(a[r], b[r], meta["recording"][r], meta["session"][r])}
+        comp[f"{k}|offset split"] = tb.offset_split(offsets, a, b)
+    support = {n: pt.subset_support(subs[n], meta["recording"], meta["session"], meta["run"], y) for n in SUBSETS}
+    return {"accuracy": acc, "support": support}, comp
+
+
+def half_systems(ctx: Ctx, h: str, choices: dict, a02: dict, v01: dict, fx_cfg: dict) -> dict:
+    """Every system of one half: the token readouts at their committed settings (and at the same arm's CLS setting), the
+    CLS outputs and the frozen Ordered outputs at their stored settings, each stored row reproduced first."""
+    ev, seqs, W = ctx.half(h); meta = rtp.window_meta(W, seqs); systems, logits, saved = {}, {}, {}
+    j = select_all(W["s"], W["centre"], W["marker"]); off = anchor_offsets(W["s"], W["centre"], j); served = sample_windows(W, seqs); split = {}
+    for key in ctx.src["predictions"][h]:
+        arm, seed = key.rsplit("_s", 1)[0], int(key.rsplit("_s", 1)[1]); d = ctx.prediction(h, key, W, seqs)
+        cls_p = rr.per_sample(W, d["logits"].astype(np.float32), seqs); tok_lg = token_logits(d["time_logits"].astype(np.float32), j)
+        tok_p = rr.per_sample(W, tok_lg, seqs); p_cls = a02[key]["b3_choice"]["params"]; ch = choices["choices"][f"token_{key}"]
+        fixed = {"half_window": int(fx_cfg["half_window"]), "threshold": float(fx_cfg["thresholds"][seed]), "nms_radius": int(fx_cfg["nms_radius"])}
+        cls = rows_of(ctx.cfg, cls_p, ev, {"argmax": None, "b3": p_cls, "fixed_ordered_setting": fixed})
+        for row, stored in (("argmax", "argmax"), ("b3", "b3"), ("fixed_ordered_setting", "fixed")):
+            check_stored(cls[row]["row"], a02[key][stored][h], f"{key} {row} {h}")
+        tok = rows_of(ctx.cfg, tok_p, ev, {"argmax": None, "b3": ch["params"], "b3_at_cls_setting": p_cls})
+        systems[f"cls_{arm}_s{seed}"] = cls | {"b3_choice": a02[key]["b3_choice"]}
+        systems[f"token_{arm}_s{seed}"] = tok | {"b3_choice": {k: ch[k] for k in ("status", "params", "n_feasible")}}
+        logits[f"cls_{arm}_s{seed}"] = d["logits"].astype(np.float32); logits[f"token_{arm}_s{seed}"] = tok_lg
+        split[f"token_{arm}_s{seed}"] = {r: sample_offset_split(seqs, served, off, tok[r]["preds"], cls[r]["preds"]) for r in ("argmax", "b3")}
+        saved[f"token_{arm}_s{seed}"] = {"token_logits": tok_lg, "anchor": j, "offset": off, "probs": tok_p, "decoded": tok["b3"]["preds"]}
+        del d
+    for s in (0, 1, 2):
+        with np.load(pinned(ctx.root, ctx.src["ordered"]["outputs"][h][s])) as z:
+            check_windows(W, [q["id"] for q in seqs], {"sequence_ids": z["sequence_ids"], "seq": z["seq"], "centre": z["centre"], "marker": z["marker"]}, f"ordered_s{s} {h}")
+            lg = z["logits"].astype(np.float32)
+        o = rows_of(ctx.cfg, rr.per_sample(W, lg, seqs), ev, {"argmax": None, "b3": v01[f"ordered_s{s}"]["b3_choice"]["params"]})
+        for row in ("argmax", "b3"):
+            check_stored(o[row]["row"], v01[f"ordered_s{s}"][row][h], f"ordered_s{s} {row} {h}")
+        systems[f"ordered_s{s}"] = o | {"b3_choice": v01[f"ordered_s{s}"]["b3_choice"]}; logits[f"ordered_s{s}"] = lg
+    return {"ev": ev, "seqs": seqs, "W": W, "meta": meta, "systems": systems, "logits": logits, "saved": saved, "offsets": off, "sample_split": split}
+
+
+def save_outputs(ctx: Ctx, h: str, seqs_h: list[dict], saved: dict) -> None:
+    """Per-window token logits, anchors and offsets, per-sample probabilities and per-sequence B3 outputs (server only)."""
+    out = ctx.out / "selection" / h; out.mkdir(parents=True, exist_ok=True); ids = [q["id"] for q in seqs_h]
+    for key, d in saved.items():
+        np.savez(out / f"{key}.npz", sequence_ids=np.asarray(ids), token_logits=d["token_logits"], anchor=d["anchor"], offset=d["offset"],
+                 sample_offsets=np.cumsum([0, *[len(d["probs"][i]) for i in ids]]), sample_probs=np.concatenate([d["probs"][i] for i in ids]).astype(np.float32),
+                 decoded=np.concatenate([np.asarray(d["decoded"][i], np.int8) for i in ids]))
+
+
+def compare(systems: dict, evs: dict, tol: float) -> tuple[dict, dict]:
+    """Paired system comparisons per seed, row and half, and their consistency over seeds."""
+    comp = {}
+    for s in (0, 1, 2):
+        for name, (a, b) in COMPARE.items():
+            ka, kb = f"{a}_s{s}", f"{b}_s{s}"
+            for row in (WITHIN_ROWS if name in WITHIN else ("b3",)):
+                for h in HALVES:
+                    A = systems[h][ka][row]; B = systems[h][kb][WITHIN_ROWS[row] if name in WITHIN else "b3"]
+                    comp[f"s{s}|{row}|{name}|{h}"] = {"bootstrap": paired_bootstrap(A["tables"], B["tables"]),
+                                                      "native_changes": native_changes(A["tables"]["native"], B["tables"]["native"]),
+                                                      "segment_changes": segment_changes(evs[h], A["preds"], B["preds"]),
+                                                      "boundary_changes": boundary_changes(evs[h], A["preds"], B["preds"], tol)}
+    ver = {row: {n: {m: {h: rt.consistency([comp[f"s{s}|{row}|{n}|{h}"]["bootstrap"][m] for s in (0, 1, 2)]) for h in HALVES} for m in METRICS}
+                 for n in COMPARE if all(f"s{s}|{row}|{n}|{h}" in comp for s in (0, 1, 2) for h in HALVES)} for row in WITHIN_ROWS}
+    return comp, ver
+
+
+def stored_rows(a02: dict) -> dict:
+    """Earlier systems' rows as A02 stored them (not recomputed)."""
+    names = ["E0 + B3", "E1 + B3", "B7 + B3"] + [f"{n} s{k}" for n in ("E1 + ASRF", "paired ASRF", "Original FACT", "A01 Linear + B3", "A01 MS-TCN", "A01 ASRF") for k in (0, 1, 2)]
+    names += [f"continued_cls_s{k}" for k in (0, 1, 2)]
+    return {n: (a02[n]["b3"] if "b3" in a02[n] else a02[n]["row"]) for n in names}
+
+
+def strip(systems: dict) -> dict:
+    out = {}
+    for h, by in systems.items():
+        for k, s in by.items():
+            e = out.setdefault(k, {})
+            for r, x in s.items():
+                if r == "b3_choice":
+                    e["b3_choice"] = x
+                else:
+                    e.setdefault(r, {})[h] = x["row"]
+    return out
+
+
+def position_figure(path: Path) -> None:
+    """A schematic of the position rule on two synthetic windows (sample indices only, no frame)."""
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    fig, axes = plt.subplots(2, 1, figsize=(13, 4.6))
+    for ax, (title, s, c) in zip(axes, (("Interior window. The request c sits at slot 8, and anchor slot 8 holds c (offset 0)", np.arange(22, 38), 30),
+                                         ("Window at a sequence end. The request c sits at slot 15, and the nearest anchor is slot 14 (offset -1)", np.arange(84, 100), 99))):
+        m = marker_of(s, c); j = selected_anchor(s, c, m); ax.set_xlim(-0.5, 16.5); ax.set_ylim(0, 2.1); ax.axis("off")
+        for i in range(16):
+            col = "#d62728" if i == m else ("#4c72b0" if i in ANCHORS else "#cfd8e3")
+            ax.add_patch(plt.Rectangle((i, 0.9), 0.85, 0.7, color=col, alpha=1.0 if i in (ANCHORS[j], m) else 0.5))
+            ax.text(i + 0.42, 1.25, str(int(s[i])), ha="center", va="center", fontsize=7, color="white" if i in ANCHORS or i == m else "black")
+        ax.annotate("", xy=(ANCHORS[j] + 0.42, 0.88), xytext=(ANCHORS[j] + 0.42, 0.45), arrowprops={"arrowstyle": "->", "color": "#4c72b0"})
+        ax.text(0, 0.15, f"{title}. The time logits of anchor slot {ANCHORS[j]} are read, and the prediction stays at sample {c}.", fontsize=8)
+        ax.text(0, 1.85, "Each box is an input slot with its sample index. Blue boxes are the trained anchors (even slots). The red box is the marker slot of c.", fontsize=8)
+    fig.tight_layout(); fig.savefig(path, dpi=130); plt.close(fig)
+
+
+def summarise(ctx: Ctx, choices: dict, a02: dict, per: dict, tol: float) -> dict:
+    systems = {h: per[h]["systems"] for h in HALVES}; evs = {h: per[h]["ev"] for h in HALVES}
+    comp, ver = compare(systems, evs, tol)
+    cls_comp = {h: per[h]["cls_comp"] for h in HALVES}
+    cls_ver = {f"{fam}|{n}": {h: pt.verdict([cls_comp[h][f"{fam}_s{s}|{n}"]["session"] for s in (0, 1, 2)],
+                                            [cls_comp[h][f"{fam}_s{s}|{n}"]["stream"] for s in (0, 1, 2)]) for h in HALVES}
+               for fam in TOKEN_FAMILIES for n in SUBSETS}
+    goals = {}
+    for fam in FAMILIES:
+        rows = [{h: systems[h][f"{fam}_s{s}"]["b3"]["row"] for h in HALVES} for s in (0, 1, 2)]
+        goals[fam] = rt.goal(rows, [systems["selection"][f"{fam}_s{s}"]["b3_choice"]["status"] == "feasible" for s in (0, 1, 2)], ctx.tt["goal"])
+    sysv = {c: ver["b3"][c]["multi segment F1@50"] for c in tb.SYS}
+    g = goals["token_aligned_dense"]
+    dec = tb.decide(sysv, cls_ver["token_aligned_dense|all mixed"], not g["constraint_failures"], g["met"], ctx.tt["decision_rules"])
+    units = rr.units(SimpleNamespace(halves=evs), {k: {r: {h: systems[h][k][r] for h in HALVES} for r in ("argmax", "b3")} for k in systems["selection"]}, tol)
+    return {"choices": choices["choices"], "systems": strip(systems), "system_comparisons": comp, "verdicts": ver,
+            "classification": {"accuracy": {k: {h: per[h]["cls_res"]["accuracy"][k] for h in HALVES} for k in per["selection"]["cls_res"]["accuracy"]},
+                               "support": {h: per[h]["cls_res"]["support"] for h in HALVES},
+                               "comparisons": {f"{k}|{h}": v for h in HALVES for k, v in cls_comp[h].items()}, "verdicts": cls_ver},
+            "positions": {h: per[h]["positions"] | {"sample_split": per[h]["sample_split"]} for h in HALVES},
+            "units": units, "goal": goals, "decision": dec, "stored_rows": stored_rows(a02), "post_hoc": []}
+
+
+def run_selection(ctx: Ctx, choices: dict, data: dict, out: Path, final: bool) -> dict:
+    """data: reported half -> the half whose files are read. The final run reads each half itself; the dry run lets the
+    calibration half stand in for both and writes only under its own run directory."""
+    a02 = ctx.a02()["systems"]; v01 = json.loads(pinned(ctx.root, ctx.src["ordered"]["summary"]).read_text())["systems"]
+    fx_cfg = yaml.safe_load(pinned(ctx.root, ctx.src["a02_config"]).read_text())["video_dense_supervision"]["evaluation"]["fixed_ordered_setting"]
+    tol = float(ctx.cfg["selection"]["boundary_tolerance_s"]) * float(ctx.cfg["protocol"]["hz"]); per = {}
+    for h in ("calibration", "selection"):
+        if data[h] != h and data[h] in per:
+            per[h] = per[data[h]]; continue
+        x = half_systems(ctx, data[h], choices, a02, v01, fx_cfg)
+        if data[h] == "calibration":              # the committed choice records must be reproduced by the applied settings
+            for key, rec in choices["systems"].items():
+                g = next(r for r in rec["grid"] if r["params"] == rec["params"])
+                if any(x["systems"][key]["b3"]["row"][f] != g[f] for f in FLAT if f in g):
+                    raise SystemExit(f"{key}: the calibration row differs from the committed choice record")
+        if final:
+            save_outputs(ctx, h, x["seqs"], x["saved"])
+        x["cls_res"], x["cls_comp"] = same_target(x["W"], x["meta"], x["logits"], x["offsets"]); x["positions"] = position_summary(x["W"], x["seqs"])
+        per[h] = x; print(f"{h} (read from {data[h]}): systems, same-target classification and positions done", flush=True)
+    res = summarise(ctx, choices, a02, per, tol)
+    ids = ids_of(ctx, {h: per[h]["seqs"] for h in HALVES}); flat = json.loads(json.dumps(res, default=str)); assert_no_ids(flat, ids, "summary")
+    md = tb.tables_md(flat)
+    if any(x in md for x in ids):
+        raise SystemExit("an id appears in the report tables")
+    out.mkdir(parents=True, exist_ok=True); old = out / "summary.json"
+    if final and old.is_file() and json.loads(old.read_text()) != flat:
+        raise SystemExit("an earlier selection summary differs from this run; it is never overwritten")
+    write_atomic(old, json.dumps(flat, indent=1)); write_atomic(out / "report_tables.md", md)
+    if final:
+        flat["cost"] = {"cpu_hours_before_this_stage": ledger_hours(ctx.ledger, "cpu"), "gpu_hours": ledger_hours(ctx.ledger, "gpu")}
+        write_atomic(ctx.results / "summary.json", json.dumps(flat, indent=1)); write_atomic(ctx.results / "report_tables.md", tb.tables_md(flat))
+        position_figure(ctx.results / "position_mapping.png")
+    print(json.dumps(res["decision"]["applied"]), flush=True)
+    return flat
+
+
+def load_choices(ctx: Ctx) -> tuple[dict, Path]:
+    """The choice record written by --calibrate: both copies equal, made by this code and configuration on the pinned
+    calibration predictions, and every record holding the configured 40-setting grid."""
+    path = ctx.results / "choices.json"
+    if not path.is_file() or not (ctx.out / "calibration" / "choices.json").is_file() or sha256_file(path) != sha256_file(ctx.out / "calibration" / "choices.json"):
+        raise SystemExit("the committed choices are missing or differ from the calibration stage's record")
+    choices = json.loads(path.read_text())
+    if choices["code"] != code_digest() or choices["config_sha256"] != sha256_file(ctx.root / ctx.config):
+        raise SystemExit("the committed choices belong to other code or another configuration")
+    if choices["predictions"] != {k: v["sha256"] for k, v in ctx.src["predictions"]["calibration"].items()}:
+        raise SystemExit("the committed choices were made on other predictions")
+    for rec in choices["systems"].values():
+        tb.check_choice_record(rec, ctx.tt["b3"]["grid"])
+    return choices, path
+
+
+def stage_dry_run(ctx: Ctx) -> None:
+    """A code check of the selection pipeline before the choices are committed: the calibration half stands in for both
+    halves, the selection half is never read, and nothing reaches the results or the selection outputs."""
+    choices, _ = load_choices(ctx)
+    run_selection(ctx, choices, {"calibration": "calibration", "selection": "calibration"}, ctx.out / "dry_run", final=False)
+
+
 def stage_selection(ctx: Ctx) -> None:
-    raise SystemExit("the selection stage is written in Task 2, after the report tests and before the calibration")
+    """Only after the committed choices: checked, then applied once; a repeat run may only reproduce the same result."""
+    choices, path = load_choices(ctx)
+    out = ctx.out / "selection"; done = out / "done.json"
+    if done.is_file() and json.loads(done.read_text()).get("choices_sha256") != sha256_file(path):
+        raise SystemExit("an earlier selection run used other choices; it is never overwritten")
+    run_selection(ctx, choices, {"calibration": "calibration", "selection": "selection"}, out, final=True)
+    out.mkdir(parents=True, exist_ok=True); write_atomic(done, json.dumps({"choices_sha256": sha256_file(path), "finished": now()}))
+
+
+STAGES = {"prepare": stage_prepare, "check": stage_check, "calibrate": stage_calibrate, "dry_run": stage_dry_run, "selection": stage_selection}
 
 
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--config", required=True)
     g = ap.add_mutually_exclusive_group(required=True)
-    for s in ("prepare", "check", "calibrate", "selection"):
-        g.add_argument(f"--{s}", action="store_true")
+    for s in STAGES:
+        g.add_argument(f"--{s.replace('_', '-')}", dest=s, action="store_true")
     a = ap.parse_args(); a.set = []; ctx = Ctx(load_cfg(a), a.config)
-    stage = next(s for s in ("prepare", "check", "calibrate", "selection") if getattr(a, s))
-    run_stage(ctx, stage, {"prepare": stage_prepare, "check": stage_check, "calibrate": stage_calibrate, "selection": stage_selection}[stage])
+    stage = next(s for s in STAGES if getattr(a, s))
+    run_stage(ctx, stage, STAGES[stage])
 
 
 if __name__ == "__main__":

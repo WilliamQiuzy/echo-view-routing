@@ -97,3 +97,89 @@ def test_anchor_offset_effects_are_split_by_exactness():
     off = np.array([0, 0, -1, -1, 0]); a = np.array([1, 0, 1, 1, 1], bool); b = np.array([1, 1, 0, 1, 1], bool)
     s = tb.offset_split(off, a, b)
     assert s["exact"] == {"windows": 3, "accuracy_token": 2 / 3, "accuracy_cls": 1.0} and s["non_exact"] == {"windows": 2, "accuracy_token": 1.0, "accuracy_cls": 0.5}
+
+
+# ----------------------------------------------------------------------------------------------- selection stage guards
+import json  # noqa: E402
+from types import SimpleNamespace  # noqa: E402
+
+import scripts.trained_token_readout as tt  # noqa: E402
+
+
+def test_per_class_f1_comes_from_the_confusion_matrix():
+    conf = np.diag([4, 3, 2, 1, 5]).astype(int); conf[2, 3] = 2           # two A4C clips read as A5C
+    r = tt.with_f1({"native_confusion": conf.tolist()})
+    assert r["native_f1"]["A4C"] == pytest.approx(2 * 2 / (2 + 4)) and r["native_f1"]["A5C"] == pytest.approx(2 * 1 / (3 + 1))
+    assert r["native_precision"]["A5C"] == pytest.approx(1 / 3) and r["native_f1"]["PLAX"] == 1.0
+
+
+def test_samples_take_the_offset_of_the_window_that_serves_them():
+    seqs = [{"id": "q0", "labels": np.zeros(12, int)}, {"id": "q1", "labels": np.ones(6, int)}]
+    W = {"seq": np.array([0, 0, 0, 1, 1]), "centre": np.array([0, 5, 11, 0, 5])}
+    served = tt.sample_windows(W, seqs)
+    assert served["q0"].tolist() == [0, 0, 0, 1, 1, 1, 1, 1, 1, 2, 2, 2] and served["q1"].tolist() == [3, 3, 3, 4, 4, 4]   # ties go to the earlier centre
+    off = np.array([0, 0, -1, 0, -1])
+    a = {"q0": np.zeros(12, int), "q1": np.r_[np.ones(3, int), np.zeros(3, int)]}; b = {"q0": np.zeros(12, int), "q1": np.ones(6, int)}
+    s = tt.sample_offset_split(seqs, served, off, a, b)
+    assert s["exact"] == {"windows": 12, "accuracy_token": 1.0, "accuracy_cls": 1.0}
+    assert s["non_exact"] == {"windows": 6, "accuracy_token": 0.5, "accuracy_cls": 1.0}
+
+
+def test_a_stored_row_that_is_not_reproduced_stops():
+    row = {f: 0.5 for f in tt.FLAT}
+    tt.check_stored(row, dict(row), "x")
+    with pytest.raises(SystemExit):
+        tt.check_stored(row, row | {"segment_f1_50_multi": 0.4}, "x")
+
+
+def _ctx(tmp_path, grid):
+    tmp_path.mkdir(parents=True, exist_ok=True); (tmp_path / "c.yaml").write_text("x: 1\n")
+    preds = {"aligned_dense_s0": {"path": "p.npz", "sha256": "ab" * 32}}
+    ctx = SimpleNamespace(results=tmp_path / "res", out=tmp_path / "out", root=tmp_path, config="c.yaml", src={"predictions": {"calibration": preds}},
+                          tt={"b3": {"grid": TT["b3"]["grid"]}})
+    rec = {"half": "calibration", "code": tt.code_digest(), "config_sha256": tt.sha256_file(tmp_path / "c.yaml"),
+           "predictions": {"aligned_dense_s0": "ab" * 32}, "systems": {"token_aligned_dense_s0": {"status": "feasible", "params": grid[3]["params"], "grid": grid}}}
+    for p in (ctx.results / "choices.json", ctx.out / "calibration" / "choices.json"):
+        p.parent.mkdir(parents=True, exist_ok=True); p.write_text(json.dumps(rec))
+    return ctx, rec
+
+
+def test_selection_runs_only_on_the_matching_committed_choices(tmp_path, monkeypatch):
+    grid = [{"order": k, "params": {"half_window": h, "threshold_quantile": q, "nms_radius": 5}} for k, (h, q) in
+            enumerate((h, q) for h in (5, 7, 9, 11, 15) for q in (0.80, 0.85, 0.90, 0.95, 0.97, 0.99, 0.995, 0.999))]
+    calls = []
+    monkeypatch.setattr(tt, "run_selection", lambda ctx, ch, data, out, final: calls.append((dict(data), final)))
+    ctx, rec = _ctx(tmp_path, grid)
+    tt.stage_dry_run(ctx)
+    assert calls[-1] == ({"calibration": "calibration", "selection": "calibration"}, False) and not (ctx.out / "selection" / "done.json").exists()
+    tt.stage_selection(ctx)
+    assert calls[-1] == ({"calibration": "calibration", "selection": "selection"}, True) and (ctx.out / "selection" / "done.json").is_file()
+    tt.stage_selection(ctx)                                    # a repeat with the same choices may only reproduce
+    for bad in ({"code": "0" * 64}, {"config_sha256": "0" * 64}, {"predictions": {"aligned_dense_s0": "cd" * 32}},
+                {"systems": {"token_aligned_dense_s0": {"status": "feasible", "params": grid[3]["params"], "grid": grid[:39]}}}):
+        ctx2, _ = _ctx(tmp_path / str(len(calls)) / str(sorted(bad)[0]), grid)
+        for p in (ctx2.results / "choices.json", ctx2.out / "calibration" / "choices.json"):
+            p.write_text(json.dumps(rec | bad))
+        with pytest.raises(SystemExit):
+            tt.stage_selection(ctx2)
+    (ctx.out / "calibration" / "choices.json").write_text(json.dumps(rec | {"note": "other"}))
+    with pytest.raises(SystemExit):
+        tt.stage_selection(ctx)                                # the two copies differ
+    (ctx.out / "calibration" / "choices.json").write_text((ctx.results / "choices.json").read_text())
+    (ctx.out / "selection" / "done.json").write_text(json.dumps({"choices_sha256": "0" * 64}))
+    with pytest.raises(SystemExit):
+        tt.stage_selection(ctx)                                # an earlier run used other choices
+
+
+def test_the_dry_run_never_reads_the_selection_half(monkeypatch, tmp_path):
+    read = []
+    def fake_half(ctx, h, *a):
+        read.append(h); raise RuntimeError("stop after the first half")
+    monkeypatch.setattr(tt, "half_systems", fake_half)
+    ctx = SimpleNamespace(a02=lambda: {"systems": {}}, root=tmp_path, src={"ordered": {"summary": {"path": "s.json", "sha256": "x"}}, "a02_config": {}})
+    monkeypatch.setattr(tt, "pinned", lambda root, pin: SimpleNamespace(read_text=lambda: json.dumps({"systems": {}}) if pin.get("path") == "s.json" else
+                                                                        "video_dense_supervision: {evaluation: {fixed_ordered_setting: {}}}"))
+    ctx.cfg = {"selection": {"boundary_tolerance_s": 1.0}, "protocol": {"hz": 10}}
+    with pytest.raises(RuntimeError):
+        tt.run_selection(ctx, {}, {"calibration": "calibration", "selection": "calibration"}, tmp_path / "dry", final=False)
+    assert read == ["calibration"]
