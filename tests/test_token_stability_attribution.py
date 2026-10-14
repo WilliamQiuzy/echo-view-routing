@@ -5,6 +5,7 @@ probability mapping is A03's bit for bit; the stem geometry check stops on anoth
 and the module never refers to a model load, a raw frame, the validation entry, the test split or Pediatric data.
 Synthetic data only."""
 import inspect
+import json
 from pathlib import Path
 
 import numpy as np
@@ -104,6 +105,10 @@ def test_the_stem_geometry_is_checked_from_the_source():
         ts.stem_geometry(v2s_source=src)
     with pytest.raises(SystemExit):
         ts.stem_geometry(target_source=inspect.getsource(ts.tm).replace("conv.kernel_size, conv.stride", "(3, 7, 7), (1, 4, 4)"))
+    with pytest.raises(SystemExit):
+        ts.stem_geometry(target_source=inspect.getsource(ts.tm).replace("0, slots] = 1.0", "0, slots - 1:slots + 2] = 1.0"))   # a wider marker plane
+    with pytest.raises(SystemExit):
+        ts.stem_geometry(target_source=inspect.getsource(ts.tm).replace("net = mvit_v2_s" + "()", "net = mvit_v2_s" + "(patch_embed_kernel=(5, 7, 7))"))
 
 
 # ----------------------------------------------------------------------------------------------- scope
@@ -169,15 +174,76 @@ def test_the_run_path_on_a_synthetic_half(tmp_path):
     assert total == int(((r["p_tok"].argmax(1) == y) != (r["p_cls"].argmax(1) == y)).sum()) == len(private["changed_windows"])
     con = ts.contrasts_of(cells)
     assert set(con) == {f"{dec}|{c}" for dec in ("b3", "argmax") for c in tb.CONTRASTS}
-    P = ts.pair_frame(W, seqs, meta); st = ts.stability_structure(P); rates = ts.stability_rates(P, tl)
+    P = ts.pair_frame(W, seqs, meta); st = ts.stability_structure(P); rates, roles, dis, union = ts.stability_rates(P, tl)
+    assert dis.shape == P["group"].shape and union["broad"]["pairs"] == len(P["group"])
+    assert sum(v["disagreeing pairs"] for v in (rates["broad"][k]["all"] for k in tb.KINDS)) == union["broad"]["disagreeing pairs"] == int(dis.sum())
     assert P["main"].sum() > 0 and st["support"]["broad"]["native"]["all"]["pairs"] >= st["support"]["main"]["native"]["all"]["pairs"]
     res = {"fixed": {"s0|calibration": acc}, "cells": {"s0|calibration": {dec: {c: {"row": cells[c][dec]["row"], "segments": cells[c][dec]["segments"]}
                                                                             for c in tb.CELLS} for dec in ("b3", "argmax")}},
            "contrasts": {f"{k.split('|')[0]}|s0|calibration|{k.split('|')[1]}": v for k, v in con.items()},
-           "stability": {"structure": {"calibration": st}, "rates": {"aligned_dense_s0|calibration": rates}}}
+           "stability": {"structure": {"calibration": st}, "rates": {"aligned_dense_s0|calibration": rates},
+                         "roles": {"aligned_dense_s0|calibration": roles}, "union": {"aligned_dense_s0|calibration": union}}}
     md = tb.tables_md(res); header = None
     for line in md.splitlines():
         if not line.startswith("|"):
             header = None; continue
         header = line.count("|") if header is None else header
         assert line.count("|") == header, line
+
+
+def test_stages_need_records_of_this_code_and_configuration(tmp_path):
+    from types import SimpleNamespace
+    env = ts.environment(); (tmp_path / "c.yaml").write_text("a: 1\n")
+    ctx = SimpleNamespace(out=tmp_path, root=tmp_path, config="c.yaml", src={"environment": {k: env[k] for k in ("python", "numpy", "pandas", "scipy")}})
+    rec = {"code": ts.code_digest(), "config_sha256": ts.sha256_file(tmp_path / "c.yaml"), "environment": env, "ok": True}
+    (tmp_path / "prepare.json").write_text(json.dumps(rec)); (tmp_path / "check.json").write_text(json.dumps(rec))
+    ts.preconditions(ctx, "run")
+    (tmp_path / "c.yaml").write_text("a: 2\n")
+    with pytest.raises(SystemExit):
+        ts.preconditions(ctx, "run")                         # the configuration changed after the check
+    (tmp_path / "c.yaml").write_text("a: 1\n"); (tmp_path / "check.json").write_text(json.dumps(rec | {"ok": False}))
+    with pytest.raises(SystemExit):
+        ts.preconditions(ctx, "run")
+
+
+def test_publish_is_atomic_and_never_overwrites_but_restores_the_results(tmp_path, monkeypatch):
+    from types import SimpleNamespace
+    monkeypatch.setattr(ts.tb, "tables_md", lambda res: "# tables\n")
+    ctx = SimpleNamespace(out=tmp_path / "runs", results=tmp_path / "res", ledger=tmp_path / "ledger.jsonl", started="t0")
+    flat = {"identity": {"code": "x"}, "readings": {"applied": ["end"]}}
+    assert ts.publish(ctx, flat, {"selection": {"a": 1}}, set())
+    assert (ctx.out / "run" / "summary.json").is_file() and (ctx.out / "run" / "private" / "selection.json").is_file() and not (ctx.out / "run.tmp").exists()
+    (ctx.results / "summary.json").unlink()
+    assert not ts.publish(ctx, flat, {"selection": {"a": 1}}, set())        # reproduced: the run stays, the results copy is restored
+    assert json.loads((ctx.results / "summary.json").read_text())["readings"] == flat["readings"]
+    with pytest.raises(SystemExit):
+        ts.publish(ctx, flat | {"readings": {"applied": ["other"]}}, {}, set())
+
+
+def test_the_readings_and_their_flags_are_traceable():
+    import scripts.token_stability_attribution_tables as tb
+    from types import SimpleNamespace
+    seeds, H = (0, 1, 2), tb.HALVES
+    d = lambda x, lo, hi: {"delta": x, "ci95": [lo, hi]}  # noqa: E731
+    con = {}
+    for dec in ("b3", "argmax"):
+        for s in seeds:
+            for h in H:
+                for name in tb.CONTRASTS:
+                    v = {"TC - CC": d(0.01, 0.002, 0.02), "CT - CC": d(-0.02, -0.03, -0.01)}.get(name, d(0.0, -0.01, 0.01))
+                    con[f"{dec}|s{s}|{h}|{name}"] = {m: v for m in ts.METRICS}
+    out = {"contrasts": con,
+           "actual": {f"s{s}|{h}": {"containing": {"multi": {"mixed": {"fixed": {"windows_by_status": {"both": 8, "token only": 1, "cls only": 0, "neither": 1},
+                                                                                "sessions": 12}}}}} for s in seeds for h in H},
+           "stability": {"union": {f"aligned_dense_s{s}|{h}": {"main": {"disagreeing pairs": 3 if s == 1 else 0, "disagreeing sessions": 2 if s == 1 else 0}}
+                                   for s in seeds for h in H},
+                         "structure": {h: {"support": {"main": {k: {"all": {"selected_output_anchor": {"both": 0}}} for k in tb.KINDS}}} for h in H}}}
+    same = {"half_window": 7, "threshold": 0.2, "nms_radius": 5, "threshold_quantile": 0.999}
+    ctx = SimpleNamespace(ts=CFG, params=lambda s: (same, dict(same)))
+    r = ts.decide(ctx, out)
+    assert r["readings"]["applied"] == ["local_correction_without_segment_recovery", "mixed_vs_pure_tradeoff", "anchor_sensitivity_observed", "unresolved", "end"]
+    assert r["readings"]["rows"]["mixed_vs_pure_tradeoff"]["halves"] == {"selection": "consistent", "calibration": "consistent"}
+    flags = r["readings"]["rows"]["unresolved"]["flags"]
+    assert flags["a reading rests on fewer than 10 sessions"] and r["inputs"]["few_session_conditions"] == {"local reading": False, "anchor reading": True}
+    assert not flags["the actual systems use differing decoders"] and flags["no main-subset pair holds A03's selected output anchor in both windows"]
+    assert r["verdicts"]["b3"]["TC - CC"]["multi segment F1@50"] == {"selection": tb.POS, "calibration": tb.POS}

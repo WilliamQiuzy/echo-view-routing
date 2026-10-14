@@ -77,7 +77,7 @@ token_stability_attribution:
     observation: "(window row, centre, marker slot, anchor j, sample s[2j], time_logits[j]) for every window and anchor of a sequence"
     within_window: "a sample held by several anchors of one window keeps the anchor closest to the window's marker slot, then the lower j"
     pairs: "unordered pairs of observations of the same sequence and sample from windows with distinct centres; different sequences or samples are never compared"
-    receptive_field: "the RGB patch embedding and the marker stem share time kernel 3, stride 2 and padding 1, and no later block pools time, so time position j reads input slots 2j - 1, 2j and 2j + 1 (slot -1 is padding); checked from the source code before use"
+    receptive_field: "the RGB patch embedding and the marker stem share time kernel 3, stride 2 and padding 1, and no later block downsamples time (later blocks pool time with stride 1 only), so the stem of time position j reads input slots 2j - 1, 2j and 2j + 1 (slot -1 is padding); equal local inputs are a statement about the stem only; checked from the source code before use"
     main_subset: "both anchors have the complete three-slot neighbourhood (j >= 1) and the two windows hold the same sequence-sample triple at those slots"
     broader_subset: "every eligible pair of the same sequence and sample, reported separately"
     marker_triple: "the three target-marker bits at slots 2j - 1, 2j and 2j + 1; only an equal triple, together with equal samples, makes the complete local stem input identical"

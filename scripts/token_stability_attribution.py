@@ -131,8 +131,9 @@ def mvit_module():
 
 def stem_geometry(defaults: dict | None = None, v2s_source: str | None = None, target_source: str | None = None) -> dict:
     """The time geometry of the RGB patch embedding and the marker stem, read from the source code (no model is built):
-    time kernel 3, stride 2 and padding 1, no later temporal pooling, a marker stem that copies the patch embedding and a
-    marker plane on one slot. Anything else stops the round."""
+    time kernel 3, stride 2 and padding 1, no later temporal downsampling (later blocks pool time with stride 1 only),
+    an encoder built with the default patch embedding, a marker stem that copies the patch embedding and a marker plane
+    on one slot. Anything else stops the round."""
     m = mvit_module()
     if defaults is None:
         sig = inspect.signature(m.MViT.__init__).parameters
@@ -146,11 +147,13 @@ def stem_geometry(defaults: dict | None = None, v2s_source: str | None = None, t
     if (k[0], s[0], p[0]) != (3, 2, 1):
         problems.append(f"patch embedding time kernel/stride/padding {(k[0], s[0], p[0])}")
     if not strides or any(int(x[0]) != 1 for x in strides):
-        problems.append("a later block pools time (or the strides could not be read)")
+        problems.append("a later block downsamples time (or the strides could not be read)")
     if "patch_embed" in v2s or "patch_embed" in inspect.getsource(m._mvit):
         problems.append("the builder overrides the patch embedding")
     if not re.search(r"self\.marker_stem = nn\.Conv3d\(1, conv\.out_channels, conv\.kernel_size, conv\.stride, conv\.padding, conv\.dilation", tgt):
         problems.append("the marker stem does not copy the patch embedding")
+    if not re.search(r"net = mvit_v2_s\(\)", tgt):
+        problems.append("the source encoder is not built with the default constructor")
     if not re.search(r"0, slots\] = 1\.0", tgt):
         problems.append("the marker plane is not a single slot")
     if problems:
@@ -160,8 +163,9 @@ def stem_geometry(defaults: dict | None = None, v2s_source: str | None = None, t
 
 
 def environment() -> dict:
-    import numpy as _np, pandas, scipy  # noqa: E401
-    return {"python": sys.version.split()[0], "numpy": _np.__version__, "pandas": pandas.__version__, "scipy": scipy.__version__, "torch": torch.__version__}
+    import numpy as _np, pandas, scipy, torchvision  # noqa: E401
+    return {"python": sys.version.split()[0], "numpy": _np.__version__, "pandas": pandas.__version__, "scipy": scipy.__version__, "torch": torch.__version__,
+            "torchvision": torchvision.__version__}
 
 
 def code_digest() -> str:
@@ -263,14 +267,15 @@ def preconditions(ctx: Ctx, stage: str) -> None:
     env = environment()
     if any(str(env[k]) != str(v) for k, v in ctx.src["environment"].items()):
         raise SystemExit(f"environment {env} differs from the pinned {ctx.src['environment']}")
+    config_sha = sha256_file(ctx.root / ctx.config)
     for name in {"check": ("prepare.json",), "run": ("prepare.json", "check.json")}.get(stage, ()):
         f = ctx.out / name; rec = json.loads(f.read_text()) if f.is_file() else {}
-        if rec.get("code") != code_digest():
-            raise SystemExit(f"{name} is missing or was made by other code; run that stage again first")
+        if rec.get("code") != code_digest() or rec.get("config_sha256") != config_sha:
+            raise SystemExit(f"{name} is missing or was made by other code or another configuration; run that stage again first")
         if name == "check.json" and rec.get("ok") is not True:
             raise SystemExit("the check did not pass")
-        if name == "prepare.json" and rec.get("environment", {}).get("torch") != env["torch"]:
-            raise SystemExit("torch differs from the preparation's")
+        if name == "prepare.json" and any(rec.get("environment", {}).get(k) != env[k] for k in ("torch", "torchvision")):
+            raise SystemExit("torch or torchvision differs from the preparation's")
 
 
 def run_stage(ctx: Ctx, name: str, fn) -> None:
@@ -302,7 +307,8 @@ def stage_prepare(ctx: Ctx) -> None:
     for seed in ts["seeds"]:
         ctx.params(seed)
     checked |= {f"a03_output_{h}_{s}": sha256_file(pinned(root, ctx.src["a03_outputs"][h][s])) for h in HALVES for s in ts["seeds"]}
-    rec = {"config": ctx.config, "checked": checked, "environment": environment(), "stem_geometry": stem_geometry(), "code": code_digest(), "halves": {}}
+    rec = {"config": ctx.config, "config_sha256": sha256_file(root / ctx.config), "checked": checked, "environment": environment(),
+           "stem_geometry": stem_geometry(), "code": code_digest(), "halves": {}}
     seqs_all = {}
     for h in HALVES:
         ev, seqs, W, meta = ctx.half(h); seqs_all[h] = seqs
@@ -349,18 +355,20 @@ def stage_check(ctx: Ctx) -> None:
             with np.load(pinned(ctx.root, ctx.src["a03_outputs"][h][seed])) as z:
                 saved = {k: z[k] for k in z.files}
             diff = float(np.abs(np.concatenate([r["probs_tok"][i] for i in ids]) - saved["sample_probs"]).max())
+            diff_cls = float(np.abs(np.concatenate([r["probs_cls"][i] for i in ids]) - r["d"]["sample_probs"]).max())
+            offsets = np.cumsum([0, *[len(r["probs_cls"][i]) for i in ids]])
             same = {"sequence order": saved["sequence_ids"].tolist() == ids, "token logits": np.array_equal(saved["token_logits"], r["token_logits"]),
                     "anchors": np.array_equal(saved["anchor"], r["j"]), "offsets": np.array_equal(saved["offset"], anchor_offsets(W["s"], W["centre"], r["j"])),
-                    "sample probabilities": diff == 0.0,
+                    "sample probabilities": diff == 0.0, "CLS sample probabilities (A02)": diff_cls == 0.0 and np.array_equal(offsets, r["d"]["sample_offsets"]),
                     "decoded": np.array_equal(saved["decoded"], np.concatenate([np.asarray(tok["b3"]["preds"][i], np.int8) for i in ids]))}
             cells = tb.cell_probs(r["p_cls"], r["p_tok"], meta["mixed"])
             same |= {"CC endpoint": np.array_equal(cells["CC"], r["p_cls"]), "TT endpoint": np.array_equal(cells["TT"], r["p_tok"])}
             if not all(same.values()):
                 raise SystemExit(f"s{seed} {h}: not reproduced: {[k for k, v in same.items() if not v]}")
             rec["reproduced"][f"s{seed}|{h}"] = "token argmax, B3 and B3 at the CLS setting, and CLS argmax and B3 rows equal A03's"
-            rec["parity"][f"s{seed}|{h}"] = {k: bool(v) for k, v in same.items()} | {"max_probability_difference": diff}
+            rec["parity"][f"s{seed}|{h}"] = {k: bool(v) for k, v in same.items()} | {"max_probability_difference": diff, "max_cls_probability_difference": diff_cls}
         print(f"{h}: three aligned seeds reproduced and equal to A03's saved outputs", flush=True)
-    rec.update({"code": code_digest(), "ok": True})
+    rec.update({"code": code_digest(), "config_sha256": sha256_file(ctx.root / ctx.config), "ok": True})
     write_json([ctx.out / "check.json", ctx.results / "checks.json"], rec, ids_of(ctx, seqs_all), "check")
 
 
@@ -401,6 +409,8 @@ def segment_accounting(seqs: list[dict], preds_a: dict, preds_b: dict) -> tuple[
             seg[k][who]["f1"] = tb.f1_of(seg[k][who])
         for n in ("newly_matched", "lost", "new_unmatched_pred", "removed_unmatched_pred"):
             seg[k][n] = _close(seg[k][n])
+        for n in ("new_unmatched_pred", "removed_unmatched_pred"):
+            seg[k][n]["xyx_a4c_a5c"] = None                  # not applicable: X-Y-X middles are reference segments
     return seg, status_of, refs_of, private
 
 
@@ -440,12 +450,14 @@ def containing_accounting(W: dict, meta: dict, fixed: np.ndarray, new: np.ndarra
     return out
 
 
-def probability_only(seqs: list[dict], W: dict, served: dict, arg_a, arg_b, p_a, p_b, preds_a: dict, preds_b: dict) -> dict:
-    """Windows whose argmax is unchanged but whose probabilities move, and decoded-sample changes split by whether the
-    serving window's argmax changed."""
-    same = arg_a == arg_b; tv = 0.5 * np.abs(np.asarray(p_a, float) - np.asarray(p_b, float)).sum(1)
-    out = {"windows_same_argmax": int(same.sum()), "windows_changed_argmax": int((~same).sum()), "tv_same_argmax": stats(tv[same]),
-           "tv_changed_argmax": stats(tv[~same]), "decoded_changes": {}}
+def probability_only(seqs: list[dict], W: dict, meta: dict, served: dict, arg_a, arg_b, p_a, p_b, preds_a: dict, preds_b: dict) -> dict:
+    """Per population, windows whose argmax is unchanged but whose probabilities move (total-variation distance), and
+    decoded-sample changes split by whether the serving window's argmax changed."""
+    same = arg_a == arg_b; tv = 0.5 * np.abs(np.asarray(p_a, float) - np.asarray(p_b, float)).sum(1); out = {}
+    for k in KINDS:
+        m = meta["kind"] == k
+        out[k] = {"windows_same_argmax": int((m & same).sum()), "windows_changed_argmax": int((m & ~same).sum()), "tv_same_argmax": stats(tv[m & same]),
+                  "tv_changed_argmax": stats(tv[m & ~same])}
     for k in KINDS:
         n_any, n_chg, n_same, n_seq = 0, 0, 0, 0
         for q in seqs:
@@ -453,7 +465,7 @@ def probability_only(seqs: list[dict], W: dict, served: dict, arg_a, arg_b, p_a,
                 continue
             diff = np.asarray(preds_a[q["id"]]) != np.asarray(preds_b[q["id"]]); rows = served[q["id"]]; chg = ~same[rows]
             n_any += int(diff.sum()); n_chg += int((diff & chg).sum()); n_same += int((diff & ~chg).sum()); n_seq += int(diff.any())
-        out["decoded_changes"][k] = {"samples": n_any, "serving_window_argmax_changed": n_chg, "serving_window_argmax_same": n_same, "sequences": n_seq}
+        out[k]["decoded_changes"] = {"samples": n_any, "serving_window_argmax_changed": n_chg, "serving_window_argmax_same": n_same, "sequences": n_seq}
     return out
 
 
@@ -476,7 +488,7 @@ def account(seqs, W, meta, served, a: dict, b: dict) -> tuple[dict, dict]:
     correct_a = a["win_arg"] == W["label"]; correct_b = b["win_arg"] == W["label"]
     win, fixed, new = window_accounting(W, meta, correct_a, correct_b)
     cont = containing_accounting(W, meta, fixed, new, status_of, refs_of)
-    prob = probability_only(seqs, W, served, a["win_arg"], b["win_arg"], a["win_p"], b["win_p"], a["b3"], b["b3"])
+    prob = probability_only(seqs, W, meta, served, a["win_arg"], b["win_arg"], a["win_p"], b["win_p"], a["b3"], b["b3"])
     sw, private_sw = switch_accounting(seqs, {"token": {"argmax": a["argmax"], "b3": a["b3"]}, "cls": {"argmax": b["argmax"], "b3": b["b3"]}})
     private = {"segments": private_seg, "switch_clips": private_sw,
                "changed_windows": [{"sequence": seqs[int(W["seq"][i])]["id"], "centre": int(W["centre"][i]), "change": "fixed" if fixed[i] else "new",
@@ -518,10 +530,9 @@ def contrasts_of(cells: dict) -> dict:
         for name, coef in tb.CONTRASTS.items():
             a = [c for c, w in coef.items() if w == 1 and c != "CC"]
             out[f"{dec}|{name}"] = paired_bootstrap(tabs[a[0]], tabs["CC"]) if len(coef) == 2 else tb.contrast_bootstrap(tabs, coef)
-        if dec == "b3":
-            mine = tb.contrast_bootstrap({"TT": tabs["TT"], "CC": tabs["CC"]}, {"TT": 1, "CC": -1})
-            if json.dumps(mine, sort_keys=True, default=float) != json.dumps(out["b3|TT - CC"], sort_keys=True, default=float):
-                raise SystemExit("the contrast bootstrap does not reproduce the paired bootstrap")
+        mine = tb.contrast_bootstrap({"TT": tabs["TT"], "CC": tabs["CC"]}, {"TT": 1, "CC": -1})
+        if json.dumps(mine, sort_keys=True, default=float) != json.dumps(out[f"{dec}|TT - CC"], sort_keys=True, default=float):
+            raise SystemExit("the contrast bootstrap does not reproduce the paired bootstrap")
     return out
 
 
@@ -548,6 +559,23 @@ def subset_mask(P: dict, sub: str, kind: str, ctx_name: str) -> np.ndarray:
     return m & (~P["mixed_any"] if ctx_name == "both pure" else P["mixed_any"] if ctx_name == "at least one mixed" else True)
 
 
+def _count(xs) -> dict:
+    xs = np.asarray(xs)
+    return {str(x): int(n) for x, n in zip(*np.unique(xs, return_counts=True))} if xs.size else {}
+
+
+def roles(P: dict, m: np.ndarray) -> dict:
+    """Anchor pairs, marker-relative positions, marker-triple pairs, centre distances, boundary bins and A03's selected
+    output anchors of the pairs in a mask."""
+    trip = lambda a: ["".join(map(str, x)) for x in a]  # noqa: E731
+    return {"anchor pairs": _count([f"{a}-{b}" for a, b in zip(P["j1"][m], P["j2"][m])]),
+            "marker-relative positions": _count(np.r_[P["pos1"][m], P["pos2"][m]]),
+            "marker triples": _count([f"{a}/{b}" for a, b in zip(trip(P["mtriple1"][m]), trip(P["mtriple2"][m]))]),
+            "centre distance": _count(P["centre_distance"][m]), "boundary distance": _count(P["bin"][m]),
+            "selected output anchor": {"at least one": int((m & (P["sel1"] | P["sel2"])).sum()), "both": int((m & P["sel1"] & P["sel2"]).sum()),
+                                       "neither": int((m & ~P["sel1"] & ~P["sel2"]).sum())}}
+
+
 def stability_structure(P: dict) -> dict:
     support = {}
     for sub in SUBSETS:
@@ -561,22 +589,17 @@ def stability_structure(P: dict) -> dict:
                                       "physical_frames": int(np.unique(P["frame"][m]).size), **units(P["recording"][m], P["session"][m]),
                                       "selected_output_anchor": {"at least one": int((m & (P["sel1"] | P["sel2"])).sum()), "both": int((m & P["sel1"] & P["sel2"]).sum()),
                                                                  "neither": int((m & ~P["sel1"] & ~P["sel2"]).sum())}}
-    dist = {}
-    for k in KINDS:
-        m = subset_mask(P, "main", k, "all")
-        count = lambda xs: {str(x): int(n) for x, n in zip(*np.unique(np.asarray(xs), return_counts=True))} if len(xs) else {}  # noqa: E731
-        trip = lambda a: ["".join(map(str, x)) for x in a]  # noqa: E731
-        dist[k] = {"anchor pairs": count([f"{a}-{b}" for a, b in zip(P["j1"][m], P["j2"][m])]),
-                   "marker-relative positions": count(np.r_[P["pos1"][m], P["pos2"][m]]),
-                   "marker triples": count([f"{a}/{b}" for a, b in zip(trip(P["mtriple1"][m]), trip(P["mtriple2"][m]))]),
-                   "centre distance": count(P["centre_distance"][m]), "boundary distance": count(P["bin"][m])}
+    dist = {k: {n: v for n, v in roles(P, subset_mask(P, "main", k, "all")).items() if n != "selected output anchor"} for k in KINDS}
     return {"support": support, "distributions": dist}
 
 
-def stability_rates(P: dict, time_logits: np.ndarray) -> dict:
-    out = {}
+def stability_rates(P: dict, time_logits: np.ndarray) -> tuple[dict, dict, np.ndarray, dict]:
+    """Group-weighted rates per subset, population and context; the roles of the disagreeing pairs; the per-pair
+    disagreement flags (server only); and per subset the disagreeing pairs and sessions over all populations."""
+    out, role, union = {}, {}, {}
     if not len(P["group"]):
-        return {sub: {k: {c: {"pairs": 0} for c in CONTEXTS} for k in KINDS} for sub in SUBSETS}
+        empty = {sub: {"pairs": 0, "disagreeing pairs": 0, "disagreeing sessions": 0, "sessions": 0} for sub in SUBSETS}
+        return {sub: {k: {c: {"pairs": 0} for c in CONTEXTS} for k in KINDS} for sub in SUBSETS}, {}, np.zeros(0, bool), empty
     l1, l2 = time_logits[P["i1"], P["j1"]].astype(float), time_logits[P["i2"], P["j2"]].astype(float)
     p1 = np.exp(l1 - l1.max(1, keepdims=True)); p1 /= p1.sum(1, keepdims=True); p2 = np.exp(l2 - l2.max(1, keepdims=True)); p2 /= p2.sum(1, keepdims=True)
     a1, a2 = p1.argmax(1), p2.argmax(1); dis = a1 != a2; js = tb.js_divergence(p1, p2); c1, c2 = a1 == P["label"], a2 == P["label"]
@@ -589,7 +612,13 @@ def stability_rates(P: dict, time_logits: np.ndarray) -> dict:
                 out[sub][k][c] = {"pairs": int(m.sum()), "disagreeing pairs": int((m & dis).sum()), "disagreement": tb.weighted_rate(dis, w),
                                   "js_mean": tb.weighted_rate(js, w), "both correct": tb.weighted_rate(c1 & c2, w), "one correct": tb.weighted_rate(c1 ^ c2, w),
                                   "both wrong": tb.weighted_rate(~c1 & ~c2, w), "disagreeing sessions": len(set(P["session"][m & dis].tolist()))}
-    return out
+        role[sub] = {k: roles(P, subset_mask(P, sub, k, "all") & dis) for k in KINDS}
+        m_all = np.zeros(len(P["group"]), bool)
+        for k in KINDS:
+            m_all |= subset_mask(P, sub, k, "all")
+        union[sub] = {"pairs": int(m_all.sum()), "disagreeing pairs": int((m_all & dis).sum()), "disagreeing sessions": len(set(P["session"][m_all & dis].tolist())),
+                      "sessions": len(set(P["session"][m_all].tolist()))}
+    return out, role, dis, union
 
 
 # ----------------------------------------------------------------------------------------------- the run
@@ -603,6 +632,21 @@ def across_seeds(private: dict, seqs: list[dict]) -> dict:
                 if e["status"] == status:
                     keys.add((e["sequence"], e["segment"])); recs |= {r[0] for r in byid[e["sequence"]]["refs"][e["start"]:e["end"]]}
         out[name] = {"segments": len(keys), **units(recs)}
+    for status, name in (("new_unmatched_pred", "newly unmatched predicted segments"), ("removed_unmatched_pred", "removed unmatched predicted segments")):
+        keys, recs = set(), set()
+        for p in private.values():
+            for e in p["segments"]:
+                if e["status"] == status:
+                    keys.add((e["sequence"], e["start"], e["end"], e["label"])); recs |= {r[0] for r in byid[e["sequence"]]["refs"][e["start"]:e["end"]]}
+        out[name] = {"segments": len(keys), **units(recs)}
+    for change in ("fixed", "new"):
+        for scope in ("all", "mixed"):
+            keys, ses = set(), set()
+            for p in private.values():
+                for e in p["changed_windows"]:
+                    if e["change"] == change and (scope == "all" or e["mixed"]):
+                        keys.add((e["sequence"], e["centre"])); ses.add(session_of(byid[e["sequence"]]["refs"][e["centre"]][0]))
+            out[f"changed windows ({change}, {scope})"] = {"windows": len(keys), "sessions": len(ses), "few_units": len(ses) < tb.FEW}
     for name in ("token|argmax", "token|b3", "cls|argmax", "cls|b3"):
         clips = set().union(*[set(p["switch_clips"][name]) for p in private.values()])
         out[f"native clips with switches ({name.replace('|', ', ')})"] = {"clips": len(clips), **units(clips)}
@@ -611,7 +655,7 @@ def across_seeds(private: dict, seqs: list[dict]) -> dict:
 
 def run_half(ctx: Ctx, h: str) -> tuple[dict, dict, list]:
     ev, seqs, W, meta = ctx.half(h); served = sample_windows(W, seqs); a03 = ctx.a03()["systems"]; seeds = ctx.ts["seeds"]
-    res = {"actual": {}, "fixed": {}, "cells": {}, "contrasts": {}, "rates": {}}; private = {"actual": {}, "fixed": {}}
+    res = {"actual": {}, "fixed": {}, "cells": {}, "contrasts": {}, "rates": {}, "roles": {}, "union": {}}; private = {"actual": {}, "fixed": {}, "disagree": {}}
     for seed in seeds:
         r = readouts(ctx, h, seed, W, seqs); choice, fixed = ctx.params(seed); key = f"s{seed}|{h}"
         tok = rows_of(ctx.cfg, r["probs_tok"], ev, {"argmax": None, "b3": choice}); cls = rows_of(ctx.cfg, r["probs_cls"], ev, {"argmax": None, "b3": fixed})
@@ -620,6 +664,10 @@ def run_half(ctx: Ctx, h: str) -> tuple[dict, dict, list]:
                 check_stored(x["row"], a03[f"{who}_aligned_dense_s{seed}"][row][h], f"{who} s{seed} {row} {h} (A03)")
         side = lambda rows, p: {"b3": rows["b3"]["preds"], "argmax": rows["argmax"]["preds"], "win_arg": p.argmax(1), "win_p": p}  # noqa: E731
         res["actual"][key], private["actual"][key] = account(seqs, W, meta, served, side(tok, r["p_tok"]), side(cls, r["p_cls"]))
+        for who, rows in (("token", tok), ("cls", cls)):
+            kc = kind_counts(seqs, rows["b3"]["preds"], rows["b3"]["tables"])
+            if any(kc[k][m] != res["actual"][key]["segments"][k][who][m] for k in KINDS for m in ("tp", "fp", "fn", "pred", "ref")):
+                raise SystemExit(f"{who} s{seed} {h}: the segment accounting disagrees with the evaluator's tables")
         cells = cells_of(ctx, ev, W, seqs, meta, r, fixed)
         for c, who, row in (("CC", "cls", "b3"), ("CC", "cls", "argmax"), ("TT", "token", "b3_at_cls_setting"), ("TT", "token", "argmax")):
             check_stored(cells[c]["b3" if row != "argmax" else "argmax"]["row"], a03[f"{who}_aligned_dense_s{seed}"][row][h], f"{c} s{seed} {row} {h} (A03)")
@@ -631,7 +679,9 @@ def run_half(ctx: Ctx, h: str) -> tuple[dict, dict, list]:
     P = pair_frame(W, seqs, meta); res["structure"] = stability_structure(P)
     for arm in (ctx.ts["arms"]["primary"], *ctx.ts["arms"]["controls"]):
         for seed in seeds:
-            res["rates"][f"{arm}_s{seed}|{h}"] = stability_rates(P, ctx.prediction(h, arm, seed, W, seqs)["time_logits"])
+            k = f"{arm}_s{seed}|{h}"
+            res["rates"][k], res["roles"][k], dis, res["union"][k] = stability_rates(P, ctx.prediction(h, arm, seed, W, seqs)["time_logits"])
+            private["disagree"][k] = dis.tolist()
     res["across"] = {"actual": across_seeds(private["actual"], seqs), "fixed": across_seeds(private["fixed"], seqs)}
     res["inputs"] = {"sequences": {k: int(sum(q["kind"] == k for q in seqs)) for k in KINDS}, "windows": {k: int((meta["kind"] == k).sum()) for k in KINDS},
                      "mixed_windows": {k: int((meta["mixed"] & (meta["kind"] == k)).sum()) for k in KINDS}}
@@ -656,18 +706,22 @@ def decide(ctx: Ctx, out: dict) -> dict:
     seg = "multi segment F1@50"
     trade = {h: {"tc": [C[f"b3|s{s}|{h}|TC - CC"][seg]["delta"] for s in seeds], "ct": [C[f"b3|s{s}|{h}|CT - CC"][seg]["delta"] for s in seeds],
                  "tc_verdict": ver["b3"]["TC - CC"][seg][h], "ct_verdict": ver["b3"]["CT - CC"][seg][h]} for h in HALVES}
-    R, S = out["stability"]["rates"], out["stability"]["structure"]
-    anchor = [sum(R[f"aligned_dense_s{s}|{h}"]["main"][k]["all"].get("disagreeing pairs", 0) for k in KINDS) for h in HALVES for s in seeds]
-    anchor_ses = [R[f"aligned_dense_s{s}|{h}"]["main"][k]["all"].get("disagreeing sessions", 0) for h in HALVES for s in seeds for k in KINDS
-                  if R[f"aligned_dense_s{s}|{h}"]["main"][k]["all"].get("disagreeing pairs", 0)]
+    U, S = out["stability"]["union"], out["stability"]["structure"]
+    anchor = [U[f"aligned_dense_s{s}|{h}"]["main"]["disagreeing pairs"] for h in HALVES for s in seeds]
+    anchor_ses = [U[f"aligned_dense_s{s}|{h}"]["main"]["disagreeing sessions"] for h in HALVES for s in seeds]
     tcs = [x for h in HALVES for x in trade[h]["tc"]]
+    local_applies = bool(local) and all(x is not None and x > 0.5 for x in local)
+    few = {"local reading": local_applies and min(local_ses) < tb.FEW,
+           "anchor reading": any(a > 0 for a in anchor) and min(x for x, a in zip(anchor_ses, anchor) if a > 0) < tb.FEW}
+    settings = {s: dict(zip(("token", "cls"), ({k: v for k, v in x.items() if k in ("half_window", "threshold", "nms_radius")} for x in ctx.params(s)))) for s in seeds}
     flags = {"no main-subset pair holds A03's selected output anchor in both windows":
              sum(S[h]["support"]["main"][k]["all"]["selected_output_anchor"]["both"] for h in HALVES for k in KINDS) == 0,
              "TC - CC segment F1@50 point estimates of both signs across the six cells": any(x > 0 for x in tcs) and any(x < 0 for x in tcs),
-             "a reading rests on fewer than 10 sessions": min(local_ses) < tb.FEW or (bool(anchor_ses) and min(anchor_ses) < tb.FEW),
-             "the actual systems use differing decoders": True}
+             "a reading rests on fewer than 10 sessions": any(few.values()),
+             "the actual systems use differing decoders": any(v["token"] != v["cls"] for v in settings.values())}
     return {"verdicts": ver, "readings": tb.readings(local, trade, anchor, flags, ctx.ts["readings"]),
-            "inputs": {"local_shares": local, "local_sessions": local_ses, "trade": trade, "anchor_disagreements": anchor}}
+            "inputs": {"local_shares": local, "local_sessions": local_ses, "trade": trade, "anchor_disagreements": anchor, "anchor_sessions": anchor_ses,
+                       "few_session_conditions": few, "decoders": settings}}
 
 
 def identity(ctx: Ctx) -> dict:
@@ -678,14 +732,28 @@ def identity(ctx: Ctx) -> dict:
             "a03_outputs": {h: {str(s): v["sha256"] for s, v in ctx.src["a03_outputs"][h].items()} for h in HALVES}}
 
 
+def write_results(ctx: Ctx, flat: dict, ids: set) -> None:
+    full = json.loads(json.dumps(flat | {"cost": {"cpu_hours_before_this_stage": ledger_hours(ctx.ledger, "cpu"), "gpu_hours": 0.0},
+                                         "run": {"started": getattr(ctx, "started", None)}}, default=str))
+    assert_no_ids(full, ids, "results summary"); md = tb.tables_md(full)
+    if any(x in md for x in ids):
+        raise SystemExit("an id appears in the report tables")
+    ctx.results.mkdir(parents=True, exist_ok=True)
+    write_atomic(ctx.results / "summary.json", json.dumps(full, indent=1)); write_atomic(ctx.results / "report_tables.md", md)
+
+
 def publish(ctx: Ctx, flat: dict, private: dict, ids: set) -> bool:
     """Atomic: everything goes to a temporary run directory that is renamed when complete. A finished run is never
-    overwritten; a repeat must reproduce it and writes nothing."""
+    overwritten; a repeat must reproduce it and writes nothing there, but restores missing or differing results copies."""
     final, tmp = ctx.out / "run", ctx.out / "run.tmp"
     if (final / "summary.json").is_file():
         if json.loads((final / "summary.json").read_text()) != flat:
             raise SystemExit("an earlier complete run differs from this one; nothing is overwritten")
-        print("the complete run is reproduced exactly; nothing is rewritten", flush=True)
+        f = ctx.results / "summary.json"; old = json.loads(f.read_text()) if f.is_file() else None
+        if old is None or {k: v for k, v in old.items() if k not in ("cost", "run")} != flat or not (ctx.results / "report_tables.md").is_file():
+            write_results(ctx, flat, ids); print("the complete run is reproduced exactly; its results copies are written again", flush=True)
+        else:
+            print("the complete run is reproduced exactly; nothing is rewritten", flush=True)
         return False
     if tmp.exists():
         tmp.rename(ctx.out / f"run.incomplete-{time.strftime('%Y%m%dT%H%M%SZ', time.gmtime())}")
@@ -695,22 +763,28 @@ def publish(ctx: Ctx, flat: dict, private: dict, ids: set) -> bool:
     md = tb.tables_md(flat)
     write_atomic(tmp / "summary.json", json.dumps(flat, indent=1)); write_atomic(tmp / "report_tables.md", md)
     tmp.rename(final)
-    full = json.loads(json.dumps(flat | {"cost": {"cpu_hours_before_this_stage": ledger_hours(ctx.ledger, "cpu"), "gpu_hours": 0.0},
-                                         "run": {"started": getattr(ctx, "started", None)}}, default=str))
-    assert_no_ids(full, ids, "results summary"); ctx.results.mkdir(parents=True, exist_ok=True)
-    write_atomic(ctx.results / "summary.json", json.dumps(full, indent=1)); write_atomic(ctx.results / "report_tables.md", tb.tables_md(full))
+    write_results(ctx, flat, ids)
     return True
 
 
 def stage_run(ctx: Ctx) -> None:
-    out = {"identity": identity(ctx), "actual": {}, "fixed": {}, "cells": {}, "contrasts": {}, "stability": {"structure": {}, "rates": {}},
+    from scripts.report_model_development import BOOT_SEED, N_BOOT
+    b = ctx.ts["bootstrap"]
+    if (int(b["draws"]), int(b["seed"])) != (N_BOOT, BOOT_SEED):
+        raise SystemExit("the configured bootstrap differs from the paired bootstrap's draws and seed")
+    pinned(ctx.root, ctx.ts["task_sheet"])
+    if stem_geometry() != json.loads((ctx.out / "prepare.json").read_text())["stem_geometry"]:
+        raise SystemExit("the stem geometry differs from the preparation's")
+    out = {"identity": identity(ctx), "actual": {}, "fixed": {}, "cells": {}, "contrasts": {}, "stability": {"structure": {}, "rates": {}, "roles": {}, "union": {}},
            "across_seeds": {}, "inputs": {}}
     private, seqs_all = {}, {}
     for h in HALVES:
         res, private[h], seqs_all[h] = run_half(ctx, h)
         for k in ("actual", "fixed", "cells", "contrasts"):
             out[k] |= res[k]
-        out["stability"]["structure"][h] = res["structure"]; out["stability"]["rates"] |= res["rates"]
+        out["stability"]["structure"][h] = res["structure"]
+        for k in ("rates", "roles", "union"):
+            out["stability"][k] |= res[k]
         out["across_seeds"][h] = res["across"]; out["inputs"][h] = res["inputs"]
     d = decide(ctx, out); out["contrast_verdicts"] = d["verdicts"]; out["readings"] = d["readings"]; out["reading_inputs"] = d["inputs"]; out["post_hoc"] = []
     ids = ids_of(ctx, seqs_all); flat = json.loads(json.dumps(out, default=str)); assert_no_ids(flat, ids, "summary")

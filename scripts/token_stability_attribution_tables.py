@@ -280,7 +280,7 @@ def tables_md(res: dict) -> str:
         rows = [{**_key(k, ("seed", "half")), "population": kind, "windows": ctx, **_flat(v)}
                 for k, a in acc.items() for kind, by in a["containing"].items() for ctx, v in by.items()]
         parts += [f"## {title}: reference segments holding changed requests\n", md_table(rows)]
-        rows = [{**_key(k, ("seed", "half")), **_flat(a["probability_only"])} for k, a in acc.items()]
+        rows = [{**_key(k, ("seed", "half")), "population": kind, **_flat(a["probability_only"][kind])} for k, a in acc.items() for kind in KINDS]
         parts += [f"## {title}: probability-only changes\n", md_table(rows)]
         rows = [{**_key(k, ("seed", "half")), "system": who, "decoding": dec, **v} for k, a in acc.items() for who, by in a["switches"].items() for dec, v in by.items()]
         parts += [f"## {title}: native label switches\n", md_table(rows)]
@@ -312,6 +312,14 @@ def tables_md(res: dict) -> str:
         rows = [{**_key(k, ("readout", "half")), "subset": sub, "population": kind, "context": ctx, **v}
                 for k, by in st["rates"].items() for sub, kk in by.items() for kind, cc in kk.items() for ctx, v in cc.items()]
         parts += ["## Overlapping-anchor rates (group-weighted)\n", md_table(rows)]
+    if st.get("union"):
+        rows = [{**_key(k, ("readout", "half")), "subset": sub, **v} for k, by in st["union"].items() for sub, v in by.items()]
+        parts += ["## Disagreeing pairs over all populations\n", md_table(rows)]
+    if st.get("roles"):
+        rows = [{**_key(k, ("readout", "half")), "subset": sub, "population": kind, **{n: json.dumps(v, sort_keys=True) for n, v in dd.items()}}
+                for k, by in st["roles"].items() for sub, kk in by.items() for kind, dd in kk.items() if dd.get("selected output anchor", {}).get("at least one", 0)
+                or any(dd.get(n) for n in ("anchor pairs",))]
+        parts += ["## Roles of the disagreeing pairs\n", md_table(rows)]
     for key, title in (("across_seeds", "Distinct cases over the three seeds"), ("readings", "Fixed readings"), ("post_hoc", "Post hoc additions"),
                        ("identity", "Run identity"), ("run", "Stage record"), ("cost", "Cost")):
         if key in res:
