@@ -3,6 +3,8 @@ written before the module: the four reference-conditioned cells and their endpoi
 and its tie order, segment status and unmatched predicted segments, the request-to-change distance, the overlapping-anchor
 pairs with their dedupe, neighbourhood, marker and weight rules, the bootstrap that must equal the existing paired
 bootstrap, and the fixed nonexclusive readings. Synthetic data only."""
+import json
+
 import numpy as np
 import pandas as pd
 import pytest
@@ -107,14 +109,14 @@ def tables(seed: int) -> dict:
     nat = pd.DataFrame({"video_id": vids, "label": [0, 1, 2, 3, 4, 2], "majority": rng.integers(0, 5, 6), "cuts": rng.integers(0, 3, 6)})
     seg = pd.DataFrame({"stream": ["m0", "m1", "m2", "m3"], "seg_matched": rng.integers(3, 6, 4), "seg_pred": rng.integers(6, 9, 4), "seg_true": [6, 7, 6, 8]})
     frag = pd.DataFrame({"stream": ["m0", "m0", "m1", "m2", "m3", "m3"], "t_matched": rng.integers(0, 2, 6), "t_true": [1, 1, 1, 1, 1, 0],
-                         "p_pred": rng.integers(0, 3, 6), "false_split": rng.integers(0, 2, 6), "same_join": [0, 0, 0, 0, 0, 1]})
+                         "p_pred": rng.integers(0, 3, 6), "false_split": rng.integers(0, 2, 6), "same_join": [1, 0, 1, 1, 0, 1]})
     return {"native": nat, "multi_seg": seg, "multi_frag": frag}
 
 
 def test_the_contrast_bootstrap_equals_the_paired_bootstrap():
     a, b = tables(1), tables(2)
     got = tb.contrast_bootstrap({"A": a, "B": b}, {"A": 1, "B": -1}); want = paired_bootstrap(a, b)
-    assert got == want
+    assert json.dumps(got, sort_keys=True, default=float) == json.dumps(want, sort_keys=True, default=float)   # NaN-aware, exact
     z = tb.contrast_bootstrap({"TT": a, "TC": a, "CT": b, "CC": b}, {"TT": 1, "TC": -1, "CT": -1, "CC": 1})
     assert all(v["delta"] == 0 and v["ci95"] == [0.0, 0.0] for v in z.values())
 

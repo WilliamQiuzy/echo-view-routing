@@ -119,3 +119,65 @@ def test_the_config_pins_the_task_sheet_and_the_a03_sources():
     assert {k: CFG["source"][k]["sha256"][:12] for k in ("a03_config", "a03_summary", "a03_readme")} == {
         "a03_config": "c2e90d605316", "a03_summary": "1cc2936f05a5", "a03_readme": "4d7272929186"}
     assert CFG["budget"]["gpu_hours_max"] == 0.0 and CFG["budget"]["cpu_wall_hours_max"] == 2.0
+
+
+# ----------------------------------------------------------------------------------------------- the run path on a synthetic half
+def synthetic_half(tmp_path):
+    rows = ["video_id,split,raw_label,label_index,n_samples,path", "pA_0,validation,x,2,40,p", "pB_0,validation,y,3,40,p", "pC_0,validation,z,0,30,p",
+            "pD_0,validation,w,4,20,p", "pE_0,validation,v,1,18,p"]
+    (tmp_path / "index.csv").write_text("\n".join(rows) + "\n")
+    multi = {"recipe_id": "multi_calibration_0001", "cell": "multi", "fragments": [
+        {"video_id": "pA_0", "label": 2, "variant": "orig", "start": 0, "end": 12}, {"video_id": "pB_0", "label": 3, "variant": "orig", "start": 0, "end": 12},
+        {"video_id": "pA_0", "label": 2, "variant": "orig", "start": 20, "end": 32}]}
+    pair = {"recipe_id": "pairs_calibration_diff_none_0001", "cell": "diff_none", "fragments": [
+        {"video_id": "pC_0", "label": 0, "variant": "orig", "start": 0, "end": 15}, {"video_id": "pA_0", "label": 2, "variant": "orig", "start": 15, "end": 30}]}
+    clips = ["pA_0", "pB_0", "pC_0", "pD_0", "pE_0"]; n = {"pA_0": 40, "pB_0": 40, "pC_0": 30, "pD_0": 20, "pE_0": 18}
+    proto = {"mapping_version": "family5_v1", "validation": {"calibration": {"clips": clips, "banks": {"pairs": {"recipes": [pair]}, "multi": {"recipes": [multi]}}}}}
+    refs = {c: [[c, k, 1.0] for k in range(n[c])] for c in clips}
+    refs[multi["recipe_id"]] = [[f["video_id"], k, 1.0] for f in multi["fragments"] for k in range(f["start"], f["end"])]
+    refs[pair["recipe_id"]] = [[f["video_id"], k, 1.0] for f in pair["fragments"] for k in range(f["start"], f["end"])]
+    bank = {c: "native_calibration" for c in clips} | {multi["recipe_id"]: "multi_calibration", pair["recipe_id"]: "pairs_calibration"}
+    plans = {"streams": {k: {"n": len(v), "refs": v, "bank": bank[k]} for k, v in refs.items()}}
+    ev, seqs = ts.half_sets(proto, "calibration", tmp_path / "index.csv", plans)
+    W = ts.half_windows(seqs); meta = ts.half_meta(W, seqs)
+    return ev, seqs, W, meta
+
+
+def test_the_run_path_on_a_synthetic_half(tmp_path):
+    import scripts.token_stability_attribution_tables as tb
+    from types import SimpleNamespace
+    ev, seqs, W, meta = synthetic_half(tmp_path); n = len(W["seq"]); rng = np.random.default_rng(3)
+    y = W["label"]; cls_lg = rng.normal(size=(n, 5)).astype(np.float32); cls_lg[np.arange(n), y] += 2.5
+    tl = rng.normal(size=(n, 8, 5)).astype(np.float32); tl[np.arange(n), :, y] += 2.0
+    assert meta["mixed"].sum() > 0 and set(meta["kind"]) == {"native", "pairs", "multi"}
+    d = {"logits": cls_lg, "time_logits": tl}
+    ctx = SimpleNamespace(ts=CFG, cfg={"protocol": {"hz": 10.0}, "selection": {"boundary_tolerance_s": 0.5}})
+    r = ts.readouts(ctx, "calibration", 0, W, seqs, d)
+    fixed = {"half_window": 5, "threshold": 0.1, "nms_radius": 5, "threshold_quantile": 0.9}
+    cells = ts.cells_of(ctx, ev, W, seqs, meta, r, fixed)
+    assert cells["CC"]["b3"]["row"] == ts.rows_of(ctx.cfg, r["probs_cls"], ev, {"b3": fixed})["b3"]["row"]
+    assert cells["TT"]["b3"]["row"] == ts.rows_of(ctx.cfg, r["probs_tok"], ev, {"b3": fixed})["b3"]["row"]
+    served = ts.sample_windows(W, seqs)
+    side = lambda c: {"b3": cells[c]["b3"]["preds"], "argmax": cells[c]["argmax"]["preds"], "win_arg": cells[c]["win_arg"], "win_p": cells[c]["win_p"]}  # noqa: E731
+    acc, private = ts.account(seqs, W, meta, served, side("TT"), side("CC"))
+    for k in tb.KINDS:
+        s = acc["segments"][k]
+        assert sum(s["status"].values()) == s["token"]["ref"] == s["cls"]["ref"]
+        assert s["token"]["tp"] == s["status"]["both"] + s["status"]["token only"] and s["cls"]["tp"] == s["status"]["both"] + s["status"]["cls only"]
+    assert acc["segments"]["native"]["token"]["ref"] == 5 and acc["segments"]["multi"]["token"]["ref"] == 3
+    total = sum(v[n]["windows"] for by in acc["windows"].values() for bins in by.values() for v in bins.values() for n in ("fixed", "new"))
+    assert total == int(((r["p_tok"].argmax(1) == y) != (r["p_cls"].argmax(1) == y)).sum()) == len(private["changed_windows"])
+    con = ts.contrasts_of(cells)
+    assert set(con) == {f"{dec}|{c}" for dec in ("b3", "argmax") for c in tb.CONTRASTS}
+    P = ts.pair_frame(W, seqs, meta); st = ts.stability_structure(P); rates = ts.stability_rates(P, tl)
+    assert P["main"].sum() > 0 and st["support"]["broad"]["native"]["all"]["pairs"] >= st["support"]["main"]["native"]["all"]["pairs"]
+    res = {"fixed": {"s0|calibration": acc}, "cells": {"s0|calibration": {dec: {c: {"row": cells[c][dec]["row"], "segments": cells[c][dec]["segments"]}
+                                                                            for c in tb.CELLS} for dec in ("b3", "argmax")}},
+           "contrasts": {f"{k.split('|')[0]}|s0|calibration|{k.split('|')[1]}": v for k, v in con.items()},
+           "stability": {"structure": {"calibration": st}, "rates": {"aligned_dense_s0|calibration": rates}}}
+    md = tb.tables_md(res); header = None
+    for line in md.splitlines():
+        if not line.startswith("|"):
+            header = None; continue
+        header = line.count("|") if header is None else header
+        assert line.count("|") == header, line
