@@ -1,0 +1,112 @@
+{
+ "config": "configs/experiments/token_stability_attribution_v1.yaml",
+ "config_sha256": "f8b7898c46605d04df68c451b95026b0f8bcff5e6cbacb4c5ea162eadee0ba70",
+ "checked": {
+  "task_sheet": "87f6ac5e52f6e0666873984cb40687d5daa39d01ab67cd06b911d114d2f916b0",
+  "a03_config": "c2e90d605316a2c7d9679728464dbf3a534a7eafc6ea0760a966025be72fc8b4",
+  "a03_summary": "1cc2936f05a50dbb084a25e9d6d98486883a5d881bfd08d3bb673aa0fa688cdc",
+  "a03_readme": "4d72729291866683db99ebe7bd27f327af84d047e8a57ebfdd0dabb7a1be3cce",
+  "a03_choices": "ed754376a49c383452e52ca0b99799d33a3c3796ec7fce5710a35abbcd6d51cd",
+  "protocol": "a897483b776e8cff1ba8b92774c6a82537758bcba6abd362f2d8603f37997593",
+  "clip_index": "60a35fd841a6ab674619d50a87d6630013e0236db4cfb23d159454d7a076de03",
+  "window_plans": "51517ea886bffe235918ad9bd250f4811efae39ee0d27fc29b648dde0fac26ba",
+  "a02_summary": "bea3ae472bfb6c45960e11ddbeec843ef587b9b4cead274cf899f8a44cae3915",
+  "a02_config": "49f8782ad0d7702f65244dd6b637f2fc20dc5dd0aab40c2de4389d69f0eb1087",
+  "a03_output_selection_0": "6088abc2685f6f83ecb3739db4a641f8a0cc55bb2c84e81c88381342701e7895",
+  "a03_output_selection_1": "feca4e3f3249099a7a9e1b32015d9f5f1379c4ee4bf5fe0a8da19977a333a196",
+  "a03_output_selection_2": "9abd7b7184e9f928aed1ec60c13ae763a7aae79d52c3eb1f3436d78bded99e81",
+  "a03_output_calibration_0": "32442e2fee6473e47229e9fa6e04566693bff1cf550ba1a9b4c18012b5ffea79",
+  "a03_output_calibration_1": "79e2e1bf8c85d98f2f75bfc638aa48367800ee62cddd3fe9f9d3edb495c207ef",
+  "a03_output_calibration_2": "2147cb3473719abe1050a9f0a1c1625364c2e672eded253855c145cb51a9e07a",
+  "selection_aligned_dense_s0": "b7275f9a245800fcd78547c019e1bec0db3762eb5443f59c63966120925a5840",
+  "selection_aligned_dense_s1": "0e78306632e40cf5d92f9d576f1b63711a064dd84034a6d7ec8bef2668c63281",
+  "selection_aligned_dense_s2": "2196ae59e6e00b502bf171dd86b64a37677b2cb3e8185e01fbcf0da1b302d34f",
+  "selection_center_only_s0": "8eabf236357cfbe5f5fa6034635600292ed9cba12b5e7f334fb4d2fbe9392eb4",
+  "selection_center_only_s1": "322eab0cd9c60a8bf24e3325dff1b819f6699a316a95ece3ca9a431466f1723b",
+  "selection_center_only_s2": "d874295c6aa3ed9fe73d8e4d78260d6c8b9a6962030f73991cfc04011ad2ee10",
+  "selection_shuffled_dense_s0": "34915e7916017c155160ecd7e289558f26e230b98cddad2bad591e96b933fb30",
+  "selection_shuffled_dense_s1": "b42c8d0106a171685ea53f232ff740fd473d8dcc311ed15c07b5bd278d961890",
+  "selection_shuffled_dense_s2": "84b7502e92a4d6a7cd23cb3ecc6ea821f2744e72e82af0c50172c2a64df0cfd6",
+  "calibration_aligned_dense_s0": "1c7a2383c8185c824c24d46b39327d06516da916f76e2a38636c0e410bb77058",
+  "calibration_aligned_dense_s1": "6b5e4242e97246a74fccd7a1eda294b45ff48cc58ad55ea158155135378b2730",
+  "calibration_aligned_dense_s2": "f30bf78e93d56e86f14d1f5c10e043c10dc881a1ef5363946fd10f0d742b2e02",
+  "calibration_center_only_s0": "2d44a2f84b71e6a544d96885ef6f08d382d64517c954afb2736523df4dd2e66a",
+  "calibration_center_only_s1": "ea38fa60f2d8a0bba6d057385747910dbca05d88d9ccbd82481e59e13a8da758",
+  "calibration_center_only_s2": "44b627d245506931bb0ad5a391388701738d7ca9a298fa7cdf1f85572e4571bc",
+  "calibration_shuffled_dense_s0": "89d3bcd6ce169a8548242576edff523cb295e545d95bdcc312cacf8965cee35c",
+  "calibration_shuffled_dense_s1": "be84ba9ec3201c15a7a834307d1b1f1327cd053eb9f6b9a420ac2f1bb62298f7",
+  "calibration_shuffled_dense_s2": "e77c1e4c13c409c4176ad880fe4474b89ccc0bffcbb47d3f4a032748b9a7f21a"
+ },
+ "environment": {
+  "python": "3.12.3",
+  "numpy": "2.5.2",
+  "pandas": "3.0.5",
+  "scipy": "1.18.1",
+  "torch": "2.14.0+cu130",
+  "torchvision": "0.29.0+cu130"
+ },
+ "stem_geometry": {
+  "kernel_t": 3,
+  "stride_t": 2,
+  "padding_t": 1,
+  "later_time_strides": [
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1
+  ],
+  "marker_stem": "copies conv_proj",
+  "marker_plane": "one slot"
+ },
+ "code": "e861fc8d6f86438d4f64fdf0a7a24240131005a3a98386ba238b80edf39c3163",
+ "halves": {
+  "selection": {
+   "sequences": {
+    "native": 284,
+    "pairs": 137,
+    "multi": 120
+   },
+   "windows": {
+    "native": 3444,
+    "pairs": 1190,
+    "multi": 3032
+   },
+   "mixed_windows": {
+    "native": 0,
+    "pairs": 269,
+    "multi": 1180
+   },
+   "samples": 37287
+  },
+  "calibration": {
+   "sequences": {
+    "native": 237,
+    "pairs": 115,
+    "multi": 120
+   },
+   "windows": {
+    "native": 2950,
+    "pairs": 1023,
+    "multi": 3048
+   },
+   "mixed_windows": {
+    "native": 0,
+    "pairs": 217,
+    "multi": 1223
+   },
+   "samples": 34216
+  }
+ }
+}
