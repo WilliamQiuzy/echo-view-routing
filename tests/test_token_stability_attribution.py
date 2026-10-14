@@ -131,10 +131,10 @@ def synthetic_half(tmp_path):
     rows = ["video_id,split,raw_label,label_index,n_samples,path", "pA_0,validation,x,2,40,p", "pB_0,validation,y,3,40,p", "pC_0,validation,z,0,30,p",
             "pD_0,validation,w,4,20,p", "pE_0,validation,v,1,18,p"]
     (tmp_path / "index.csv").write_text("\n".join(rows) + "\n")
-    multi = {"recipe_id": "multi_calibration_0001", "cell": "multi", "fragments": [
+    multi = {"recipe_id": "multi_synthetic_a", "cell": "multi", "fragments": [
         {"video_id": "pA_0", "label": 2, "variant": "orig", "start": 0, "end": 12}, {"video_id": "pB_0", "label": 3, "variant": "orig", "start": 0, "end": 12},
         {"video_id": "pA_0", "label": 2, "variant": "orig", "start": 20, "end": 32}]}
-    pair = {"recipe_id": "pairs_calibration_diff_none_0001", "cell": "diff_none", "fragments": [
+    pair = {"recipe_id": "pairs_synthetic_a", "cell": "diff_none", "fragments": [
         {"video_id": "pC_0", "label": 0, "variant": "orig", "start": 0, "end": 15}, {"video_id": "pA_0", "label": 2, "variant": "orig", "start": 15, "end": 30}]}
     clips = ["pA_0", "pB_0", "pC_0", "pD_0", "pE_0"]; n = {"pA_0": 40, "pB_0": 40, "pC_0": 30, "pD_0": 20, "pE_0": 18}
     proto = {"mapping_version": "family5_v1", "validation": {"calibration": {"clips": clips, "banks": {"pairs": {"recipes": [pair]}, "multi": {"recipes": [multi]}}}}}
