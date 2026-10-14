@@ -1,6 +1,6 @@
 # Echocardiography experiment history and decisions
 
-Maintained for the project lead, research team, Codex and Claude. Last reviewed on 2026-10-12. Entry A01 was updated on 2026-10-14 (UTC) after its fact-checked report.
+Maintained for the project lead, research team, Codex and Claude. Last reviewed on 2026-10-13 (America/New_York). Entry A01 was updated on 2026-10-14 (UTC) after its fact-checked report.
 
 This is the starting point for choosing a model or proposing another experiment. It records the question, input condition, scoped finding and stopping decision. The linked result reports retain the complete tables, configurations, checks and limitations. A closed configuration is not a rejection of every method in its model family.
 
@@ -120,6 +120,14 @@ The current numerical goals are three-seed mean multi-stream segment F1@50 at le
 | A01, 2026-10-12 to 10-14. Frozen V01 Ordered video-context features (stride 5, 512-d, float32, extracted after whole-stream assembly); Linear + change-point, official MS-TCN and official ASRF (primary) on identical inputs and batches; nine final-weight runs of 18,750 updates. | **Closed configuration (trade-off; no gain).** This was not R16 repeated on L1 or R03 repeated with a boundary-only head; the input was the stronger 16-frame video representation. Only the nine heads were trained; the evaluation and its diagnostics ran once on the development halves. Neither ASRF nor MS-TCN shows a consistent segment F1@50 difference from Linear + change-point or from frozen Ordered + change-point in either half, and every temporal-head point estimate against the frozen reference is negative. ASRF places fewer boundaries (selection recall below 0.95 in every seed) and has fewer native label switches. Both temporal heads fix some A4C clips read as A5C but read some A5C clips as A4C, and they miss more reference-matched units than they recover. Linear + change-point also makes 7 of ASRF's 26 fixes. ASRF beats the E1-based paired ASRF, E1 + change-point and Original FACT on selection only. Goal not met: ASRF 0.9449 / 0.9747 with five constraint failures, Linear + change-point 0.9476 / 0.9760 with none, MS-TCN 0.9387 / 0.9679 with four. This video-feature temporal recipe ends; temporal models in general are not rejected. 4.18 of 8 GPU hours. | [Result report](results/2026-10-12_video_feature_temporal/README.md) with `summary.json`; [authorised task](superpowers/plans/2026-10-12-video-feature-temporal-training.md); [configuration](../configs/experiments/video_feature_temporal_v1.yaml) at 14e359c; frozen heads `models_frozen/video_feature_temporal_v1/{linear,mstcn,asrf}_s{0,1,2}` on the source encoders `models_frozen/raw_video_context_v1/ordered_s{0,1,2}`; commits 19092dd, 1427324, b47b986, 43b0d74, 1926b67, 14e359c, 74e135d, 32bf8af and 6a1bd89 (task, code and fixes), c4f5590 (review and checks) and fa3f18f (results). |
 
 A01 kept V01's video-plus-simple-decoder system as the strong reference. Its selection-only gains over weaker E1-based systems do not show progress beyond that reference. The result entry replaced the pending status after the report and an independent fact-check had confirmed the run evidence.
+
+## Next authorised task A02 (pending)
+
+| Record and condition | Status and scope | Task |
+|---|---|---|
+| A02, 2026-10-13 (Eastern). Starting from V01 Ordered weights, preserve CLS inference and add aligned class supervision to the final video-context time tokens; compare matched CLS-only continuation and within-window label-permuted supervision. | **Pending comparison.** A new supervised objective on video-context tokens, with no new parameters, rather than A01's frozen-feature temporal heads or V02's replacement readouts. R11 already used image-frame auxiliary supervision; this does not claim dense supervision was never tried. Nine paired final-weight runs are authorised within an eight-GPU-hour cap after implementation/budget checks. No implementation, formal training or gain is confirmed by this entry. | [Authorised plan](superpowers/plans/2026-10-13-video-dense-supervision.md). |
+
+A02 must beat matched continuation and the frozen Ordered + simple-decoder reference to establish a complete model improvement. Beating the deliberately misaligned supervision control alone is insufficient. A01/V02/V03 stopping decisions and the strong reference remain unchanged. Update this pending record only from verified run evidence and the completed report.
 
 ## Component names that must not be conflated
 
