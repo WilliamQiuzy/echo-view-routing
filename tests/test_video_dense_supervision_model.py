@@ -47,6 +47,17 @@ def test_model_functions_take_no_labels():
         assert set(inspect.signature(fn).parameters) <= allowed, fn.__name__
 
 
+@pytest.fixture()
+def one_thread():
+    """Multithreaded CPU backward of the relative-position terms is not bit-reproducible run to run (about 3e-10 between two
+    identical plain runs); exact gradient equality is checked on one thread, where repeated runs are bit-identical."""
+    n = torch.get_num_threads(); torch.set_num_threads(1)
+    try:
+        yield
+    finally:
+        torch.set_num_threads(n)
+
+
 @pytest.fixture(scope="module")
 def models():
     torch.manual_seed(0)
@@ -114,19 +125,19 @@ def test_the_loss_formula_and_label_isolation():
     assert float(vd.dense_loss(z_cls, z_time, y, b, 0.5)[0]) != float(loss)          # labels change the loss only
 
 
-def test_lambda_zero_gives_the_cls_cross_entropy_gradients(models):
+def test_lambda_zero_gives_the_cls_cross_entropy_gradients(models, one_thread):
     base, state = models; plain = tm.build_model(None, tm.initial_new_state(0)); plain.load_state_dict(state, strict=True); m = vd.build_dense_model(state)
     for net in (plain, m):
         net.train(); net.set_encoder_trainable(True); net.zero_grad(set_to_none=True)
     rgb = torch.randn(2, 3, 16, 224, 224); mk = tm.marker_planes(torch.tensor([8, 3])); y = torch.tensor([1, 4]); aux = torch.randint(0, 5, (2, 8))
     torch.manual_seed(7); want = F.cross_entropy(plain(rgb, mk), y); want.backward()
     torch.manual_seed(7); z_cls, z_time = m.forward_with_time(rgb, mk); got, _ = vd.dense_loss(z_cls, z_time, y, aux, 0.0); got.backward()
-    assert float(got) == float(want)
+    assert float(got.detach()) == float(want.detach())
     gp, gm = dict(plain.named_parameters()), dict(m.named_parameters())
     assert all((gp[k].grad is None and gm[k].grad is None) or torch.equal(gp[k].grad, gm[k].grad) for k in gp)
 
 
-def test_native_windows_give_identical_aligned_and_shuffled_losses_and_gradients(models):
+def test_native_windows_give_identical_aligned_and_shuffled_losses_and_gradients(models, one_thread):
     _, state = models; rgb = torch.randn(2, 3, 16, 224, 224); mk = tm.marker_planes(torch.tensor([8, 8])); y = torch.tensor([2, 2])
     aligned = torch.full((2, 8), 2); shuffled = aligned[:, torch.tensor([3, 1, 7, 0, 2, 6, 5, 4])]
     out = []
@@ -149,7 +160,7 @@ def test_aux_gradients_reach_the_shared_head_projection_marker_and_encoder(model
     assert float(m.encoder.head[-1].weight.grad.abs().max()) > 0 and float(m.encoder.blocks[0].attn.qkv.weight.grad.abs().max()) > 0
 
 
-def test_train_mode_rng_use_does_not_depend_on_labels_or_lambda(models):
+def test_train_mode_rng_use_does_not_depend_on_labels_or_lambda(models, one_thread):
     _, state = models; rgb = torch.randn(2, 3, 16, 224, 224); mk = tm.marker_planes(torch.tensor([8, 2])); y = torch.tensor([0, 3]); res = []
     for lam, labels in ((0.0, torch.zeros(2, 8, dtype=torch.long)), (0.5, torch.ones(2, 8, dtype=torch.long)), (0.5, torch.full((2, 8), 4))):
         m = vd.build_dense_model(state); m.train(); m.set_encoder_trainable(False)
