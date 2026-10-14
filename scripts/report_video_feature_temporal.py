@@ -330,7 +330,7 @@ def figures(ctx: tv.Ctx, runs: dict) -> None:
     for c in (2, 7, 12, 17, 22, 27):
         ax.annotate("", xy=(1.65 + c * 1.6, 7.5), xytext=(1.65 + c * 1.6, 6.3), arrowprops={"arrowstyle": "->", "color": "#4c72b0"})
     ax.add_patch(plt.Rectangle((1 + 4 * 1.6, 7.4), 16 * 1.6 - 0.3, 1.7, fill=False, ec="#c44e52", lw=1.5))
-    ax.text(1, 9.4, "a whole stream on the 10 Hz axis (two fragments, assembled first); one 16-sample window around a stride-5 centre", fontsize=9)
+    ax.text(1, 9.4, "a whole stream on the 10 Hz axis (three fragments, assembled first); one 16-sample window around a stride-5 centre", fontsize=9)
     ax.text(1, 5.4, "frozen Ordered encoder: model.embed(16 frames, marker) -> one 512-d window feature per centre (2, 7, 12, ...)", fontsize=9)
     ax.text(1, 3.9, "nearest centre -> (T, 512) float32 for every sample; the same arrays and batches feed three heads per seed:", fontsize=9)
     for i, (t, cc) in enumerate((("Linear(512, 5) + B3", "#8172b2"), ("official MS-TCN", "#dd8452"), ("official ASRF (primary)", "#4c72b0"))):
