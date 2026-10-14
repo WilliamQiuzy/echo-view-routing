@@ -1,10 +1,10 @@
 # Echocardiography experiment history and decisions
 
-Maintained for the project lead, research team, Codex and Claude. Last reviewed on 2026-10-12.
+Maintained for the project lead, research team, Codex and Claude. Last reviewed on 2026-10-12. Entry A01 was updated on 2026-10-14 (UTC) after its fact-checked report.
 
 This is the starting point for choosing a model or proposing another experiment. It records the question, input condition, scoped finding and stopping decision. The linked result reports retain the complete tables, configurations, checks and limitations. A closed configuration is not a rejection of every method in its model family.
 
-The historical [experiment ledger](EXPERIMENT_LEDGER.md) has 46 dated rows and stops at 2026-10-01. Later rounds are recorded below. This index covers the 46 result READMEs currently present, the two earlier baseline result directories, and the separate Pediatric boundary diagnosis. Do not infer that later experiments did not happen because they are absent from the old ledger.
+The historical [experiment ledger](EXPERIMENT_LEDGER.md) has 46 dated rows and stops at 2026-10-01. Later rounds are recorded below. This index covers the 47 result READMEs currently present, the two earlier baseline result directories, and the separate Pediatric boundary diagnosis. Do not infer that later experiments did not happen because they are absent from the old ledger.
 
 ## Current model selection position
 
@@ -19,10 +19,13 @@ The working strong video reference is **Frozen Ordered MViTv2-S with the simple 
 | Continued CLS from V02 | 0.9442 / 0.9776 | No consistent improvement over the frozen reference. |
 | Global patches from V02 | 0.9261 / 0.9663 | No qualifying system gain. |
 | Target patches from V02 | 0.9230 / 0.9640 | No qualifying system gain; the readout configuration is closed. |
+| Frozen Ordered features, Linear + change-point (A01) | 0.9476 / 0.9760 | No consistent difference from the frozen reference; no constraint failure, but the calibration mean misses the goal. |
+| Frozen Ordered features, official ASRF (A01, primary) | 0.9449 / 0.9747 | No consistent difference from Linear + change-point or the frozen reference; five constraint failures. The recipe is closed. |
+| Frozen Ordered features, official MS-TCN (A01) | 0.9387 / 0.9679 | No consistent difference from the frozen reference; four constraint failures. |
 
 The current numerical goals are three-seed mean multi-stream segment F1@50 at least **0.944409687184662 / 0.9821421709894332**, boundary recall at least **0.95** in every seed and half, and native macro-F1 at least **0.973 / 0.980** in every seed. Calibration sensitivity uses **0.9838935784747763**. Use the unrounded JSON values to assess a floor. Passing these old numerical goals does not itself prove a new model beats the now stronger video reference.
 
-**Active task A01:** [Video-feature temporal training](superpowers/plans/2026-10-12-video-feature-temporal-training.md). The task was dispatched and its configuration exists. There is no completed result report at this review; formal training is not confirmed by the registry. The runtime ledger and logs must establish progress. It freezes the Ordered video encoders and compares Linear + change-point, MS-TCN and ASRF under matched data and an eight-GPU-hour cap.
+**Completed task A01:** [Video-feature temporal training](results/2026-10-12_video_feature_temporal/README.md), fact-checked on 2026-10-14 (UTC). With the Ordered video encoders frozen, neither ASRF nor MS-TCN shows a consistent segment F1@50 difference from Linear + change-point or from the frozen Ordered + change-point reference, and no system meets the goal. The configuration is closed under its trade-off and no-gain readings. The frozen Ordered model with the simple decoder remains the strong reference.
 
 ## Record types
 
@@ -110,13 +113,13 @@ The current numerical goals are three-seed mean multi-stream segment F1@50 at le
 | V02, 2026-10-11. Continued CLS, global patches and target-time patch readouts, from the same Ordered states. | **Closed readout/budget configuration.** No consistent primary target-readout advantage, and no complete system gain. Continued training improves some mixed-window decisions without improving segmentation. The frozen V01 positive result remains. | [Target patch readout](results/2026-10-11_target_patch_readout/README.md). |
 | V03, 2026-10-12. Same frozen Ordered models: Sparse, interpolated probabilities and Dense requests; inherited decoder numbers. | **Closed sampling configuration.** Dense gives finer offsets but no consistent system gain, and adds a native-floor failure. Interpolation lowers recall at the inherited working point. Native/calibration errors are mostly classification; selection also has decoder losses. Reference-assisted attribution is not a repair result. | [Dense inference](results/2026-10-12_dense_target_inference/README.md). |
 
-## Current authorised work and why it is different
+## Authorised work A01 and why it was different
 
-| Record and condition | Status and scope | Task |
+| Record and condition | Status and scope | Evidence |
 |---|---|---|
-| A01, 2026-10-12. Frozen V01 video-context features, Linear + change-point, MS-TCN and ASRF; nine final-weight runs. | **Pending comparison.** This is not R16 repeated on L1 or R03 repeated with a boundary-only head. The input is the stronger 16-frame video representation, extracted after whole-stream assembly. Head data/batches are matched; the linear control separates some classifier recalibration from the full temporal systems. No gain is claimed before completion. | [Authorised task](superpowers/plans/2026-10-12-video-feature-temporal-training.md); [configuration](../configs/experiments/video_feature_temporal_v1.yaml). |
+| A01, 2026-10-12 to 10-14. Frozen V01 Ordered video-context features (stride 5, 512-d, float32, extracted after whole-stream assembly); Linear + change-point, official MS-TCN and official ASRF (primary) on identical inputs and batches; nine final-weight runs of 18,750 updates. | **Closed configuration (trade-off; no gain).** This was not R16 repeated on L1 or R03 repeated with a boundary-only head; the input was the stronger 16-frame video representation. Only the nine heads were trained; the evaluation and its diagnostics ran once on the development halves. Neither ASRF nor MS-TCN shows a consistent segment F1@50 difference from Linear + change-point or from frozen Ordered + change-point in either half, and every temporal-head point estimate against the frozen reference is negative. ASRF places fewer boundaries (selection recall below 0.95 in every seed) and has fewer native label switches. Both temporal heads fix some A4C clips read as A5C but read some A5C clips as A4C, and they miss more reference-matched units than they recover. Linear + change-point also makes 7 of ASRF's 26 fixes. ASRF beats the E1-based paired ASRF, E1 + change-point and Original FACT on selection only. Goal not met: ASRF 0.9449 / 0.9747 with five constraint failures, Linear + change-point 0.9476 / 0.9760 with none, MS-TCN 0.9387 / 0.9679 with four. This video-feature temporal recipe ends; temporal models in general are not rejected. 4.18 of 8 GPU hours. | [Result report](results/2026-10-12_video_feature_temporal/README.md) with `summary.json`; [authorised task](superpowers/plans/2026-10-12-video-feature-temporal-training.md); [configuration](../configs/experiments/video_feature_temporal_v1.yaml) at 14e359c; frozen heads `models_frozen/video_feature_temporal_v1/{linear,mstcn,asrf}_s{0,1,2}` on the source encoders `models_frozen/raw_video_context_v1/ordered_s{0,1,2}`; commits 19092dd, 1427324, b47b986, 43b0d74, 1926b67, 14e359c, 74e135d, 32bf8af and 6a1bd89 (task, code and fixes), c4f5590 (review and checks) and fa3f18f (results). |
 
-A01 must keep V01's video-plus-simple-decoder system as a strong reference. Beating a weaker historical encoder, or attaining an old numerical threshold, is not enough to claim it beats the current strong model. Its result entry must replace this pending status only after the report and verified run evidence exist.
+A01 kept V01's video-plus-simple-decoder system as the strong reference. Its selection-only gains over weaker E1-based systems do not show progress beyond that reference. The result entry replaced the pending status after the report and an independent fact-check had confirmed the run evidence.
 
 ## Component names that must not be conflated
 
