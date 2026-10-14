@@ -1,0 +1,205 @@
+# Video token supervision with the preserved CLS output (docs/superpowers/plans/2026-10-13-video-dense-supervision.md).
+# Fixed before any code, preparation or training of this round exists. Three paired arms continue each seed's frozen
+# Ordered context model of the raw-video context round (V01) from its full final weights. Every arm runs the same forward:
+# the original CLS logits first, then the 8 time positions of the final normalised tokens, averaged over space and read
+# by the shared dropout, 512-d projection and five-class head. The arms differ only in the auxiliary supervision of those
+# 8 time logits: none (weight 0), the classes at the true input time anchors, or the same classes permuted within the
+# window. Inference uses only the original CLS output with B3. No parameter is added. Labels serve the losses and the
+# evaluation only. The test split and EchoNet-Pediatric are not read. This is a test of a training objective on an
+# existing backbone (MViTv2), not a new architecture; earlier per-frame supervision (R11) is acknowledged.
+#
+# Inherits model_development_v2.yaml only for the protocol keys, the two development halves and the decoding grid.
+extends: model_development_v2.yaml
+run_name: video_dense_supervision_v1
+experiment: video_dense_supervision_v1
+
+video_dense_supervision:
+  task_sheet: {path: docs/superpowers/plans/2026-10-13-video-dense-supervision.md,
+               sha256: b67dede565e49c7ca91c43b0a5109cf9251f35f46f65457cd992e71065495d8d}
+  predecessors:                  # docs/EXPERIMENT_INDEX.md records; their reports and stopping rules stay unchanged
+    R11: "per-frame auxiliary loss (weight 0.5) on E1 image outputs before a temporal Transformer; not the MViT tokens after video interaction"
+    V01: "Ordered MViTv2-S trained with the window-target CLS loss only; this round's start and the frozen strong reference"
+    V02: "continued CLS and patch readouts replacing the CLS input; one window target per window; closed"
+    V03: "request density at inference only; closed"
+    A01: "temporal heads on frozen 512-d window features; closed (trade-off, no gain)"
+    change: "class supervision of the 8 final time tokens at their input time anchors, with the CLS path, parameters, inputs, batches and RNG use unchanged across the paired arms"
+  source:
+    raw_video_config: {path: configs/experiments/raw_video_context_v1.yaml,
+                       sha256: 832694f4ea1ec4c7d1811b59c0a6803495645e9ff8be1db80fe28d2c049af485}
+    readout_config: {path: configs/experiments/target_patch_readout_v1.yaml,
+                     sha256: bd54c4b67216c56da55749c45944a5af051df61153c822a555ab24b5fe77e664}
+    weights:                     # the V01 Ordered final weights; all three arms of a seed start from the same full state
+      0: {path: models_frozen/raw_video_context_v1/ordered_s0/final.pt, sha256: 80f13a42e628fe2647634b79e59d5b8486fee5c3e0ae45f70bcc667c41258505}
+      1: {path: models_frozen/raw_video_context_v1/ordered_s1/final.pt, sha256: 74276323ababf78fcb578be28d3172f3c220b3b7e66c2ff96a2072f39210c26f}
+      2: {path: models_frozen/raw_video_context_v1/ordered_s2/final.pt, sha256: 923eb3afb0d846b1361897dbb63bb5aecf22401ce4b305b44fe990d48edc7f2c}
+    rv_manifests:                # V01's frozen training windows (pixels, markers, targets, order, digests); read only
+      index: {path: runs/raw_video_context_v1/manifests/index.json, sha256: 50b6123a1efd1389ff19514468ca99f64ee4007d5152db3c601b8be3b7c04643}
+      files:
+        0: {path: runs/raw_video_context_v1/manifests/RV_s0.npz, sha256: ee54951de6a974e30c688b9cdc1d13e0e8fb1057c9092d9efacfb9b2fce05f8b}
+        1: {path: runs/raw_video_context_v1/manifests/RV_s1.npz, sha256: 1e8c5b4afb54fd277be6dd45739fa631a359a5e7cc9d7afa644cf081592ef712}
+        2: {path: runs/raw_video_context_v1/manifests/RV_s2.npz, sha256: b112ccc84e89e3079e22c31aaa88ec2b650369d5ab1d152ae23a83b0e8dac245}
+    sc_manifests:                # the centre-supervision round's training lists; only their per-slot labels are added; read only
+      index: {path: runs/center_supervision_v1/manifests/index.json, sha256: 8e2148b46d5cf028943f7000cffdfe114f31ed9320a5f6f14343359bfc1227a1}
+      files:
+        0: {path: runs/center_supervision_v1/manifests/SC_s0.npz, sha256: 3df87fe8fea5b8995faed3ed7c3634f9b53c2da901dc2bc90107d896a56606f3}
+        1: {path: runs/center_supervision_v1/manifests/SC_s1.npz, sha256: 805ed2c28fc4bd0ab854a26cd810dee7e85ef00a45b4981877ca48ddaed89ec0}
+        2: {path: runs/center_supervision_v1/manifests/SC_s2.npz, sha256: 6e7f889b3c7a18057d9b7e0e8a4fd4a3da633feab0469b13072b1f5557b27e0c}
+    reports:                     # stored rows of the references; read only
+      raw_video_summary: {path: docs/results/2026-10-10_raw_video_context/summary.json, sha256: a521d47e5a5618e7000fcd877ac58dc7ebc16f488a48b229f20bccfb18f333ab}
+      readout_summary: {path: docs/results/2026-10-11_target_patch_readout/summary.json, sha256: 1103b1ac06f6ee1c07538fbe51653a8255db081e18df0c0be0d5bf6f61f78632}
+      a01_summary: {path: docs/results/2026-10-12_video_feature_temporal/summary.json, sha256: 3a1601512bc423a6ad97b5c88ed29e8ebf949a6df802bc0a76fb6fc13c503acf}
+    ordered_outputs:             # V01's saved per-window development outputs of the three Ordered models (frozen Ordered + B3)
+      selection:
+        0: {path: runs/raw_video_context_v1/evaluation/selection/ordered_s0.npz, sha256: 98706faa4efdeae4e1b7640f65b24dbbd4878f0f354611aec6679233a0f3a0dc}
+        1: {path: runs/raw_video_context_v1/evaluation/selection/ordered_s1.npz, sha256: b5d6a13c20e2be1d922b88eafc20b17f4dacfbebcbf83149715575c9e69c9aa1}
+        2: {path: runs/raw_video_context_v1/evaluation/selection/ordered_s2.npz, sha256: 86f6f90d869a05cc4a886257a3f35b9bb2ec1e696c4508e0cbfb9ebf840bfe3d}
+      calibration:
+        0: {path: runs/raw_video_context_v1/evaluation/calibration/ordered_s0.npz, sha256: d79008575f59aad1a6a9911906bff3752bb0d0e54bacfceb23232562f703400d}
+        1: {path: runs/raw_video_context_v1/evaluation/calibration/ordered_s1.npz, sha256: 37fb569093916aaf00d455fe92d8efe2397a6f1913c57d55d798c59acd2915ac}
+        2: {path: runs/raw_video_context_v1/evaluation/calibration/ordered_s2.npz, sha256: 306f1abf7bfda0edad8dd21aa5980f89efa246aaa38c718db374df68de89315f}
+    continued_cls_outputs:       # V02's saved per-window development outputs of Continued CLS (historical reference)
+      selection:
+        0: {path: runs/target_patch_readout_v1/evaluation/selection/cls_s0.npz, sha256: bf7e3bdad41cc60c57c8ea8c521d8a5217fe64118c7a4ae00c207d55c8896c64}
+        1: {path: runs/target_patch_readout_v1/evaluation/selection/cls_s1.npz, sha256: 7a05aa99f26d1146a41da37374aaa61c9a046f871e3b70c7b4f89e3ca4fa14ff}
+        2: {path: runs/target_patch_readout_v1/evaluation/selection/cls_s2.npz, sha256: c025bcd35866f9017681ee740238b20ab63a4291bc21e7a4ac83305f1d85002f}
+      calibration:
+        0: {path: runs/target_patch_readout_v1/evaluation/calibration/cls_s0.npz, sha256: 761c87eb1f68101d20c0ce6cb5e0c331b70b05e6f3b8f5c97e5e8b951a023f0a}
+        1: {path: runs/target_patch_readout_v1/evaluation/calibration/cls_s1.npz, sha256: 78177a709e47da8a462d2cc8c5654a1e5580a91c22f7173ec9a2be98d4f6002f}
+        2: {path: runs/target_patch_readout_v1/evaluation/calibration/cls_s2.npz, sha256: 24f8534efb1d9f41d378135290070c48448e53f9affbf7d74def53e6e2b283bc}
+    a01:                         # A01's frozen heads and saved development features, for reproducing its stored rows
+      config: {path: configs/experiments/video_feature_temporal_v1.yaml, sha256: 3b065e7fe908ca7432ba0a407fd6b82432882c1d72dabd1d22b899b79d790690}
+      features:
+        0: {path: runs/video_feature_temporal_v1/features/development/ordered_s0.npz, sha256: 6f0f862f2d9e3a926f6cca3f493ba0a81735d156b4c29cbcc197f8454c49491b}
+        1: {path: runs/video_feature_temporal_v1/features/development/ordered_s1.npz, sha256: a3309e3c06fdb77b3267b3642b513ccb8fef734635ade16f8bd42ba674d7e5ab}
+        2: {path: runs/video_feature_temporal_v1/features/development/ordered_s2.npz, sha256: 2a6fa58d85d45ca7f11ef302afd1cc3f869a5830bbb342dd6f0be541919c2200}
+    environment: {torch: 2.14.0+cu130, torchvision: 0.29.0+cu130, cuda: "13.0", cudnn: 92400,
+                  torchvision_mvit_sha256: 76ca465f2be0bb7ff914ca434264ceb6736402856d164e5810491d5ba77d4210}
+  arms: [center_only, aligned_dense, shuffled_dense]
+  names: {center_only: CLS continuation, aligned_dense: Aligned token supervision, shuffled_dense: Shuffled token supervision}
+  primary: aligned_dense
+  model:
+    forward: >-
+      every arm calls the full original TargetMViT.forward(rgb, marker) once; a forward hook on encoder.norm, registered
+      for that call only and removed in finally, stores a clone of the norm output X (B, 1 + 8 x 7 x 7, 768) with autograd
+      and returns nothing, so token 0, the CLS path and the CLS logits are unchanged; the hook must fire exactly once
+    time_logits: "P = X[:, 1:].reshape(B, 8, 7, 7, 768).mean over (7, 7); z_time = classifier(encoder.head(P)) (B, 8, 5): the shared dropout, 768->512 projection and five-class head, computed after the CLS logits in every arm"
+    grid: "the final token grid read from the network must be (8, 7, 7) with every block's query time stride 1; anything else stops the round"
+    stem_time: [3, 2, 1, 1]      # kernel, stride, padding, dilation of conv_proj in time; anything else stops the round
+    anchors: [0, 2, 4, 6, 8, 10, 12, 14]   # j * stride - padding + (kernel - 1) * dilation / 2: input slot anchors, not receptive fields
+    parameters: "none added; no aux head, temporal head, boundary loss, gate, residual, teacher or decoder"
+    inference: "CLS logits only (the original TargetMViT.forward); the time logits serve the training loss and pre-specified diagnostics"
+  aux:
+    labels: "the per-slot labels of the seed's SC manifest at the 8 anchor slots of each window (input slot order = time order)"
+    lambda: {center_only: 0.0, aligned_dense: 0.5, shuffled_dense: 0.5}
+    center_only_labels: "the aligned labels at weight 0 (the time logits and their loss are still computed)"
+    shuffled: "per window, numpy default_rng([20261013, seed, update_index, window_index]).permutation(8) applied once to the 8 aligned labels (new label j = aligned label perm[j]); identity or same-class permutations are kept; no resampling; pixels, targets and the global torch RNG are untouched"
+    loss: "L_center = CE(z_cls, target) batch mean; L_time = mean over windows of the mean over the 8 anchors of CE(z_time, aux); loss = (L_center + lambda * L_time) / (1 + lambda)"
+    repeats: "clamped or repeated slots stay as in the manifest and count among the 8 anchors; their share is reported, not counted as independent cases"
+    files: "runs/video_dense_supervision_v1/manifests/AUX_s{seed}.npz (aligned labels, permutations, shuffled labels) and index.json with digests and counts; the repository records counts and digests only"
+  data:
+    windows: "V01's frozen RV manifest rows: 3,750 updates of 4 native and 4 mixed-view windows, 16 frames in Ordered order, the same frames, gammas, markers, targets, pixel digests and batches for the three arms of a seed"
+    pairing: "for every window, the SC and RV references (vid, frame, gamma, s per slot; c, target, kind, seq, repeats per window; the video list) are identical, the RV marker is the middle target slot of the SC window, RV's Ordered order is the identity, and the SC labels at the target slots equal the target; any difference stops the preparation"
+    allowlist: "protocol['train']['clips']; every recording of the RV and SC manifests must be in it, otherwise the preparation stops"
+    isolation: "preparation and training read no development frames, features or labels and no test or Pediatric data; training indexes are filtered by the allowlist before any label is read"
+  training:
+    start: "every run strictly loads its seed's V01 Ordered final weights (encoder with the 512-d projection, marker stem, five-class head); nothing is reinitialised; a new optimiser and update count start at 0"
+    seeds: [0, 1, 2]
+    total_updates: 3750
+    batch_windows: 8
+    optimiser: {name: AdamW, lr_encoder: 1.0e-5, lr_new: 1.0e-4, weight_decay: 1.0e-4, grad_clip: 1.0, betas: [0.9, 0.999], eps: 1.0e-8}
+    param_groups: "group 0 = every encoder parameter including the 512-d projection; group 1 = marker stem and five-class head; no extra group"
+    warmup_updates: 375
+    schedule: "new parameters 1e-4 x lr_factor(u, 375, 3750); encoder 0 for u < 375, then 1e-5 x the same factor"
+    freeze: "for u < 375 every encoder parameter has requires_grad False and lr 0, with autograd through the encoder to the marker; afterwards everything trains"
+    model_rng: "torch.manual_seed(seed) and torch.cuda.manual_seed_all(seed) before the first update; all arms compute the time logits in the same order; the data order is the manifest's"
+    checkpoint: "final weights after 3,750 updates; no development data during training; no epoch, lr, weight or seed choice"
+    resume: "full model, optimiser, update count and CPU and CUDA RNG after every epoch; every run records whether it was interrupted"
+  determinism: {precision: fp32, tf32: false, cudnn_deterministic: true, cudnn_benchmark: false, stochastic_depth_and_dropout: "kept as in the source",
+                deterministic_algorithms: "torch.use_deterministic_algorithms(True, warn_only=True) with CUBLAS_WORKSPACE_CONFIG=:4096:8; V01's recorded MViT max-pool CUDA backward nondeterminism applies"}
+  identity: >-
+    SHA256 over this config's training sections (including the budget) and the source round's training sections, the arm,
+    the seed, the source weights, the RV manifest and its epoch digests, the AUX file, the environment, the total updates,
+    and the dense module, the model and token-grid modules, the preparation, training and V01 training scripts in full
+    plus the shared frame, path and schedule helpers
+  checks:
+    windows: "16 training windows of the seed-0 manifest by manifest order and coverage (V01's rule)"
+    cls_parity_max_abs: 0.0          # every arm's CLS logits against the source TargetMViT, eval, same input
+    time_recompute_max_abs: 1.0e-5   # the time logits recomputed by hand from the source model's norm output, eval
+    arm_pairing: "train mode, same state and RNG: the three arms' CLS and time logits before the loss and the torch RNG states after the step are identical; on native windows the aligned and shuffled losses and gradients are identical"
+    smoke: {updates: 100, lr_new: 1.0e-4, encoder: frozen, batches: "windows 0-7 and 8-15 alternately", gate: "finite values, updated marker and head, unchanged encoder; no score gate"}
+    reproducibility: {updates: 6, loss_abs: 1.0e-4, params_abs: 1.0e-5}
+    resume: {loss_abs: 1.0e-4, params_abs: 1.0e-5}
+    boundary: {warmup: 3, total: 8, resume_at: 2, adam_step_bound: 2.1,
+               rule: "V01's recorded rule: exact state round-trip, losses within 1e-4, parameter drift within adam_step_bound x each group's summed learning rate; tolerances are not raised from observed values"}
+    timing: {warmup_updates: 5, timed_updates: 20, state: "encoder unfrozen, batch 8 from the formal manifest, decoding, time logits and hooks included"}
+  budget:
+    gpu_hours_max: 8.0               # failed and passed checks, nine trainings, development inference, report and fact-check; one ledger
+    evaluation_allowance_hours: 2.0
+    ledger: runs/video_dense_supervision_v1/ledger.jsonl
+    rule: "the check and the queue project spent + remaining runs x the larger of the checked and the slowest finished run + the evaluation allowance; above the cap nothing new starts and the state is reported; no arm is dropped or shortened"
+  queue: [center_only_s0, aligned_dense_s0, shuffled_dense_s0, center_only_s1, aligned_dense_s1, shuffled_dense_s1, center_only_s2, aligned_dense_s2, shuffled_dense_s2]
+  evaluation:
+    after: "all nine runs complete and frozen; only then are development frames loaded"
+    windows: "V01's: window_centres(n, 5), window_frames(c, n, 16, 16), the marker at the middle target slot, Ordered order; every 10 Hz sample takes the nearest centre's output; native clips are scored by the per-sample majority"
+    system_output: "CLS probabilities only; the time logits are saved for the pre-specified diagnostics and never form a system"
+    rows: ["direct argmax", "B3", "the seed's source Ordered numeric B3 setting (decoding sensitivity only)"]
+    b3: {half_window: [5, 7, 9, 11, 15], quantile: [0.80, 0.85, 0.90, 0.95, 0.97, 0.99, 0.995, 0.999], nms_radius: 5}
+    b3_rule: >-
+      per model, once, on the calibration half: thresholds are quantiles of that model's own calibration native B3
+      scores; among settings with native macro-F1 >= 0.980 and multi boundary recall >= 0.95 the highest segment F1@50
+      wins, ties to the earlier grid entry; then frozen and applied once to selection; no feasible setting fails the
+      model's B3 row and the diagnostic 9 / 0.95 never passes anything
+    fixed_ordered_setting: {half_window: 9, nms_radius: 5, thresholds: {0: 0.29269428317686846, 1: 0.2845063773784935, 2: 0.30845250187026374}}
+    primary: "aligned_dense - center_only, multi segment F1@50 with B3, per half over the three seeds"
+    must_list: ["aligned_dense - frozen Ordered + B3", "aligned_dense - shuffled_dense"]
+    also: ["center_only - frozen Ordered + B3", "shuffled_dense - center_only", "aligned_dense - historical Continued CLS"]
+    references: >-
+      frozen Ordered + B3 (V01 saved outputs and stored settings), historical Continued CLS (V02 saved outputs and stored
+      settings), E0/E1/B7 + B3, historical E1 + ASRF, paired ASRF and Original FACT (their frozen weights or outputs),
+      A01 Linear + B3, MS-TCN and ASRF (their frozen heads on their saved features) and G1 + ASRF (stored rows); every
+      reference reproduces its stored rows before use; no old weight is applied to new features
+    bootstrap: "existing paired bootstrap: native clips by session, streams by stream (approximate; development halves reused); 2,000 draws, seed 20261002; the same draws for both systems"
+    consistent: "all three seeds' 95% intervals strictly exclude zero on the same side in a half; anything else is no consistent difference detected (not equality); seeds are not extra cases"
+    mixed_windows: >-
+      mixed windows of the constructed streams (at least two reference views among the 16 frames): five-class CLS argmax
+      accuracy at the requested sample on all mixed windows, by the number of frames carrying the requested sample's
+      reference view (<= 7, 8, 9-11, 12-15 of 16) and on A4C/A5C pair windows; paired bootstrap resampling the source
+      sessions of the requested samples (primary) and whole streams (sensitivity), 2,000 draws, seed 20261002
+    stream_conflict: "if the stream-resampled verdict is consistent in the opposite direction to the session verdict in a half, that half's mechanism reading is uncertain"
+    native: "native macro-F1, five-class recall, A4C->A5C and A5C->A4C fixed and new clips with their recordings and sessions, label switches per clip"
+    units: "multi segment F1@50, boundary precision, recall and F1, reference segments of at most 16 samples, X-Y-X middles, A4C/A5C middles, cuts at same-view joins"
+    diagnostics: >-
+      pre-specified, not systems: the time-logit accuracy at the 8 anchors against the development reference labels
+      (overall, mixed windows, class-wise recall), and at every change of the reference class between two consecutive
+      anchors of a mixed window whether both anchors are right; counted with their source recordings and sessions;
+      fewer than 10 units are flagged; never a selection, a sampling rule or a trigger for another round
+    cases: "every case also as distinct source recordings and sessions; no id or medium leaves the server"
+  goal:
+    selection_min: 0.944409687184662
+    calibration_min: 0.9821421709894332
+    calibration_sensitivity: 0.9838935784747763
+    boundary_recall_min: 0.95
+    native_macro_f1_min: {selection: 0.973, calibration: 0.980}
+    rule: "three-seed mean multi segment F1@50 at or above both minimums, and in every seed and half a feasible B3 setting, boundary recall >= 0.95 and native macro-F1 at or above the floor; no rounding"
+  decision_rules:                # the task sheet's Task 4, applied once after the evaluation; conditions fixed before any output
+    model_progress: >-
+      aligned_dense - center_only and aligned_dense - frozen Ordered + B3 are both consistent positive in multi segment
+      F1@50 in both halves, and aligned_dense meets every constraint and the goal -> 'it improves on the current strong
+      system'; meeting the old numbers alone is not enough
+    mechanism_support: >-
+      on all mixed windows (session bootstrap), aligned_dense - center_only and aligned_dense - shuffled_dense are
+      consistent positive in both halves; aligned_dense - center_only is consistent positive in multi segment F1@50 in
+      both halves; and aligned_dense has a feasible B3 setting, native macro-F1 at the floor and boundary recall >= 0.95 in
+      every seed and half -> 'this recipe supports time-aligned supervision'; it does not need the old mean goal and does
+      not mean beating the frozen strong reference; a half with a stream-sensitivity conflict makes the reading uncertain
+    system_only: "aligned_dense - center_only consistent positive in multi segment F1@50 in both halves without mechanism support -> the system result is kept and the mechanism is undetermined"
+    shuffled_only: "aligned_dense beats shuffled_dense consistently (all-mixed accuracy or multi segment F1@50) in a half, while aligned_dense - center_only is consistent positive on neither in either half -> no practical gain"
+    tradeoff: "aligned_dense - center_only is consistent positive on all-mixed accuracy or multi segment F1@50 in a half, but aligned_dense fails a constraint or lacks the two-half system gain -> the trade-off is reported and this configuration ends"
+    no_gain: "aligned_dense - center_only is consistent positive on neither all-mixed accuracy nor multi segment F1@50 in either half, and aligned_dense - frozen Ordered + B3 is not consistent positive in either half -> this configuration ends; dense supervision in general is not rejected"
+    end: "the round ends at its report; no teacher, boundary loss, gate, new head, lambda sweep, more epochs or seeds, and no sampling change from development cases"
+    several: "the readings are not exclusive; every one that applies is reported"
+  outputs:
+    root: runs/video_dense_supervision_v1
+    checkpoints: checkpoints/video_dense_supervision_v1
+    frozen: models_frozen/video_dense_supervision_v1/{center_only,aligned_dense,shuffled_dense}_s{seed}
+    results_dir: docs/results/2026-10-13_video_dense_supervision
