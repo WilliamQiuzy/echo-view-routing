@@ -1,0 +1,113 @@
+# Token stability and segmentation attribution (docs/superpowers/plans/2026-10-14-token-stability-attribution.md).
+# Fixed before any code or new diagnostic count of this round. A retrospective, CPU-only diagnosis of the frozen A02/A03
+# outputs: nothing is trained, no model is loaded or run, and no selector, decoder, threshold or fusion is searched.
+# The reference-conditioned cells (TC, CT) use reference labels to choose a readout per window. They are diagnostics,
+# never deployable systems, attainable scores or upper bounds, and they never enter a model-selection table.
+#
+# Inherits model_development_v2.yaml only for the protocol keys (10 Hz, the 0.5 s boundary tolerance), as A03 did.
+extends: model_development_v2.yaml
+run_name: token_stability_attribution_v1
+experiment: token_stability_attribution_v1
+
+token_stability_attribution:
+  task_sheet: {path: docs/superpowers/plans/2026-10-14-token-stability-attribution.md,
+               sha256: 87f6ac5e52f6e0666873984cb40687d5daa39d01ab67cd06b911d114d2f916b0}
+  predecessors:                  # docs/EXPERIMENT_INDEX.md; their reports, choices, models and stopping decisions stay unchanged
+    A02: "aligned anchor-label training of the time tokens; inference through CLS; closed (no gain)"
+    A03: "fixed nearest supervised-anchor readout of the saved time logits; local gain, no usable system gain; closed"
+    V02: "replacement patch readouts and more training; closed"
+    V03: "denser requests at inference; better offsets, no consistent segment gain; closed"
+    A01: "temporal heads on frozen 512-d window features; closed"
+    change: "attribute A03's local classification gain and its system results to segments, mixed versus pure windows at one inherited decoder, and the stability of matching frame anchors across overlapping windows; no new model or policy"
+  source:                        # mismatches stop the run and are reported, never repaired by changing source results
+    a03_config: {path: configs/experiments/trained_token_readout_v1.yaml, sha256: c2e90d605316a2c7d9679728464dbf3a534a7eafc6ea0760a966025be72fc8b4}
+    a03_summary: {path: docs/results/2026-10-14_trained_token_readout/summary.json, sha256: 1cc2936f05a50dbb084a25e9d6d98486883a5d881bfd08d3bb673aa0fa688cdc}
+    a03_readme: {path: docs/results/2026-10-14_trained_token_readout/README.md, sha256: 4d72729291866683db99ebe7bd27f327af84d047e8a57ebfdd0dabb7a1be3cce}
+    a03_choices: {path: docs/results/2026-10-14_trained_token_readout/choices.json, sha256: ed754376a49c383452e52ca0b99799d33a3c3796ec7fce5710a35abbcd6d51cd}
+    inherited: >-
+      the protocol, clip index, window plans, A02 configuration and summary and the 18 A02 prediction files are read
+      through the pinned A03 configuration's own pins, each checked again; the A02 final weights are not hashed again
+      (A03 checked them; no weight is loaded)
+    a03_outputs:                 # A03's saved aligned token outputs on the server; used only as parity checks
+      calibration:
+        0: {path: runs/trained_token_readout_v1/selection/calibration/token_aligned_dense_s0.npz, sha256: 32442e2fee6473e47229e9fa6e04566693bff1cf550ba1a9b4c18012b5ffea79}
+        1: {path: runs/trained_token_readout_v1/selection/calibration/token_aligned_dense_s1.npz, sha256: 79e2e1bf8c85d98f2f75bfc638aa48367800ee62cddd3fe9f9d3edb495c207ef}
+        2: {path: runs/trained_token_readout_v1/selection/calibration/token_aligned_dense_s2.npz, sha256: 2147cb3473719abe1050a9f0a1c1625364c2e672eded253855c145cb51a9e07a}
+      selection:
+        0: {path: runs/trained_token_readout_v1/selection/selection/token_aligned_dense_s0.npz, sha256: 6088abc2685f6f83ecb3739db4a641f8a0cc55bb2c84e81c88381342701e7895}
+        1: {path: runs/trained_token_readout_v1/selection/selection/token_aligned_dense_s1.npz, sha256: feca4e3f3249099a7a9e1b32015d9f5f1379c4ee4bf5fe0a8da19977a333a196}
+        2: {path: runs/trained_token_readout_v1/selection/selection/token_aligned_dense_s2.npz, sha256: 9abd7b7184e9f928aed1ec60c13ae763a7aae79d52c3eb1f3436d78bded99e81}
+    environment: {python: 3.12.3, numpy: 2.5.2, pandas: 3.0.5, scipy: 1.18.1}
+  arms:
+    primary: aligned_dense       # attribution uses the three aligned seeds in both halves
+    controls: [center_only, shuffled_dense]   # controls for anchor stability only
+  seeds: [0, 1, 2]
+  halves: [selection, calibration]
+  decoders:
+    actual: "aligned token at its committed A03 B3 choice; aligned CLS at A02's stored B3 choice (a complete-system difference, not attributable to the readout alone)"
+    fixed: "every cell decoded with the seed's A02 aligned CLS stored numeric B3 parameters, unchanged (no refit, tuning or choice)"
+    fixed_params:                # A02 summary systems.aligned_dense_s{k}.b3_choice.params; checked against the source at run time
+      0: {half_window: 7, threshold: 0.22942657029594846, nms_radius: 5, threshold_quantile: 0.999}
+      1: {half_window: 7, threshold: 0.20869092549018176, nms_radius: 5, threshold_quantile: 0.999}
+      2: {half_window: 5, threshold: 0.16905315484864056, nms_radius: 5, threshold_quantile: 0.999}
+    argmax_sensitivity: "the four cells with the direct per-sample argmax, prespecified; no second decoder search"
+  definitions:
+    selector: "A03's rule, unchanged: the unique anchor j minimising (|s[a_j] - c|, |a_j - m|, j), anchors (0, 2, ..., 14)"
+    mixed: "M[i] is true only when the 16 input slots of window i hold at least two reference classes (fixed constructed labels); native windows are pure"
+    cells: {CC: [cls, cls], TC: [token, cls], CT: [cls, token], TT: [token, token]}   # [mixed-window source, pure-window source]
+    mapping: "the source is chosen per window first, then the window probabilities are mapped to 10 Hz by A02's nearest-request mapping; no per-sample mask after mapping"
+    matching: >-
+      the evaluator's class-aware one-to-one matching at temporal IoU >= 0.5: candidates sorted descending by
+      (temporal IoU, prediction index, reference index), each accepted when neither index is used; matched counts must
+      equal segment_f1's; TP = matched, FP = predicted - matched, FN = reference - matched, F1 = 2 TP / (2 TP + FP + FN)
+    populations: "native clips (one reference segment each), pair streams and multi streams are reported separately; multi streams are the primary segment population"
+    reference_segment_status: "per reference segment: matched by both systems, by the token system only (newly matched), by the CLS system only (lost under token) or by neither"
+    predicted_segment_identity: "(start, end, label); newly unmatched = unmatched token segments absent from the CLS system's unmatched segments; removed = the reverse"
+    length_bins: "at most 16 samples, or longer"
+    xyx: "A4C/A5C X-Y-X middle: the middle of three consecutive reference segments X, Y, X with {X, Y} = {A4C, A5C} (report_fact_asrf.xyx_middle)"
+    request_distance: >-
+      samples between the request c and the nearest reference view change b (b = first sample of the new view):
+      c - b when c >= b and b - 1 - c when c < b, so 0 means the request is adjacent to the change; bins 0-5, 6-10,
+      >10 and none (no reference view change in the sequence, including every native clip and same-view pair streams)
+    window_change: "fixed = the token argmax names the requested sample's reference class and the CLS argmax does not; new error = the reverse"
+    probability_only: "windows whose argmax is the same for token and CLS; their probability change is summarised by the total-variation distance, and decoded-sample changes are split by whether the serving window's argmax changed"
+    switches: "label changes inside native clips (the evaluator's cuts), with the direct argmax and with B3; a switch is not an expert-confirmed false cut"
+    sources: "recordings come from the window plans' per-sample references and sessions from session_of; cases are grouped by recording and session, never by seed or duplicated stream"
+  stability:
+    observation: "(window row, centre, marker slot, anchor j, sample s[2j], time_logits[j]) for every window and anchor of a sequence"
+    within_window: "a sample held by several anchors of one window keeps the anchor closest to the window's marker slot, then the lower j"
+    pairs: "unordered pairs of observations of the same sequence and sample from windows with distinct centres; different sequences or samples are never compared"
+    receptive_field: "the RGB patch embedding and the marker stem share time kernel 3, stride 2 and padding 1, and no later block pools time, so time position j reads input slots 2j - 1, 2j and 2j + 1 (slot -1 is padding); checked from the source code before use"
+    main_subset: "both anchors have the complete three-slot neighbourhood (j >= 1) and the two windows hold the same sequence-sample triple at those slots"
+    broader_subset: "every eligible pair of the same sequence and sample, reported separately"
+    marker_triple: "the three target-marker bits at slots 2j - 1, 2j and 2j + 1; only an equal triple, together with equal samples, makes the complete local stem input identical"
+    weights: "each sequence-sample occurrence group has total weight 1 within a subset, split equally over its pairs; physical frames are counted separately by (recording, frame, contrast)"
+    measures: "argmax disagreement, Jensen-Shannon divergence (base 2) of the two softmax distributions, and both / one / neither correct against the sample's reference label"
+    selected_anchor: "whether each observation's anchor is A03's selected output anchor of its window: pairs with at least one, both or neither"
+    strata: ["native, pair stream, multi stream", "both windows pure, or at least one mixed"]
+    controls: "the same pairs read from the CLS-only and shuffled arms' saved time logits; CLS outputs are never compared as if they predicted the same sample"
+  bootstrap: {draws: 2000, seed: 20261002, native: session, streams: stream, contrasts: ["TC - CC", "CT - CC", "TT - CC", "TT - TC - CT + CC"]}
+  consistency: "all three seeds' 95% intervals strictly exclude zero on the same side within a half; anything else is no consistent difference detected (not equality); seeds are not extra cases"
+  readings:                      # nonexclusive diagnostic descriptions, applied once after the run; never a gate for a trainable mechanism
+    local_correction_without_segment_recovery: >-
+      in every seed and half, more than half of the fixed mixed-window requests of multi streams (actual systems) lie in
+      reference segments that the CLS system already matched; the proportions and the distance bins are reported
+    mixed_vs_pure_tradeoff: >-
+      in a half, TC - CC and CT - CC multi segment F1@50 point estimates have opposite signs in all three seeds at the
+      fixed decoder; called consistent only when both contrasts are consistent, in opposite directions, in that half;
+      the reference mask does not establish a learnable routing policy
+    anchor_sensitivity_observed: >-
+      the aligned arm's main stability subset has at least one argmax disagreement in some seed and half; equal-marker
+      and changed-marker support are reported apart; complete local stem equality needs an equal marker triple
+    unresolved: >-
+      flags that prevent attribution: no main-subset pair holds A03's selected output anchor in both windows; TC - CC
+      segment F1@50 point estimates of both signs across the six seed and half cells; a reading resting on fewer than
+      10 sessions; the actual systems' differing decoders
+    end: "the configuration closes after the report; no training, readout fusion, shifted request, interpolation, threshold search, new loss or label change follows"
+  budget:
+    cpu_wall_hours_max: 2.0      # executed checks, diagnosis, tests and fact-check probes, failed or superseded runs included
+    gpu_hours_max: 0.0
+    ledger: runs/token_stability_attribution_v1/ledger.jsonl
+  outputs:
+    root: runs/token_stability_attribution_v1
+    results_dir: docs/results/2026-10-14_token_stability_attribution
