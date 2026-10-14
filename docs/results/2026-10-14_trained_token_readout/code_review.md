@@ -7,7 +7,8 @@ and commit 95b56e4 (tables module, selection stage, dry run and their tests). It
 id and wrote nothing on the server. Its read-only probes used about 3 minutes of server CPU outside the stage ledger.
 
 **Verdict.** Pass with fixes. No finding was blocking. All seven should-fix findings and the nine notes were fixed in
-0e62879, and the reviewer verified the fixes.
+0e62879, and the reviewer verified the fixes. The later table-layout fix (aada40b), made after the first dry run, was not part of
+this review. The independent fact-check confirmed that it changed only the markdown functions and added a test.
 
 ## Should-fix findings and their fixes
 
@@ -81,4 +82,5 @@ id and wrote nothing on the server. Its read-only probes used about 3 minutes of
   - A stream-sensitivity conflict makes a half uncertain, and only all-mixed accuracy enters the readings.
 - **Ids.** The id guard holds 1,095 ids, the shortest 15 characters long. None of them occurs in the fixed text of the
   tables, so the guard cannot trip falsely. Per-window outputs stay under the server's ignored `runs/` directory.
-- **Tests.** 36 of 36 pass on the final code, and ruff finds no undefined or unused names.
+- **Tests.** 36 of 36 passed on the reviewed fixes (0e62879), and ruff finds no undefined or unused names. After the
+  later table-layout fix (aada40b), 37 of 37 pass on the final code.
