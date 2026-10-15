@@ -1,0 +1,211 @@
+# A06-R1: the official FACT fallback gate amendment and the unexecuted formal trainings
+# (docs/superpowers/plans/2026-10-15-fact-video-feature-gate-amendment.md). Fixed before any code of this revision.
+# A06 v1 stopped correctly at its original smoke gate; its configuration, preparation, failed check and README stay
+# unchanged and are pinned below. This revision changes one launch requirement after the smoke result was seen (a
+# post-hoc procedure amendment, disclosed as such): a single-segment smoke sequence may name its segment through the
+# pinned official all-null fallback (Block._eval returns the frame-branch argmax) when its official output is correct.
+# The scientific content - seeds, data, the FACT recipe, the monitor, the evaluation, the goal and the readings - is
+# copied verbatim from v1 and must stay field-equal. Only the task and source provenance, the namespace and paths, the
+# launch acceptance policy, the small revalidation and the cumulative ledger accounting differ.
+#
+# Inherits model_development_v2.yaml only for the protocol keys (10 Hz, the 0.5 s boundary tolerance).
+extends: model_development_v2.yaml
+run_name: fact_video_feature_v2
+experiment: fact_video_feature_v2
+
+fact_video_feature:
+  task_sheet: {path: docs/superpowers/plans/2026-10-15-fact-video-feature-gate-amendment.md,
+               sha256: 551576221b77782751bf8d9d08a62c11ae2f9db97b294e8d8acb891433d317fa}
+  revision:
+    name: A06-R1
+    kind: "post-hoc launch-gate amendment after the v1 smoke result; not a new model, not a pre-registered plan, not a reversal of the v1 stop, not a performance search"
+    original:                    # immutable v1 evidence; the server's runs copies of the preparation and check must be byte-identical
+      task_sheet: {path: docs/superpowers/plans/2026-10-15-fact-video-feature-training.md, sha256: cbd5f8e0d8a5bda0dc4afb27dcf29fdced8bef61b0948bfd1912ab9161fb49eb}
+      config: {path: configs/experiments/fact_video_feature_v1.yaml, sha256: f9d3d51daeadcf9f9f5728bde45b8b8623bb2e07a21053c44fa657301a17f9a9}
+      preparation: {path: docs/results/2026-10-15_fact_video_feature/preparation.json, sha256: 94991e928ef99e1b00507ec9e5d4ccf9fe7730f9f20fdba84e3006e2b2f11c6b}
+      check: {path: docs/results/2026-10-15_fact_video_feature/checks.json, sha256: 9061032ef98c7527ef8eb46fe706f7ffe1dc82db66409e510db8c0eb00c859c1}
+      readme: {path: docs/results/2026-10-15_fact_video_feature/README.md, sha256: 72089029ad49160d1a59a59e777cde3d0e46da0053b76ba01b8b7f125a947849}
+      server_copies: {preparation: runs/fact_video_feature_v1/preparation.json, check: runs/fact_video_feature_v1/checks.json}
+      code_digest: ae7531732dd0ea8be0a3aa09b9f94f236cac5006cf15163bb36de2d36d548546   # the old preparation and check
+      code_commit: 3d2ea49f33c7c16b9b04a746ec0d92ea5e5c3cf4   # the first commit whose training files give that digest (unchanged through 0053bda)
+      old_code_dir: runs/fact_video_feature_v2/old_code       # the old training files exported from git; their own digest must equal code_digest
+    scientific_sections: [seeds, data, fact, monitor, train_fit, evaluation, goal, readings]   # field-equal to v1; anything else stops the revision
+    gate: >-
+      The task sheet's section 3 predicate on the 16 rows of the old check's final update-2,000 smoke outcome: every row
+      has an exact transcript, segment F1@50 = 1 and one-to-one matching; a row with no active token passes only if it
+      has one reference segment, its matched token is counted wrong (0.0) and its official output is exact; every other
+      row needs at least one active token and every matched token right. The old check's failure must be only
+      matched_classes_right (with its aggregates all, ok and passed); every other smoke requirement and every other old
+      check is verified field by field. The old record keeps passed = false; nothing is rewritten. No checkpoint other
+      than the final update 2,000 is read for the gate. The exception is limited to single-segment sequences by the
+      owner's decision; the pinned official decoder itself does not restrict its fallback to them.
+    known_zero_gradients:        # explained in the v1 records and F02's smoke; any other missing or non-finite gradient stops
+      names: [block_list.0.action_branch.layers.0.norm1.weight, block_list.0.action_branch.layers.0.self_attn.in_proj_weight,
+              block_list.0.action_branch.layers.0.self_attn.out_proj.weight]
+      explanation: "the first action-branch layer of the input block receives no gradient from the official total at the initial state (F02 recorded the same three)"
+    allowed_code_changes:        # functions of scripts/train_fact_video_feature.py that may differ from the old code; every other function must be AST-identical and every other training file byte-identical
+      Ctx.__init__: "namespace and revision attributes and the output-path guard"
+      identity_payload: "the namespace and the revision provenance enter the run identity"
+      identity: "passes the namespace and the revision provenance"
+      term_values: "the same per-sequence monitor forwards (as fact_integration.term_losses) also count active and null tokens and matched-token correctness, single- and multi-segment sequences apart; logging only"
+      preconditions: "the launch record is the verified revalidation record under a revision"
+      run_stage: "the budget check reads the cumulative ledgers"
+      stage_check: "refuses under a revision (no repeated smoke); the projection reads the cumulative ledgers"
+      stage_queue: "the launch record, the cumulative ledgers and the namespace of the logs"
+      main: "routes --check away under a revision"
+    allowed_added_functions: [spent_hours, inherited_ledger_hours, launch_record, revision_identity, token_stats]
+    monitor_logging: "per epoch, from the forwards the monitor already runs: active and null token counts and matched-token correctness for single- and multi-segment check sequences; it changes no training, selection or extension and adds no inference"
+  predecessors:                  # docs/EXPERIMENT_INDEX.md; their reports, models, choices and stopping decisions stay unchanged
+    V01: "frozen Ordered video model with the simple decoder; the strong reference"
+    F02: "official GTEA FACT against ASRF on frozen E1 image features; no consistent FACT - ASRF advantage; closed"
+    F03_F04: "FACT localisation diagnostic and predicted/fixed subdivisions of final U on E1; closed; not reopened"
+    A01: "the same frozen video features with Linear + B3, MS-TCN and ASRF; no FACT was trained"
+    A02_A04: "window-token supervision, readout and attribution; no whole-stream FACT comparison"
+    A05: "objectives of the linear head on the same features; closed (uncertain or no qualifying gain; end)"
+    change: "the complete official FACT system on A01's video features and batches; differences against ASRF belong to the whole recipe (model, optimiser, augmentation), never to cross-attention or one loss term alone"
+    A06_v1: "this very comparison under the original smoke gate; stopped before formal training (no FACT - ASRF result); records kept unchanged"
+  source:                        # every pin is checked before use; a mismatch is located and stops the round
+    a01_config: {path: configs/experiments/video_feature_temporal_v1.yaml, sha256: 3b065e7fe908ca7432ba0a407fd6b82432882c1d72dabd1d22b899b79d790690}
+    a01_preparation: {path: docs/results/2026-10-12_video_feature_temporal/preparation.json, sha256: 5f7d48db3a3b2f54f0788d9dc66a53dae2ff3dbf5105d9c1033b78a2f417d021}
+    a01_summary: {path: docs/results/2026-10-12_video_feature_temporal/summary.json, sha256: 3a1601512bc423a6ad97b5c88ed29e8ebf949a6df802bc0a76fb6fc13c503acf}
+    f02_config: {path: configs/experiments/fact_asrf_paired_v1.yaml, sha256: 5caffd566fd560593c5d60e829446fe0ecc97debd59cbd5c627ce13aec421ab2}
+    f02_summary: {path: docs/results/2026-10-08_fact_asrf_training/summary.json, sha256: 32c2665f485981d8b38d9c63c283027b1fd02568d04c36816d162fe88066bafa}
+    a05_config: {path: configs/experiments/segment_objective_v1.yaml, sha256: 3f6980942cdf1ff6aec550608605888cd6dac1a3ea454d2442e927a5762826bd}         # A05 source pins only
+    a05_preparation: {path: docs/results/2026-10-14_segment_objective/preparation.json, sha256: b02b362da058a93f2c29ce20915e0e7cc0519eb83e6396dcb638716693dbb735}   # full cache hashes
+    a03_config: {path: configs/experiments/trained_token_readout_v1.yaml, sha256: c2e90d605316a2c7d9679728464dbf3a534a7eafc6ea0760a966025be72fc8b4}   # metadata adapter sources
+    a01_server_preparation: runs/video_feature_temporal_v1/preparation.json   # must equal the pinned results copy byte for byte
+    resolved: >-
+      through the pinned records only, never by results: A01's plans, linear initial states, training feature identities,
+      sequence file and frozen ASRF / Linear / MS-TCN heads (A01 preparation and summary); the full sha256 of the training
+      and development caches (A05 preparation); F02's untrained FACT initial states (F02 summary runs/FACT_s{k}/init_sha256);
+      V01's frozen Ordered weights, saved development outputs and stored B3 settings (A01 configuration); the protocol,
+      clip index and window plans (A03 configuration). Newly verified full hashes go to this round's preparation record;
+      the old records are not presented as holding fields they never recorded
+    development_caches: "runs/video_feature_temporal_v1/features/development/ordered_s{k}.npz; before the freeze only the whole file is hashed; no array, label or member is opened"
+    environment: {python: 3.12.3, numpy: 2.5.2, pandas: 3.0.5, scipy: 1.18.1, torch: 2.14.0+cu130, torchvision: 0.29.0+cu130, cuda: "13.0", cudnn: 92400}
+  seeds: [0, 1, 2]
+  queue: [FACT_s0, FACT_s1, FACT_s2]   # exactly three formal trainings, one GPU job at a time
+  data:                          # A01's training data and batch rule through A01's read-only TrainSet / Batches
+    features: "seed k's run reads only features/train/ordered_s{k}.npz: whole constructed streams encoded first, stride-5 window features mapped to the 10 Hz axis by nearest centre, repeated rows kept, (T, 512) float32, no normalisation, no Dense requests, no window reset at reference boundaries"
+    sequences: "A01's 3,364 native training recordings and 1,500 constructed streams; labels and joins only from A01's sequence file"
+    epochs: 50
+    updates_per_epoch: 375
+    total_updates: 18750
+    streams_per_batch: 4
+    natives_per_batch: 4
+    native_window: 256
+    native_per_epoch: 1500
+    batches: "every update's structure digest equals A01's plan of the seed (A01's plans equal F02's paired plans); float32 features are spot-checked element by element against the source cache"
+    padding: "the collated batch is unpadded by length before the official loss; each unpadded (T, 512) input and its labels equal the sequence cut directly from the source cache"
+    labels: "metadata reads labels of the allowed split only; other splits give ids, split and sample counts for isolation"
+    model_input: "the forward receives features (and, in training, the official loss's labels); no reference boundary, transcript, native flag or id; inference passes an all-zero label sequence"
+  fact:
+    repo: third_party/fact
+    commit: 7bd81bda2b84618a3e23876a2637a82f24881122
+    tracked_modifications: "none: HEAD equals the commit, git status of tracked files is empty and the digest of every tracked official file is recorded; a difference is located and stops the round; nobody's change is reset"
+    adapter: echo_routing/temporal/fact_head.py::FACTHead
+    base_config: gtea.yaml       # configs/default.py + gtea.yaml; official dropout, channel masking, temporal masking, matching and loss weights unchanged
+    in_dim: 512
+    n_classes: 5
+    bg_class: []
+    trans: false
+    match: o2o
+    token_ratio: 1.5
+    expected_longest_transcript: 8
+    expected_average_transcript: 2.654333333333333   # one epoch's training sequences (the 1,500 streams and 1,500 native windows)
+    expected_ntoken: 12          # int(1.5 x 8); a mismatch stops the round and is never answered by another token count
+    null_weight: "utils/train_tools.compute_null_weight (official rule)"
+    init: "F02's untrained runs/fact_asrf_paired_v1/inits/FACT_s{k}.pt, sha256 equal to the F02 summary's runs/FACT_s{k}/init_sha256, copied bit for bit and strictly loaded: the expanded configuration, tensor names and shapes must match a fresh build; F02's final or overfit weights are never loaded"
+    optimizer: {name: Adam, lr: 1.0e-4, betas: [0.9, 0.999], eps: 1.0e-8, weight_decay: 0.0, grad_clip: 10.0}
+    schedule: {name: step, decay_at_completed_updates: 11719, factor: 0.1}   # no warm-up
+    determinism: "fp32, TF32 off, cuDNN deterministic, benchmark off, torch.use_deterministic_algorithms(True) (F02's FACT setting)"
+    rng: "seed_everything(seed) after the model and optimiser are built and before the first update (F02); resume restores the saved Python, NumPy, torch and CUDA states"
+    checkpoint: "the final weights after 18,750 updates; no epoch choice, no early stop, no extension"
+    resume: "after every epoch: parameters, optimiser, scheduler, completed updates, RNG states and records; a run continues only under the same complete identity"
+    decoding: "the official output of the last block (Block._eval with the gtea.yaml mwt) on an all-zero label sequence; no B3, no mwt, switch-cost or threshold search"
+    diagnostic_readout: "the same weights' frame-branch argmax of the last block; a readout of the trained system, not a token-free ablation"
+  monitor: "after every epoch, on A01's 16 fixed training check sequences (the first 8 native crops and the first 8 constructed streams): each loss term, frame accuracy, segment F1@50 and exact transcripts, with the epoch's gradient norms and learning rate; a training-fit diagnostic that never selects or extends anything (it differs from F02's monitor set)"
+  train_fit: "after the freeze, the official decoding of all 1,500 training streams per seed: frame accuracy, segment F1@50, exact transcripts and the missed reference segments by length and class; it locates under-fitting only and never adds budget, updates or Breakfast"
+  checks:
+    sources: "every pin, the A01 records, the A05 full cache hashes, the official checkout and its tracked files, F02's initial states"
+    batches: "in the preparation (CPU): all 50 epochs' structure digests per seed against A01's plan; every batch of every epoch unpadded and compared element by element with its sequences; float32 spot checks against bounded reads of the source cache"
+    token_rule: "recomputed from the training labels: longest 8, average 2.654333333333333, ntoken 12"
+    init: "strict load of the copied F02 initial state; tensor names and shapes equal a fresh build"
+    padding: "padded labels and features changed with the valid samples kept: the official loss (same RNG state, training mode) and the eval-mode predictions do not change"
+    isolation: "five label sequences (reference, zeros, random, time-reversed, one sample) on the 16 check sequences and the first 200 constructed streams, at the initial and the overfit state: identical predictions, frame and token logits, and the adapter's zero-label decode equals them"
+    reproducibility: {device: GPU, updates: 6, resume: "3 + 3 against 6, through a saved resume file", objects: "the six update losses and every parameter", tolerance: 1.0e-6,
+                      rule: "a larger difference is located and reported; no tolerance is raised and no precision changed to start the runs"}
+    smoke:
+      updates: 2000              # at most; checked every 250 updates from update 500 and at update 2,000; it stops at the first passing check
+      check_from: 500
+      check_every: 250
+      batches: "the 16 check sequences in two fixed batches of 8, alternating"
+      optimiser: "Adam at a constant lr 1e-4 with the formal betas, eps, weight decay and clip; official augmentation on; seed 0; from the seed-0 initial state"
+      requirements: "every predicted transcript equals the reference, segment F1@50 is 1 for all 16, the matching is one to one and every matched token predicts its segment's view; the official loss need not approach zero"
+      failure: "the fit curve is saved and this round stops; no extra updates, no other optimiser"
+      weights: "smoke weights never initialise a formal run"
+    timing: {warmup_updates: 5, timed_updates: 50, batches: "seed 0, epoch 0, from the seed-0 initial state; measured first in the check, before the other GPU checks",
+             projection: "per-update time fitted to the batch's valid samples on the 50 timed updates and applied to every seed's planned batches, plus the per-epoch monitor and save time",
+             post_training: "measured FACT and control (A01 ASRF and MS-TCN) decoding seconds per sample on training streams, times the samples of the real passes: FACT decodes the 1,500 training streams per seed, each development half once (its outputs are saved and reused) and one GPU fact-check pass over both halves; the controls run in the calibration stage, the dry run and the selection stage; A01's recorded half sizes (37,287 selection and 34,216 calibration samples); plus 0.05 h of stage overhead after A05's recorded evaluation stages (0.006 to 0.019 GPU h each)"}
+  budget:                        # cumulative for A06 v1 + R1, not a new budget
+    gpu_hours_max: 12.0
+    gpu_reserve_hours: 1.25
+    cpu_hours_max: 4.0
+    inherited_ledgers:           # read, never written; their sha256 and totals fix the boundary of the v1 costs
+      - {path: runs/fact_video_feature_v1/ledger.jsonl, sha256: 7e90dc535c40e5b573308b871a47b279df76e90d5204b9762b696bc9a8215117, lines: 9,
+         gpu_hours: 0.3389764675166872, cpu_hours: 0.8995401660601299}
+    revalidation_gpu_hours_max: 0.05   # the new GPU checks of this revision
+    rule: "before the queue and before every run: the cumulative spent GPU hours (v1 and R1 ledgers) + the remaining runs (the larger of the old and the new measured projection and the slowest finished run) + the remaining post-training work (the larger of the old and the new estimate) + the reserve must stay within 12; otherwise nothing new starts and the progress is saved and reported; no run is shortened, no control dropped and no budget added"
+    ledger: runs/fact_video_feature_v2/ledger.jsonl   # this revision's new stages only
+  revalidation:                  # small new checks of the new path; no repeated or extended smoke; never a formal initialisation
+    reproducibility: {device: GPU, updates: 6, resume: "3 + 3 against 6, through a saved resume file", objects: "the six update losses and every parameter", tolerance: 1.0e-6, init: "the seed-0 untrained initial state", batches: "seed 0, epoch 0"}
+    padding: "one formal mixed batch (4 streams and 4 native crops): padded labels and features changed, the training-mode loss under the same RNG state and the eval-mode predictions unchanged, and the optimiser bound to the trained model"
+    timing: "5 warm-up and 50 formal updates of seed 0 epoch 0, with the per-epoch monitor and save and the FACT and control decoding times per sample; the projection uses the larger of the old and the new values"
+    inherited: "the old check's isolation under five label sequences at the initial and the overfit state, its gradient record (three explained zero-gradient parameters) and its final update-2,000 smoke rows, verified field by field and cited with their sha256"
+  evaluation:
+    after: "all three final FACT heads frozen with scripts/freeze_model.py; only then are development arrays, labels or saved outputs opened"
+    reader: "A05's scripts/report_segment_objective.py::DevAccess and dev_half (bounded seeks over A01's combined development cache) and A03's half_index, meta_stream and half_sets, imported read-only"
+    forbidden: ["report_center_supervision.validation", "dev_run.Inputs", "A01's eager development loader dev_features", "any video encoder construction, forward or feature extraction"]
+    parity: "on each half when it is opened: the seed's source classifier on the cached window features against V01's saved window logits, max |difference| <= 1e-4 and argmax equal"
+    controls: >-
+      historical frozen controls with their stored settings, reproduced exactly against A01's stored rows before use
+      (calibration first; selection only after the barrier): A01 ASRF s{k} (official refinement), A01 Linear + B3 s{k}
+      (A01's stored B3 setting; it equals A05's F, so A05 is not repeated as a control), A01 MS-TCN s{k} (official
+      argmax) and frozen Ordered + B3 s{k} (V01's saved probabilities and stored setting); their argmax rows are listed
+    stored_rows: "E0 + B3, E1 + B3, B7 + B3 and F02's FACT (A01's 'Original FACT s{k}') as stored rows from A01's pinned summary, labelled as whole-input-source replacements; their image-feature inputs need loaders this round forbids, so they are listed, not recomputed and not silently dropped"
+    manifest: "after the calibration stage, its dry run and the table-driven reading tests: every model and source sha256, the fixed official decoding, the control settings and the reading definitions in evaluation_manifest.json, committed; there is no candidate choice"
+    barrier: "--selection needs the manifest's sha256 and commit; it verifies the committed manifest's git-object proof (commit, trees and blob, made locally from a commit in the local history and copied to the server without a push) and the current provenance before the selection half is opened; it is opened once, an interrupted run may reuse saved outputs of the same identity, and every opening is recorded"
+    dry_run: "before the manifest commit, the selection pipeline with the calibration half standing in for both halves; the selection half is not read and nothing reaches the results"
+    primary: "FACT - A01 ASRF, multi segment F1@50, paired by seed, per half"
+    mandatory: ["FACT - A01 Linear + B3", "FACT - frozen Ordered + B3", "FACT - A01 MS-TCN"]
+    secondary: "F02 FACT and E0 / E1 / B7 + B3 as stored rows; FACT's frame-branch argmax and token counts as diagnostics"
+    populations: [native, pairs, multi]
+    metrics: ["multi segment F1@50", "multi boundary F1", "multi boundary recall", "native macro-F1", "native cuts per clip", "same-class cut rate"]
+    counts: ["multi FP segments", "multi FN segments"]        # reported with their paired intervals beside the six metrics
+    bootstrap: {draws: 2000, seed: 20261002, native: session, streams: stream}
+    consistent: "all three seeds' 95% intervals strictly exclude zero on the same side within one half; anything else is no consistent difference detected (not equality); seeds are not extra cases"
+    accounting: >-
+      reference segments recovered and lost and unmatched predicted segments against every control, per population, with
+      distinct source recordings and sessions; segments of at most 16 samples and A4C/A5C X-Y-X middles with their raw
+      denominators; counts on fewer than 10 sessions flagged; native confusions counted in both directions
+  goal:
+    selection_min: 0.944409687184662
+    calibration_min: 0.9821421709894332
+    calibration_sensitivity: 0.9838935784747763
+    boundary_recall_min: 0.95
+    native_macro_f1_min: {selection: 0.973, calibration: 0.980}
+    rule: "three-seed means at or above both minimums and, in every seed and half, boundary recall >= 0.95 and native macro-F1 at the floor; FACT has no B3 feasibility condition because its main output has no B3, and the floors are not relaxed for it; passing the old goal does not replace the comparison with the strong reference"
+  readings:                      # nonexclusive, fixed before implementation, applied once after the selection evaluation
+    complete_system_progress: "FACT - A01 ASRF, FACT - A01 Linear + B3 and FACT - frozen Ordered + B3 are consistent positive in multi segment F1@50 in both halves, every seed and half meets the recall and native floors, and the goal's means are met; at most a system advance on this development protocol, never originality, clinical validity or a causal contribution of cross-attention"
+    learned_system_gain_without_strong_reference_win: "FACT - A01 ASRF and FACT - A01 Linear + B3 are consistent positive in both halves while complete_system_progress does not hold; the failed condition (frozen Ordered comparison, a floor or the goal) is named; no overall win is claimed"
+    one_half_or_local_effect: "(a) any of the four F1 comparisons (A01 ASRF, A01 Linear + B3, frozen Ordered + B3, A01 MS-TCN) is consistent positive in at least one half, or (b) only point estimates improve: pooled over seeds, FACT recovers more reference segments than it loses (all segments, segments of at most 16 samples, or A4C/A5C X-Y-X middles) against A01 ASRF, A01 Linear + B3 or frozen Ordered + B3 in a half, counted separately for native clips, pair streams and multi streams; every item is listed with its population, denominator and intervals, and point estimates are kept apart from consistent evidence"
+    trade_off: "in some seed and half, against A01 Linear + B3 or frozen Ordered + B3, FACT recovers at least one reference segment while it also has a new unmatched predicted segment, a lower native macro-F1 point estimate or a recall or native floor failure in that seed and half; the counts and intervals of those cells are listed; it describes coexistence, needs no cross-seed significance and proves no cause; without this pattern it is not applied"
+    uncertain_or_no_qualifying_gain: "complete_system_progress does not hold; the primary comparison's direction in each half is reported; no interval containing zero is called equality, and one configuration never rejects a model family"
+    end: "after the one report this official GTEA, video-feature and budget combination closes; no extra seed, Breakfast configuration, more tokens or layers, encoder fine-tuning, loss, optimiser, epoch or decoder search, reference boundaries, boundary subdivision, teacher, gate or fusion follows automatically"
+  outputs:
+    root: runs/fact_video_feature_v2
+    checkpoints: checkpoints/fact_video_feature_v2
+    frozen: models_frozen/fact_video_feature_v2/FACT_s{seed}
+    results_dir: docs/results/2026-10-15_fact_video_feature_revised_gate
+    manifest: docs/results/2026-10-15_fact_video_feature_revised_gate/evaluation_manifest.json   # committed; its server twin is runs/fact_video_feature_v2/evaluation/evaluation_manifest.json
+    manifest_proof: runs/fact_video_feature_v2/evaluation/manifest_proof.json      # made locally from the commit, copied to the server
