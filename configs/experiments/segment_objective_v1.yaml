@@ -1,0 +1,144 @@
+# Segment-balanced and transcript-forward training (docs/superpowers/plans/2026-10-14-segment-objective-training.md).
+# Fixed before any code, training-library count, head preparation or loss comparison of this round. Three matched
+# five-class Linear(512, 5) heads per seed (2,565 trainable parameters each) on each seed's frozen V01 Ordered video
+# features: F (frame-weighted CE, the A01 linear control), B (segment-balanced CE) and O (B plus a transcript-forward term).
+# The whole video encoder and its 512-d features stay unchanged; nothing is re-extracted. Labels, runs and transcripts
+# serve the training losses and the report only; inference reads the features and the valid length.
+#
+# Inherits model_development_v2.yaml only for the protocol keys (10 Hz, the 0.5 s boundary tolerance) and the decoding
+# grid, as A01 did.
+extends: model_development_v2.yaml
+run_name: segment_objective_v1
+experiment: segment_objective_v1
+
+segment_objective:
+  task_sheet: {path: docs/superpowers/plans/2026-10-14-segment-objective-training.md,
+               sha256: 98fd5b6af816a777141e7f59deb6d4077649de9a8d23135f422f8ebc5cd3f948}
+  predecessors:                  # docs/EXPERIMENT_INDEX.md; their reports, choices, models and stopping decisions stay unchanged
+    V01: "frozen Ordered MViT video representation with the simple decoder; the strongest current reference"
+    A01: "the same frozen video features with frame-weighted Linear, ASRF and MS-TCN heads; no consistent segment gain; F replicates its linear condition"
+    A02: "anchor-label training of the time tokens; closed"
+    A03: "direct time-token readout; local gain only; closed; its metadata-only helpers are reused"
+    A04: "attribution: most corrected mixed requests lay in segments already matched; motivates counting recovered and lost segments, proves nothing about A05"
+    F02_F04: "FACT segment-token matching on E1 image features; a different model and input; stored rows only"
+    closed: ["R03 boundary separation", "R13 residuals", "R17 fixed-output decoding", "S01-S05 fragment classification and calibration"]
+    change: "only the training objective of the same Linear(512, 5) head on the same frozen features, batches, initial states and optimiser"
+  source:                        # mismatches stop the round and are reported, never repaired by changing data
+    a01_config: {path: configs/experiments/video_feature_temporal_v1.yaml, sha256: 3b065e7fe908ca7432ba0a407fd6b82432882c1d72dabd1d22b899b79d790690}
+    a01_preparation: {path: docs/results/2026-10-12_video_feature_temporal/preparation.json, sha256: 5f7d48db3a3b2f54f0788d9dc66a53dae2ff3dbf5105d9c1033b78a2f417d021}
+    a01_summary: {path: docs/results/2026-10-12_video_feature_temporal/summary.json, sha256: 3a1601512bc423a6ad97b5c88ed29e8ebf949a6df802bc0a76fb6fc13c503acf}
+    a04_readme: {path: docs/results/2026-10-14_token_stability_attribution/README.md, sha256: 52a81cefa4dee51ddea202fcc37536ecbb6dde7c4e788cce0a72c4d38c58957d}
+    a04_summary: {path: docs/results/2026-10-14_token_stability_attribution/summary.json, sha256: 87a60003962995d6dc093b7de7804a89587a6d53532b484dac925875d1852639}
+    a01_server_preparation: runs/video_feature_temporal_v1/preparation.json     # must equal the pinned results copy byte for byte
+    a01_records: >-
+      through the pinned A01 preparation record: plans/plan_s{k}.json (sha256), inits/linear_s{k}.pt (sha256, 2,565
+      parameters), features/train/ordered_s{k}.npz (identity) and features/train/sequences.npz (sha256); through the pinned
+      A01 summary: the frozen A01 heads' final sha256 and A01 Linear's B3 choices; through the pinned A01 configuration:
+      the V01 frozen models, the V01 saved development outputs, the protocol and the window plans
+    a03_config: {path: configs/experiments/trained_token_readout_v1.yaml, sha256: c2e90d605316a2c7d9679728464dbf3a534a7eafc6ea0760a966025be72fc8b4}   # the clip index pin for A03's metadata helpers
+    development_caches: "runs/video_feature_temporal_v1/features/development/ordered_s{k}.npz; only their file sha256 is recorded before all nine heads freeze; their members are opened afterwards"
+    full_hashes: "the preparation record pins the full sha256 of every training and development cache, plan, initial state and sequence file it uses"
+    environment: {python: 3.12.3, numpy: 2.5.2, pandas: 3.0.5, scipy: 1.18.1, torch: 2.14.0+cu130, torchvision: 0.29.0+cu130, cuda: "13.0", cudnn: 92400}
+  arms:
+    order: [frame, segment, order]
+    names: {frame: F (frame-weighted CE), segment: B (segment-balanced CE), order: O (segment-balanced CE + transcript-forward)}
+    primary: "O - B"
+  seeds: [0, 1, 2]
+  data:                          # A01's training data and batch rule, read through A01's own read-only code
+    features: "seed k's heads read only features/train/ordered_s{k}.npz (float32, (T, 512), nearest stride-5 window feature per 10 Hz sample); no re-encoding, normalisation or augmentation"
+    sequences: "the 3,364 native training recordings and the 1,500 bank streams of A01's sequence file; labels and joins only from that file"
+    epochs: 50
+    updates_per_epoch: 375
+    total_updates: 18750
+    streams_per_batch: 4
+    natives_per_batch: 4
+    native_window: 256
+    native_per_epoch: 1500
+    batches: "A01's Batches.epoch(seed, epoch, ...) through A01's TrainSet; every update's batch digest must equal A01's plan of the seed; the three arms of a seed read bit-identical batches"
+    check_sequences: "A01's 16 training check sequences (the first 8 native crops of at most 256 samples from sample 0 and the first 8 bank streams)"
+  model:
+    head: "torch.nn.Linear(512, 5) applied at every position; 2,565 trainable parameters; no dropout, no extra layer, head or parameter"
+    init: "a bit-identical copy of A01's pinned inits/linear_s{k}.pt (itself the seed's V01 final source classifier) for each arm; never an A01 trained head, an A02 model or a new random state"
+    inference: "per-sample softmax of the head on the features and the valid length only; no transcript, label, join, native or mixed flag or id"
+  objectives:
+    notation: "per sequence n: valid length T_n, logits z[t, c], logp = log_softmax(z), reference labels r[t], reference runs R_n (adjacent equal classes merged, also across a recording join; X-Y-X keeps three runs) and transcript y_n = the classes of R_n; alpha = A01's per-seed class weights from the pinned plan (five finite positive values, never re-estimated); e[t] = -logp[t, r[t]]; padding excluded everywhere"
+    F: "L_F = sum_n sum_t alpha[r[t]] e[t] / sum_n sum_t alpha[r[t]] (A01's masked weighted cross-entropy)"
+    B: "D_n = sum_(r in R_n) alpha[class(r)]; L_B = sum_n sum_(r in R_n) alpha[class(r)] mean_(t in r) e[t] / sum_n D_n"
+    O: "P(y | x) = sum over all paths k[0:T] that start in state 0, end in state K - 1 and stay or advance exactly one state per sample of prod_t p[t, y[k[t]]]; q_n = -log P(y_n | x_n) / T_n; L_order = sum_n D_n q_n / sum_n D_n; L_O = (L_B + 0.5 L_order) / 1.5"
+    coefficient: 0.5             # an operational choice, not tuned; no sweep follows
+    recursion: "the task sheet's log-space cumulative-sum recursion with logcumsumexp; positive durations only; no blank, no sixth class, no zero-length state, no zero_infinity, no Viterbi or max, no duration prior, no transcript decoder"
+    rejections: "an empty sequence, a transcript longer than its sequence, adjacent repeated states or a class outside 0-4 stop with an error; no sample is skipped"
+    numerics: "head weights and feature arithmetic fp32 with TF32 off (as A01); in every arm the objective is accumulated in float64 from the same fp32 log-softmax values, with the class weights as the plan's float64 values (A01 rounded them to float32 inside its fp32 cross-entropy); differences from A01's computation are measured and reported, never chosen after results"
+  training:
+    optimiser: {name: AdamW, lr: 3.0e-4, weight_decay: 1.0e-4, betas: [0.9, 0.999], eps: 1.0e-8, grad_clip: 1.0}
+    schedule: {name: warmup_cosine, warmup_updates: 750}
+    rng: "seed_everything(seed) right before the first update; Python, NumPy, torch CPU and CUDA states saved and restored on resume"
+    determinism: "fp32, TF32 off, cuDNN deterministic, benchmark off, use_deterministic_algorithms(True, warn_only=True)"
+    checkpoint: "the final weights after 18,750 updates; no early stopping, epoch choice or development data during training"
+    resume: "after every epoch a complete state (parameters, optimiser, scheduler, completed updates, RNG states, records); a run continues only under the same complete identity"
+    queue: [frame_s0, segment_s0, order_s0, frame_s1, segment_s1, order_s1, frame_s2, segment_s2, order_s2]
+    monitor: "after every epoch, on training data only: the arm's mean loss terms, gradient norm and learning rate; on the 16 check sequences L_F, L_B, L_order, reference-segment mean CE, native and multi argmax accuracy and the normalised transcript edit distance of the argmax output; monitors never select an epoch or trigger an extension"
+    freeze: "after the ninth run every manifest is verified and the final weights are frozen with scripts/freeze_model.py into models_frozen/segment_objective_v1/{arm}_s{seed}"
+  checks:
+    losses: "CPU float64 against enumerated positive-duration paths on T <= 6 (X-Y-X included), value and gradient tolerance 1e-9; K = 1 reduces q to mean CE; T = K has one path; P <= 1 and q <= the unweighted mean CE within 1e-9; rejections"
+    equality: "B and O give equal loss and gradients within 1e-9 (CPU float64) on all-native batches of differing lengths and classes"
+    padding: "changes of padded labels or features leave every loss, output and gradient unchanged"
+    isolation: "changing labels, transcripts, joins and ids with the same features and lengths leaves logits, probabilities and predictions unchanged"
+    replication: "F equals masked weighted CE; B is invariant to repeating identical-loss samples within a run while F's run mass changes"
+    reproducibility: {updates: 6, resume: "3 + 3 against 6", tolerance: 1.0e-6}
+    smoke: {updates: 100, batches: "check sequences 0-7 and 8-15 alternately", gate: "finite losses and gradients and changed weights; no fit threshold; no retuning"}
+    timing: {warmup_updates: 5, timed_updates: 50, batch: "the formal batches of epoch 0", includes: "the order recursion, the monitor and the epoch saving"}
+    review: "an independent implementation review verifies the equations, the dynamic programme and its gradient tests, the source and data isolation, the batching, the optimiser binding, the choices barrier and the budget before any formal run"
+  budget:
+    gpu_hours_max: 4.0           # checks, nine trainings, head inference and GPU fact-checks
+    gpu_reserve_hours: 0.75      # held in every launch projection for evaluation and review contingencies
+    cpu_hours_max: 3.0           # additional executed CPU stages: source checks, tests, bootstrap and CPU fact-checks
+    rule: "before the queue and before every run: spent GPU hours + the remaining runs at each arm's measured hours (or its slowest finished run) + the reserve must fit the cap; above it nothing new starts and the state is reported; no control is dropped, no run shortened, no seed added and no learning rate changed"
+    ledger: runs/segment_objective_v1/ledger.jsonl   # one append-only ledger; GPU and CPU stages recorded separately, failed and superseded attempts included
+  evaluation:
+    after: "all nine final heads frozen; only then are development cache members, labels or archived arrays opened"
+    metadata: "A03's half_index, meta_stream and half_sets with the pinned protocol, clip index and window plans; one half at a time"
+    forbidden: ["A01's dev_features", "report_center_supervision.validation", "dev_run.Inputs", "any video encoder construction, forward or feature extraction"]
+    development_reader: "a read-only adapter of A01's development caches (both halves concatenated): ZIP_STORED members validated, the NPY header and data offset parsed, and only the allowed half's row spans copied through a bounded read; a compressed or other layout stops the round; canary selection spans are never read during calibration"
+    parity: "on each half when it is opened: the seed's frozen source classifier on the cached window features against V01's archived window logits, max |difference| <= 1e-4 and argmax equal"
+    references: "frozen Ordered + B3 (V01's saved per-sample probabilities and stored setting) and A01 Linear + B3, MS-TCN and ASRF (their frozen heads on the cached features, A01's stored settings or official decoding) must reproduce A01's archived rows exactly, calibration before the choices and selection only after them"
+    b3:
+      grid: {half_window: [5, 7, 9, 11, 15], quantile: [0.80, 0.85, 0.90, 0.95, 0.97, 0.99, 0.995, 0.999], nms_radius: 5}
+      rule: "once per head on calibration: thresholds are quantiles of that head's calibration native B3 scores; feasible needs native macro-F1 >= 0.980 and multi boundary recall >= 0.95; the highest multi segment F1@50, exact ties to the earlier grid entry; no feasible setting fails the head (the 9 / 0.95 diagnostic never passes)"
+    barrier: "all choices and their provenance are committed before any selection probability or metric exists; the selection stage requires the committed choices file's sha256 and a git object proof (the raw commit, tree and blob objects, made locally from a commit in the local history and copied to the server without a push) that the commit holds exactly that file, and it rejects missing, uncommitted or changed choices, sources, models or configuration"
+    dry_run: "before the choices are committed, a code check of the selection pipeline with the calibration half standing in for both halves; the selection half is not read and nothing reaches the results"
+    primary: "O - B multi segment F1@50 with B3, per seed and half"
+    mandatory: ["B - F", "O - F", "O - frozen Ordered + B3", "B - frozen Ordered + B3"]
+    disclosed: ["F - A01 Linear + B3 (replication and numerics)", "F - frozen Ordered + B3"]
+    sensitivity: ["direct argmax", "probabilities decoded with the seed's stored frozen Ordered numeric B3 setting"]
+    stored_rows: "other archived references (E0/E1/B7 + B3, historical E1 + ASRF, paired ASRF, Original FACT) are listed from A01's summary, never re-tuned"
+    metrics: >-
+      per system: TP, FP, FN and F1 for native clips, pair streams and multi streams separately (the evaluator's exact
+      greedy class-aware IoU 0.5 matching); reference segments recovered and lost against B, F and frozen Ordered;
+      segments of at most 16 samples and A4C/A5C X-Y-X middles; native macro-F1, per-class precision and recall, A4C and
+      A5C clips fixed and newly wrong; native switches; boundary precision, recall and F1 at 0.5 s; same-view join cuts;
+      normalised transcript edit distance (argmax and B3); every case also as distinct source recordings and sessions
+    bootstrap: {draws: 2000, seed: 20261002, native: session, streams: stream, metrics: ["multi segment F1@50", "native macro-F1", "multi boundary recall", "multi FP segments", "multi FN segments", "native switches per clip"]}
+    consistent: "all three seeds' 95% intervals strictly exclude zero on the same side within a half; anything else is no consistent difference detected (not equality); seeds are not extra cases"
+  goal:
+    selection_min: 0.944409687184662
+    calibration_min: 0.9821421709894332
+    calibration_sensitivity: 0.9838935784747763
+    boundary_recall_min: 0.95
+    native_macro_f1_min: {selection: 0.973, calibration: 0.980}
+    rule: "three-seed means at or above both minimums, and in every seed and half a feasible B3 setting, boundary recall >= 0.95 and native macro-F1 at the floor; unrounded values; passing the old goal alone is not superiority over frozen Ordered"
+  readings:                      # nonexclusive, applied once after the selection evaluation; fixed before implementation
+    complete_system_progress: "B or O is consistent positive in multi segment F1@50 against both F and frozen Ordered + B3 in both halves and meets every constraint and the old goal; an order-objective contribution is claimed only if O - B is also consistent positive in both halves, otherwise the candidate that progressed is named without that claim"
+    segment_balancing_effect: "B - F is consistent positive in both halves and B meets every constraint; reference and goal results are reported apart; a standard weighting change is not automatically novel"
+    order_objective_effect: "O - B is consistent positive in both halves and O meets every constraint; the effect of this extra term under this recipe, not proof that missed segments were caused by absent temporal order"
+    transcript_only_or_local_effect: "edit distance or some recovery counts improve while the primary F1 or the constraints do not; the gain is reported in its own metric and never called model success"
+    trade_off: "recovered segments come with new false-positive segments, a native classification loss or a recall-floor failure; counts and intervals are shown without forcing a cause; a better F1 below a floor is not a qualifying system"
+    uncertain_or_no_qualifying_gain: "the primary consistency conditions are not met; directions, uncertainty and one-half-only effects are kept; an interval containing zero is not equality"
+    end: "after the one report this feature, loss and budget configuration closes; no larger encoder, nonlinear head, boundary head, teacher, gate, duration prior, transcript decoder, loss-weight, epoch or learning-rate search, more seeds, new extraction or continuation follows"
+  outputs:
+    root: runs/segment_objective_v1
+    checkpoints: checkpoints/segment_objective_v1
+    frozen: models_frozen/segment_objective_v1/{arm}_s{seed}
+    results_dir: docs/results/2026-10-14_segment_objective
+    choices: docs/results/2026-10-14_segment_objective/choices.json        # committed; its server twin is runs/segment_objective_v1/calibration/choices.json
+    choices_proof: runs/segment_objective_v1/calibration/choices_proof.json  # made locally from the commit, copied to the server
