@@ -357,6 +357,13 @@ def new_checks(ctx, head, data, init_path: Path, device) -> dict:
     return rep
 
 
+def launch_identities(ctx, rule, prep: dict) -> dict:
+    """The run identities exactly as the queue, every run, the freeze, the train-fit and the report compute them: from a
+    head on which no model was built (the official FACT constructor fills the Bu/BU block sizes of the head's
+    configuration in place, and the identity hashes that configuration)."""
+    return tf.identities(ctx, tf.make_head(ctx, rule), prep)
+
+
 def new_failures(ctx, rep: dict, old_check: dict) -> list[str]:
     tol, d = float(ctx.fv["revalidation"]["reproducibility"]["tolerance"]), ctx.fv["data"]
     tests = (("reproducibility", rep["reproducibility"]["loss_max_abs"] <= tol and rep["reproducibility"]["params_max_abs"] <= tol),
@@ -399,7 +406,7 @@ def stage_check(ctx) -> None:
                for s in ctx.seeds}
     per_used = {k: max(float(old_check["hours_per_run"][k]), v) for k, v in per_new.items()}
     post_new, basis = post_hours(prep, new["decode_seconds_per_sample"], new["control_seconds_per_sample"], len(ctx.seeds))
-    post_used = max(float(old_check["post_training_hours"]), post_new); idents = tf.identities(ctx, head, prep)
+    post_used = max(float(old_check["post_training_hours"]), post_new); idents = launch_identities(ctx, rule, prep)
     hours = (time.time() - t0) / 3600
     proj = tf.projection(tf.spent_hours(ctx, "gpu") + hours, per_used, list(per_used), post_used, float(b["gpu_reserve_hours"]), float(b["gpu_hours_max"]))
     bad = failures(cpu) + new_failures(ctx, new, old_check)

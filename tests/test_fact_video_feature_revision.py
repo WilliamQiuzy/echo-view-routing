@@ -352,6 +352,27 @@ def test_the_queue_launches_under_the_launch_record_and_the_namespace(tmp_path, 
     assert not seen and "exceed" in json.loads((c2.out / "queue_status.json").read_text())["stopped"]["reason"]
 
 
+@needs_fact
+def test_the_launch_identities_match_the_queue(tmp_path, monkeypatch):
+    monkeypatch.setattr(tf, "ROOT", tmp_path); seen = []
+    c2 = tmp_ctx(V2, tmp_path / "v2", inherited=False); rule = fh.TokenRule(**RULE)
+    built = tf.make_head(c2, rule); fresh = built.cfg.dump(); built.build()
+    assert built.cfg.dump() != fresh                                     # the official constructor fills block sizes in place
+    monkeypatch.setattr(tf, "identities", lambda ctx, head, prep: {k: hashlib.sha256(head.cfg.dump().encode()).hexdigest() for k in ctx.fv["queue"]})
+    idents = rv.launch_identities(c2, rule, {})
+    write_launch(c2, True, identities=idents, hours_per_run={k: 3.4 for k in idents}, post_training_hours=0.11)
+    real_run = tf.subprocess.run
+
+    def fake_run(cmd, *a, **k):                                         # only the training launch is faked (make_head runs git)
+        if "--seed" not in cmd:
+            return real_run(cmd, *a, **k)
+        seen.append(cmd); return SimpleNamespace(returncode=1)
+    monkeypatch.setattr(tf.subprocess, "run", fake_run)
+    with pytest.raises(SystemExit, match="failed"):
+        tf.stage_queue(c2, V2)                                           # the fake first run fails after its launch
+    assert seen and tf.identities(c2, built, {}) != idents               # the queue accepted the record; a built head's would be refused
+
+
 # ----------------------------------------------------------------------------------------------- the ledgers
 def test_the_cumulative_ledger_counts_v1_once(tmp_path):
     v1 = tmp_path / "v1.jsonl"; tf.ledger_append(v1, "check", "gpu", "t", 1220.0, False); tf.ledger_append(v1, "prepare", "cpu", "t", 100.0, True)
