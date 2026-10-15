@@ -155,6 +155,12 @@ A03 kept the same weights' CLS and the frozen Ordered + simple-decoder system as
 
 A04 is a diagnosis on reused development data; it changes no model, choice, reading or stopping decision of A02 or A03, and its reference-conditioned cells are not systems. The result entry replaced the pending status after the report and an independent fact-check had confirmed the run evidence. The strong reference remains unchanged.
 
+## Authorised work A05 and why it is different
+
+| Record and condition | Status and scope | Evidence |
+|---|---|---|
+| A05, 2026-10-14. Matched objective comparison on A01's frozen Ordered video features and source-initialized five-class linear heads: frame-weighted CE (F), segment-balanced CE (B), and B plus a five-symbol transcript-forward training loss (O); three seeds and identical batches/budget. | **Pending training; no result yet.** Tests training objectives aimed at segment coverage instead of another anchor readout, density, decoder search or temporal architecture. No extra labels, blank class, encoder adaptation or transcript at inference. Reference segments and transcripts supervise training only; complete segment F1, false positives, native recognition and boundary recall govern the outcome. The standard weighting/sequence-probability ideas are not claimed as a novel architecture. A04 did not establish that this objective will help; all predecessor closures and the frozen Ordered reference remain unchanged. | [Authorised task](superpowers/plans/2026-10-14-segment-objective-training.md). Source A01 feature caches are present; configuration, formal launch and results remain unverified until execution. |
+
 ## Component names that must not be conflated
 
 | Report shorthand | What it identifies |
