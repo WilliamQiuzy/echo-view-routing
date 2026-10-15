@@ -1,0 +1,695 @@
+{
+ "revision": "A06-R1",
+ "made": "2026-10-15T15:42:34Z",
+ "code": "b548d93c2a16d3b35708ad798d1d114dbcee4665897e3b4321e6be1049315a5f",
+ "config_sha256": "d3841a09cba8d9af832c1089d3c5d97f2345ca4ffe83cb5e07a61a06b86df918",
+ "revalidation_code_sha256": "b6c727d6056162e4af6d3dc6defc87053147597dc0376cf943c8339051510550",
+ "evidence": {
+  "task_sheet": {
+   "path": "docs/superpowers/plans/2026-10-15-fact-video-feature-training.md",
+   "sha256": "cbd5f8e0d8a5bda0dc4afb27dcf29fdced8bef61b0948bfd1912ab9161fb49eb"
+  },
+  "config": {
+   "path": "configs/experiments/fact_video_feature_v1.yaml",
+   "sha256": "f9d3d51daeadcf9f9f5728bde45b8b8623bb2e07a21053c44fa657301a17f9a9"
+  },
+  "preparation": {
+   "path": "docs/results/2026-10-15_fact_video_feature/preparation.json",
+   "sha256": "94991e928ef99e1b00507ec9e5d4ccf9fe7730f9f20fdba84e3006e2b2f11c6b",
+   "server_copy": "runs/fact_video_feature_v1/preparation.json"
+  },
+  "check": {
+   "path": "docs/results/2026-10-15_fact_video_feature/checks.json",
+   "sha256": "9061032ef98c7527ef8eb46fe706f7ffe1dc82db66409e510db8c0eb00c859c1",
+   "server_copy": "runs/fact_video_feature_v1/checks.json"
+  },
+  "readme": {
+   "path": "docs/results/2026-10-15_fact_video_feature/README.md",
+   "sha256": "72089029ad49160d1a59a59e777cde3d0e46da0053b76ba01b8b7f125a947849"
+  }
+ },
+ "science": {
+  "equal": [
+   "seeds",
+   "data",
+   "fact",
+   "monitor",
+   "train_fit",
+   "evaluation",
+   "goal",
+   "readings",
+   "source",
+   "queue",
+   "checks"
+  ],
+  "changed": [
+   "budget",
+   "outputs",
+   "predecessors",
+   "revalidation",
+   "revision",
+   "task_sheet"
+  ]
+ },
+ "old_code": {
+  "commit": "3d2ea49f33c7c16b9b04a746ec0d92ea5e5c3cf4",
+  "digest": "ae7531732dd0ea8be0a3aa09b9f94f236cac5006cf15163bb36de2d36d548546",
+  "export_made": "2026-10-15T15:16:27Z",
+  "comparison": {
+   "ok": true,
+   "modules": {
+    "echo_routing/temporal/fact_head.py": {
+     "identical": true,
+     "old_sha256": "e47baf4309f963f8cbe30783b6317e70fffbcd3953fbea33cc087f7515fe1651",
+     "new_sha256": "e47baf4309f963f8cbe30783b6317e70fffbcd3953fbea33cc087f7515fe1651"
+    },
+    "scripts/train_fact_asrf.py": {
+     "identical": true,
+     "old_sha256": "a15fa83924cf90e052bc570ea3cc7d4db6acea555efc5b16e7589292bd7ed962",
+     "new_sha256": "a15fa83924cf90e052bc570ea3cc7d4db6acea555efc5b16e7589292bd7ed962"
+    },
+    "scripts/fact_integration.py": {
+     "identical": true,
+     "old_sha256": "0e39a2f9d02ea69c2ab534b7b52d1602fa18aad3fc9dda24bc87ee62ba5c5a4c",
+     "new_sha256": "0e39a2f9d02ea69c2ab534b7b52d1602fa18aad3fc9dda24bc87ee62ba5c5a4c"
+    },
+    "scripts/train_l1_asrf.py": {
+     "identical": true,
+     "old_sha256": "f3b90c8366dff606e06d09fc4bb22290bedfff2609c748d9f16fa411141dbfb1",
+     "new_sha256": "f3b90c8366dff606e06d09fc4bb22290bedfff2609c748d9f16fa411141dbfb1"
+    },
+    "scripts/train_segment_objective.py": {
+     "identical": true,
+     "old_sha256": "7ee9502efc5347f1d52fb209cbf4acccffaf33688126c58a8b046dd161be72ff",
+     "new_sha256": "7ee9502efc5347f1d52fb209cbf4acccffaf33688126c58a8b046dd161be72ff"
+    },
+    "scripts/train_video_feature_temporal.py": {
+     "identical": true,
+     "old_sha256": "2b4892ff3fc8601518f17e605ce0eacc0fbbd67653400914f3981f7683e7cb72",
+     "new_sha256": "2b4892ff3fc8601518f17e605ce0eacc0fbbd67653400914f3981f7683e7cb72"
+    },
+    "scripts/prepare_video_feature_temporal.py": {
+     "identical": true,
+     "old_sha256": "e570b44e76ad8d6eaef4caf9eb6d64f395c000873ff6ac92fef1df5afef0b155",
+     "new_sha256": "e570b44e76ad8d6eaef4caf9eb6d64f395c000873ff6ac92fef1df5afef0b155"
+    },
+    "echo_routing/temporal/dev_data.py": {
+     "identical": true,
+     "old_sha256": "f8b17e996fda42622166a34147435bae3729ce4ccc55ff4a1bafa4fc4d202292",
+     "new_sha256": "f8b17e996fda42622166a34147435bae3729ce4ccc55ff4a1bafa4fc4d202292"
+    },
+    "echo_routing/temporal/dev_train.py": {
+     "identical": true,
+     "old_sha256": "8d6e80ada58cd230b28c89bf2ddc912ce825ce0464b0c2b0824c379be102977d",
+     "new_sha256": "8d6e80ada58cd230b28c89bf2ddc912ce825ce0464b0c2b0824c379be102977d"
+    },
+    "echo_routing/temporal/video_sequence_features.py": {
+     "identical": true,
+     "old_sha256": "91e239f50bf96da7a691b4ab3a3cfd5da55c4bf71fe2310959ecf163de211440",
+     "new_sha256": "91e239f50bf96da7a691b4ab3a3cfd5da55c4bf71fe2310959ecf163de211440"
+    },
+    "scripts/train_fact_video_feature.py": {
+     "identical": false,
+     "old_sha256": "c26168f7d81c00eacf7148d4e6001f475924a9e2eefd1060ecd14d765f36a591",
+     "new_sha256": "1b71549f9fbae5fe7c086601b3f0475e2904d77ceaec0aa611992f9f95f6674e"
+    }
+   },
+   "train_script": {
+    "changed": [
+     "Ctx.__init__",
+     "identity",
+     "identity_payload",
+     "main",
+     "preconditions",
+     "run_stage",
+     "stage_check",
+     "stage_queue",
+     "term_values"
+    ],
+    "added": [
+     "inherited_ledger_hours",
+     "launch_record",
+     "revision_identity",
+     "spent_hours",
+     "token_stats"
+    ],
+    "removed": [],
+    "identical": [
+     "<module>",
+     "Ctx.<class>",
+     "Ctx.a01",
+     "Ctx.config_sha",
+     "Ctx.json_pin",
+     "batch_loss",
+     "check_batches",
+     "check_fact",
+     "check_rule",
+     "code_digest",
+     "control_seconds_per_sample",
+     "copy_init",
+     "fit_time",
+     "identities",
+     "identity_of",
+     "library",
+     "make_head",
+     "max_diff",
+     "monitor",
+     "new_model",
+     "official_state",
+     "overfit",
+     "padding_check",
+     "pinned",
+     "plot_smoke",
+     "projection",
+     "read_record",
+     "resume_check",
+     "rule_of",
+     "run_hours",
+     "run_key",
+     "run_state",
+     "run_updates",
+     "smoke_due",
+     "smoke_passed",
+     "spot_check",
+     "stage_prepare",
+     "strict_init",
+     "timing",
+     "train"
+    ],
+    "disallowed": []
+   },
+   "disallowed": []
+  }
+ },
+ "gate": {
+  "passed": true,
+  "common": true,
+  "rows": [
+   {
+    "index": 0,
+    "kind": "native",
+    "segments": 1,
+    "tokens_used": 0,
+    "matched_token_class_correct": 0.0,
+    "transcript_exact": true,
+    "segment_f1_50": 1.0,
+    "match_one_to_one": true,
+    "unmatched_tokens_null": 1.0,
+    "result": "official fallback"
+   },
+   {
+    "index": 1,
+    "kind": "native",
+    "segments": 1,
+    "tokens_used": 1,
+    "matched_token_class_correct": 1.0,
+    "transcript_exact": true,
+    "segment_f1_50": 1.0,
+    "match_one_to_one": true,
+    "unmatched_tokens_null": 1.0,
+    "result": "tokens right"
+   },
+   {
+    "index": 2,
+    "kind": "native",
+    "segments": 1,
+    "tokens_used": 1,
+    "matched_token_class_correct": 1.0,
+    "transcript_exact": true,
+    "segment_f1_50": 1.0,
+    "match_one_to_one": true,
+    "unmatched_tokens_null": 1.0,
+    "result": "tokens right"
+   },
+   {
+    "index": 3,
+    "kind": "native",
+    "segments": 1,
+    "tokens_used": 12,
+    "matched_token_class_correct": 1.0,
+    "transcript_exact": true,
+    "segment_f1_50": 1.0,
+    "match_one_to_one": true,
+    "unmatched_tokens_null": 0.0,
+    "result": "tokens right"
+   },
+   {
+    "index": 4,
+    "kind": "native",
+    "segments": 1,
+    "tokens_used": 0,
+    "matched_token_class_correct": 0.0,
+    "transcript_exact": true,
+    "segment_f1_50": 1.0,
+    "match_one_to_one": true,
+    "unmatched_tokens_null": 1.0,
+    "result": "official fallback"
+   },
+   {
+    "index": 5,
+    "kind": "native",
+    "segments": 1,
+    "tokens_used": 1,
+    "matched_token_class_correct": 1.0,
+    "transcript_exact": true,
+    "segment_f1_50": 1.0,
+    "match_one_to_one": true,
+    "unmatched_tokens_null": 1.0,
+    "result": "tokens right"
+   },
+   {
+    "index": 6,
+    "kind": "native",
+    "segments": 1,
+    "tokens_used": 0,
+    "matched_token_class_correct": 0.0,
+    "transcript_exact": true,
+    "segment_f1_50": 1.0,
+    "match_one_to_one": true,
+    "unmatched_tokens_null": 1.0,
+    "result": "official fallback"
+   },
+   {
+    "index": 7,
+    "kind": "native",
+    "segments": 1,
+    "tokens_used": 1,
+    "matched_token_class_correct": 1.0,
+    "transcript_exact": true,
+    "segment_f1_50": 1.0,
+    "match_one_to_one": true,
+    "unmatched_tokens_null": 1.0,
+    "result": "tokens right"
+   },
+   {
+    "index": 8,
+    "kind": "stream",
+    "segments": 4,
+    "tokens_used": 4,
+    "matched_token_class_correct": 1.0,
+    "transcript_exact": true,
+    "segment_f1_50": 1.0,
+    "match_one_to_one": true,
+    "unmatched_tokens_null": 1.0,
+    "result": "tokens right"
+   },
+   {
+    "index": 9,
+    "kind": "stream",
+    "segments": 3,
+    "tokens_used": 3,
+    "matched_token_class_correct": 1.0,
+    "transcript_exact": true,
+    "segment_f1_50": 1.0,
+    "match_one_to_one": true,
+    "unmatched_tokens_null": 1.0,
+    "result": "tokens right"
+   },
+   {
+    "index": 10,
+    "kind": "stream",
+    "segments": 1,
+    "tokens_used": 0,
+    "matched_token_class_correct": 0.0,
+    "transcript_exact": true,
+    "segment_f1_50": 1.0,
+    "match_one_to_one": true,
+    "unmatched_tokens_null": 1.0,
+    "result": "official fallback"
+   },
+   {
+    "index": 11,
+    "kind": "stream",
+    "segments": 5,
+    "tokens_used": 5,
+    "matched_token_class_correct": 1.0,
+    "transcript_exact": true,
+    "segment_f1_50": 1.0,
+    "match_one_to_one": true,
+    "unmatched_tokens_null": 1.0,
+    "result": "tokens right"
+   },
+   {
+    "index": 12,
+    "kind": "stream",
+    "segments": 4,
+    "tokens_used": 4,
+    "matched_token_class_correct": 1.0,
+    "transcript_exact": true,
+    "segment_f1_50": 1.0,
+    "match_one_to_one": true,
+    "unmatched_tokens_null": 1.0,
+    "result": "tokens right"
+   },
+   {
+    "index": 13,
+    "kind": "stream",
+    "segments": 6,
+    "tokens_used": 6,
+    "matched_token_class_correct": 1.0,
+    "transcript_exact": true,
+    "segment_f1_50": 1.0,
+    "match_one_to_one": true,
+    "unmatched_tokens_null": 1.0,
+    "result": "tokens right"
+   },
+   {
+    "index": 14,
+    "kind": "stream",
+    "segments": 6,
+    "tokens_used": 6,
+    "matched_token_class_correct": 1.0,
+    "transcript_exact": true,
+    "segment_f1_50": 1.0,
+    "match_one_to_one": true,
+    "unmatched_tokens_null": 1.0,
+    "result": "tokens right"
+   },
+   {
+    "index": 15,
+    "kind": "stream",
+    "segments": 5,
+    "tokens_used": 5,
+    "matched_token_class_correct": 1.0,
+    "transcript_exact": true,
+    "segment_f1_50": 1.0,
+    "match_one_to_one": true,
+    "unmatched_tokens_null": 1.0,
+    "result": "tokens right"
+   }
+  ],
+  "groups": {
+   "single": {
+    "rows": 9,
+    "all_null": 4,
+    "tokens_used": [
+     0,
+     1,
+     1,
+     12,
+     0,
+     1,
+     0,
+     1,
+     0
+    ],
+    "segments": [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "matched_token_class_correct": [
+     0.0,
+     1.0,
+     1.0,
+     1.0,
+     0.0,
+     1.0,
+     0.0,
+     1.0,
+     0.0
+    ],
+    "unmatched_tokens_null": [
+     1.0,
+     1.0,
+     1.0,
+     0.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ]
+   },
+   "multi": {
+    "rows": 7,
+    "all_null": 0,
+    "tokens_used": [
+     4,
+     3,
+     5,
+     4,
+     6,
+     6,
+     5
+    ],
+    "segments": [
+     4,
+     3,
+     5,
+     4,
+     6,
+     6,
+     5
+    ],
+    "matched_token_class_correct": [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ],
+    "unmatched_tokens_null": [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0
+    ]
+   }
+  },
+  "official_fallback": [
+   0,
+   4,
+   6,
+   10
+  ],
+  "rejected": []
+ },
+ "inherited": {
+  "source": {
+   "path": "docs/results/2026-10-15_fact_video_feature/checks.json",
+   "sha256": "9061032ef98c7527ef8eb46fe706f7ffe1dc82db66409e510db8c0eb00c859c1",
+   "started": "2026-10-15T06:08:23Z",
+   "finished": "2026-10-15T06:28:43Z"
+  },
+  "passed": true,
+  "failed_only": [
+   "matched_classes_right"
+  ],
+  "zero_gradients": [
+   "block_list.0.action_branch.layers.0.norm1.weight",
+   "block_list.0.action_branch.layers.0.self_attn.in_proj_weight",
+   "block_list.0.action_branch.layers.0.self_attn.out_proj.weight"
+  ],
+  "fields": {
+   "reproducibility.loss_max_abs": {
+    "value": 0.0,
+    "ok": true
+   },
+   "reproducibility.params_max_abs": {
+    "value": 0.0,
+    "ok": true
+   },
+   "resume.params_max_abs": {
+    "value": 0.0,
+    "ok": true
+   },
+   "resume.losses_max_abs": {
+    "value": 0.0,
+    "ok": true
+   },
+   "resume.first_half_losses_max_abs": {
+    "value": 0.0,
+    "ok": true
+   },
+   "resume.completed_before": {
+    "value": 3,
+    "ok": true
+   },
+   "resume.bound": {
+    "value": true,
+    "ok": true
+   },
+   "resume.lr_equal": {
+    "value": true,
+    "ok": true
+   },
+   "optimizer_matches_config": {
+    "value": true,
+    "ok": true
+   },
+   "optimizer.bound": {
+    "value": true,
+    "ok": true
+   },
+   "padding.padded_positions": {
+    "value": 831,
+    "ok": true
+   },
+   "padding.loss_diff": {
+    "value": 0.0,
+    "ok": true
+   },
+   "padding.predictions_equal": {
+    "value": true,
+    "ok": true
+   },
+   "zero_or_missing_gradients": {
+    "value": [
+     "block_list.0.action_branch.layers.0.norm1.weight",
+     "block_list.0.action_branch.layers.0.self_attn.in_proj_weight",
+     "block_list.0.action_branch.layers.0.self_attn.out_proj.weight"
+    ],
+    "ok": true
+   },
+   "isolation_initial.changed_predictions": {
+    "value": 0,
+    "ok": true
+   },
+   "isolation_initial.max_abs_logit_difference": {
+    "value": 0.0,
+    "ok": true
+   },
+   "isolation_initial.adapter_decode_differs": {
+    "value": 0,
+    "ok": true
+   },
+   "isolation_initial.coverage": {
+    "value": {
+     "sequences": 216,
+     "comparisons": 864
+    },
+    "ok": true
+   },
+   "isolation_overfit.changed_predictions": {
+    "value": 0,
+    "ok": true
+   },
+   "isolation_overfit.max_abs_logit_difference": {
+    "value": 0.0,
+    "ok": true
+   },
+   "isolation_overfit.adapter_decode_differs": {
+    "value": 0,
+    "ok": true
+   },
+   "isolation_overfit.coverage": {
+    "value": {
+     "sequences": 216,
+     "comparisons": 864
+    },
+    "ok": true
+   },
+   "init": {
+    "value": {
+     "FACT_s0": {
+      "tensors": 326,
+      "parameters": 10215424
+     },
+     "FACT_s1": {
+      "tensors": 326,
+      "parameters": 10215424
+     },
+     "FACT_s2": {
+      "tensors": 326,
+      "parameters": 10215424
+     }
+    },
+    "ok": true
+   },
+   "smoke.final_update": {
+    "value": 2000,
+    "ok": true
+   },
+   "smoke.rows_match_outcome": {
+    "value": {
+     "sequences": 16,
+     "transcript_exact": 16,
+     "match_one_to_one": 16,
+     "segment_f1_50_min": 1.0,
+     "matched_token_class_correct_min": 0.0,
+     "tokens_used_equals_segments": 11
+    },
+    "ok": true
+   },
+   "smoke.requirements_recomputed": {
+    "value": {
+     "sixteen_sequences": true,
+     "transcripts_exact": true,
+     "segment_f1_all_one": true,
+     "one_to_one": true,
+     "matched_classes_right": false,
+     "isolation": true,
+     "all": false
+    },
+    "ok": true
+   },
+   "smoke.failed_only_matched_classes": {
+    "value": [
+     "matched_classes_right"
+    ],
+    "ok": true
+   },
+   "original_gate_failed": {
+    "value": {
+     "passed": false,
+     "ok": false,
+     "all": false
+    },
+    "ok": true
+   }
+  },
+  "known_zero_gradients": {
+   "names": [
+    "block_list.0.action_branch.layers.0.norm1.weight",
+    "block_list.0.action_branch.layers.0.self_attn.in_proj_weight",
+    "block_list.0.action_branch.layers.0.self_attn.out_proj.weight"
+   ],
+   "explanation": "the first action-branch layer of the input block receives no gradient from the official total at the initial state (F02 recorded the same three)"
+  }
+ },
+ "preparation": {
+  "rechecked_now": "every field of preparation.json: the pins and the task sheet, A01's and A05's records, the full cache hashes, the official checkout, the token rule, every batch of every epoch, the spot checks and the bit-identical strict initial states (scripts/train_fact_video_feature.py::stage_prepare under this configuration)",
+  "inherited": "nothing of the preparation; the check's inherited items are listed under inherited",
+  "equal_to_original": [
+   "a01_environment",
+   "a01_frozen",
+   "batches",
+   "caches",
+   "development_counts",
+   "environment",
+   "expanded_config_sha256",
+   "library",
+   "official",
+   "seeds",
+   "sequence_file",
+   "spot_check",
+   "token_rule",
+   "training_stream_samples",
+   "v01_outputs",
+   "inits (all but the path)",
+   "plans (all but the path)",
+   "checked (all but the task sheet)"
+  ],
+  "differ_by_design": [
+   "config",
+   "config_sha256",
+   "code",
+   "checked.task_sheet",
+   "inits.*.path",
+   "plans.*.path"
+  ]
+ },
+ "passed": true
+}
