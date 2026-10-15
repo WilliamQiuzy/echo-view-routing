@@ -286,6 +286,38 @@ def test_encoders_and_eager_loaders_are_forbidden():
     src = inspect.getsource(rs)
     for name in ("dev_features(", "rcs.validation(", "Inputs(", "build_source(", "pv.extract(", "np.load("):
         assert name not in src, name
+    for mod in (ts, so):                                         # training never builds or runs an encoder either
+        src = inspect.getsource(mod)
+        for name in ("dev_features(", "rcs.validation(", "Inputs(", "build_source(", "pv.extract(", "pv.encode(", "build_model(", ".embed("):
+            assert name not in src, (mod.__name__, name)
+
+
+def test_label_metadata_of_a_closed_half_is_never_read():
+    c = object.__new__(rs.Ctx)                                   # no protocol, plans or clip index: reaching them would fail differently
+    with pytest.raises(SystemExit, match="not open"):
+        rs.Ctx.half(c, "selection", rs.DevAccess({"calibration"}))
+
+
+def test_selection_openings_are_recorded_and_a_repeat_needs_a_reason(tmp_path):
+    ctx = SimpleNamespace(choices_sha256="a" * 64, choices_commit="b" * 40, repeat_reason=None, ledger=tmp_path / "ledger.jsonl"); out = tmp_path / "selection"
+    assert len(rs.open_selection(ctx, out)) == 1
+    with pytest.raises(SystemExit):
+        rs.open_selection(ctx, out)
+    ctx.repeat_reason = "a figure error after the first opening"
+    assert [o["reason"] for o in rs.open_selection(ctx, out)] == ["first opening", "a figure error after the first opening"]
+    (out / "done.json").write_text("{}")
+    with pytest.raises(SystemExit):
+        rs.open_selection(ctx, out)
+    assert [json.loads(x)["job"] for x in ctx.ledger.read_text().splitlines()] == ["selection opened", "selection opened"]
+
+
+def test_a_run_killed_with_the_queue_is_booked_once(tmp_path):
+    p = tmp_path / "ledger.jsonl"
+    ts.ledger_append(p, "train order_s0", "gpu", "2026-10-15T02:00:05Z", 100.0, True)
+    assert not ts.ensure_run_line(p, "order_s0", "2026-10-15T02:00:00Z", 120.0, "queue")      # the run booked itself
+    assert ts.ensure_run_line(p, "order_s1", "2026-10-15T02:05:00Z", 30.0, "queue")           # killed before it could
+    assert not ts.ensure_run_line(p, "order_s1", "2026-10-15T02:05:00Z", 30.0, "queue")
+    assert abs(ts.ledger_hours(p, "gpu") - 130.0 / 3600) < 1e-12
 
 
 # ----------------------------------------------------------------------------------------------- the git-object proof
@@ -417,3 +449,6 @@ def test_readings_follow_the_fixed_rules():
     assert "order_objective_effect" in r["applied"] and "segment_balancing_effect" in r["applied"] and "complete_system_progress" not in r["applied"]
     r = st.readings(ver(POS, NONE, NONE, POS), {"B": ok, "O": bad}, {"transcript_or_recovery_gain": True, "tradeoff": True})
     assert "order_objective_effect" not in r["applied"] and "transcript_only_or_local_effect" in r["applied"] and "trade_off" in r["applied"]
+    v = ver(POS, POS, POS, NONE)                               # B progresses; O - B is positive but O fails a constraint
+    r = st.readings(v, {"B": ok, "O": bad}, {"transcript_or_recovery_gain": False, "tradeoff": False})
+    assert "complete_system_progress" in r["applied"] and r["notes"]["complete_system_progress"] == {"candidates": ["B"], "order_contribution_claimed": False}

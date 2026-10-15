@@ -68,7 +68,7 @@ segment_objective:
     coefficient: 0.5             # an operational choice, not tuned; no sweep follows
     recursion: "the task sheet's log-space cumulative-sum recursion with logcumsumexp; positive durations only; no blank, no sixth class, no zero-length state, no zero_infinity, no Viterbi or max, no duration prior, no transcript decoder"
     rejections: "an empty sequence, a transcript longer than its sequence, adjacent repeated states or a class outside 0-4 stop with an error; no sample is skipped"
-    numerics: "head weights and feature arithmetic fp32 with TF32 off (as A01); in every arm the objective is accumulated in float64 from the same fp32 log-softmax values, with the class weights as the plan's float64 values (A01 rounded them to float32 inside its fp32 cross-entropy); differences from A01's computation are measured and reported, never chosen after results"
+    numerics: "head weights and feature arithmetic fp32 with TF32 off (as A01); in every arm the objective is accumulated in float64 from the same fp32 log-softmax values, with the class weights as the plan's values (they are float32-exact, so A01's fp32 weights hold the same numbers); the remaining difference from A01's fp32 cross-entropy is accumulation precision, measured and reported, never chosen after results"
   training:
     optimiser: {name: AdamW, lr: 3.0e-4, weight_decay: 1.0e-4, betas: [0.9, 0.999], eps: 1.0e-8, grad_clip: 1.0}
     schedule: {name: warmup_cosine, warmup_updates: 750}

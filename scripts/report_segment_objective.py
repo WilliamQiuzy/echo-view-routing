@@ -378,7 +378,9 @@ class Ctx(ts.Ctx):
     def plans(self) -> dict:
         return self._pinned("plans", self.a03src()["window_plans"])
 
-    def half(self, h: str) -> tuple:
+    def half(self, h: str, access: DevAccess) -> tuple:
+        """One half's metadata (labels of that half's clips only), after the access check."""
+        access.require(h)
         return ttr.half_sets(self.proto(), h, pinned(self.root, self.a03src()["clip_index"]), self.plans())
 
     def a01_summary(self) -> dict:
@@ -390,6 +392,13 @@ class Ctx(ts.Ctx):
 
 def pinned(root: Path, pin: dict) -> Path:
     return pv.pinned(root, pin)
+
+
+def check_grid(ctx: Ctx) -> None:
+    grid, want = ctx.cfg["decode_grids"]["b3"], ctx.so["evaluation"]["b3"]["grid"]
+    if ([int(x) for x in grid["half_window"]], [float(x) for x in grid["threshold_quantile"]], [int(x) for x in grid["nms_radius"]]) != \
+            ([int(x) for x in want["half_window"]], [float(x) for x in want["quantile"]], [int(want["nms_radius"])]):
+        raise SystemExit("the inherited decoding grid differs from the configured B3 grid")
 
 
 def verify_runs(ctx: Ctx) -> dict:
@@ -459,7 +468,7 @@ def half_systems(ctx: Ctx, h: str, ev, seqs: list[dict], access: DevAccess, devi
     """One half: per seed the bounded cache read, the parity, A01's stored reference rows reproduced and the new heads'
     probabilities; with choices also the new heads' B3, argmax and Ordered-setting systems."""
     a01 = ctx.a01(); stored = ctx.a01_summary()["systems"]; v01 = ctx.v01_summary()["systems"]; prep = ts.read_record(ctx, "preparation.json")
-    ids = [q["id"] for q in seqs]; out = {"systems": {}, "probs": {}, "parity": {}, "reproduced": [], "seqs": seqs, "ev": ev}
+    ids = [q["id"] for q in seqs]; out = {"systems": {}, "probs": {}, "parity": {}, "reproduced": [], "replication": {}, "seqs": seqs, "ev": ev}
     for s in ctx.seeds:
         cache = ctx.root / prep["caches"][str(s)]["development"]["path"]
         if sha256_file(cache) != prep["caches"][str(s)]["development"]["sha256"]:
@@ -493,6 +502,9 @@ def half_systems(ctx: Ctx, h: str, ev, seqs: list[dict], access: DevAccess, devi
                 sysd[f"{n} + B3"] = row_of(ctx.cfg, decode(choices["choices"][key]["params"], probs), ev)
                 sysd[f"{n} argmax"] = row_of(ctx.cfg, {k: p.argmax(1) for k, p in probs.items()}, ev)
                 sysd[f"{n} at Ordered setting"] = row_of(ctx.cfg, decode(oparams, probs), ev)
+        f, a = out["probs"][("frame", s)], out["probs"][("a01_linear", s)]
+        out["replication"][f"s{s}"] = {"samples": int(sum(len(f[k]) for k in ids)), "max_abs_probability": float(max(np.abs(f[k] - a[k]).max() for k in ids)),
+                                       "argmax_disagreements": int(sum(int((f[k].argmax(1) != a[k].argmax(1)).sum()) for k in ids))}
         for name, x in sysd.items():
             out["systems"][f"{name} s{s}"] = x
         torch.cuda.empty_cache(); print(f"{h} seed {s}: parity, references and heads done", flush=True)
@@ -529,7 +541,7 @@ def read_halves(ctx: Ctx, data: dict, access: DevAccess, runs: dict, choices: di
                 continue
             if data[h] != h and data[h] in per:
                 per[h] = per[data[h]]; continue
-            ev, seqs = ctx.half(data[h]); per[h] = half_systems(ctx, data[h], ev, seqs, access, device, runs, choices)
+            ev, seqs = ctx.half(data[h], access); per[h] = half_systems(ctx, data[h], ev, seqs, access, device, runs, choices)
     finally:
         torch.cuda.empty_cache(); ctx.gpu_seconds += time.time() - t0
     return per
@@ -538,7 +550,7 @@ def read_halves(ctx: Ctx, data: dict, access: DevAccess, runs: dict, choices: di
 def stage_calibrate(ctx: Ctx) -> None:
     undo = forbid_encoders()
     try:
-        runs = verify_runs(ctx); prov = provenance(ctx, runs)
+        check_grid(ctx); runs = verify_runs(ctx); prov = provenance(ctx, runs)
         per = read_halves(ctx, {"calibration": "calibration"}, DevAccess({"calibration"}), runs, None)["calibration"]
         rec = {"provenance": prov, "half": "calibration", "parity": per["parity"], "reproduced": per["reproduced"], "systems": {}}
         for s in ctx.seeds:
@@ -656,6 +668,16 @@ def decide(ctx: Ctx, res: dict) -> dict:
     return st.readings(ver, {"B": res["goal"]["B"], "O": res["goal"]["O"]}, extra)
 
 
+def weight_differences(ctx: Ctx, runs: dict) -> dict:
+    """The largest absolute difference between F's and A01 Linear's final weights, per seed (the same start and batches)."""
+    out = {}
+    for s in ctx.seeds:
+        f = torch.load(ctx.root / runs[ts.run_key("frame", s)]["frozen"] / "final.pt", map_location="cpu", weights_only=True)
+        a = torch.load(ctx.root / "models_frozen" / "video_feature_temporal_v1" / f"linear_s{s}" / "final.pt", map_location="cpu", weights_only=True)
+        out[f"s{s}"] = {k: float((f[k] - a[k]).abs().max()) for k in ("weight", "bias")}
+    return out
+
+
 def figures(ctx: Ctx, runs: dict, out: Path) -> None:
     import matplotlib
     matplotlib.use("Agg")
@@ -692,6 +714,7 @@ def evaluate_all(ctx: Ctx, choices: dict, data: dict, access: DevAccess, runs: d
     check_calibration_rows(per["calibration"], choices)
     res, private = summarise(ctx, per, runs, choices)
     res["parity"] = {h: per[h]["parity"] for h in HALVES}; res["reproduced"] = {h: per[h]["reproduced"] for h in HALVES}
+    res["replication"] = {"probabilities": {h: per[h]["replication"] for h in HALVES}, "weights": weight_differences(ctx, runs)}
     res["choices"] = choices["choices"]; res["runs"] = {k: {x: v for x, v in r.items() if x != "records"} for k, r in runs.items()}
     res["training_last_epoch"] = {k: r["records"][-1] for k, r in runs.items()}
     ids = ids_of(ctx, {h: per[h]["seqs"] for h in HALVES}); flat = json.loads(json.dumps(res, default=str)); assert_no_ids(flat, ids, "summary")
@@ -700,10 +723,25 @@ def evaluate_all(ctx: Ctx, choices: dict, data: dict, access: DevAccess, runs: d
     return flat, per, private, ids
 
 
+def open_selection(ctx: Ctx, out: Path) -> list:
+    """Recorded before the selection half is read. A finished evaluation is never repeated; after a failed one, a
+    repeat needs --repeat-reason and every opening is listed in the summary."""
+    if (out / "done.json").is_file():
+        raise SystemExit("the selection half was already evaluated once; it is never evaluated again")
+    p = out / "opened.json"; rec = json.loads(p.read_text()) if p.is_file() else {"openings": []}
+    reason = getattr(ctx, "repeat_reason", None)
+    if rec["openings"] and not reason:
+        raise SystemExit("the selection half was already opened; a repeat needs --repeat-reason and is disclosed in the summary")
+    rec["openings"].append({"at": ts.now(), "choices_sha256": ctx.choices_sha256, "choices_commit": ctx.choices_commit, "reason": reason or "first opening"})
+    out.mkdir(parents=True, exist_ok=True); write_atomic(p, json.dumps(rec, indent=1))
+    ts.ledger_append(ctx.ledger, "selection opened", "cpu", ts.now(), 0.0, True, f"opening {len(rec['openings'])}: {rec['openings'][-1]['reason']}")
+    return rec["openings"]
+
+
 def stage_dry_run(ctx: Ctx) -> None:
     undo = forbid_encoders()
     try:
-        runs = verify_runs(ctx); prov = provenance(ctx, runs)
+        check_grid(ctx); runs = verify_runs(ctx); prov = provenance(ctx, runs)
         if not ctx.twin.is_file():
             raise SystemExit("run --calibrate first")
         choices = load_choices(ctx, json.loads(ctx.twin.read_text()))
@@ -712,6 +750,7 @@ def stage_dry_run(ctx: Ctx) -> None:
         flat, per, private, _ = evaluate_all(ctx, choices, {"calibration": "calibration", "selection": "calibration"}, DevAccess({"calibration"}), runs)
         out = ctx.out / "dry_run"; out.mkdir(parents=True, exist_ok=True)
         flat["dry_run"] = "the calibration half stands in for both halves; a code check, not a result"
+        figures(ctx, runs, out); save_private(out, per, private)
         write_atomic(out / "summary.json", json.dumps(flat, indent=1)); write_atomic(out / "report_tables.md", st.tables_md(flat))
         print("dry run ok (a code check, not a result)", flush=True)
     finally:
@@ -721,20 +760,17 @@ def stage_dry_run(ctx: Ctx) -> None:
 def stage_selection(ctx: Ctx) -> None:
     undo = forbid_encoders()
     try:
-        runs = verify_runs(ctx); prov = provenance(ctx, runs)
+        check_grid(ctx); runs = verify_runs(ctx); prov = provenance(ctx, runs)
         choices = load_choices(ctx, barrier(ctx.root / ctx.relpath, ctx.twin, ctx.proof, ctx.relpath, ctx.choices_sha256, ctx.choices_commit, prov))
-        out = ctx.out / "selection"; done = out / "done.json"
-        if done.is_file():
-            raise SystemExit("the selection half was already evaluated once; it is never evaluated again")
+        out = ctx.out / "selection"; done = out / "done.json"; openings = open_selection(ctx, out)
         flat, per, private, ids = evaluate_all(ctx, choices, {"calibration": "calibration", "selection": "selection"}, DevAccess({"calibration", "selection"}), runs)
         led = [json.loads(x) for x in ctx.ledger.read_text().splitlines() if x.strip()]
         flat["identity"] = {**prov, "choices_sha256": ctx.choices_sha256, "choices_commit": ctx.choices_commit,
-                            "proof_made": json.loads(ctx.proof.read_text()).get("made")}
+                            "proof_made": json.loads(ctx.proof.read_text()).get("made"), "selection_openings": openings}
         flat["cost"] = {"gpu_hours_before_this_stage": ts.ledger_hours(ctx.ledger, "gpu"), "cpu_hours_before_this_stage": ts.ledger_hours(ctx.ledger, "cpu"),
                         "earlier_stages": [{k: x[k] for k in ("job", "kind", "started", "finished", "hours", "ok")} for x in led]}
-        assert_no_ids(flat, ids, "results summary"); out.mkdir(parents=True, exist_ok=True); save_private(out, per, private)
+        assert_no_ids(flat, ids, "results summary"); figures(ctx, runs, ctx.results); save_private(out, per, private)
         write_atomic(ctx.results / "summary.json", json.dumps(flat, indent=1)); write_atomic(ctx.results / "report_tables.md", st.tables_md(flat))
-        figures(ctx, runs, ctx.results)
         write_atomic(done, json.dumps({"choices_sha256": ctx.choices_sha256, "choices_commit": ctx.choices_commit, "finished": ts.now()}))
         print(json.dumps(flat["decision"]["applied"]), flush=True)
     finally:
@@ -751,11 +787,13 @@ def stage_proof(ctx: Ctx) -> None:
 
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--config", required=True); ap.add_argument("--choices-sha256"); ap.add_argument("--choices-commit")
+    ap.add_argument("--config", required=True); ap.add_argument("--choices-sha256"); ap.add_argument("--choices-commit", help="the full 40-character commit")
+    ap.add_argument("--repeat-reason", help="--selection only: why a failed selection evaluation is repeated (disclosed in the summary)")
     g = ap.add_mutually_exclusive_group(required=True)
     for s in ("calibrate", "dry_run", "proof", "selection"):
         g.add_argument(f"--{s.replace('_', '-')}", dest=s, action="store_true")
-    a = ap.parse_args(); a.set = []; ctx = Ctx(load_cfg(a), a.config); ctx.choices_sha256, ctx.choices_commit = a.choices_sha256, a.choices_commit
+    a = ap.parse_args(); a.set = []; ctx = Ctx(load_cfg(a), a.config)
+    ctx.choices_sha256, ctx.choices_commit, ctx.repeat_reason = a.choices_sha256, a.choices_commit, a.repeat_reason
     if a.proof:
         stage_proof(ctx); return
     stage = next(s for s in ("calibrate", "dry_run", "selection") if getattr(a, s))

@@ -189,7 +189,7 @@ def readings(ver: dict, goals: dict, extra: dict) -> dict:
     applied, notes = [], {}
     if progress:
         applied.append("complete_system_progress")
-        notes["complete_system_progress"] = {"candidates": progress, "order_contribution_claimed": both_halves(ver["O - B"], POS)}
+        notes["complete_system_progress"] = {"candidates": progress, "order_contribution_claimed": "O" in progress and both_halves(ver["O - B"], POS)}
     if both_halves(ver["B - F"], POS) and ok["B"]:
         applied.append("segment_balancing_effect")
     if both_halves(ver["O - B"], POS) and ok["O"]:

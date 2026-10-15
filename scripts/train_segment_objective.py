@@ -29,6 +29,7 @@ os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
 import argparse  # noqa: E402
 import hashlib  # noqa: E402
 import json  # noqa: E402
+import signal  # noqa: E402
 import subprocess  # noqa: E402
 import sys  # noqa: E402
 import time  # noqa: E402
@@ -105,6 +106,27 @@ def ledger_hours(path: Path, kind: str) -> float:
     if not path.is_file():
         return 0.0
     return float(sum(x["hours"] for x in (json.loads(line) for line in path.read_text().splitlines() if line.strip()) if x.get("kind") == kind))
+
+
+def run_lines(path: Path, key: str, since: str) -> list[dict]:
+    path = Path(path)
+    if not path.is_file():
+        return []
+    return [x for x in (json.loads(line) for line in path.read_text().splitlines() if line.strip()) if x["job"] == f"train {key}" and x["started"] >= since]
+
+
+def ensure_run_line(path: Path, key: str, spawned: str, seconds: float, note: str) -> bool:
+    """Books a run's GPU time when the run process wrote no line of its own since it was spawned (it was killed, for
+    example together with the queue); returns whether a line was added."""
+    if run_lines(path, key, spawned):
+        return False
+    ledger_append(path, f"train {key}", "gpu", spawned, seconds, False, note)
+    return True
+
+
+def terminate(signum, frame) -> None:  # noqa: ARG001 - signal handler signature
+    """SIGTERM ends a stage like an exception, so its ledger lines are still written."""
+    raise SystemExit(f"terminated by signal {signum}")
 
 
 def projection(spent: float, per_arm: dict, remaining: list[str], reserve: float, cap: float) -> dict:
@@ -383,7 +405,10 @@ def identities(ctx: Ctx, prep: dict) -> dict:
 
 # ----------------------------------------------------------------------------------------------- one formal run
 def train(ctx: Ctx, arm: str, seed: int, device) -> None:
-    a01 = ctx.a01(); prep = read_record(ctx, "preparation.json"); data = tv.TrainSet(a01, seed); plan, plan_sha = a01.plan(seed)
+    a01 = ctx.a01(); prep = read_record(ctx, "preparation.json"); cache = ctx.root / prep["caches"][str(seed)]["train"]["path"]
+    if sha256_file(cache) != prep["caches"][str(seed)]["train"]["sha256"]:
+        raise SystemExit(f"seed {seed}: the training cache differs from the preparation record")
+    data = tv.TrainSet(a01, seed); plan, plan_sha = a01.plan(seed)
     alpha = ctx.alpha(plan); state, init_sha = ctx.init_state(arm, seed, prep)
     ident = identity(ctx, arm, seed, data.feature_identity, plan_sha, init_sha, alpha)
     key = run_key(arm, seed); run_dir = ctx.out / "train" / key; ck = ctx.ckpt / key; man_path = run_dir / "run_manifest.json"
@@ -485,11 +510,12 @@ def check_arm(ctx: Ctx, arm: str, seed: int, data, plan: dict, prep: dict, devic
     st_ = {"model": {k: v.clone() for k, v in c[0].state_dict().items()}, "opt": c[1].state_dict(), "sched": c[2].state_dict(), "rng": tv.rng_state()}
     d = run_updates(arm, state, b0[3:6], alpha, tr, ctx.total, device, seed, resume=st_)
     rep["resume"] = {"loss_max_abs": max(abs(x - y) for x, y in zip(a[3][3:], d[3])), "params_max_abs": tv.max_diff(a[0].state_dict(), d[0].state_dict())}
-    # padding: other padded labels and features change no loss or gradient after the normalisation (GPU, same input twice)
+    # padding: padded features and labels that reach the head unnormalised (other logits at padding) change no loss or
+    # gradient, because the loss reads the valid positions of the reference runs only (GPU)
     m = new_model(state, device); raw = dd.collate(b0[0], device); pad = raw["valid"] == 0; alt = dict(raw)
     x = raw["x"].clone(); x[pad[:, None, :].expand_as(x)] = 99.0; lab = raw["labels"].clone(); lab[pad] = 3; alt["x"], alt["labels"] = x, lab
     runs = batch_runs(b0[0]); l1, _ = loss_from_batch(arm, m, tv.normalise(raw), runs, alpha); g1 = torch.autograd.grad(l1, list(m.parameters()))
-    l2, _ = loss_from_batch(arm, m, tv.normalise(alt), runs, alpha); g2 = torch.autograd.grad(l2, list(m.parameters()))
+    l2, _ = loss_from_batch(arm, m, alt, runs, alpha); g2 = torch.autograd.grad(l2, list(m.parameters()))
     rep["padding"] = {"padded_positions": int(pad.sum()), "loss_diff": abs(float(l1) - float(l2)), "grad_max_abs": max(float((p - q).abs().max()) for p, q in zip(g1, g2))}
     rep["zero_or_missing_gradients"] = [i for i, g in enumerate(g1) if not torch.isfinite(g).all() or float(g.abs().max()) == 0.0]
     # inference isolation: the head's output depends on the features alone (other ids, no label input)
@@ -588,10 +614,12 @@ def freeze(ctx: Ctx, idents: dict, prep: dict) -> dict:
         if not dest.exists():
             arm, s = key.rsplit("_s", 1); init = ctx.root / prep["inits"][key]["path"]
             files = [man["final_checkpoint"], str(man_path), str(init), str(ctx.root / ctx.config)]
-            subprocess.run([sys.executable, "scripts/freeze_model.py", NS, key, *[x for f in files for x in ("--file", f)], "--meta", f"identity={ident}",
-                            "--meta", f"arm={arm}", "--meta", f"seed={s}", "--meta", f"updates={man['updates']}",
-                            "--notes", "Segment objective round (2026-10-14): Linear(512, 5) final weights after 18,750 updates on frozen V01 Ordered features."],
-                           cwd=ctx.root, check=True, capture_output=True)
+            r = subprocess.run([sys.executable, "scripts/freeze_model.py", NS, key, *[x for f in files for x in ("--file", f)], "--meta", f"identity={ident}",
+                                "--meta", f"arm={arm}", "--meta", f"seed={s}", "--meta", f"updates={man['updates']}",
+                                "--notes", "Segment objective round (2026-10-14): Linear(512, 5) final weights after 18,750 updates on frozen V01 Ordered features."],
+                               cwd=ctx.root, capture_output=True, text=True)
+            if r.returncode != 0:
+                raise SystemExit(f"{key}: freeze_model.py failed ({(r.stderr or r.stdout)[-500:]}); a partly created frozen directory must be inspected by hand")
         if sha256_file(dest / "final.pt") != man["final_sha256"]:
             raise SystemExit(f"{key}: the frozen copy differs from the final weights")
         out[key] = {"path": str(dest.relative_to(ctx.root)), "final_sha256": man["final_sha256"], "updates": man["updates"], "interrupted": man["interrupted"]}
@@ -627,11 +655,11 @@ def stage_queue(ctx: Ctx, config: str, logs: str = "logs") -> None:
         log = ROOT / logs / f"{NS}_{key}.log"; log.parent.mkdir(parents=True, exist_ok=True)
         cmd = [sys.executable, "-u", "scripts/train_segment_objective.py", "--config", config, "--arm", arm, "--seed", s]
         status["jobs"][key] = {"state": "running", "identity": idents[key], "arm": arm, "seed": int(s), "log": str(log.relative_to(ROOT)), "started": now()}
-        pv.write_atomic_json(status_path, status); started, t0 = now(), time.time()
+        pv.write_atomic_json(status_path, status); started, t0 = now(), time.time(); ctx.inflight = (key, started, t0)
         with log.open("a") as fh:
             rc = subprocess.run(cmd, cwd=ROOT, stdout=fh, stderr=subprocess.STDOUT).returncode
-        hours = (time.time() - t0) / 3600; ok = rc == 0 and tv.finished(man, idents[key])
-        ledger_append(ctx.ledger, f"train {key}", "gpu", started, hours * 3600, ok)
+        ctx.inflight = None; hours = (time.time() - t0) / 3600; ok = rc == 0 and tv.finished(man, idents[key])
+        ensure_run_line(ctx.ledger, key, started, hours * 3600, f"the run wrote no ledger line (return code {rc}); booked by the queue")
         status["jobs"][key] = {**status["jobs"][key], "state": "done" if ok else "failed", "returncode": rc, "finished": now(), "hours": hours}
         if ok:
             m = json.loads(man.read_text()); status["jobs"][key].update({"updates": m["updates"], "final_sha256": m["final_sha256"], "interrupted": m["interrupted"]})
@@ -654,16 +682,26 @@ def main() -> None:
     elif a.check:
         run_stage(ctx, "check", "gpu", stage_check)
     elif a.queue:
-        preconditions(ctx, "queue"); t0, started = time.time(), now()
+        signal.signal(signal.SIGTERM, terminate); preconditions(ctx, "queue"); t0, started, ok, note = time.time(), now(), False, ""; ctx.inflight = None
         try:
-            stage_queue(ctx, a.config, a.logs)
-        finally:   # the queue's own time beside its runs (each run is recorded by itself)
-            run_hours = sum(float(json.loads(x)["hours"]) for x in ctx.ledger.read_text().splitlines() if x.strip() and json.loads(x)["job"].startswith("train ")
-                            and json.loads(x)["started"] >= started)
-            ledger_append(ctx.ledger, "queue overhead and freeze", "cpu", started, max(0.0, time.time() - t0 - run_hours * 3600), True)
+            stage_queue(ctx, a.config, a.logs); ok = True
+        except BaseException as e:  # noqa: BLE001 - recorded, then raised again
+            note = f"{type(e).__name__}: {str(e)[:200]}"; raise
+        finally:   # a run killed with the queue is booked here; the queue's own time is its wall time minus its runs
+            if ctx.inflight is not None:
+                key, spawned, ts0 = ctx.inflight; ensure_run_line(ctx.ledger, key, spawned, time.time() - ts0, f"interrupted with the queue ({note}); booked by the queue")
+            run_hours = sum(float(x["hours"]) for x in (json.loads(line) for line in ctx.ledger.read_text().splitlines() if line.strip())
+                            if x["job"].startswith("train ") and x["started"] >= started)
+            ledger_append(ctx.ledger, "queue overhead and freeze", "cpu", started, max(0.0, time.time() - t0 - run_hours * 3600), ok, note)
     elif a.arm is not None and a.seed in ctx.seeds:
-        preconditions(ctx, "run"); tv.determinism(); device = torch.device("cuda"); torch.cuda.set_per_process_memory_fraction(pv.gpu_memory_fraction())
-        train(ctx, a.arm, a.seed, device)
+        signal.signal(signal.SIGTERM, terminate); t0, started, ok, note = time.time(), now(), False, ""
+        try:
+            preconditions(ctx, "run"); tv.determinism(); device = torch.device("cuda"); torch.cuda.set_per_process_memory_fraction(pv.gpu_memory_fraction())
+            train(ctx, a.arm, a.seed, device); ok = True
+        except BaseException as e:  # noqa: BLE001 - recorded, then raised again
+            note = f"{type(e).__name__}: {str(e)[:200]}"; raise
+        finally:   # every run, direct or from the queue, finished, failed or interrupted, books its own GPU time
+            ledger_append(ctx.ledger, f"train {run_key(a.arm, a.seed)}", "gpu", started, time.time() - t0, ok, note)
     else:
         raise SystemExit("pass --prepare, --check, --queue, or --arm and one of the round's seeds")
 
