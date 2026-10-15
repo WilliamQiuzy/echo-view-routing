@@ -56,7 +56,6 @@ import echo_routing.temporal.fact_head as fh  # noqa: E402
 from echo_routing.evaluate.complementarity import sha256_file  # noqa: E402
 from echo_routing.evaluate.failure_units import session_of  # noqa: E402
 
-NS = tf.NS
 HALVES = st.HALVES
 POS, NEG, NONE = st.POS, st.NEG, st.NONE
 DevAccess, open_half, member_layout, read_members = rs.DevAccess, rs.dev_half, rs.member_layout, rs.read_members
@@ -284,7 +283,7 @@ def verify_runs(ctx: Ctx) -> dict:
         man_path = ctx.out / "train" / key / "run_manifest.json"
         if tf.run_state(man_path, ident, ctx.total) != "done":
             raise SystemExit(f"{key}: not a finished run of this identity")
-        man = json.loads(man_path.read_text()); frozen = ctx.root / "models_frozen" / NS / key / "final.pt"
+        man = json.loads(man_path.read_text()); frozen = ctx.root / "models_frozen" / ctx.ns / key / "final.pt"
         if not frozen.is_file() or sha256_file(frozen) != man["final_sha256"]:
             raise SystemExit(f"{key}: the frozen final weights are missing or differ")
         out[key] = {"identity": ident, "updates": man["completed_updates"], "final_sha256": man["final_sha256"], "interrupted": man["interrupted"],
@@ -443,10 +442,10 @@ def pooled(ctx: Ctx, acc: dict) -> dict:
     return out
 
 
-def tables_md(res: dict) -> str:
+def tables_md(res: dict, config: str = "configs/experiments/fact_video_feature_v1.yaml") -> str:
     md = st.md_table
     parts = ["# FACT video feature round: tables\n",
-             "Recompute: `python scripts/report_fact_video_feature.py --config configs/experiments/fact_video_feature_v1.yaml --selection "
+             f"Recompute: `python scripts/report_fact_video_feature.py --config {config} --selection "
              "--manifest-sha256 <sha> --manifest-commit <commit>`\n"]
     rows = [{"system": k, "half": h, "segment F1@50": r.get("segment_f1_50_multi"), "boundary P": r.get("boundary_precision_multi"), "boundary R": r.get("boundary_recall_multi"),
              "boundary F1": r.get("boundary_f1_multi"), "native macro-F1": r.get("native_macro_f1"), "switches per clip": r.get("native_internal_cuts_per_clip"),
@@ -514,7 +513,7 @@ def evaluate_all(ctx: Ctx, data: dict, access: DevAccess, runs: dict) -> tuple[d
     res["reused_outputs"] = {h: per[h]["reused_outputs"] for h in HALVES}
     res["runs"] = {k: {x: v for x, v in r.items() if x != "records"} for k, r in runs.items()}; res["training_last_epoch"] = {k: r["records"][-1] for k, r in runs.items()}
     ids = ids_of(ctx, {h: per[h]["seqs"] for h in HALVES}); flat = json.loads(json.dumps(res, default=str)); assert_no_ids(flat, ids, "summary")
-    if any(x in tables_md(flat) for x in ids):
+    if any(x in tables_md(flat, ctx.config) for x in ids):
         raise SystemExit("an id appears in the report tables")
     return flat, per, private, ids
 
@@ -522,7 +521,7 @@ def evaluate_all(ctx: Ctx, data: dict, access: DevAccess, runs: dict) -> tuple[d
 # ----------------------------------------------------------------------------------------------- stages
 def run_stage(ctx: Ctx, name: str, fn) -> None:
     b = ctx.fv["budget"]
-    if ts.ledger_hours(ctx.ledger, "cpu") >= float(b["cpu_hours_max"]) or ts.ledger_hours(ctx.ledger, "gpu") >= float(b["gpu_hours_max"]):
+    if tf.spent_hours(ctx, "cpu") >= float(b["cpu_hours_max"]) or tf.spent_hours(ctx, "gpu") >= float(b["gpu_hours_max"]):
         raise SystemExit("the CPU or GPU budget is spent")
     t0, started, ok, note = time.time(), ts.now(), False, ""; ctx.gpu_seconds = 0.0
     try:
@@ -570,7 +569,7 @@ def stage_dry_run(ctx: Ctx) -> None:
         flat, per, private, _ = evaluate_all(ctx, {"calibration": "calibration", "selection": "calibration"}, DevAccess({"calibration"}), runs)
         out = ctx.out / "dry_run"; out.mkdir(parents=True, exist_ok=True); flat["dry_run"] = "the calibration half stands in for both halves; a code check, not a result"
         figures(ctx, runs, out); save_private(out, per, private)
-        write_atomic(out / "summary.json", json.dumps(flat, indent=1)); write_atomic(out / "report_tables.md", tables_md(flat)); print("dry run ok (a code check, not a result)", flush=True)
+        write_atomic(out / "summary.json", json.dumps(flat, indent=1)); write_atomic(out / "report_tables.md", tables_md(flat, ctx.config)); print("dry run ok (a code check, not a result)", flush=True)
     finally:
         undo()
 
@@ -585,10 +584,11 @@ def stage_selection(ctx: Ctx) -> None:
         led = [json.loads(x) for x in ctx.ledger.read_text().splitlines() if x.strip()]
         flat["identity"] = {**prov, "manifest_sha256": ctx.manifest_sha256, "manifest_commit": ctx.manifest_commit, "proof_made": json.loads(ctx.proof.read_text()).get("made"),
                             "selection_openings": openings}
-        flat["cost"] = {"gpu_hours_before_this_stage": ts.ledger_hours(ctx.ledger, "gpu"), "cpu_hours_before_this_stage": ts.ledger_hours(ctx.ledger, "cpu"),
+        flat["cost"] = {"gpu_hours_before_this_stage": tf.spent_hours(ctx, "gpu"), "cpu_hours_before_this_stage": tf.spent_hours(ctx, "cpu"),
+                        "inherited_ledgers": ctx.fv["budget"].get("inherited_ledgers", []), "own_ledger": {k: ts.ledger_hours(ctx.ledger, k) for k in ("gpu", "cpu")},
                         "earlier_stages": [{k: x[k] for k in ("job", "kind", "started", "finished", "hours", "ok")} for x in led]}
         assert_no_ids(flat, ids, "results summary"); figures(ctx, runs, ctx.results); save_private(out, per, private)
-        write_atomic(ctx.results / "summary.json", json.dumps(flat, indent=1)); write_atomic(ctx.results / "report_tables.md", tables_md(flat))
+        write_atomic(ctx.results / "summary.json", json.dumps(flat, indent=1)); write_atomic(ctx.results / "report_tables.md", tables_md(flat, ctx.config))
         write_atomic(out / "done.json", json.dumps({"manifest_sha256": ctx.manifest_sha256, "manifest_commit": ctx.manifest_commit, "finished": ts.now()}))
         print(json.dumps(flat["decision"]["applied"]), flush=True)
     finally:

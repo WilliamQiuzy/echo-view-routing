@@ -97,12 +97,19 @@ class Ctx:
     def __init__(self, cfg: dict, config: str) -> None:
         self.cfg, self.config, self.fv = cfg, config, cfg["fact_video_feature"]
         self.paths = load_paths(); self.root = self.paths.repo_root; self.src = self.fv["source"]; self.f = self.fv["fact"]
-        o = self.fv["outputs"]
+        o = self.fv["outputs"]; self.ns, self.revision = str(cfg["experiment"]), self.fv.get("revision")
         self.out, self.results, self.ckpt = self.root / o["root"], self.root / o["results_dir"], self.root / o["checkpoints"]
         self.ledger = self.root / self.fv["budget"]["ledger"]; self.seeds = [int(s) for s in self.fv["seeds"]]; d = self.fv["data"]
+        self.frozen = self.root / "models_frozen" / self.ns
         self.total, self.per_epoch, self.epochs = int(d["total_updates"]), int(d["updates_per_epoch"]), int(d["epochs"])
         if self.epochs * self.per_epoch != self.total or self.fv["queue"] != [run_key(s) for s in self.seeds]:
             raise SystemExit("the configured epochs, updates or queue are inconsistent")
+        # every output of a configuration lives under its own namespace; a revision never writes into the original round
+        if any(self.ns not in Path(p).parts for p in (o["root"], o["checkpoints"], o["manifest_proof"], self.fv["budget"]["ledger"])) or \
+                o["frozen"] != f"models_frozen/{self.ns}/{ARM}_s{{seed}}":
+            raise SystemExit(f"an output path lies outside the namespace {self.ns}")
+        if self.revision is not None and (self.ns == NS or self.results == self.root / Path(self.revision["original"]["check"]["path"]).parent):
+            raise SystemExit("a revision writes into the original round's namespace or results")
         self._a01 = None
 
     def config_sha(self) -> str:
@@ -201,9 +208,22 @@ def new_model(head, init_path: Path, device) -> torch.nn.Module:
 
 
 # ----------------------------------------------------------------------------------------------- identity
-def identity_payload(fv: dict, seed: int, official: dict, expanded: str, rule: dict, inputs: dict, code: str) -> dict:
-    return {"experiment": NS, "seed": int(seed), "config": {k: fv[k] for k in TRAINING_KEYS}, "official": official, "expanded_config": expanded,
-            "token_rule": rule, "inputs": inputs, "total_updates": int(fv["data"]["total_updates"]), "code": code}
+def identity_payload(fv: dict, seed: int, official: dict, expanded: str, rule: dict, inputs: dict, code: str, ns: str = NS,
+                     revision: dict | None = None) -> dict:
+    """The run identity; without a revision it is exactly the original round's."""
+    payload = {"experiment": ns, "seed": int(seed), "config": {k: fv[k] for k in TRAINING_KEYS}, "official": official, "expanded_config": expanded,
+               "token_rule": rule, "inputs": inputs, "total_updates": int(fv["data"]["total_updates"]), "code": code}
+    return payload if revision is None else {**payload, "revision": revision}
+
+
+def revision_identity(ctx: Ctx) -> dict | None:
+    """A revision's provenance in the run identity: its task sheet, the pinned original evidence and the revision section."""
+    r = ctx.revision
+    if r is None:
+        return None
+    return {"name": r["name"], "task_sheet": ctx.fv["task_sheet"]["sha256"], "old_code_digest": r["original"]["code_digest"],
+            "original": {k: v["sha256"] for k, v in r["original"].items() if isinstance(v, dict) and "sha256" in v},
+            "revision_sha256": hashlib.sha256(json.dumps(r, sort_keys=True, default=str).encode()).hexdigest()}
 
 
 def identity_of(payload: dict) -> str:
@@ -215,7 +235,7 @@ def identity(ctx: Ctx, seed: int, head, prep: dict) -> str:
     inputs = {"features": a01.prep["features"][str(seed)]["identity"], "train_cache_sha256": prep["caches"][str(seed)]["train"]["sha256"],
               "sequence_file": a01.prep["sequence_file"]["sha256"], "plan": plan_sha, "init": prep["inits"][key]["sha256"]}
     official = {"head": head.commit, "digest": prep["official"]["digest"]}
-    return identity_of(identity_payload(ctx.fv, seed, official, head.cfg.dump(), head.rule.__dict__, inputs, code_digest()))
+    return identity_of(identity_payload(ctx.fv, seed, official, head.cfg.dump(), head.rule.__dict__, inputs, code_digest(), ctx.ns, revision_identity(ctx)))
 
 
 def identities(ctx: Ctx, head, prep: dict) -> dict:
@@ -317,10 +337,32 @@ def resume_check(head, init_path: Path, batches: list, fcfg: dict, total: int, d
             "lr_equal": float(opt.param_groups[0]["lr"]) == float(ref_opt.param_groups[0]["lr"])}
 
 
+def token_stats(cls: list, null: int, match: tuple, transcript: list) -> dict:
+    """One sequence's last-block tokens: active and null tokens, and the matched tokens that name their reference segment."""
+    a, sg = match; active = sum(int(c != null) for c in cls)
+    return {"segments": len(transcript), "active": active, "null": len(cls) - active, "matched": len(a),
+            "matched_correct": sum(int(cls[t] == transcript[k]) for t, k in zip(a, sg))}
+
+
 @torch.no_grad()
 def term_values(head, model, seqs: list, device) -> dict:
-    model.eval()
-    return {f"loss_{k}": float(v) for k, v in fi.term_losses(head, model, list(seqs), device).items()}
+    """fact_integration.term_losses, step for step, and from the same forwards the last block's tokens of single- and
+    multi-segment sequences apart (active, null, all-null sequences, matched and rightly matched); logging only."""
+    model.eval(); acc, tok = defaultdict(list), {g: defaultdict(int) for g in ("single", "multi")}
+    for s in list(seqs):
+        x, lab = fi.as_input(s, device); model._forward_one_video(x.unsqueeze(1)); p = fi.loss_parts(head, model, lab); n = len(p["blocks"])
+        contrib = {t: sum(b[t] * b["weights"][t] for b in p["blocks"] if t in b) / n for t in fi.TERMS if any(t in b for b in p["blocks"])}
+        if not torch.allclose(sum(contrib.values()), p["total"], rtol=1e-5, atol=1e-6):
+            raise AssertionError(f"{s.seq_id}: the term contributions do not add up to the official total")
+        for t, v in contrib.items():
+            acc[t].append(v)
+        acc["total"].append(p["total"])
+        st = token_stats(model.block_list[-1].action_clogit[:, 0].argmax(-1).tolist(), head.num_classes, tuple(t.tolist() for t in p["match"]),
+                         model.mcriterion.transcript.tolist())
+        g = tok["single" if st["segments"] == 1 else "multi"]; g["sequences"] += 1; g["all_null_sequences"] += int(st["active"] == 0)
+        for k, name in (("active", "active_tokens"), ("null", "null_tokens"), ("matched", "matched"), ("matched_correct", "matched_correct")):
+            g[name] += st[k]
+    return {**{f"loss_{k}": float(sum(v) / len(v)) for k, v in acc.items()}, "tokens": {g: dict(v) for g, v in tok.items()}}
 
 
 def monitor(head, model, seqs: list, device) -> dict:
@@ -330,6 +372,41 @@ def monitor(head, model, seqs: list, device) -> dict:
 
 
 # ----------------------------------------------------------------------------------------------- budget helpers
+def inherited_ledger_hours(root: Path, pins: list[dict], kind: str) -> float:
+    """Earlier ledgers of the same budget, read and never written; each is fixed by its sha256, line count and totals."""
+    total = 0.0
+    for pin in pins:
+        p = pinned(root, pin); lines = [x for x in p.read_text().splitlines() if x.strip()]
+        if len(lines) != int(pin["lines"]) or any(abs(ledger_hours(p, k) - float(pin[f"{k}_hours"])) > 1e-9 for k in ("gpu", "cpu")):
+            raise SystemExit(f"{pin['path']}: its lines or totals differ from the pin")
+        total += ledger_hours(p, kind)
+    return total
+
+
+def spent_hours(ctx, kind: str) -> float:
+    """The cumulative hours of the budget: the pinned inherited ledgers and this configuration's own ledger, each once."""
+    pins = ctx.fv["budget"].get("inherited_ledgers", [])
+    if any((Path(ctx.root) / p["path"]).resolve() == Path(ctx.ledger).resolve() for p in pins):
+        raise SystemExit("an inherited ledger is this configuration's own ledger; it would be counted twice")
+    return inherited_ledger_hours(ctx.root, pins, kind) + ledger_hours(ctx.ledger, kind)
+
+
+def launch_record(ctx: Ctx) -> dict:
+    """The record that opens the queue and every run: the passed check of the original configuration, or under a revision
+    its verified revalidation record. The original failed check keeps passed = false and never opens anything."""
+    name = "checks.json" if ctx.revision is None else "revalidation.json"; rec = read_record(ctx, name)
+    if rec.get("code") != code_digest() or rec.get("config_sha256") != ctx.config_sha():
+        raise SystemExit(f"{name} is missing or was made by other code or another configuration; run that stage again first")
+    if rec.get("passed") is not True:
+        raise SystemExit("the check did not pass" if ctx.revision is None else "the revalidation did not pass")
+    if ctx.revision is not None:
+        if rec.get("revision") != ctx.revision["name"] or rec.get("original") != ctx.revision["original"] or rec.get("original_gate_passed") is not False:
+            raise SystemExit("the revalidation record cites another revision or other original evidence")
+        for k in ("preparation", "check"):
+            pinned(ctx.root, ctx.revision["original"][k])        # the immutable original records are unchanged
+    return rec
+
+
 def projection(spent: float, per_run: dict, remaining: list[str], post: float, reserve: float, cap: float) -> dict:
     runs = float(sum(per_run[k] for k in remaining)); total = float(spent) + runs + float(post) + float(reserve)
     return {"spent": float(spent), "remaining_runs": runs, "remaining": list(remaining), "post_training": float(post), "reserve": float(reserve),
@@ -477,17 +554,17 @@ def preconditions(ctx: Ctx, stage: str) -> None:
     env = environment(); want = ctx.src["environment"]
     if any(str(env[k]) != str(v) for k, v in want.items()):
         raise SystemExit(f"environment {env} differs from the pinned {want}")
-    for name in {"check": ("preparation.json",), "queue": ("preparation.json", "checks.json"), "run": ("preparation.json", "checks.json"),
-                 "train_fit": ("preparation.json", "checks.json")}.get(stage, ()):
+    for name in {"check": ("preparation.json",), "queue": ("preparation.json", "launch"), "run": ("preparation.json", "launch"),
+                 "train_fit": ("preparation.json", "launch")}.get(stage, ()):
+        if name == "launch":
+            launch_record(ctx); continue
         rec = read_record(ctx, name)
         if rec.get("code") != code_digest() or rec.get("config_sha256") != ctx.config_sha():
             raise SystemExit(f"{name} is missing or was made by other code or another configuration; run that stage again first")
-        if name == "checks.json" and rec.get("passed") is not True:
-            raise SystemExit("the check did not pass")
 
 
 def run_stage(ctx: Ctx, name: str, kind: str, fn) -> None:
-    cap = float(ctx.fv["budget"]["cpu_hours_max" if kind == "cpu" else "gpu_hours_max"]); spent = ledger_hours(ctx.ledger, kind)
+    cap = float(ctx.fv["budget"]["cpu_hours_max" if kind == "cpu" else "gpu_hours_max"]); spent = spent_hours(ctx, kind)
     if spent >= cap:
         raise SystemExit(f"the {kind.upper()} budget is spent ({spent:.3f} of {cap} h)")
     signal.signal(signal.SIGTERM, terminate); t0, started, ok, note = time.time(), now(), False, ""
@@ -557,6 +634,8 @@ def stage_prepare(ctx: Ctx) -> None:
 
 
 def stage_check(ctx: Ctx) -> None:
+    if ctx.revision is not None:
+        raise SystemExit("under a revision the check and its smoke are never repeated; run scripts/revalidate_fact_video_feature.py --check")
     tfa.determinism(ARM); device = torch.device("cuda"); torch.cuda.set_per_process_memory_fraction(pv.gpu_memory_fraction()); t0 = time.time()
     prep = read_record(ctx, "preparation.json"); a01 = ctx.a01(); rule = fh.TokenRule(**prep["token_rule"]); check_rule(rule, ctx.f); head = make_head(ctx, rule)
     if official_state(ctx.root / ctx.f["repo"], ctx.f["commit"])["digest"] != prep["official"]["digest"]:
@@ -581,7 +660,7 @@ def stage_check(ctx: Ctx) -> None:
     post = (rec["fact"]["decode_seconds_per_sample"] * fact_samples + rec["fact"]["control_seconds_per_sample"] * control_samples) / 3600 + STAGE_OVERHEAD_HOURS
     rec["hours_per_run"], rec["post_training_hours"] = per_run, post
     rec["post_training_basis"] = {"fact_samples": fact_samples, "control_samples": control_samples, "stage_overhead_hours": STAGE_OVERHEAD_HOURS}
-    rec["projection"] = projection(ledger_hours(ctx.ledger, "gpu") + (time.time() - t0) / 3600, per_run, list(per_run), post, float(b["gpu_reserve_hours"]),
+    rec["projection"] = projection(spent_hours(ctx, "gpu") + (time.time() - t0) / 3600, per_run, list(per_run), post, float(b["gpu_reserve_hours"]),
                                    float(b["gpu_hours_max"]))
     rec["identities"] = identities(ctx, head, prep)
     rec["passed"] = bool(rec["fact"]["ok"] and rec["projection"]["within_cap"])
@@ -655,7 +734,7 @@ def train(ctx: Ctx, seed: int, device) -> None:
 
 
 def stage_queue(ctx: Ctx, config: str, logs: str = "logs") -> None:
-    prep, check = read_record(ctx, "preparation.json"), read_record(ctx, "checks.json"); head = make_head(ctx, fh.TokenRule(**prep["token_rule"]))
+    check = launch_record(ctx); prep = read_record(ctx, "preparation.json"); head = make_head(ctx, fh.TokenRule(**prep["token_rule"]))
     idents = identities(ctx, head, prep); b = ctx.fv["budget"]
     if check.get("identities") != idents:
         raise SystemExit("the passed check record carries other run identities; run the check again")
@@ -675,12 +754,12 @@ def stage_queue(ctx: Ctx, config: str, logs: str = "logs") -> None:
         done_hours = [v["hours"] for v in status["jobs"].values() if v.get("state") == "done" and "hours" in v]
         per_run = {k: max([float(check["hours_per_run"][k]), *done_hours]) for k in ctx.fv["queue"]}
         remaining = [k for k in ctx.fv["queue"] if run_state(ctx.out / "train" / k / "run_manifest.json", idents[k], ctx.total) != "done"]
-        proj = projection(ledger_hours(ctx.ledger, "gpu"), per_run, remaining, float(check["post_training_hours"]), float(b["gpu_reserve_hours"]), float(b["gpu_hours_max"]))
+        proj = projection(spent_hours(ctx, "gpu"), per_run, remaining, float(check["post_training_hours"]), float(b["gpu_reserve_hours"]), float(b["gpu_hours_max"]))
         status["projection"] = {"at": now(), "before": key, **proj}
         if not proj["within_cap"]:
             status["stopped"] = {"at": now(), "reason": f"projected {proj['total']:.2f} GPU hours exceed the cap {proj['cap']}", "before": key}
             pv.write_atomic_json(status_path, status); raise SystemExit(status["stopped"]["reason"])
-        log = ROOT / logs / f"{NS}_{key}.log"; log.parent.mkdir(parents=True, exist_ok=True)
+        log = ROOT / logs / f"{ctx.ns}_{key}.log"; log.parent.mkdir(parents=True, exist_ok=True)
         cmd = [sys.executable, "-u", "scripts/train_fact_video_feature.py", "--config", config, "--seed", s]
         status["jobs"][key] = {"state": "running", "identity": idents[key], "seed": int(s), "log": str(log.relative_to(ROOT)), "started": now()}
         pv.write_atomic_json(status_path, status); started, t0 = now(), time.time(); ctx.inflight = (key, started, t0)
@@ -710,6 +789,8 @@ def main() -> None:
     if a.prepare:
         run_stage(ctx, "prepare", "cpu", stage_prepare)
     elif a.check:
+        if ctx.revision is not None:
+            raise SystemExit("under a revision the check and its smoke are never repeated; run scripts/revalidate_fact_video_feature.py --check")
         run_stage(ctx, "check", "gpu", stage_check)
     elif a.queue:
         signal.signal(signal.SIGTERM, terminate); preconditions(ctx, "queue"); t0, started, ok, note = time.time(), now(), False, ""; ctx.inflight = None

@@ -43,13 +43,13 @@ CLASSES = tf.CLASSES
 def freeze(ctx, idents: dict, prep: dict) -> dict:
     out = {}
     for key, ident in idents.items():
-        man_path = ctx.out / "train" / key / "run_manifest.json"; dest = ctx.root / "models_frozen" / tf.NS / key
+        man_path = ctx.out / "train" / key / "run_manifest.json"; dest = ctx.root / "models_frozen" / ctx.ns / key
         if tf.run_state(man_path, ident, ctx.total) != "done":
             raise SystemExit(f"{key}: not a finished run of this identity")
         man = json.loads(man_path.read_text())
         if not dest.exists():
             s = key.rsplit("_s", 1)[1]; files = [man["final_checkpoint"], str(man_path), str(ctx.root / prep["inits"][key]["path"]), str(ctx.root / ctx.config)]
-            r = subprocess.run([sys.executable, "scripts/freeze_model.py", tf.NS, key, *[x for f in files for x in ("--file", f)], "--meta", f"identity={ident}",
+            r = subprocess.run([sys.executable, "scripts/freeze_model.py", ctx.ns, key, *[x for f in files for x in ("--file", f)], "--meta", f"identity={ident}",
                                 "--meta", f"seed={s}", "--meta", f"updates={man['completed_updates']}",
                                 "--notes", "FACT video feature round (2026-10-15): official GTEA FACT, final weights after 18,750 updates on frozen V01 Ordered features."],
                                cwd=ctx.root, capture_output=True, text=True)
@@ -90,7 +90,7 @@ def stage_train_fit(ctx) -> None:
     prep = tf.read_record(ctx, "preparation.json"); a01 = ctx.a01(); head = tf.make_head(ctx, fh.TokenRule(**prep["token_rule"])); idents = tf.identities(ctx, head, prep)
     status = json.loads((ctx.out / "queue_status.json").read_text()); out = {}
     for s in ctx.seeds:
-        key = tf.run_key(s); fz = ctx.root / "models_frozen" / tf.NS / key / "final.pt"
+        key = tf.run_key(s); fz = ctx.root / "models_frozen" / ctx.ns / key / "final.pt"
         if tf.run_state(ctx.out / "train" / key / "run_manifest.json", idents[key], ctx.total) != "done" or sha256_file(fz) != status["frozen"][key]["final_sha256"]:
             raise SystemExit(f"{key}: not a frozen run of this identity")
         model = head.build(); model.load_state_dict(torch.load(fz, map_location="cpu", weights_only=True), strict=True); model = model.to(device)

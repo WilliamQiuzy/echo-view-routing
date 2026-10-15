@@ -369,6 +369,34 @@ def same_rng(a: dict, b: dict) -> bool:
     return a["python"] == b["python"] and all(np.array_equal(x, y) for x, y in zip(a["numpy"], b["numpy"])) and torch.equal(a["torch"], b["torch"])
 
 
+def test_the_monitor_groups_token_counts_exactly(monkeypatch):
+    import scripts.fact_integration as fi
+    plan = iter([([5] * 12, [0], [0], [2]),                            # single segment, all null (the official fallback case)
+                 ([2] + [5] * 11, [0], [0], [2]),                      # single segment, one active token, right
+                 ([1, 3, 1] + [5] * 9, [0, 1, 2], [0, 1, 2], [1, 3, 0]),   # three segments, three active tokens, two right
+                 ([5] * 12, [4, 7], [0, 1], [0, 4])])                  # two segments, all null
+
+    class Model:
+        block_list = [SimpleNamespace(action_clogit=None)]; mcriterion = SimpleNamespace(transcript=None)
+
+        def eval(self):
+            return self
+
+        def _forward_one_video(self, x):
+            cls, a, sg, trans = next(plan); logits = torch.full((12, 1, 6), -5.0); logits[torch.arange(12), 0, torch.tensor(cls)] = 5.0
+            self.block_list[-1].action_clogit, self.cur = logits, (a, sg, trans)
+
+    def fake_parts(head, m, lab):
+        a, sg, trans = m.cur; m.mcriterion.transcript = torch.tensor(trans)
+        return {"blocks": [{"frame": torch.tensor(1.0), "weights": {"frame": 1.0}}], "total": torch.tensor(1.0), "match": (torch.tensor(a), torch.tensor(sg))}
+    monkeypatch.setattr(fi, "loss_parts", fake_parts)
+    seqs = [SimpleNamespace(seq_id=f"s{i}", feat=np.zeros((4, 3), np.float32), labels=np.zeros(4, np.int64)) for i in range(4)]
+    out = tf.term_values(SimpleNamespace(num_classes=5), Model(), seqs, "cpu")
+    assert out["tokens"] == {"single": {"sequences": 2, "all_null_sequences": 1, "active_tokens": 1, "null_tokens": 23, "matched": 2, "matched_correct": 1},
+                             "multi": {"sequences": 2, "all_null_sequences": 1, "active_tokens": 3, "null_tokens": 21, "matched": 5, "matched_correct": 2}}
+    assert out["loss_frame"] == 1.0 and out["loss_total"] == 1.0
+
+
 @needs_fact
 def test_the_monitor_counts_tokens_from_its_own_forwards():
     import scripts.fact_integration as fi
