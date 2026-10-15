@@ -175,6 +175,8 @@ A05 kept the matched frame-weighted control F, which reproduces A01's Linear exa
 
 A06 stopped at its fixed check gate before training; the lead decides whether anything follows. The stop is not a FACT − ASRF result, and the A01–A05 stopping decisions and the strong reference remain unchanged.
 
+**Owner decision, 2026-10-15 — A06-R1 pending:** Continue the same unexecuted scientific comparison under an explicit **post-hoc smoke-gate amendment**, not a new model or a replacement of the v1 stop. The pinned official decoder permits all-null tokens to fall back to frame predictions. R1 permits this only on a single-segment smoke sequence whose official transcript and segment fit are correct; all multi-segment token requirements and every scientific training/evaluation setting remain unchanged. Reuse the immutable final-2,000-step evidence with source/code-semantic checks and small fresh implementation checks, without more smoke training. The original v1 failure is preserved. The cumulative v1+R1 cap remains 12 GPU hours and 4 CPU execution hours. No formal training or development result exists yet. See [the amendment and execution task](superpowers/plans/2026-10-15-fact-video-feature-gate-amendment.md).
+
 ## Component names that must not be conflated
 
 | Report shorthand | What it identifies |
