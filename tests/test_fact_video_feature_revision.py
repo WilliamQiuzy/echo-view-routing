@@ -373,6 +373,17 @@ def test_the_launch_identities_match_the_queue(tmp_path, monkeypatch):
     assert seen and tf.identities(c2, built, {}) != idents               # the queue accepted the record; a built head's would be refused
 
 
+def test_the_check_needs_a_preparation_of_the_same_script(tmp_path):
+    c2 = tmp_ctx(V2, tmp_path / "v2"); c2.out.mkdir(parents=True)
+    base = {"code": tf.code_digest(), "config_sha256": c2.config_sha(), "passed": True}
+    (c2.out / "preparation.json").write_text(json.dumps(base))
+    for pre, message in (({**base, "passed": False}, "did not pass"), ({**base, "code": "0" * 64}, "other code"),
+                         ({**base, "revalidation_code_sha256": "0" * 64}, "another version")):
+        (c2.out / "revalidation_prepare.json").write_text(json.dumps(pre))
+        with pytest.raises(SystemExit, match=message):
+            rv.stage_check(c2)                                           # refused before any GPU work
+
+
 # ----------------------------------------------------------------------------------------------- the ledgers
 def test_the_cumulative_ledger_counts_v1_once(tmp_path):
     v1 = tmp_path / "v1.jsonl"; tf.ledger_append(v1, "check", "gpu", "t", 1220.0, False); tf.ledger_append(v1, "prepare", "cpu", "t", 100.0, True)

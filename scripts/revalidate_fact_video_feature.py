@@ -387,6 +387,8 @@ def stage_check(ctx) -> None:
             raise SystemExit(f"{name} is missing or was made by other code or another configuration; run --prepare first")
     if pre.get("passed") is not True:
         raise SystemExit("the revalidation preparation did not pass")
+    if pre.get("revalidation_code_sha256") != sha256_file(Path(__file__)):
+        raise SystemExit("revalidation_prepare.json was made by another version of this script; run --prepare again")
     cpu = cpu_evidence(ctx); _, old_check, _ = original_records(ctx)
     if json.loads(json.dumps({k: cpu[k] for k in ("science", "gate", "inherited")}, default=str)) != {k: pre[k] for k in ("science", "gate", "inherited")}:
         raise SystemExit("the CPU evidence differs from the revalidation preparation's")
