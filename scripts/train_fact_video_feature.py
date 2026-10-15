@@ -106,9 +106,10 @@ class Ctx:
             raise SystemExit("the configured epochs, updates or queue are inconsistent")
         # every output of a configuration lives under its own namespace; a revision never writes into the original round
         if any(self.ns not in Path(p).parts for p in (o["root"], o["checkpoints"], o["manifest_proof"], self.fv["budget"]["ledger"])) or \
-                o["frozen"] != f"models_frozen/{self.ns}/{ARM}_s{{seed}}":
-            raise SystemExit(f"an output path lies outside the namespace {self.ns}")
-        if self.revision is not None and (self.ns == NS or self.results == self.root / Path(self.revision["original"]["check"]["path"]).parent):
+                o["frozen"] != f"models_frozen/{self.ns}/{ARM}_s{{seed}}" or Path(o["manifest"]).parent != Path(o["results_dir"]):
+            raise SystemExit(f"an output path lies outside the namespace {self.ns} or the manifest outside the results directory")
+        old = None if self.revision is None else self.root / Path(self.revision["original"]["check"]["path"]).parent
+        if old is not None and (self.ns == NS or self.results.is_relative_to(old) or old.is_relative_to(self.results)):
             raise SystemExit("a revision writes into the original round's namespace or results")
         self._a01 = None
 

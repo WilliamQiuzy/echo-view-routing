@@ -188,6 +188,10 @@ def test_the_old_code_is_identified_by_its_digest_and_differs_only_in_allowed_fu
     (tmp_path / "old" / me).write_text((tmp_path / "old" / me).read_text() + "\n")
     with pytest.raises(SystemExit):
         rv.verify_old_code(tmp_path / "old", r["original"]["code_digest"])     # any byte changes the digest
+    with pytest.raises(SystemExit, match="missing"):
+        rv.verify_old_code(tmp_path / "absent", r["original"]["code_digest"])  # an export never copied to this host
+    with pytest.raises(SystemExit):
+        rv.export_old_code(tmp_path / "no_repo", r["original"]["code_commit"], tmp_path / "x")   # no git history here
 
 
 def test_the_code_comparison_flags_every_other_change():
@@ -213,7 +217,10 @@ def test_the_namespaces_are_separate_and_guarded():
     for path, value in ((("fact_video_feature", "outputs", "root"), "runs/fact_video_feature_v1"), (("fact_video_feature", "outputs", "checkpoints"), "checkpoints/x"),
                         (("fact_video_feature", "outputs", "frozen"), "models_frozen/fact_video_feature_v1/FACT_s{seed}"),
                         (("fact_video_feature", "budget", "ledger"), "runs/fact_video_feature_v1/ledger.jsonl"),
-                        (("fact_video_feature", "outputs", "results_dir"), "docs/results/2026-10-15_fact_video_feature"), (("experiment",), "fact_video_feature_v1")):
+                        (("fact_video_feature", "outputs", "results_dir"), "docs/results/2026-10-15_fact_video_feature"), (("experiment",), "fact_video_feature_v1"),
+                        (("fact_video_feature", "outputs", "results_dir"), "docs/results/2026-10-15_fact_video_feature/revised"),
+                        (("fact_video_feature", "outputs", "results_dir"), "docs/results"),
+                        (("fact_video_feature", "outputs", "manifest"), "docs/results/2026-10-15_fact_video_feature/evaluation_manifest.json")):
         with pytest.raises(SystemExit):
             tf.Ctx(set_path(cfg, path, value), V2)
     p1 = tf.identity_payload(c1.fv, 0, {"head": "c"}, "e", {}, {"plan": "p"}, "code")

@@ -175,6 +175,9 @@ def old_code_digest(d: Path) -> str:
 
 
 def verify_old_code(d: Path, digest: str) -> str:
+    missing = [rel for rel in code_paths() if not (Path(d) / rel).is_file()]
+    if missing:
+        raise SystemExit(f"{d}: {len(missing)} old training file(s) missing; run --export-old-code where the git history is and copy the directory here")
     got = old_code_digest(d)
     if got != digest:
         raise SystemExit(f"the exported old code digests to {got[:12]}, not the old records' {digest[:12]}")
@@ -187,8 +190,8 @@ def export_old_code(root: Path, commit: str, dst: Path) -> dict:
     for rel in code_paths():
         try:
             blob = subprocess.run(["git", "-C", str(root), "show", f"{commit}:{rel}"], capture_output=True, check=True).stdout
-        except subprocess.CalledProcessError as e:
-            raise SystemExit(f"git show {commit[:12]}:{rel} failed ({e.returncode}); export the old code where the history is") from None
+        except (subprocess.CalledProcessError, FileNotFoundError) as e:
+            raise SystemExit(f"git show {commit[:12]}:{rel} failed ({type(e).__name__}); export the old code where the history is") from None
         p = Path(dst) / rel; p.parent.mkdir(parents=True, exist_ok=True); p.write_bytes(blob); files[rel] = hashlib.sha256(blob).hexdigest()
     rec = {"commit": commit, "files": files, "digest": old_code_digest(dst), "made": tf.now()}
     (Path(dst) / "export.json").write_text(json.dumps(rec, indent=1))
