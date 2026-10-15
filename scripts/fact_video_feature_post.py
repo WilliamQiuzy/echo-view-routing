@@ -96,7 +96,7 @@ def stage_train_fit(ctx) -> None:
         model = head.build(); model.load_state_dict(torch.load(fz, map_location="cpu", weights_only=True), strict=True); model = model.to(device)
         data = tv.TrainSet(a01, s); out[key] = stream_fit(head, model, list(data.streams), device); del data, model; torch.cuda.empty_cache()
         print(f"{key}: training streams decoded {json.dumps({k: out[key][k] for k in ('segment_f1_50', 'frame_accuracy', 'exact_transcripts')})}", flush=True)
-    rec = {"code": tf.code_digest(), "config_sha256": ctx.config_sha(), "fit": out}; lib, _ = tf.library(ctx)
+    rec = {"code": tf.code_digest(), "post_code_sha256": sha256_file(Path(__file__)), "config_sha256": ctx.config_sha(), "fit": out}; lib, _ = tf.library(ctx)
     assert_no_ids(rec, {q["id"] for q in lib} | {session_of(q["id"]) for q in lib if q["kind"] == "native"}, "train fit")
     for p in (ctx.out / "train_fit.json", ctx.results / "train_fit.json"):
         pv.write_atomic_json(p, rec)
