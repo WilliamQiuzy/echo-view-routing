@@ -1,0 +1,225 @@
+{
+ "config": "configs/experiments/fact_video_feature_v1.yaml",
+ "config_sha256": "f9d3d51daeadcf9f9f5728bde45b8b8623bb2e07a21053c44fa657301a17f9a9",
+ "code": "ae7531732dd0ea8be0a3aa09b9f94f236cac5006cf15163bb36de2d36d548546",
+ "environment": {
+  "python": "3.12.3",
+  "numpy": "2.5.2",
+  "pandas": "3.0.5",
+  "scipy": "1.18.1",
+  "torch": "2.14.0+cu130",
+  "torchvision": "0.29.0+cu130",
+  "cuda": "13.0",
+  "cudnn": 92400
+ },
+ "a01_environment": {
+  "torch": "2.14.0+cu130",
+  "torchvision": "0.29.0+cu130",
+  "cuda": "13.0",
+  "cudnn": 92400,
+  "torchvision_mvit_sha256": "76ca465f2be0bb7ff914ca434264ceb6736402856d164e5810491d5ba77d4210"
+ },
+ "checked": {
+  "task_sheet": "cbd5f8e0d8a5bda0dc4afb27dcf29fdced8bef61b0948bfd1912ab9161fb49eb",
+  "a01_config": "3b065e7fe908ca7432ba0a407fd6b82432882c1d72dabd1d22b899b79d790690",
+  "a01_preparation": "5f7d48db3a3b2f54f0788d9dc66a53dae2ff3dbf5105d9c1033b78a2f417d021",
+  "a01_summary": "3a1601512bc423a6ad97b5c88ed29e8ebf949a6df802bc0a76fb6fc13c503acf",
+  "f02_config": "5caffd566fd560593c5d60e829446fe0ecc97debd59cbd5c627ce13aec421ab2",
+  "f02_summary": "32c2665f485981d8b38d9c63c283027b1fd02568d04c36816d162fe88066bafa",
+  "a05_config": "3f6980942cdf1ff6aec550608605888cd6dac1a3ea454d2442e927a5762826bd",
+  "a05_preparation": "b02b362da058a93f2c29ce20915e0e7cc0519eb83e6396dcb638716693dbb735",
+  "a03_config": "c2e90d605316a2c7d9679728464dbf3a534a7eafc6ea0760a966025be72fc8b4"
+ },
+ "official": {
+  "head": "7bd81bda2b84618a3e23876a2637a82f24881122",
+  "tracked_changes": [],
+  "files": 30,
+  "digest": "59ffe5849d5d1b80440bf51e33b9da7eefec71d294482056dfee0c48ac30d952"
+ },
+ "expanded_config_sha256": "cb87eb7cda00af4fcf11c0256093352a93159a7d814fedbc7079c5359a2e5f51",
+ "token_rule": {
+  "max_transcript": 8,
+  "average_transcript": 2.654333333333333,
+  "token_ratio": 1.5,
+  "ntoken": 12
+ },
+ "library": {
+  "sequences": 4864,
+  "natives": 3364,
+  "bank_streams": 1500,
+  "samples": 398980
+ },
+ "sequence_file": {
+  "path": "runs/video_feature_temporal_v1/features/train/sequences.npz",
+  "sha256": "3a9fa10387e1a03e85587d6b1742db86f2c4f28a6e94ac2bf3a8960b2bd6ef3b"
+ },
+ "seeds": {
+  "0": {
+   "plan_sha256": "767401a23ccda2c6b40b8bb84507cfb963ea02b3f297aeb3358da931d7856ae0",
+   "feature_identity": "085079336bff489151d10df7fcf7b8cd321eab1eb49b3d6a3f564b7e47f7b4b3"
+  },
+  "1": {
+   "plan_sha256": "746180b8c68e95f1ea84c6ea9167bc5a870d28c61200716bc737adba6ecf5875",
+   "feature_identity": "acd787641442def6a412e479a8bff809de93c3247b89270b3ae76d57c60549a1"
+  },
+  "2": {
+   "plan_sha256": "723d5b0f1adf74fd8bb9ffd9a6d4c4e7ba1d2ab7acc074b7aa5248eb538ae05a",
+   "feature_identity": "62a5dbc12c4514b9ee9737267db94fc45a72dbadeb230a45d2da069a0686ea8b"
+  }
+ },
+ "inits": {
+  "FACT_s0": {
+   "path": "runs/fact_video_feature_v1/inits/FACT_s0.pt",
+   "sha256": "52ba46733482696dcf40cf22d809853dba26f66da402338bfa076fa5aabbd8bd",
+   "f02_init_sha256": "52ba46733482696dcf40cf22d809853dba26f66da402338bfa076fa5aabbd8bd",
+   "tensors": 326,
+   "parameters": 10215424
+  },
+  "FACT_s1": {
+   "path": "runs/fact_video_feature_v1/inits/FACT_s1.pt",
+   "sha256": "048357d7312ff0aa486c0c2cf695cef6492c5321fe2595a7621fcf18e42018eb",
+   "f02_init_sha256": "048357d7312ff0aa486c0c2cf695cef6492c5321fe2595a7621fcf18e42018eb",
+   "tensors": 326,
+   "parameters": 10215424
+  },
+  "FACT_s2": {
+   "path": "runs/fact_video_feature_v1/inits/FACT_s2.pt",
+   "sha256": "7bb0b6851d3fad23e3d2bb66c45bbdcc0001f72dbeabf14307616b6ee87d2ff3",
+   "f02_init_sha256": "7bb0b6851d3fad23e3d2bb66c45bbdcc0001f72dbeabf14307616b6ee87d2ff3",
+   "tensors": 326,
+   "parameters": 10215424
+  }
+ },
+ "plans": {
+  "0": {
+   "a01_sha256": "767401a23ccda2c6b40b8bb84507cfb963ea02b3f297aeb3358da931d7856ae0",
+   "path": "runs/fact_video_feature_v1/plans/plan_s0.json",
+   "sha256": "767401a23ccda2c6b40b8bb84507cfb963ea02b3f297aeb3358da931d7856ae0",
+   "updates": 18750,
+   "samples": 14016902
+  },
+  "1": {
+   "a01_sha256": "746180b8c68e95f1ea84c6ea9167bc5a870d28c61200716bc737adba6ecf5875",
+   "path": "runs/fact_video_feature_v1/plans/plan_s1.json",
+   "sha256": "746180b8c68e95f1ea84c6ea9167bc5a870d28c61200716bc737adba6ecf5875",
+   "updates": 18750,
+   "samples": 14019794
+  },
+  "2": {
+   "a01_sha256": "723d5b0f1adf74fd8bb9ffd9a6d4c4e7ba1d2ab7acc074b7aa5248eb538ae05a",
+   "path": "runs/fact_video_feature_v1/plans/plan_s2.json",
+   "sha256": "723d5b0f1adf74fd8bb9ffd9a6d4c4e7ba1d2ab7acc074b7aa5248eb538ae05a",
+   "updates": 18750,
+   "samples": 14008212
+  }
+ },
+ "caches": {
+  "0": {
+   "train": {
+    "path": "runs/video_feature_temporal_v1/features/train/ordered_s0.npz",
+    "sha256": "3566a50ea6b359cfc870b0b3a5852a7fa7c5485d518a46b679fa520e21fc21f6",
+    "identity": "085079336bff489151d10df7fcf7b8cd321eab1eb49b3d6a3f564b7e47f7b4b3"
+   },
+   "development": {
+    "path": "runs/video_feature_temporal_v1/features/development/ordered_s0.npz",
+    "sha256": "6f0f862f2d9e3a926f6cca3f493ba0a81735d156b4c29cbcc197f8454c49491b",
+    "note": "hashed only; not opened before the freeze"
+   }
+  },
+  "1": {
+   "train": {
+    "path": "runs/video_feature_temporal_v1/features/train/ordered_s1.npz",
+    "sha256": "5cbde702a0f6879662304a3463c4ac103d6e5f6dcd924fa8df13483f3cd63291",
+    "identity": "acd787641442def6a412e479a8bff809de93c3247b89270b3ae76d57c60549a1"
+   },
+   "development": {
+    "path": "runs/video_feature_temporal_v1/features/development/ordered_s1.npz",
+    "sha256": "a3309e3c06fdb77b3267b3642b513ccb8fef734635ade16f8bd42ba674d7e5ab",
+    "note": "hashed only; not opened before the freeze"
+   }
+  },
+  "2": {
+   "train": {
+    "path": "runs/video_feature_temporal_v1/features/train/ordered_s2.npz",
+    "sha256": "ee9fe9374744d8c5b2e55052669b7d24618c2be279da963aa2e14145ae4818d6",
+    "identity": "62a5dbc12c4514b9ee9737267db94fc45a72dbadeb230a45d2da069a0686ea8b"
+   },
+   "development": {
+    "path": "runs/video_feature_temporal_v1/features/development/ordered_s2.npz",
+    "sha256": "2a6fa58d85d45ca7f11ef302afd1cc3f869a5830bbb342dd6f0be541919c2200",
+    "note": "hashed only; not opened before the freeze"
+   }
+  }
+ },
+ "a01_frozen": {
+  "linear_s0": "9d8e66d4271048ff4b4cdc393e869a63514bb8fa93776c2d56f74c6391aa1aae",
+  "mstcn_s0": "3ddb3be7cca5a38097a59bc7026a1e0b38396cf274d2ebe64dfbb1fdee0dcb67",
+  "asrf_s0": "9cd9fd1e4e4266386a775f3741a7a007fbcaa527250caf172c664fae239b823c",
+  "linear_s1": "41d139b91937d950292865905fdecb6cfd848f5e10a3c3fb1f930df4443c22e9",
+  "mstcn_s1": "60e66d63915cabf22ea4547dd058797cb15b76f9b8ab172f6024b2a8c94b270b",
+  "asrf_s1": "acc86f177e9251262e9cfc5511141126ae6e109347e97e6dee5e0a550b3e5ff7",
+  "linear_s2": "a9cb90847cf8fd05972e1a1cd98ddb658c9b2e51025289e55702dc8cabd2a981",
+  "mstcn_s2": "9fe4d14e14a4f9e9330a24097f2d389cc3f27aac158f8bc9715b521678bf829b",
+  "asrf_s2": "9a93b174058529b913f72b5f594ae908e810728ba05f2b195e1afa42519b29e2"
+ },
+ "v01_outputs": {
+  "selection_s0": "98706faa4efdeae4e1b7640f65b24dbbd4878f0f354611aec6679233a0f3a0dc",
+  "calibration_s0": "d79008575f59aad1a6a9911906bff3752bb0d0e54bacfceb23232562f703400d",
+  "selection_s1": "b5d6a13c20e2be1d922b88eafc20b17f4dacfbebcbf83149715575c9e69c9aa1",
+  "calibration_s1": "37fb569093916aaf00d455fe92d8efe2397a6f1913c57d55d798c59acd2915ac",
+  "selection_s2": "86f6f90d869a05cc4a886257a3f35b9bb2ec1e696c4508e0cbfb9ebf840bfe3d",
+  "calibration_s2": "306f1abf7bfda0edad8dd21aa5980f89efa246aaa38c718db374df68de89315f"
+ },
+ "batches": {
+  "0": {
+   "epochs_checked": 50,
+   "batches_unpadded": 18750,
+   "sequences_compared": 150000,
+   "samples": 14016902
+  },
+  "1": {
+   "epochs_checked": 50,
+   "batches_unpadded": 18750,
+   "sequences_compared": 150000,
+   "samples": 14019794
+  },
+  "2": {
+   "epochs_checked": 50,
+   "batches_unpadded": 18750,
+   "sequences_compared": 150000,
+   "samples": 14008212
+  }
+ },
+ "spot_check": {
+  "0": {
+   "equal": true,
+   "rows_compared": 1723,
+   "sequences": 16
+  },
+  "1": {
+   "equal": true,
+   "rows_compared": 1723,
+   "sequences": 16
+  },
+  "2": {
+   "equal": true,
+   "rows_compared": 1723,
+   "sequences": 16
+  }
+ },
+ "training_stream_samples": {
+  "0": 191366,
+  "1": 191366,
+  "2": 191366
+ },
+ "development_counts": {
+  "selection": {
+   "sequences": 541,
+   "samples": 37287
+  },
+  "calibration": {
+   "sequences": 472,
+   "samples": 34216
+  }
+ }
+}
