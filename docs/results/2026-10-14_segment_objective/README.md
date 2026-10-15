@@ -201,6 +201,19 @@ These rows show the same heads with other decoders. Nothing is chosen from them.
   boundary head, teacher, gate, duration prior, transcript decoder, loss-weight, epoch or learning-rate search, extra
   seed or new extraction follows.
 
+#### Project-lead interpretation, 2026-10-15
+
+The project lead confirms closure. Under the original task sheet's nonexclusive wording, also record
+**transcript-only / local effect** and **trade-off**, with the following scope. O has a lower transcript edit-distance
+point estimate than F in all six cells, without intervals; this is not a demonstrated O-versus-B order-term effect.
+B and O recover some segments against F while each breaks the selection native floor in two seeds. This is a
+descriptive coexistence of segment changes and native classification loss, not a consistent or causal trade-off.
+Neither reading establishes a qualifying system gain.
+
+This dated interpretation supplements the original operational readings; it does not replace them. The configuration,
+decision code, `summary.json`, choices, weights and numerical results remain unchanged. The primary conclusion remains
+**uncertain or no qualifying gain; end**. No loss-weight, training-budget or head search is authorized by this addendum.
+
 ### 9. Cost
 
 - **GPU.** 0.392 of 4 hours: checks 0.012 h, the nine trainings 0.345 h, and calibration, dry run and selection
