@@ -88,7 +88,7 @@ def _repo_modules() -> list[str]:
 
 
 IMPORTED = _repo_modules()
-HELPER_FILES = ("scripts/freeze_model.py",)
+HELPER_FILES = ("scripts/freeze_model.py", "third_party/ms-tcn/model.py")
 
 
 def code_digest() -> str:
@@ -209,17 +209,33 @@ def goal_of(rows_by_seed: list[dict], g: dict) -> dict:
     return rt.goal(rows_by_seed, [True] * len(rows_by_seed), g)
 
 
+CATEGORIES = (("all reference segments", "segments"), ("segments of at most 16 samples", "short"), ("A4C/A5C X-Y-X middles", "xyx_a4c_a5c"))
+
+
 def point_estimate_items(acc: dict, seeds=(0, 1, 2)) -> list[dict]:
-    """Multi-stream recoveries pooled over seeds that exceed the losses against ASRF, Linear + B3 or frozen Ordered + B3."""
+    """Recoveries pooled over seeds that exceed the losses against ASRF, Linear + B3 or frozen Ordered + B3, counted
+    separately for native clips, pair streams and multi streams."""
     items = []
     for c in POINT_CONTROLS:
         for h in HALVES:
-            xs = [acc[f"s{s}|FACT vs {c}|{h}"]["segments"]["multi"] for s in seeds]
-            for what, key in (("all reference segments", "segments"), ("segments of at most 16 samples", "short"), ("A4C/A5C X-Y-X middles", "xyx_a4c_a5c")):
-                rec, lost = (int(sum(x[side][key] for x in xs)) for side in ("recovered", "lost"))
-                if rec > lost:
-                    items.append({"control": c, "half": h, "what": what, "recovered": rec, "lost": lost})
+            for kind in st.KINDS:
+                xs = [acc[f"s{s}|FACT vs {c}|{h}"]["segments"][kind] for s in seeds]
+                for what, key in CATEGORIES:
+                    rec, lost = (int(sum(x[side][key] for x in xs)) for side in ("recovered", "lost"))
+                    if rec > lost:
+                        items.append({"control": c, "half": h, "population": kind, "what": what, "recovered": rec, "lost": lost})
     return items
+
+
+def denominators(seqs: list[dict]) -> dict:
+    """Reference segments per population: all, at most 16 samples, and A4C/A5C X-Y-X middles (the raw denominators)."""
+    from echo_routing.temporal.segments import labels_to_segments
+    out = {k: {w: 0 for w, _ in CATEGORIES} for k in st.KINDS}
+    for q in seqs:
+        ref = labels_to_segments(np.asarray(q["labels"])); d = out[q["kind"]]
+        d["all reference segments"] += len(ref); d["segments of at most 16 samples"] += sum(r.length <= 16 for r in ref)
+        d["A4C/A5C X-Y-X middles"] += sum(st.xyx_middle(ref, j) for j in range(len(ref)))
+    return out
 
 
 def local_evidence(ver: dict, points: list[dict]) -> dict:
@@ -399,9 +415,19 @@ def summarise(ctx: Ctx, per: dict, runs: dict) -> tuple[dict, dict]:
                    "A01 ASRF": goal_of([rows[f"A01 ASRF s{s}"] for s in ctx.seeds], ctx.fv["goal"]),
                    "A01 Linear + B3": rt.goal([rows[f"A01 Linear + B3 s{s}"] for s in ctx.seeds], [a01["linear_b3"][str(s)]["status"] == "feasible" for s in ctx.seeds], ctx.fv["goal"]),
                    "frozen Ordered + B3": goal_of([rows[f"frozen Ordered + B3 s{s}"] for s in ctx.seeds], ctx.fv["goal"])}
-    ver = {c: res["verdicts"][f"{c}|multi segment F1@50"] for c in COMPARE}
-    points = point_estimate_items(res["accounting"], ctx.seeds); trade = trade_cells(res["accounting"], rows, res["goal"]["FACT"]["constraint_failures"], ctx.seeds)
-    res["decision"] = readings(ver, res["goal"]["FACT"], local_evidence(ver, points), trade)
+    ver = {c: res["verdicts"][f"{c}|multi segment F1@50"] for c in COMPARE}; res["denominators"] = {h: denominators(per[h]["seqs"]) for h in HALVES}
+    points = [{**i, "denominator_per_seed": res["denominators"][i["half"]][i["population"]][i["what"]], "seeds": len(ctx.seeds)}
+              for i in point_estimate_items(res["accounting"], ctx.seeds)]
+    trade = trade_cells(res["accounting"], rows, res["goal"]["FACT"]["constraint_failures"], ctx.seeds)
+    for cell in trade:
+        cell["intervals"] = {m: res["comparisons"][f"s{cell['seed']}|FACT - {cell['control']}|{cell['half']}"][m] for m in ("multi FP segments", "native macro-F1")}
+    res["decision"] = readings(ver, res["goal"]["FACT"], local_evidence(ver, points), trade); notes = res["decision"]["notes"]
+    by_seed = lambda c, h: {f"s{s}": res["comparisons"][f"s{s}|{c}|{h}"]["multi segment F1@50"] for s in ctx.seeds}  # noqa: E731
+    if "one_half_or_local_effect" in notes:
+        for item in notes["one_half_or_local_effect"]["consistent"]:
+            item["intervals"] = by_seed(item["comparison"], item["half"])
+    if "uncertain_or_no_qualifying_gain" in notes:
+        notes["uncertain_or_no_qualifying_gain"]["primary_by_seed"] = {h: by_seed(PRIMARY, h) for h in HALVES}
     res["stored_rows"] = stored_rows(a01)
     return res, private
 

@@ -197,7 +197,20 @@ def test_point_estimate_items_come_from_pooled_multi_stream_recoveries():
                 multi = seg(rec=2, lost=1, rec_short=1, lost_short=1) if (c == "A01 ASRF" and h == "selection") else seg(rec=1, lost=1)
                 acc[f"s{s}|FACT vs {c}|{h}"] = {"segments": {"native": seg(), "pairs": seg(), "multi": multi}}
     items = rf.point_estimate_items(acc)
-    assert items == [{"control": "A01 ASRF", "half": "selection", "what": "all reference segments", "recovered": 6, "lost": 3}]
+    assert items == [{"control": "A01 ASRF", "half": "selection", "population": "multi", "what": "all reference segments", "recovered": 6, "lost": 3}]
+    acc["s0|FACT vs frozen Ordered + B3|calibration"]["segments"]["pairs"] = seg(rec=1, rec_short=1)       # a pair-stream recovery counts in its own population
+    assert {(i["control"], i["population"], i["what"]) for i in rf.point_estimate_items(acc)} == {
+        ("A01 ASRF", "multi", "all reference segments"), ("frozen Ordered + B3", "pairs", "all reference segments"),
+        ("frozen Ordered + B3", "pairs", "segments of at most 16 samples")}
+
+
+def test_denominators_count_reference_segments_per_population():
+    seqs = [{"kind": "native", "labels": np.full(20, 2)}, {"kind": "pairs", "labels": np.array([2] * 10 + [3] * 30)},
+            {"kind": "multi", "labels": np.array([2] * 30 + [3] * 8 + [2] * 30 + [0] * 5)}]
+    d = rf.denominators(seqs)
+    assert d["native"] == {"all reference segments": 1, "segments of at most 16 samples": 0, "A4C/A5C X-Y-X middles": 0}
+    assert d["pairs"] == {"all reference segments": 2, "segments of at most 16 samples": 1, "A4C/A5C X-Y-X middles": 0}
+    assert d["multi"] == {"all reference segments": 4, "segments of at most 16 samples": 2, "A4C/A5C X-Y-X middles": 1}
 
 
 def test_trade_off_cells_need_a_recovery_and_a_cost_in_the_same_cell():

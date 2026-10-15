@@ -85,22 +85,25 @@ fact_video_feature:
   train_fit: "after the freeze, the official decoding of all 1,500 training streams per seed: frame accuracy, segment F1@50, exact transcripts and the missed reference segments by length and class; it locates under-fitting only and never adds budget, updates or Breakfast"
   checks:
     sources: "every pin, the A01 records, the A05 full cache hashes, the official checkout and its tracked files, F02's initial states"
-    batches: "all 50 epochs' structure digests per seed against A01's plan; every batch of every epoch unpadded and compared element by element with its sequences; float32 spot checks against bounded reads of the source cache"
+    batches: "in the preparation (CPU): all 50 epochs' structure digests per seed against A01's plan; every batch of every epoch unpadded and compared element by element with its sequences; float32 spot checks against bounded reads of the source cache"
     token_rule: "recomputed from the training labels: longest 8, average 2.654333333333333, ntoken 12"
     init: "strict load of the copied F02 initial state; tensor names and shapes equal a fresh build"
-    padding: "padded labels and features changed with the valid samples kept: the official loss (same RNG state) and the predictions do not change"
+    padding: "padded labels and features changed with the valid samples kept: the official loss (same RNG state, training mode) and the eval-mode predictions do not change"
     isolation: "five label sequences (reference, zeros, random, time-reversed, one sample) on the 16 check sequences and the first 200 constructed streams, at the initial and the overfit state: identical predictions, frame and token logits, and the adapter's zero-label decode equals them"
     reproducibility: {device: GPU, updates: 6, resume: "3 + 3 against 6, through a saved resume file", objects: "the six update losses and every parameter", tolerance: 1.0e-6,
                       rule: "a larger difference is located and reported; no tolerance is raised and no precision changed to start the runs"}
     smoke:
-      updates: 2000              # at most; checked at the end
+      updates: 2000              # at most; checked every 250 updates from update 500 and at update 2,000; it stops at the first passing check
+      check_from: 500
+      check_every: 250
       batches: "the 16 check sequences in two fixed batches of 8, alternating"
       optimiser: "Adam at a constant lr 1e-4 with the formal betas, eps, weight decay and clip; official augmentation on; seed 0; from the seed-0 initial state"
       requirements: "every predicted transcript equals the reference, segment F1@50 is 1 for all 16, the matching is one to one and every matched token predicts its segment's view; the official loss need not approach zero"
       failure: "the fit curve is saved and this round stops; no extra updates, no other optimiser"
       weights: "smoke weights never initialise a formal run"
-    timing: {warmup_updates: 5, timed_updates: 50, batches: "seed 0, epoch 0, from the seed-0 initial state",
-             projection: "per-update time fitted to the batch's valid samples on the 50 timed updates and applied to every seed's planned batches, plus the per-epoch monitor and save time; the train-fit decoding, development inference and fact-check inference are estimated from the measured decoding time per sample"}
+    timing: {warmup_updates: 5, timed_updates: 50, batches: "seed 0, epoch 0, from the seed-0 initial state; measured first in the check, before the other GPU checks",
+             projection: "per-update time fitted to the batch's valid samples on the 50 timed updates and applied to every seed's planned batches, plus the per-epoch monitor and save time",
+             post_training: "measured FACT and control (A01 ASRF and MS-TCN) decoding seconds per sample on training streams, times the samples of the real passes: FACT decodes the 1,500 training streams per seed, each development half once (its outputs are saved and reused) and one GPU fact-check pass over both halves; the controls run in the calibration stage, the dry run and the selection stage; A01's recorded half sizes (37,287 selection and 34,216 calibration samples); plus 0.05 h of stage overhead after A05's recorded evaluation stages (0.006 to 0.019 GPU h each)"}
   budget:
     gpu_hours_max: 12.0          # failed checks, smoke, the three trainings, train-fit and development inference, GPU fact-check
     gpu_reserve_hours: 1.25      # kept for evaluation and verification in every launch projection
@@ -143,7 +146,7 @@ fact_video_feature:
   readings:                      # nonexclusive, fixed before implementation, applied once after the selection evaluation
     complete_system_progress: "FACT - A01 ASRF, FACT - A01 Linear + B3 and FACT - frozen Ordered + B3 are consistent positive in multi segment F1@50 in both halves, every seed and half meets the recall and native floors, and the goal's means are met; at most a system advance on this development protocol, never originality, clinical validity or a causal contribution of cross-attention"
     learned_system_gain_without_strong_reference_win: "FACT - A01 ASRF and FACT - A01 Linear + B3 are consistent positive in both halves while complete_system_progress does not hold; the failed condition (frozen Ordered comparison, a floor or the goal) is named; no overall win is claimed"
-    one_half_or_local_effect: "(a) any of the four F1 comparisons (A01 ASRF, A01 Linear + B3, frozen Ordered + B3, A01 MS-TCN) is consistent positive in at least one half, or (b) only point estimates improve: pooled over seeds, FACT recovers more reference segments than it loses (all segments, segments of at most 16 samples, or A4C/A5C X-Y-X middles) against A01 ASRF, A01 Linear + B3 or frozen Ordered + B3 in a half; every item is listed with its metric, denominator and interval, and point estimates are kept apart from consistent evidence"
+    one_half_or_local_effect: "(a) any of the four F1 comparisons (A01 ASRF, A01 Linear + B3, frozen Ordered + B3, A01 MS-TCN) is consistent positive in at least one half, or (b) only point estimates improve: pooled over seeds, FACT recovers more reference segments than it loses (all segments, segments of at most 16 samples, or A4C/A5C X-Y-X middles) against A01 ASRF, A01 Linear + B3 or frozen Ordered + B3 in a half, counted separately for native clips, pair streams and multi streams; every item is listed with its population, denominator and intervals, and point estimates are kept apart from consistent evidence"
     trade_off: "in some seed and half, against A01 Linear + B3 or frozen Ordered + B3, FACT recovers at least one reference segment while it also has a new unmatched predicted segment, a lower native macro-F1 point estimate or a recall or native floor failure in that seed and half; the counts and intervals of those cells are listed; it describes coexistence, needs no cross-seed significance and proves no cause; without this pattern it is not applied"
     uncertain_or_no_qualifying_gain: "complete_system_progress does not hold; the primary comparison's direction in each half is reported; no interval containing zero is called equality, and one configuration never rejects a model family"
     end: "after the one report this official GTEA, video-feature and budget combination closes; no extra seed, Breakfast configuration, more tokens or layers, encoder fine-tuning, loss, optimiser, epoch or decoder search, reference boundaries, boundary subdivision, teacher, gate or fusion follows automatically"

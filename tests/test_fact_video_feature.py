@@ -178,6 +178,8 @@ def test_padding_never_changes_the_loss_or_the_prediction(trainset):
     assert tf.batch_loss(head, model, batch, seed=1) == tf.batch_loss(head, model, alt, seed=1)
     xs, ys = fh.FACTHead.unpad(alt)
     assert all(torch.equal(a, torch.from_numpy(s.feat)) and torch.equal(b, torch.from_numpy(s.labels)) for a, b, s in zip(xs, ys, seqs))
+    rep = tf.padding_check(head, model, batch, seqs, "cpu", 1)             # the check's own helper: eval-mode predictions
+    assert rep["padded_positions"] == int(pad.sum()) and rep["loss_diff"] == 0.0 and rep["predictions_equal"]
 
 
 @needs_fact
@@ -243,6 +245,23 @@ def test_smoke_gate(change, ok):
     iso = [{"changed_predictions": 0, "max_abs_logit_difference": 0.0, "adapter_decode_differs": 0}] * 2
     assert tf.smoke_passed(out, iso)["all"] is ok
     assert tf.smoke_passed({**out, **change}, [{"changed_predictions": 1, "max_abs_logit_difference": 0.0, "adapter_decode_differs": 0}, iso[0]])["all"] is False
+
+
+def test_smoke_check_points():
+    due = [n for n in range(1, 2001) if tf.smoke_due(n, 500, 250, 2000)]
+    assert due == [500, 750, 1000, 1250, 1500, 1750, 2000]
+
+
+@needs_fact
+def test_training_stream_fit_counts(trainset):
+    import scripts.fact_video_feature_post as post
+    ctx, data, _ = trainset
+    head = fh.FACTHead(REPO, 512, RULE, num_classes=5, base_config="gtea.yaml"); torch.manual_seed(0); model = head.build()
+    fit = post.stream_fit(head, model, list(data.streams), "cpu")
+    refs = sum(len(np.unique(np.flatnonzero(np.diff(s.labels)) + 1)) + 1 for s in data.streams)
+    assert fit["streams"] == len(data.streams) and fit["tp"] + fit["fn"] == refs and sum(fit["missed"]["by_class"].values()) == fit["fn"]
+    assert sum(fit["missed"]["by_length"].values()) == fit["fn"] and sum(fit["tokens_minus_segments"].values()) == len(data.streams)
+    assert 0.0 <= fit["frame_accuracy"] <= 1.0
 
 
 def test_ledger_books_every_run_once(tmp_path):
