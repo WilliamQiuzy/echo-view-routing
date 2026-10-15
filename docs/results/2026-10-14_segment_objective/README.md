@@ -207,8 +207,8 @@ These rows show the same heads with other decoders. Nothing is chosen from them.
   inference 0.035 h.
 - **Extra CPU.** 0.323 of 3 hours. This covers the tests, preparations, review, calibration grids, dry run, selection
   bootstrap, queue overhead and the fact-check's 0.04 hours.
-- The ledger is `runs/segment_objective_v1/ledger.jsonl` on the server. It has 26 lines, including the reviewer's and the
-  fact-checker's hand-recorded command time.
+- The ledger is `runs/segment_objective_v1/ledger.jsonl` on the server. It has 27 lines. They include the reviewer's and
+  the fact-checker's hand-recorded command time and, last, a final id scan of the result files.
 
 ## Terms
 
