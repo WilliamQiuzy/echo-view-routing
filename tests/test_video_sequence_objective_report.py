@@ -153,6 +153,13 @@ def test_every_archived_summary_resolves_to_its_pin_and_holds_the_listed_rows():
     assert rp.archived_pin(src, "a05_summary") is src["a05_summary"] and rp.archived_pin(src, "a01_summary") is src["archived_rows"]["a01_summary"]
 
 
+def test_the_context_keeps_every_reader_method():
+    """The first archived_pin fix (dcae2cd) was placed inside the class body and orphaned Ctx.v01_output."""
+    for name in ("a03src", "proto", "plans", "half", "v01_summary", "archived", "v01_output"):
+        assert inspect.isfunction(getattr(rp.Ctx, name, None)), name
+    assert inspect.getsource(rp.archived_pin).count("def ") == 1
+
+
 def test_the_barrier_paths_and_stages_follow_the_config():
     assert VSO["outputs"]["choices"].startswith(VSO["outputs"]["results_dir"]) and VSO["outputs"]["choices_proof"].startswith(VSO["outputs"]["root"])
     src = inspect.getsource(rp)
