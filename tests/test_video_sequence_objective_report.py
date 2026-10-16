@@ -5,7 +5,9 @@ loaders forbidden, the choice record rules, the per-sample mapping and the paths
 from __future__ import annotations
 
 import copy
+import hashlib
 import inspect
+import json
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -138,6 +140,17 @@ def test_choice_records_are_complete_and_follow_the_rule():
     bad = copy.deepcopy(choices); bad["systems"].pop("frame_s2")
     with pytest.raises(SystemExit):
         rp.load_choices(ctx, bad)
+
+
+def test_every_archived_summary_resolves_to_its_pin_and_holds_the_listed_rows():
+    """The dry run found A05's summary pinned under source.a05_summary, not under source.archived_rows."""
+    src = VSO["source"]
+    for key, names in rp.ARCHIVED.items():
+        pin = rp.archived_pin(src, key); path = ROOT / pin["path"]
+        assert hashlib.sha256(path.read_bytes()).hexdigest() == pin["sha256"]
+        systems = json.loads(path.read_text())["systems"]
+        assert all({"selection", "calibration"} <= set(systems[p.format(k=k)]) for p in names.values() for k in (0, 1, 2))
+    assert rp.archived_pin(src, "a05_summary") is src["a05_summary"] and rp.archived_pin(src, "a01_summary") is src["archived_rows"]["a01_summary"]
 
 
 def test_the_barrier_paths_and_stages_follow_the_config():

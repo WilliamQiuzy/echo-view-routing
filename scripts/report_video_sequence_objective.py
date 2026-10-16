@@ -210,7 +210,12 @@ class Ctx(tr.Ctx):
         return self._pinned("v01", self.src["raw_video_summary"])
 
     def archived(self, key: str) -> dict:
-        return self._pinned(key, self.src["archived_rows"][key])
+        return self._pinned(key, archived_pin(self.src, key))
+
+
+def archived_pin(src: dict, key: str) -> dict:
+    """A01's and A06-R1's summaries are pinned under source.archived_rows, A05's under source.a05_summary."""
+    return src["archived_rows"][key] if key in src["archived_rows"] else src[key]
 
     def v01_output(self, h: str, seed: int) -> dict:
         with np.load(pr_pinned(self.root, self.src["ordered_outputs"][h][seed])) as z:
