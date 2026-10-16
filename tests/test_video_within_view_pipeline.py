@@ -262,6 +262,51 @@ def test_the_comparison_map_follows_the_config():
     assert rw.CMP["ordered_setting"]["M - frozen Ordered"] == ("M at Ordered setting", "frozen Ordered + B3")
 
 
+# ----------------------------------------------------------------------------------------------- shared seed cases, trade-offs, consistent verdicts
+def test_shared_counts_give_distinct_cases_and_their_seed_multiplicity():
+    assert rw.shared_counts([{"a", "b"}, {"b", "c"}, {"b"}]) == {"distinct": 3, "in_1_seed": 2, "in_2_seeds": 0, "in_3_seeds": 1}
+    assert rw.shared_counts([set(), set(), set()]) == {"distinct": 0, "in_1_seed": 0, "in_2_seeds": 0, "in_3_seeds": 0}
+
+
+def test_case_sets_split_the_private_lists_by_population_and_category():
+    priv = [{"sequence": "x", "segment": 2, "start": 0, "end": 9, "label": 1, "status": "a only"},
+            {"sequence": "y", "segment": 0, "start": 0, "end": 5, "label": 3, "status": "b only"},
+            {"sequence": "x", "start": 10, "end": 12, "label": 2, "status": "new_unmatched_pred"},
+            {"sequence": "z", "start": 1, "end": 4, "label": 0, "status": "removed_unmatched_pred"}]
+    sets = rw.case_sets(priv, {"x": "multi", "y": "pairs", "z": "native"})
+    assert sets["multi"]["recovered"] == {("x", 2)} and sets["pairs"]["lost"] == {("y", 0)}
+    assert sets["multi"]["new_unmatched_sequences"] == {"x"} and sets["native"]["removed_unmatched_sequences"] == {"z"}
+    assert sets["native"]["recovered"] == set()
+
+
+def test_trade_cells_need_a_gain_and_a_cost_in_the_same_half():
+    def res(recovered, lost, fp_m, fp_f, recall=NONE, failures=()):
+        systems = {f"{n} s{s}": {h: {"multi": {"fp": fp_m if n == "M + B3" else fp_f}} for h in ("selection", "calibration")}
+                   for n in ("M + B3", "F + B3", "A + B3", "frozen Ordered + B3") for s in (0, 1, 2)}
+        pooled = {f"{c}|{h}|multi": {"recovered": recovered, "lost": lost, "new_unmatched_pred": 0, "removed_unmatched_pred": 0}
+                  for c in CMPS for h in ("selection", "calibration")}
+        ver = {f"b3|{c}|{m}": {"selection": recall if (m == "multi boundary recall" and c == "M - F") else NONE, "calibration": NONE}
+               for c in CMPS for m in ("multi boundary recall", "multi segment F1@50")}
+        g = {n: {"constraint_failures": [{"half": h} for h in failures]} for n in ("A", "M", "F", "frozen Ordered")}
+        return {"verdicts": ver, "kind_counts": systems, "accounting_pooled": pooled, "goal": g}
+    assert rw.trade_cells(res(3, 1, 10, 10)) == []                                      # a gain without a cost
+    cells = rw.trade_cells(res(3, 5, 10, 10))
+    assert {(c["comparison"], c["half"]) for c in cells} == {(c, h) for c in CMPS for h in ("selection", "calibration")}
+    assert all(c["costs"] == ["more lost than recovered reference segments"] for c in cells)
+    cells = rw.trade_cells(res(0, 0, 8, 10, recall=NEG))
+    assert {(c["comparison"], c["half"]) for c in cells} == {("M - F", "selection")}           # fewer FP with a consistent recall loss
+    assert cells[0]["gains"] == ["fewer multi FP segments"] and cells[0]["costs"] == ["consistently lower multi boundary recall"]
+
+
+def test_consistent_list_keeps_unfavourable_and_literal_negative_verdicts():
+    res = {"verdicts": {"b3|M - A|multi segment F1@50": {"selection": NEG, "calibration": POS},
+                        "b3|M - A|multi FP segments": {"selection": POS, "calibration": NEG},
+                        "argmax|A - F|native macro-F1": {"selection": NONE, "calibration": NONE}}}
+    got = {(c["metric"], c["half"], c["verdict"], c["unfavourable"]) for c in rw.consistent_list(res)}
+    assert got == {("multi segment F1@50", "selection", NEG, True), ("multi FP segments", "selection", POS, True),
+                   ("multi FP segments", "calibration", NEG, False)}
+
+
 # ----------------------------------------------------------------------------------------------- F's stored outputs and the guards
 def f_npz(tmp_path, ident="fid", tamper=False):
     W = {"seq": np.array([0, 0, 1]), "centre": np.array([2, 7, 2]), "marker": np.array([8, 8, 8])}

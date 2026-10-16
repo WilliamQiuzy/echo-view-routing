@@ -31,6 +31,7 @@ import hashlib  # noqa: E402
 import json  # noqa: E402
 import sys  # noqa: E402
 import time  # noqa: E402
+from collections import Counter  # noqa: E402
 from pathlib import Path  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -80,6 +81,7 @@ forbid_eager_loaders = vrp.forbid_eager_loaders
 half_refs = vrp.half_refs
 HELPER_FILES = ("scripts/freeze_model.py",)
 F_SYSTEMS = ("F + B3", "F argmax", "F at Ordered setting")
+CASE_CATEGORIES = ("recovered", "lost", "new_unmatched_sequences", "removed_unmatched_sequences")
 
 
 def system_name(n: str, dec: str) -> str:
@@ -433,6 +435,26 @@ def consistent_list(res: dict) -> list[dict]:
     return out
 
 
+def shared_counts(sets: list[set]) -> dict:
+    """Distinct cases over the seeds and how many of them appear in one, two or three seeds (the seeds share the cases)."""
+    mult = Counter(c for x in sets for c in x)
+    return {"distinct": len(mult), "in_1_seed": sum(v == 1 for v in mult.values()), "in_2_seeds": sum(v == 2 for v in mult.values()),
+            "in_3_seeds": sum(v == 3 for v in mult.values())}
+
+
+def case_sets(priv: list[dict], kind_of: dict) -> dict:
+    """One seed's private accounting list per population: the recovered and lost reference segments (sequence, segment) and
+    the sequences with new or removed unmatched predicted segments (their boundaries differ between seeds)."""
+    out = {k: {c: set() for c in CASE_CATEGORIES} for k in st.KINDS}
+    for x in priv:
+        k, s = kind_of[x["sequence"]], x["status"]
+        if s in ("a only", "b only"):
+            out[k]["recovered" if s == "a only" else "lost"].add((x["sequence"], int(x["segment"])))
+        elif s in ("new_unmatched_pred", "removed_unmatched_pred"):
+            out[k]["new_unmatched_sequences" if s == "new_unmatched_pred" else "removed_unmatched_sequences"].add(x["sequence"])
+    return out
+
+
 def pooled(ctx: Ctx, acc: dict) -> dict:
     out = {}
     for c in PAIRS:
@@ -455,10 +477,11 @@ def training_penalties(runs: dict) -> dict:
 
 
 def summarise(ctx: Ctx, per: dict, choices: dict) -> tuple[dict, dict]:
-    res = {"systems": {}, "kind_counts": {}, "transcripts": {}, "switches": {}, "join_cuts": {}, "comparisons": {}, "accounting": {}, "native_changes": {}}
+    res = {"systems": {}, "kind_counts": {}, "transcripts": {}, "switches": {}, "join_cuts": {}, "comparisons": {}, "accounting": {}, "native_changes": {},
+           "shared_cases": {}, "shared_native_changes": {}}
     private = {}
     for h in HALVES:
-        x = per[h]; seqs = x["seqs"]
+        x = per[h]; seqs = x["seqs"]; kind_of = {q["id"]: q["kind"] for q in seqs}; cases, natives = {}, {}
         for name, sysd in x["systems"].items():
             res["systems"].setdefault(name, {})[h] = sysd["row"]
             res["kind_counts"].setdefault(name, {})[h] = st.kind_counts(seqs, sysd["preds"], sysd["tables"])
@@ -480,7 +503,13 @@ def summarise(ctx: Ctx, per: dict, choices: dict) -> tuple[dict, dict]:
                 res["native_changes"][f"s{s}|{pname}|{h}"] = {k: ({"fixed": len(v["fixed"]), "new": len(v["new"]), "fixed_sessions": v["fixed_sessions"],
                                                                   "new_sessions": v["new_sessions"]} if "fixed_sessions" in v else v) for k, v in nc.items()}
                 private[f"s{s}|{pname}|{h}"] = {"segments": priv, "native": {k: v for k, v in nc.items() if "fixed_sessions" in v}}
+                cases[(s, pname)] = case_sets(priv, kind_of); natives[(s, pname)] = {k: v for k, v in nc.items() if "fixed_sessions" in v}
             print(f"{h} seed {s}: comparisons and accounting done", flush=True)
+        for pname in PAIRS:
+            for kind in st.KINDS:
+                res["shared_cases"][f"{pname}|{h}|{kind}"] = {c: shared_counts([cases[(s, pname)][kind][c] for s in ctx.seeds]) for c in CASE_CATEGORIES}
+            res["shared_native_changes"][f"{pname}|{h}"] = {err: {w: shared_counts([set(natives[(s, pname)][err][w]) for s in ctx.seeds]) for w in ("fixed", "new")}
+                                                         for err in natives[(ctx.seeds[0], pname)]}
     res["verdicts"] = {f"{dec}|{c}|{m}": {h: st.consistency([res["comparisons"][f"s{s}|{dec}|{c}|{h}"][m] for s in ctx.seeds]) for h in HALVES}
                        for dec, cmps in CMP.items() for c in cmps for m in st.BOOT_METRICS}
     res["accounting_pooled"] = pooled(ctx, res["accounting"]); res["goal"] = goals(ctx, res["systems"], choices)
@@ -504,6 +533,10 @@ def tables_md(res: dict, config: str) -> str:
     parts += ["## Three-seed verdicts\n", md([{"decoding / comparison / metric": k.replace("|", " / "), **v} for k, v in res.get("verdicts", {}).items()])]
     parts += ["## Pooled recovered and lost reference segments (B3 systems)\n", md([{"pair / half / population": k.replace("|", " / "), **{x: y for x, y in v.items() if not isinstance(y, list)}}
                                                                                    for k, v in res.get("accounting_pooled", {}).items()])]
+    parts += ["## Shared seed cases (distinct cases over the three seeds and how many appear in 1 / 2 / 3 seeds; multi streams)\n",
+              md([{"pair / half": k.rsplit("|", 1)[0].replace("|", " / "), **{c: f"{v[c]['distinct']} ({v[c]['in_1_seed']} / {v[c]['in_2_seeds']} / {v[c]['in_3_seeds']})"
+                                                                            for c in CASE_CATEGORIES}}
+                  for k, v in res.get("shared_cases", {}).items() if k.endswith("|multi")])]
     parts += ["## Goal\n", md([{"group": g, "selection mean": v["mean_segment_f1"]["selection"], "calibration mean": v["mean_segment_f1"]["calibration"],
                                  "constraint failures": len(v["constraint_failures"]), "met": v["met"]} for g, v in res.get("goal", {}).items()])]
     pen = [{"run": k, "epoch": e["epoch"], "CE": e["ce"], "S_A": e["S_A"], "S_M": e["S_M"], "equal-label penalty": e["same_label_penalty"],
