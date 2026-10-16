@@ -1,0 +1,177 @@
+{
+ "provenance": {
+  "report_code": "7ba9fed6f209cb5dbc5ed9505fc64577c09ab7e4fe0fe98a2af051013d00461d",
+  "train_code": "b548d93c2a16d3b35708ad798d1d114dbcee4665897e3b4321e6be1049315a5f",
+  "config_sha256": "d3841a09cba8d9af832c1089d3c5d97f2345ca4ffe83cb5e07a61a06b86df918",
+  "preparation_code": "b548d93c2a16d3b35708ad798d1d114dbcee4665897e3b4321e6be1049315a5f",
+  "official": {
+   "head": "7bd81bda2b84618a3e23876a2637a82f24881122",
+   "tracked_changes": [],
+   "files": 30,
+   "digest": "59ffe5849d5d1b80440bf51e33b9da7eefec71d294482056dfee0c48ac30d952"
+  },
+  "runs": {
+   "FACT_s0": {
+    "identity": "8657fed5d54bf359c7851c2445884f2b425d436d54cd3270e29c90dfad662fb4",
+    "final_sha256": "911a9a647a3bc0ac47987f43f2c94fe75f968cd4e00da254049c8ed47490b0ba"
+   },
+   "FACT_s1": {
+    "identity": "c278491b46dce09b2b0d718a382aea3b9f39206b3dd9bf18c8d6d5aeef001609",
+    "final_sha256": "ff2c6637f22ff45d9539ece38f3359af823cad263e5514ab7469bd903b160f9d"
+   },
+   "FACT_s2": {
+    "identity": "9174af3aba0087adef828315d15a6c84e936af2927d08dcb4ee7e474c7d5fa73",
+    "final_sha256": "369f7fc8fa97ff22385f4288a744ef7160b10c6ef3b01690a335fdb8debe8c51"
+   }
+  },
+  "development_caches": {
+   "0": "6f0f862f2d9e3a926f6cca3f493ba0a81735d156b4c29cbcc197f8454c49491b",
+   "1": "a3309e3c06fdb77b3267b3642b513ccb8fef734635ade16f8bd42ba674d7e5ab",
+   "2": "2a6fa58d85d45ca7f11ef302afd1cc3f869a5830bbb342dd6f0be541919c2200"
+  },
+  "a01_summary": "3a1601512bc423a6ad97b5c88ed29e8ebf949a6df802bc0a76fb6fc13c503acf",
+  "f02_summary": "32c2665f485981d8b38d9c63c283027b1fd02568d04c36816d162fe88066bafa",
+  "metadata": {
+   "protocol": "a897483b776e8cff1ba8b92774c6a82537758bcba6abd362f2d8603f37997593",
+   "clip_index": "60a35fd841a6ab674619d50a87d6630013e0236db4cfb23d159454d7a076de03",
+   "window_plans": "51517ea886bffe235918ad9bd250f4811efae39ee0d27fc29b648dde0fac26ba"
+  },
+  "v01_outputs": {
+   "selection_s0": "98706faa4efdeae4e1b7640f65b24dbbd4878f0f354611aec6679233a0f3a0dc",
+   "selection_s1": "b5d6a13c20e2be1d922b88eafc20b17f4dacfbebcbf83149715575c9e69c9aa1",
+   "selection_s2": "86f6f90d869a05cc4a886257a3f35b9bb2ec1e696c4508e0cbfb9ebf840bfe3d",
+   "calibration_s0": "d79008575f59aad1a6a9911906bff3752bb0d0e54bacfceb23232562f703400d",
+   "calibration_s1": "37fb569093916aaf00d455fe92d8efe2397a6f1913c57d55d798c59acd2915ac",
+   "calibration_s2": "306f1abf7bfda0edad8dd21aa5980f89efa246aaa38c718db374df68de89315f"
+  }
+ },
+ "half_opened": "calibration",
+ "decoding": {
+  "FACT": "the official output of the last block (Block._eval with the gtea.yaml mwt) on an all-zero label sequence; no B3, no mwt, switch-cost or threshold search",
+  "diagnostic": "the same weights' frame-branch argmax of the last block; a readout of the trained system, not a token-free ablation"
+ },
+ "controls": {
+  "A01 Linear + B3": {
+   "0": {
+    "half_window": 7,
+    "threshold": 0.1730087995635474,
+    "nms_radius": 5,
+    "threshold_quantile": 0.999
+   },
+   "1": {
+    "half_window": 7,
+    "threshold": 0.19467906761053383,
+    "nms_radius": 5,
+    "threshold_quantile": 0.999
+   },
+   "2": {
+    "half_window": 9,
+    "threshold": 0.10074527008505041,
+    "nms_radius": 5,
+    "threshold_quantile": 0.995
+   }
+  },
+  "frozen Ordered + B3": {
+   "0": {
+    "half_window": 9,
+    "threshold": 0.29269428317686846,
+    "nms_radius": 5,
+    "threshold_quantile": 0.999
+   },
+   "1": {
+    "half_window": 9,
+    "threshold": 0.2845063773784935,
+    "nms_radius": 5,
+    "threshold_quantile": 0.999
+   },
+   "2": {
+    "half_window": 9,
+    "threshold": 0.30845250187026374,
+    "nms_radius": 5,
+    "threshold_quantile": 0.999
+   }
+  },
+  "A01 ASRF": "official refinement_with_boundary at boundary_th 0.5",
+  "A01 MS-TCN": "official last-stage argmax"
+ },
+ "comparisons": {
+  "primary": "FACT - A01 ASRF",
+  "mandatory": [
+   "FACT - A01 Linear + B3",
+   "FACT - frozen Ordered + B3",
+   "FACT - A01 MS-TCN"
+  ],
+  "metrics": [
+   "multi segment F1@50",
+   "multi boundary F1",
+   "multi boundary recall",
+   "native macro-F1",
+   "native cuts per clip",
+   "same-class cut rate",
+   "multi FP segments",
+   "multi FN segments"
+  ],
+  "bootstrap": {
+   "draws": 2000,
+   "seed": 20261002
+  }
+ },
+ "readings": {
+  "complete_system_progress": "FACT - A01 ASRF, FACT - A01 Linear + B3 and FACT - frozen Ordered + B3 are consistent positive in multi segment F1@50 in both halves, every seed and half meets the recall and native floors, and the goal's means are met; at most a system advance on this development protocol, never originality, clinical validity or a causal contribution of cross-attention",
+  "learned_system_gain_without_strong_reference_win": "FACT - A01 ASRF and FACT - A01 Linear + B3 are consistent positive in both halves while complete_system_progress does not hold; the failed condition (frozen Ordered comparison, a floor or the goal) is named; no overall win is claimed",
+  "one_half_or_local_effect": "(a) any of the four F1 comparisons (A01 ASRF, A01 Linear + B3, frozen Ordered + B3, A01 MS-TCN) is consistent positive in at least one half, or (b) only point estimates improve: pooled over seeds, FACT recovers more reference segments than it loses (all segments, segments of at most 16 samples, or A4C/A5C X-Y-X middles) against A01 ASRF, A01 Linear + B3 or frozen Ordered + B3 in a half, counted separately for native clips, pair streams and multi streams; every item is listed with its population, denominator and intervals, and point estimates are kept apart from consistent evidence",
+  "trade_off": "in some seed and half, against A01 Linear + B3 or frozen Ordered + B3, FACT recovers at least one reference segment while it also has a new unmatched predicted segment, a lower native macro-F1 point estimate or a recall or native floor failure in that seed and half; the counts and intervals of those cells are listed; it describes coexistence, needs no cross-seed significance and proves no cause; without this pattern it is not applied",
+  "uncertain_or_no_qualifying_gain": "complete_system_progress does not hold; the primary comparison's direction in each half is reported; no interval containing zero is called equality, and one configuration never rejects a model family",
+  "end": "after the one report this official GTEA, video-feature and budget combination closes; no extra seed, Breakfast configuration, more tokens or layers, encoder fine-tuning, loss, optimiser, epoch or decoder search, reference boundaries, boundary subdivision, teacher, gate or fusion follows automatically"
+ },
+ "goal": {
+  "selection_min": 0.944409687184662,
+  "calibration_min": 0.9821421709894332,
+  "calibration_sensitivity": 0.9838935784747763,
+  "boundary_recall_min": 0.95,
+  "native_macro_f1_min": {
+   "selection": 0.973,
+   "calibration": 0.98
+  },
+  "rule": "three-seed means at or above both minimums and, in every seed and half, boundary recall >= 0.95 and native macro-F1 at the floor; FACT has no B3 feasibility condition because its main output has no B3, and the floors are not relaxed for it; passing the old goal does not replace the comparison with the strong reference"
+ },
+ "calibration_evidence": {
+  "parity": {
+   "s0": {
+    "windows": 7021,
+    "max_abs": 6.429890987647013e-06,
+    "argmax_equal": true
+   },
+   "s1": {
+    "windows": 7021,
+    "max_abs": 7.40092592721453e-06,
+    "argmax_equal": true
+   },
+   "s2": {
+    "windows": 7021,
+    "max_abs": 7.827656521186555e-06,
+    "argmax_equal": true
+   }
+  },
+  "reproduced": [
+   "frozen Ordered + B3 s0 calibration",
+   "frozen Ordered argmax s0 calibration",
+   "A01 Linear + B3 s0 calibration",
+   "A01 Linear argmax s0 calibration",
+   "A01 MS-TCN s0 calibration",
+   "A01 ASRF s0 calibration",
+   "frozen Ordered + B3 s1 calibration",
+   "frozen Ordered argmax s1 calibration",
+   "A01 Linear + B3 s1 calibration",
+   "A01 Linear argmax s1 calibration",
+   "A01 MS-TCN s1 calibration",
+   "A01 ASRF s1 calibration",
+   "frozen Ordered + B3 s2 calibration",
+   "frozen Ordered argmax s2 calibration",
+   "A01 Linear + B3 s2 calibration",
+   "A01 Linear argmax s2 calibration",
+   "A01 MS-TCN s2 calibration",
+   "A01 ASRF s2 calibration"
+  ]
+ }
+}
