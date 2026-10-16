@@ -1,0 +1,244 @@
+{
+ "config": "configs/experiments/video_sequence_objective_v1.yaml",
+ "config_sha256": "f8d50e07666dc1cb4ab26a85d4c45749f2241a650be041715c3505fb8698f390",
+ "started": "2026-10-16T02:54:59Z",
+ "sources": {
+  "task_sheet": "4418f3e66c74d358f82906e99d9617e0975e7bc2632d92ce74eddd3f5d64be9c",
+  "raw_video_config": "832694f4ea1ec4c7d1811b59c0a6803495645e9ff8be1db80fe28d2c049af485",
+  "dense_config": "49f8782ad0d7702f65244dd6b637f2fc20dc5dd0aab40c2de4389d69f0eb1087",
+  "a01_config": "3b065e7fe908ca7432ba0a407fd6b82432882c1d72dabd1d22b899b79d790690",
+  "raw_video_summary": "a521d47e5a5618e7000fcd877ac58dc7ebc16f488a48b229f20bccfb18f333ab",
+  "a05_summary": "047f715780106ca1166fa2d4b2fe9ed364e6d6426ebf42c4f442e9db867dd29a",
+  "loss_module": "93ae515735afdfb8b4b92780981559456516acdfd114f028ee90b7c92c479b85",
+  "a03_config": "c2e90d605316a2c7d9679728464dbf3a534a7eafc6ea0760a966025be72fc8b4",
+  "weights": {
+   "0": "80f13a42e628fe2647634b79e59d5b8486fee5c3e0ae45f70bcc667c41258505",
+   "1": "74276323ababf78fcb578be28d3172f3c220b3b7e66c2ff96a2072f39210c26f",
+   "2": "923eb3afb0d846b1361897dbb63bb5aecf22401ce4b305b44fe990d48edc7f2c"
+  },
+  "protocol": "a897483b776e8cff1ba8b92774c6a82537758bcba6abd362f2d8603f37997593",
+  "archived_rows": {
+   "a01_summary": "3a1601512bc423a6ad97b5c88ed29e8ebf949a6df802bc0a76fb6fc13c503acf",
+   "a06r1_summary": "9b4c5d89cb202a8de793239079bec40b39151f2ef40bfae45ae95c88d72c1f28"
+  },
+  "helpers": 18,
+  "environment": {
+   "python": "3.12.3",
+   "numpy": "2.5.2",
+   "pandas": "3.0.5",
+   "scipy": "1.18.1",
+   "torch": "2.14.0+cu130",
+   "torchvision": "0.29.0+cu130",
+   "cuda": "13.0",
+   "cudnn": 92400,
+   "torchvision_mvit_sha256": "76ca465f2be0bb7ff914ca434264ceb6736402856d164e5810491d5ba77d4210"
+  }
+ },
+ "sequences": {
+  "natives": 3364,
+  "bank_streams": 1500,
+  "bank_digest": "228062c5f9acef9dec180e02a4aa422888c74943c004b3f6f2fcf025e32556b2"
+ },
+ "plan_stats": {
+  "native_clips": 3364,
+  "native_starts": 33049,
+  "native_clips_with_repeats": 230,
+  "streams": {
+   "eligible": 1478,
+   "ineligible": 22
+  },
+  "eligible_starts": 14153,
+  "ineligible_starts": 20204,
+  "updates": 3750
+ },
+ "seeds": {
+  "0": {
+   "sha256": "0d5653cd807521bcbd7125ff602772e8289c832759ce5071816df24b0ef6c38c",
+   "arrays_digest": "4e148ebf0fecb3d4c3030745fe21338a4038baf61df07deae15a6828ed35b8df",
+   "epoch_digests": [
+    "591f138ef08508d674faf0c22700ad3c9239a51fdbf15f5c0045b7854551343e",
+    "b825653c427eabc701facb1235c88e6174e566d227ddf4f3cf34dbd81705b3c9",
+    "4c29e434f77150af27d543f3788c994a05dc1cc349723305f1fb369d17e13e7c",
+    "35d54bf0936e72cf2146af6f0847464d415f8b344b80c9da5d6ce19edf96f752",
+    "e3b9af891f17247f862f9aa95a62aaad19d9fd24182c0df38e1bb21c18ea294d",
+    "a18bcb32096993332aa07dbb11abcf576ca582eace9917d99ece6c3947a76c4a",
+    "92b0e61537b127cf3c699e0b9fe8fa675289bc0e741568540bb013f88b2156af",
+    "dfcdfa49d80945225ee421abe336cccf61c9cd4e5433acfa2c56840f01d2bb2b",
+    "4435868f8eb173640b137e997e5a07f37c11a3169529efdaad6d8b04d729a51c",
+    "c1bb451d3e9291a2a9ad090edb261c6a5e214cf4b54582f0d8c61012b7311963"
+   ],
+   "counts": {
+    "windows": 30000,
+    "target_classes": {
+     "PLAX": 8378,
+     "PSAX": 7239,
+     "A4C": 6741,
+     "A5C": 3932,
+     "SC4C": 3710
+    },
+    "target_classes_constructed": {
+     "PLAX": 3118,
+     "PSAX": 2931,
+     "A4C": 2909,
+     "A5C": 3064,
+     "SC4C": 2978
+    },
+    "native_runs": {
+     "min": 1.0,
+     "mean": 1.0,
+     "max": 1.0
+    },
+    "constructed_runs": {
+     "min": 2.0,
+     "mean": 2.0317333333333334,
+     "max": 3.0
+    },
+    "transcript_lengths": {
+     "2": 3631,
+     "3": 119
+    },
+    "repeated_native_targets": 311,
+    "skipped_reference_runs": 0,
+    "sources": {
+     "native_clips_drawn": 2310,
+     "streams_drawn": 1355,
+     "max_draws_per_native_clip": 6,
+     "max_draws_per_stream": 11,
+     "recordings_in_windows": 3021
+    }
+   }
+  },
+  "1": {
+   "sha256": "d92b5a05fc21c16e3d1e5934074c640afd04b04b8b2e7cbcf5992fffbf83299a",
+   "arrays_digest": "f9e50a8519825210974b8be5d70fb14a8772044c6fc84876819fa9d4a2a76124",
+   "epoch_digests": [
+    "3473659cad6244c7cfae280f87420be15f198f9d505db00e6c571a628cbfb29a",
+    "d0338f6faf38d01229638112357c495d641013a7fe85deb097fa8081735a9839",
+    "c84b3afc44fddae1875515dfaac2c26a2d1194cded23eb2ec3c6344b52b9a83c",
+    "8f6f3b395dd3f8e5fc066f65e63298768b0afa4c9d06cb680fac9cdbc13bb199",
+    "0a4ab3da462832dcb7e14d0af67d03a34c610267791ca578f24ddbea395656ed",
+    "7fd93b6ae8b8c1332a168b9d7da066cdc8c5e364c0b946ef242a64f910822568",
+    "9736588c9ac987bc9799f9be5e17372cd8c6f19179409b1931d17fcf356a406b",
+    "935f8a63cb3a283ba2def6f16882b1ea938ce76e2ab920e4200fa7607796ee79",
+    "1cd4d90e911bd3a103377e878e7959a5ee6ecddac5823ed64aeacbfe32277943",
+    "ae2051736bb066524c02e35e287a26d1d4270f191e662879ff6063df38da048f"
+   ],
+   "counts": {
+    "windows": 30000,
+    "target_classes": {
+     "PLAX": 8002,
+     "PSAX": 7229,
+     "A4C": 6978,
+     "A5C": 4064,
+     "SC4C": 3727
+    },
+    "target_classes_constructed": {
+     "PLAX": 3114,
+     "PSAX": 3049,
+     "A4C": 2918,
+     "A5C": 3052,
+     "SC4C": 2867
+    },
+    "native_runs": {
+     "min": 1.0,
+     "mean": 1.0,
+     "max": 1.0
+    },
+    "constructed_runs": {
+     "min": 2.0,
+     "mean": 2.029333333333333,
+     "max": 3.0
+    },
+    "transcript_lengths": {
+     "2": 3640,
+     "3": 110
+    },
+    "repeated_native_targets": 329,
+    "skipped_reference_runs": 0,
+    "sources": {
+     "native_clips_drawn": 2240,
+     "streams_drawn": 1355,
+     "max_draws_per_native_clip": 6,
+     "max_draws_per_stream": 9,
+     "recordings_in_windows": 3018
+    }
+   }
+  },
+  "2": {
+   "sha256": "2310dd5e9be40864d1f054065334e4d8309518efe50b330b5ef82275c0db2dfd",
+   "arrays_digest": "254bcc168338c2ea8bc3b29e15c2858081c3beaecc800128d2023ad365da2217",
+   "epoch_digests": [
+    "b0664f32ccfa98809d6bd50991a1fec0e3c69fa341166fd549aee98a1cc1d702",
+    "c3c0c225a4580f5c42af076bfb51d5459ed626ff83a38ed991c9a458c92dafa9",
+    "095a3636d126e3f43e9ed987c8dd021300b6dd3e64324e3f576aa24993087b14",
+    "6a5a5de2141971e881044a8f9286af2c065d91a911a8ed26283aab65e74f3d69",
+    "5403881a6cae40ed4f341adb77e090721e004af3022fb98785571cc8ec5379e9",
+    "9c3e7ba448f5229d9c847b9d485bbce523ab2bace4f7fe1a7638c64667c9000c",
+    "530d6a5e7ac4484ae49a0cad4ecca9bede5aedeff7b340a9d226ec6f9c87afae",
+    "46d3eb0045c9cf990be5f73df4a07ae875d621c2e8bb7ffa7aadabcccd34dcd8",
+    "5a19b554520ca77844258ee39e2ccd24834d1e4195e7d195b344e5951fe10744",
+    "1415b4052bc507bb058f0d9eaef052b87398a0499173e65aeda4ba114a11fe89"
+   ],
+   "counts": {
+    "windows": 30000,
+    "target_classes": {
+     "PLAX": 7989,
+     "PSAX": 7241,
+     "A4C": 6773,
+     "A5C": 4002,
+     "SC4C": 3995
+    },
+    "target_classes_constructed": {
+     "PLAX": 3021,
+     "PSAX": 2941,
+     "A4C": 2989,
+     "A5C": 3026,
+     "SC4C": 3023
+    },
+    "native_runs": {
+     "min": 1.0,
+     "mean": 1.0,
+     "max": 1.0
+    },
+    "constructed_runs": {
+     "min": 2.0,
+     "mean": 2.0296,
+     "max": 3.0
+    },
+    "transcript_lengths": {
+     "2": 3639,
+     "3": 111
+    },
+    "repeated_native_targets": 335,
+    "skipped_reference_runs": 0,
+    "sources": {
+     "native_clips_drawn": 2285,
+     "streams_drawn": 1370,
+     "max_draws_per_native_clip": 6,
+     "max_draws_per_stream": 9,
+     "recordings_in_windows": 3044
+    }
+   }
+  }
+ },
+ "second_build_identical": {
+  "0": {
+   "plan": true,
+   "arrays": true
+  },
+  "1": {
+   "plan": true,
+   "arrays": true
+  },
+  "2": {
+   "plan": true,
+   "arrays": true
+  }
+ },
+ "pixels": {
+  "distinct_frames": 184387,
+  "hash_table_digest": "f5888dc00adab6376d0cf6492139139f239096646ca7f83f95babe5f477af32e"
+ },
+ "finished": "2026-10-16T02:58:14Z",
+ "seconds": 194.62111258506775
+}

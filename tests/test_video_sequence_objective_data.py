@@ -144,6 +144,18 @@ def test_counts_cover_classes_runs_lengths_exposure_repeats_and_skips():
     assert st["repeated_native_targets"] >= 0 and "skipped_reference_runs" in st and "transcript_lengths" in st
 
 
+def test_skipped_runs_are_counted_in_the_manifest_counts():
+    """Review note: a constructed group whose span holds a short run between its sampled centres counts it once."""
+    seqs = synthetic_seqs()[:1]
+    labels = np.array([0] * 9 + [4] * 2 + [0] * 9 + [1] * 20)
+    seqs.append({"id": "stream_short", "kind": "bank", "refs": [("clip0", 3 * t, 1.0) for t in range(labels.size)], "labels": labels})
+    info = pr.sequence_info(seqs)
+    plan = {"native_seq": np.array([0, 0]), "native_start": np.array([0, 1]), "stream_seq": np.array([1, 1]), "stream_start": np.array([1, 3])}
+    assert pr.skipped_total(seqs, info, plan) == 1
+    m = pr.build_manifest(seqs, info, plan)
+    assert pr.manifest_counts(m, info, plan, seqs)["skipped_reference_runs"] == 1 and pr.manifest_counts(m, info, plan)["skipped_reference_runs"] is None
+
+
 # ----------------------------------------------------------------------------------------------- isolation
 def test_training_labels_are_read_for_training_rows_only(tmp_path):
     p = tmp_path / "index.csv"
