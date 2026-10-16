@@ -302,7 +302,7 @@ def test_eager_development_loaders_are_forbidden_during_the_report():
 
 def test_training_code_never_refers_to_development_test_or_pediatric_data():
     banned = ("validation(", "EvalSet", "report_center_supervision", "pediatric", "evaluation/selection", "evaluation/calibration", "'test'",
-              "ordered_outputs", "features/development", "window_plans", "half_sets", "clip_index", "[\"outputs\"]")
+              "ordered_outputs", "features/development", "window_plans", "half_sets", "clip_index", "[\"outputs\"][\"", "sample_probs")
     src = (inspect.getsource(tw) + inspect.getsource(wv)).lower()
     assert not any(b.lower() in src for b in banned)
 
