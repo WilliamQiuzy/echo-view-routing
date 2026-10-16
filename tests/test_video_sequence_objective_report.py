@@ -6,7 +6,6 @@ from __future__ import annotations
 
 import copy
 import inspect
-import json
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -58,7 +57,7 @@ def test_objective_signal_without_full_success():
 def test_balancing_only_and_continuation_only():
     v = verdicts(); v["B - F"] = {"selection": POS, "calibration": NONE}
     r = rp.decide(v, goal(), [])
-    assert "balancing_only" in r["applied"] and "no_qualifying_gain" in r["applied"]
+    assert "balancing_only" in r["applied"] and "no_qualifying_gain" not in r["applied"]     # the config: none of the four gain readings
     v["O - B"] = both(POS)
     assert "balancing_only" not in rp.decide(v, goal(), [])["applied"]
     v = verdicts(); v["F - frozen Ordered"] = {"selection": NONE, "calibration": POS}

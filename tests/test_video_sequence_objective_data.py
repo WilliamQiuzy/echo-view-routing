@@ -9,7 +9,6 @@ import inspect
 from pathlib import Path
 
 import numpy as np
-import pytest
 import yaml
 
 import echo_routing.temporal.video_sequence_features as vsf
