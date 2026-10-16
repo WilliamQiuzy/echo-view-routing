@@ -37,10 +37,12 @@ report only, and the remaining findings are low.
 **Shared seed cases.** Task 3 and the configuration ask for the seeds' shared cases to be noted. The report summed the
 recovered and lost counts over seeds without saying how many of them are the same reference segments.
 
-**The planned fix.** Before calibration, the report will also count, from the private case lists, the distinct cases
-behind every pooled count and how many appear in one, two or three seeds. It must come before calibration, because the
-report's code digest enters the choice record's provenance. The report is not part of the training code digest, so the
-run identities do not change, and the trainings start meanwhile.
+**The fix (eb937a0).** The report now also counts, from the private case lists, the distinct cases behind every pooled
+count and how many appear in one, two or three seeds. This covers recovered and lost reference segments, sequences
+with new or removed unmatched predictions and native fixed or new clips. The fix was made after the queue started and
+before calibration, because the report's code digest enters the choice record's provenance. The report is not part of
+the training code digest, which stayed 56224ab7, so the run identities did not change. The 49 tests pass locally and
+on the server.
 
 ## Low findings and what was done
 
@@ -56,8 +58,8 @@ run identities do not change, and the trainings start meanwhile.
   them.
 - **Consistent negatives.** The reading also applies when its only items are favourable to the candidate, for example
   fewer FN segments. Every item carries an `unfavourable` flag, and the README explains the reading.
-- **Untested report helpers.** `trade_cells` and `consistent_list` had no unit test. Tests will be added with the
-  report fix.
+- **Untested report helpers.** `trade_cells` and `consistent_list` had no unit test. Tests were added with the report
+  fix (eb937a0).
 - **Inherited from A07's accepted design.** Four behaviours were kept and noted:
   - the id deny-list reads both halves' clip lists from the protocol;
   - a selection repeat after a failure needs a disclosed reason;
