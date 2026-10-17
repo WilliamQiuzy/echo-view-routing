@@ -100,3 +100,20 @@ Values are per seed, 0, 1 and 2.
   stay on the server in `runs/post_a08_loss_diagnostic/private_windows.json`.
 - **Scope.** Single agent, no helpers and no independent fact-check. The reproduction gate, the numpy reimplementation
   and the closed-form gradients are self-checks only.
+
+## Dated note on the R2 criterion (2026-10-17, added after the lead's review; the frozen protocol is unchanged)
+
+The protocol's original wording, committed before any computation (19c56f5), is quoted here:
+- R2: "The median ratio is above 1 in some seed, but in at most half of the current-endpoint windows does the penalty
+  reduce the margin by more than CE increases it (Δm_X < 0 and |Δm_X| > Δm_CE)."
+- R3: "The median ratio is above 1 and, in more than half of the windows in every seed, the penalty reduces the margin by
+  more than CE increases it."
+
+**The uncovered case.** The wording does not say how to read a set where the share is above half in some seeds and at
+or below half in others. For A this happened: 51% in seed 1, against 34% and 48% in seeds 0 and 2. The script, written
+before any computation, assigned R3 only when every seed is above half and R2 otherwise. A therefore received R2. That
+rule is kept. It is not changed to fit these numbers.
+
+**How R2 must be read.** R2 here means that the cross-seed criterion for systematic opposition was not met at the fixed
+start point. It does not mean that the penalty never opposes classification. In seed 1 it outweighed CE against the
+margin in a little over half of the windows. The start-point counterfactuals do not describe training as a whole.
