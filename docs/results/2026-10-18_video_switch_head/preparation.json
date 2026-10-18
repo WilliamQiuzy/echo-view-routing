@@ -1,0 +1,251 @@
+{
+ "config": "configs/experiments/video_switch_head_v1.yaml",
+ "config_sha256": "c139704ca635019daaf4c8c39aeaf8f092a68c4fec5082edf420d55a1f7f233e",
+ "started": "2026-10-18T15:01:22Z",
+ "pins": {
+  "a07_config": "f8d50e07666dc1cb4ab26a85d4c45749f2241a650be041715c3505fb8698f390",
+  "a08_config": "f671b2e5032621107e1be69bb81729b3ea65c467639e5e885c948131abd32d8d",
+  "a08_choices": "b2a731e5f4393187ee9954f710821ac04938652f0a7d00e0381ad0b8b21cf27e",
+  "a07_inherited": {
+   "task_sheet": "4418f3e66c74d358f82906e99d9617e0975e7bc2632d92ce74eddd3f5d64be9c",
+   "raw_video_config": "832694f4ea1ec4c7d1811b59c0a6803495645e9ff8be1db80fe28d2c049af485",
+   "dense_config": "49f8782ad0d7702f65244dd6b637f2fc20dc5dd0aab40c2de4389d69f0eb1087",
+   "a01_config": "3b065e7fe908ca7432ba0a407fd6b82432882c1d72dabd1d22b899b79d790690",
+   "raw_video_summary": "a521d47e5a5618e7000fcd877ac58dc7ebc16f488a48b229f20bccfb18f333ab",
+   "a05_summary": "047f715780106ca1166fa2d4b2fe9ed364e6d6426ebf42c4f442e9db867dd29a",
+   "loss_module": "93ae515735afdfb8b4b92780981559456516acdfd114f028ee90b7c92c479b85",
+   "a03_config": "c2e90d605316a2c7d9679728464dbf3a534a7eafc6ea0760a966025be72fc8b4",
+   "weights": {
+    "0": "80f13a42e628fe2647634b79e59d5b8486fee5c3e0ae45f70bcc667c41258505",
+    "1": "74276323ababf78fcb578be28d3172f3c220b3b7e66c2ff96a2072f39210c26f",
+    "2": "923eb3afb0d846b1361897dbb63bb5aecf22401ce4b305b44fe990d48edc7f2c"
+   },
+   "protocol": "a897483b776e8cff1ba8b92774c6a82537758bcba6abd362f2d8603f37997593",
+   "archived_rows": {
+    "a01_summary": "3a1601512bc423a6ad97b5c88ed29e8ebf949a6df802bc0a76fb6fc13c503acf",
+    "a06r1_summary": "9b4c5d89cb202a8de793239079bec40b39151f2ef40bfae45ae95c88d72c1f28"
+   },
+   "helpers": 18,
+   "environment": {
+    "python": "3.12.3",
+    "numpy": "2.5.2",
+    "pandas": "3.0.5",
+    "scipy": "1.18.1",
+    "torch": "2.14.0+cu130",
+    "torchvision": "0.29.0+cu130",
+    "cuda": "13.0",
+    "cudnn": 92400,
+    "torchvision_mvit_sha256": "76ca465f2be0bb7ff914ca434264ceb6736402856d164e5810491d5ba77d4210"
+   }
+  }
+ },
+ "a08_weights": {
+  "0": "9b144925f32fac7d725d13231a132abeb6635fa44b6fe0dbcec7f5b59d035bbc",
+  "1": "c8b09ecaf286c7b66fc0eec69fdd102f98930aaa657a7604e3204c3845a8e172",
+  "2": "f95fed7ba78cc0b5e2474c71a156356507b4588a4b324957fd5b53fe66ee8472"
+ },
+ "join_groups": {
+  "eligible": 6866,
+  "streams": 1266
+ },
+ "pixels": {
+  "distinct_join_group_frames": 51491,
+  "seconds": 23.397104263305664
+ },
+ "seeds": {
+  "0": {
+   "sha256": "fd28d1c8dbe6ac3e1acf951850aa4b9cb0ff3a900cd598b7d29ceb9dabb41ce4",
+   "edges": {
+    "by_group": {
+     "native": {
+      "pos": 0,
+      "neg": 4403,
+      "masked": 97,
+      "join_neg": 0,
+      "join_pos": 0
+     },
+     "constructed_change": {
+      "pos": 1546,
+      "neg": 2954,
+      "masked": 0,
+      "join_neg": 61,
+      "join_pos": 1546
+     },
+     "same_label_join": {
+      "pos": 0,
+      "neg": 4500,
+      "masked": 0,
+      "join_neg": 1527,
+      "join_pos": 0
+     }
+    },
+    "pos": 1546,
+    "neg": 11857,
+    "masked": 97,
+    "positive_class_pairs": {
+     "A4C->A5C": 85,
+     "A4C->PLAX": 64,
+     "A4C->PSAX": 68,
+     "A4C->SC4C": 78,
+     "A5C->A4C": 71,
+     "A5C->PLAX": 79,
+     "A5C->PSAX": 83,
+     "A5C->SC4C": 77,
+     "PLAX->A4C": 82,
+     "PLAX->A5C": 70,
+     "PLAX->PSAX": 76,
+     "PLAX->SC4C": 95,
+     "PSAX->A4C": 66,
+     "PSAX->A5C": 87,
+     "PSAX->PLAX": 76,
+     "PSAX->SC4C": 77,
+     "SC4C->A4C": 82,
+     "SC4C->A5C": 83,
+     "SC4C->PLAX": 79,
+     "SC4C->PSAX": 68
+    },
+    "positives_into_segments_of_at_most_16": 433,
+    "balanced_weights": {
+     "pos": 4.334734799482535,
+     "neg": 0.565193556548874
+    }
+   },
+   "join_group": {
+    "distinct_streams": 824,
+    "recordings": 1544,
+    "sessions": 449
+   },
+   "repeated_targets": 97
+  },
+  "1": {
+   "sha256": "1f9f33dffbd55f1038b8551913b9ff38d263764810bb1426046e3c258bf9d4da",
+   "edges": {
+    "by_group": {
+     "native": {
+      "pos": 0,
+      "neg": 4367,
+      "masked": 133,
+      "join_neg": 0,
+      "join_pos": 0
+     },
+     "constructed_change": {
+      "pos": 1550,
+      "neg": 2950,
+      "masked": 0,
+      "join_neg": 61,
+      "join_pos": 1550
+     },
+     "same_label_join": {
+      "pos": 0,
+      "neg": 4500,
+      "masked": 0,
+      "join_neg": 1530,
+      "join_pos": 0
+     }
+    },
+    "pos": 1550,
+    "neg": 11817,
+    "masked": 133,
+    "positive_class_pairs": {
+     "A4C->A5C": 79,
+     "A4C->PLAX": 68,
+     "A4C->PSAX": 79,
+     "A4C->SC4C": 81,
+     "A5C->A4C": 92,
+     "A5C->PLAX": 67,
+     "A5C->PSAX": 96,
+     "A5C->SC4C": 81,
+     "PLAX->A4C": 91,
+     "PLAX->A5C": 88,
+     "PLAX->PSAX": 77,
+     "PLAX->SC4C": 71,
+     "PSAX->A4C": 74,
+     "PSAX->A5C": 66,
+     "PSAX->PLAX": 81,
+     "PSAX->SC4C": 72,
+     "SC4C->A4C": 58,
+     "SC4C->A5C": 83,
+     "SC4C->PLAX": 78,
+     "SC4C->PSAX": 68
+    },
+    "positives_into_segments_of_at_most_16": 395,
+    "balanced_weights": {
+     "pos": 4.311935483870967,
+     "neg": 0.5655834814250655
+    }
+   },
+   "join_group": {
+    "distinct_streams": 805,
+    "recordings": 1525,
+    "sessions": 448
+   },
+   "repeated_targets": 133
+  },
+  "2": {
+   "sha256": "e2416ceb4bccbf609b5e341e55462077e06b38dec5fe01768735f8a795d670ad",
+   "edges": {
+    "by_group": {
+     "native": {
+      "pos": 0,
+      "neg": 4357,
+      "masked": 143,
+      "join_neg": 0,
+      "join_pos": 0
+     },
+     "constructed_change": {
+      "pos": 1546,
+      "neg": 2954,
+      "masked": 0,
+      "join_neg": 65,
+      "join_pos": 1546
+     },
+     "same_label_join": {
+      "pos": 0,
+      "neg": 4500,
+      "masked": 0,
+      "join_neg": 1529,
+      "join_pos": 0
+     }
+    },
+    "pos": 1546,
+    "neg": 11811,
+    "masked": 143,
+    "positive_class_pairs": {
+     "A4C->A5C": 97,
+     "A4C->PLAX": 74,
+     "A4C->PSAX": 71,
+     "A4C->SC4C": 93,
+     "A5C->A4C": 67,
+     "A5C->PLAX": 71,
+     "A5C->PSAX": 79,
+     "A5C->SC4C": 77,
+     "PLAX->A4C": 85,
+     "PLAX->A5C": 84,
+     "PLAX->PSAX": 80,
+     "PLAX->SC4C": 88,
+     "PSAX->A4C": 80,
+     "PSAX->A5C": 68,
+     "PSAX->PLAX": 64,
+     "PSAX->SC4C": 75,
+     "SC4C->A4C": 78,
+     "SC4C->A5C": 78,
+     "SC4C->PLAX": 65,
+     "SC4C->PSAX": 72
+    },
+    "positives_into_segments_of_at_most_16": 421,
+    "balanced_weights": {
+     "pos": 4.319857697283312,
+     "neg": 0.5654474642282618
+    }
+   },
+   "join_group": {
+    "distinct_streams": 795,
+    "recordings": 1542,
+    "sessions": 441
+   },
+   "repeated_targets": 143
+  }
+ },
+ "finished": "2026-10-18T15:01:57Z",
+ "seconds": 34.73799920082092
+}
