@@ -1,0 +1,114 @@
+# A09, cross-session discriminative training on the V01 Ordered raw-video model (video_discriminative_v1), 2026-10-18 UTC.
+# This is the round's one-page task and configuration. It was written and committed before any A09 code ran, any A09
+# manifest was drawn or any model was trained. It follows the lead's task of 2026-10-18: does strengthening cross-session view
+# discrimination on the working multi-frame video backbone give better native recognition and full segmentation than
+# ordinary classification training on the same inputs? This is a hypothesis check of a known method, supervised contrast
+# (Khosla et al. 2020, arXiv:2004.11362). No novelty is claimed. Every number is exploratory feedback on the two reused
+# development halves, never an independent confirmation. The test split and EchoNet-Pediatric are not read.
+#
+# Inherits model_development_v2.yaml only for the protocol keys (10 Hz, the 0.5 s tolerance), the two development halves and
+# the B3 grid.
+extends: model_development_v2.yaml
+run_name: video_discriminative_v1
+experiment: video_discriminative_v1
+
+video_discriminative:
+  predecessors:                  # docs/EXPERIMENT_INDEX.md; their reports and stopping decisions stay unchanged
+    V01: "EchoPrime-initialised MViTv2-S, 512-d projection, target marker, five-class CLS; the reliable gain comes from multi-frame input, not shown to come from true order; each seed's frozen Ordered state is every run's start and a strong reference"
+    V03: "the residual native errors are mostly A4C read as A5C, not generic low A5C recall; selection also loses to missed cuts/decoder; both A4C/A5C error directions are reported and one is never traded for the other"
+    A01_A06R1_V02_A02_A03_A05_A07: "temporal heads on frozen features, new readouts/time tokens and run/transcript objectives gave no stable full-segment gain; none is repeated or added here; local window accuracy is never a system win"
+    A04: "most mixed-window corrections fell in already-matched segments"
+    A08: "all-neighbour smoothing (A) first met the old development targets but was not consistently above frozen Ordered; its frozen outputs are the second strong reference; no smoothing coefficient is scanned"
+    R08: "cross-recording supervised contrast was proposed but never trained (C0/C1 not run); its gate only measured mean clustering of fitted E1 image features. Changed now: the RGB video backbone trained end to end, class-balanced cross-session sampling, and no in-training similarity gate"
+    change: "C = class-balanced cross-session native sampling with plain CE (a sampling/continuation change against frozen Ordered); D = the same plus a supervised contrastive term on the existing 512-d video embedding; D - C isolates the contrastive term"
+  source:
+    a07_config: {path: configs/experiments/video_sequence_objective_v1.yaml, sha256: f8d50e07666dc1cb4ab26a85d4c45749f2241a650be041715c3505fb8698f390}
+    a08_config: {path: configs/experiments/video_within_view_v1.yaml, sha256: f671b2e5032621107e1be69bb81729b3ea65c467639e5e885c948131abd32d8d}
+    a07_manifests:               # read only: update u's constructed group (windows 4-7) is this round's replay group of update u
+      index: {path: runs/video_sequence_objective_v1/manifests/index.json, sha256: 2914238816b2df27e58ed9e07a3fcc64dc2e9a2d98d4f632875f7a560fde8631}
+      0: {path: runs/video_sequence_objective_v1/manifests/VSO_s0.npz, sha256: 0d5653cd807521bcbd7125ff602772e8289c832759ce5071816df24b0ef6c38c}
+      1: {path: runs/video_sequence_objective_v1/manifests/VSO_s1.npz, sha256: d92b5a05fc21c16e3d1e5934074c640afd04b04b8b2e7cbcf5992fffbf83299a}
+      2: {path: runs/video_sequence_objective_v1/manifests/VSO_s2.npz, sha256: 2310dd5e9be40864d1f054065334e4d8309518efe50b330b5ef82275c0db2dfd}
+    a08_all_outputs:             # A08 A's saved development outputs (reference), read in evaluation only
+      calibration: {0: 99e65dcbb8aad9284199c0fbf94cd02e06a24e64fb69a93882707aaf006349cf, 1: 2d4cb76d42a64672c7c522a78c3d1588a7ca8b6e276b9ddf73e6578c27385d61, 2: 7cb42bf7eaf424c07942c698455234dc4e5bf3358f2a3e105b7cad80b9b68613}
+      selection: {0: 5a0c58d912438d7d5f563d553580a9f4e8c8ec88ef3171f3301b025f96557537, 1: f43bfe1822473bf8bc959b0f8506e1e8eb8e6a5f546fca7b6004b9b7ea1f4d67, 2: df88b1b8ca002619e43a54f6de9804738e6d4d38c330ddbc10706087d3af2f18}
+    a08_choices: {path: docs/results/2026-10-16_video_within_view/choices.json, sha256: b2a731e5f4393187ee9954f710821ac04938652f0a7d00e0381ad0b8b21cf27e}
+    inherited: "the V01 Ordered start weights, V01's saved development outputs, the protocol and the frame paths are A07's pins (a07_config), checked through A07's own code"
+  arms: [plain, contrast]
+  names: {plain: C, contrast: D}
+  model:
+    network: "the unchanged TargetMViT, strictly loaded with the seed's V01 Ordered final state; no parameter added or reinitialised"
+    forward: "e = model.embed(rgb, marker) (the existing 512-d embedding) and z = model.classifier(e), i.e. model.forward, once per update on all 14 windows"
+    inference: "V01's ordinary single-window CLS logits; no label, session, mask or group input"
+  data:
+    allowlist: "A07's training allowlist only; every recording must be on it"
+    batch: "per update 14 windows: 10 native windows (each of the five classes from two different sessions) and A07's 4-window change-containing constructed group of the same update for CE replay"
+    native_draw: "rng = numpy default_rng([20261018, seed, u]); for each class in PLAX, PSAX, A4C, A5C, SC4C: two distinct sessions uniformly among the training sessions with a native clip of that class, then one clip of that class uniformly in each session, then one of its stride-5 window centres uniformly; sessions are the file-name prefixes (sessions are not patients)"
+    disclosed: "repeated windows, clips with fewer than 4 centres, draws per session and per clip, and updates whose classes share a session are counted, never changed"
+    preprocessing: "V01's: numeric frame order, 10 Hz, 16 RGB frames, gamma per fragment, short side 256, centre crop 224, the target marker; V01's loader checks every window's pixel digest against the manifest"
+    identical_arms: "C and D read the same manifest file (sha256), pixels, initial state, optimiser, schedule, model RNG and 3,750-update budget"
+  loss:
+    module: echo_routing/temporal/losses/supcon.py
+    ce: "mean cross-entropy over the 14 windows (A07 F's plain CE, mean over windows)"
+    contrast: "SupCon L_out on u = normalize(e) of the 10 native windows only, float64: for anchor i, P(i) = same class and different session; the denominator holds every other native window except same-class same-session ones; L_i = -mean_{p in P(i)} log softmax_i(u_i . u_p / tau); S = mean over anchors with |P(i)| > 0; constructed windows never enter S"
+    tau: 0.1
+    objective: "C: L = CE (S logged from detached embeddings); D: L = CE + lambda S"
+    lambda_rule: "fixed once, before any formal run, on training batches only: at each of seeds 0 and 2's start states, train mode, the encoder trainable, the first 4 updates of the seed's A09 manifest; r = median over the 8 batches of ||grad S|| / ||grad CE|| over the encoder and marker-stem parameters; lambda = the largest of 1.0, 0.5, 0.2, 0.1, 0.05, 0.02, 0.01 with lambda * r <= 1 (0.01 if none, flagged); no development data, no search after training starts"
+  training:                      # A07's optimiser and schedule (V01/A02), unchanged
+    seeds: [0, 1, 2]
+    total_updates: 3750
+    updates_per_epoch: 375
+    batch_windows: 14
+    optimiser: {name: AdamW, lr_encoder: 1.0e-5, lr_new: 1.0e-4, weight_decay: 1.0e-4, grad_clip: 1.0, betas: [0.9, 0.999], eps: 1.0e-8}
+    warmup_updates: 375
+    schedule: "A07's: new parameters 1e-4 x lr_factor(u, 375, 3750); encoder frozen (lr 0) for u < 375, then 1e-5 x the same factor"
+    model_rng: "torch.manual_seed(seed) and torch.cuda.manual_seed_all(seed) before the first update, identical across arms"
+    resume: "after every epoch and at the pilot point: model, optimiser, update count, CPU and CUDA RNG; a run continues only under its identity; the pilot pause is not part of the identity"
+  determinism: {precision: fp32, tf32: false, cudnn_deterministic: true, cudnn_benchmark: false, note: "V01's settings; bitwise weights are not promised"}
+  checks:                        # only the necessary ones, on training data; one agent; no fit/token gate
+    - "allowlist; constructed windows equal A07's manifest windows 4-7 reference by reference; every native class pair from two sessions"
+    - "positive/negative masks: each anchor has a cross-session positive, no same-session positive"
+    - "S finite; with the encoder trainable S alone reaches the projection, conv_proj and the marker stem, not the classifier"
+    - "D at lambda 0 equals C: logits and loss of one update, and parameters after 6 updates, within 1e-4 (loss) and 1e-5 (parameters)"
+    - "optimiser bound to the two groups; 3 + 3 updates with a resume equal 6"
+    - "eval logits unchanged when the targets and sessions change (no label input)"
+    - "the zero-update model against V01's saved source build on 16 windows: max |logit difference| <= 1e-4 and argmax equal"
+    - "timing on 20 formal updates, peak memory and the budget projection"
+  pilot:
+    seeds: [0, 2]                # fixed in advance; seed 2 was the unstable seed of earlier rounds
+    updates: 1250                # of the fixed 3,750 schedule; the state is kept and the run resumes exactly
+    queue: [plain_s0, contrast_s0, plain_s2, contrast_s2]
+    evaluation: "the existing evaluation path on both development halves; one B3 choice per checkpoint on calibration with A08's rule and grid; the fixed Ordered setting as sensitivity; argmax rows"
+    cells: "2 seeds x 2 halves; X is paired with reference R of the same seed"
+    measures:
+      N: "native five-class macro-F1 of the argmax row (decoder-free)"
+      E: "native A4C read as A5C (E45) and A5C read as A4C (E54), argmax row, clip counts summed over the cells"
+      F: "multi segment F1@50 of the B3 system at the checkpoint's calibration choice"
+      BR: "multi boundary recall of that system"
+    native_signal: "(mean dN >= +0.003 and dN >= 0 in at least 3 of 4 cells and dE <= 0) or (dE <= -max(2, ceil(0.15 E_R)) and max(dE45, dE54) <= +1)"
+    segment_signal: "mean dF >= +0.003 and dF >= 0 in at least 3 of 4 cells"
+    max_degradation: "mean dN >= -0.005, mean dF >= -0.005, mean dBR >= -0.010, every cell dF >= -0.015 and dN >= -0.015, and dE <= +2"
+    signal: "(native_signal or segment_signal) and max_degradation"
+    decision:
+      - "if signal(D vs C): resume C and D at seeds 0 and 2 to 3,750 and train the seed-1 pair fully"
+      - "else if signal(C vs frozen Ordered): resume C at seeds 0 and 2 to 3,750 and train C seed 1 fully; D stops"
+      - "else: stop both; report which conditions failed; no small-parameter variant"
+    note: "an exploratory screen, applied once and never changed after any pilot number; a pass is never called success or confirmation"
+  final:
+    evaluation: "every completed model at 3,750 updates on both halves, one B3 choice per model on calibration (A08's rule), the fixed Ordered setting and argmax as sensitivities"
+    comparisons: ["D - C", "best trained arm - frozen Ordered", "best trained arm - A08 A", "C - frozen Ordered"]
+    bootstrap: "the inherited paired bootstrap (native clips by session, streams by stream, 2,000 draws, seed 20261002); consistent = all three seeds' 95% intervals strictly beyond zero on the same side in one half; otherwise no consistent difference (not equality)"
+    reported: "native macro-F1, per-class recall, A4C/A5C balanced accuracy and both error directions with fixed/new counts, multi segment F1@50, TP/FP/FN, boundary precision/recall, segments of at most 16 samples, access and decoder choice of every stage"
+    goal_reference: "the old development targets (0.944409687184662 selection, 0.9821421709894332 calibration) are a development reference only"
+  budget:
+    gpu_hours_max: 8.0
+    pilot_gpu_hours_max: 2.0     # pilot training and its evaluation
+    cpu_hours_max: 6.0           # includes the agent's own wall clock
+    ledger: runs/video_discriminative_v1/ledger.jsonl
+    charged: "every GPU job as GPU hours; preparation, checks on CPU, evaluation CPU work and the agent's wall clock as CPU hours"
+    stop: "before every run, spent + the measured hours of every remaining run + 0.5 evaluation reserve must stay within the cap; otherwise nothing new starts"
+  outputs:
+    root: runs/video_discriminative_v1
+    checkpoints: checkpoints/video_discriminative_v1
+    frozen: models_frozen/video_discriminative_v1/{plain,contrast}_s{seed}
+    results_dir: docs/results/2026-10-18_video_discriminative
