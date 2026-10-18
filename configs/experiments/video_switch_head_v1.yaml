@@ -1,0 +1,76 @@
+# A10, an explicit switch head on the A08 all-neighbour model (video_switch_head_v1), 2026-10-18 UTC. This is the round's
+# one-page task and configuration, written before any A10 code ran, any A10 manifest was drawn or any model was trained.
+# It tests a known multi-task idea and claims no new algorithm. Three paired arms per seed start from that seed's frozen
+# A08 all_s{k}. All three share CE plus KL to the frozen A08 teacher (a common continuation condition, not assumed to work).
+# R adds nothing and keeps B3. P adds a small switch head on adjacent windows' class probabilities. V gives the same head
+# also the adjacent 512-d embedding difference. Exploratory feedback on the two reused development halves only. The test
+# split and EchoNet-Pediatric are not read.
+experiment: video_switch_head_v1
+
+video_switch_head:
+  predecessors:
+    R03: "boundary-only learning on frozen E0/E1 features (too many cuts with E1)"
+    R17: "decoding fixed L1/ASRF outputs with switch-cost / boundary-informed Viterbi (no stable gain)"
+    A01: "ASRF and its boundary branch on frozen V01 video features (fewer boundaries; recall below 0.95)"
+    A07_A08: "end-to-end RGB video updates without a deployable switch branch; A08 A is the start and the strong reference"
+    A09_R1: "class-balanced native-heavy batches closed; A10 returns to A07/A08's transition-dense groups"
+    change: "the A08 start, end-to-end video features, an explicit adjacent-window switch target and a probability-only (P) versus probability + embedding (V) input contrast"
+  source:
+    a07_config: {path: configs/experiments/video_sequence_objective_v1.yaml, sha256: f8d50e07666dc1cb4ab26a85d4c45749f2241a650be041715c3505fb8698f390}
+    a08_config: {path: configs/experiments/video_within_view_v1.yaml, sha256: f671b2e5032621107e1be69bb81729b3ea65c467639e5e885c948131abd32d8d}
+    a08_choices: {path: docs/results/2026-10-16_video_within_view/choices.json, sha256: b2a731e5f4393187ee9954f710821ac04938652f0a7d00e0381ad0b8b21cf27e}
+    a08_weights:                 # each seed's student start and teacher; frozen, read only
+      0: {path: models_frozen/video_within_view_v1/all_s0/final.pt, sha256: 9b144925f32fac7d725d13231a132abeb6635fa44b6fe0dbcec7f5b59d035bbc}
+      1: {path: models_frozen/video_within_view_v1/all_s1/final.pt, sha256: c8b09ecaf286c7b66fc0eec69fdd102f98930aaa657a7604e3204c3845a8e172}
+      2: {path: models_frozen/video_within_view_v1/all_s2/final.pt, sha256: f95fed7ba78cc0b5e2474c71a156356507b4588a4b324957fd5b53fe66ee8472}
+    a07_manifests: "A07's VSO_s{seed}.npz and index.json as pinned in the A08 configuration (source.manifests); rows 0-1,499 give groups 0 and 1"
+  arms: [R, P, V]
+  model:
+    network: "the unchanged TargetMViT strictly loaded from the seed's A08 all_s{k}; e = model.embed(rgb, marker), z = model.classifier(e); classifier and marker kept"
+    heads: "two heads built in every arm, each under torch.random.fork_rng with its own fixed seed (P 1000 + seed, V 2000 + seed), so the global RNG and the backbone's dropout sequence are untouched; R trains neither, P trains the P head, V the V head"
+    p_head: "x = [p_a, p_b, |p_b - p_a|] (15) -> Linear(15, 32) -> GELU -> Linear(32, 1); 545 parameters"
+    v_head: "x = [p_a, p_b, |p_b - p_a|, layernorm_noaffine(e_b - e_a)] (527) -> Linear(527, 32) -> GELU -> Linear(32, 1); 16,929 parameters (same width; more input)"
+    teacher: "the same seed's A08 all_s{k}, eval, requires_grad False, no_grad forward of the same 12 windows"
+  data:
+    allowlist: "the protocol's EV9V training clips only; public labels unchanged; V01's numeric frame order, 10 Hz, 16 RGB frames, target marker, whole-stream context"
+    groups: "per update u (0-1,499) three groups of 4 adjacent stride-5 targets, 12 windows: A07's native group and change-containing constructed group of row u, and a same-label join group"
+    join_group: "rng = numpy default_rng([20261019, seed, u]); uniform over every (training bank stream, start) whose 4 centres span at least one join of two same-label fragments and no label change"
+    edges: "3 per group (9 per update), between consecutive targets a < b (sample indices): a == b (repeat/clamp) -> masked; no label change in (a, b] -> negative; label(a) != label(b) -> positive; equal ends with changes inside -> masked; a fragment join in (a, b] is flagged; computed from the training labels at preparation, never a model input"
+    disclosed: "edge counts by kind, class pair and group, join negatives and positives, masked edges, short segments covered, source recordings and sessions"
+  loss:
+    ce: "mean cross-entropy over the 12 windows"
+    kl: "KL(teacher || student) = sum_c p_T (log p_T - log p_S), mean over windows, temperature 1, weight 1"
+    bce: "P and V: balanced BCE over unmasked edges, w_pos = N / (2 N_pos), w_neg = N / (2 N_neg) from the seed's fixed manifest, mean over unmasked edges"
+    objective: "R: CE + KL; P/V: CE + KL + lambda_b BCE"
+    lambda_rule: "fixed once before any formal run: at seeds 0 and 2's start states, train mode, encoder trainable, the first 4 updates of each manifest; r = max over the two heads of the median over the 8 batches of ||grad_enc BCE|| / ||grad_enc (CE + KL)||; lambda_b = the largest of 1.0, 0.5, 0.2, 0.1, 0.05 with lambda_b r <= 1 (0.05 if none, flagged)"
+  training:
+    seeds: [0, 2]                # the screen; seed 1 only under third_seed_rule
+    total_updates: 1500
+    warmup_updates: 150
+    optimiser: {name: AdamW, lr_encoder: 1.0e-5, lr_new: 1.0e-4, lr_head: 1.0e-3, weight_decay: 1.0e-4, grad_clip: 1.0, betas: [0.9, 0.999], eps: 1.0e-8}
+    schedule: "new parameters and heads: lr x lr_factor(u, 150, 1500) (linear warm-up, cosine to 0); encoder frozen for u < 150, then 1e-5 x the same factor"
+    model_rng: "torch.manual_seed(seed) and torch.cuda.manual_seed_all(seed) before update 0, identical across arms"
+    checkpoint: "final weights at update 1,500; resume every 150 updates; no epoch or score choice"
+  checks: ["source parity: the loaded student and teacher equal A08's saved outputs on 64 calibration windows (evaluation stage) and each other at start", "paired inputs and model RNG across arms (identical logits before the loss at update 0)", "edge labels and indices recomputed independently on the first 50 updates", "no label/source/edge input at inference", "gradients reach the trained head and the encoder; the teacher gets none", "optimiser binding and a 3 + 3 resume", "budget projection"]
+  evaluation:
+    inference: "V01's windows per half; per-window logits and embeddings; per-sample probabilities by nearest centre"
+    R: "B3 with A08's 40-setting grid and rule, once on calibration"
+    P_V: "edge score between consecutive windows of a sequence at cut sample (c_k + c_k+1) // 2 + 1 (0.5 s resolution); NMS radius 5 (B3's non_max_suppression); segments named by mean-probability argmax (labels_from_boundaries), so adjacent same-class segments merge; thresholds = the 0.80, 0.85, 0.90, 0.95, 0.97, 0.99, 0.995 and 0.999 quantiles of the model's own calibration native edge scores (8 settings, identical for P and V; R has 40); chosen once on calibration with A08's rule"
+    sensitivities: "P and V CLS outputs through B3 (40 settings, own choice); every model's argmax"
+    references: "the seed's frozen A08 A + B3 (committed choice) and frozen Ordered + B3 (stored setting)"
+    reported: "multi segment F1@50, native macro-F1, A4C->A5C and A5C->A4C, boundary recall/precision, FP and short FP, FN and missed short true segments, same-label join cuts, with sessions where counted"
+  third_seed_rule:               # fixed before any A10 output; cells = seeds 0 and 2 x two halves; X's primary system vs the seed's A08 A + B3
+    signal: "mean over the 4 cells of F(X) - F(A08 A) >= +0.003"
+    no_reversal: "in each half the two-seed mean dF >= -0.005 and no cell dF < -0.015"
+    no_harm: "mean native macro-F1 difference >= -0.003, mean boundary-recall difference >= -0.010, missed short true segments (4-cell sum) <= A08 A's + 3"
+    decision: "if any arm meets all three, train seed 1 for R, P and V and evaluate three seeds; otherwise close; applied once"
+  budget:
+    gpu_hours_max: 8.0
+    screen_gpu_hours: 2.5
+    cpu_hours_max: 6.0           # includes the agent's active wall clock
+    ledger: runs/video_switch_head_v1/ledger.jsonl
+  outputs:
+    root: runs/video_switch_head_v1
+    checkpoints: checkpoints/video_switch_head_v1
+    frozen: models_frozen/video_switch_head_v1/{R,P,V}_s{seed}
+    results_dir: docs/results/2026-10-18_video_switch_head
