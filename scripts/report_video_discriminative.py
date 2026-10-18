@@ -31,6 +31,7 @@ import scripts.report_center_supervision as rcs  # noqa: E402
 import scripts.report_raw_video_context as rr  # noqa: E402
 import scripts.report_segment_objective as rso  # noqa: E402
 import scripts.report_video_within_view as rw  # noqa: E402
+import scripts.segment_objective_tables as st  # noqa: E402
 import scripts.train_video_discriminative as td  # noqa: E402
 import scripts.trained_token_readout as ttr  # noqa: E402
 from scripts._common import load_cfg  # noqa: E402
@@ -46,6 +47,8 @@ from echo_routing.evaluate.complementarity import sha256_file  # noqa: E402
 HALVES = ("selection", "calibration")
 PARITY_WINDOWS = 64
 NAMES = {"plain": "C", "contrast": "D"}
+CMPS = {"D - C": ("D", "C"), "C - frozen Ordered": ("C", "frozen Ordered"), "D - frozen Ordered": ("D", "frozen Ordered"),
+        "C - A08 A": ("C", "A08 A"), "D - A08 A": ("D", "A08 A")}
 
 
 def a08_ctx(ctx: td.Ctx) -> rw.Ctx:
@@ -70,10 +73,34 @@ def models_of(ctx: td.Ctx, stage: str) -> dict:
     return out
 
 
-def rows_of(cfg: dict, probs: dict, ev, params: dict | None, oparams: dict) -> dict:
-    out = {"argmax": rso.row_of(cfg, {q: p.argmax(1) for q, p in probs.items()}, ev)["row"], "ordered_setting": rso.row_of(cfg, decode(oparams, probs), ev)["row"]}
-    if params is not None:
-        out["b3"] = rso.row_of(cfg, decode(params, probs), ev)["row"]
+def rows_of(cfg: dict, probs: dict, ev, params: dict, oparams: dict | None) -> dict:
+    """Full evaluator outputs (row, tables, preds): B3 at params, argmax and, when given, B3 at the Ordered setting."""
+    out = {"b3": rso.row_of(cfg, decode(params, probs), ev), "argmax": rso.row_of(cfg, {q: p.argmax(1) for q, p in probs.items()}, ev)}
+    if oparams is not None:
+        out["ordered_setting"] = rso.row_of(cfg, decode(oparams, probs), ev)
+    return out
+
+
+def compare(systems: dict, seqs: dict, seeds: list[int], names: set) -> dict:
+    """Paired bootstrap of the B3 systems (the inherited draws), three-seed verdicts and segment accounting."""
+    out = {"comparisons": {}, "verdicts": {}, "accounting": {}}
+    for h in HALVES:
+        for s in seeds:
+            draws = {}
+            for c, (a, b) in CMPS.items():
+                if a not in names or b not in names:
+                    continue
+                for n in (a, b):
+                    if n not in draws:
+                        draws[n] = st.system_draws(systems[f"{n} + B3 s{s}"][h]["tables"])
+                out["comparisons"][f"s{s}|{c}|{h}"] = st.paired(draws[a], draws[b])
+                acc, _ = st.segment_accounting(seqs[h], systems[f"{a} + B3 s{s}"][h]["preds"], systems[f"{b} + B3 s{s}"][h]["preds"])
+                out["accounting"][f"s{s}|{c}|{h}"] = acc
+            print(f"{h} seed {s}: comparisons done", flush=True)
+    for c, (a, b) in CMPS.items():
+        if a in names and b in names:
+            for m in st.BOOT_METRICS:
+                out["verdicts"][f"{c}|{m}"] = {h: st.consistency([out["comparisons"][f"s{s}|{c}|{h}"][m] for s in seeds]) for h in HALVES}
     return out
 
 
@@ -173,26 +200,34 @@ def run(ctx: td.Ctx, stage: str, workers: int) -> None:
                 cdir = ctx.out / "evaluation" / stage; cdir.mkdir(parents=True, exist_ok=True)
                 td.write_json(cdir / "choices.json", {"stage": stage, "models": {k: {x: v[x] for x in ("sha256", "identity", "lambda")} for k, v in models.items()},
                                                       "choices": choices, "time": td.now()})
-        sysrows = {}
+        systems, names = {}, {"frozen Ordered", "A08 A"}
         for h in ("calibration", "selection"):
             P = per[h]
             for s in seeds:
                 op = P["oparams"][s]
                 for name, probs, params in (("frozen Ordered", P["refs"][("Ordered", s)], op), ("A08 A", P["refs"][("A08 A", s)], P["a08params"][s])):
-                    r = rows_of(a8.cfg, probs, P["ev"], params, op)
-                    sysrows.setdefault(f"{name} + B3 s{s}", {})[h] = r["b3"]; sysrows.setdefault(f"{name} argmax s{s}", {})[h] = r["argmax"]
+                    r = rows_of(a8.cfg, probs, P["ev"], params, None)
+                    systems.setdefault(f"{name} + B3 s{s}", {})[h] = r["b3"]; systems.setdefault(f"{name} argmax s{s}", {})[h] = r["argmax"]
                 for key in models:
                     arm, ks = key.rsplit("_s", 1)
                     if int(ks) != s:
                         continue
-                    n = NAMES[arm]; r = rows_of(a8.cfg, P["probs"][key], P["ev"], choices[key]["params"], op)
-                    sysrows.setdefault(f"{n} + B3 s{s}", {})[h] = r["b3"]; sysrows.setdefault(f"{n} argmax s{s}", {})[h] = r["argmax"]
-                    sysrows.setdefault(f"{n} at Ordered setting s{s}", {})[h] = r["ordered_setting"]
+                    n = NAMES[arm]; names.add(n); r = rows_of(a8.cfg, P["probs"][key], P["ev"], choices[key]["params"], op)
+                    systems.setdefault(f"{n} + B3 s{s}", {})[h] = r["b3"]; systems.setdefault(f"{n} argmax s{s}", {})[h] = r["argmax"]
+                    systems.setdefault(f"{n} at Ordered setting s{s}", {})[h] = r["ordered_setting"]
+        sysrows = {k: {h: v[h]["row"] for h in v} for k, v in systems.items()}
+        counts = {k: {h: st.kind_counts(per[h]["seqs"], v[h]["preds"], v[h]["tables"]) for h in v} for k, v in systems.items() if " + B3 " in k}
         res = {"stage": stage, "config_sha256": sha256_file(ROOT / ctx.config), "models": {k: {x: v[x] for x in ("sha256", "lambda")} for k, v in models.items()},
-               "choices": choices, "systems": sysrows, "parity": per["calibration"]["parity"], "reproduced": {h: per[h]["reproduced"] for h in HALVES},
+               "choices": choices, "systems": sysrows, "segment_counts": counts, "parity": per["calibration"]["parity"], "reproduced": {h: per[h]["reproduced"] for h in HALVES},
                "half_counts": {h: per[h]["counts"] for h in HALVES}, "access": {"halves": list(HALVES), "time": started}}
         if stage == "pilot":
             res["rule"] = pilot_decision(sysrows, seeds)
+        cmp = compare(systems, {h: per[h]["seqs"] for h in HALVES}, seeds, names) if stage == "final" else None
+        if cmp is not None:
+            res.update(cmp)
+        elif stage == "pilot":                                    # described only: segment accounting at the pilot point
+            res["accounting"] = {f"s{s}|{c}|{h}": st.segment_accounting(per[h]["seqs"], systems[f"{a} + B3 s{s}"][h]["preds"], systems[f"{b} + B3 s{s}"][h]["preds"])[0]
+                                 for s in seeds for h in HALVES for c, (a, b) in CMPS.items() if a in names and b in names}
         ids = rw.ids_of(a8, {h: per[h]["seqs"] for h in HALVES}); flat = json.loads(json.dumps(res, default=str)); assert_no_ids(flat, ids, stage)
         for p in (ctx.out / "evaluation" / stage / f"{stage}.json", ctx.results / f"{stage}.json"):
             p.parent.mkdir(parents=True, exist_ok=True); td.write_json(p, flat)

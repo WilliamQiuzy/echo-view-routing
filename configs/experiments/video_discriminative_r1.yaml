@@ -1,0 +1,56 @@
+# A09-R1, full-schedule continuation of A09's plain arm C (2026-10-18 UTC). This is the lead's dated follow-up decision after
+# reading A09's pilot result. It is not A09's promotion and not a preregistered success. A09's configuration, its stop_both
+# record, its pilot states and its ledger stay unchanged and are read only.
+# Question: at the pilot point the learning rate was still 0.84 of its peak. With the design unchanged, does completing the
+# original decaying schedule keep the native gain and remove the extra short false segments? Training length, data exposure
+# and learning-rate progress change together, so no result can be credited to the learning rate alone.
+# Written before any R1 training or evaluation output existed. Exploratory feedback on the two reused development halves only.
+experiment: video_discriminative_r1
+
+video_discriminative_r1:
+  decision: docs/superpowers/plans/2026-10-18-a09-r1-full-schedule.md
+  parent:                        # every pin is checked before use; the parent identity is recomputed with the parent's code
+    config: {path: configs/experiments/video_discriminative_v1.yaml, sha256: 2f294dc699fb798b2645f4e1f6a553d68bae7b733cf7d215286af0e8f71a7a3b}
+    trainer: {path: scripts/train_video_discriminative.py, sha256: 106a7a931914366d221b5c48cb87e315ef01e2dd66791bc5d17bc768071158d6}
+    evaluator: {path: scripts/report_video_discriminative.py, sha256: 5e140e58ebc04936aeccb69617d3b6b4820bd325d9a321a6b8461d8e1b475cc7}
+    manifests_index: {path: runs/video_discriminative_v1/manifests/index.json, sha256: 7ee50051f5254fdafeab04b55cb018676ee4fa94ba3eafec987afa9199803e08}
+    pilot_record: {path: docs/results/2026-10-18_video_discriminative/pilot.json, sha256: 626e1e62df63a9e850aa54ac562e88fdba407461d2bd57215932384c8a2fb6b8}
+    pilot_choices: {path: runs/video_discriminative_v1/evaluation/pilot/choices.json, sha256: 1433ed7d0ae5485607cacf45f31d37c321ffa06b2f9601806674a08d9c8311e7}
+    runs:
+      0:
+        identity: 24dcc875d47f694b3679cf399f57c12d5a84fe9f9a2ffd23920f623b13c18633
+        resume: {path: checkpoints/video_discriminative_v1/plain_s0/resume.pt, sha256: cad4e6a7180fe68c8cffe0bb0f148d83b004ce92ecf036c04651c5b1762edd52}
+        pilot_snapshot: {path: checkpoints/video_discriminative_v1/plain_s0/pilot_u1250.pt, sha256: b82d521e233887f54bfa22acfcefe9c9564581ff438b99da0336d218f435d7ec}
+      2:
+        identity: 427e1b9a9c49123472cfe5157ae88519f1c40f25cf8e6c4bd4837bfb07244e9d
+        resume: {path: checkpoints/video_discriminative_v1/plain_s2/resume.pt, sha256: b3f662b9c4ba1299120db718ebbaf865fa8ead6d08893712a6984d89142fabbc}
+        pilot_snapshot: {path: checkpoints/video_discriminative_v1/plain_s2/pilot_u1250.pt, sha256: 9cbfd5490d77cc34c79ebc302dc2fa805687c6f0e1d36e03b567642afd6d9572}
+  arm: plain                     # C only; D (SupCon) is not continued; no coefficient, smoothing, token, readout or temporal head
+  continuation: >-
+    the parent's own trainer (unchanged file) resumes each seed's update-1,250 state (model, AdamW moments and steps, update
+    count, CPU and CUDA RNG) into this round's directories and runs updates 1,250 to 3,749 of the unchanged 3,750 schedule:
+    the same manifest suffix, 14-window batches, plain CE, model, marker, 512-d projection, optimiser, global update
+    numbering and epoch boundaries; no Adam reset, no new warm-up, no new epoch 0, no augmentation or sampling change; V01's
+    known CUDA nondeterminism applies and bitwise later weights are not promised
+  queue: [0, 2]
+  checks: "parent identity recomputed and equal to the pilot record and the resume state; resume and snapshot sha256; resume weights equal the evaluated snapshot; manifest epoch digests; full state restored at update 1,250 with AdamW steps; optimiser binding; the learning rate at update 1,250; input digests of update 1,250; eval logits of the restored model equal the snapshot's; no other GPU process; budget projection"
+  evaluation: >-
+    the final update-3,750 weights only (no epoch choice) on both development halves through the parent's evaluator
+    functions; one B3 choice per new model on calibration with the same grid and rule; the pilot snapshots keep their pilot
+    choices and their cached pilot outputs (reproduced against pilot.json); frozen Ordered and A08 A as references; argmax and
+    the Ordered fixed setting as sensitivities; no grid extension
+  seed1_rule:                    # fixed before any R1 output; cells = seeds 0 and 2 x selection and calibration; F = multi segment F1@50 of B3
+    recovery: "mean over the 4 cells of F(C3750) - F(C1250) >= +0.010, and selection multi FP segments summed over the two seeds <= 0.70 x C1250's"
+    strong_reference: "mean over the 4 cells of F(C3750) - F(A08 A) >= -0.005"
+    no_degradation: "against frozen Ordered: mean argmax native macro-F1 difference >= -0.003; A4C read as A5C plus A5C read as A4C (4-cell sum) <= frozen Ordered's; mean multi boundary recall difference >= -0.010; multi FN segments (4-cell sum) <= 1.15 x frozen Ordered's; lost minus recovered reference segments of at most 16 samples (4-cell sum) <= 3"
+    decision: "all three hold: train seed 1 from V01 Ordered s1 with the parent's plain recipe for 3,750 updates and evaluate the three seeds; otherwise stop and report; applied once, never changed after an output"
+  comparisons: ["C3750 - C1250", "C3750 - frozen Ordered", "C3750 - A08 A"]
+  bootstrap: "the inherited paired bootstrap (2,000 draws, seed 20261002) per seed and half; three-seed verdicts only if seed 1 is trained; two seeds give no verdict"
+  budget:
+    gpu_hours_max: 4.0
+    cpu_hours_max: 4.0           # includes the agent's active wall clock
+    ledger: runs/video_discriminative_r1/ledger.jsonl
+  outputs:
+    root: runs/video_discriminative_r1
+    checkpoints: checkpoints/video_discriminative_r1
+    results_dir: docs/results/2026-10-18_video_discriminative_r1
