@@ -1,0 +1,151 @@
+{
+ "config": "configs/experiments/video_discriminative_v1.yaml",
+ "config_sha256": "2f294dc699fb798b2645f4e1f6a553d68bae7b733cf7d215286af0e8f71a7a3b",
+ "started": "2026-10-18T01:02:25Z",
+ "pins": {
+  "a07_config": "f8d50e07666dc1cb4ab26a85d4c45749f2241a650be041715c3505fb8698f390",
+  "a08_config": "f671b2e5032621107e1be69bb81729b3ea65c467639e5e885c948131abd32d8d",
+  "a08_choices": "b2a731e5f4393187ee9954f710821ac04938652f0a7d00e0381ad0b8b21cf27e",
+  "a07_inherited": {
+   "task_sheet": "4418f3e66c74d358f82906e99d9617e0975e7bc2632d92ce74eddd3f5d64be9c",
+   "raw_video_config": "832694f4ea1ec4c7d1811b59c0a6803495645e9ff8be1db80fe28d2c049af485",
+   "dense_config": "49f8782ad0d7702f65244dd6b637f2fc20dc5dd0aab40c2de4389d69f0eb1087",
+   "a01_config": "3b065e7fe908ca7432ba0a407fd6b82432882c1d72dabd1d22b899b79d790690",
+   "raw_video_summary": "a521d47e5a5618e7000fcd877ac58dc7ebc16f488a48b229f20bccfb18f333ab",
+   "a05_summary": "047f715780106ca1166fa2d4b2fe9ed364e6d6426ebf42c4f442e9db867dd29a",
+   "loss_module": "93ae515735afdfb8b4b92780981559456516acdfd114f028ee90b7c92c479b85",
+   "a03_config": "c2e90d605316a2c7d9679728464dbf3a534a7eafc6ea0760a966025be72fc8b4",
+   "weights": {
+    "0": "80f13a42e628fe2647634b79e59d5b8486fee5c3e0ae45f70bcc667c41258505",
+    "1": "74276323ababf78fcb578be28d3172f3c220b3b7e66c2ff96a2072f39210c26f",
+    "2": "923eb3afb0d846b1361897dbb63bb5aecf22401ce4b305b44fe990d48edc7f2c"
+   },
+   "protocol": "a897483b776e8cff1ba8b92774c6a82537758bcba6abd362f2d8603f37997593",
+   "archived_rows": {
+    "a01_summary": "3a1601512bc423a6ad97b5c88ed29e8ebf949a6df802bc0a76fb6fc13c503acf",
+    "a06r1_summary": "9b4c5d89cb202a8de793239079bec40b39151f2ef40bfae45ae95c88d72c1f28"
+   },
+   "helpers": 18,
+   "environment": {
+    "python": "3.12.3",
+    "numpy": "2.5.2",
+    "pandas": "3.0.5",
+    "scipy": "1.18.1",
+    "torch": "2.14.0+cu130",
+    "torchvision": "0.29.0+cu130",
+    "cuda": "13.0",
+    "cudnn": 92400,
+    "torchvision_mvit_sha256": "76ca465f2be0bb7ff914ca434264ceb6736402856d164e5810491d5ba77d4210"
+   }
+  }
+ },
+ "pool": {
+  "PLAX": {
+   "sessions": 448,
+   "clips": 1120
+  },
+  "PSAX": {
+   "sessions": 362,
+   "clips": 974
+  },
+  "A4C": {
+   "sessions": 405,
+   "clips": 858
+  },
+  "A5C": {
+   "sessions": 139,
+   "clips": 217
+  },
+  "SC4C": {
+   "sessions": 154,
+   "clips": 195
+  }
+ },
+ "pixels": {
+  "distinct_native_frames": 180205,
+  "seconds": 79.04340553283691
+ },
+ "seeds": {
+  "0": {
+   "sha256": "49022f94bf677e565a613481ca8d78de690fede7d518273db0874ba896bdee4e",
+   "counts": {
+    "updates": 3750,
+    "native_windows": 37500,
+    "native_targets_by_class": {
+     "PLAX": 7500,
+     "PSAX": 7500,
+     "A4C": 7500,
+     "A5C": 7500,
+     "SC4C": 7500
+    },
+    "class_layout_ok": true,
+    "pair_sessions_distinct": true,
+    "updates_with_a_session_shared_across_classes": 294,
+    "distinct_native_clips": 3288,
+    "distinct_sessions": 502,
+    "repeated_native_windows": 20534,
+    "max_draws_per_native_window": 35,
+    "max_draws_per_clip": 74,
+    "max_draws_per_session": 181,
+    "windows_from_clips_under_4_centres": 2646,
+    "constructed_repeated_targets": 0,
+    "recordings_in_windows": 3333
+   }
+  },
+  "1": {
+   "sha256": "7abbd409fa72024a2532aa7668591917d56aab3a9e111643e7deb8012dd5ac90",
+   "counts": {
+    "updates": 3750,
+    "native_windows": 37500,
+    "native_targets_by_class": {
+     "PLAX": 7500,
+     "PSAX": 7500,
+     "A4C": 7500,
+     "A5C": 7500,
+     "SC4C": 7500
+    },
+    "class_layout_ok": true,
+    "pair_sessions_distinct": true,
+    "updates_with_a_session_shared_across_classes": 290,
+    "distinct_native_clips": 3302,
+    "distinct_sessions": 502,
+    "repeated_native_windows": 20509,
+    "max_draws_per_native_window": 34,
+    "max_draws_per_clip": 72,
+    "max_draws_per_session": 175,
+    "windows_from_clips_under_4_centres": 2705,
+    "constructed_repeated_targets": 0,
+    "recordings_in_windows": 3346
+   }
+  },
+  "2": {
+   "sha256": "bd48b8ec8d766f81aeb625472649bb8b08026a95aabcce0d142c6994392326df",
+   "counts": {
+    "updates": 3750,
+    "native_windows": 37500,
+    "native_targets_by_class": {
+     "PLAX": 7500,
+     "PSAX": 7500,
+     "A4C": 7500,
+     "A5C": 7500,
+     "SC4C": 7500
+    },
+    "class_layout_ok": true,
+    "pair_sessions_distinct": true,
+    "updates_with_a_session_shared_across_classes": 293,
+    "distinct_native_clips": 3298,
+    "distinct_sessions": 502,
+    "repeated_native_windows": 20629,
+    "max_draws_per_native_window": 30,
+    "max_draws_per_clip": 67,
+    "max_draws_per_session": 184,
+    "windows_from_clips_under_4_centres": 2685,
+    "constructed_repeated_targets": 0,
+    "recordings_in_windows": 3343
+   }
+  }
+ },
+ "index_sha256": "7ee50051f5254fdafeab04b55cb018676ee4fa94ba3eafec987afa9199803e08",
+ "finished": "2026-10-18T01:04:05Z",
+ "seconds": 99.60983777046204
+}
