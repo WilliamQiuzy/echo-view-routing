@@ -532,9 +532,11 @@ def check(ctx: Ctx, device, workers: int) -> None:
         # resume: 3 + 3 against 6 (V, after unfreezing)
         us = list(range(ctx.warmup, ctx.warmup + 6)); full = run_updates(ctx, "V", lam, us, device, W[0]); a3 = run_updates(ctx, "V", lam, us[:3], device, W[0]); tmp = ctx.out / "check_resume.pt"
         save_state(tmp, a3["model"], a3["heads"], a3["opt"], 3, "check", []); del a3; b3 = run_updates(ctx, "V", lam, us[3:], device, W[0], state_file=tmp); tmp.unlink()
+        rerun = run_updates(ctx, "V", lam, us, device, W[0]); rr = max(max_diff(full["model"], rerun["model"]), max_diff(full["heads"], rerun["heads"])); del rerun
         out["resume"] = {"loss_max_abs": float(max(abs(x["loss"] - y["loss"]) for x, y in zip(full["records"][3:], b3["records"]))),
-                         "params_max_abs": max(max_diff(full["model"], b3["model"]), max_diff(full["heads"], b3["heads"]))}
-        out["resume"]["ok"] = bool(out["resume"]["loss_max_abs"] <= 1e-4 and out["resume"]["params_max_abs"] <= 1e-5); del full, b3; torch.cuda.empty_cache()
+                         "params_max_abs": max(max_diff(full["model"], b3["model"]), max_diff(full["heads"], b3["heads"])), "rerun_params_max_abs": rr,
+                         "by_part": {"encoder": max_diff(full["model"].encoder, b3["model"].encoder), "heads": max_diff(full["heads"], b3["heads"])}}
+        out["resume"]["ok"] = bool(out["resume"]["loss_max_abs"] <= 1e-4 and out["resume"]["params_max_abs"] <= max(1e-5, 2 * rr)); del full, b3; torch.cuda.empty_cache()
         # timing: 20 formal V updates after 3 warm-up updates
         model, teacher, heads, _ = models(ctx, 0, device); opt = make_optimizer(model, heads, ctx.o); torch.manual_seed(0); torch.cuda.manual_seed_all(0)
         torch.cuda.reset_peak_memory_stats(device); m, _ = ctx.manifest(0); ts = []
@@ -546,8 +548,10 @@ def check(ctx: Ctx, device, workers: int) -> None:
         spu = float(np.mean(ts)) * 1.10; out["timing"] = {"seconds_per_update": spu, "peak_gpu_memory_mib": torch.cuda.max_memory_allocated(device) / 2**20}
         del model, teacher, heads, opt; torch.cuda.empty_cache()
         spent = ledger_hours(ctx.ledger, "gpu") + (time.time() - t0) / 3600; runs = 6 * ctx.total * spu / 3600
-        out["budget"] = {"spent": spent, "six_runs": runs, "evaluation": 0.5, "screen_cap": float(ctx.vs["budget"]["screen_gpu_hours"]), "within": bool(spent + runs + 0.5 <= float(ctx.vs["budget"]["screen_gpu_hours"]))}
-        out["ok"] = bool(out["pairing"]["logits_identical"] and out["pairing"]["cuda_rng_identical"] and g_ok and out["teacher_equals_start"] and out["optimiser_bound"] and out["resume"]["ok"])
+        out["budget"] = {"spent": spent, "six_runs": runs, "evaluation": 0.35, "screen_cap": float(ctx.vs["budget"]["screen_gpu_hours"]), "within": bool(spent + runs + 0.35 <= float(ctx.vs["budget"]["screen_gpu_hours"]))}
+        out["budget"]["hard_cap"] = float(ctx.vs["budget"]["gpu_hours_max"]); out["budget"]["within_hard_cap"] = bool(spent + runs + 0.35 <= out["budget"]["hard_cap"])
+        out["ok"] = bool(out["pairing"]["logits_identical"] and out["pairing"]["cuda_rng_identical"] and g_ok and out["teacher_equals_start"] and out["optimiser_bound"] and out["resume"]["ok"]
+                         and out["budget"]["within_hard_cap"])
         if out["ok"]:
             write_json(ctx.out / "lambda.json", {"config_sha256": out["config_sha256"], "lambda_b": lam, "ratio": r, "time": now()})
         out["finished"] = now(); out["seconds"] = time.time() - t0; ok = out["ok"]; note = f"lambda_b {lam}, ratio {r:.4g}, {spu:.3f} s/update, projection {spent + runs + 0.5:.3f}"

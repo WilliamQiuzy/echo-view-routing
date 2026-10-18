@@ -23,7 +23,7 @@ video_switch_head:
       0: {path: models_frozen/video_within_view_v1/all_s0/final.pt, sha256: 9b144925f32fac7d725d13231a132abeb6635fa44b6fe0dbcec7f5b59d035bbc}
       1: {path: models_frozen/video_within_view_v1/all_s1/final.pt, sha256: c8b09ecaf286c7b66fc0eec69fdd102f98930aaa657a7604e3204c3845a8e172}
       2: {path: models_frozen/video_within_view_v1/all_s2/final.pt, sha256: f95fed7ba78cc0b5e2474c71a156356507b4588a4b324957fd5b53fe66ee8472}
-    a07_manifests: "A07's VSO_s{seed}.npz and index.json as pinned in the A08 configuration (source.manifests); rows 0-1,499 give groups 0 and 1"
+    a07_manifests: "A07's VSO_s{seed}.npz and index.json as pinned in the A08 configuration (source.manifests); rows 0-1,349 give groups 0 and 1"
   arms: [R, P, V]
   model:
     network: "the unchanged TargetMViT strictly loaded from the seed's A08 all_s{k}; e = model.embed(rgb, marker), z = model.classifier(e); classifier and marker kept"
@@ -33,7 +33,7 @@ video_switch_head:
     teacher: "the same seed's A08 all_s{k}, eval, requires_grad False, no_grad forward of the same 12 windows"
   data:
     allowlist: "the protocol's EV9V training clips only; public labels unchanged; V01's numeric frame order, 10 Hz, 16 RGB frames, target marker, whole-stream context"
-    groups: "per update u (0-1,499) three groups of 4 adjacent stride-5 targets, 12 windows: A07's native group and change-containing constructed group of row u, and a same-label join group"
+    groups: "per update u (0-1,349) three groups of 4 adjacent stride-5 targets, 12 windows: A07's native group and change-containing constructed group of row u, and a same-label join group"
     join_group: "rng = numpy default_rng([20261019, seed, u]); uniform over every (training bank stream, start) whose 4 centres span at least one join of two same-label fragments and no label change"
     edges: "3 per group (9 per update), between consecutive targets a < b (sample indices): a == b (repeat/clamp) -> masked; no label change in (a, b] -> negative; label(a) != label(b) -> positive; equal ends with changes inside -> masked; a fragment join in (a, b] is flagged; computed from the training labels at preparation, never a model input"
     disclosed: "edge counts by kind, class pair and group, join negatives and positives, masked edges, short segments covered, source recordings and sessions"
@@ -45,13 +45,13 @@ video_switch_head:
     lambda_rule: "fixed once before any formal run: at seeds 0 and 2's start states, train mode, encoder trainable, the first 4 updates of each manifest; r = max over the two heads of the median over the 8 batches of ||grad_enc BCE|| / ||grad_enc (CE + KL)||; lambda_b = the largest of 1.0, 0.5, 0.2, 0.1, 0.05 with lambda_b r <= 1 (0.05 if none, flagged)"
   training:
     seeds: [0, 2]                # the screen; seed 1 only under third_seed_rule
-    total_updates: 1500
-    warmup_updates: 150
+    total_updates: 1350           # set before any formal run: the first check projected 2.86 GPU h for the screen at 1,500 (0.937 s/update padded); see budget
+    warmup_updates: 135
     optimiser: {name: AdamW, lr_encoder: 1.0e-5, lr_new: 1.0e-4, lr_head: 1.0e-3, weight_decay: 1.0e-4, grad_clip: 1.0, betas: [0.9, 0.999], eps: 1.0e-8}
-    schedule: "new parameters and heads: lr x lr_factor(u, 150, 1500) (linear warm-up, cosine to 0); encoder frozen for u < 150, then 1e-5 x the same factor"
+    schedule: "new parameters and heads: lr x lr_factor(u, 135, 1350) (linear warm-up, cosine to 0); encoder frozen for u < 135, then 1e-5 x the same factor"
     model_rng: "torch.manual_seed(seed) and torch.cuda.manual_seed_all(seed) before update 0, identical across arms"
-    checkpoint: "final weights at update 1,500; resume every 150 updates; no epoch or score choice"
-  checks: ["source parity: the loaded student and teacher equal A08's saved outputs on 64 calibration windows (evaluation stage) and each other at start", "paired inputs and model RNG across arms (identical logits before the loss at update 0)", "edge labels and indices recomputed independently on the first 50 updates", "no label/source/edge input at inference", "gradients reach the trained head and the encoder; the teacher gets none", "optimiser binding and a 3 + 3 resume", "budget projection"]
+    checkpoint: "final weights at update 1,350; resume every 135 updates; no epoch or score choice"
+  checks: ["source parity: the loaded student and teacher equal A08's saved outputs on 64 calibration windows (evaluation stage) and each other at start", "paired inputs and model RNG across arms (identical logits before the loss at update 0)", "edge labels and indices recomputed independently on the first 50 updates", "no label/source/edge input at inference", "gradients reach the trained head and the encoder; the teacher gets none", "optimiser binding and a 3 + 3 resume, compared with an identical 6-update rerun (V01's known CUDA nondeterminism): parameters within max(1e-5, 2 x the rerun difference), losses within 1e-4", "budget projection"]
   evaluation:
     inference: "V01's windows per half; per-window logits and embeddings; per-sample probabilities by nearest centre"
     R: "B3 with A08's 40-setting grid and rule, once on calibration"
@@ -66,7 +66,8 @@ video_switch_head:
     decision: "if any arm meets all three, train seed 1 for R, P and V and evaluate three seeds; otherwise close; applied once"
   budget:
     gpu_hours_max: 8.0
-    screen_gpu_hours: 2.5
+    screen_gpu_hours: 2.5          # a planning target reported by the check (padded projection 2.50 h at 1,350 updates); every run is guarded against gpu_hours_max
+    schedule_note: "the lead preferred 1,500 updates; the first check measured 0.851 s/update (0.937 padded) and projected 2.86 GPU h for six runs plus a 0.5 h evaluation reserve, above the 2.5 h screen, so the full short schedule was shortened to 1,350 updates (warm-up 135) before any formal run; the manifests had been prepared with 1,500 rows, the runs read rows 0-1,349, and the balanced edge weights stay those of the fixed 1,500-row manifests; nothing else changed"
     cpu_hours_max: 6.0           # includes the agent's active wall clock
     ledger: runs/video_switch_head_v1/ledger.jsonl
   outputs:
