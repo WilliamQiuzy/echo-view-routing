@@ -75,7 +75,7 @@ def read_half(ctx: tp.Ctx, a8, h: str, trained: dict, seeds: list[int], device, 
             raise SystemExit("A08 saved outputs do not match")
         PA = rr.per_sample(W, lgA, seqs); ap = a8ch[f"all_s{s}"]["params"]; out["a08params"][s] = ap; out["refs"][("A08 A", s)] = PA
         ttr.check_stored(rso.row_of(a8.cfg, decode(ap, PA), ev)["row"], a8sum["systems"][f"A + B3 s{s}"][h], f"A08 A + B3 s{s} {h}")
-    jobs = [("A08 on Pro", s, "pro", ctx.a10.start_state(s)[0], f"a08_s{s}") for s in seeds]
+    jobs = [("A08 on Pro", s, "pro", {"state": ctx.a10.start_state(s)[0]}, f"a08_s{s}") for s in seeds]
     for key, mr in trained.items():
         own, other = ("pro", "original") if mr["arm"] == "Pro" else ("original", "pro")
         jobs += [(mr["arm"], mr["seed"], own, mr, key), (f"{mr['arm']} on {'original' if other == 'original' else 'Pro'}", mr["seed"], other, mr, key)]
@@ -86,15 +86,15 @@ def read_half(ctx: tp.Ctx, a8, h: str, trained: dict, seeds: list[int], device, 
         t0 = time.time(); frames = rr.decode_frames(refs, FramePaths(prv.frame_dirs(a8.paths, a8.rv, {r[0] for r in refs})), workers) if inp == "original" else pi.frames_for_refs(refs, cache)
         out["counts"][f"decode_seconds_{inp}"] = time.time() - t0
         for name, s, _, src, key in todo:
-            path = ctx.out / "evaluation" / h / f"{key}_{inp}.npz"; ident = (src["identity"] if isinstance(src, dict) else f"A08 all_s{s}") + f"|{inp}"
+            run = "identity" in src; path = ctx.out / "evaluation" / h / f"{key}_{inp}.npz"; ident = (src["identity"] if run else f"A08 all_s{s}") + f"|{inp}"
             lg, _ = rr.cached_logits(path, ident, W, orders, seqs)
             if lg is None:
-                if isinstance(src, dict):
+                if run:
                     if sha256_file(Path(src["weights"])) != src["sha256"]:
                         raise SystemExit(f"{key}: weights differ from the run record")
                     model = tp.make_model(torch.load(src["weights"], map_location="cpu", weights_only=True), device).eval()
                 else:
-                    model = tp.make_model(src, device).eval()
+                    model = tp.make_model(src["state"], device).eval()
                 lg, sec = rr.model_logits(model, W, orders, frames, device); out["gpu_seconds"] += float(sec); del model; torch.cuda.empty_cache()
                 rr.save_outputs(path, ident, W, orders, lg, rr.per_sample(W, lg, seqs), seqs, sec)
             out["probs"][(name, s)] = rr.per_sample(W, lg, seqs); print(f"{h} {name} s{s} on {inp}: ready", flush=True)
