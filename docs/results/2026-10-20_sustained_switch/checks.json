@@ -1,0 +1,96 @@
+{
+ "config_sha256": "7eee59f4ea736d6fb38b94236a01e2b64278be816fc4f309dfc9537687d5ba64",
+ "started": "2026-10-20T07:19:50Z",
+ "edge_recheck": {
+  "updates": 50,
+  "seeds": 3,
+  "mismatches": 0
+ },
+ "lambda_rule": {
+  "batches": [
+   {
+    "seed": 0,
+    "u": 0,
+    "ratio": 0.002682312991905798,
+    "bce": 0.410167396068573
+   },
+   {
+    "seed": 0,
+    "u": 1,
+    "ratio": 0.00513868528877856,
+    "bce": 0.4095613360404968
+   },
+   {
+    "seed": 0,
+    "u": 2,
+    "ratio": 0.014825313248017854,
+    "bce": 0.4102115035057068
+   },
+   {
+    "seed": 0,
+    "u": 3,
+    "ratio": 0.026868257571643656,
+    "bce": 0.41202712059020996
+   },
+   {
+    "seed": 2,
+    "u": 0,
+    "ratio": 0.04217613571103582,
+    "bce": 0.4349367618560791
+   },
+   {
+    "seed": 2,
+    "u": 1,
+    "ratio": 0.032294886403657824,
+    "bce": 1.1803635358810425
+   },
+   {
+    "seed": 2,
+    "u": 2,
+    "ratio": 0.014286830489369746,
+    "bce": 1.1913046836853027
+   },
+   {
+    "seed": 2,
+    "u": 3,
+    "ratio": 0.1822326082326303,
+    "bce": 1.1805720329284668
+   }
+  ],
+  "ratio": 0.020846785409830756,
+  "lambda": 1.0
+ },
+ "pairing": {
+  "logits_identical": true,
+  "cuda_rng_identical": true
+ },
+ "gradients": {
+  "projection": 0.0018782338593155146,
+  "conv_proj": 0.003633552696555853,
+  "head": 0.01146126352250576,
+  "teacher_with_grad": 0
+ },
+ "teacher_equals_start": true,
+ "optimiser_bound": true,
+ "head_parameters": 33921,
+ "resume": {
+  "loss_max_abs": 1.1920928955078125e-07,
+  "params_max_abs": 7.37607479095459e-07,
+  "rerun_params_max_abs": 9.5367431640625e-07,
+  "ok": true
+ },
+ "timing": {
+  "seconds_per_update": 0.8981208854913713,
+  "peak_gpu_memory_mib": 21749.53125
+ },
+ "budget": {
+  "spent": 0.35190844933191934,
+  "four_runs": 1.347181328237057,
+  "evaluation": 0.35,
+  "projection": 2.0490897775689763,
+  "target": 2.5,
+  "cap": 6.0
+ },
+ "ok": true,
+ "finished": "2026-10-20T07:21:06Z"
+}

@@ -1,0 +1,147 @@
+{
+ "config": "configs/experiments/video_sustained_switch_v1.yaml",
+ "config_sha256": "7eee59f4ea736d6fb38b94236a01e2b64278be816fc4f309dfc9537687d5ba64",
+ "started": "2026-10-20T06:59:09Z",
+ "pool": {
+  "groups": 1952,
+  "native": 1350,
+  "stream": 602,
+  "sessions": 498
+ },
+ "scoring": {
+  "pairs": 11647,
+  "gpu_seconds": 1191.564357995987
+ },
+ "hard_set": {
+  "groups": 1350,
+  "score_min": 0.005605652695521712,
+  "native": 928
+ },
+ "seeds": {
+  "0": {
+   "sha256": "6c9a0af6c9d0d1034d4c991ac8a5ff49a62281ae874674315ceb285d98d5abb2",
+   "central_edges": {
+    "random_native": {
+     "pos": 0,
+     "neg": 668,
+     "masked": 7
+    },
+    "hard_pool": {
+     "pos": 0,
+     "neg": 675,
+     "masked": 0
+    },
+    "change_group": {
+     "pos": 458,
+     "neg": 892,
+     "masked": 0
+    },
+    "same_label_join": {
+     "pos": 0,
+     "neg": 1350,
+     "masked": 0
+    }
+   },
+   "weights": {
+    "w_pos": 4.413755458515284,
+    "w_neg_U": 0.5638772663877266,
+    "quartile_thresholds": {
+     "random_native": 0.03620367217808962,
+     "hard_pool": 0.08089957447373308,
+     "change_group": 0.5660818442702293,
+     "same_label_join": 0.05875996185204713
+    },
+    "rescale": 0.6664807585052984,
+    "mass_neg_U": 2021.5,
+    "mass_neg_H": 2021.5000000000007,
+    "mass_pos_U": 2021.5,
+    "mass_pos_H": 2021.5
+   },
+   "hard_groups_used": 675
+  },
+  "1": {
+   "sha256": "92cc8d9c38c6928680394c4705c97d194376a750fae12225af00b639686a36b6",
+   "central_edges": {
+    "random_native": {
+     "pos": 0,
+     "neg": 663,
+     "masked": 12
+    },
+    "hard_pool": {
+     "pos": 0,
+     "neg": 675,
+     "masked": 0
+    },
+    "change_group": {
+     "pos": 471,
+     "neg": 879,
+     "masked": 0
+    },
+    "same_label_join": {
+     "pos": 0,
+     "neg": 1350,
+     "masked": 0
+    }
+   },
+   "weights": {
+    "w_pos": 4.286624203821656,
+    "w_neg_U": 0.5660218671152228,
+    "quartile_thresholds": {
+     "random_native": 0.03511090723623056,
+     "hard_pool": 0.07033108733594418,
+     "change_group": 0.5713514387607574,
+     "same_label_join": 0.053395890863612294
+    },
+    "rescale": 0.6663553147767607,
+    "mass_neg_U": 2019.0000000000005,
+    "mass_neg_H": 2019.0,
+    "mass_pos_U": 2019.000000000001,
+    "mass_pos_H": 2019.000000000001
+   },
+   "hard_groups_used": 675
+  },
+  "2": {
+   "sha256": "08b981c64555bdad92a55f488091d0d621a5dacd43e6756c2b14a36158a492dd",
+   "central_edges": {
+    "random_native": {
+     "pos": 0,
+     "neg": 660,
+     "masked": 15
+    },
+    "hard_pool": {
+     "pos": 0,
+     "neg": 675,
+     "masked": 0
+    },
+    "change_group": {
+     "pos": 464,
+     "neg": 886,
+     "masked": 0
+    },
+    "same_label_join": {
+     "pos": 0,
+     "neg": 1350,
+     "masked": 0
+    }
+   },
+   "weights": {
+    "w_pos": 4.348060344827586,
+    "w_neg_U": 0.5649677961355363,
+    "quartile_thresholds": {
+     "random_native": 0.040433947622659616,
+     "hard_pool": 0.07636156398802996,
+     "change_group": 0.5742110759019852,
+     "same_label_join": 0.060620963166002184
+    },
+    "rescale": 0.6658586611970911,
+    "mass_neg_U": 2017.5,
+    "mass_neg_H": 2017.5,
+    "mass_pos_U": 2017.5,
+    "mass_pos_H": 2017.5
+   },
+   "hard_groups_used": 675
+  }
+ },
+ "finished": "2026-10-20T07:19:35Z",
+ "seconds": 1225.5457088947296
+}
