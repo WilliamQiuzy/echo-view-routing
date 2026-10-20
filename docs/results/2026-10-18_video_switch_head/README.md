@@ -85,3 +85,18 @@ A08 A's.
   9bdaf93b and 76e29686).
 - **Records.** `screen.json` (rows, counts, choices with the head grids, paired comparisons, accounting and the
   third-seed decision), `checks.json` and `preparation.json`. Per-window outputs and embeddings stay on the server.
+
+## Dated supplement (2026-10-20, after the lead's review; the readings and the stop decision above are unchanged)
+
+1. **R.** Its mean segment F1 is +0.0013 against A08 A. That is below the +0.003 promotion threshold, not a demonstrated
+   advantage. It does not mean that every arm was numerically below A08 A.
+2. **P.** The P result applies to this one head and decoding configuration only. It does not show that probability-based
+   cut methods are settled. The P head − P + B3 comparison also changed the decoding rule, so the difference cannot be
+   credited to the probability features alone:
+   - B3 keeps a peak only when the mean-probability argmax differs on its two sides.
+   - The head path's `boundary_decode` has no such check before cutting.
+   - Merging adjacent same-class segments afterwards is not the same check.
+3. **V.** V found more short true segments and also reported more false ones, which is a recall/precision trade at one
+   working point. On its own this does not show that the video representation adds a usable increment beyond the
+   probabilities. Failed threshold transfer, insufficient feature ranking and the different decoding rule have not been
+   separated.

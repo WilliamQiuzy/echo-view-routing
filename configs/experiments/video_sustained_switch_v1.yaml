@@ -1,0 +1,71 @@
+# A11, a sustained-switch readout with hard negatives from training data (video_sustained_switch_v1), 2026-10-20 UTC.
+# This is the round's one-page task and configuration, written before stage one, the mining or any training output.
+# Question: can a switch head separate brief appearance changes from sustained view changes, keep A08's recognition and
+# short true segments, and cut fewer false segments than A10's V branch? It is a hypothesis check of a known multi-task
+# idea. The two development halves are reused for exploratory feedback; this is not an independent confirmation. The test
+# split and EchoNet-Pediatric are not read.
+experiment: video_sustained_switch_v1
+
+video_sustained_switch:
+  predecessors:
+    R17_A01: "fewer cuts lost true boundaries (switch-cost decoding on fixed outputs; ASRF on frozen video features)"
+    A03_A04: "local corrections did not become segment gains"
+    A09_R1: "the native-heavy recipe kept no gain; A11 keeps A10's three transition-rich groups"
+    A10: "R/P/V on the A08 start: no arm met its rule; V recovered short true segments with many short false cuts on selection; same-label join negatives covered few of them; the head decoder lacked B3's left/right argmax check"
+    change: "a central-edge head reading the 4 adjacent windows (endpoints plus two-sided summaries) with magnitude-preserving embedding features; a shared manifest with training hard-negative groups scored by the frozen A10 V; U (balanced BCE) against H (the same BCE with fixed hard-negative weights)"
+  source:
+    a10_config: {path: configs/experiments/video_switch_head_v1.yaml, sha256: fb851c684450e48ebe031db0cc98bbbcbdd35b20b6ee88541489cf80d0124a58}
+    a10_manifests: "runs/video_switch_head_v1/manifests/VSH_s{0,1,2}.npz with index.json (sha256 checked against A10's index)"
+    a10_v_models: "models_frozen/video_switch_head_v1/V_s0 and V_s2 (final.pt sha256 f3ee9417, 76e29686; checked against A10's run manifests)"
+    a10_screen: {path: docs/results/2026-10-18_video_switch_head/screen.json}
+  stage_one:                     # a low-cost decoding check on cached A10 outputs; CPU only; not a training gate
+    models: "A10 P_s0, P_s2, V_s0, V_s2: their frozen heads, cached per-window logits and embeddings, the committed head thresholds, NMS 5, candidate cuts and segment naming"
+    versions: "original head decoding, and the same plus B3's left/right check: a peak at i is kept only if argmax(mean prob over [i-h, i)) != argmax(mean prob over [i, i+h)), with h the model's own committed P/V + B3 half-window"
+    reads: "(a) both versions at the original numeric threshold on both halves; (b) the checked version chosen once among the same 8 calibration quantiles with A08's rule on calibration, then applied to selection"
+    reported: "multi segment F1@50, FP and short FP, FN and missed short true segments, boundary recall, and how many reference segments V recovered against A08 A are kept or lost by the check"
+    mapping: "A11's head decoder enables the check (h = each model's own CLS + B3 calibration half-window) if the checked version at its calibration choice has a higher mean multi segment F1@50 than the original over the 8 model-half cells; otherwise it is disabled; fixed now, applied once"
+  arms: [U, H]
+  model:
+    start_and_teacher: "each seed's frozen A08 all_s{k} (A10's pins), strictly loaded; classifier and marker kept; the same weights in eval mode, no_grad, as teacher"
+    head: "one head per run, built under torch.random.fork_rng with seed 3000 + seed; MLP Linear(1058, 32) -> GELU -> Linear(32, 1); 33,921 parameters"
+    head_input: "for the central edge of 4 adjacent windows w0..w3: p1, p2, |p2 - p1|, P_L = (p0 + p1) / 2, P_R = (p2 + p3) / 2, |P_R - P_L| (30); unit embeddings u_i = e_i / (||e_i|| + 1e-6); d_loc = u2 - u1 and d_side = (u2 + u3) / 2 - (u0 + u1) / 2 (1,024); ||d_loc||, ||d_side||, 1 - cos(u1, u2), 1 - cos(u0 + u1, u2 + u3) (4); no layer normalisation"
+    context: "4 windows per edge (A10's head read 2); at inference windows k-1..k+2 for the edge between k and k+1, clamped at sequence ends, as in training"
+  data:
+    allowlist: "the protocol's EV9V training clips only; public labels unchanged; V01's frames, 10 Hz, 16 RGB frames, target marker, whole-stream context"
+    groups: "per update u (0-1,349) 12 windows: g1 = A07's change-containing group and g2 = A10's same-label join group (rows of A10's manifest); g0 = A07's random native group for even u and a hard-negative pool group for odd u"
+    pool: "2,700 candidate groups of 4 adjacent stride-5 targets without a label change: 1,350 from native clips and 1,350 from same-label stream intervals, drawn with numpy default_rng([20261020, 0]) uniformly over eligible (sequence, start), at most 4 per session (session of the central windows)"
+    mining: "the pool's central edges are scored once with the frozen A10 V_s0 and V_s2 heads (mean sigmoid score); the top 1,350 groups form the hard set; each seed draws 675 of them without replacement (default_rng([20261020, 1, seed])) for the odd-u g0 slots"
+    edge: "the supervised unit is the central edge (w1 | w2) of each group, 3 per update: no label change in (c1, c2] -> negative; label(c1) != label(c2) -> positive; equal ends with changes inside or c1 == c2 -> masked; reference labels and joins are training supervision only"
+    frozen_scores: "every negative central edge of every seed's manifest is scored once with the same frozen A10 V mean score; nothing is rescored online"
+  loss:
+    common: "CE (mean over 12 windows) + KL(teacher || student) (temperature 1, weight 1) + lambda BCE over unmasked central edges"
+    U: "balanced BCE: w_pos = N / (2 N_pos), w_neg = N / (2 N_neg) from the seed's manifest"
+    H: "the same positives; within negatives, per source type (random native, hard pool, change-group negative, same-label join) the top quartile by frozen score gets raw weight 3 and the rest 1, rescaled so the total negative mass equals U's"
+    lambda_rule: "A10's rule once, on training batches only: seeds 0 and 2 start states, encoder trainable, first 4 updates each; r = median ||grad_enc BCE_U|| / ||grad_enc (CE + KL)||; lambda = the largest of 1.0, 0.5, 0.2, 0.1, 0.05 with lambda r <= 1; the same lambda for U and H"
+  training:
+    seeds: [0, 2]                # seed 1 only under third_seed_rule
+    total_updates: 1350
+    warmup_updates: 135
+    optimiser: {name: AdamW, lr_encoder: 1.0e-5, lr_new: 1.0e-4, lr_head: 1.0e-3, weight_decay: 1.0e-4, grad_clip: 1.0, betas: [0.9, 0.999], eps: 1.0e-8}
+    schedule: "A10's: lr_factor(u, 135, 1350) for new parameters and the head; encoder frozen for u < 135, then 1e-5 x the same factor; final weights at 1,350, no epoch choice"
+    pairing: "U and H share the manifest, batch order, model RNG (torch.manual_seed(seed) before update 0), head initialisation, lambda and budget; only the negative weights differ"
+  evaluation:
+    head_decoder: "for each edge between consecutive windows k and k+1: the head on windows k-1..k+2 (clamped); cut at (c_k + c_k+1) // 2 + 1 (0.5 s resolution); NMS 5; the left/right check per stage_one.mapping; segments named by mean-probability argmax with adjacent same-class segments merged; thresholds are the 8 quantiles (0.80-0.999) of the model's calibration native edge scores, chosen once on calibration with A08's rule"
+    sensitivity: "each model's CLS + B3 (40 settings, own choice) and argmax"
+    references: "the seed's frozen A08 A + B3 (primary strong reference) and frozen Ordered + B3; A10 R, P and V as historical references"
+    reported: "multi segment F1@50, FP and short FP, FN and missed short true segments, boundary recall and precision, native macro-F1, A4C->A5C and A5C->A4C, same-label join cuts, and reference segments recovered and lost against A08 A, with sessions where counted"
+  third_seed_rule:               # fixed before any A11 model output; X's head-decoded system against the seed's A08 A + B3 over the 4 cells
+    signal: "mean F(X) - F(A08 A) >= +0.003"
+    no_reversal: "each half's two-seed mean >= -0.005 and no cell below -0.015"
+    no_harm: "mean native macro-F1 difference >= -0.003, mean boundary-recall difference >= -0.010, missed short true segments (4-cell sum) <= A08 A's + 3"
+    decision: "if U or H meets all three, train seed 1 for U and H and evaluate three seeds; otherwise close this recipe; applied once"
+  budget:
+    gpu_hours_max: 6.0
+    screen_target_gpu_hours: 2.5
+    cpu_hours_max: 4.0           # includes the agent's active wall clock
+    ledger: runs/video_sustained_switch_v1/ledger.jsonl
+  outputs:
+    root: runs/video_sustained_switch_v1
+    checkpoints: checkpoints/video_sustained_switch_v1
+    frozen: models_frozen/video_sustained_switch_v1/{U,H}_s{seed}
+    results_dir: docs/results/2026-10-20_sustained_switch
