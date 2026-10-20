@@ -1,0 +1,59 @@
+# A13, a sustained-switch head on the frozen A08 classification path (video_frozen_switch_v1), 2026-10-20 UTC.
+# This is the round's one-page task and configuration, written before any A13 feature, head or evaluation output.
+# Question: when A08's classification outputs are held fixed, can A11's sustained-switch evidence (which recovered short
+# true segments) become a full-segmentation gain? This tests the condition that the whole classification path stays fixed.
+# It does not claim the cause of A11's seed-2 loss is known. Exploratory feedback on the two reused development halves.
+# The test split and EchoNet-Pediatric are not read.
+experiment: video_frozen_switch_v1
+
+video_frozen_switch:
+  predecessors:
+    R03: "boundary-only learning on frozen E0/E1 features"
+    A01: "MS-TCN/ASRF on frozen V01 video features"
+    A03_A04: "token readouts and local corrections without segment gains"
+    A11: "the sustained-switch head and hard-negative manifest trained together with A08's classification path: H -0.0012 against A08 A, seed-dependent; its CLS + B3, classifier and recalibrated decoder all changed"
+    change: "A08's strong raw-video representation and classifier frozen (eval, no gradient); A11's sustained-switch features, head and training manifest; only the head is trained; not a renamed old experiment"
+  source:
+    a11_config: {path: configs/experiments/video_sustained_switch_v1.yaml, sha256: 7eee59f4ea736d6fb38b94236a01e2b64278be816fc4f309dfc9537687d5ba64}
+    a11_code: {train: {path: scripts/train_video_sustained_switch.py, sha256: 488e499957e50c35894fdd0a751656212e354d31c40943bb0939879e3916e74b},
+               report: {path: scripts/report_video_sustained_switch.py, sha256: aeed8f54416d7db9e4b0107076d1658c34f1b83712338f8ed1dc632f8be8ee0c}}
+    a11_manifests:
+      index: {path: runs/video_sustained_switch_v1/manifests/index.json, sha256: fb7fd9cb4ab7f0f6917eeadc189d4e9f05290ba92a21a29e38e007de156fbb76}
+      0: 6c9a0af6c9d0d1034d4c991ac8a5ff49a62281ae874674315ceb285d98d5abb2
+      1: 92cc8d9c38c6928680394c4705c97d194376a750fae12225af00b639686a36b6
+      2: 08b981c64555bdad92a55f488091d0d621a5dacd43e6756c2b14a36158a492dd
+    a08_weights: "A10's pins (models_frozen/video_within_view_v1/all_s{k}/final.pt: 9b144925, c8b09eca, f95fed7b), checked by sha256"
+  arms: [U, H]
+  model:
+    frozen: "the seed's A08 all_s{k} TargetMViT strictly loaded; every parameter requires_grad False; eval mode throughout; parameter and buffer digests checked before and after"
+    head: "A11's central-edge MLP (1058 -> 32 -> GELU -> 1, 33,921 parameters) and central_features, initialised with seed 3000 + seed under fork_rng; A11's adapted heads are not transplanted"
+    objective: "A11's BCE over unmasked central edges with coefficient 1: U balanced weights, H A11's fixed hard-negative weights; CE and KL are constant in the head and are not computed"
+  data:
+    manifests: "A11's sealed VSS_s{seed} (pinned above): 12 windows per update, central edges, masks, hard-pool groups, frozen scores and U/H weights; no re-mining, no sample change, no Pro input"
+    features: "per seed, A08 eval/no_grad float32 logits and 512-d embeddings of all 1,350 x 12 manifest windows, through A11's loader (whole-stream context, 16 frames, gamma, marker, digest-checked); one cache per seed, shared by U and H"
+    note: "eval-mode features replace A11's train-mode features; against A11 the frozen path, the mode and the optimisation conditions change together, so no difference is credited to one of them"
+  training:
+    seeds: [0, 2]
+    total_updates: 1350
+    warmup_updates: 135
+    optimiser: "AdamW on the head only: lr 1e-3 x lr_factor(u, 135, 1350), weight decay 1e-4, betas (0.9, 0.999), eps 1e-8, gradient clip 1.0 (A11's head settings)"
+    checkpoint: "final head at update 1,350; no epoch choice"
+  checks: ["the frozen path unchanged (parameter and buffer digests, eval) through extraction and training", "only the head receives gradients; the optimiser holds only head parameters", "U and H identical initial heads and identical feature files", "manifest pins and U/H mass equality", "3 + 3 resume equals 6 updates", "development: new A08 logits equal the saved A08 outputs (1e-4) on every window", "each model's CLS + B3 reproduces A08's stored rows"]
+  evaluation:
+    head_decoder: "A11's: the head on windows k-1..k+2 (clamped) for the edge between k and k+1, cut at (c_k + c_k+1) // 2 + 1 (0.5 s), NMS 5, no left/right check, segments named by mean A08 probability with same-class merge; 8 calibration-native quantile thresholds; A11's choice rule once on calibration"
+    barrier: "the calibration stage writes choices.json, which is committed locally before the selection stage reads any selection output"
+    references: "frozen A08 A + B3 at its committed setting (primary), frozen Ordered + B3; A11 U/H head systems recomputed from their frozen heads and cached outputs for paired comparisons"
+    reported: "multi segment F1@50, FP and short FP, FN and missed short true segments, boundary recall/precision, native macro-F1 (measured, not assumed), A4C->A5C and A5C->A4C, recovered/lost segments against A08 A, per seed and half"
+  third_seed_rule:               # fixed before any A13 output; each arm's head system against the seed's A08 A + B3 over the 4 cells
+    signal: "mean F(X) - F(A08 A) >= +0.003"
+    no_reversal: "each half's two-seed mean >= -0.005 and no cell < -0.015"
+    no_harm: "mean native macro-F1 difference >= -0.003, mean boundary-recall difference >= -0.010, missed short true segments <= A08 A's + 3"
+    decision: "if U or H meets all three, extract seed-1 features, train U and H seed 1 and evaluate three seeds; otherwise close this frozen-classifier sustained-head configuration"
+  budget:
+    gpu_hours_max: 3.0
+    screen_target_gpu_hours: 1.0
+    cpu_hours_max: 3.0           # includes the agent's active wall clock and worker time
+    ledger: runs/video_frozen_switch_v1/ledger.jsonl
+  outputs:
+    root: runs/video_frozen_switch_v1
+    results_dir: docs/results/2026-10-20_frozen_switch

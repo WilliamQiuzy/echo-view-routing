@@ -94,3 +94,11 @@ holdout. The test split and EchoNet-Pediatric were not read. Configuration: `con
 - **Records.** `preparation.json` (mapping, fallback, spot check, cache), `checks.json` and `screen.json` (rows,
   common-support rows, counts, choices, comparisons and both rules).
 - **Server only.** The Pro frame cache (21 GB) and every per-video mapping stay on the server.
+
+## Dated note (2026-10-20, after the lead's review; the readings and the stop decision above are unchanged)
+
+The Pro-trained model scored higher on the original input than on Pro input. That observation does not establish that the
+cross-input KL or the short schedule limited the adaptation. It also does not establish that the crop removed anatomical
+information, for example for A5C. Both remain untested hypotheses. The earlier sentence that the KL and schedule
+"kept it an original-input model" is narrowed accordingly. The Pro models, failure records, mapping and 21 GB cache are
+kept on the server, and the provider's algorithm was not rerun.
