@@ -103,3 +103,17 @@ Definitions:
   - `screen.json`: rows, counts, choices with the head grids, comparisons, accounting, A10 historical rows and the
     third-seed decision.
 - **Server only.** Per-window outputs and the mined scores stay on the server.
+
+## Dated supplement (2026-10-20, after the lead's review; the numbers and the stop decision above are unchanged)
+
+1. **The whole recipe.** The drop in false cuts with short segments kept is progress of the whole recipe. It is not
+   credited to any single part.
+2. **Seed 2.** Seed 2's degraded CLS + B3 shows a problem in the classification output path and its decoding point. It
+   does not locate the cause in the encoder alone. The classifier, the changed output probabilities and the recalibrated
+   B3 parameters all take part. Without a paired experiment that fixes the decoding point or freezes the encoder, encoder
+   continuation stability is not established as the only remaining bottleneck.
+3. **"H − U ≥ 0 in every cell" is not exact.**
+   - In calibration, seed 2's paired difference is −3.7 × 10⁻⁵, with interval [−0.000165, 0.0]. It was displayed as
+     −0.0 after rounding.
+   - The selection lower bounds are exactly 0.0.
+   - H and U therefore do not differ in a strictly consistent direction. The precise values are in `screen.json`.

@@ -1,0 +1,65 @@
+# A12, Pro-processed EV9V input against the original input on the strong video model (video_processed_input_v1), 2026-10-20 UTC.
+# This is the round's one-page task and configuration, written before any A12 mapping, cache, inference or training.
+# Question: does the Pro group's ready-made processing give the current strong video model a full-segmentation gain, and if
+# switching the input shifts the distribution, does adapting to the processed input under identical training help? Only the
+# student's input source changes: no architecture, switch head, sampling or loss change. This is the same EV9V data, not a
+# new holdout. The development halves are reused for exploratory feedback. The test split and EchoNet-Pediatric are not read.
+experiment: video_processed_input_v1
+
+video_processed_input:
+  predecessors:
+    R14: "the old input pilot"
+    R15: "a fixed global fan224 template with an image ViT and last-block/head adaptation: negative; that recipe is not Pro's per-video product"
+    V01_A08: "the current 16-frame raw RGB MViTv2-S strong start (A08 all_s{k})"
+    A10_R: "CE + KL continuation of A08 kept its level"
+    A11: "the switch multi-task did not qualify; not restarted"
+    change: "the student's pixels come from Pro's per-video processed videos, with a fixed fallback; teacher, recipe and evaluation are unchanged"
+  pro:
+    root: /home/william/hli-echo-segmentation/ev9v_processed_oct16    # read only; nothing is run or written there
+    videos: videos/Videos
+    records: [manifests/ev9v_oct16_model_ready.csv, manifests/ev9v_oct16_render_summary.json, manifests/ev9v_oct16_analysis_summary.json, configs, metadata]
+    provider_record: "5,138 source videos; 5,131 analysed and rendered; 7 analysis failures; audit passed 5,131; output_size 224; crop_margin 0.05; libx264 CRF 18; one FastSAM fan analysis per video from 30 equally spaced frames over the whole recording; square crop with padding, INTER_AREA down-scaling; fps and duration audited (tolerance 0.01 fps, 0.02 s)"
+    disclosed: "offline whole-recording-assisted input (the crop region uses the whole recording), not the same information budget as an online 16-frame window; a view_label column exists in the provider's manifest and whether any step used it is recorded as unknown unless the provider's configuration shows a label-dependent parameter"
+  mapping:
+    allowlist: "the protocol's training clips and the validation clips of the two development halves only; provider rows are filtered by our video_path before any other field is read; no test or Pediatric row, file or label is read"
+    key: "our data/manifests/ev9v_native.csv video_path equals the provider's input_path"
+    time: "identity frame mapping: our 10 Hz sample's source frame index i (numeric Images order) reads Pro output frame i, valid only when the provider's source frame_count, our n_frames and the decoded Pro frame count are all equal"
+    spot_check: "on 20 training videos (default_rng([20261021, 0])) at the first, middle and last frames: the Pro frame against the raw Images frame cropped with the provider's own crop and pad and resized to 224; the best normalised correlation over offsets -2..+2 must be at 0, otherwise the round stops with an engineering blocker"
+    fallback: "a video uses its original input when the provider has no row, the analysis/render/audit is not complete, the output is missing, or the frame counts differ; never by label, score or performance; counts reported per split"
+    pixels: "Pro frames take the same gamma LUT per slot (after the provider's resize) and the same RGB normalisation; no centre crop and no new mask; the original branch keeps V01's exact load_frame_u8 path"
+    cache: "only the needed 10 Hz frames, decoded once with at most 8 workers into runs/video_processed_input_v1/cache (input version and mapping identity recorded); window digests recomputed for the Pro path"
+  stage_one:                     # frozen A08 all_s0 and all_s2, no training
+    raw: "A08's saved development outputs (identity verified)"
+    pro: "the same windows, times and constructed streams with Pro pixels (fallback applied)"
+    primary: "B3 at A08's committed parameters, Pro minus raw, and argmax"
+    secondary: "the Pro path chosen once on calibration with the 40-setting grid and rule, then selection"
+    common_support: "the same reading on sequences with no fallback window, with its denominator"
+    seed1_rule: "if the frozen Pro reading at A08's parameters has mean dF >= +0.003 against raw A08 over the 4 cells, each half >= -0.005, no cell < -0.015, and native/recall/short-true no harm (as below), the frozen A08 seed-1 input comparison is added"
+  arms: [Raw, Pro]
+  training:
+    recipe: "A10 R exactly: each seed's frozen A08 all_s{k} strictly loaded, classifier and marker kept; A10's VSH_s{k} rows 0-1,349 (12 windows); CE + KL(teacher || student), T 1, weight 1; 1,350 updates, warm-up 135 (encoder frozen), cosine to 0; AdamW lr 1e-5 encoder, 1e-4 new, the unused head group of A10 kept for identical optimiser structure; grad clip 1; torch.manual_seed(seed) before update 0; final weights"
+    teacher: "the same seed's frozen A08, eval, no_grad, always on the original pixels of the same windows"
+    Raw: "student on the original pixels"
+    Pro: "student on Pro pixels (fallback applied); the KL is cross-input distillation from the original strong model"
+    seeds: [0, 2]
+  evaluation:
+    systems: "each model + B3 (40 settings, one calibration choice per model and input) and argmax"
+    primary: "trained Pro + B3 - trained Raw + B3; trained Pro + B3 - frozen A08 A + B3"
+    sensitivity: "Raw model on Pro input and Pro model on original input; common-support rows"
+    reported: "multi segment F1@50, native macro-F1, A4C->A5C and A5C->A4C, boundary recall/precision, FP/FN, short FP, missed short true segments (<= 16 samples), recovered/lost segments, fallback and common-support denominators"
+  third_seed_rule:               # fixed before any A12 output
+    signal: "trained Pro - trained Raw and trained Pro - frozen A08 A: both four-cell means >= +0.003"
+    no_reversal: "against A08 A each half's two-seed mean >= -0.005 and no cell < -0.015"
+    no_harm: "native macro-F1 mean difference >= -0.003, boundary recall >= -0.010, missed short true segments <= A08 A's + 3"
+    decision: "all three: train Raw and Pro seed 1 and evaluate three seeds; otherwise close this short-training configuration"
+  budget:
+    gpu_hours_max: 6.0
+    screen_target_gpu_hours: 2.5
+    cpu_hours_max: 4.0           # includes the agent's active wall clock and decoding worker time
+    decode_workers_max: 8
+    ledger: runs/video_processed_input_v1/ledger.jsonl
+  outputs:
+    root: runs/video_processed_input_v1
+    checkpoints: checkpoints/video_processed_input_v1
+    frozen: models_frozen/video_processed_input_v1/{Raw,Pro}_s{seed}
+    results_dir: docs/results/2026-10-20_processed_input
