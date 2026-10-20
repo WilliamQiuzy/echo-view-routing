@@ -10,6 +10,7 @@ Never reads a test or Pediatric row, file or label: provider rows are filtered b
 from __future__ import annotations
 
 import argparse
+import collections
 import csv
 import hashlib
 import json
@@ -50,14 +51,19 @@ class ProCache:
     without a usable Pro output fall back to V01's original loader."""
 
     def __init__(self, root: Path, raw_fp=None) -> None:
-        self.root = Path(root); self.index = json.loads((self.root / "index.json").read_text()); self.raw_fp = raw_fp; self._arr = {}
+        self.root = Path(root); self.index = json.loads((self.root / "index.json").read_text()); self.raw_fp = raw_fp; self._arr = collections.OrderedDict()
 
     def is_pro(self, video: str) -> bool:
         return self.index["videos"].get(video, {}).get("fallback") is None and video in self.index["videos"]
 
     def _frames(self, video: str):
-        if video not in self._arr:
+        """A bounded LRU of memory maps (64 videos), so the open-file limit is never reached."""
+        if video in self._arr:
+            self._arr.move_to_end(video)
+        else:
             e = self.index["videos"][video]; self._arr[video] = (np.load(self.root / e["npy"], mmap_mode="r"), {int(f): i for i, f in enumerate(e["frames"])})
+            while len(self._arr) > 64:
+                self._arr.popitem(last=False)
         return self._arr[video]
 
     def frame(self, video: str, frame: int, gamma: float) -> np.ndarray:
