@@ -54,7 +54,8 @@ def subset(ev, keep: set):
 
 def read_half(ctx: tp.Ctx, a8, h: str, trained: dict, seeds: list[int], device, workers: int) -> dict:
     ev, seqs = a8.half(h, rso.DevAccess({h})); ids = [q["id"] for q in seqs]; refs = rw.half_refs(seqs); at = {r: i for i, r in enumerate(refs)}
-    W = rr.half_windows(seqs, at, 5); orders = np.broadcast_to(np.arange(16, dtype=np.int64), W["s"].shape).copy(); cache = ctx.cache()
+    W = rr.half_windows(seqs, at, 5); orders = np.broadcast_to(np.arange(16, dtype=np.int64), W["s"].shape).copy()
+    cache = pi.ProCache(ctx.out / "cache", FramePaths(prv.frame_dirs(a8.paths, a8.rv, {r[0] for r in refs})))   # this half's original frames serve the fallback
     supported = {q["id"] for q in seqs if all(cache.is_pro(str(r[0])) for r in q["refs"])}
     v01 = a8.v01_summary()["systems"]; a8sum = json.loads((ROOT / "docs/results/2026-10-16_video_within_view/summary.json").read_text())
     a8ch = json.loads(tp.vsh.pinned(ctx.a10.src["a08_choices"]).read_text())["choices"]; pins = rsh.a08_output_pins()
