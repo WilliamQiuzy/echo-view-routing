@@ -1,0 +1,990 @@
+{
+ "note": "reference-assisted diagnostic after the selection stage; not a system and not used by any decision",
+ "development": {
+  "s0 calibration": {
+   "zones": {
+    "native": {
+     "zones": 0,
+     "beneficial": 0,
+     "zero": 0,
+     "harmful": 0
+    },
+    "pairs": {
+     "zones": 5,
+     "beneficial": 1,
+     "zero": 3,
+     "harmful": 1
+    },
+    "multi": {
+     "zones": 44,
+     "beneficial": 3,
+     "zero": 37,
+     "harmful": 4
+    }
+   },
+   "systems": {
+    "A14 P": {
+     "native": {
+      "accepted": 0,
+      "beneficial": 0,
+      "zero": 0,
+      "harmful": 0,
+      "net_dTP": 0,
+      "net_dFP": 0
+     },
+     "pairs": {
+      "accepted": 2,
+      "beneficial": 1,
+      "zero": 0,
+      "harmful": 1,
+      "net_dTP": -1,
+      "net_dFP": -1
+     },
+     "multi": {
+      "accepted": 4,
+      "beneficial": 3,
+      "zero": 0,
+      "harmful": 1,
+      "net_dTP": -1,
+      "net_dFP": -4
+     }
+    },
+    "A15 large-P": {
+     "native": {
+      "accepted": 0,
+      "beneficial": 0,
+      "zero": 0,
+      "harmful": 0,
+      "net_dTP": 0,
+      "net_dFP": 0
+     },
+     "pairs": {
+      "accepted": 1,
+      "beneficial": 1,
+      "zero": 0,
+      "harmful": 0,
+      "net_dTP": 0,
+      "net_dFP": -1
+     },
+     "multi": {
+      "accepted": 4,
+      "beneficial": 3,
+      "zero": 0,
+      "harmful": 1,
+      "net_dTP": -1,
+      "net_dFP": -3
+     }
+    },
+    "A16 C-fixed": {
+     "native": {
+      "accepted": 0,
+      "beneficial": 0,
+      "zero": 0,
+      "harmful": 0,
+      "net_dTP": 0,
+      "net_dFP": 0
+     },
+     "pairs": {
+      "accepted": 2,
+      "beneficial": 1,
+      "zero": 0,
+      "harmful": 1,
+      "net_dTP": -1,
+      "net_dFP": -1
+     },
+     "multi": {
+      "accepted": 5,
+      "beneficial": 3,
+      "zero": 0,
+      "harmful": 2,
+      "net_dTP": -2,
+      "net_dFP": -3
+     }
+    },
+    "A16 U-fixed": {
+     "native": {
+      "accepted": 0,
+      "beneficial": 0,
+      "zero": 0,
+      "harmful": 0,
+      "net_dTP": 0,
+      "net_dFP": 0
+     },
+     "pairs": {
+      "accepted": 4,
+      "beneficial": 1,
+      "zero": 3,
+      "harmful": 0,
+      "net_dTP": 0,
+      "net_dFP": -1
+     },
+     "multi": {
+      "accepted": 39,
+      "beneficial": 3,
+      "zero": 34,
+      "harmful": 2,
+      "net_dTP": -2,
+      "net_dFP": -3
+     }
+    },
+    "O-fixed": {
+     "native": {
+      "accepted": 0,
+      "beneficial": 0,
+      "zero": 0,
+      "harmful": 0,
+      "net_dTP": 0,
+      "net_dFP": 0
+     },
+     "pairs": {
+      "accepted": 2,
+      "beneficial": 1,
+      "zero": 0,
+      "harmful": 1,
+      "net_dTP": -1,
+      "net_dFP": -1
+     },
+     "multi": {
+      "accepted": 5,
+      "beneficial": 3,
+      "zero": 0,
+      "harmful": 2,
+      "net_dTP": -2,
+      "net_dFP": -3
+     }
+    },
+    "O-cal": {
+     "native": {
+      "accepted": 0,
+      "beneficial": 0,
+      "zero": 0,
+      "harmful": 0,
+      "net_dTP": 0,
+      "net_dFP": 0
+     },
+     "pairs": {
+      "accepted": 1,
+      "beneficial": 1,
+      "zero": 0,
+      "harmful": 0,
+      "net_dTP": 0,
+      "net_dFP": -1
+     },
+     "multi": {
+      "accepted": 3,
+      "beneficial": 2,
+      "zero": 0,
+      "harmful": 1,
+      "net_dTP": -1,
+      "net_dFP": -2
+     }
+    },
+    "S-fixed": {
+     "native": {
+      "accepted": 0,
+      "beneficial": 0,
+      "zero": 0,
+      "harmful": 0,
+      "net_dTP": 0,
+      "net_dFP": 0
+     },
+     "pairs": {
+      "accepted": 2,
+      "beneficial": 1,
+      "zero": 0,
+      "harmful": 1,
+      "net_dTP": -1,
+      "net_dFP": -1
+     },
+     "multi": {
+      "accepted": 5,
+      "beneficial": 3,
+      "zero": 0,
+      "harmful": 2,
+      "net_dTP": -2,
+      "net_dFP": -3
+     }
+    },
+    "S-cal": {
+     "native": {
+      "accepted": 0,
+      "beneficial": 0,
+      "zero": 0,
+      "harmful": 0,
+      "net_dTP": 0,
+      "net_dFP": 0
+     },
+     "pairs": {
+      "accepted": 2,
+      "beneficial": 1,
+      "zero": 0,
+      "harmful": 1,
+      "net_dTP": -1,
+      "net_dFP": -1
+     },
+     "multi": {
+      "accepted": 5,
+      "beneficial": 3,
+      "zero": 0,
+      "harmful": 2,
+      "net_dTP": -2,
+      "net_dFP": -3
+     }
+    }
+   },
+   "auc_beneficial_vs_rest": {
+    "O": 0.9777777777777777,
+    "S": 0.9666666666666667,
+    "large-P": 0.9833333333333333,
+    "A14 P": 0.9944444444444445,
+    "A16 U": 0.5055555555555555
+   }
+  },
+  "s2 calibration": {
+   "zones": {
+    "native": {
+     "zones": 4,
+     "beneficial": 0,
+     "zero": 1,
+     "harmful": 3
+    },
+    "pairs": {
+     "zones": 8,
+     "beneficial": 3,
+     "zero": 5,
+     "harmful": 0
+    },
+    "multi": {
+     "zones": 25,
+     "beneficial": 1,
+     "zero": 22,
+     "harmful": 2
+    }
+   },
+   "systems": {
+    "A14 P": {
+     "native": {
+      "accepted": 0,
+      "beneficial": 0,
+      "zero": 0,
+      "harmful": 0,
+      "net_dTP": 0,
+      "net_dFP": 0
+     },
+     "pairs": {
+      "accepted": 0,
+      "beneficial": 0,
+      "zero": 0,
+      "harmful": 0,
+      "net_dTP": 0,
+      "net_dFP": 0
+     },
+     "multi": {
+      "accepted": 0,
+      "beneficial": 0,
+      "zero": 0,
+      "harmful": 0,
+      "net_dTP": 0,
+      "net_dFP": 0
+     }
+    },
+    "A15 large-P": {
+     "native": {
+      "accepted": 0,
+      "beneficial": 0,
+      "zero": 0,
+      "harmful": 0,
+      "net_dTP": 0,
+      "net_dFP": 0
+     },
+     "pairs": {
+      "accepted": 0,
+      "beneficial": 0,
+      "zero": 0,
+      "harmful": 0,
+      "net_dTP": 0,
+      "net_dFP": 0
+     },
+     "multi": {
+      "accepted": 0,
+      "beneficial": 0,
+      "zero": 0,
+      "harmful": 0,
+      "net_dTP": 0,
+      "net_dFP": 0
+     }
+    },
+    "A16 C-fixed": {
+     "native": {
+      "accepted": 1,
+      "beneficial": 0,
+      "zero": 0,
+      "harmful": 1,
+      "net_dTP": 0,
+      "net_dFP": 1
+     },
+     "pairs": {
+      "accepted": 2,
+      "beneficial": 2,
+      "zero": 0,
+      "harmful": 0,
+      "net_dTP": 3,
+      "net_dFP": -1
+     },
+     "multi": {
+      "accepted": 3,
+      "beneficial": 1,
+      "zero": 0,
+      "harmful": 2,
+      "net_dTP": -1,
+      "net_dFP": 0
+     }
+    },
+    "A16 U-fixed": {
+     "native": {
+      "accepted": 1,
+      "beneficial": 0,
+      "zero": 0,
+      "harmful": 1,
+      "net_dTP": 0,
+      "net_dFP": 1
+     },
+     "pairs": {
+      "accepted": 6,
+      "beneficial": 3,
+      "zero": 3,
+      "harmful": 0,
+      "net_dTP": 3,
+      "net_dFP": -2
+     },
+     "multi": {
+      "accepted": 20,
+      "beneficial": 1,
+      "zero": 17,
+      "harmful": 2,
+      "net_dTP": -1,
+      "net_dFP": 0
+     }
+    },
+    "O-fixed": {
+     "native": {
+      "accepted": 2,
+      "beneficial": 0,
+      "zero": 0,
+      "harmful": 2,
+      "net_dTP": 0,
+      "net_dFP": 2
+     },
+     "pairs": {
+      "accepted": 2,
+      "beneficial": 2,
+      "zero": 0,
+      "harmful": 0,
+      "net_dTP": 3,
+      "net_dFP": -1
+     },
+     "multi": {
+      "accepted": 4,
+      "beneficial": 1,
+      "zero": 2,
+      "harmful": 1,
+      "net_dTP": 0,
+      "net_dFP": 0
+     }
+    },
+    "O-cal": {
+     "native": {
+      "accepted": 0,
+      "beneficial": 0,
+      "zero": 0,
+      "harmful": 0,
+      "net_dTP": 0,
+      "net_dFP": 0
+     },
+     "pairs": {
+      "accepted": 0,
+      "beneficial": 0,
+      "zero": 0,
+      "harmful": 0,
+      "net_dTP": 0,
+      "net_dFP": 0
+     },
+     "multi": {
+      "accepted": 0,
+      "beneficial": 0,
+      "zero": 0,
+      "harmful": 0,
+      "net_dTP": 0,
+      "net_dFP": 0
+     }
+    },
+    "S-fixed": {
+     "native": {
+      "accepted": 3,
+      "beneficial": 0,
+      "zero": 1,
+      "harmful": 2,
+      "net_dTP": 0,
+      "net_dFP": 4
+     },
+     "pairs": {
+      "accepted": 3,
+      "beneficial": 3,
+      "zero": 0,
+      "harmful": 0,
+      "net_dTP": 3,
+      "net_dFP": -2
+     },
+     "multi": {
+      "accepted": 4,
+      "beneficial": 1,
+      "zero": 2,
+      "harmful": 1,
+      "net_dTP": 0,
+      "net_dFP": 0
+     }
+    },
+    "S-cal": {
+     "native": {
+      "accepted": 0,
+      "beneficial": 0,
+      "zero": 0,
+      "harmful": 0,
+      "net_dTP": 0,
+      "net_dFP": 0
+     },
+     "pairs": {
+      "accepted": 0,
+      "beneficial": 0,
+      "zero": 0,
+      "harmful": 0,
+      "net_dTP": 0,
+      "net_dFP": 0
+     },
+     "multi": {
+      "accepted": 0,
+      "beneficial": 0,
+      "zero": 0,
+      "harmful": 0,
+      "net_dTP": 0,
+      "net_dFP": 0
+     }
+    }
+   },
+   "auc_beneficial_vs_rest": {
+    "O": 0.9318181818181818,
+    "S": 0.946969696969697,
+    "large-P": 0.9166666666666666,
+    "A14 P": 0.5227272727272727,
+    "A16 U": 0.4772727272727273
+   }
+  },
+  "s0 selection": {
+   "zones": {
+    "native": {
+     "zones": 3,
+     "beneficial": 3,
+     "zero": 0,
+     "harmful": 0
+    },
+    "pairs": {
+     "zones": 8,
+     "beneficial": 0,
+     "zero": 6,
+     "harmful": 2
+    },
+    "multi": {
+     "zones": 35,
+     "beneficial": 9,
+     "zero": 22,
+     "harmful": 4
+    }
+   },
+   "systems": {
+    "A14 P": {
+     "native": {
+      "accepted": 3,
+      "beneficial": 3,
+      "zero": 0,
+      "harmful": 0,
+      "net_dTP": 1,
+      "net_dFP": -5
+     },
+     "pairs": {
+      "accepted": 2,
+      "beneficial": 0,
+      "zero": 0,
+      "harmful": 2,
+      "net_dTP": -2,
+      "net_dFP": 0
+     },
+     "multi": {
+      "accepted": 9,
+      "beneficial": 8,
+      "zero": 0,
+      "harmful": 1,
+      "net_dTP": 0,
+      "net_dFP": -8
+     }
+    },
+    "A15 large-P": {
+     "native": {
+      "accepted": 0,
+      "beneficial": 0,
+      "zero": 0,
+      "harmful": 0,
+      "net_dTP": 0,
+      "net_dFP": 0
+     },
+     "pairs": {
+      "accepted": 0,
+      "beneficial": 0,
+      "zero": 0,
+      "harmful": 0,
+      "net_dTP": 0,
+      "net_dFP": 0
+     },
+     "multi": {
+      "accepted": 3,
+      "beneficial": 2,
+      "zero": 0,
+      "harmful": 1,
+      "net_dTP": -1,
+      "net_dFP": -2
+     }
+    },
+    "A16 C-fixed": {
+     "native": {
+      "accepted": 2,
+      "beneficial": 2,
+      "zero": 0,
+      "harmful": 0,
+      "net_dTP": 0,
+      "net_dFP": -2
+     },
+     "pairs": {
+      "accepted": 2,
+      "beneficial": 0,
+      "zero": 0,
+      "harmful": 2,
+      "net_dTP": -2,
+      "net_dFP": 0
+     },
+     "multi": {
+      "accepted": 5,
+      "beneficial": 4,
+      "zero": 0,
+      "harmful": 1,
+      "net_dTP": -1,
+      "net_dFP": -4
+     }
+    },
+    "A16 U-fixed": {
+     "native": {
+      "accepted": 2,
+      "beneficial": 2,
+      "zero": 0,
+      "harmful": 0,
+      "net_dTP": 0,
+      "net_dFP": -2
+     },
+     "pairs": {
+      "accepted": 8,
+      "beneficial": 0,
+      "zero": 6,
+      "harmful": 2,
+      "net_dTP": -2,
+      "net_dFP": 0
+     },
+     "multi": {
+      "accepted": 26,
+      "beneficial": 4,
+      "zero": 21,
+      "harmful": 1,
+      "net_dTP": 0,
+      "net_dFP": -4
+     }
+    },
+    "O-fixed": {
+     "native": {
+      "accepted": 2,
+      "beneficial": 2,
+      "zero": 0,
+      "harmful": 0,
+      "net_dTP": 1,
+      "net_dFP": -4
+     },
+     "pairs": {
+      "accepted": 2,
+      "beneficial": 0,
+      "zero": 0,
+      "harmful": 2,
+      "net_dTP": -2,
+      "net_dFP": 0
+     },
+     "multi": {
+      "accepted": 6,
+      "beneficial": 5,
+      "zero": 0,
+      "harmful": 1,
+      "net_dTP": 0,
+      "net_dFP": -5
+     }
+    },
+    "O-cal": {
+     "native": {
+      "accepted": 0,
+      "beneficial": 0,
+      "zero": 0,
+      "harmful": 0,
+      "net_dTP": 0,
+      "net_dFP": 0
+     },
+     "pairs": {
+      "accepted": 0,
+      "beneficial": 0,
+      "zero": 0,
+      "harmful": 0,
+      "net_dTP": 0,
+      "net_dFP": 0
+     },
+     "multi": {
+      "accepted": 3,
+      "beneficial": 2,
+      "zero": 0,
+      "harmful": 1,
+      "net_dTP": -1,
+      "net_dFP": -2
+     }
+    },
+    "S-fixed": {
+     "native": {
+      "accepted": 3,
+      "beneficial": 3,
+      "zero": 0,
+      "harmful": 0,
+      "net_dTP": 1,
+      "net_dFP": -5
+     },
+     "pairs": {
+      "accepted": 2,
+      "beneficial": 0,
+      "zero": 0,
+      "harmful": 2,
+      "net_dTP": -2,
+      "net_dFP": 0
+     },
+     "multi": {
+      "accepted": 6,
+      "beneficial": 5,
+      "zero": 0,
+      "harmful": 1,
+      "net_dTP": 0,
+      "net_dFP": -5
+     }
+    },
+    "S-cal": {
+     "native": {
+      "accepted": 3,
+      "beneficial": 3,
+      "zero": 0,
+      "harmful": 0,
+      "net_dTP": 1,
+      "net_dFP": -5
+     },
+     "pairs": {
+      "accepted": 2,
+      "beneficial": 0,
+      "zero": 0,
+      "harmful": 2,
+      "net_dTP": -2,
+      "net_dFP": 0
+     },
+     "multi": {
+      "accepted": 6,
+      "beneficial": 5,
+      "zero": 0,
+      "harmful": 1,
+      "net_dTP": 0,
+      "net_dFP": -5
+     }
+    }
+   },
+   "auc_beneficial_vs_rest": {
+    "O": 0.8995098039215687,
+    "S": 0.8995098039215687,
+    "large-P": 0.8137254901960784,
+    "A14 P": 0.8725490196078431,
+    "A16 U": 0.2549019607843137
+   }
+  },
+  "s2 selection": {
+   "zones": {
+    "native": {
+     "zones": 4,
+     "beneficial": 0,
+     "zero": 0,
+     "harmful": 4
+    },
+    "pairs": {
+     "zones": 10,
+     "beneficial": 0,
+     "zero": 7,
+     "harmful": 3
+    },
+    "multi": {
+     "zones": 37,
+     "beneficial": 8,
+     "zero": 23,
+     "harmful": 6
+    }
+   },
+   "systems": {
+    "A14 P": {
+     "native": {
+      "accepted": 0,
+      "beneficial": 0,
+      "zero": 0,
+      "harmful": 0,
+      "net_dTP": 0,
+      "net_dFP": 0
+     },
+     "pairs": {
+      "accepted": 0,
+      "beneficial": 0,
+      "zero": 0,
+      "harmful": 0,
+      "net_dTP": 0,
+      "net_dFP": 0
+     },
+     "multi": {
+      "accepted": 0,
+      "beneficial": 0,
+      "zero": 0,
+      "harmful": 0,
+      "net_dTP": 0,
+      "net_dFP": 0
+     }
+    },
+    "A15 large-P": {
+     "native": {
+      "accepted": 0,
+      "beneficial": 0,
+      "zero": 0,
+      "harmful": 0,
+      "net_dTP": 0,
+      "net_dFP": 0
+     },
+     "pairs": {
+      "accepted": 0,
+      "beneficial": 0,
+      "zero": 0,
+      "harmful": 0,
+      "net_dTP": 0,
+      "net_dFP": 0
+     },
+     "multi": {
+      "accepted": 0,
+      "beneficial": 0,
+      "zero": 0,
+      "harmful": 0,
+      "net_dTP": 0,
+      "net_dFP": 0
+     }
+    },
+    "A16 C-fixed": {
+     "native": {
+      "accepted": 2,
+      "beneficial": 0,
+      "zero": 0,
+      "harmful": 2,
+      "net_dTP": -1,
+      "net_dFP": 4
+     },
+     "pairs": {
+      "accepted": 2,
+      "beneficial": 0,
+      "zero": 0,
+      "harmful": 2,
+      "net_dTP": -1,
+      "net_dFP": 4
+     },
+     "multi": {
+      "accepted": 9,
+      "beneficial": 6,
+      "zero": 1,
+      "harmful": 2,
+      "net_dTP": 3,
+      "net_dFP": -1
+     }
+    },
+    "A16 U-fixed": {
+     "native": {
+      "accepted": 2,
+      "beneficial": 0,
+      "zero": 0,
+      "harmful": 2,
+      "net_dTP": -1,
+      "net_dFP": 5
+     },
+     "pairs": {
+      "accepted": 7,
+      "beneficial": 0,
+      "zero": 6,
+      "harmful": 1,
+      "net_dTP": -1,
+      "net_dFP": 3
+     },
+     "multi": {
+      "accepted": 24,
+      "beneficial": 6,
+      "zero": 16,
+      "harmful": 2,
+      "net_dTP": 2,
+      "net_dFP": -2
+     }
+    },
+    "O-fixed": {
+     "native": {
+      "accepted": 2,
+      "beneficial": 0,
+      "zero": 0,
+      "harmful": 2,
+      "net_dTP": -1,
+      "net_dFP": 4
+     },
+     "pairs": {
+      "accepted": 2,
+      "beneficial": 0,
+      "zero": 0,
+      "harmful": 2,
+      "net_dTP": 0,
+      "net_dFP": 2
+     },
+     "multi": {
+      "accepted": 11,
+      "beneficial": 7,
+      "zero": 0,
+      "harmful": 4,
+      "net_dTP": 4,
+      "net_dFP": 0
+     }
+    },
+    "O-cal": {
+     "native": {
+      "accepted": 0,
+      "beneficial": 0,
+      "zero": 0,
+      "harmful": 0,
+      "net_dTP": 0,
+      "net_dFP": 0
+     },
+     "pairs": {
+      "accepted": 0,
+      "beneficial": 0,
+      "zero": 0,
+      "harmful": 0,
+      "net_dTP": 0,
+      "net_dFP": 0
+     },
+     "multi": {
+      "accepted": 0,
+      "beneficial": 0,
+      "zero": 0,
+      "harmful": 0,
+      "net_dTP": 0,
+      "net_dFP": 0
+     }
+    },
+    "S-fixed": {
+     "native": {
+      "accepted": 2,
+      "beneficial": 0,
+      "zero": 0,
+      "harmful": 2,
+      "net_dTP": -1,
+      "net_dFP": 4
+     },
+     "pairs": {
+      "accepted": 3,
+      "beneficial": 0,
+      "zero": 0,
+      "harmful": 3,
+      "net_dTP": -1,
+      "net_dFP": 5
+     },
+     "multi": {
+      "accepted": 11,
+      "beneficial": 7,
+      "zero": 0,
+      "harmful": 4,
+      "net_dTP": 4,
+      "net_dFP": 0
+     }
+    },
+    "S-cal": {
+     "native": {
+      "accepted": 0,
+      "beneficial": 0,
+      "zero": 0,
+      "harmful": 0,
+      "net_dTP": 0,
+      "net_dFP": 0
+     },
+     "pairs": {
+      "accepted": 0,
+      "beneficial": 0,
+      "zero": 0,
+      "harmful": 0,
+      "net_dTP": 0,
+      "net_dFP": 0
+     },
+     "multi": {
+      "accepted": 0,
+      "beneficial": 0,
+      "zero": 0,
+      "harmful": 0,
+      "net_dTP": 0,
+      "net_dFP": 0
+     }
+    }
+   },
+   "auc_beneficial_vs_rest": {
+    "O": 0.8633720930232558,
+    "S": 0.8575581395348837,
+    "large-P": 0.8982558139534884,
+    "A14 P": 0.6831395348837209,
+    "A16 U": 0.561046511627907
+   }
+  }
+ },
+ "A16_supplement": {
+  "lost_short_segments": 2,
+  "segments": [
+   {
+    "segment_length": 10,
+    "u_accepted_zones": 0,
+    "c_accepted_zones": 1,
+    "undo": [],
+    "u_has_same_class_overlap": false,
+    "reading": "combination effect or unknown (no single undo restores it)"
+   },
+   {
+    "segment_length": 10,
+    "u_accepted_zones": 1,
+    "c_accepted_zones": 0,
+    "undo": [
+     {
+      "zone_length": 6,
+      "zone_in_c": false,
+      "restores_match": true,
+      "matches_after": 6,
+      "matches_u": 5
+     }
+    ],
+    "u_has_same_class_overlap": false,
+    "reading": "single-zone damage"
+   }
+  ]
+ }
+}
