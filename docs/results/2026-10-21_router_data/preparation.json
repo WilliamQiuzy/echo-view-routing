@@ -1,0 +1,269 @@
+{
+ "config_sha256": "0b6f6db29309eec9965e588d7e01e45f1edfa24df7b849f789936c6239a18556",
+ "pool_digest": "da41a5612e537b86ef9930687d81075ded9c8d8f351358ab13b78f75b463ac73",
+ "counts": {
+  "sessions": {
+   "fit": 402,
+   "check": 100
+  },
+  "training_clips": {
+   "fit": 2670,
+   "check": 694
+  },
+  "large_fit": {
+   "multi": 1500,
+   "native": 887,
+   "native_shortfall_by_class": {
+    "0": 0,
+    "1": 0,
+    "2": 0,
+    "3": 58,
+    "4": 55
+   }
+  },
+  "check": {
+   "multi": 600,
+   "native": 200,
+   "native_shortfall_by_class": {
+    "0": 0,
+    "1": 0,
+    "2": 0,
+    "3": 0,
+    "4": 0
+   }
+  },
+  "small_fit": {
+   "multi": 300,
+   "native": 200,
+   "native_shortfall_by_class": {
+    "0": 0,
+    "1": 0,
+    "2": 0,
+    "3": 0,
+    "4": 0
+   }
+  },
+  "recordings_used": {
+   "fit": 2490,
+   "check": 678
+  },
+  "sessions_used": {
+   "fit": 399,
+   "check": 99
+  },
+  "recipe_reuse": {
+   "large_fit": {
+    "streams": 1500,
+    "fragments_mean": 6.020666666666667,
+    "samples_mean": 128.66333333333333,
+    "distinct_recordings": 2438,
+    "fragments_per_recording_mean": 3.7042657916324857,
+    "fragments_per_recording_max": 23,
+    "streams_identical_to_an_a01_bank_stream": 0
+   },
+   "small_fit": {
+    "streams": 300,
+    "fragments_mean": 6.06,
+    "samples_mean": 129.80666666666667,
+    "distinct_recordings": 1128,
+    "fragments_per_recording_mean": 1.6117021276595744,
+    "fragments_per_recording_max": 9,
+    "streams_identical_to_an_a01_bank_stream": 0
+   },
+   "check": {
+    "streams": 600,
+    "fragments_mean": 6.016666666666667,
+    "samples_mean": 129.94333333333333,
+    "distinct_recordings": 671,
+    "fragments_per_recording_mean": 5.380029806259315,
+    "fragments_per_recording_max": 26,
+    "streams_identical_to_an_a01_bank_stream": 0
+   }
+  },
+  "scale": 1.0
+ },
+ "seeds": {
+  "0": {
+   "arms": {
+    "large_fit": {
+     "zones": 429,
+     "positive": 88,
+     "negative": 341,
+     "neutral": 296,
+     "harmful": 45,
+     "short_zones": 405,
+     "positive_short": 80,
+     "positive_recovers_true": 18,
+     "positive_removes_false_only": 70,
+     "positive_trades_match": 0,
+     "positive_by_kind": {
+      "multi": 76,
+      "native": 12
+     },
+     "zones_by_kind": {
+      "multi": 407,
+      "native": 22
+     },
+     "dtp_sum_positive": 20,
+     "dfp_sum_positive": -117,
+     "sequences_with_zones": 385,
+     "sequences_with_positive": 86,
+     "recordings_with_zones": 1313,
+     "sessions_with_zones": 364,
+     "preparation_met": true
+    },
+    "small_fit": {
+     "zones": 78,
+     "positive": 17,
+     "negative": 61,
+     "neutral": 50,
+     "harmful": 11,
+     "short_zones": 73,
+     "positive_short": 15,
+     "positive_recovers_true": 2,
+     "positive_removes_false_only": 15,
+     "positive_trades_match": 0,
+     "positive_by_kind": {
+      "multi": 15,
+      "native": 2
+     },
+     "zones_by_kind": {
+      "multi": 73,
+      "native": 5
+     },
+     "dtp_sum_positive": 2,
+     "dfp_sum_positive": -22,
+     "sequences_with_zones": 68,
+     "sequences_with_positive": 16,
+     "recordings_with_zones": 358,
+     "sessions_with_zones": 211,
+     "preparation_met": true
+    },
+    "check": {
+     "zones": 167,
+     "positive": 24,
+     "negative": 143,
+     "neutral": 121,
+     "harmful": 22,
+     "short_zones": 157,
+     "positive_short": 19,
+     "positive_recovers_true": 8,
+     "positive_removes_false_only": 16,
+     "positive_trades_match": 0,
+     "positive_by_kind": {
+      "multi": 23,
+      "native": 1
+     },
+     "zones_by_kind": {
+      "multi": 166,
+      "native": 1
+     },
+     "dtp_sum_positive": 10,
+     "dfp_sum_positive": -31,
+     "sequences_with_zones": 149,
+     "sequences_with_positive": 24,
+     "recordings_with_zones": 440,
+     "sessions_with_zones": 90,
+     "preparation_met": null
+    }
+   },
+   "start_sha256": "9b144925f32fac7d725d13231a132abeb6635fa44b6fe0dbcec7f5b59d035bbc",
+   "path_digest": "53a659185b133b22e88d21d067b8b5ce9eaedb172e7028b5abe589c0aecf7eb6",
+   "alternative_head_sha256": "19cb9310951c4c95ef2c0b15559959758fe2222cbc3786fe8650a9e4c0a1293f",
+   "alternative_threshold": 0.31476298642158546
+  },
+  "2": {
+   "arms": {
+    "large_fit": {
+     "zones": 483,
+     "positive": 82,
+     "negative": 401,
+     "neutral": 332,
+     "harmful": 69,
+     "short_zones": 452,
+     "positive_short": 63,
+     "positive_recovers_true": 49,
+     "positive_removes_false_only": 33,
+     "positive_trades_match": 0,
+     "positive_by_kind": {
+      "multi": 82,
+      "native": 0
+     },
+     "zones_by_kind": {
+      "multi": 461,
+      "native": 22
+     },
+     "dtp_sum_positive": 69,
+     "dfp_sum_positive": -50,
+     "sequences_with_zones": 440,
+     "sequences_with_positive": 81,
+     "recordings_with_zones": 1420,
+     "sessions_with_zones": 365,
+     "preparation_met": true
+    },
+    "small_fit": {
+     "zones": 94,
+     "positive": 18,
+     "negative": 76,
+     "neutral": 61,
+     "harmful": 15,
+     "short_zones": 87,
+     "positive_short": 13,
+     "positive_recovers_true": 12,
+     "positive_removes_false_only": 6,
+     "positive_trades_match": 0,
+     "positive_by_kind": {
+      "multi": 18,
+      "native": 0
+     },
+     "zones_by_kind": {
+      "multi": 87,
+      "native": 7
+     },
+     "dtp_sum_positive": 19,
+     "dfp_sum_positive": -10,
+     "sequences_with_zones": 85,
+     "sequences_with_positive": 17,
+     "recordings_with_zones": 435,
+     "sessions_with_zones": 235,
+     "preparation_met": true
+    },
+    "check": {
+     "zones": 182,
+     "positive": 31,
+     "negative": 151,
+     "neutral": 126,
+     "harmful": 25,
+     "short_zones": 171,
+     "positive_short": 25,
+     "positive_recovers_true": 22,
+     "positive_removes_false_only": 9,
+     "positive_trades_match": 0,
+     "positive_by_kind": {
+      "multi": 31,
+      "native": 0
+     },
+     "zones_by_kind": {
+      "multi": 177,
+      "native": 5
+     },
+     "dtp_sum_positive": 32,
+     "dfp_sum_positive": -19,
+     "sequences_with_zones": 164,
+     "sequences_with_positive": 30,
+     "recordings_with_zones": 458,
+     "sessions_with_zones": 91,
+     "preparation_met": null
+    }
+   },
+   "start_sha256": "f95fed7ba78cc0b5e2474c71a156356507b4588a4b324957fd5b53fe66ee8472",
+   "path_digest": "f060b67747d288cce384f6b12deedcb4783977f0db24cf44d0abedfb013da456",
+   "alternative_head_sha256": "98e8ae5ab98642b9a7de225ec3bd6946b10f034a63f7c4ce0dfde8a75abe4d7b",
+   "alternative_threshold": 0.1268617582321173
+  }
+ },
+ "decode_seconds": 145.72091269493103,
+ "gpu_seconds": 2195.054423093796,
+ "windows": 67829,
+ "finished": "2026-10-21T05:51:06Z"
+}
