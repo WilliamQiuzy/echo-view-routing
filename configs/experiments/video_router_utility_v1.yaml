@@ -1,0 +1,65 @@
+# A16, utility-weighted training of the local router (video_router_utility_v1), 2026-10-21 UTC. This is the round's
+# one-page task and configuration, written before any A16 label, training, score or evaluation output.
+# Question: on A15's pinned large-fit candidates, with the same 1,729-parameter P router, does training on a count-based
+# utility (the sizes of gains and losses on the formal segment matching) instead of the binary single-sequence improvement
+# label give a local selection whose gains survive in full segmentation? Exploratory feedback on the reused development
+# halves. The router-check set is unseen by the routers but not new: A08 and A13 saw its recordings, and A15's check
+# summaries have been read. The test split and EchoNet-Pediatric are not read.
+experiment: video_router_utility_v1
+
+video_router_utility:
+  predecessors:
+    A14: "zone router P +0.0026 against Base (seed 0 above both sources, seed 2 no-op)"
+    A15: "88/82 positive large-fit zones; better separation on unseen sessions (balanced accuracy 0.868/0.786 against 0.718/0.715) but no segmentation gain (large-P +0.0007 against Base); seed 2 no-op although beneficial zones existed"
+    R07: "a calibration AUC gain did not become accuracy or segmentation, including a later threshold check"
+    S03: "thresholds on rare positives depended on one candidate"
+    change: "only the training labels and per-zone loss weights (binary improvement with balanced BCE against a count-based utility with |u| weights); no new pool, candidate, feature, model, threshold grid or hyperparameter search"
+  pinned_from_A15:
+    preparation: {path: runs/video_router_data_v1/preparation.json, sha256: a41d5155dbd9d87e05905735eefb7f773cdbb13b82dc22ec24c3b89636ca826b}
+    pool_manifest: {path: runs/video_router_data_v1/pool_manifest.json, sha256: 5ab124d48f48f826fd0b52542cf8cf1aa7f97e0f6b82327358406cf574a14050}
+    candidates: {0: 14c75d1c8df497618c6a54fad58fd75ce88089fc7dd2a3db480fddae351bf6b7, 2: b120caf28d59d186dfc056bd8aec78d899023f7ad3d07d7d3c8e7520a54b8475}
+    preds: {0: 848c4c91c0b3d2f2ad00cf95cc3ada7882d3d703318de4c7d333441c09443654, 2: af5a489b86aa9df106fabce3bd4255443fc5394aa24fa8558ea788002ed03e05}
+    windows: {0: 2a6b53aed829e64c7ea23dfdee8bbfa473bf383525f341b214f0731532cf7cd4, 2: c21becbd8188a326f2405e53185fb0d0fb6efc087fa494510d124b5ada3198a8}
+    large_P: {0: b982cc856274ebe0b5f75f84221489e09c336eff5623795201c37cc22003a886, 2: 66e5e093c274f85e62564cfde1cb65d4871467217c9ccad0b4679fd04c6ccb5a}
+    choices_sha256: 25ba7421f00926e07f2e311a51f00fc15e5c2d05a05630cb266170ecdbeea558
+    screen_sha256: 546747ee6a38fc585468b13ff213e819073a6c0429768ec7a89358330bfd2359
+    split: "A15's 402 router-fit / 100 router-check sessions, large_fit and check masks, candidate order and actual recording reuse, unchanged; no new pool and no development error list"
+  fixed_from_A15: "Base = frozen A08 all_s{k} + B3 at A08's committed setting; Alternative = A13 H at its committed threshold (eval, no_grad, cached whole-stream outputs of the original RGB 16-frame marker windows); zones (disagreement runs merged within 16 samples), the replacement action and the 52 P features exactly as A15; no-op equals Base and accept-all equals Alternative"
+  utility:
+    counts: "per training zone one single replacement; dTP, dFP, dFN on the formal segment F1@50 matching (same class, IoU >= 0.5, one-to-one); the reference count is fixed, so dFN = -dTP and dP = dTP + dFP; A15's cached counts are reused only after an independent recount of a sample with the exposed matching and a check of the A15 counting against the evaluator's tables"
+    F_fit: "per seed, Base's pooled segment F1@50 over all large-fit multi streams, streams without a zone included: 2 TP / (P + R); no check, development, test or Pediatric sequence"
+    u: "2 dTP - F_fit dP = (2 - F_fit) dTP - F_fit dFP for every large-fit zone, natives included (one training proxy; it does not optimise native macro-F1)"
+    scope: "with a set's own Base F, the sign of one replacement's dF equals the sign of 2 dTP - F dP; inference uses only F_fit, so u approximates a transferable utility and guarantees neither a gain nor additivity across zones; every reported metric re-matches whole sequences"
+    report: "cross-counts of A15's positive/zero/harmful labels with u > 0 / u = 0 / u < 0, utility sizes and support (multi/native); the primary metric counts multi streams only"
+  arms:
+    C: "control, A15 large-P exactly: label = strict single-sequence F1 improvement with A15's balanced BCE weights; retrained and compared with A15's frozen large-P (bitwise expected; otherwise max |logit| difference <= 1e-6 with identical decoded outputs, disclosed)"
+    U: "label 1[u > 0]; weight |u| / (mean of |u| over this seed's large-fit zones, computed once); u = 0 gives weight 0 and no gradient; loss = batch mean(w * BCEWithLogits); no class balancing, truncation, squaring or resampling; preparation not met if the mean is 0"
+    shared: "52 -> 32 -> GELU -> 1 MLP (1,729 parameters), initialisation seed 4000 + seed, large-fit mean/std normalisation, 1,350 updates of 128 zones drawn uniformly with replacement from the same large-fit list through default_rng([20261021, 15, 8, seed]), AdamW lr 1e-3, weight decay 1e-4, warm-up 135 and cosine, clip 1, final weights, CPU, router parameters only"
+    score_meaning: "U's sigmoid weighs expected positive against expected negative utility under the training distribution (0.5 = balance); it is not a probability of improvement, and neither arm's score is calibrated"
+  rules:
+    fixed: "accept a zone when sigmoid(score) > 0.5 (equality rejects); fixed here, before any A16 output, for both arms (C-fixed control, U-fixed main candidate)"
+    cal: "A15's grid 0.50, 0.60, 0.70, 0.80, 0.90, 0.95, 0.975, 0.99 and no-op with score >= threshold; feasibility calibration native macro-F1 >= 0.980 and multi boundary recall >= 0.95; highest multi segment F1@50, ties to fewer accepted zones; one choice per arm and seed (C-cal must reproduce A15 large-P)"
+    boundary_note: "fixed uses > 0.5 and cal uses >= its threshold; A15's code is not changed"
+    order: "router weights and sha recorded and committed before calibration; training and check outputs are logged, never chosen from; all rules and cal choices committed with the choices sha before selection is read; fixed calibration rows are evaluated only, kept as they are and flagged when infeasible, never replaced by Base"
+  evaluation:
+    systems: "Base, Alternative, A14 P (its committed choice), C-fixed, C-cal, U-fixed, U-cal; A15 large-P reproduced and merged with C-cal when identical"
+    comparisons: ["U-fixed - C-fixed (primary training-objective comparison)", "U-cal - C-cal (matched selection)", "U-fixed - U-cal", "C-fixed - C-cal", "C-fixed, C-cal, U-fixed and U-cal each against Base, Alternative and A14 P"]
+    not_allowed: "U-fixed - C-cal alone is not the objective effect; the better U rule is not picked to claim calibration unnecessary"
+    per_cell: "multi segment F1@50 (primary), FP / short FP, FN / missed short true segments, boundary precision and recall, native macro-F1, A4C->A5C and A5C->A4C, recovered / lost matched segments, new / removed unmatched predictions, candidate and accepted zones"
+    check: "router-check whole-stream results at the fixed rule and at each final cal choice: per accepted edit the utility sign and size, actual net counts after combining, zero-utility edits; logged only"
+    diagnostic: "after selection only: accepted positive and negative utility on the development halves by native / pairs / multi, actual net counts re-matched on whole sequences; no oracle combinations; nothing returns to training or choices"
+  third_seed_rule:
+    applies_to: "U-fixed or U-cal against the seed's Base over the 4 cells"
+    signal: "mean dF >= +0.003"
+    no_reversal: "each half's two-seed mean >= -0.005 and no cell < -0.015"
+    no_harm: "mean native macro-F1 difference >= -0.003, mean boundary recall difference >= -0.010, missed short true segments <= Base's + 3"
+    feasibility: "that rule's calibration rows meet native macro-F1 >= 0.980 and multi boundary recall >= 0.95 in each seed"
+    decision: "if either U rule meets all four, seed 1 is built in A16's namespace (an A13-recipe H_s1 with its calibration choice committed before the seed-1 selection barrier, seed-1 caches of A15's pinned pool, C_s1 and U_s1) and both rules are evaluated over three seeds; otherwise this utility-weighted configuration closes with no extra length, resampling, coefficient, threshold, third arm or loss variant"
+    limits: "C's readings never qualify A15; a gain under cal only does not show that a fixed 0.5 or no selection suffices; better check or AUC alone is not a stronger system; two seeds without a detected difference do not show equivalence"
+  budget:
+    gpu_hours_max: 1.0             # only for an approved seed 1; seeds 0 and 2 reuse A15's and A13's caches
+    cpu_hours_max: 3.0             # includes the agent's active wall clock, workers, failed work and an approved seed 1
+    ledger: runs/video_router_utility_v1/ledger.jsonl
+  outputs:
+    root: runs/video_router_utility_v1
+    results_dir: docs/results/2026-10-21_router_utility
