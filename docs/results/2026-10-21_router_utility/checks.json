@@ -1,0 +1,78 @@
+{
+ "synthetic_utility": {
+  "remove_false": {
+   "dTP": 0,
+   "dFP": -1,
+   "dFN": 0,
+   "u": 0.8571428571428571,
+   "dF": 0.1428571428571429,
+   "counts_as_designed": true,
+   "sign_equal": true,
+   "identity": true,
+   "dFN_is_minus_dTP": true
+  },
+  "lose_true": {
+   "dTP": -1,
+   "dFP": 0,
+   "dFN": 1,
+   "u": -1.0,
+   "dF": -0.1428571428571429,
+   "counts_as_designed": true,
+   "sign_equal": true,
+   "identity": true,
+   "dFN_is_minus_dTP": true
+  },
+  "recover_short": {
+   "dTP": 1,
+   "dFP": 0,
+   "dFN": -1,
+   "u": 1.1428571428571428,
+   "dF": 0.1428571428571429,
+   "counts_as_designed": true,
+   "sign_equal": true,
+   "identity": true,
+   "dFN_is_minus_dTP": true
+  },
+  "directions": true,
+  "ok": true
+ },
+ "zone_selftest": true,
+ "pins": [
+  "A15 choices",
+  "A15 screen",
+  "candidates_s0",
+  "candidates_s2",
+  "large-P_s0",
+  "large-P_s2",
+  "pool_manifest",
+  "preds_s0",
+  "preds_s2",
+  "preparation",
+  "windows_s0",
+  "windows_s2"
+ ],
+ "weights_fit_only": true,
+ "zero_weight_zero_gradient": true,
+ "cost_directions": {
+  "positive_u": 0.22404707595705986,
+  "negative_u": -0.17391353100538254,
+  "ok": true
+ },
+ "identical_starts": true,
+ "optimiser_only_router": true,
+ "same_code_path_C": {
+  "losses_equal": true,
+  "weights_bitwise": true
+ },
+ "resume_U": {
+  "loss_equal": true,
+  "params_equal": true
+ },
+ "noop_equals_base": true,
+ "all_equals_alternative": true,
+ "budget": {
+  "gpu_spent": 0.0,
+  "cpu_spent": 0.0004010055462519328
+ },
+ "ok": true
+}
