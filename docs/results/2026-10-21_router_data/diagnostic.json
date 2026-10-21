@@ -1,0 +1,1017 @@
+{
+ "note": "reference-assisted diagnostic after the selection stage; not a system and not used by any decision",
+ "development": {
+  "s0 calibration": {
+   "zones": {
+    "zones": 49,
+    "beneficial": 4,
+    "zero": 40,
+    "harmful": 5,
+    "beneficial_recovers_true": 0,
+    "beneficial_removes_false_only": 4,
+    "beneficial_trades_match": 0,
+    "harmful_loses_match": 5,
+    "harmful_adds_false_only": 0
+   },
+   "short_zones_beneficial": 4,
+   "all_beneficial_applied": {
+    "row": {
+     "segment_f1_50_multi": 0.9855351976856316,
+     "boundary_precision_multi": 0.9874686716791979,
+     "boundary_recall_multi": 0.9899497487437185,
+     "boundary_f1_multi": 0.9887076537013801,
+     "native_macro_f1": 0.9929417020326111,
+     "native_internal_cuts_per_clip": 0.012658227848101266,
+     "same_class_cut_rate_multi": 0.01990049751243781,
+     "segment_f1_50_pairs": 0.9825581395348837,
+     "boundary_recall_pairs": 0.9482758620689655,
+     "native_recall": {
+      "PLAX": 1.0,
+      "PSAX": 1.0,
+      "A4C": 0.9836065573770492,
+      "A5C": 1.0,
+      "SC4C": 1.0
+     },
+     "native_confusion": [
+      [
+       80,
+       0,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       71,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       60,
+       1,
+       0
+      ],
+      [
+       0,
+       0,
+       0,
+       18,
+       0
+      ],
+      [
+       0,
+       0,
+       0,
+       0,
+       7
+      ]
+     ],
+     "A5C read as A4C": 0,
+     "A4C read as A5C": 1,
+     "native_precision": {
+      "PLAX": 1.0,
+      "PSAX": 1.0,
+      "A4C": 1.0,
+      "A5C": 0.9473684210526315,
+      "SC4C": 1.0
+     },
+     "multi_frame_accuracy": 0.9487674883411059,
+     "native_frame_accuracy": 0.9939258535223068
+    },
+    "counts": {
+     "tp": 511,
+     "fp": 8,
+     "fn": 7,
+     "pred": 519,
+     "ref": 518,
+     "f1": 0.9855351976856316,
+     "fp_short": 5,
+     "fn_short": 5,
+     "ref_short": 134,
+     "tp_short": 129,
+     "same_label_join_cuts": 4,
+     "same_label_joins": 201
+    },
+    "base_counts": {
+     "tp": 511,
+     "fp": 11,
+     "fn": 7,
+     "pred": 522,
+     "ref": 518,
+     "f1": 0.9826923076923076,
+     "fp_short": 8,
+     "fn_short": 5,
+     "ref_short": 134,
+     "tp_short": 129,
+     "same_label_join_cuts": 5,
+     "same_label_joins": 201
+    }
+   },
+   "sum_single_dtp_dfp": {
+    "dtp": 0,
+    "dfp": -4
+   },
+   "interaction": {
+    "sequences_with_beneficial": 4,
+    "sequences_with_two_or_more": 0,
+    "combined_below_best_single": 0,
+    "combined_below_base": 0
+   },
+   "routers": {
+    "small-P": {
+     "threshold": 0.5,
+     "accepted": 4,
+     "accepted_beneficial": 3,
+     "beneficial_not_accepted": 1,
+     "accepted_zero": 0,
+     "accepted_harmful": 1,
+     "score_auc_beneficial_vs_rest": 0.9,
+     "beneficial_score_median": 0.7786365151405334,
+     "beneficial_at_or_above_0.5": 3
+    },
+    "large-P": {
+     "threshold": 0.9,
+     "accepted": 5,
+     "accepted_beneficial": 4,
+     "beneficial_not_accepted": 0,
+     "accepted_zero": 0,
+     "accepted_harmful": 1,
+     "score_auc_beneficial_vs_rest": 0.9833333333333333,
+     "beneficial_score_median": 0.9471455216407776,
+     "beneficial_at_or_above_0.5": 4
+    },
+    "A14 P": {
+     "threshold": 0.8,
+     "accepted": 6,
+     "accepted_beneficial": 4,
+     "beneficial_not_accepted": 0,
+     "accepted_zero": 0,
+     "accepted_harmful": 2,
+     "score_auc_beneficial_vs_rest": 0.9944444444444445,
+     "beneficial_score_median": 0.9995837211608887,
+     "beneficial_at_or_above_0.5": 4
+    }
+   }
+  },
+  "s2 calibration": {
+   "zones": {
+    "zones": 37,
+    "beneficial": 4,
+    "zero": 28,
+    "harmful": 5,
+    "beneficial_recovers_true": 2,
+    "beneficial_removes_false_only": 2,
+    "beneficial_trades_match": 0,
+    "harmful_loses_match": 1,
+    "harmful_adds_false_only": 4
+   },
+   "short_zones_beneficial": 3,
+   "all_beneficial_applied": {
+    "row": {
+     "segment_f1_50_multi": 0.9846449136276392,
+     "boundary_precision_multi": 0.9777227722772277,
+     "boundary_recall_multi": 0.992462311557789,
+     "boundary_f1_multi": 0.9850374064837906,
+     "native_macro_f1": 0.9856102003642988,
+     "native_internal_cuts_per_clip": 0.016877637130801686,
+     "same_class_cut_rate_multi": 0.029850746268656716,
+     "segment_f1_50_pairs": 0.9855072463768116,
+     "boundary_recall_pairs": 0.9655172413793104,
+     "native_recall": {
+      "PLAX": 1.0,
+      "PSAX": 1.0,
+      "A4C": 0.9836065573770492,
+      "A5C": 0.9444444444444444,
+      "SC4C": 1.0
+     },
+     "native_confusion": [
+      [
+       80,
+       0,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       71,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       60,
+       1,
+       0
+      ],
+      [
+       0,
+       0,
+       1,
+       17,
+       0
+      ],
+      [
+       0,
+       0,
+       0,
+       0,
+       7
+      ]
+     ],
+     "A5C read as A4C": 1,
+     "A4C read as A5C": 1,
+     "native_precision": {
+      "PLAX": 1.0,
+      "PSAX": 1.0,
+      "A4C": 0.9836065573770492,
+      "A5C": 0.9444444444444444,
+      "SC4C": 1.0
+     },
+     "multi_frame_accuracy": 0.9532978014656895,
+     "native_frame_accuracy": 0.9806604761572296
+    },
+    "counts": {
+     "tp": 513,
+     "fp": 11,
+     "fn": 5,
+     "pred": 524,
+     "ref": 518,
+     "f1": 0.9846449136276392,
+     "fp_short": 8,
+     "fn_short": 3,
+     "ref_short": 134,
+     "tp_short": 131,
+     "same_label_join_cuts": 6,
+     "same_label_joins": 201
+    },
+    "base_counts": {
+     "tp": 513,
+     "fp": 12,
+     "fn": 5,
+     "pred": 525,
+     "ref": 518,
+     "f1": 0.9837008628954937,
+     "fp_short": 9,
+     "fn_short": 3,
+     "ref_short": 134,
+     "tp_short": 131,
+     "same_label_join_cuts": 6,
+     "same_label_joins": 201
+    }
+   },
+   "sum_single_dtp_dfp": {
+    "dtp": 3,
+    "dfp": -3
+   },
+   "interaction": {
+    "sequences_with_beneficial": 4,
+    "sequences_with_two_or_more": 0,
+    "combined_below_best_single": 0,
+    "combined_below_base": 0
+   },
+   "routers": {
+    "small-P": {
+     "threshold": "noop",
+     "accepted": 0,
+     "accepted_beneficial": 0,
+     "beneficial_not_accepted": 4,
+     "accepted_zero": 0,
+     "accepted_harmful": 0,
+     "score_auc_beneficial_vs_rest": 0.9015151515151515,
+     "beneficial_score_median": 0.9947909712791443,
+     "beneficial_at_or_above_0.5": 3
+    },
+    "large-P": {
+     "threshold": "noop",
+     "accepted": 0,
+     "accepted_beneficial": 0,
+     "beneficial_not_accepted": 4,
+     "accepted_zero": 0,
+     "accepted_harmful": 0,
+     "score_auc_beneficial_vs_rest": 0.9166666666666666,
+     "beneficial_score_median": 0.7800753116607666,
+     "beneficial_at_or_above_0.5": 3
+    },
+    "A14 P": {
+     "threshold": "noop",
+     "accepted": 0,
+     "accepted_beneficial": 0,
+     "beneficial_not_accepted": 4,
+     "accepted_zero": 0,
+     "accepted_harmful": 0,
+     "score_auc_beneficial_vs_rest": 0.5227272727272727,
+     "beneficial_score_median": 0.008776985108852386,
+     "beneficial_at_or_above_0.5": 0
+    }
+   }
+  },
+  "s0 selection": {
+   "zones": {
+    "zones": 46,
+    "beneficial": 12,
+    "zero": 28,
+    "harmful": 6,
+    "beneficial_recovers_true": 3,
+    "beneficial_removes_false_only": 9,
+    "beneficial_trades_match": 0,
+    "harmful_loses_match": 6,
+    "harmful_adds_false_only": 0
+   },
+   "short_zones_beneficial": 6,
+   "all_beneficial_applied": {
+    "row": {
+     "segment_f1_50_multi": 0.967032967032967,
+     "boundary_precision_multi": 0.9762532981530343,
+     "boundary_recall_multi": 0.9685863874345549,
+     "boundary_f1_multi": 0.9724047306176085,
+     "native_macro_f1": 0.9785909601243429,
+     "native_internal_cuts_per_clip": 0.02464788732394366,
+     "same_class_cut_rate_multi": 0.008695652173913044,
+     "segment_f1_50_pairs": 0.9688249400479616,
+     "boundary_recall_pairs": 0.9857142857142858,
+     "native_recall": {
+      "PLAX": 0.9904761904761905,
+      "PSAX": 1.0,
+      "A4C": 0.9770114942528736,
+      "A5C": 1.0,
+      "SC4C": 1.0
+     },
+     "native_confusion": [
+      [
+       104,
+       1,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       68,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       85,
+       2,
+       0
+      ],
+      [
+       0,
+       0,
+       0,
+       11,
+       0
+      ],
+      [
+       0,
+       0,
+       0,
+       0,
+       13
+      ]
+     ],
+     "A5C read as A4C": 0,
+     "A4C read as A5C": 2,
+     "native_precision": {
+      "PLAX": 1.0,
+      "PSAX": 0.9855072463768116,
+      "A4C": 1.0,
+      "A5C": 0.8461538461538461,
+      "SC4C": 1.0
+     },
+     "multi_frame_accuracy": 0.94118040237952,
+     "native_frame_accuracy": 0.9906221821460776
+    },
+    "counts": {
+     "tp": 484,
+     "fp": 15,
+     "fn": 18,
+     "pred": 499,
+     "ref": 502,
+     "f1": 0.967032967032967,
+     "fp_short": 3,
+     "fn_short": 7,
+     "ref_short": 141,
+     "tp_short": 134,
+     "same_label_join_cuts": 2,
+     "same_label_joins": 230
+    },
+    "base_counts": {
+     "tp": 482,
+     "fp": 24,
+     "fn": 20,
+     "pred": 506,
+     "ref": 502,
+     "f1": 0.9563492063492064,
+     "fp_short": 9,
+     "fn_short": 7,
+     "ref_short": 141,
+     "tp_short": 134,
+     "same_label_join_cuts": 5,
+     "same_label_joins": 230
+    }
+   },
+   "sum_single_dtp_dfp": {
+    "dtp": 3,
+    "dfp": -14
+   },
+   "interaction": {
+    "sequences_with_beneficial": 12,
+    "sequences_with_two_or_more": 0,
+    "combined_below_best_single": 0,
+    "combined_below_base": 0
+   },
+   "routers": {
+    "small-P": {
+     "threshold": 0.5,
+     "accepted": 10,
+     "accepted_beneficial": 6,
+     "beneficial_not_accepted": 6,
+     "accepted_zero": 0,
+     "accepted_harmful": 4,
+     "score_auc_beneficial_vs_rest": 0.7365196078431373,
+     "beneficial_score_median": 0.3569623827934265,
+     "beneficial_at_or_above_0.5": 6
+    },
+    "large-P": {
+     "threshold": 0.9,
+     "accepted": 3,
+     "accepted_beneficial": 2,
+     "beneficial_not_accepted": 10,
+     "accepted_zero": 0,
+     "accepted_harmful": 1,
+     "score_auc_beneficial_vs_rest": 0.8137254901960784,
+     "beneficial_score_median": 0.49953126907348633,
+     "beneficial_at_or_above_0.5": 6
+    },
+    "A14 P": {
+     "threshold": 0.8,
+     "accepted": 14,
+     "accepted_beneficial": 11,
+     "beneficial_not_accepted": 1,
+     "accepted_zero": 0,
+     "accepted_harmful": 3,
+     "score_auc_beneficial_vs_rest": 0.8725490196078431,
+     "beneficial_score_median": 0.9545440673828125,
+     "beneficial_at_or_above_0.5": 11
+    }
+   }
+  },
+  "s2 selection": {
+   "zones": {
+    "zones": 51,
+    "beneficial": 8,
+    "zero": 30,
+    "harmful": 13,
+    "beneficial_recovers_true": 5,
+    "beneficial_removes_false_only": 3,
+    "beneficial_trades_match": 0,
+    "harmful_loses_match": 4,
+    "harmful_adds_false_only": 9
+   },
+   "short_zones_beneficial": 7,
+   "all_beneficial_applied": {
+    "row": {
+     "segment_f1_50_multi": 0.9664031620553359,
+     "boundary_precision_multi": 0.9615384615384616,
+     "boundary_recall_multi": 0.981675392670157,
+     "boundary_f1_multi": 0.9715025906735751,
+     "native_macro_f1": 0.9785909601243429,
+     "native_internal_cuts_per_clip": 0.04225352112676056,
+     "same_class_cut_rate_multi": 0.013043478260869565,
+     "segment_f1_50_pairs": 0.9807692307692307,
+     "boundary_recall_pairs": 0.9857142857142858,
+     "native_recall": {
+      "PLAX": 0.9904761904761905,
+      "PSAX": 1.0,
+      "A4C": 0.9770114942528736,
+      "A5C": 1.0,
+      "SC4C": 1.0
+     },
+     "native_confusion": [
+      [
+       104,
+       1,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       68,
+       0,
+       0,
+       0
+      ],
+      [
+       0,
+       0,
+       85,
+       2,
+       0
+      ],
+      [
+       0,
+       0,
+       0,
+       11,
+       0
+      ],
+      [
+       0,
+       0,
+       0,
+       0,
+       13
+      ]
+     ],
+     "A5C read as A4C": 0,
+     "A4C read as A5C": 2,
+     "native_precision": {
+      "PLAX": 1.0,
+      "PSAX": 0.9855072463768116,
+      "A4C": 1.0,
+      "A5C": 0.8461538461538461,
+      "SC4C": 1.0
+     },
+     "multi_frame_accuracy": 0.9403783169574226,
+     "native_frame_accuracy": 0.9876765855124737
+    },
+    "counts": {
+     "tp": 489,
+     "fp": 21,
+     "fn": 13,
+     "pred": 510,
+     "ref": 502,
+     "f1": 0.9664031620553359,
+     "fp_short": 9,
+     "fn_short": 3,
+     "ref_short": 141,
+     "tp_short": 138,
+     "same_label_join_cuts": 3,
+     "same_label_joins": 230
+    },
+    "base_counts": {
+     "tp": 483,
+     "fp": 25,
+     "fn": 19,
+     "pred": 508,
+     "ref": 502,
+     "f1": 0.9564356435643564,
+     "fp_short": 13,
+     "fn_short": 7,
+     "ref_short": 141,
+     "tp_short": 134,
+     "same_label_join_cuts": 3,
+     "same_label_joins": 230
+    }
+   },
+   "sum_single_dtp_dfp": {
+    "dtp": 6,
+    "dfp": -4
+   },
+   "interaction": {
+    "sequences_with_beneficial": 8,
+    "sequences_with_two_or_more": 0,
+    "combined_below_best_single": 0,
+    "combined_below_base": 0
+   },
+   "routers": {
+    "small-P": {
+     "threshold": "noop",
+     "accepted": 0,
+     "accepted_beneficial": 0,
+     "beneficial_not_accepted": 8,
+     "accepted_zero": 0,
+     "accepted_harmful": 0,
+     "score_auc_beneficial_vs_rest": 0.8953488372093024,
+     "beneficial_score_median": 0.9517611861228943,
+     "beneficial_at_or_above_0.5": 6
+    },
+    "large-P": {
+     "threshold": "noop",
+     "accepted": 0,
+     "accepted_beneficial": 0,
+     "beneficial_not_accepted": 8,
+     "accepted_zero": 0,
+     "accepted_harmful": 0,
+     "score_auc_beneficial_vs_rest": 0.8982558139534884,
+     "beneficial_score_median": 0.8774564266204834,
+     "beneficial_at_or_above_0.5": 6
+    },
+    "A14 P": {
+     "threshold": "noop",
+     "accepted": 0,
+     "accepted_beneficial": 0,
+     "beneficial_not_accepted": 8,
+     "accepted_zero": 0,
+     "accepted_harmful": 0,
+     "score_auc_beneficial_vs_rest": 0.6831395348837209,
+     "beneficial_score_median": 0.2029409110546112,
+     "beneficial_at_or_above_0.5": 3
+    }
+   }
+  }
+ },
+ "pools": {
+  "s0 large_fit": {
+   "zones": {
+    "zones": 429,
+    "beneficial": 88,
+    "zero": 296,
+    "harmful": 45,
+    "beneficial_recovers_true": 18,
+    "beneficial_removes_false_only": 70,
+    "beneficial_trades_match": 0,
+    "harmful_loses_match": 44,
+    "harmful_adds_false_only": 1
+   },
+   "pooled": {
+    "multi": {
+     "base": {
+      "f1": 0.9582129188471452,
+      "tp": 6134,
+      "pred": 6448,
+      "ref": 6355
+     },
+     "alternative": {
+      "f1": 0.9611045364891518,
+      "tp": 6091,
+      "pred": 6320,
+      "ref": 6355
+     },
+     "all_beneficial_applied": {
+      "f1": 0.9664545525964333,
+      "tp": 6151,
+      "pred": 6374,
+      "ref": 6355
+     }
+    },
+    "native": {
+     "base": {
+      "f1": 0.9308108108108109,
+      "tp": 861,
+      "pred": 963,
+      "ref": 887
+     },
+     "alternative": {
+      "f1": 0.9489291598023064,
+      "tp": 864,
+      "pred": 934,
+      "ref": 887
+     },
+     "all_beneficial_applied": {
+      "f1": 0.9458128078817734,
+      "tp": 864,
+      "pred": 940,
+      "ref": 887
+     }
+    }
+   },
+   "sum_single_dtp_dfp": {
+    "dtp": 20,
+    "dfp": -117
+   },
+   "interaction": {
+    "sequences_with_beneficial": 86,
+    "sequences_with_two_or_more": 2,
+    "combined_below_best_single": 0,
+    "combined_below_base": 0
+   }
+  },
+  "s0 small_fit": {
+   "zones": {
+    "zones": 78,
+    "beneficial": 17,
+    "zero": 50,
+    "harmful": 11,
+    "beneficial_recovers_true": 2,
+    "beneficial_removes_false_only": 15,
+    "beneficial_trades_match": 0,
+    "harmful_loses_match": 10,
+    "harmful_adds_false_only": 1
+   },
+   "pooled": {
+    "multi": {
+     "base": {
+      "f1": 0.957429718875502,
+      "tp": 1192,
+      "pred": 1255,
+      "ref": 1235
+     },
+     "alternative": {
+      "f1": 0.9581470946769606,
+      "tp": 1179,
+      "pred": 1226,
+      "ref": 1235
+     },
+     "all_beneficial_applied": {
+      "f1": 0.9652384801940178,
+      "tp": 1194,
+      "pred": 1239,
+      "ref": 1235
+     }
+    },
+    "native": {
+     "base": {
+      "f1": 0.9285714285714286,
+      "tp": 195,
+      "pred": 220,
+      "ref": 200
+     },
+     "alternative": {
+      "f1": 0.9375,
+      "tp": 195,
+      "pred": 216,
+      "ref": 200
+     },
+     "all_beneficial_applied": {
+      "f1": 0.9375,
+      "tp": 195,
+      "pred": 216,
+      "ref": 200
+     }
+    }
+   },
+   "sum_single_dtp_dfp": {
+    "dtp": 2,
+    "dfp": -22
+   },
+   "interaction": {
+    "sequences_with_beneficial": 16,
+    "sequences_with_two_or_more": 1,
+    "combined_below_best_single": 0,
+    "combined_below_base": 0
+   }
+  },
+  "s0 check": {
+   "zones": {
+    "zones": 167,
+    "beneficial": 24,
+    "zero": 121,
+    "harmful": 22,
+    "beneficial_recovers_true": 8,
+    "beneficial_removes_false_only": 16,
+    "beneficial_trades_match": 0,
+    "harmful_loses_match": 22,
+    "harmful_adds_false_only": 0
+   },
+   "pooled": {
+    "multi": {
+     "base": {
+      "f1": 0.9603097773475314,
+      "tp": 2480,
+      "pred": 2598,
+      "ref": 2567
+     },
+     "alternative": {
+      "f1": 0.9590323839250878,
+      "tp": 2458,
+      "pred": 2559,
+      "ref": 2567
+     },
+     "all_beneficial_applied": {
+      "f1": 0.967741935483871,
+      "tp": 2490,
+      "pred": 2579,
+      "ref": 2567
+     }
+    },
+    "native": {
+     "base": {
+      "f1": 0.9535452322738386,
+      "tp": 195,
+      "pred": 209,
+      "ref": 200
+     },
+     "alternative": {
+      "f1": 0.9582309582309583,
+      "tp": 195,
+      "pred": 207,
+      "ref": 200
+     },
+     "all_beneficial_applied": {
+      "f1": 0.9582309582309583,
+      "tp": 195,
+      "pred": 207,
+      "ref": 200
+     }
+    }
+   },
+   "sum_single_dtp_dfp": {
+    "dtp": 10,
+    "dfp": -31
+   },
+   "interaction": {
+    "sequences_with_beneficial": 24,
+    "sequences_with_two_or_more": 0,
+    "combined_below_best_single": 0,
+    "combined_below_base": 0
+   }
+  },
+  "s2 large_fit": {
+   "zones": {
+    "zones": 483,
+    "beneficial": 82,
+    "zero": 332,
+    "harmful": 69,
+    "beneficial_recovers_true": 49,
+    "beneficial_removes_false_only": 33,
+    "beneficial_trades_match": 0,
+    "harmful_loses_match": 22,
+    "harmful_adds_false_only": 47
+   },
+   "pooled": {
+    "multi": {
+     "base": {
+      "f1": 0.9579516091143998,
+      "tp": 6117,
+      "pred": 6416,
+      "ref": 6355
+     },
+     "alternative": {
+      "f1": 0.9592408214063473,
+      "tp": 6166,
+      "pred": 6501,
+      "ref": 6355
+     },
+     "all_beneficial_applied": {
+      "f1": 0.9673182173573104,
+      "tp": 6186,
+      "pred": 6435,
+      "ref": 6355
+     }
+    },
+    "native": {
+     "base": {
+      "f1": 0.9373979314099075,
+      "tp": 861,
+      "pred": 950,
+      "ref": 887
+     },
+     "alternative": {
+      "f1": 0.9166666666666666,
+      "tp": 858,
+      "pred": 985,
+      "ref": 887
+     },
+     "all_beneficial_applied": {
+      "f1": 0.9373979314099075,
+      "tp": 861,
+      "pred": 950,
+      "ref": 887
+     }
+    }
+   },
+   "sum_single_dtp_dfp": {
+    "dtp": 69,
+    "dfp": -50
+   },
+   "interaction": {
+    "sequences_with_beneficial": 81,
+    "sequences_with_two_or_more": 1,
+    "combined_below_best_single": 0,
+    "combined_below_base": 0
+   }
+  },
+  "s2 small_fit": {
+   "zones": {
+    "zones": 94,
+    "beneficial": 18,
+    "zero": 61,
+    "harmful": 15,
+    "beneficial_recovers_true": 12,
+    "beneficial_removes_false_only": 6,
+    "beneficial_trades_match": 0,
+    "harmful_loses_match": 5,
+    "harmful_adds_false_only": 10
+   },
+   "pooled": {
+    "multi": {
+     "base": {
+      "f1": 0.9551877270892208,
+      "tp": 1183,
+      "pred": 1242,
+      "ref": 1235
+     },
+     "alternative": {
+      "f1": 0.9595514617541049,
+      "tp": 1198,
+      "pred": 1262,
+      "ref": 1235
+     },
+     "all_beneficial_applied": {
+      "f1": 0.9670152855993563,
+      "tp": 1202,
+      "pred": 1251,
+      "ref": 1235
+     }
+    },
+    "native": {
+     "base": {
+      "f1": 0.9216152019002375,
+      "tp": 194,
+      "pred": 221,
+      "ref": 200
+     },
+     "alternative": {
+      "f1": 0.8955916473317865,
+      "tp": 193,
+      "pred": 231,
+      "ref": 200
+     },
+     "all_beneficial_applied": {
+      "f1": 0.9216152019002375,
+      "tp": 194,
+      "pred": 221,
+      "ref": 200
+     }
+    }
+   },
+   "sum_single_dtp_dfp": {
+    "dtp": 19,
+    "dfp": -10
+   },
+   "interaction": {
+    "sequences_with_beneficial": 17,
+    "sequences_with_two_or_more": 1,
+    "combined_below_best_single": 0,
+    "combined_below_base": 0
+   }
+  },
+  "s2 check": {
+   "zones": {
+    "zones": 182,
+    "beneficial": 31,
+    "zero": 126,
+    "harmful": 25,
+    "beneficial_recovers_true": 22,
+    "beneficial_removes_false_only": 9,
+    "beneficial_trades_match": 0,
+    "harmful_loses_match": 10,
+    "harmful_adds_false_only": 15
+   },
+   "pooled": {
+    "multi": {
+     "base": {
+      "f1": 0.9554608830364059,
+      "tp": 2467,
+      "pred": 2597,
+      "ref": 2567
+     },
+     "alternative": {
+      "f1": 0.9576597382602001,
+      "tp": 2488,
+      "pred": 2629,
+      "ref": 2567
+     },
+     "all_beneficial_applied": {
+      "f1": 0.9650376666022793,
+      "tp": 2498,
+      "pred": 2610,
+      "ref": 2567
+     }
+    },
+    "native": {
+     "base": {
+      "f1": 0.9631449631449631,
+      "tp": 196,
+      "pred": 207,
+      "ref": 200
+     },
+     "alternative": {
+      "f1": 0.9443099273607748,
+      "tp": 195,
+      "pred": 213,
+      "ref": 200
+     },
+     "all_beneficial_applied": {
+      "f1": 0.9631449631449631,
+      "tp": 196,
+      "pred": 207,
+      "ref": 200
+     }
+    }
+   },
+   "sum_single_dtp_dfp": {
+    "dtp": 32,
+    "dfp": -19
+   },
+   "interaction": {
+    "sequences_with_beneficial": 30,
+    "sequences_with_two_or_more": 1,
+    "combined_below_best_single": 0,
+    "combined_below_base": 0
+   }
+  }
+ }
+}
