@@ -1,0 +1,67 @@
+{
+ "config_sha256": "24a934b7af6293600acee68f1b4b2365095ec99fbf89877247c19958bb2b3b10",
+ "started": "2026-10-21T16:42:38Z",
+ "cache_against_live": {
+  "updates": 5,
+  "max_abs_logit_difference": 0.0,
+  "request_identity": true
+ },
+ "teachers": {
+  "unchanged": true,
+  "with_grad": 0
+ },
+ "own_teacher_equals_start": true,
+ "q": {
+  "min": 0.001803976483643055,
+  "sum_minus_1_max_abs": 2.384185791015625e-07,
+  "stable_minus_direct_max_abs": 1.7881393432617188e-07
+ },
+ "matched_control": {
+  "initial": {
+   "loss_max_abs": 0.0,
+   "ce_kl_max_abs": 0.0,
+   "logits_max_abs": 0.0,
+   "grads_max_abs": 2.0954757928848267e-09,
+   "params_max_abs": 1.862645149230957e-09,
+   "repeat_params_max_abs": 0.0,
+   "cuda_rng_equal": true,
+   "encoder_grad_present": false,
+   "ok": true
+  },
+  "after_unfreezing": {
+   "loss_max_abs": 3.725290298461914e-09,
+   "ce_kl_max_abs": 1.210719347000122e-08,
+   "logits_max_abs": 9.5367431640625e-07,
+   "grads_max_abs": 2.849919837899506e-06,
+   "params_max_abs": 5.858950316905975e-06,
+   "repeat_params_max_abs": 5.681067705154419e-06,
+   "cuda_rng_equal": true,
+   "encoder_grad_present": true,
+   "ok": true
+  }
+ },
+ "identical_teachers_reduce_to_one": {
+  "kl_abs": 1.7695128917694092e-08,
+  "grads_max_abs": 1.4901161193847656e-08,
+  "params_max_abs": 9.5367431640625e-07,
+  "ok": true
+ },
+ "optimiser_bound": true,
+ "resume_E": {
+  "loss_max_abs": 4.470348358154297e-08,
+  "params_max_abs": 9.5367431640625e-07,
+  "rerun_params_max_abs": 1.4402728993445635e-05,
+  "ok": true
+ },
+ "timing": {
+  "seconds_per_update": 0.7091135555505753
+ },
+ "budget": {
+  "spent": 0.43499053749773237,
+  "projection_two_students_plus_evaluation": 1.4668257041606638,
+  "seed1_reserve": 0.9318351666629315,
+  "cap": 4.0
+ },
+ "ok": true,
+ "finished": "2026-10-21T16:43:45Z"
+}
