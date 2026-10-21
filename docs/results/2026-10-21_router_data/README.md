@@ -134,15 +134,16 @@ probability that a router scores a beneficial zone above a non-beneficial one in
 
 ## What this round shows
 
-1. **More data improved how well the router separates useful zones on unseen sessions, but not the segmentation.**
+1. **The larger pool separated useful zones better on unseen sessions, but did not improve the segmentation.**
    - On the session-disjoint check pool, large-P's balanced accuracy is 0.868 and 0.786, against small-P's 0.718 and
      0.715.
    - Its development AUC is higher in all four cells, by 0.003 to 0.08.
    - After the fixed calibration choice, large-P is not ahead of small-P (mean −0.0005). So no data-expansion effect
      on segmentation is shown.
-2. **The calibration choice limits both routers.** Each calibration half has only 37–49 zones per seed, 4 of them
-   beneficial. Admitting one harmful zone can outweigh the gain, so the rule picked a high threshold (large-P, seed 0)
-   or no-op (both arms, seed 2).
+2. **The calibration choice rests on very few useful zones.** Each calibration half has only 37–49 zones per seed, 4
+   of them beneficial. One admitted harmful zone can outweigh the gain, and the rule picked a high threshold (large-P,
+   seed 0) or no-op (both arms, seed 2). Whether another selection rule would carry the better separation into the
+   segmentation was not tested.
 3. **No-op is not the ceiling of the candidates.** Seed 2 has unselected beneficial zones in both halves. Applying all
    individually beneficial zones reaches 0.9759 on average, and combining zones did not destroy single-zone gains
    wherever that could be tested.
