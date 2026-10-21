@@ -1,0 +1,66 @@
+# A17, ordered against shuffled local prediction trajectories for the local router (video_router_trajectory_v1),
+# 2026-10-21 UTC. This is the round's one-page task and configuration, written before any A17 tensor, training, score or
+# evaluation output.
+# Question: with A08 + B3 kept as the default and only local replacements learned, does the within-region time order of a
+# candidate's prediction trajectory (A08 probabilities, Base and Alternative labels) give decision evidence beyond A15's
+# 52 summary features? The two same-capacity arms differ only in that order. Exploratory feedback on the reused
+# development halves. The router-check set is unseen by the routers but has been read repeatedly, and A08/A13 saw its
+# recordings. The test split and EchoNet-Pediatric are not read.
+experiment: video_router_trajectory_v1
+
+video_router_trajectory:
+  predecessors:
+    history: "R01/A01 trained temporal models (A01: ASRF/MS-TCN on frozen V01 features, no full gain); R05/R07 probability statistics and local readouts; A11/A13 sustained-switch heads (recall/false-cut trade); A14 pooled visual features (no increment); A15 a larger pool (better ranking, no segmentation gain); A16 utility weights (the same harmful development zones, zero-utility zones unconstrained)"
+    change: "candidate-conditioned prediction trajectories over the A08 + B3 / A13 H edit zones with A15's segment-utility label, ordered against within-region shuffled at equal capacity; convolutions and routing are known methods and no contribution is claimed"
+  pinned:
+    A15_preparation: {path: runs/video_router_data_v1/preparation.json, sha256: a41d5155dbd9d87e05905735eefb7f773cdbb13b82dc22ec24c3b89636ca826b}
+    A15_pool_manifest: {path: runs/video_router_data_v1/pool_manifest.json, sha256: 5ab124d48f48f826fd0b52542cf8cf1aa7f97e0f6b82327358406cf574a14050}
+    A15_candidates: {0: 14c75d1c8df497618c6a54fad58fd75ce88089fc7dd2a3db480fddae351bf6b7, 2: b120caf28d59d186dfc056bd8aec78d899023f7ad3d07d7d3c8e7520a54b8475}
+    A15_preds: {0: 848c4c91c0b3d2f2ad00cf95cc3ada7882d3d703318de4c7d333441c09443654, 2: af5a489b86aa9df106fabce3bd4255443fc5394aa24fa8558ea788002ed03e05}
+    A15_windows: {0: 2a6b53aed829e64c7ea23dfdee8bbfa473bf383525f341b214f0731532cf7cd4, 2: c21becbd8188a326f2405e53185fb0d0fb6efc087fa494510d124b5ada3198a8}
+    A15_large_P: {0: b982cc856274ebe0b5f75f84221489e09c336eff5623795201c37cc22003a886, 2: 66e5e093c274f85e62564cfde1cb65d4871467217c9ccad0b4679fd04c6ccb5a}
+    A15_choices_sha256: 25ba7421f00926e07f2e311a51f00fc15e5c2d05a05630cb266170ecdbeea558
+    A15_screen_sha256: 546747ee6a38fc585468b13ff213e819073a6c0429768ec7a89358330bfd2359
+    A16_U: {0: 47e0c5851fc91eebb8937fdafec97f6ed44df77d12244617707bf26d2092953d, 2: b194fbbca341e315bd8a1e41dadb203e68a4f54e15dfa13be73810ba29906f60}
+    A16_choices_sha256: 83761ab98eceb496150b30ef1979a98a1715ba526d8dbe5cd9048b8ecf0f56be
+    A16_screen_sha256: c8675805d7127315c4c33e00716b164b164251c10dfd06def915bc775d6219f2
+    split: "A15's 402/100 session split, large_fit and check masks, candidate order, native counts and recording reuse unchanged; no new pool or draw and no development error list"
+  fixed: "Base = A08 all_s{k} + B3 at A08's committed setting; Alternative = A13 H at its committed threshold; A08, H and the decoders frozen (eval, no_grad, cached original-RGB outputs; no Pro, no encoder update, no new cuts); zones (merged within 16 samples), replacement inside accepted zones and Base elsewhere unchanged"
+  labels: "A15's strict single-sequence segment F1@50 improvement (pos); zero and harmful zones are negatives with ordinary gradient; balanced BCE with large-P's fit counts; no A16 utility weights (this common restoration is not attributed to O - S)"
+  trajectory:
+    window: "per zone [a, b): left region [max(0, a - 16), a), the whole zone, right region [b, min(n, b + 16)), clamped to the sequence; zones are never cut, interpolated or joined"
+    channels: "18 per 10 Hz sample: A08's 5 class probabilities (stride-5 window softmax mapped to samples by nearest centre, as A15 used them; neighbouring samples can repeat one window), Base one-hot 5, Alternative one-hot 5 and region one-hot 3 (left, zone, right); a valid mask only gates the convolutions and pooling"
+    excluded: "no reference, source join, true segment length, label correctness, video/session id, file name or patient information; the inputs depend on Base/Alternative labels, never on true labels"
+    summary_branch: "A15's 52 P features unchanged, normalised with A15's large-fit mean/std; trajectory channels stay in their natural 0-1 range; no statistic from check or development"
+  arms:
+    O: "trajectory rows in true time order"
+    S: "inside each region the rows are permuted once by numpy.random.default_rng([20261021, 17, seed, set, sequence_index, a, b, region]).permutation(region_length); set 0 = A15 pool (manifest index), 1 = selection, 2 = calibration (index in the half's fixed sequence order); region 0/1/2 = left/zone/right; all 18 channels of a row move together; region order, lengths and members unchanged; the 52 P features are not recomputed; the same permutation at every training and inference use; keys and draws are never inputs"
+    reading: "S keeps the 52 features' coarse timing statistics and the left/zone/right context, so O - S tests the increment of within-region fine-grained prediction order only; it is neither time-free input nor evidence about raw-video motion or anatomy"
+  model: "Conv1d(18, 16, 5, padding 2) -> GELU -> Conv1d(16, 16, 5, padding 2) -> GELU, padding positions set to zero after each layer; masked means over left, zone and right (empty region = 0) give 48 values, concatenated with the normalised 52 P features (100) -> Linear(100, 16) -> GELU -> Linear(16, 1); 4,385 parameters; no normalisation layer, dropout, attention or positional encoding"
+  training: "identical initial state for O and S (torch fork_rng, manual seed 6000 + seed); A15 large-fit zones and labels with balanced BCE; 1,350 updates of 128 zones from default_rng([20261021, 15, 8, seed]) mapped onto the same fit list; AdamW lr 1e-3, weight decay 1e-4, warm-up 135 and cosine, clip 1, final weights; batches padded to their longest zone with the mask, no truncation; CPU with torch.set_num_threads(1), wall time recorded; steps, width and rate are never changed"
+  checks: "per-sample probabilities rebuilt from A15's window cache reproduce A15's Base, Alternative and 52 features bit for bit (cache identities pinned); O and S share region members and per-region channel sums; empty-neighbour, sequence-boundary, long-zone and padding invariance; reference isolation (changed labels leave tensors, zones, features, scores and outputs unchanged); 4,385 parameters, identical starts and batches; zero-label zones get a nonzero gradient; router-only optimiser; a short exact resume; no-op = Base and accept-all = Alternative; old rows reproduced"
+  rules:
+    fixed: "accept a zone when sigmoid(score) > 0.5 (equality rejects); the primary rule"
+    cal: "A15's grid 0.50, 0.60, 0.70, 0.80, 0.90, 0.95, 0.975, 0.99 and no-op, score >= threshold, calibration native macro-F1 >= 0.980 and multi boundary recall >= 0.95, highest multi segment F1@50, ties to fewer zones; one choice per arm and seed; no class-specific threshold, region heuristic, cut union or global search"
+    order: "router records with weights sha committed before calibration; choices committed and their sha verified before selection is read; fixed calibration rows are evaluated only and flagged when infeasible, never replaced by Base"
+  evaluation:
+    systems: "Base, Alternative, A14 P, A15 large-P (= A16 C-cal), A16 C-fixed, A16 U-fixed (historical short-segment reference, not retrained), O-fixed, O-cal, S-fixed, S-cal; old rows reproduced and identical rows merged"
+    comparisons: ["O-fixed - S-fixed (primary)", "O-cal - S-cal", "O-fixed - O-cal", "S-fixed - S-cal", "O-fixed, O-cal, S-fixed and S-cal against Base, Alternative, A14 P, A16 C-fixed and A15 large-P"]
+    per_cell: "multi segment F1@50 (primary), FP / short FP, FN / missed short true segments, boundary precision and recall, native macro-F1, both A4C/A5C directions, recovered / lost matched segments, new / removed unmatched predictions, candidate and accepted zones; natives and pairs reported separately; net counts re-matched on whole sequences"
+    check_pool: "accepted beneficial / zero / harmful zones and whole-stream F1, short segments and boundaries at both rules; logged only"
+    reading: "O above the A15/A16 routers but not above S is a common input, capacity or training effect, not an ordered-trajectory increment; check or AUC gains alone are not a system gain; O - S covers this permutation and readout only"
+  promotion_rule:
+    applies_to: "O-fixed or O-cal against the seed's Base over the 4 cells; S alone never qualifies"
+    signal: "mean dF >= +0.003"
+    no_reversal: "each half's two-seed mean >= -0.005 and no cell < -0.015"
+    no_harm: "mean native macro-F1 difference >= -0.003, mean boundary recall difference >= -0.010, missed short true segments <= Base's + 3"
+    feasibility: "that rule's calibration rows meet native macro-F1 >= 0.980 and multi boundary recall >= 0.95 in each seed"
+    decision: "if met, seed 1 in A17's namespace (an A13-recipe H_s1 with its calibration setting, seed-1 caches of A15's pinned pool, O_s1 and S_s1; all sources, rules and choices committed before the seed-1 selection); otherwise this local-trajectory readout closes with no automatic loss, weight, threshold, kernel, epoch, visual or data variant"
+  a16_supplement: "after A17's selection only, read-only: for the 2 short true segments U-fixed lost against C-fixed in seed-2 selection, undo each U-accepted zone of that sequence singly and record whether the match returns (single-zone damage, match substitution or combination effect; unknown when no single undo localises it); C's kept matches checked if needed; no combination search, no repaired-system score, nothing feeds A17"
+  budget:
+    gpu_hours_max: 1.0             # only for an approved seed 1; seeds 0 and 2 need CPU only
+    cpu_hours_max: 3.0             # includes the agent's active wall clock, workers, failed work and an approved seed 1
+    ledger: runs/video_router_trajectory_v1/ledger.jsonl
+  outputs:
+    root: runs/video_router_trajectory_v1
+    results_dir: docs/results/2026-10-21_router_trajectory
