@@ -61,7 +61,8 @@ def evaluate(ctx: bc.Ctx, choices_sha: str) -> None:
             raise SystemExit("choices.json differs from the committed sha256; nothing is evaluated")
         ch = json.loads(cp.read_text())["choices"]; prm = params_of(ch); a8 = rsh.a08_ctx(); cfg = a8.cfg
         P = bc.with_index(ctx, bc.pool(ctx)); cidx = bc.members(P, "check"); ev_c = bc.evalset(P, cidx, "check")
-        chk_seqs = [{"id": P["seqs"][i]["id"], "kind": P["seqs"][i]["kind"], "labels": np.asarray(P["seqs"][i]["labels"])} for i in cidx]; systems, seqs_of = {}, {"check": chk_seqs}
+        chk_seqs = [{"id": P["seqs"][i]["id"], "kind": P["seqs"][i]["kind"], "labels": np.asarray(P["seqs"][i]["labels"]), "refs": P["seqs"][i]["refs"]} for i in cidx]
+        systems, seqs_of = {}, {"check": chk_seqs}
         for key in bc.KEYS:
             probs = bc.pool_probs(ctx, P, key); sub = {q["id"]: probs[q["id"]] for q in chk_seqs}
             for rule, pr in prm[key].items():
