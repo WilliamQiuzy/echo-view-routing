@@ -55,13 +55,15 @@ CMPS = {"E - R": ("E + B3", "R + B3"), "E - Base": ("E + B3", "Base"), "E - froz
 
 
 def e_models(ctx: tet.Ctx, seeds: list[int]) -> dict:
+    """This round's trained students: E_s{k} for every seed, plus the new R_s1 control when seed 1 is present."""
     out = {}
     for s in seeds:
-        key = f"E_s{s}"; man = json.loads((ctx.out / "train" / key / "run_manifest.json").read_text())
-        fz = ROOT / "models_frozen" / "video_ensemble_teacher_v1" / key / "final.pt"; w = fz if fz.is_file() else Path(man["final_checkpoint"])
-        if sha256_file(w) != man["final_sha256"]:
-            raise SystemExit(f"{key}: the weights differ from their run record")
-        out[key] = {"weights": str(w), "sha256": man["final_sha256"], "identity": man["identity"], "seed": s, "frozen": fz.is_file()}
+        for key in [f"E_s{s}"] + ([f"R_s{s}"] if s == 1 else []):
+            man = json.loads((ctx.out / "train" / key / "run_manifest.json").read_text())
+            fz = ROOT / "models_frozen" / "video_ensemble_teacher_v1" / key / "final.pt"; w = fz if fz.is_file() else Path(man["final_checkpoint"])
+            if sha256_file(w) != man["final_sha256"]:
+                raise SystemExit(f"{key}: the weights differ from their run record")
+            out[key] = {"weights": str(w), "sha256": man["final_sha256"], "identity": man["identity"], "seed": s, "arm": key[0], "frozen": fz.is_file()}
     return out
 
 
@@ -99,7 +101,9 @@ def read_half(ctx: tet.Ctx, a8, h: str, seeds: list[int], device, workers: int, 
         P = rr.per_sample(W, saved["logits"].astype(np.float32), seqs); rows = ttr.cls_rows(a8.cfg, P, ev, op)
         for row in ("argmax", "b3"):
             ttr.check_stored(rows[row]["row"], v01[f"ordered_s{s}"][row][h], f"ordered_s{s} {row} {h} (V01)")
-        out["probs"][f"frozen Ordered s{s}"], out["params"][f"frozen Ordered s{s}"] = P, op
+        out["probs"][f"frozen Ordered s{s}"], out["params"][f"frozen Ordered s{s}"] = P, op; out["reproduced"] += [f"frozen Ordered s{s} {h}"]
+        if s not in (0, 2):                                      # seed 1's R is this round's own R_s1 (inference below)
+            continue
         rpath = ROOT / "runs/video_switch_head_v1/evaluation" / h / f"R_s{s}.npz"; rman = json.loads((ROOT / "runs/video_switch_head_v1/train" / f"R_s{s}" / "run_manifest.json").read_text())
         if sha256_file(rpath) != p["A10_R_outputs"][h][s] or rman["final_sha256"] != p["A10_R_weights"][s]:
             raise SystemExit(f"R_s{s} {h}: outputs or weights differ from their pins")
@@ -109,7 +113,7 @@ def read_half(ctx: tet.Ctx, a8, h: str, seeds: list[int], device, workers: int, 
         out["probs"][f"R s{s}"] = rr.per_sample(W, lgR, seqs); out["params"][f"R s{s}"] = a10ch[f"R_s{s}|b3"]["params"]; out["wprobs"][f"R s{s}"] = torch.softmax(torch.from_numpy(lgR), -1).numpy()
         rso.check_stored(rso.row_of(a8.cfg, decode(out["params"][f"R s{s}"], out["probs"][f"R s{s}"]), ev)["row"], a10[f"R + B3 s{s}"][h], f"R + B3 s{s} {h} (A10 screen)")
         rso.check_stored(rso.row_of(a8.cfg, {q: v.argmax(1) for q, v in out["probs"][f"R s{s}"].items()}, ev)["row"], a10[f"R argmax s{s}"][h], f"R argmax s{s} {h} (A10 screen)")
-        out["reproduced"] += [f"A08 all_s0-2 + B3 {h}", f"frozen Ordered s{s} {h}", f"R s{s} + B3 and argmax {h}"]
+        out["reproduced"] += [f"A08 all_s0-2 + B3 {h}", f"R s{s} + B3 and argmax {h} (A10)"]
     models = e_models(ctx, seeds); frames = None
     for key, mr in models.items():
         path = ctx.out / "evaluation" / h / f"{key}.npz"; lg = windows_logits(path, mr["identity"], W)
@@ -119,15 +123,15 @@ def read_half(ctx: tet.Ctx, a8, h: str, seeds: list[int], device, workers: int, 
             st_ = torch.load(mr["weights"], map_location="cpu", weights_only=True); model = vsh.make_model(st_["model"], device).eval()
             lg, em, sec = rsh.infer(model, W, orders, frames, device); out["gpu_seconds"] += sec; out["counts"][f"{key}_inference_seconds"] = sec; del model; torch.cuda.empty_cache()
             path.parent.mkdir(parents=True, exist_ok=True); np.savez(path, identity=mr["identity"], seq=W["seq"], centre=W["centre"], logits=lg)
-        out["probs"][f"E s{mr['seed']}"] = rr.per_sample(W, lg.astype(np.float32), seqs); out["wprobs"][f"E s{mr['seed']}"] = torch.softmax(torch.from_numpy(lg.astype(np.float32)), -1).numpy()
+        nm = f"{mr.get('arm', 'E')} s{mr['seed']}"; out["probs"][nm] = rr.per_sample(W, lg.astype(np.float32), seqs); out["wprobs"][nm] = torch.softmax(torch.from_numpy(lg.astype(np.float32)), -1).numpy()
         print(f"{h} {key}: outputs ready", flush=True)
     del frames
     if routers:
-        c17 = trt.Ctx(load_cfg(SimpleNamespace(config=A17_CONFIG, set=[])), A17_CONFIG); P17 = rrt.read_half(c17, a8, h, seeds)
+        rs = [s for s in seeds if s in (0, 2)]; c17 = trt.Ctx(load_cfg(SimpleNamespace(config=A17_CONFIG, set=[])), A17_CONFIG); P17 = rrt.read_half(c17, a8, h, rs)
         if [q["id"] for q in P17["seqs"]] != ids:
             raise SystemExit("A17's half differs in order")
         ch17 = json.loads((ROOT / "runs/video_router_trajectory_v1/evaluation/choices.json").read_text())["choices"]; a15ch = rrt.a15_choices(); out["routed"] = {}
-        for s in seeds:
+        for s in rs:
             d = P17["seed"][s]
             for name, key in (("A14 P", "A14 P"), ("A17 O-fixed", "O-fixed")):
                 out["routed"][f"{name} s{s}"] = rrd.routed(P17, s, rrt.accept(key, d, ch17, a15ch, s))
@@ -172,13 +176,16 @@ def promotion(rows: dict, counts: dict, ch: dict) -> dict:
 def systems_of(a8, P: dict, seeds: list[int], choices: dict) -> dict:
     ev, out = P["ev"], {}
     for s in seeds:
-        for name, preds in (("Base", decode(P["params"][f"A08 all_s{s}"], P["probs"][f"A08 all_s{s}"])), ("A08 argmax", {q: v.argmax(1) for q, v in P["probs"][f"A08 all_s{s}"].items()}),
-                            ("frozen Ordered + B3", decode(P["params"][f"frozen Ordered s{s}"], P["probs"][f"frozen Ordered s{s}"])),
-                            ("R + B3", decode(P["params"][f"R s{s}"], P["probs"][f"R s{s}"])), ("R argmax", {q: v.argmax(1) for q, v in P["probs"][f"R s{s}"].items()}),
-                            ("R + B3@A08", decode(P["params"][f"A08 all_s{s}"], P["probs"][f"R s{s}"])),
-                            ("E + B3", decode(choices[f"E s{s}|b3"]["params"], P["probs"][f"E s{s}"])), ("E argmax", {q: v.argmax(1) for q, v in P["probs"][f"E s{s}"].items()}),
-                            ("E + B3@A08", decode(P["params"][f"A08 all_s{s}"], P["probs"][f"E s{s}"])),
-                            ("ensemble + B3", decode(choices["ensemble|b3"]["params"], P["probs"]["ensemble"])), ("A14 P", P["routed"][f"A14 P s{s}"]), ("A17 O-fixed", P["routed"][f"A17 O-fixed s{s}"])):
+        rp = P["params"].get(f"R s{s}") or choices[f"R s{s}|b3"]["params"]
+        items = [("Base", decode(P["params"][f"A08 all_s{s}"], P["probs"][f"A08 all_s{s}"])), ("A08 argmax", {q: v.argmax(1) for q, v in P["probs"][f"A08 all_s{s}"].items()}),
+                 ("frozen Ordered + B3", decode(P["params"][f"frozen Ordered s{s}"], P["probs"][f"frozen Ordered s{s}"])),
+                 ("R + B3", decode(rp, P["probs"][f"R s{s}"])), ("R argmax", {q: v.argmax(1) for q, v in P["probs"][f"R s{s}"].items()}),
+                 ("R + B3@A08", decode(P["params"][f"A08 all_s{s}"], P["probs"][f"R s{s}"])),
+                 ("E + B3", decode(choices[f"E s{s}|b3"]["params"], P["probs"][f"E s{s}"])), ("E argmax", {q: v.argmax(1) for q, v in P["probs"][f"E s{s}"].items()}),
+                 ("E + B3@A08", decode(P["params"][f"A08 all_s{s}"], P["probs"][f"E s{s}"])), ("ensemble + B3", decode(choices["ensemble|b3"]["params"], P["probs"]["ensemble"]))]
+        if f"A14 P s{s}" in P.get("routed", {}):
+            items += [("A14 P", P["routed"][f"A14 P s{s}"]), ("A17 O-fixed", P["routed"][f"A17 O-fixed s{s}"])]
+        for name, preds in items:
             out[f"{name} s{s}"] = rso.row_of(a8.cfg, preds, ev)
     out["A08 all_s1 + B3"] = rso.row_of(a8.cfg, decode(P["params"]["A08 all_s1"], P["probs"]["A08 all_s1"]), ev)
     out["ensemble argmax"] = rso.row_of(a8.cfg, {q: v.argmax(1) for q, v in P["probs"]["ensemble"].items()}, ev)
@@ -244,7 +251,7 @@ def diagnostic(ctx: tet.Ctx, seeds: list[int], workers: int) -> None:
     try:
         if not (ctx.out / "evaluation" / "screen.json").exists():
             raise SystemExit("the diagnostic runs after the selection stage only")
-        ch = json.loads((ctx.out / "evaluation" / "choices.json").read_text())["choices"]; a8 = rsh.a08_ctx(); device = torch.device("cuda"); out = {"note": "after selection; descriptive", "halves": {}}
+        ch = merged_choices(ctx); a8 = rsh.a08_ctx(); device = torch.device("cuda"); out = {"note": "after selection; descriptive", "halves": {}}
         seqs_of = {}
         for h in HALVES:
             P = read_half(ctx, a8, h, seeds, device, workers, routers=False); seqs_of[h] = P["seqs"]; sysd = {k: v["preds"] for k, v in systems_of_light(a8, P, seeds, ch).items()}; q = P["wprobs"]["ensemble"]; rec = {}
@@ -282,20 +289,94 @@ def systems_of_light(a8, P: dict, seeds: list[int], choices: dict) -> dict:
     for j in tet.TEACHERS:
         out[f"member {j}"] = {"preds": decode(P["params"][f"A08 all_s{j}"], P["probs"][f"A08 all_s{j}"])}
     for s in seeds:
-        out[f"Base s{s}"] = out[f"member {s}"]; out[f"R + B3 s{s}"] = {"preds": decode(P["params"][f"R s{s}"], P["probs"][f"R s{s}"])}
+        rp = P["params"].get(f"R s{s}") or choices[f"R s{s}|b3"]["params"]
+        out[f"Base s{s}"] = out[f"member {s}"]; out[f"R + B3 s{s}"] = {"preds": decode(rp, P["probs"][f"R s{s}"])}
         out[f"E + B3 s{s}"] = {"preds": decode(choices[f"E s{s}|b3"]["params"], P["probs"][f"E s{s}"])}
     return out
 
 
+def merged_choices(ctx: tet.Ctx) -> dict:
+    ch = json.loads((ctx.out / "evaluation" / "choices.json").read_text())["choices"]; p1 = ctx.out / "evaluation" / "choices_seed1.json"
+    return {**ch, **(json.loads(p1.read_text())["choices"] if p1.is_file() else {})}
+
+
+def calibrate1(ctx: tet.Ctx, workers: int) -> None:
+    """Seed 1 (after the met promotion rule): E_s1 and the new R_s1, one B3 choice each on calibration, committed before
+    any seed-1 selection output is read."""
+    t0, started, ok, note = time.time(), tet.now(), False, ""
+    try:
+        a8 = rsh.a08_ctx(); rw.check_grid(a8); device = torch.device("cuda"); tet.determinism(); P = read_half(ctx, a8, "calibration", [1], device, workers, routers=False); choices = {}
+        for key in ("E s1", "R s1"):
+            ch = rcs.b3_choose(a8.cfg, rso.DIAG, P["probs"][key], P["ev"]); choices[f"{key}|b3"] = {x: ch[x] for x in ("status", "params", "n_feasible")}; choices[f"{key}|b3"]["grid"] = ch["grid"]
+            print(f"{key}: B3 {ch['status']} {ch['params']} ({ch['n_feasible']} feasible)", flush=True)
+        rec = {"stage": "calibrate seed 1", "config_sha256": sha256_file(ROOT / ctx.config), "choices": choices, "models": {k: {x: v[x] for x in ("sha256", "identity", "frozen")} for k, v in e_models(ctx, [1]).items()},
+               "time": tet.now()}
+        flat = json.loads(json.dumps(rec, default=str)); assert_no_ids(flat, rw.ids_of(a8, {"calibration": P["seqs"]}), "choices seed 1")
+        for p in (ctx.out / "evaluation" / "choices_seed1.json", ctx.results / "choices_seed1.json"):
+            tet.write_json(p, flat)
+        ok = True
+    except BaseException as e:  # noqa: BLE001 - recorded, then raised again
+        note = f"{type(e).__name__}: {str(e)[:200]}"; raise
+    finally:
+        tet.ledger_append(ctx.ledger, "evaluate calibrate seed 1 (E_s1 / R_s1 inference, GPU job wall time)", "gpu", started, time.time() - t0, ok, note)
+
+
+def select3(ctx: tet.Ctx, sha02: str, sha1: str, workers: int) -> None:
+    """Three seeds after both choice files were committed: E - R and E - Base per seed and half with consistency verdicts."""
+    t0, started, ok, note = time.time(), tet.now(), False, ""
+    try:
+        for f, sha in (("choices.json", sha02), ("choices_seed1.json", sha1)):
+            if sha256_file(ctx.out / "evaluation" / f) != sha:
+                raise SystemExit(f"{f} differs from the committed sha256; selection is not read")
+        choices = merged_choices(ctx); a8 = rsh.a08_ctx(); device = torch.device("cuda"); tet.determinism(); seeds = [0, 1, 2]
+        per = {h: read_half(ctx, a8, h, seeds, device, workers) for h in ("calibration", "selection")}; systems = {}
+        for h in ("calibration", "selection"):
+            for k, v in systems_of(a8, per[h], seeds, choices).items():
+                systems.setdefault(k, {})[h] = v
+        rows = {k: {h: v[h]["row"] for h in v} for k, v in systems.items()}; counts = {k: {h: rsh.counts_of(per[h]["seqs"], v[h]) for h in v} for k, v in systems.items() if "argmax" not in k}
+        three = {"E - R": ("E + B3", "R + B3"), "E - Base": ("E + B3", "Base"), "R - Base": ("R + B3", "Base"), "E - frozen Ordered": ("E + B3", "frozen Ordered + B3"),
+                 "E - ensemble": ("E + B3", "ensemble + B3"), "E@A08 - R@A08 (sensitivity)": ("E + B3@A08", "R + B3@A08")}
+        cmp_, acc_ = {}, {}
+        for h in HALVES:
+            for s in seeds:
+                draws = {}
+                for c, (a, b) in {**three, **({"E - A14 P": ("E + B3", "A14 P"), "E - A17 O-fixed": ("E + B3", "A17 O-fixed")} if s in (0, 2) else {})}.items():
+                    ka, kb = f"{a} s{s}", f"{b} s{s}"
+                    for nm in (ka, kb):
+                        if nm not in draws:
+                            draws[nm] = st.system_draws(systems[nm][h]["tables"])
+                    cmp_[f"s{s}|{c}|{h}"] = st.paired(draws[ka], draws[kb]); acc_[f"s{s}|{c}|{h}"] = st.segment_accounting(per[h]["seqs"], systems[ka][h]["preds"], systems[kb][h]["preds"])[0]
+            print(f"{h}: comparisons done", flush=True)
+        verdicts = {f"{c}|{m}": {h: st.consistency([cmp_[f"s{s}|{c}|{h}"][m] for s in seeds]) for h in HALVES} for c in three for m in st.BOOT_METRICS}
+        F = lambda n, s, h: rows[f"{n} s{s}"][h]["segment_f1_50_multi"]  # noqa: E731
+        means = {n: float(np.mean([F(n, s, h) for s in seeds for h in HALVES])) for n in ("Base", "R + B3", "E + B3", "frozen Ordered + B3", "E + B3@A08", "R + B3@A08", "ensemble + B3")}
+        res = {"stage": "select three seeds", "seeds": seeds, "config_sha256": sha256_file(ROOT / ctx.config), "choices_sha256": {"seeds 0 and 2": sha02, "seed 1": sha1}, "systems": rows, "segment_counts": counts,
+               "comparisons": cmp_, "accounting": acc_, "verdicts": verdicts, "six_cell_means": means, "access": {"halves": list(HALVES), "time": started},
+               "notes": {"ensemble": "one system per half, copied under each seed key for paired comparisons; never separate cells", "A14 P / A17 O-fixed": "seeds 0 and 2 only"}}
+        ids = rw.ids_of(a8, {h: per[h]["seqs"] for h in HALVES}); flat = json.loads(json.dumps(res, default=str)); assert_no_ids(flat, ids, "select3")
+        for p in (ctx.out / "evaluation" / "screen_three_seeds.json", ctx.results / "screen_three_seeds.json"):
+            tet.write_json(p, flat)
+        print(json.dumps(means, indent=1), flush=True); ok = True
+    except BaseException as e:  # noqa: BLE001 - recorded, then raised again
+        note = f"{type(e).__name__}: {str(e)[:200]}"; raise
+    finally:
+        tet.ledger_append(ctx.ledger, "evaluate select three seeds (R_s1 / E_s1 inference on selection, GPU job wall time)", "gpu", started, time.time() - t0, ok, note)
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--config", required=True); ap.add_argument("--stage", choices=("calibrate", "select", "diagnostic"), required=True); ap.add_argument("--choices-sha")
+    ap.add_argument("--config", required=True); ap.add_argument("--stage", choices=("calibrate", "select", "calibrate1", "select3", "diagnostic"), required=True); ap.add_argument("--choices-sha")
+    ap.add_argument("--choices1-sha")
     ap.add_argument("--seeds", nargs="+", type=int, default=[0, 2]); ap.add_argument("--workers", type=int, default=8)
     a = ap.parse_args(); a.set = []; ctx = tet.Ctx(load_cfg(a), a.config)
     if a.stage == "calibrate":
         return calibrate(ctx, a.seeds, a.workers)
     if a.stage == "select":
         return select(ctx, a.seeds, a.choices_sha, a.workers)
+    if a.stage == "calibrate1":
+        return calibrate1(ctx, a.workers)
+    if a.stage == "select3":
+        return select3(ctx, a.choices_sha, a.choices1_sha, a.workers)
     diagnostic(ctx, a.seeds, a.workers)
 
 

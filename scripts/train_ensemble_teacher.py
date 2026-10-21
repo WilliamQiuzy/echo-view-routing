@@ -9,7 +9,8 @@ The teachers' logits come from a cache computed on the same loader batches, so n
   --cache            GPU: all three teachers' logits for every update and window of the E_s0 / E_s2 manifests
   --diagnose         CPU: teacher disagreement, q against the own teacher and CE by group on training windows
   --check            GPU: cache, q, the matched-control step against A10's live train_step, identical teachers, resume, timing
-  --queue K [K ...]  runs in order (E_s0, E_s2)
+  --queue K [K ...]  runs in order (E_s0, E_s2; after a met promotion rule R_s1 and E_s1, R = A10 R's own-teacher target)
+  --check-seed1      GPU: the seed-1 cache against live teachers and its q, before R_s1 / E_s1
 """
 from __future__ import annotations
 
@@ -92,12 +93,12 @@ def check_batch(m: dict, b) -> None:
 
 
 # ----------------------------------------------------------------------------------------------- teacher cache (GPU)
-def build_cache(ctx: Ctx, workers: int) -> None:
+def build_cache(ctx: Ctx, workers: int, seeds: tuple = SEEDS) -> None:
     t0, started, ok, note, gsec = time.time(), now(), False, "", 0.0
     try:
-        determinism(); device = torch.device("cuda"); T = {j: teacher(ctx, j, device) for j in TEACHERS}; d0 = {j: state_digest(T[j][0]) for j in TEACHERS}; U = ctx.total; index = {}
-        (ctx.out / "cache").mkdir(parents=True, exist_ok=True)
-        for s in SEEDS:
+        determinism(); device = torch.device("cuda"); T = {j: teacher(ctx, j, device) for j in TEACHERS}; d0 = {j: state_digest(T[j][0]) for j in TEACHERS}; U = ctx.total
+        (ctx.out / "cache").mkdir(parents=True, exist_ok=True); ip = ctx.out / "cache" / "index.json"; index = json.loads(ip.read_text())["seeds"] if ip.is_file() else {}
+        for s in seeds:
             m, msha = ctx.manifest(s); lg = np.zeros((len(TEACHERS), U, WINDOWS, C), np.float32); dig = np.zeros((U, WINDOWS, 32), np.uint8); seen = np.zeros(U, bool)
             for b in vsh.loader(m, ctx.a10.frame_paths(), list(range(U)), workers):
                 u = int(b[0]); check_batch(m, b); rgb, mk = tm.to_rgb(b[1].to(device, non_blocking=True)), tm.marker_planes(b[2].to(device))
@@ -124,7 +125,7 @@ def build_cache(ctx: Ctx, workers: int) -> None:
         if any(state_digest(T[j][0]) != d0[j] for j in TEACHERS):
             raise SystemExit("a teacher's state changed")
         rec = {"teachers": {f"all_s{j}": T[j][1] for j in TEACHERS}, "seeds": index, "teacher_states_unchanged": True, "config_sha256": sha256_file(ROOT / ctx.config), "gpu_seconds": gsec, "time": now()}
-        write_json(ctx.out / "cache" / "index.json", rec); ok = True; note = f"{gsec:.0f} GPU s"
+        write_json(ip, rec); ok = True; note = f"{gsec:.0f} GPU s, seeds {list(seeds)}"
     except BaseException as e:  # noqa: BLE001 - recorded, then raised again
         note = f"{type(e).__name__}: {str(e)[:200]}"; raise
     finally:
@@ -204,12 +205,12 @@ def train(ctx: Ctx, arm: str, seed: int, device, workers: int) -> dict:
         check_batch(m, b); u = int(b[0])
         if not np.array_equal(b[4].numpy(), cache["digests"][u]):
             raise SystemExit(f"update {u}: the batch differs from the cached teacher request")
-        lrs = vsh.apply_schedule(model, opt, u, ctx.warmup, ctx.total, ctx.o); r = train_step(model, heads, opt, b, target_of(cache, seed, u, "E"), "E", lrs, ctx.o, device)
+        mode = "own" if arm == "R" else "E"; lrs = vsh.apply_schedule(model, opt, u, ctx.warmup, ctx.total, ctx.o); r = train_step(model, heads, opt, b, target_of(cache, seed, u, mode), mode, lrs, ctx.o, device)
         acc.append(r); done = u + 1
         with ul.open("a") as fh:
             fh.write(json.dumps({"u": u, **{k: (round(v, 7) if isinstance(v, float) else v) for k, v in r.items()}}) + "\n")
         if done % 25 == 0:
-            write_json(rd / "progress.json", {"stage": "E student training (backward, GPU)", "identity": ident, "updates": done, "total": ctx.total, "seconds": time.time() - t0, "loss": r["loss"]})
+            write_json(rd / "progress.json", {"stage": f"{arm} student training (backward, GPU)", "identity": ident, "updates": done, "total": ctx.total, "seconds": time.time() - t0, "loss": r["loss"]})
         if done % ctx.warmup == 0:
             mean = lambda k: float(np.mean([a[k] for a in acc]))  # noqa: E731
             rec = {"updates": done, **{k: mean(k) for k in ("loss", "ce", "kl", "grad_norm")}, "accuracy": sum(a["correct"] for a in acc) / (WINDOWS * len(acc)),
@@ -345,6 +346,31 @@ def check(ctx: Ctx, device, workers: int) -> None:
         ledger_append(ctx.ledger, "check", "gpu", started, time.time() - t0, ok, note)
 
 
+def check_seed1(ctx: Ctx, device) -> None:
+    t0, started, ok, note = time.time(), now(), False, ""; out = {"started": started}
+    try:
+        determinism(); s = 1; m, _ = ctx.manifest(s); cache = load_cache(ctx, s); fp = ctx.a10.frame_paths(); T = {j: teacher(ctx, j, device) for j in TEACHERS}; diff = 0.0; ident = True
+        for u in (0, 1, ctx.warmup, 700, ctx.total - 1):
+            b = vsh.Inputs(m, fp, [u])[0]; check_batch(m, b); ident &= bool(np.array_equal(b[4].numpy(), cache["digests"][u]))
+            with torch.no_grad():
+                rgb, mk = tm.to_rgb(b[1].to(device)), tm.marker_planes(b[2].to(device))
+                for j in TEACHERS:
+                    diff = max(diff, float((T[j][0](rgb, mk).float().cpu() - torch.from_numpy(cache["logits"][j, u])).abs().max()))
+        z = torch.from_numpy(cache["logits"]).reshape(3, -1, C); lq = log_q(z)
+        out.update({"cache_against_live_max_abs": diff, "request_identity": ident, "q_min": float(lq.exp().min()), "q_sum_minus_1_max_abs": float((lq.exp().sum(-1) - 1).abs().max()),
+                    "stable_minus_direct_max_abs": float((lq.exp() - torch.softmax(z, -1).mean(0)).abs().max()), "training_path": "unchanged from the seed-0 checks (R uses the cached own-teacher target verified against A10's live train_step)"})
+        out["ok"] = ok = bool(diff == 0.0 and ident and out["q_min"] >= 0 and out["q_sum_minus_1_max_abs"] <= 1e-5 and out["stable_minus_direct_max_abs"] <= 1e-6)
+        for p in (ctx.out / "checks_seed1.json", ctx.results / "checks_seed1.json"):
+            write_json(p, out)
+        print(json.dumps(out, indent=1), flush=True)
+        if not ok:
+            raise SystemExit("a seed-1 check failed")
+    except BaseException as e:  # noqa: BLE001 - recorded, then raised again
+        note = f"{type(e).__name__}: {str(e)[:200]}"; raise
+    finally:
+        ledger_append(ctx.ledger, "check seed 1", "gpu", started, time.time() - t0, ok, note)
+
+
 def queue(ctx: Ctx, keys: list[str], device, workers: int) -> None:
     chk = json.loads((ctx.out / "checks.json").read_text())
     if not chk["ok"]:
@@ -368,15 +394,17 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--config", required=True); ap.add_argument("--workers", type=int, default=8)
     g = ap.add_mutually_exclusive_group(required=True); g.add_argument("--cache", action="store_true"); g.add_argument("--diagnose", action="store_true"); g.add_argument("--check", action="store_true")
-    g.add_argument("--queue", nargs="+")
+    g.add_argument("--queue", nargs="+"); g.add_argument("--check-seed1", action="store_true"); ap.add_argument("--cache-seeds", nargs="+", type=int, default=list(SEEDS))
     a = ap.parse_args(); a.set = []; ctx = Ctx(load_cfg(a), a.config)
     if a.cache:
-        return build_cache(ctx, a.workers)
+        return build_cache(ctx, a.workers, tuple(a.cache_seeds))
     if a.diagnose:
         return diagnose(ctx)
     device = torch.device("cuda"); determinism()
     if a.check:
         return check(ctx, device, a.workers)
+    if a.check_seed1:
+        return check_seed1(ctx, device)
     queue(ctx, a.queue, device, a.workers)
 
 
