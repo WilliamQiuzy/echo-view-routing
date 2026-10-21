@@ -1,0 +1,64 @@
+# A18, a three-model A08 probability teacher for one video student (video_ensemble_teacher_v1), 2026-10-21 UTC. This is
+# the round's one-page task and configuration, written before any A18 cache, training or evaluation output.
+# Question: can the equal-weight probability average of the three frozen A08 models, used as the KL target of A10 R's
+# stable continuation recipe, turn cross-model prediction differences into a stronger single video model? The primary
+# comparison is the student E against A10's frozen single-teacher continuation R; the three-model average is evaluated
+# on its own to separate a usable teacher increment from what the student learns. Knowledge distillation and probability
+# averaging are known methods; no algorithmic contribution is claimed. Exploratory feedback on the reused development
+# halves; the test split and EchoNet-Pediatric are not read.
+experiment: video_ensemble_teacher_v1
+
+video_ensemble_teacher:
+  predecessors:
+    A10_R: "from A08 all_s{k}, A10's switch-rich 12-window batches, CE + KL(own A08 || student), CLS + B3: +0.0013 against A08 A, no promotion; its teacher is the student's own start"
+    R09: "the old ResNet/EchoViewCLIP equal-weight fusion gave no gain and its student was never trained; this is not a first fusion and that unstarted distillation is not a negative training result"
+    A12_Raw: "A10 R's recipe reimplemented reproduced R's four cells exactly"
+    A14_A17: "the local-router configurations closed; A14 P remains the highest point estimate and A08 A + B3 the working reference"
+    change: "only the KL target: the three frozen A08 models' averaged probabilities instead of the student's own start model"
+  pinned:
+    A10_config: {path: configs/experiments/video_switch_head_v1.yaml, sha256: fb851c684450e48ebe031db0cc98bbbcbdd35b20b6ee88541489cf80d0124a58}
+    A10_manifest_index: {path: runs/video_switch_head_v1/manifests/index.json, sha256: eaf3c99a219b57ef0e063eecaa1fb84e0c56f44f0861ba2621ece3a4c7cec5a1}
+    A10_R_weights: {0: 1db6ccd42f7b7212cfc282a9c60db83ed2c98a605cc29ef6637781a7b95c044b, 2: 858c4e2580d01b2a255434110eb14a8d8231558d58ba1bb992c2951e822f4e5a}
+    A10_R_outputs: {selection: {0: 324b0ef06a11351cfcc68f9c1c98ac712f8398046bb45e107114e61d6d1cc6c1, 2: 2b3c8930769bed0e1d786a2519f1f7b58c43ab8ed9378bb8bb34b3a017da74cc}, calibration: {0: 66f546ba136c9ef1f83a68d815b371ec1dc8469030235e44c77c19e55ce687ca, 2: 25407b2537294c79d4a9c01e3ae98b8d17d5cc133dcc969c6d572c02c8c82ab5}}
+    A10_choices: {path: runs/video_switch_head_v1/evaluation/screen/choices.json, sha256: b100370dd08e29acad584a65de014370f8eeca27e62b2762bb300cacc00c8a07}
+    A10_screen: {path: docs/results/2026-10-18_video_switch_head/screen.json, sha256: 3e5348d8e2dfef5a968f9ada766e376b527a84fa1e9a5b55694271ab7ca70389}
+    A08_teachers: {0: 9b144925f32fac7d725d13231a132abeb6635fa44b6fe0dbcec7f5b59d035bbc, 1: c8b09ecaf286c7b66fc0eec69fdd102f98930aaa657a7604e3204c3845a8e172, 2: f95fed7ba78cc0b5e2474c71a156356507b4588a4b324957fd5b53fe66ee8472}
+    A08_outputs: "the development outputs of all_s0/s1/s2 pinned in video_discriminative_v1 (source.a08_all_outputs)"
+    references: {A14_screen: runs/video_local_router_v1/evaluation/screen.json, A17_screen_sha256: 0b6bc50dc0e3d05715da4d8c7ac066afb13f9f37dfdfe5b7f7504411c2406c55}
+  student_E: "per seed, A08 all_s{k} strictly loaded into the unchanged TargetMViT (EchoPrime-initialised MViTv2-S, 512-d projection, target marker, five-class classifier); A10 R's update scope, train mode and dropout; A10's unused head group kept in AdamW for the same optimiser layout (no loss, no gradient, not in inference); final inference one ordinary CLS classifier + B3; no router or switch head"
+  control_R: "A10's frozen R_s0/R_s2 with their manifests, identities, outputs and committed B3 choices, reproduced row by row; not retrained, no checkpoint choice"
+  teacher:
+    members: "A08 all_s0, all_s1 and all_s2 (all frozen, eval, no_grad; parameters and buffers unchanged), weight 1/3 each, for every student seed; no member, case, class, weight, temperature or confidence selection"
+    target: "p_j = softmax(z_j) at temperature 1 on the same full window request; q = (p_0 + p_1 + p_2) / 3, computed as log q = logsumexp_j log_softmax(z_j) - log 3 and checked against direct averaging; probabilities are averaged, never logits, argmaxes or segments"
+    inputs: "the student's original RGB batch: the same 16 frames, order, gamma, target marker, stream context and centre; no source join or development reference"
+  loss: "E: mean CE(z, target) + mean KL(q || softmax(z)), weight 1, temperature 1; R: mean CE + mean KL(p_own || softmax(z)); no smoothing, BCE, contrast, feature matching, weight or temperature search"
+  data: "A10's pinned VSH_s{k} manifests, rows 0-1,349 of 1,500 stored rows: per update 12 windows (A07's native group, the change-containing constructed group and the same-label join group, 4 each); labels, sampling and frame references unchanged; RGB from the protocol training allowlist only"
+  cache: "before training, each teacher's float32 logits for every update and window of the E_s0 and E_s2 manifests, from the same loader batches (digest-checked), A08 eval under the deterministic settings (TF32 off); raw logits and q stored with manifest and teacher identities on the server; reading the cache consumes no CPU/CUDA random numbers"
+  training_diagnostic: "before training, on training windows only: teacher disagreement, q against p_own (difference, entropy) and CE by group, with denominators; descriptive only, no start gate and no change of members, coefficients or data"
+  training: "1,350 updates, warm-up 135; A10 R's AdamW groups: encoder lr 1e-5 (frozen for u < 135, then the same warm-up/cosine factor), marker/projection/classifier lr 1e-4, head group lr 1e-3 (no gradient), weight decay 1e-4, betas (0.9, 0.999), eps 1e-8, clip 1; torch.manual_seed(seed) and cuda seed, input order and dropout as A10 R; resume records optimiser, RNG and update; final weights only"
+  checks: "A08 source weights and outputs parity; cached against live teacher logits for the same windows; request identity; q non-negative, summing to 1 and equal to direct averaging; teachers without gradient and unchanged; the cached-own-teacher path against A10's live-teacher train_step (CE/KL, logits, gradients and one update at update 0 and after unfreezing), parameters within max(1e-5, 2 x the repeat difference) and loss within 1e-4; three identical teachers reproduce the single-teacher KL and gradient; optimiser binding; encoder gradients after unfreezing; 3 + 3 resume against 6 updates; timing and budget projection"
+  evaluation:
+    selection_order: "E weights frozen first; per seed one B3 choice on calibration from the same 40 settings and feasibility (native macro-F1 >= 0.980, multi boundary recall >= 0.95); the ensemble's one B3 choice likewise; all choices committed with their sha before selection is read; R, A08, A14 P and A17 O-fixed at their committed settings"
+    primary: "E_s{k} + B3 - R_s{k} + B3"
+    references: "each seed's A08 + B3 (Base), frozen Ordered + B3, A14 P and A17 O-fixed"
+    per_cell: "multi segment F1@50 (primary), native macro-F1, both A4C/A5C directions, FP / short FP, FN / missed short true segments, boundary recall and precision, recovered / lost matched segments; better native recognition with more fragments is not a success"
+    sensitivity: "E and R decoded with the seed's A08 committed B3 setting, and plain argmax readouts; never used to pick a winner or trigger promotion"
+    ensemble: "the three frozen A08 models' same-window probability average (from their saved development logits), nearest-centre mapping and B3 with one calibration choice; one system per half, three video forwards per window, listed with its three members; never copied into seeds or counted as four cells"
+    cost: "the student's parameters, windows, forwards and a short inference timing, reported apart from the ensemble"
+    after_training: "from frozen outputs only: whether the average beats its single members, whether the student moves toward it, and whether it inherits, improves or only averages shared errors"
+  promotion_rule:
+    applies_to: "E against each seed's A08 + B3 over the 4 cells; the ensemble row never triggers anything"
+    signal: "mean dF >= +0.003"
+    no_reversal: "each half's two-seed mean >= -0.005 and no cell < -0.015"
+    no_harm: "mean native macro-F1 difference >= -0.003, mean boundary recall difference >= -0.010, missed short true segments <= Base's + 3"
+    feasibility: "both seeds' E calibration choices meet native macro-F1 >= 0.980 and multi boundary recall >= 0.95"
+    decision: "if met, seed 1 in A18's namespace (a new R_s1 with A10 R's fixed recipe and E_s1; the same three teachers; every seed-1 choice committed before its selection); otherwise A18 closes with two seeds and no temperature, member weight, teacher choice, length, head or input variant"
+  budget:
+    gpu_hours_max: 4.0             # cache, checks, two students, evaluation, failed work and an approved seed 1
+    cpu_hours_max: 3.0             # includes the agent's active wall clock and workers
+    ledger: runs/video_ensemble_teacher_v1/ledger.jsonl
+  outputs:
+    root: runs/video_ensemble_teacher_v1
+    checkpoints: checkpoints/video_ensemble_teacher_v1
+    frozen: models_frozen/video_ensemble_teacher_v1/E_s{seed}
+    results_dir: docs/results/2026-10-21_ensemble_teacher
