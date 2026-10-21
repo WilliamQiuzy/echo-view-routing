@@ -1,0 +1,49 @@
+# A15, does more training data help the local router? (video_router_data_v1), 2026-10-21 UTC. This is the round's
+# one-page task and configuration, written before any A15 pool, inference, label or router output.
+# Question: with the same 1,729-parameter P router, the same frozen candidate systems and the same evaluation budget, does
+# wider coverage of training sources and useful local replacements teach a transferable selection that improves full
+# segmentation? The only trained difference between the two arms is the data pool. Exploratory feedback on the reused
+# development halves; the check set is router-unseen but not unseen by A08/A13 and not patient-independent. The test split
+# and EchoNet-Pediatric are not read.
+experiment: video_router_data_v1
+
+video_router_data:
+  predecessors:
+    A14: "the zone router (P +0.0026 against Base; seed 0 beat both originals; seed 2 no-op); only 12-16 positive fit zones per seed, routers fit perfectly, a majority-assigned check set with 4 zones and 216 mixed streams"
+    A11_A13: "the recall/false-cut trade of the sustained-switch head"
+    R05_R06_R17_F04: "closed span reclassification, fixed-output switch-cost decoding and extra-cut refinement configurations"
+    change: "training supervision coverage (a matched small and large fit pool) and a strictly session-disjoint router check; not a new local head or a new algorithm"
+  fixed_from_A14: "Base = frozen A08 all_s{k} + B3 at A08's committed setting; Alternative = A13 H of the seed at its committed threshold (both on the same A08 eval outputs); zones (disagreement runs merged within 16 samples), the replacement action, the 52 P features, the strict single-zone full-sequence segment F1@50 utility label; no-op equals Base, accept-all equals Alternative"
+  sessions: "all protocol training sessions sorted; numpy default_rng([20261021, 15, 1]) permutation; the first 20% (rounded) are router-check, the rest router-fit; zero overlap of sessions and recordings"
+  pools:
+    generator: "echo_routing.compose.recipes.make_multi_recipes with A01's recipe parameters (n_fragments, edit_variant, edit_prob, min_len, max_len, p_same_next, reuse=True), on the training index restricted to the group's sessions"
+    large_fit: "1,500 multi streams (default_rng([20261021, 15, 2])) and 1,000 native clips (at most 200 per class, at most 2 per session, default_rng([20261021, 15, 4]))"
+    check: "600 multi streams (default_rng([20261021, 15, 3])) and 200 native clips (at most 40 per class, at most 2 per session, default_rng([20261021, 15, 5]))"
+    small_fit: "from the large fit pool, 300 multi streams (default_rng([20261021, 15, 6]) without replacement) and 200 native clips (40 per class where available, at most 2 per session, default_rng([20261021, 15, 7])); fixed before any inference"
+    shortfall: "if a native quota cannot be met under its caps, the draw takes what exists in its fixed order and the shortfall is disclosed"
+    inference: "whole sequences through V01's window plan (stride 5, 16 frames, target marker, whole-stream context) and frozen A08 eval; one pass per seed serves both pools; processed in chunks; window logits and embeddings cached with the sequence ids and A08 weight identity"
+    stop: "an arm with no positive or no negative fit zone is preparation not met; a check set without positives is reported and the round continues"
+    scale: 1.0                   # one common factor for every pool, fixed before features or labels if a timing probe exceeds a hard cap
+  routers:
+    arms: [small-P, large-P]
+    model: "A14's P: Linear(52, 32) -> GELU -> Linear(32, 1), 1,729 parameters, initialised with seed 4000 + seed (identical for both arms)"
+    training: "CPU; 1,350 updates of 128 fit zones drawn uniformly with replacement (the same base random numbers default_rng([20261021, 15, 8, seed]) mapped onto each arm's fit list); each arm's own fit mean/std normalisation and balanced BCE weights; AdamW lr 1e-3, weight decay 1e-4, warm-up 135 and cosine, clip 1; final weights"
+    check_logging: "positives and negatives separately, balanced accuracy (unavailable when a class is absent), accepted beneficial/harmful zones and the full-sequence F1 with all accepted zones applied, at 0.5 and at the calibration choice; nothing is chosen from it"
+  evaluation:
+    thresholds: "0.50, 0.60, 0.70, 0.80, 0.90, 0.95, 0.975, 0.99 and no-op; A14's feasibility rule (calibration native macro-F1 >= 0.980, multi boundary recall >= 0.95), the highest multi segment F1@50, ties to fewer accepted zones; one choice per arm and seed; choices committed before selection"
+    systems: "Base, Alternative, A14's frozen P (its committed choice), small-P, large-P; old sources reproduced row by row"
+    comparisons: ["large-P - small-P", "small-P - Base", "large-P - Base", "small-P - Alternative", "large-P - Alternative", "large-P - A14 P", "small-P - A14 P"]
+    diagnostic: "after the selection stage only, reference-assisted and never a system: per zone single-replacement utility (positive/zero/negative; recovering a true segment against deleting a false one) on fit, check and the development halves, and all individually beneficial zones applied together with full metrics recomputed"
+  third_seed_rule:               # unchanged; each new arm against the seed's Base over the 4 cells
+    signal: "mean dF >= +0.003"
+    no_reversal: "each half's two-seed mean >= -0.005 and no cell < -0.015"
+    no_harm: "mean native macro-F1 difference >= -0.003, mean boundary recall difference >= -0.010, missed short true segments <= Base's + 3"
+    decision: "if either arm meets all three, both arms get seed 1 (an A13-recipe H_s1 built in A15's namespace, its calibration choice committed before the seed-1 selection barrier) and three seeds are evaluated; otherwise close this data-expansion configuration"
+    attribution: "a data-expansion effect needs large-P ahead of small-P on development and consistent check evidence"
+  budget:
+    gpu_hours_max: 3.0
+    cpu_hours_max: 3.0           # includes the agent's active wall clock and decode/training/evaluation worker time
+    ledger: runs/video_router_data_v1/ledger.jsonl
+  outputs:
+    root: runs/video_router_data_v1
+    results_dir: docs/results/2026-10-21_router_data

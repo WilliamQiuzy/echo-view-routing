@@ -83,3 +83,16 @@ exploratory feedback. The test split and EchoNet-Pediatric were not read. Config
 - **Records.** `preparation.json` (pool, candidates, labels), `checks.json`, `choices.json` (committed before selection)
   and `screen.json` (rows, counts, zones, comparisons, accounting and the decision).
 - **Server only.** Routers and caches stay on the server.
+
+## Dated reading notes (2026-10-21, after the lead's review; the results, configuration and ledger are unchanged)
+
+1. **Seed 2.** The committed choices show more than "any edit hurts".
+   - For P, thresholds 0.50–0.95 each select a single zone that lowers calibration F1, and 0.975/0.99 select none.
+   - For V, selecting one zone leaves F1 equal to Base, so the tie-break toward fewer edits chose no-op.
+   - This does not show that every zone, or any edit, must be harmful. Not every combination of local edits was tried.
+2. **Seed 0.** Base's true segments were not entirely kept.
+   - On calibration P misses 8 segments against Base's 7.
+   - The new unmatched predictions are 2 on selection and 1 on calibration, not 2 in each half.
+   - One matched segment lost per half remains as recorded.
+3. **The fit/check split.** It assigned mixed streams by majority session share, and 216 streams span both groups. So it
+   was not a strictly session-disjoint router check. The source models had also seen these training sessions.
