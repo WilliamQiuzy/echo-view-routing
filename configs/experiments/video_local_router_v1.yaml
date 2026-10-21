@@ -1,0 +1,54 @@
+# A14, a local router between the strong B3 segmentation and the frozen sustained-switch alternative
+# (video_local_router_v1), 2026-10-21 UTC. This is the round's one-page task and configuration, written before any A14
+# computation. Question: can the local complementarity of two segmentations keep B3's true segments while adopting A13's
+# useful removals of false segments? The supervised unit is a local replacement and its effect on full segment F1. It uses
+# a known selection/residual-correction idea and claims no algorithmic contribution. Exploratory feedback on the reused
+# development halves. The test split and EchoNet-Pediatric are not read.
+experiment: video_local_router_v1
+
+video_local_router:
+  predecessors:
+    R05_R06: "probability and visual A4C/A5C reclassification of E1/ASRF candidate spans gave no strong-system gain; not restarted"
+    R17: "switch-cost/Viterbi decoding of fixed outputs"
+    F04: "extra cuts offset small short-run gains"
+    A11_A13: "the sustained-switch head; A13 kept A08's outputs fixed, cut false segments and lost short-segment recall (H +0.0015)"
+    change: "A08's strong frozen video representation, the real disagreements of B3 and A13 H, and training labels from the full-sequence segment utility of a local edit; not a first span head, not an A4C/A5C reclassifier, not FACT, not a concatenation of two cut sets"
+  systems:
+    base: "frozen A08 all_s{k} + B3 at A08's committed setting (A08 choices.json)"
+    alternative: "A13's frozen H head of the same seed with A13's committed calibration threshold (e8ccf20), decoded by A11's head decoder; fixed H for every seed"
+    shared: "both read the same frozen A08 logits and embeddings; no source decoder or threshold is retuned"
+    output_rule: "with no accepted zone the output equals Base sample by sample; agreeing samples never change; no reference, source join, file name or id is an input"
+  zones:
+    definition: "maximal runs of 10 Hz samples where Base and Alternative labels differ; neighbouring runs separated by at most 16 agreeing samples merge into one zone that includes the gap"
+    action: "replace Base labels by Alternative labels inside the zone; accepted zones are applied together once; adjacent same-class runs merge as usual; no new zone, cut or reference boundary is created"
+    tests: "synthetic: two cuts recovering a short segment, removal of a false short segment, a boundary shift, sequence ends, no disagreement, merging of neighbouring zones"
+  pool:
+    sources: "training allowlist only: 300 of the 1,500 training bank streams (numpy default_rng([20261021, 1]) without replacement) and 200 native clips, 40 per class, at most 2 per session (default_rng([20261021, 2])); the same pool for every seed"
+    inference: "whole sequences through V01's window plan (stride-5 centres, 16 frames, target marker, whole-stream context), frozen A08 eval logits and embeddings, per-sample probabilities by nearest centre; the frozen H head on the same features"
+    labels: "per zone: the sequence's segment F1@50 with Base against Base with only this zone replaced (the evaluator's matching); positive when strictly higher; TP/FP/FN deltas, short-segment and source exposure recorded"
+    split: "training sessions split 80/20 (default_rng([20261021, 3])); a native clip follows its session; a stream goes to check when at least half of its samples come from check sessions; overlap disclosed; check only logs fit and generalisation and chooses nothing"
+    stop: "if the fit set has no positive zone, the round closes as preparation not met; no pool or rule change"
+  routers:
+    P: "per zone: zone length; up to 16 samples of left and right context; Base and Alternative run counts and majority classes in the zone; agreement of the majorities with the neighbouring Base labels; A08 mean probabilities in the zone and both contexts, mean top-1 margin and entropy in the zone, and the JS divergences zone/left and zone/right"
+    V: "P's features plus the per-sample (nearest-centre) unit A08 embeddings pooled over the zone and both contexts: zone - left and right - zone differences (2 x 512), their norms and the zone/left and zone/right cosine distances"
+    normalisation: "fit-set mean and standard deviation per feature, applied unchanged to check and development"
+    model: "Linear(d, 32) -> GELU -> Linear(32, 1), built under fork_rng with seed 4000 + seed (P) and 5000 + seed (V); parameter counts disclosed"
+    training: "CPU; 1,350 updates of 128 fit zones drawn uniformly with replacement (the same draws for P and V, default_rng([20261021, 4, seed])); BCE with positive and negative weights balanced from fit counts; AdamW lr 1e-3, weight decay 1e-4, warm-up 135 and cosine, clip 1; final weights"
+  evaluation:
+    thresholds: "acceptance thresholds 0.50, 0.60, 0.70, 0.80, 0.90, 0.95, 0.975, 0.99 and an explicit no-op (reject all); identical for P and V; chosen once on calibration with A08's feasibility rule (native macro-F1 >= 0.980, multi boundary recall >= 0.95) and the highest multi segment F1@50, ties to fewer accepted zones"
+    barrier: "calibration choices committed locally before any selection output is read"
+    systems: "Base, Alternative, accept-all, P router and V router; no-op must reproduce Base and accept-all must reproduce Alternative"
+    reported: "multi segment F1@50, FP and short FP, FN and missed short true segments, boundary recall/precision, native macro-F1 (measured), A4C->A5C and A5C->A4C, recovered/lost segments, candidate and accepted zones, matched Base segments broken by accepted zones"
+    comparisons: ["P - A08 A", "V - A08 A", "P - A13 H", "V - A13 H", "V - P"]
+  third_seed_rule:               # fixed before any A14 output; each router against the seed's A08 A + B3 over the 4 cells
+    signal: "mean dF >= +0.003"
+    no_reversal: "each half's two-seed mean >= -0.005 and no cell < -0.015"
+    no_harm: "mean native macro-F1 difference >= -0.003, mean boundary recall difference >= -0.010, missed short true segments <= A08 A's + 3"
+    decision: "if P or V meets all three, build seed 1 in A14's namespace (A13's recipe for an H head, its calibration choice fixed before the selection barrier, the pool features and both routers) and evaluate three seeds; otherwise close this local-router configuration"
+  budget:
+    gpu_hours_max: 3.0
+    cpu_hours_max: 3.0           # includes the agent's active wall clock and worker time
+    ledger: runs/video_local_router_v1/ledger.jsonl
+  outputs:
+    root: runs/video_local_router_v1
+    results_dir: docs/results/2026-10-21_local_router
