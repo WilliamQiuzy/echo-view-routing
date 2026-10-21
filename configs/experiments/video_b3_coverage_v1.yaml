@@ -1,0 +1,46 @@
+# A19, wider data coverage for choosing the B3 decoder point of frozen video models (video_b3_coverage_v1), 2026-10-21
+# UTC. This is the round's one-page task and configuration, written before any A19 inference, choice or evaluation output.
+# Question: with the same nine frozen video models and the same 40 B3 settings, does choosing each model's setting on
+# A15's large training-source pool instead of its small pool give a full-segmentation gain that transfers? No video
+# encoder or new network is trained; only existing B3 parameters are chosen. The router-check sessions are unseen by the
+# choice but their recordings trained the video models and were used in earlier exploration, so they are not a new
+# holdout and not patient-independent; the development halves are reused exploratory feedback. The test split and
+# EchoNet-Pediatric are not read.
+experiment: video_b3_coverage_v1
+
+video_b3_coverage:
+  predecessors:
+    working_point: "A09-R1/A10/A11 showed working-point transfer risk; A15's better router ranking gave no segmentation gain; A16/A17's fixed points kept selection gains that the calibration choice gave up; A18's E - R was +0.0006 with its own choices and +0.0034 at A08's fixed setting, with reversed cells"
+    change: "only the data used to choose each model's B3 setting (A15 small-fit against A15 large-fit); the B3 formula, grid, quantisation, feasibility, criterion and tie-break are unchanged"
+  models:
+    A08: {0: 9b144925f32fac7d725d13231a132abeb6635fa44b6fe0dbcec7f5b59d035bbc, 1: c8b09ecaf286c7b66fc0eec69fdd102f98930aaa657a7604e3204c3845a8e172, 2: f95fed7ba78cc0b5e2474c71a156356507b4588a4b324957fd5b53fe66ee8472}
+    R: {0: 1db6ccd42f7b7212cfc282a9c60db83ed2c98a605cc29ef6637781a7b95c044b, 1: 19ac49074dd96cec11487512d2058555aa88ef5a7e4eaf3d56ff3d1c7d079211, 2: 858c4e2580d01b2a255434110eb14a8d8231558d58ba1bb992c2951e822f4e5a}
+    E: {0: d994c9550e32f18d59ebb9eda63b1d94eb6b1e5e6e0aa2e38853437dde36daa7, 1: f1ce9253c6e1de44c527440e8d52dbedc621739f15177e914667071a1b518235, 2: 5b301b574b6c26bd815f2550938ea1d0cffdee688dc6fc0174cf7fe833096b09}
+    sources: "A08 models_frozen/video_within_view_v1/all_s{k}; R_s0/R_s2 models_frozen/video_switch_head_v1 (A10); R_s1 and E_s{k} models_frozen/video_ensemble_teacher_v1 (A18); all nine fixed now, eval, no_grad, no new training and no third-seed rule"
+    old_choices: {A08: {path: docs/results/2026-10-16_video_within_view/choices.json, sha256: b2a731e5f4393187ee9954f710821ac04938652f0a7d00e0381ad0b8b21cf27e}, A10: {path: runs/video_switch_head_v1/evaluation/screen/choices.json, sha256: b100370dd08e29acad584a65de014370f8eeca27e62b2762bb300cacc00c8a07}, A18: {seeds_0_2: 2069924a17f08a7285dea9aba4a68f84c3e321ed7fa1f1eda3ac86875d2be8cf, seed_1: e7bd4a11a2c0a1478fef264eb85fe5cc7daec93cd86d5eeb7903d7213d18bcbd}}
+  pools:
+    source: "configs/experiments/video_router_data_v1.yaml and A15's pinned manifest (runs/video_router_data_v1/pool_manifest.json, sha256 5ab124d48f48f826fd0b52542cf8cf1aa7f97e0f6b82327358406cf574a14050), rebuilt and checked against its digest"
+    large: "large-fit: 1,500 multi streams and the actual 887 native clips (quota shortfall kept)"
+    small: "small-fit: the fixed 300 multi streams and 200 native clips inside large-fit"
+    check: "600 multi streams and 200 native clips from the 100 router-check sessions (no shared session or recording with fit)"
+    use: "whole sequences with reference labels only; no A15 zone, router label, positive filter, score or utility; references from the protocol training allowlist; V01's window plan (16 frames, stride 5, target marker, gamma, whole-stream context, nearest-centre mapping)"
+  inference: "A15's cached A08 all_s0/all_s2 window logits reused only where the weight identity, frame request, order, marker, gamma and centres match; the other seven models one frozen eval/no_grad forward over the pool's windows, 5-class float32 logits only, chunked with one frame decode shared by the models; no embedding, head or duplicate RGB cache"
+  selection: "per model and pool, scripts/report_center_supervision.py::b3_choose's procedure: the 40 B3 settings of the A08 configuration's decode_grids.b3 (half_window 5, 7, 9, 11, 15 x threshold_quantile 0.8-0.999 x nms_radius 5), numeric thresholds from the quantiles of the pool's own native JS boundary scores, every setting evaluated on that pool, feasibility native macro-F1 >= 0.980 and multi boundary recall >= 0.95, highest multi segment F1@50, ties to the lower order; the pool has no pair streams, so its pair tables are empty and pair metrics are not used; infeasible is recorded as infeasible with no fallback"
+  frozen_choice: "half_window, numeric threshold, quantile, NMS radius, order, denominators, feasible count and pool sha; applied unchanged to the check pool and both development halves (no quantile recomputed on target data, no separate choice)"
+  order: "this configuration first; fit inference; all 18 choices (9 models x 2 pools) committed and their sha verified; then the check pool and both development halves evaluated together once"
+  checks: "old weights, choices and caches pinned; A15 pool rebuilt exactly, small inside large, fit/check sessions and recordings disjoint, no development, test or Pediatric sequence; every sequence and window present, class order unchanged; reused cache against fresh online logits for a random small batch (TF32 off, parity 1e-4); model states unchanged, no optimiser or backward; the selector reproduces the old committed B3 choices on the old calibration inputs; thresholds never recomputed on check or development; old A08/R/E development rows reproduced"
+  evaluation:
+    primary: "large, fixed before any output; small is the matched coverage control; the old committed B3 choices and each seed's A08 setting are references outside the new choice"
+    comparisons: ["large - small for every model (check per seed; development per seed and half)", "E-large - R-large", "E-large - A08-large", "E-large - Base (A08 + B3 at A08's committed setting)", "E-large - A14 P on seeds 0 and 2 only (four cells)"]
+    per_cell: "multi segment F1@50, native macro-F1, both A4C/A5C directions, boundary recall and precision, FP / short FP, FN / missed short true segments, recovered / lost matched segments; denominators kept per pool and half; fewer cuts that lose true segments are not a gain"
+    attribution: "an improvement is attributed to more selection data only with same-direction cross-seed evidence on both the check pool and selection; paired bootstrap intervals over constructed streams are exploratory, not session-independent; three seeds are not three patient sets"
+    candidate_criterion: "E-large against Base over the six cells: mean dF >= +0.003, each half's mean >= -0.005, no cell < -0.015, native macro-F1 mean difference >= -0.003, boundary recall >= -0.010, missed short true segments <= Base's + 3, and each seed's development calibration row meeting native >= 0.980 and boundary recall >= 0.95; it does not replace E-large - R-large and passing it does not declare a new strongest model"
+    closure: "one evaluation of the fixed 18 choices, then the round closes whatever the result; no model, pool, grid, regularised selector or training is added"
+  a18_note: "a dated A18 addendum: with CE + KL(q || p) both at weight 1, a freely fitted isolated window's optimum is (one_hot(y) + q) / 2, so a larger window L1 to q is descriptive only; the ensemble is one system per half (real counts per half; calibration against its members +0.0010 / -0.0048 / 0.0)"
+  budget:
+    gpu_hours_max: 4.0
+    cpu_hours_max: 3.0             # includes decode and evaluation workers outside GPU jobs and the agent's active wall clock
+    ledger: runs/video_b3_coverage_v1/ledger.jsonl
+  outputs:
+    root: runs/video_b3_coverage_v1
+    results_dir: docs/results/2026-10-21_b3_coverage
