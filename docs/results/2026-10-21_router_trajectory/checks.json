@@ -1,0 +1,81 @@
+{
+ "pins": [
+  "A15 choices",
+  "A15 manifest",
+  "A15 preparation",
+  "A15 screen",
+  "A16 U_s0",
+  "A16 U_s2",
+  "A16 choices",
+  "A16 screen",
+  "candidates_s0",
+  "candidates_s2",
+  "large-P_s0",
+  "large-P_s2",
+  "preds_s0",
+  "preds_s2",
+  "windows_s0",
+  "windows_s2"
+ ],
+ "rebuilt_equal_A15": {
+  "0": {
+   "base": true,
+   "alternative": true,
+   "zones": true,
+   "features_bitwise": true
+  },
+  "2": {
+   "base": true,
+   "alternative": true,
+   "zones": true,
+   "features_bitwise": true
+  }
+ },
+ "tensors_rebuilt_equal": true,
+ "O_S_regions": {
+  "same_members": true,
+  "same_channel_sums": true,
+  "regions_reordered": 1346
+ },
+ "reference_isolation": true,
+ "synthetic": {
+  "empty_left": {
+   "length": 20,
+   "left": 0,
+   "zone": 4,
+   "right": 16,
+   "padding_max_abs_diff": 0.0
+  },
+  "empty_right": {
+   "length": 20,
+   "left": 16,
+   "zone": 4,
+   "right": 0,
+   "padding_max_abs_diff": 0.0
+  },
+  "long_zone": {
+   "length": 40,
+   "left": 10,
+   "zone": 20,
+   "right": 10,
+   "padding_max_abs_diff": 0.0
+  },
+  "ok": true
+ },
+ "parameters": 4385,
+ "identical_starts": true,
+ "optimiser_only_router": true,
+ "zero_label_gradient_nonzero": true,
+ "identical_batches": true,
+ "resume": {
+  "loss_equal": true,
+  "params_equal": true
+ },
+ "noop_equals_base": true,
+ "all_equals_alternative": true,
+ "budget": {
+  "gpu_spent": 0.0,
+  "cpu_spent": 0.0050661391682095
+ },
+ "ok": true
+}
