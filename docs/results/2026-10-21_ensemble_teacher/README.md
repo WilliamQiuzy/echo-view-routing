@@ -150,3 +150,15 @@ they compare with the per-seed sums.
   - `screen_two_seeds.json` with `decision_two_seeds.json`, then `screen_three_seeds.json` and `diagnostic.json`.
 - **Frozen models.** `models_frozen/video_ensemble_teacher_v1/{E_s0,E_s1,E_s2,R_s1}`.
 - **Server only.** Teacher caches, development outputs and all per-sequence data.
+
+## Dated reading notes (2026-10-21, after the lead's review; the results, configuration and verdicts are unchanged)
+
+1. **What the loss pulls toward.** E's loss is CE(z, y) + KL(q || softmax(z)), both at weight 1. For one isolated window
+   that the model could fit freely, the minimum is at softmax(z) = (one_hot(y) + q) / 2, not at q. So the larger window
+   L1 distance to q after training is a description only. It does not show that the distillation failed to optimise, or
+   that it optimised badly.
+2. **The ensemble's real counts.** The ensemble is one system per half. Its real counts are 23 false segments (9 short)
+   and 15 missed (5 short) on selection, and 12 (9) and 5 (3) on calibration. The count columns of the three-seed table
+   repeat these three times, for comparison only. They are not three seeds or three times the sequences.
+3. **The ensemble against its members on calibration.** It is +0.0010 against all_s0, −0.0048 against all_s1 and 0.0
+   against all_s2. "About level with each member" is too general.
