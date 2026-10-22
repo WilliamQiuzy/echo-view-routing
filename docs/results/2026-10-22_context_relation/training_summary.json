@@ -1,0 +1,167 @@
+{
+ "stage": "training summary",
+ "seeds": [
+  0,
+  2
+ ],
+ "runs": {
+  "OtherRel_s0": {
+   "all": {
+    "updates": 1350,
+    "loss": 0.7182788966666667,
+    "ce_original": 0.1186159528888889,
+    "kl": 0.0491683165925926,
+    "ce_copy": 0.49048962955555553,
+    "rel": 0.06000499637037037,
+    "accuracy_original": 0.9646296296296296,
+    "accuracy_copy": 0.8286419753086419
+   },
+   "encoder frozen (u < warm-up)": {
+    "updates": 135,
+    "loss": 1.5523914074074072,
+    "ce_original": 0.15749823777777777,
+    "kl": 0.013735285185185185,
+    "ce_copy": 1.3416822859259259,
+    "rel": 0.03947559999999999,
+    "accuracy_original": 0.95,
+    "accuracy_copy": 0.519753086419753
+   },
+   "last 270 updates": {
+    "updates": 270,
+    "loss": 0.44946668999999995,
+    "ce_original": 0.10917080074074073,
+    "kl": 0.06185154333333334,
+    "ce_copy": 0.21394592888888886,
+    "rel": 0.06449841925925925,
+    "accuracy_original": 0.9682098765432099,
+    "accuracy_copy": 0.9373456790123457
+   }
+  },
+  "SameRel_s0": {
+   "all": {
+    "updates": 1350,
+    "loss": 0.19680129585185185,
+    "ce_original": 0.10822086274074073,
+    "kl": 0.01919682585185185,
+    "ce_copy": 0.04062171911111111,
+    "rel": 0.028761887407407406,
+    "accuracy_original": 0.964320987654321,
+    "accuracy_copy": 0.9879629629629629
+   },
+   "encoder frozen (u < warm-up)": {
+    "updates": 135,
+    "loss": 0.2534369451851852,
+    "ce_original": 0.14457112444444445,
+    "kl": 0.011274414814814816,
+    "ce_copy": 0.06415466222222223,
+    "rel": 0.03343674666666666,
+    "accuracy_original": 0.9506172839506173,
+    "accuracy_copy": 0.9808641975308642
+   },
+   "last 270 updates": {
+    "updates": 270,
+    "loss": 0.19560275444444444,
+    "ce_original": 0.11115968074074074,
+    "kl": 0.018209027407407406,
+    "ce_copy": 0.042066454814814816,
+    "rel": 0.024167585185185185,
+    "accuracy_original": 0.9638888888888889,
+    "accuracy_copy": 0.9861111111111112
+   }
+  },
+  "OtherRel - SameRel s0": {
+   "all": {
+    "mean_ce_original_difference": 0.010395090148148147,
+    "correct_original_difference": 5
+   },
+   "encoder frozen (u < warm-up)": {
+    "mean_ce_original_difference": 0.012927113333333332,
+    "correct_original_difference": -1
+   },
+   "last 270 updates": {
+    "mean_ce_original_difference": -0.0019888799999999997,
+    "correct_original_difference": 14
+   }
+  },
+  "OtherRel_s2": {
+   "all": {
+    "updates": 1350,
+    "loss": 0.6537766982962963,
+    "ce_original": 0.11353741740740741,
+    "kl": 0.04909506177777778,
+    "ce_copy": 0.43248882192592597,
+    "rel": 0.058655398592592584,
+    "accuracy_original": 0.9646296296296296,
+    "accuracy_copy": 0.8532716049382716
+   },
+   "encoder frozen (u < warm-up)": {
+    "updates": 135,
+    "loss": 1.4518906970370369,
+    "ce_original": 0.13369118148148146,
+    "kl": 0.011489922222222221,
+    "ce_copy": 1.2729967362962962,
+    "rel": 0.03371285333333334,
+    "accuracy_original": 0.9586419753086419,
+    "accuracy_copy": 0.5395061728395062
+   },
+   "last 270 updates": {
+    "updates": 270,
+    "loss": 0.42921774000000007,
+    "ce_original": 0.10235744555555555,
+    "kl": 0.052670349259259265,
+    "ce_copy": 0.2145458388888889,
+    "rel": 0.059644111111111106,
+    "accuracy_original": 0.9666666666666667,
+    "accuracy_copy": 0.9324074074074075
+   }
+  },
+  "SameRel_s2": {
+   "all": {
+    "updates": 1350,
+    "loss": 0.19433707614814816,
+    "ce_original": 0.11016457155555555,
+    "kl": 0.017491552888888887,
+    "ce_copy": 0.039919286222222225,
+    "rel": 0.026761666148148143,
+    "accuracy_original": 0.9656172839506173,
+    "accuracy_copy": 0.9883333333333333
+   },
+   "encoder frozen (u < warm-up)": {
+    "updates": 135,
+    "loss": 0.20134386814814814,
+    "ce_original": 0.1239373311111111,
+    "kl": 0.008860053333333335,
+    "ce_copy": 0.04084103481481481,
+    "rel": 0.027705448148148147,
+    "accuracy_original": 0.9586419753086419,
+    "accuracy_copy": 0.9907407407407407
+   },
+   "last 270 updates": {
+    "updates": 270,
+    "loss": 0.1853446825925926,
+    "ce_original": 0.10232029444444445,
+    "kl": 0.016684746296296297,
+    "ce_copy": 0.04293554148148148,
+    "rel": 0.023404103703703702,
+    "accuracy_original": 0.9700617283950618,
+    "accuracy_copy": 0.9867283950617284
+   }
+  },
+  "OtherRel - SameRel s2": {
+   "all": {
+    "mean_ce_original_difference": 0.0033728458518518523,
+    "correct_original_difference": -16
+   },
+   "encoder frozen (u < warm-up)": {
+    "mean_ce_original_difference": 0.009753850370370371,
+    "correct_original_difference": 0
+   },
+   "last 270 updates": {
+    "mean_ce_original_difference": 3.715111111110949e-05,
+    "correct_original_difference": -11
+   }
+  }
+ },
+ "notes": "training windows only; both arms see the same 12 originals each update (with the relation term); their copies differ in the donor's view; models diverge after the first update",
+ "time": "2026-10-22T23:32:52Z"
+}
