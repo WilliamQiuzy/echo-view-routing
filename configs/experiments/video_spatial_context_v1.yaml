@@ -1,0 +1,75 @@
+# A21, extra spatial context for the single CLS video model (video_spatial_context_v1), 2026-10-22 UTC. This is the
+# round's one-page task and configuration, written before any A21 preparation, check, training or evaluation output.
+# Question: keeping A08's original centre view, does also showing the whole frame (an auxiliary view through the same
+# shared encoder, residual fusion) reduce recognition errors on high-loss windows and give a full-segmentation gain that
+# keeps short true segments without adding short false ones? Full against Restricted (same capacity, compute, loss,
+# teacher, batches and random layout; the auxiliary view can or cannot see pixels outside the old centre crop) isolates
+# the extra visible area. A conventional dual-view / residual-fusion test; no algorithmic contribution is claimed. Two
+# encoder forwards per window at deployment; never an equal-compute or one-forward claim against A08.
+# Geometry fact (lead's spot check of 20 protocol-train JPEG headers, all 320x240): crop_uint8 resizes the short side to
+# 256 (341x256) and keeps the centre 224x224, 57.48% of the area. Extra pixels may be background, black borders or screen
+# text; any Full gain is first attributed to the extra visible RGB area, not named anatomy.
+# The check pool's sessions are unseen by training, but its recordings trained the A08 encoder: not a new holdout. The
+# development halves are reused exploratory feedback; the test split and EchoNet-Pediatric are not read.
+experiment: video_spatial_context_v1
+
+video_spatial_context:
+  predecessors:
+    not_repeated: "R13 (target-logit residual on E1 image embeddings + temporal Transformer, no new spatial input); V02 (readouts of the same video tokens); A02-A04 (time-token supervision/readout); R15/A12 (replace the input by fan/Pro; A12's short Pro adaptation had no gain, which shows neither that the crop drops cardiac structure nor that KL limited adaptation); A20 (H = U in 83-84% of updates closed only that constrained replay configuration)"
+    changed_condition: "a new visible RGB area (the whole short-side-256 frame) added beside the unchanged centre view, original labels, no Pro, no supplier algorithm, no replacement of the centre branch"
+  pinned:
+    A10_config: {path: configs/experiments/video_switch_head_v1.yaml, sha256: fb851c684450e48ebe031db0cc98bbbcbdd35b20b6ee88541489cf80d0124a58}
+    A10_manifest_index: {path: runs/video_switch_head_v1/manifests/index.json, sha256: eaf3c99a219b57ef0e063eecaa1fb84e0c56f44f0861ba2621ece3a4c7cec5a1}
+    A08_weights: {0: 9b144925f32fac7d725d13231a132abeb6635fa44b6fe0dbcec7f5b59d035bbc, 1: c8b09ecaf286c7b66fc0eec69fdd102f98930aaa657a7604e3204c3845a8e172, 2: f95fed7ba78cc0b5e2474c71a156356507b4588a4b324957fd5b53fe66ee8472}
+    A08_choices: {path: docs/results/2026-10-16_video_within_view/choices.json, sha256: b2a731e5f4393187ee9954f710821ac04938652f0a7d00e0381ad0b8b21cf27e}
+    A18_teacher_cache: {0: ecdd3512b0b98960b0dbed81cc8b4f2246958d58b03f40edb3b0f8552af8b1e4, 1: a28acb739f4c943680eb49caa3c3b7fc525334ed8134c3aa04c0ec088f068332, 2: d096f765e071048021ec2b0962e1c6e3c821e772802af11abc9e5a10a4fb5831}
+    crop_code: {path: echo_routing/temporal/joint_visual.py, sha256: 6aa655fda17b7f24c948183bc7bd20a075fdd01c7966a59922a3ffea47a6f048, function: crop_uint8 / load_frame_u8}
+    A15_pool_manifest: {path: runs/video_router_data_v1/pool_manifest.json, sha256: 5ab124d48f48f826fd0b52542cf8cf1aa7f97e0f6b82327358406cf574a14050}
+    A19_screen: {path: runs/video_b3_coverage_v1/screen.json, sha256: 8a66a0f5cedff15ff88b69791979aed6cfa7eae5431611a87f2776e5699021fe}
+    A20_screen: {path: docs/results/2026-10-22_hard_replay/screen.json, sha256: 53d2f22adca111a1d1e44cea42b3fc9cc837ef4233f36989eb101ae919b55eb1}
+  arms:
+    model: "per seed, A08 all_s{k} strictly loaded into the unchanged TargetMViT (EchoPrime-initialised, task-trained MViTv2-S, 16 RGB frames, target marker, 512-d projection, five-class CLS); one shared encoder/marker for both views (the same parameter objects, registered once)"
+    forward: "e_crop = model.embed(crop, marker), then e_aux = model.embed(aux, marker); z = classifier(e_crop) + g(concat(e_crop, e_aux)); g = Linear(1024, 32) -> GELU -> Linear(32, 5); no gate, LayerNorm, probability fusion or extra loss"
+    g_init: "first layer weight N(0, 0.02^2) from torch.Generator seeded 2100 + seed (independent of the global RNG), bias 0; last layer weight and bias 0; identical in both arms, so at the start eval z equals A08's crop logits"
+    Full: "aux = the whole intermediate image R fitted into 224x224"
+    Restricted: "aux = R with every pixel outside the old centre 224x224 rectangle replaced by RGB(29,28,29) before resizing, then the identical fit"
+    only_difference: "whether aux can see pixels outside the old centre crop; parameters, forwards, loss, teacher, batches, RNG layout and schedule are identical"
+  pixels:
+    source: "V01's original JPEG paths, the same 10 Hz sampling and constructed streams; source frame, time index, gamma, target and 16-frame order inherited unchanged; no Pro, predictions, view labels or whole-recording ROI fitting; never an upscaled 224 crop"
+    R: "per frame: RGB, the original gamma LUT, then crop_uint8's resize (short side 256, its max(224, round()) sizes, PIL BILINEAR); crop = R's exact centre 224x224 (left/top = (W-224)//2, (H-224)//2) and must equal load_frame_u8 bit for bit"
+    fit: "R (or masked R) resized with PIL BILINEAR so the long side is 224 and the other side Python round(side x 224 / long), pasted at ((224-w)//2, (224-h)//2) on a 224x224 RGB(29,28,29) canvas (an odd difference leaves the extra pixel right/bottom)"
+    fill: "RGB(29,28,29) = EchoPrime's 0-255 mean rounded; all inputs keep the original 0-255 mean/std normalisation, so the fill is near, not exactly, 0 after normalisation"
+    per_frame: "geometry is taken from each frame's own source size; windows mixing sources or sizes are assembled in the original request order"
+    marker: "the same target slot, 224x224, in both views and arms"
+  data:
+    batches: "A10's pinned VSH manifests, rows 0-1,349 per seed: 4 native, 4 change-containing constructed, 4 same-label join = 12 windows per update; targets, frames, markers and gamma identical across arms; no A20 replay, no development error list, no new stream draw"
+    teacher: "the seed's frozen A08 on the crop view (eval, no_grad), from A18's verified own-teacher cache (logits[seed], pinned sha, manifest sha and request digests checked; cached against online parity re-checked)"
+  loss: "mean CE(z, target) + mean KL(p_own A08 crop || softmax(z)), weight 1, temperature 1; no auxiliary classification, smoothing, contrast or boundary loss; no coefficient search"
+  training: "Full_s0, Restricted_s0, Full_s2, Restricted_s2: 1,350 updates, warm-up 135; AdamW groups: encoder incl. the 512-d projection lr 1e-5 (requires_grad off for u < 135, then warm-up/cosine as A10), marker stem + classifier 1e-4, g 1e-3; weight decay 1e-4, betas (0.9, 0.999), eps 1e-8, clip 1 over all trainable parameters; torch.manual_seed(seed) and CUDA seed after model creation, the same in both arms, crop forward before aux forward; one 12-window two-view forward per update (no accumulation unless memory forces a fixed identical microbatch layout); final weights and full resume state only, no best-checkpoint, schedule or freezing variant; training data only for monitoring"
+  checks: "source pins, the 12 base windows and teacher-cache identity; crop pixels bit-equal to load_frame_u8 on real requests; start eval logits equal A08's (g last layer 0); train-mode crop logits and student RNG equal across arms at the start; synthetic geometry (non-square R, outside perturbed: crop and Restricted aux unchanged bit for bit, Full aux changed; several aspect ratios, odd padding, mixed-size windows, gamma, real-request correspondence); training-manifest summary of Full/Restricted aux differences (windows, pixels), extra-area share, extra-region pixel variation and source sizes (identical inputs everywhere = preparation not met); teacher without gradient and unchanged; g last layer gradient at step 1, g first layer and the aux path after it moves; encoder frozen/unfrozen states; one parameter object per shared tensor, optimiser groups registered once; synthetic Full = Restricted inputs reproduce loss, gradients and update; 3 + 3 resume against 6 updates (loss <= 1e-4, parameters <= max(1e-5, 2 x repeat difference)); two-view throughput, memory and budget projection (evaluation and seed 1 reserved)"
+  evaluation:
+    primary: "Full@A08 and Restricted@A08: each seed's committed A08 B3 numeric setting, unchanged formula, NMS, nearest-centre mapping and segment naming"
+    attribution: "Full - Restricted isolates the extra visible area; Full/Restricted - A08 + B3 (Base) tests the final system; A10 R is background, never the matched control"
+    sensitivity: "one own-calibration choice per new model from the standard 40 settings, and argmax; weights sha and all choices committed (git object checked) before selection or the check pool is read; never used for promotion"
+    development: "both halves; A08, frozen Ordered, A14 P (seeds 0/2, its four cells only) and A20 U/H frozen development rows reproduced"
+    check_pool: "A15's 600 multi + 200 native, once after the commits, primary decode; A08 from the pinned A19/A15 pool logits (A19 rows reproduced); not used to select anything"
+    rows: "multi segment F1@50, native macro-F1, both A4C/A5C directions, boundary recall and precision, FP / short FP, FN / missed short true segments, recovered / lost matched segments; window accuracy and CE by pure/mixed, short-run/other and A08 right/wrong"
+    cost: "per arm real parameter count, two encoder forwards per window, measured inference time and memory, against A08's one forward and A18's three-model average"
+    success: "fixing windows only, or recovering true segments while adding short false ones, is not a full success"
+  promotion_rule:
+    applies_to: "Full@A08 or Restricted@A08 against each seed's A08 + B3 over the 4 cells"
+    signal: "mean dF >= +0.003"
+    no_reversal: "each half's two-seed mean >= -0.005 and no cell < -0.015"
+    no_harm: "mean native macro-F1 difference >= -0.003, mean boundary recall difference >= -0.010, missed short true segments <= Base's + 3"
+    feasibility: "each seed's primary calibration row meets native >= 0.980 and multi boundary recall >= 0.95"
+    decision: "if either arm meets all, Full_s1 and Restricted_s1 by the same recipe in A21's namespace without asking, weights and choices committed before their selection; otherwise A21 closes with two seeds and no input, crop, head, teacher or schedule variant"
+    attribution: "an information gain from the extra area needs paired Full - Restricted full-segmentation evidence that keeps recognition, true boundaries and short segments; a shared change is a common dual-view / residual / continuation effect"
+  budget:
+    gpu_hours_max: 6.0
+    cpu_hours_max: 4.0             # agent active wall clock and decode/evaluation workers outside GPU time; GPU-job loaders not double-booked (A18-A20)
+    ledger: runs/video_spatial_context_v1/ledger.jsonl
+  outputs:
+    root: runs/video_spatial_context_v1
+    checkpoints: checkpoints/video_spatial_context_v1
+    frozen: models_frozen/video_spatial_context_v1/{Full,Restricted}_s{seed}
+    results_dir: docs/results/2026-10-22_spatial_context
