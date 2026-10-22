@@ -1,0 +1,71 @@
+# A23, same-target context intervention for the single CLS video model (video_context_intervention_v1), 2026-10-22 UTC.
+# This is the round's one-page task and configuration, written before any A23 preparation, check, training or evaluation
+# output. Question: can the prediction for a given target time be made robust to interfering context, keeping the stable
+# correct predictions and the true short segments, by training the A08 video model on copies of its own training targets
+# whose context (outside a protected local run of real target frames) is replaced by another view's real frames? The
+# matched control trains on the identical copies with the context replaced by the target's own view from another
+# session, so seams, slots, extra samples, loss and compute are equal and only the context's view differs.
+# History: R10 (2026-10-05) probed frozen B7 with paired same-view / other-view context replacement and found that
+# other-view context pulls the centre; its proposed training was never run (gate). No round has trained a video model
+# under same-target context interventions. A08's neighbour smoothing, A02's dense time-token supervision, A20's replay of
+# existing windows, A21's spatial branch and A22's short support are different conditions and are not rerun. This is a
+# conventional counterfactual-augmentation test; no algorithmic contribution is claimed.
+# Copies contain synthetic recording joins; they are training inputs, not continuous scans. The check pool's sessions
+# are unseen by the batches, but its recordings trained the A08 encoder: not a new holdout. The development halves are
+# reused exploratory feedback; the test split and EchoNet-Pediatric are not read.
+experiment: video_context_intervention_v1
+
+video_context_intervention:
+  predecessors:
+    learned: "A09/A09-R1 native gains did not become segmentation; A10/A11/A13 switch evidence recovered short segments but continuation degraded the class path; A14-A17 local routing closed; A18/A19 teacher averaging and decoder points move results by about the model-change size; A20 replay recalled short segments with more short false ones; A21 extra spatial area added nothing; A22 short support improved mixed windows but broke pure ones"
+    changed_condition: "paired same-target counterfactual inputs in training: the target's protected local run is kept, only the surrounding context is replaced; the deployed input layout (16 frames at 10 Hz, target marker) and one encoder forward are unchanged"
+  pinned:
+    A10_config: {path: configs/experiments/video_switch_head_v1.yaml, sha256: fb851c684450e48ebe031db0cc98bbbcbdd35b20b6ee88541489cf80d0124a58}
+    A10_manifest_index: {path: runs/video_switch_head_v1/manifests/index.json, sha256: eaf3c99a219b57ef0e063eecaa1fb84e0c56f44f0861ba2621ece3a4c7cec5a1}
+    A08_weights: {0: 9b144925f32fac7d725d13231a132abeb6635fa44b6fe0dbcec7f5b59d035bbc, 1: c8b09ecaf286c7b66fc0eec69fdd102f98930aaa657a7604e3204c3845a8e172, 2: f95fed7ba78cc0b5e2474c71a156356507b4588a4b324957fd5b53fe66ee8472}
+    A08_choices: {path: docs/results/2026-10-16_video_within_view/choices.json, sha256: b2a731e5f4393187ee9954f710821ac04938652f0a7d00e0381ad0b8b21cf27e}
+    A18_teacher_cache: {0: ecdd3512b0b98960b0dbed81cc8b4f2246958d58b03f40edb3b0f8552af8b1e4, 1: a28acb739f4c943680eb49caa3c3b7fc525334ed8134c3aa04c0ec088f068332, 2: d096f765e071048021ec2b0962e1c6e3c821e772802af11abc9e5a10a4fb5831}
+    Long10_R_weights: {0: 1db6ccd42f7b7212cfc282a9c60db83ed2c98a605cc29ef6637781a7b95c044b, 1: 19ac49074dd96cec11487512d2058555aa88ef5a7e4eaf3d56ff3d1c7d079211, 2: 858c4e2580d01b2a255434110eb14a8d8231558d58ba1bb992c2951e822f4e5a}
+    A15_pool_manifest: {path: runs/video_router_data_v1/pool_manifest.json, sha256: 5ab124d48f48f826fd0b52542cf8cf1aa7f97e0f6b82327358406cf574a14050}
+    A19_screen: {path: runs/video_b3_coverage_v1/screen.json, sha256: 8a66a0f5cedff15ff88b69791979aed6cfa7eae5431611a87f2776e5699021fe}
+    A19_logits_index: {path: runs/video_b3_coverage_v1/logits/index.json, sha256: f380668e4adef2ed9a70d4fcd66caf9c738913051934095865090ee6e8058901}
+    A18_screen: {path: runs/video_ensemble_teacher_v1/evaluation/screen.json, sha256: 8fe99e0eb74775d4001d4eca43fcef122d266160f1952626f5822596578db16f}
+    A20_screen: {path: docs/results/2026-10-22_hard_replay/screen.json, sha256: 53d2f22adca111a1d1e44cea42b3fc9cc837ef4233f36989eb101ae919b55eb1}
+  arms:
+    model: "per seed, A08 all_s{k} strictly loaded into the unchanged TargetMViT (34,640,549 parameters); no branch, head, token or gate; one CLS forward per window at deployment"
+    Other: "each update: A10's 12 pinned windows (rows 0-1,349) plus one intervened copy of each of the same 12 targets whose context comes from a training recording of a different view"
+    Same: "identical copies, context from a training recording of the target's own view and a different session"
+    only_difference: "the view of the donor recording; protected runs, replaced slots, donor offsets rule, gamma, seams, labels, extra samples, loss, forwards, schedule and RNG are identical"
+  intervention:
+    protected: "the maximal run of slots around the marker slot m inside [m - 4, m + 3] whose samples carry the target's label and are continuous in the original stream (same fragment, no join between them, positions equal or consecutive); at most 8 slots; the target sample and its frames are never altered"
+    context: "every other slot of the copy; the slots before the run take donor samples o .. o+nL-1 and the slots after it o+nL .. o+nL+nR-1 in slot order (one real contiguous run of the donor's own 10 Hz plan at gamma 1.0, never another video's frame index treated as time)"
+    donor: "per (seed, u, w) from numpy default_rng([20261022, 23, seed, u, w]): a protocol-train native recording with at least nL + nR samples, Other: label != target label; Same: label == target label and session != the target sample's session; the same draws (index into the sorted eligible list by the same uniform, then offset) in both arms"
+    labels: "the copy's target and label are the original target's; the protected run keeps its real frames, so the label stays legal; labels choose donors only; no label, boundary, source or join input reaches the model"
+    marker: "the original marker slot"
+  loss: "mean over the 12 originals of CE + KL(own A08 on the original window || student) (A18's cached teacher), plus mean over the 12 copies of CE with the target label; weights 1, temperature 1; no teacher on copies, no consistency term, no other loss"
+  training: "Other_s0, Same_s0, Other_s2, Same_s2: 1,350 updates of 24 windows (12 originals + 12 copies) in one forward/backward; A10's AdamW groups (encoder incl. projection 1e-5 frozen for u < 135, marker/classifier 1e-4, unused head group kept for layout), weight decay 1e-4, betas (0.9, 0.999), eps 1e-8, clip 1, warm-up/cosine; torch.manual_seed(seed) and CUDA seed as A10; final weights only; training monitored on training data only"
+  checks: "configuration committed before any output; originals equal A10's windows and digests; protected runs legal (labels, continuity, marker inside); donors protocol-train natives with the right label/session relation and enough samples; copies differ from originals outside the run only; both arms share runs, offsets and slot layout; pixel digests; teacher cache parity and state; forced Other = Same copies reproduce loss, gradients and update; optimiser binding, encoder freeze/unfreeze, real gradients; 3 + 3 resume against 6 updates (loss <= 1e-4, parameters <= max(1e-5, 2 x repeat difference)); throughput and budget projection (evaluation and seed 1 reserved; an over-cap fixed comparison is recorded as not completed)"
+  evaluation:
+    primary: "Other@A08 and Same@A08: each seed's committed A08 B3 numeric setting; the deployed input is the original 16-frame window"
+    attribution: "Other - Same isolates training under interfering-view context; Other/Same - Base tests the system and the common continuation; Long10 R@A08 (A10/A18 R), A14 P and A20 H@A08 are frozen background rows"
+    sensitivity: "one own-calibration choice per model (standard 40 settings) and argmax; final weights sha and all choices committed (git object checked) before selection or the check pool is read; never used for promotion"
+    development: "both halves, full denominators; A08, frozen Ordered, Long10 R, A14 P and A20 U/H rows reproduced"
+    check_pool: "A15's 600 multi + 200 native once after the commits; A08 and Long10 R from A19's pinned pool logits and rows"
+    rows: "multi segment F1@50, native macro-F1, both A4C/A5C directions, boundary recall/precision, FP / short FP, FN / missed short true, recovered / lost matched segments; window CE / accuracy and kept / fixed / broken counts in the original A08-defined pure/mixed, short/other, A08 right/wrong groups"
+  promotion_rule:
+    applies_to: "Other@A08 or Same@A08 against each seed's A08 + B3 over the 4 cells"
+    signal: "mean dF >= +0.003"
+    no_reversal: "each half's two-seed mean >= -0.005 and no cell < -0.015"
+    no_harm: "mean native macro-F1 difference >= -0.003, mean boundary recall difference >= -0.010, missed short true segments <= Base's + 3"
+    feasibility: "each seed's primary calibration row meets native >= 0.980 and multi boundary recall >= 0.95"
+    decision: "if either arm meets all, Other_s1 and Same_s1 by the same recipe without asking, seed-1 choices committed before its selection; otherwise A23 closes with two seeds and no mechanism, coefficient, teacher, input-branch or schedule variant"
+    attribution: "robustness to interfering context needs matched Other - Same full-segmentation evidence that keeps stable predictions and short true segments; a shared change is a common copy / continuation effect"
+  budget:
+    gpu_hours_max: 6.0
+    cpu_hours_max: 4.0             # agent active wall clock and decode/evaluation workers outside GPU time; GPU-job loaders not double-booked (A18-A22)
+    ledger: runs/video_context_intervention_v1/ledger.jsonl
+  outputs:
+    root: runs/video_context_intervention_v1
+    checkpoints: checkpoints/video_context_intervention_v1
+    frozen: models_frozen/video_context_intervention_v1/{Other,Same}_s{seed}
+    results_dir: docs/results/2026-10-22_context_intervention
