@@ -1,0 +1,97 @@
+{
+ "config_sha256": "fa56a108fb7ebe3c327ba246eafc265e339a73da5b3d73ac50510d7970a4b51d",
+ "started": "2026-10-22T17:17:02Z",
+ "synthetic_runs": {
+  "cases": {
+   "inside one run (cap 8)": true,
+   "label change on the left": true,
+   "fragment join on the right": true,
+   "repeated positions": true,
+   "window start": true,
+   "window end": true,
+   "copy keeps the run and fills the rest in order": true
+  },
+  "ok": true
+ },
+ "legality": {
+  "s0": {
+   "copies": 16200,
+   "violations": {}
+  },
+  "s2": {
+   "copies": 16200,
+   "violations": {}
+  },
+  "ok": true
+ },
+ "pixels": {
+  "Other": {
+   "copies": 24,
+   "protected_equal": 24,
+   "context_equal": 24
+  },
+  "Same": {
+   "copies": 24,
+   "protected_equal": 24,
+   "context_equal": 24
+  },
+  "ok": true
+ },
+ "teacher": {
+  "cached_against_online_max_abs": 0.0,
+  "windows": 72,
+  "unchanged": true,
+  "ok": true
+ },
+ "forced_other_equals_same": {
+  "loss_max_abs": 0.0,
+  "params_max_abs": 1.1641532182693481e-10,
+  "ok": true
+ },
+ "resume": {
+  "updates": [
+   133,
+   134,
+   135,
+   136,
+   137,
+   138
+  ],
+  "loss_max_abs": 1.1920928955078125e-06,
+  "params_max_abs": 1.9136816263198853e-05,
+  "repeat_params_max_abs": 1.909583806991577e-05,
+  "ok": true
+ },
+ "encoder": {
+  "grad_max_before_warmup": [
+   0.0,
+   0.0
+  ],
+  "grad_max_after": [
+   0.03407587856054306,
+   0.048191316425800323,
+   0.044558022171258926,
+   0.04489194601774216
+  ],
+  "ok": true
+ },
+ "optimiser_bound": {
+  "ok": true
+ },
+ "timing": {
+  "seconds_per_update": 1.4167950749397278,
+  "peak_gpu_memory_mib": 36444.16748046875
+ },
+ "budget": {
+  "spent": 0.0,
+  "inference_seconds_per_window": 0.015331953763961792,
+  "evaluation_per_model_hours": 0.13995518460869788,
+  "per_run_hours": 0.5312981531023979,
+  "projection_two_seeds": 2.6850133508443834,
+  "seed1_reserve": 1.3425066754221917,
+  "cap": 6.0,
+  "fits_with_seed1": true
+ },
+ "ok": true,
+ "finished": "2026-10-22T17:18:01Z"
+}
