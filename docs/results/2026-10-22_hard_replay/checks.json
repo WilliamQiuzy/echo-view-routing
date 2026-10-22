@@ -1,0 +1,57 @@
+{
+ "config_sha256": "4dd651c4fd557132fe3ec0f430cfbc5c7982be3208fa8b8202d2cc951734d024",
+ "started": "2026-10-22T02:09:35Z",
+ "base_12_equal_A10": true,
+ "cached_teacher_against_online": {
+  "U": {
+   "windows": 64,
+   "max_abs": 2.86102294921875e-06,
+   "argmax_equal": true,
+   "ok": true
+  },
+  "H": {
+   "windows": 64,
+   "max_abs": 2.86102294921875e-06,
+   "argmax_equal": true,
+   "ok": true
+  }
+ },
+ "teacher": {
+  "unchanged": true,
+  "with_grad": 0
+ },
+ "sampling_recomputed_equal": true,
+ "U_H_constraints": {
+  "same_stream": true,
+  "same_bucket_and_parity": true,
+  "same_tuple": true,
+  "all_mixed": true,
+  "H_in_top_quarter": true,
+  "large_fit_only": true
+ },
+ "forced_H_equals_U": {
+  "loss_max_abs": 0.0,
+  "params_max_abs": 4.76837158203125e-07,
+  "grads_max_abs": 1.1175870895385742e-08
+ },
+ "encoder_gradient_after_unfreezing": true,
+ "encoder_frozen_before": true,
+ "optimiser_bound": true,
+ "resume": {
+  "loss_max_abs": 4.470348358154297e-07,
+  "params_max_abs": 5.9671707276720554e-05,
+  "repeat_params_max_abs": 5.9665639128070325e-05,
+  "ok": true
+ },
+ "timing": {
+  "seconds_per_update": 0.9551693665981293
+ },
+ "budget": {
+  "spent": 0.02158472180366516,
+  "projection_four_runs_plus_evaluation": 2.154338771700859,
+  "seed1_reserve": 1.066377024948597,
+  "cap": 4.0
+ },
+ "ok": true,
+ "finished": "2026-10-22T02:10:41Z"
+}
