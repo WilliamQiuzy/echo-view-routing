@@ -1,0 +1,69 @@
+# A20, hard-position replay for the single CLS video model (video_hard_replay_v1), 2026-10-22 UTC. This is the round's
+# one-page task and configuration, written before any A20 preparation, training or evaluation output.
+# Question: keeping A10's switch-dense 12-window batches, does adding a 4-window replay group drawn from positions where
+# the frozen A08 classifies badly (H) give a stronger single CLS video model than the same replay drawn uniformly (U)?
+# Hard-example training is a known method; no algorithmic contribution is claimed. Shared misses of several models are
+# examples of residual errors, not proof that no decoder could fix them, and window discrimination is not shown to be the
+# bottleneck. The check pool's sessions are unseen by the replay but its recordings trained the video encoders, so it is
+# not a new holdout; the development halves are reused exploratory feedback; the test split and EchoNet-Pediatric are
+# not read.
+experiment: video_hard_replay_v1
+
+video_hard_replay:
+  predecessors:
+    history: "A09/R1 native resampling lost segmentation; A11's hard negatives served a switch head and changed the classification path; A14-A17 local routers; A18's multi-teacher target changed the top class on ~0.8% of training windows without a matched single-model gain; A19's wider decoder-choice data gave no gain"
+    change: "the video classifier's extra supervision is aimed at training windows that the frozen A08 finds hard, with true target classes; not routing or decoding, and not A11's head BCE renamed"
+  pinned:
+    A10_config: {path: configs/experiments/video_switch_head_v1.yaml, sha256: fb851c684450e48ebe031db0cc98bbbcbdd35b20b6ee88541489cf80d0124a58}
+    A10_manifest_index: {path: runs/video_switch_head_v1/manifests/index.json, sha256: eaf3c99a219b57ef0e063eecaa1fb84e0c56f44f0861ba2621ece3a4c7cec5a1}
+    A08_weights: {0: 9b144925f32fac7d725d13231a132abeb6635fa44b6fe0dbcec7f5b59d035bbc, 1: c8b09ecaf286c7b66fc0eec69fdd102f98930aaa657a7604e3204c3845a8e172, 2: f95fed7ba78cc0b5e2474c71a156356507b4588a4b324957fd5b53fe66ee8472}
+    A08_choices: {path: docs/results/2026-10-16_video_within_view/choices.json, sha256: b2a731e5f4393187ee9954f710821ac04938652f0a7d00e0381ad0b8b21cf27e}
+    A18_teacher_cache: {0: ecdd3512b0b98960b0dbed81cc8b4f2246958d58b03f40edb3b0f8552af8b1e4, 1: a28acb739f4c943680eb49caa3c3b7fc525334ed8134c3aa04c0ec088f068332, 2: d096f765e071048021ec2b0962e1c6e3c821e772802af11abc9e5a10a4fb5831}
+    A15_pool_manifest: {path: runs/video_router_data_v1/pool_manifest.json, sha256: 5ab124d48f48f826fd0b52542cf8cf1aa7f97e0f6b82327358406cf574a14050}
+    A08_pool_logits: {0: "A15 windows_s0.npz 2a6b53aed829e64c7ea23dfdee8bbfa473bf383525f341b214f0731532cf7cd4", 1: "A19 logits/A08_s1.npz 2d32527d44ce32c4320c6a4d3da5c6be9a6b8083dd0f072edccbc76d8af30181", 2: "A15 windows_s2.npz c21becbd8188a326f2405e53185fb0d0fb6efc087fa494510d124b5ada3198a8"}
+  arms:
+    U: "uniform-position replay"
+    H: "hard-position replay from the same stream, short bucket and target-class tuple"
+    model: "per seed, A08 all_s{k} strictly loaded into the unchanged TargetMViT (EchoPrime-initialised MViTv2-S, 16 RGB frames, target marker, 512-d projection, five-class CLS); one CLS forward + B3 at deployment"
+    batch: "per update A10's pinned 12 windows of VSH rows 0-1,349 unchanged (native 4, change-containing constructed 4, same-label join 4) plus one 4-window replay group = 16 windows; the 12 are never replaced"
+    loss: "both arms, all 16 windows: mean CE + mean KL(p_own A08 || p_student), weight 1, temperature 1; own teacher = the seed's frozen A08 (eval, no_grad); no extra window weight, smoothing, BCE, contrast, margin, time token or head"
+    references: "A10 R and A18 R are background (12 windows), not the matched control; U against H is the matched comparison"
+  replay_pool:
+    source: "the 1,500 multi streams of A15's large-fit pool only (no check, calibration, selection, test or Pediatric sequence; no native clips added; no development error list)"
+    groups: "every 4 adjacent stride-5 windows of each whole multi stream's window plan, with the original 16-frame context, gamma, marker and frame references; all four windows present"
+    mixed: "at least one of the four windows' 16-frame reference labels holds two or more views; only mixed groups are candidates"
+    short: "at least one of the four targets lies in a true label run of at most 16 samples (runs over the whole stream's labels; neighbouring same-label fragments form one run)"
+    difficulty: "the seed's own A08 mean CE (stable log_softmax, true target) over the four requests, from the pinned A08 pool logits reused by request identity; computed once before training"
+  sampling:
+    rng: "numpy default_rng([20261021, 20, seed]); per update three uniforms (stream, U group, H pick) drawn in that order; no torch or CUDA random numbers"
+    bucket: "update u even: short candidates; odd: non-short candidates"
+    U: "a stream drawn uniformly among streams with candidates in the bucket; one candidate drawn uniformly in that stream and bucket"
+    H: "in the same stream and bucket, the candidates with U's four-target class tuple, sorted by A08 mean CE descending (ties by earlier centre), the top ceil(n/4), one drawn uniformly; n = 1 gives H = U (counted)"
+    stop: "an empty short bucket is preparation not met; no other start gate"
+    record: "H = U share, n = 1 share, CE distributions, class tuples, short/mixed shares, A08 error rate, unique requests, source recordings and sessions, maximum reuse; manifests frozen before training, mappings and scores server-only"
+  training: "U_s0, H_s0, U_s2, H_s2: 1,350 updates, warm-up 135; A10's AdamW groups (encoder lr 1e-5 frozen for u < 135 then warm-up/cosine; marker/projection/classifier 1e-4; unused head group kept, no loss or gradient), weight decay 1e-4, betas (0.9, 0.999), eps 1e-8, clip 1; torch.manual_seed(seed) and cuda seed as A10; final weights only; teacher logits cached (base 12 from A18's cache, replay 4 from the A08 pool logits) after identity checks"
+  checks: "cached against online teacher logits for a small 16-window batch (float32, TF32 off); teacher without gradient and unchanged; the 12 base windows equal A10's; U/H constraints and scores recomputed independently; allowlist and no check sequence; optimiser binding and encoder gradients after unfreezing; H forced to U reproduces U's loss, gradients and update; 3 + 3 resume against 6 updates (loss <= 1e-4, parameters <= max(1e-5, 2 x repeat difference)); 16-window timing and budget projection"
+  evaluation:
+    primary: "U/H@A08: every new model decoded with its seed's committed A08 B3 numeric setting, pinned here"
+    sensitivity: "one own-calibration choice per new model from the standard 40 settings and plain argmax readouts; choices and final weight sha committed before selection or the check pool is read; never used for promotion or to change the primary"
+    development: "both halves; old A08, frozen Ordered, A10/A18 R and A14 P rows reproduced; A14 P compared only on its seeds 0 and 2"
+    check_pool: "A15's 600 multi + 200 native, once after the commits, primary B3 = A08's numeric setting, full denominators"
+    window_groups: "window accuracy and CE on check and development by fixed groups: mixed against pure, short run against other, A08 originally wrong against right"
+    per_cell: "multi segment F1@50 (primary), native macro-F1, both A4C/A5C directions, boundary recall and precision, FP / short FP, FN / missed short true segments, recovered / lost matched segments; H - U is the hard-sampling attribution, U/H - A08 the full-system test"
+  promotion_rule:
+    applies_to: "U@A08 or H@A08 against each seed's A08 + B3 over the 4 cells"
+    signal: "mean dF >= +0.003"
+    no_reversal: "each half's two-seed mean >= -0.005 and no cell < -0.015"
+    no_harm: "mean native macro-F1 difference >= -0.003, mean boundary recall difference >= -0.010, missed short true segments <= Base's + 3"
+    feasibility: "each seed's primary calibration row meets native >= 0.980 and multi boundary recall >= 0.95"
+    decision: "if U or H meets all, U_s1 and H_s1 by the same recipe in A20's namespace (A08_s1 teacher and pool logits), their weights and choices committed before their selection; otherwise A20 closes with two seeds and no ratio, CE weight, re-mining or length variant"
+    attribution: "hard-position training is supported only by matched cross-seed H - U full-segmentation evidence without new harm; a shared U and H change is a common replay effect"
+  budget:
+    gpu_hours_max: 4.0
+    cpu_hours_max: 3.0             # agent active wall clock and decode/evaluation workers outside GPU time; GPU-job loaders not double-booked
+    ledger: runs/video_hard_replay_v1/ledger.jsonl
+  outputs:
+    root: runs/video_hard_replay_v1
+    checkpoints: checkpoints/video_hard_replay_v1
+    frozen: models_frozen/video_hard_replay_v1/{U,H}_s{seed}
+    results_dir: docs/results/2026-10-22_hard_replay
