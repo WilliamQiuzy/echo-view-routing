@@ -1,0 +1,63 @@
+# A24, teacher-referenced neighbour relation on top of the A23 context interventions (video_context_relation_v1),
+# 2026-10-22 UTC. One-page task and configuration, written before any A24 preparation, check, training or evaluation output.
+# Question: while keeping the local recognition that A23's context interventions bought, does a training term on the
+# relation between neighbouring predictions -- the student's change between consecutive original windows should follow
+# the frozen own A08's change there -- stop stable segments from being cut by scattered errors and raise full
+# segmentation? The term allows every switch that A08 itself makes and penalises only changes A08 does not make.
+# Predecessors: A23 (36dabaa; Other - Same negative in all six cells; window gains with pure-segment flips); A22 (the same
+# pattern with short support); A08 (MS-TCN's truncated squared log-probability penalty towards zero change, all or
+# label-masked neighbours, closed with post-A08's R2 reading: the penalty dominated gradients); A05/A07 (transcript /
+# segment-balanced objectives, closed). Differences: the target change is the frozen A08's own change, not zero; no labels,
+# mask, truncation or log-probability; probabilities; only the originals' truly consecutive windows; on A23's fixed
+# intervention batches. Not a per-window KL restatement: a constant offset from the teacher costs nothing, only changes in
+# the residual between neighbours do. A conventional consistency term; no algorithmic contribution is claimed.
+# The check pool is not a new holdout; development halves are reused exploratory feedback; test and Pediatric not read.
+experiment: video_context_relation_v1
+
+video_context_relation:
+  pinned:
+    A23_config: {path: configs/experiments/video_context_intervention_v1.yaml, sha256: fa56a108fb7ebe3c327ba246eafc265e339a73da5b3d73ac50510d7970a4b51d}
+    A23_manifest_index: {path: runs/video_context_intervention_v1/manifests/index.json, sha256: 6566a1b2b8b6d39f178e2284d7b10c909c5fb007419a760def1b72f825678fe2}
+    A23_manifests: {Other_s0: 2308d84d363c08f70f8e62bb50f0a3bcb0bb47fdfaae16639623e062fac53bd8, Same_s0: b0146af57f80bfaf647dc828f89c97644827c87a926a3c85a63ef3be05fb80cf, Other_s2: 4a5f6c2e95edfaab598ff72d2a083b723a346edafeb88a3033e5f5ae7e5c788d, Same_s2: c5c79de492da687c1eef86d6ea4b535e726f38ef22de887b861f82d748d71d56}
+    A23_weights: {Other_s0: d4fdcf48ef2f7fdeea9dfb4ef24f23e2ddd66012a5bee46e38de8ca36a0e5ea8, Same_s0: d594fe90ea275aa25af885fe9430c565f2c54ae327ea4f8a3722138a7dae5711, Other_s2: 6d2571b17aceba0c17f15fdc4f06ec505f31b640b922c44fcfd6e5e328467d42, Same_s2: ebce3644b18d720d7ab49500be2788e7555464a01748589d958e9c2084d8a8fc}
+    A23_screen: {path: docs/results/2026-10-22_context_intervention/screen.json, sha256: 3bd860f25c8d2d9e356b7e935e6b1296462b6dee878d64acba6ae37d1c8b92ef}
+    A08_weights: {0: 9b144925f32fac7d725d13231a132abeb6635fa44b6fe0dbcec7f5b59d035bbc, 1: c8b09ecaf286c7b66fc0eec69fdd102f98930aaa657a7604e3204c3845a8e172, 2: f95fed7ba78cc0b5e2474c71a156356507b4588a4b324957fd5b53fe66ee8472}
+    A18_teacher_cache: {0: ecdd3512b0b98960b0dbed81cc8b4f2246958d58b03f40edb3b0f8552af8b1e4, 1: a28acb739f4c943680eb49caa3c3b7fc525334ed8134c3aa04c0ec088f068332, 2: d096f765e071048021ec2b0962e1c6e3c821e772802af11abc9e5a10a4fb5831}
+    reused: "A23's pins (A10 configuration and manifests, A08 choices, A15 pool, A19/A18/A20 screens and logits) through A23's verified context"
+  arms:
+    OtherRel: "A23 Other exactly (its fixed seed manifest, 12 originals + 12 other-view copies, CE + KL on originals, CE on copies) plus lambda * Rel"
+    SameRel: "A23 Same exactly (same-view copies) plus lambda * Rel"
+    zero_relation_references: "A23's frozen Other_s{0,2} and Same_s{0,2}, never retrained; their outputs, choices and rows reused after identity checks"
+    model: "A08 all_s{k} strictly loaded into the unchanged TargetMViT; one CLS forward per window; no head, branch, router or decoder change"
+  relation:
+    pairs: "only between consecutive windows of the same group among the 12 originals (3 groups x 4 windows: native, change-containing constructed, same-label join; each group is one sequence with consecutive centres, 3 pairs per group, 9 per update); never across groups and never on copies (independent donors are not continuous)"
+    term: "Rel = mean over the 9 pairs of 0.5 * sum_k | (p_i - p_{i-1})_k - (q_i - q_{i-1})_k |, p = softmax(student logits), q = softmax(the cached own A08 teacher logits on the same original windows), q detached; both student endpoints receive gradient; a pair of identical windows (clip-end repeat) contributes 0"
+    coefficient: "lambda = 1.0, fixed once; no scale normalisation from data"
+    labels: "none; labels only define the existing groups; inference reads no label, boundary, donor, source, join or purity input"
+  loss: "L = mean_originals(CE) + mean_originals(KL(q || p)) + mean_copies(CE) + lambda * Rel"
+  training: "OtherRel_s0, SameRel_s0, OtherRel_s2, SameRel_s2 from A08 all_s{k}: A23's 24-window update, optimiser, schedule, seeds, initialisation and batch order (1,350 updates, warm-up 135, encoder incl. projection 1e-5 frozen for u < 135, marker/classifier 1e-4, unused head group kept); final weights only; the all-protocol-train frame-path table"
+  checks: "configuration committed before any output; A23 manifests and frozen weights verified by sha; Rel recomputed independently on small examples (p = q gives 0; an offset from q gives 0; a teacher switch followed by the student gives 0; a new student jump is penalised); group pairs and order; teacher detached and cached-online parity; lambda = 0 path reproduces A23 Other_s0's logged losses over updates 0-136 (including after unfreezing) within 1e-4; optimiser binding, encoder freeze/unfreeze, real gradients; forced OtherRel = SameRel inputs reproduce; 3 + 3 resume against 6 (loss <= 1e-4, parameters <= max(1e-5, 2 x repeat)); the Rel term's size and its gradient norm against CE disclosed; timing and budget projection with evaluation and seed 1 reserved"
+  evaluation:
+    primary: "OtherRel@A08 and SameRel@A08 at each seed's committed A08 B3 numeric setting; A23 Other@A08/Same@A08, Base, Long10 R@A08, A14 P and A20 H@A08 as frozen rows (reproduced)"
+    comparisons: "OtherRel - SameRel (the intervention under the relation term); OtherRel - A23 Other and SameRel - A23 Same (the relation term); their difference (the interaction); every arm against Base, A14 P (seeds 0/2) and A20 H"
+    sensitivity: "one own-calibration choice per new model (standard 40 settings) and argmax; final weights sha and all choices committed (git object checked) before selection or the check pool is read; never used for promotion"
+    check_pool: "A15's 600 multi + 200 native once after the commits; A08 and Long10 R from A19's pool logits; A23 Other/Same from A23's saved check outputs"
+    rows: "multi segment F1@50, native macro-F1, both A4C/A5C directions, boundary recall/precision, FP / short FP, FN / missed short true, recovered / lost matched segments; window CE / accuracy, kept / fixed / broken in the original A08 groups"
+    flips: "fixed definitions on every target set: a flip is an argmax change between consecutive request windows of a sequence; pure flips are flips between two pure windows (16-frame labels one view) of the same label, and new pure flips are those where the seed's A08 does not flip; boundary errors are wrong windows whose centre lies within 8 samples of a true label change, far errors the rest"
+  promotion_rule:
+    applies_to: "OtherRel@A08 or SameRel@A08 against each seed's A08 + B3 over the 4 cells"
+    signal: "mean dF >= +0.003"
+    no_reversal: "each half's two-seed mean >= -0.005 and no cell < -0.015"
+    no_harm: "mean native macro-F1 difference >= -0.003, mean boundary recall difference >= -0.010, missed short true segments <= Base's + 3"
+    feasibility: "each seed's primary calibration row meets native >= 0.980 and multi boundary recall >= 0.95"
+    decision: "if either arm meets all, OtherRel_s1 and SameRel_s1 by the same recipe (seed-1 manifests built by A23's unchanged builder in this namespace), their choices committed before their selection; A23 references stay seeds 0/2 only; otherwise A24 closes with two seeds and no coefficient, loss, input, teacher or schedule variant"
+    attribution: "the relation term's effect needs matched new-arm - A23-arm evidence; an intervention gain under the term needs OtherRel - SameRel evidence; a shared change is a common relation effect; OtherRel only repairing A23's loss while staying below Base is not success"
+  budget:
+    gpu_hours_max: 6.0
+    cpu_hours_max: 4.0             # agent active wall clock and decode/evaluation workers outside GPU time; GPU-job loaders not double-booked
+    ledger: runs/video_context_relation_v1/ledger.jsonl
+  outputs:
+    root: runs/video_context_relation_v1
+    checkpoints: checkpoints/video_context_relation_v1
+    frozen: models_frozen/video_context_relation_v1/{OtherRel,SameRel}_s{seed}
+    results_dir: docs/results/2026-10-22_context_relation
