@@ -1,0 +1,173 @@
+{
+ "stage": "training summary",
+ "seeds": [
+  0,
+  2
+ ],
+ "runs": {
+  "Repeated_s0": {
+   "all": {
+    "updates": 1350,
+    "loss": 0.19398635088888888,
+    "ce": 0.13807790385185184,
+    "kl": 0.05590844659259259,
+    "acc_native": 0.9751851851851852,
+    "acc_change": 0.9309259259259259,
+    "acc_join": 0.9698148148148148,
+    "accuracy": 0.9586419753086419
+   },
+   "encoder frozen (u < warm-up)": {
+    "updates": 135,
+    "loss": 0.32220010666666665,
+    "ce": 0.2265323740740741,
+    "kl": 0.09566773407407407,
+    "acc_native": 0.9611111111111111,
+    "acc_change": 0.8962962962962963,
+    "acc_join": 0.95,
+    "accuracy": 0.9358024691358025
+   },
+   "last 270 updates": {
+    "updates": 270,
+    "loss": 0.16721372185185185,
+    "ce": 0.12965343074074073,
+    "kl": 0.03756028962962963,
+    "acc_native": 0.9777777777777777,
+    "acc_change": 0.9361111111111111,
+    "acc_join": 0.975925925925926,
+    "accuracy": 0.9632716049382716
+   }
+  },
+  "Interleaved_s0": {
+   "all": {
+    "updates": 1350,
+    "loss": 0.17760286125925925,
+    "ce": 0.1285691245925926,
+    "kl": 0.04903373866666666,
+    "acc_native": 0.9761111111111112,
+    "acc_change": 0.9351851851851852,
+    "acc_join": 0.9707407407407408,
+    "accuracy": 0.960679012345679
+   },
+   "encoder frozen (u < warm-up)": {
+    "updates": 135,
+    "loss": 0.2517601229629629,
+    "ce": 0.18519147037037037,
+    "kl": 0.06656866222222223,
+    "acc_native": 0.9648148148148148,
+    "acc_change": 0.9055555555555556,
+    "acc_join": 0.9444444444444444,
+    "accuracy": 0.9382716049382716
+   },
+   "last 270 updates": {
+    "updates": 270,
+    "loss": 0.16534786407407406,
+    "ce": 0.1265228022222222,
+    "kl": 0.03882505592592593,
+    "acc_native": 0.975,
+    "acc_change": 0.9407407407407408,
+    "acc_join": 0.975925925925926,
+    "accuracy": 0.9638888888888889
+   }
+  },
+  "Interleaved - Repeated s0": {
+   "all": {
+    "mean_ce_difference": -0.00950877925925926,
+    "share_interleaved_lower": 0.5785185185185185,
+    "correct_difference": 33
+   },
+   "encoder frozen (u < warm-up)": {
+    "mean_ce_difference": -0.04134090370370371,
+    "share_interleaved_lower": 0.725925925925926,
+    "correct_difference": 4
+   },
+   "last 270 updates": {
+    "mean_ce_difference": -0.00313062851851852,
+    "share_interleaved_lower": 0.562962962962963,
+    "correct_difference": 2
+   }
+  },
+  "Repeated_s2": {
+   "all": {
+    "updates": 1350,
+    "loss": 0.18490594133333332,
+    "ce": 0.13418767533333334,
+    "kl": 0.0507182654074074,
+    "acc_native": 0.9777777777777777,
+    "acc_change": 0.9296296296296296,
+    "acc_join": 0.9679629629629629,
+    "accuracy": 0.9584567901234567
+   },
+   "encoder frozen (u < warm-up)": {
+    "updates": 135,
+    "loss": 0.275187137037037,
+    "ce": 0.1920490237037037,
+    "kl": 0.08313812074074076,
+    "acc_native": 0.9685185185185186,
+    "acc_change": 0.9092592592592592,
+    "acc_join": 0.9685185185185186,
+    "accuracy": 0.9487654320987654
+   },
+   "last 270 updates": {
+    "updates": 270,
+    "loss": 0.16484110555555556,
+    "ce": 0.12333406185185185,
+    "kl": 0.04150703962962963,
+    "acc_native": 0.9777777777777777,
+    "acc_change": 0.9351851851851852,
+    "acc_join": 0.9685185185185186,
+    "accuracy": 0.9604938271604938
+   }
+  },
+  "Interleaved_s2": {
+   "all": {
+    "updates": 1350,
+    "loss": 0.1720745080740741,
+    "ce": 0.12662236311111114,
+    "kl": 0.04545214362962963,
+    "acc_native": 0.9788888888888889,
+    "acc_change": 0.9287037037037037,
+    "acc_join": 0.9701851851851852,
+    "accuracy": 0.9592592592592593
+   },
+   "encoder frozen (u < warm-up)": {
+    "updates": 135,
+    "loss": 0.20312711037037035,
+    "ce": 0.15089912962962965,
+    "kl": 0.052227985185185184,
+    "acc_native": 0.9796296296296296,
+    "acc_change": 0.9111111111111111,
+    "acc_join": 0.9833333333333333,
+    "accuracy": 0.9580246913580247
+   },
+   "last 270 updates": {
+    "updates": 270,
+    "loss": 0.1562182251851852,
+    "ce": 0.11774408777777778,
+    "kl": 0.03847413555555556,
+    "acc_native": 0.9796296296296296,
+    "acc_change": 0.9324074074074075,
+    "acc_join": 0.9731481481481481,
+    "accuracy": 0.9617283950617284
+   }
+  },
+  "Interleaved - Repeated s2": {
+   "all": {
+    "mean_ce_difference": -0.0075653122222222235,
+    "share_interleaved_lower": 0.5392592592592592,
+    "correct_difference": 13
+   },
+   "encoder frozen (u < warm-up)": {
+    "mean_ce_difference": -0.04114989407407408,
+    "share_interleaved_lower": 0.8074074074074075,
+    "correct_difference": 15
+   },
+   "last 270 updates": {
+    "mean_ce_difference": -0.005589974074074074,
+    "share_interleaved_lower": 0.5370370370370371,
+    "correct_difference": 4
+   }
+  }
+ },
+ "notes": "training windows only; both arms see the same targets each update, with different odd-slot frames; their models diverge after the first update",
+ "time": "2026-10-22T15:52:56Z"
+}
