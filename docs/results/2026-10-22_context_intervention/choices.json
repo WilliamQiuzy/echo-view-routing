@@ -1,0 +1,2979 @@
+{
+ "stage": "calibrate",
+ "seeds": [
+  0,
+  2
+ ],
+ "config_sha256": "fa56a108fb7ebe3c327ba246eafc265e339a73da5b3d73ac50510d7970a4b51d",
+ "primary": {
+  "s0": {
+   "half_window": 7,
+   "threshold": 0.19660949291632382,
+   "nms_radius": 5,
+   "threshold_quantile": 0.999
+  },
+  "s2": {
+   "half_window": 9,
+   "threshold": 0.25063810737320275,
+   "nms_radius": 5,
+   "threshold_quantile": 0.999
+  }
+ },
+ "sensitivity_choices": {
+  "Other_s0|own": {
+   "status": "feasible",
+   "params": {
+    "half_window": 15,
+    "threshold": 0.2073770659429581,
+    "nms_radius": 5,
+    "threshold_quantile": 0.995
+   },
+   "n_feasible": 29,
+   "grid": [
+    {
+     "order": 0,
+     "params": {
+      "half_window": 5,
+      "threshold": 0.00035140232158008137,
+      "nms_radius": 5,
+      "threshold_quantile": 0.8
+     },
+     "native_macro_f1": 0.9788251060978332,
+     "segment_f1_50_multi": 0.9547169811320755,
+     "boundary_recall_multi": 0.9899497487437185,
+     "boundary_precision_multi": 0.933649289099526,
+     "boundary_f1_multi": 0.9609756097560975,
+     "native_internal_cuts_per_clip": 0.18143459915611815,
+     "same_class_cut_rate_multi": 0.05970149253731343,
+     "segment_f1_50_pairs": 0.9715909090909091,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 1,
+     "params": {
+      "half_window": 5,
+      "threshold": 0.0006219502355794566,
+      "nms_radius": 5,
+      "threshold_quantile": 0.85
+     },
+     "native_macro_f1": 0.9788251060978332,
+     "segment_f1_50_multi": 0.9547169811320755,
+     "boundary_recall_multi": 0.9899497487437185,
+     "boundary_precision_multi": 0.933649289099526,
+     "boundary_f1_multi": 0.9609756097560975,
+     "native_internal_cuts_per_clip": 0.18143459915611815,
+     "same_class_cut_rate_multi": 0.05970149253731343,
+     "segment_f1_50_pairs": 0.9715909090909091,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 2,
+     "params": {
+      "half_window": 5,
+      "threshold": 0.0015630602226571772,
+      "nms_radius": 5,
+      "threshold_quantile": 0.9
+     },
+     "native_macro_f1": 0.9788251060978332,
+     "segment_f1_50_multi": 0.9547169811320755,
+     "boundary_recall_multi": 0.9899497487437185,
+     "boundary_precision_multi": 0.933649289099526,
+     "boundary_f1_multi": 0.9609756097560975,
+     "native_internal_cuts_per_clip": 0.18143459915611815,
+     "same_class_cut_rate_multi": 0.05970149253731343,
+     "segment_f1_50_pairs": 0.9715909090909091,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 3,
+     "params": {
+      "half_window": 5,
+      "threshold": 0.011598505495867462,
+      "nms_radius": 5,
+      "threshold_quantile": 0.95
+     },
+     "native_macro_f1": 0.9788251060978332,
+     "segment_f1_50_multi": 0.9547169811320755,
+     "boundary_recall_multi": 0.9899497487437185,
+     "boundary_precision_multi": 0.933649289099526,
+     "boundary_f1_multi": 0.9609756097560975,
+     "native_internal_cuts_per_clip": 0.18143459915611815,
+     "same_class_cut_rate_multi": 0.05970149253731343,
+     "segment_f1_50_pairs": 0.9715909090909091,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 4,
+     "params": {
+      "half_window": 5,
+      "threshold": 0.03981383376191153,
+      "nms_radius": 5,
+      "threshold_quantile": 0.97
+     },
+     "native_macro_f1": 0.9788251060978332,
+     "segment_f1_50_multi": 0.9547169811320755,
+     "boundary_recall_multi": 0.9899497487437185,
+     "boundary_precision_multi": 0.933649289099526,
+     "boundary_f1_multi": 0.9609756097560975,
+     "native_internal_cuts_per_clip": 0.18143459915611815,
+     "same_class_cut_rate_multi": 0.05970149253731343,
+     "segment_f1_50_pairs": 0.9629629629629629,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 5,
+     "params": {
+      "half_window": 5,
+      "threshold": 0.12514194555630745,
+      "nms_radius": 5,
+      "threshold_quantile": 0.99
+     },
+     "native_macro_f1": 0.9788251060978332,
+     "segment_f1_50_multi": 0.9563567362428842,
+     "boundary_recall_multi": 0.9874371859296482,
+     "boundary_precision_multi": 0.9447115384615384,
+     "boundary_f1_multi": 0.9656019656019657,
+     "native_internal_cuts_per_clip": 0.13924050632911392,
+     "same_class_cut_rate_multi": 0.04975124378109453,
+     "segment_f1_50_pairs": 0.9629629629629629,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 6,
+     "params": {
+      "half_window": 5,
+      "threshold": 0.1883561656145457,
+      "nms_radius": 5,
+      "threshold_quantile": 0.995
+     },
+     "native_macro_f1": 0.9788251060978332,
+     "segment_f1_50_multi": 0.96,
+     "boundary_recall_multi": 0.9849246231155779,
+     "boundary_precision_multi": 0.9514563106796117,
+     "boundary_f1_multi": 0.9679012345679012,
+     "native_internal_cuts_per_clip": 0.10548523206751055,
+     "same_class_cut_rate_multi": 0.04975124378109453,
+     "segment_f1_50_pairs": 0.9657142857142857,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 7,
+     "params": {
+      "half_window": 5,
+      "threshold": 0.37262297455424515,
+      "nms_radius": 5,
+      "threshold_quantile": 0.999
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9212362911266201,
+     "boundary_recall_multi": 0.8919597989949749,
+     "boundary_precision_multi": 0.9726027397260274,
+     "boundary_f1_multi": 0.9305373525557011,
+     "native_internal_cuts_per_clip": 0.016877637130801686,
+     "same_class_cut_rate_multi": 0.029850746268656716,
+     "segment_f1_50_pairs": 0.967930029154519,
+     "boundary_recall_pairs": 0.9137931034482759
+    },
+    {
+     "order": 8,
+     "params": {
+      "half_window": 7,
+      "threshold": 0.00039768803088823044,
+      "nms_radius": 5,
+      "threshold_quantile": 0.8
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.950328022492971,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9230769230769231,
+     "boundary_f1_multi": 0.9576783555018138,
+     "native_internal_cuts_per_clip": 0.17721518987341772,
+     "same_class_cut_rate_multi": 0.05970149253731343,
+     "segment_f1_50_pairs": 0.9715909090909091,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 9,
+     "params": {
+      "half_window": 7,
+      "threshold": 0.0007595014761244663,
+      "nms_radius": 5,
+      "threshold_quantile": 0.85
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.950328022492971,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9230769230769231,
+     "boundary_f1_multi": 0.9576783555018138,
+     "native_internal_cuts_per_clip": 0.17721518987341772,
+     "same_class_cut_rate_multi": 0.05970149253731343,
+     "segment_f1_50_pairs": 0.9715909090909091,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 10,
+     "params": {
+      "half_window": 7,
+      "threshold": 0.0021114006647922528,
+      "nms_radius": 5,
+      "threshold_quantile": 0.9
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.950328022492971,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9230769230769231,
+     "boundary_f1_multi": 0.9576783555018138,
+     "native_internal_cuts_per_clip": 0.17721518987341772,
+     "same_class_cut_rate_multi": 0.05970149253731343,
+     "segment_f1_50_pairs": 0.9715909090909091,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 11,
+     "params": {
+      "half_window": 7,
+      "threshold": 0.018234812532177576,
+      "nms_radius": 5,
+      "threshold_quantile": 0.95
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.950328022492971,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9230769230769231,
+     "boundary_f1_multi": 0.9576783555018138,
+     "native_internal_cuts_per_clip": 0.17721518987341772,
+     "same_class_cut_rate_multi": 0.05970149253731343,
+     "segment_f1_50_pairs": 0.9715909090909091,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 12,
+     "params": {
+      "half_window": 7,
+      "threshold": 0.053434003152981815,
+      "nms_radius": 5,
+      "threshold_quantile": 0.97
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.955785512699906,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9317647058823529,
+     "boundary_f1_multi": 0.9623329283110571,
+     "native_internal_cuts_per_clip": 0.1729957805907173,
+     "same_class_cut_rate_multi": 0.05472636815920398,
+     "segment_f1_50_pairs": 0.9715909090909091,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 13,
+     "params": {
+      "half_window": 7,
+      "threshold": 0.15453832320611327,
+      "nms_radius": 5,
+      "threshold_quantile": 0.99
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9629629629629629,
+     "boundary_recall_multi": 0.992462311557789,
+     "boundary_precision_multi": 0.9518072289156626,
+     "boundary_f1_multi": 0.971709717097171,
+     "native_internal_cuts_per_clip": 0.12658227848101267,
+     "same_class_cut_rate_multi": 0.04477611940298507,
+     "segment_f1_50_pairs": 0.9657142857142857,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 14,
+     "params": {
+      "half_window": 7,
+      "threshold": 0.21431681684464457,
+      "nms_radius": 5,
+      "threshold_quantile": 0.995
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9657142857142857,
+     "boundary_recall_multi": 0.992462311557789,
+     "boundary_precision_multi": 0.9587378640776699,
+     "boundary_f1_multi": 0.9753086419753086,
+     "native_internal_cuts_per_clip": 0.09282700421940929,
+     "same_class_cut_rate_multi": 0.04477611940298507,
+     "segment_f1_50_pairs": 0.976878612716763,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 15,
+     "params": {
+      "half_window": 7,
+      "threshold": 0.29666598108338355,
+      "nms_radius": 5,
+      "threshold_quantile": 0.999
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9692307692307692,
+     "boundary_recall_multi": 0.9824120603015075,
+     "boundary_precision_multi": 0.972636815920398,
+     "boundary_f1_multi": 0.9775,
+     "native_internal_cuts_per_clip": 0.0379746835443038,
+     "same_class_cut_rate_multi": 0.029850746268656716,
+     "segment_f1_50_pairs": 0.976878612716763,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 16,
+     "params": {
+      "half_window": 9,
+      "threshold": 0.00042363167285239484,
+      "nms_radius": 5,
+      "threshold_quantile": 0.8
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9659090909090909,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9473684210526315,
+     "boundary_f1_multi": 0.9705882352941176,
+     "native_internal_cuts_per_clip": 0.12236286919831224,
+     "same_class_cut_rate_multi": 0.04975124378109453,
+     "segment_f1_50_pairs": 0.9771428571428571,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 17,
+     "params": {
+      "half_window": 9,
+      "threshold": 0.0008474554879659637,
+      "nms_radius": 5,
+      "threshold_quantile": 0.85
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9659090909090909,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9473684210526315,
+     "boundary_f1_multi": 0.9705882352941176,
+     "native_internal_cuts_per_clip": 0.12236286919831224,
+     "same_class_cut_rate_multi": 0.04975124378109453,
+     "segment_f1_50_pairs": 0.9771428571428571,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 18,
+     "params": {
+      "half_window": 9,
+      "threshold": 0.002722740572323846,
+      "nms_radius": 5,
+      "threshold_quantile": 0.9
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9659090909090909,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9473684210526315,
+     "boundary_f1_multi": 0.9705882352941176,
+     "native_internal_cuts_per_clip": 0.12236286919831224,
+     "same_class_cut_rate_multi": 0.04975124378109453,
+     "segment_f1_50_pairs": 0.9771428571428571,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 19,
+     "params": {
+      "half_window": 9,
+      "threshold": 0.021862844635433854,
+      "nms_radius": 5,
+      "threshold_quantile": 0.95
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9659090909090909,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9473684210526315,
+     "boundary_f1_multi": 0.9705882352941176,
+     "native_internal_cuts_per_clip": 0.12236286919831224,
+     "same_class_cut_rate_multi": 0.04975124378109453,
+     "segment_f1_50_pairs": 0.9771428571428571,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 20,
+     "params": {
+      "half_window": 9,
+      "threshold": 0.06417380213298515,
+      "nms_radius": 5,
+      "threshold_quantile": 0.97
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9659090909090909,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9473684210526315,
+     "boundary_f1_multi": 0.9705882352941176,
+     "native_internal_cuts_per_clip": 0.11814345991561181,
+     "same_class_cut_rate_multi": 0.04975124378109453,
+     "segment_f1_50_pairs": 0.9771428571428571,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 21,
+     "params": {
+      "half_window": 9,
+      "threshold": 0.16483515052228506,
+      "nms_radius": 5,
+      "threshold_quantile": 0.99
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.966824644549763,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9496402877697842,
+     "boundary_f1_multi": 0.9717791411042945,
+     "native_internal_cuts_per_clip": 0.08860759493670886,
+     "same_class_cut_rate_multi": 0.04477611940298507,
+     "segment_f1_50_pairs": 0.9799426934097422,
+     "boundary_recall_pairs": 1.0
+    },
+    {
+     "order": 22,
+     "params": {
+      "half_window": 9,
+      "threshold": 0.2113472136417002,
+      "nms_radius": 5,
+      "threshold_quantile": 0.995
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9686609686609686,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9542168674698795,
+     "boundary_f1_multi": 0.974169741697417,
+     "native_internal_cuts_per_clip": 0.08016877637130802,
+     "same_class_cut_rate_multi": 0.04477611940298507,
+     "segment_f1_50_pairs": 0.9827586206896551,
+     "boundary_recall_pairs": 1.0
+    },
+    {
+     "order": 23,
+     "params": {
+      "half_window": 9,
+      "threshold": 0.31779567260733965,
+      "nms_radius": 5,
+      "threshold_quantile": 0.999
+     },
+     "native_macro_f1": 0.9788251060978332,
+     "segment_f1_50_multi": 0.9721955896452541,
+     "boundary_recall_multi": 0.9874371859296482,
+     "boundary_precision_multi": 0.9703703703703703,
+     "boundary_f1_multi": 0.9788293897882939,
+     "native_internal_cuts_per_clip": 0.03375527426160337,
+     "same_class_cut_rate_multi": 0.029850746268656716,
+     "segment_f1_50_pairs": 0.976878612716763,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 24,
+     "params": {
+      "half_window": 11,
+      "threshold": 0.0004607548727873234,
+      "nms_radius": 5,
+      "threshold_quantile": 0.8
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9649952696310312,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9451073985680191,
+     "boundary_f1_multi": 0.9694002447980417,
+     "native_internal_cuts_per_clip": 0.11392405063291139,
+     "same_class_cut_rate_multi": 0.04975124378109453,
+     "segment_f1_50_pairs": 0.9771428571428571,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 25,
+     "params": {
+      "half_window": 11,
+      "threshold": 0.0009296109889242993,
+      "nms_radius": 5,
+      "threshold_quantile": 0.85
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9649952696310312,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9451073985680191,
+     "boundary_f1_multi": 0.9694002447980417,
+     "native_internal_cuts_per_clip": 0.11392405063291139,
+     "same_class_cut_rate_multi": 0.04975124378109453,
+     "segment_f1_50_pairs": 0.9771428571428571,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 26,
+     "params": {
+      "half_window": 11,
+      "threshold": 0.003426719215396632,
+      "nms_radius": 5,
+      "threshold_quantile": 0.9
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9649952696310312,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9451073985680191,
+     "boundary_f1_multi": 0.9694002447980417,
+     "native_internal_cuts_per_clip": 0.11392405063291139,
+     "same_class_cut_rate_multi": 0.04975124378109453,
+     "segment_f1_50_pairs": 0.9771428571428571,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 27,
+     "params": {
+      "half_window": 11,
+      "threshold": 0.028267816463564,
+      "nms_radius": 5,
+      "threshold_quantile": 0.95
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9659090909090909,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9473684210526315,
+     "boundary_f1_multi": 0.9705882352941176,
+     "native_internal_cuts_per_clip": 0.10970464135021098,
+     "same_class_cut_rate_multi": 0.04975124378109453,
+     "segment_f1_50_pairs": 0.9771428571428571,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 28,
+     "params": {
+      "half_window": 11,
+      "threshold": 0.06869141437964828,
+      "nms_radius": 5,
+      "threshold_quantile": 0.97
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9659090909090909,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9473684210526315,
+     "boundary_f1_multi": 0.9705882352941176,
+     "native_internal_cuts_per_clip": 0.09282700421940929,
+     "same_class_cut_rate_multi": 0.04975124378109453,
+     "segment_f1_50_pairs": 0.9771428571428571,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 29,
+     "params": {
+      "half_window": 11,
+      "threshold": 0.15789687223507418,
+      "nms_radius": 5,
+      "threshold_quantile": 0.99
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.967741935483871,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9519230769230769,
+     "boundary_f1_multi": 0.972972972972973,
+     "native_internal_cuts_per_clip": 0.08016877637130802,
+     "same_class_cut_rate_multi": 0.04477611940298507,
+     "segment_f1_50_pairs": 0.9827586206896551,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 30,
+     "params": {
+      "half_window": 11,
+      "threshold": 0.2113734404572775,
+      "nms_radius": 5,
+      "threshold_quantile": 0.995
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9714828897338403,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9565217391304348,
+     "boundary_f1_multi": 0.9753694581280788,
+     "native_internal_cuts_per_clip": 0.05907172995780591,
+     "same_class_cut_rate_multi": 0.03980099502487562,
+     "segment_f1_50_pairs": 0.9827586206896551,
+     "boundary_recall_pairs": 1.0
+    },
+    {
+     "order": 31,
+     "params": {
+      "half_window": 11,
+      "threshold": 0.3230277609079937,
+      "nms_radius": 5,
+      "threshold_quantile": 0.999
+     },
+     "native_macro_f1": 0.9788251060978332,
+     "segment_f1_50_multi": 0.9712643678160919,
+     "boundary_recall_multi": 0.9874371859296482,
+     "boundary_precision_multi": 0.9679802955665024,
+     "boundary_f1_multi": 0.9776119402985075,
+     "native_internal_cuts_per_clip": 0.02531645569620253,
+     "same_class_cut_rate_multi": 0.029850746268656716,
+     "segment_f1_50_pairs": 0.976878612716763,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 32,
+     "params": {
+      "half_window": 15,
+      "threshold": 0.0004979465548325163,
+      "nms_radius": 5,
+      "threshold_quantile": 0.8
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.969639468690702,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9519230769230769,
+     "boundary_f1_multi": 0.972972972972973,
+     "native_internal_cuts_per_clip": 0.08438818565400844,
+     "same_class_cut_rate_multi": 0.04975124378109453,
+     "segment_f1_50_pairs": 0.9771428571428571,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 33,
+     "params": {
+      "half_window": 15,
+      "threshold": 0.0011585289554896384,
+      "nms_radius": 5,
+      "threshold_quantile": 0.85
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.969639468690702,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9519230769230769,
+     "boundary_f1_multi": 0.972972972972973,
+     "native_internal_cuts_per_clip": 0.08438818565400844,
+     "same_class_cut_rate_multi": 0.04975124378109453,
+     "segment_f1_50_pairs": 0.9771428571428571,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 34,
+     "params": {
+      "half_window": 15,
+      "threshold": 0.004389822330746905,
+      "nms_radius": 5,
+      "threshold_quantile": 0.9
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.969639468690702,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9519230769230769,
+     "boundary_f1_multi": 0.972972972972973,
+     "native_internal_cuts_per_clip": 0.08438818565400844,
+     "same_class_cut_rate_multi": 0.04975124378109453,
+     "segment_f1_50_pairs": 0.9771428571428571,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 35,
+     "params": {
+      "half_window": 15,
+      "threshold": 0.03442241330044016,
+      "nms_radius": 5,
+      "threshold_quantile": 0.95
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.969639468690702,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9519230769230769,
+     "boundary_f1_multi": 0.972972972972973,
+     "native_internal_cuts_per_clip": 0.08438818565400844,
+     "same_class_cut_rate_multi": 0.04975124378109453,
+     "segment_f1_50_pairs": 0.9771428571428571,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 36,
+     "params": {
+      "half_window": 15,
+      "threshold": 0.0692400091359525,
+      "nms_radius": 5,
+      "threshold_quantile": 0.97
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9705603038936372,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9542168674698795,
+     "boundary_f1_multi": 0.974169741697417,
+     "native_internal_cuts_per_clip": 0.0759493670886076,
+     "same_class_cut_rate_multi": 0.04975124378109453,
+     "segment_f1_50_pairs": 0.9771428571428571,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 37,
+     "params": {
+      "half_window": 15,
+      "threshold": 0.14742495389007043,
+      "nms_radius": 5,
+      "threshold_quantile": 0.99
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9743101807802094,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9588377723970944,
+     "boundary_f1_multi": 0.9765721331689272,
+     "native_internal_cuts_per_clip": 0.06329113924050633,
+     "same_class_cut_rate_multi": 0.03980099502487562,
+     "segment_f1_50_pairs": 0.9799426934097422,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 38,
+     "params": {
+      "half_window": 15,
+      "threshold": 0.2073770659429581,
+      "nms_radius": 5,
+      "threshold_quantile": 0.995
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9752380952380952,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9611650485436893,
+     "boundary_f1_multi": 0.9777777777777777,
+     "native_internal_cuts_per_clip": 0.0379746835443038,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9827586206896551,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 39,
+     "params": {
+      "half_window": 15,
+      "threshold": 0.33496541325666035,
+      "nms_radius": 5,
+      "threshold_quantile": 0.999
+     },
+     "native_macro_f1": 0.9788251060978332,
+     "segment_f1_50_multi": 0.9691119691119691,
+     "boundary_recall_multi": 0.9698492462311558,
+     "boundary_precision_multi": 0.9698492462311558,
+     "boundary_f1_multi": 0.9698492462311558,
+     "native_internal_cuts_per_clip": 0.012658227848101266,
+     "same_class_cut_rate_multi": 0.029850746268656716,
+     "segment_f1_50_pairs": 0.9739130434782609,
+     "boundary_recall_pairs": 0.9655172413793104
+    }
+   ]
+  },
+  "Same_s0|own": {
+   "status": "feasible",
+   "params": {
+    "half_window": 7,
+    "threshold": 0.2368032336483705,
+    "nms_radius": 5,
+    "threshold_quantile": 0.999
+   },
+   "n_feasible": 39,
+   "grid": [
+    {
+     "order": 0,
+     "params": {
+      "half_window": 5,
+      "threshold": 4.2074519072644314e-05,
+      "nms_radius": 5,
+      "threshold_quantile": 0.8
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9694656488549618,
+     "boundary_recall_multi": 0.9874371859296482,
+     "boundary_precision_multi": 0.9585365853658536,
+     "boundary_f1_multi": 0.9727722772277227,
+     "native_internal_cuts_per_clip": 0.07172995780590717,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9767441860465116,
+     "boundary_recall_pairs": 0.9137931034482759
+    },
+    {
+     "order": 1,
+     "params": {
+      "half_window": 5,
+      "threshold": 6.435911777511686e-05,
+      "nms_radius": 5,
+      "threshold_quantile": 0.85
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9694656488549618,
+     "boundary_recall_multi": 0.9874371859296482,
+     "boundary_precision_multi": 0.9585365853658536,
+     "boundary_f1_multi": 0.9727722772277227,
+     "native_internal_cuts_per_clip": 0.07172995780590717,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9767441860465116,
+     "boundary_recall_pairs": 0.9137931034482759
+    },
+    {
+     "order": 2,
+     "params": {
+      "half_window": 5,
+      "threshold": 0.0001270651129586081,
+      "nms_radius": 5,
+      "threshold_quantile": 0.9
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9694656488549618,
+     "boundary_recall_multi": 0.9874371859296482,
+     "boundary_precision_multi": 0.9585365853658536,
+     "boundary_f1_multi": 0.9727722772277227,
+     "native_internal_cuts_per_clip": 0.07172995780590717,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9767441860465116,
+     "boundary_recall_pairs": 0.9137931034482759
+    },
+    {
+     "order": 3,
+     "params": {
+      "half_window": 5,
+      "threshold": 0.0006558175600799803,
+      "nms_radius": 5,
+      "threshold_quantile": 0.95
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9694656488549618,
+     "boundary_recall_multi": 0.9874371859296482,
+     "boundary_precision_multi": 0.9585365853658536,
+     "boundary_f1_multi": 0.9727722772277227,
+     "native_internal_cuts_per_clip": 0.07172995780590717,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9767441860465116,
+     "boundary_recall_pairs": 0.9137931034482759
+    },
+    {
+     "order": 4,
+     "params": {
+      "half_window": 5,
+      "threshold": 0.0030324366629327763,
+      "nms_radius": 5,
+      "threshold_quantile": 0.97
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9694656488549618,
+     "boundary_recall_multi": 0.9874371859296482,
+     "boundary_precision_multi": 0.9585365853658536,
+     "boundary_f1_multi": 0.9727722772277227,
+     "native_internal_cuts_per_clip": 0.06751054852320675,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9767441860465116,
+     "boundary_recall_pairs": 0.9137931034482759
+    },
+    {
+     "order": 5,
+     "params": {
+      "half_window": 5,
+      "threshold": 0.04076736993415844,
+      "nms_radius": 5,
+      "threshold_quantile": 0.99
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9732313575525813,
+     "boundary_recall_multi": 0.9874371859296482,
+     "boundary_precision_multi": 0.9632352941176471,
+     "boundary_f1_multi": 0.9751861042183623,
+     "native_internal_cuts_per_clip": 0.05485232067510549,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9795918367346939,
+     "boundary_recall_pairs": 0.9137931034482759
+    },
+    {
+     "order": 6,
+     "params": {
+      "half_window": 5,
+      "threshold": 0.08793182796314068,
+      "nms_radius": 5,
+      "threshold_quantile": 0.995
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9732313575525813,
+     "boundary_recall_multi": 0.9874371859296482,
+     "boundary_precision_multi": 0.9632352941176471,
+     "boundary_f1_multi": 0.9751861042183623,
+     "native_internal_cuts_per_clip": 0.05063291139240506,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9795918367346939,
+     "boundary_recall_pairs": 0.9137931034482759
+    },
+    {
+     "order": 7,
+     "params": {
+      "half_window": 5,
+      "threshold": 0.19853745168132123,
+      "nms_radius": 5,
+      "threshold_quantile": 0.999
+     },
+     "native_macro_f1": 0.9788251060978332,
+     "segment_f1_50_multi": 0.9788461538461538,
+     "boundary_recall_multi": 0.9874371859296482,
+     "boundary_precision_multi": 0.9776119402985075,
+     "boundary_f1_multi": 0.9825,
+     "native_internal_cuts_per_clip": 0.029535864978902954,
+     "same_class_cut_rate_multi": 0.029850746268656716,
+     "segment_f1_50_pairs": 0.9795918367346939,
+     "boundary_recall_pairs": 0.9137931034482759
+    },
+    {
+     "order": 8,
+     "params": {
+      "half_window": 7,
+      "threshold": 5.4848071195898434e-05,
+      "nms_radius": 5,
+      "threshold_quantile": 0.8
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9761677788369876,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9635036496350365,
+     "boundary_f1_multi": 0.9789864029666254,
+     "native_internal_cuts_per_clip": 0.07172995780590717,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.976878612716763,
+     "boundary_recall_pairs": 0.9482758620689655
+    },
+    {
+     "order": 9,
+     "params": {
+      "half_window": 7,
+      "threshold": 8.529301589197855e-05,
+      "nms_radius": 5,
+      "threshold_quantile": 0.85
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9761677788369876,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9635036496350365,
+     "boundary_f1_multi": 0.9789864029666254,
+     "native_internal_cuts_per_clip": 0.07172995780590717,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.976878612716763,
+     "boundary_recall_pairs": 0.9482758620689655
+    },
+    {
+     "order": 10,
+     "params": {
+      "half_window": 7,
+      "threshold": 0.00017982871176424367,
+      "nms_radius": 5,
+      "threshold_quantile": 0.9
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9761677788369876,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9635036496350365,
+     "boundary_f1_multi": 0.9789864029666254,
+     "native_internal_cuts_per_clip": 0.07172995780590717,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.976878612716763,
+     "boundary_recall_pairs": 0.9482758620689655
+    },
+    {
+     "order": 11,
+     "params": {
+      "half_window": 7,
+      "threshold": 0.001084348494053007,
+      "nms_radius": 5,
+      "threshold_quantile": 0.95
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9761677788369876,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9635036496350365,
+     "boundary_f1_multi": 0.9789864029666254,
+     "native_internal_cuts_per_clip": 0.07172995780590717,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.976878612716763,
+     "boundary_recall_pairs": 0.9482758620689655
+    },
+    {
+     "order": 12,
+     "params": {
+      "half_window": 7,
+      "threshold": 0.005318640784921298,
+      "nms_radius": 5,
+      "threshold_quantile": 0.97
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9761677788369876,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9635036496350365,
+     "boundary_f1_multi": 0.9789864029666254,
+     "native_internal_cuts_per_clip": 0.06751054852320675,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.976878612716763,
+     "boundary_recall_pairs": 0.9482758620689655
+    },
+    {
+     "order": 13,
+     "params": {
+      "half_window": 7,
+      "threshold": 0.05418787536079291,
+      "nms_radius": 5,
+      "threshold_quantile": 0.99
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9761677788369876,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9635036496350365,
+     "boundary_f1_multi": 0.9789864029666254,
+     "native_internal_cuts_per_clip": 0.05485232067510549,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9797101449275363,
+     "boundary_recall_pairs": 0.9482758620689655
+    },
+    {
+     "order": 14,
+     "params": {
+      "half_window": 7,
+      "threshold": 0.12265616825034542,
+      "nms_radius": 5,
+      "threshold_quantile": 0.995
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9761677788369876,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9635036496350365,
+     "boundary_f1_multi": 0.9789864029666254,
+     "native_internal_cuts_per_clip": 0.05063291139240506,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9797101449275363,
+     "boundary_recall_pairs": 0.9482758620689655
+    },
+    {
+     "order": 15,
+     "params": {
+      "half_window": 7,
+      "threshold": 0.2368032336483705,
+      "nms_radius": 5,
+      "threshold_quantile": 0.999
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9798270893371758,
+     "boundary_recall_multi": 0.9899497487437185,
+     "boundary_precision_multi": 0.9776674937965261,
+     "boundary_f1_multi": 0.9837702871410736,
+     "native_internal_cuts_per_clip": 0.02109704641350211,
+     "same_class_cut_rate_multi": 0.029850746268656716,
+     "segment_f1_50_pairs": 0.9797101449275363,
+     "boundary_recall_pairs": 0.9482758620689655
+    },
+    {
+     "order": 16,
+     "params": {
+      "half_window": 9,
+      "threshold": 6.804349839024793e-05,
+      "nms_radius": 5,
+      "threshold_quantile": 0.8
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9761677788369876,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9635036496350365,
+     "boundary_f1_multi": 0.9789864029666254,
+     "native_internal_cuts_per_clip": 0.06329113924050633,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.976878612716763,
+     "boundary_recall_pairs": 0.9482758620689655
+    },
+    {
+     "order": 17,
+     "params": {
+      "half_window": 9,
+      "threshold": 0.00010663097517423214,
+      "nms_radius": 5,
+      "threshold_quantile": 0.85
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9761677788369876,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9635036496350365,
+     "boundary_f1_multi": 0.9789864029666254,
+     "native_internal_cuts_per_clip": 0.06329113924050633,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.976878612716763,
+     "boundary_recall_pairs": 0.9482758620689655
+    },
+    {
+     "order": 18,
+     "params": {
+      "half_window": 9,
+      "threshold": 0.00022783200019361175,
+      "nms_radius": 5,
+      "threshold_quantile": 0.9
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9761677788369876,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9635036496350365,
+     "boundary_f1_multi": 0.9789864029666254,
+     "native_internal_cuts_per_clip": 0.05907172995780591,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.976878612716763,
+     "boundary_recall_pairs": 0.9482758620689655
+    },
+    {
+     "order": 19,
+     "params": {
+      "half_window": 9,
+      "threshold": 0.0014841326977021402,
+      "nms_radius": 5,
+      "threshold_quantile": 0.95
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9761677788369876,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9635036496350365,
+     "boundary_f1_multi": 0.9789864029666254,
+     "native_internal_cuts_per_clip": 0.05907172995780591,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.976878612716763,
+     "boundary_recall_pairs": 0.9482758620689655
+    },
+    {
+     "order": 20,
+     "params": {
+      "half_window": 9,
+      "threshold": 0.008794818811444817,
+      "nms_radius": 5,
+      "threshold_quantile": 0.97
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9761677788369876,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9635036496350365,
+     "boundary_f1_multi": 0.9789864029666254,
+     "native_internal_cuts_per_clip": 0.05485232067510549,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.976878612716763,
+     "boundary_recall_pairs": 0.9482758620689655
+    },
+    {
+     "order": 21,
+     "params": {
+      "half_window": 9,
+      "threshold": 0.07541615700968701,
+      "nms_radius": 5,
+      "threshold_quantile": 0.99
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9761677788369876,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9635036496350365,
+     "boundary_f1_multi": 0.9789864029666254,
+     "native_internal_cuts_per_clip": 0.04219409282700422,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9797101449275363,
+     "boundary_recall_pairs": 0.9482758620689655
+    },
+    {
+     "order": 22,
+     "params": {
+      "half_window": 9,
+      "threshold": 0.1395096375447785,
+      "nms_radius": 5,
+      "threshold_quantile": 0.995
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9761677788369876,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9635036496350365,
+     "boundary_f1_multi": 0.9789864029666254,
+     "native_internal_cuts_per_clip": 0.04219409282700422,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9797101449275363,
+     "boundary_recall_pairs": 0.9482758620689655
+    },
+    {
+     "order": 23,
+     "params": {
+      "half_window": 9,
+      "threshold": 0.26620024087286787,
+      "nms_radius": 5,
+      "threshold_quantile": 0.999
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9788867562380038,
+     "boundary_recall_multi": 0.9899497487437185,
+     "boundary_precision_multi": 0.9752475247524752,
+     "boundary_f1_multi": 0.9825436408977556,
+     "native_internal_cuts_per_clip": 0.016877637130801686,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9797101449275363,
+     "boundary_recall_pairs": 0.9482758620689655
+    },
+    {
+     "order": 24,
+     "params": {
+      "half_window": 11,
+      "threshold": 7.931680096134878e-05,
+      "nms_radius": 5,
+      "threshold_quantile": 0.8
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9761677788369876,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9635036496350365,
+     "boundary_f1_multi": 0.9789864029666254,
+     "native_internal_cuts_per_clip": 0.05063291139240506,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.976878612716763,
+     "boundary_recall_pairs": 0.9482758620689655
+    },
+    {
+     "order": 25,
+     "params": {
+      "half_window": 11,
+      "threshold": 0.000127849347344283,
+      "nms_radius": 5,
+      "threshold_quantile": 0.85
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9761677788369876,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9635036496350365,
+     "boundary_f1_multi": 0.9789864029666254,
+     "native_internal_cuts_per_clip": 0.05063291139240506,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.976878612716763,
+     "boundary_recall_pairs": 0.9482758620689655
+    },
+    {
+     "order": 26,
+     "params": {
+      "half_window": 11,
+      "threshold": 0.00027471095789842145,
+      "nms_radius": 5,
+      "threshold_quantile": 0.9
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9761677788369876,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9635036496350365,
+     "boundary_f1_multi": 0.9789864029666254,
+     "native_internal_cuts_per_clip": 0.05063291139240506,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.976878612716763,
+     "boundary_recall_pairs": 0.9482758620689655
+    },
+    {
+     "order": 27,
+     "params": {
+      "half_window": 11,
+      "threshold": 0.001982785210654154,
+      "nms_radius": 5,
+      "threshold_quantile": 0.95
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9761677788369876,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9635036496350365,
+     "boundary_f1_multi": 0.9789864029666254,
+     "native_internal_cuts_per_clip": 0.05063291139240506,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.976878612716763,
+     "boundary_recall_pairs": 0.9482758620689655
+    },
+    {
+     "order": 28,
+     "params": {
+      "half_window": 11,
+      "threshold": 0.012315201760046381,
+      "nms_radius": 5,
+      "threshold_quantile": 0.97
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9761677788369876,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9635036496350365,
+     "boundary_f1_multi": 0.9789864029666254,
+     "native_internal_cuts_per_clip": 0.046413502109704644,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.976878612716763,
+     "boundary_recall_pairs": 0.9482758620689655
+    },
+    {
+     "order": 29,
+     "params": {
+      "half_window": 11,
+      "threshold": 0.0869874573271782,
+      "nms_radius": 5,
+      "threshold_quantile": 0.99
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9761677788369876,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9635036496350365,
+     "boundary_f1_multi": 0.9789864029666254,
+     "native_internal_cuts_per_clip": 0.04219409282700422,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9797101449275363,
+     "boundary_recall_pairs": 0.9482758620689655
+    },
+    {
+     "order": 30,
+     "params": {
+      "half_window": 11,
+      "threshold": 0.16651448966150753,
+      "nms_radius": 5,
+      "threshold_quantile": 0.995
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9761677788369876,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9635036496350365,
+     "boundary_f1_multi": 0.9789864029666254,
+     "native_internal_cuts_per_clip": 0.03375527426160337,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9797101449275363,
+     "boundary_recall_pairs": 0.9482758620689655
+    },
+    {
+     "order": 31,
+     "params": {
+      "half_window": 11,
+      "threshold": 0.2941170936351147,
+      "nms_radius": 5,
+      "threshold_quantile": 0.999
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9760306807286673,
+     "boundary_recall_multi": 0.9874371859296482,
+     "boundary_precision_multi": 0.9703703703703703,
+     "boundary_f1_multi": 0.9788293897882939,
+     "native_internal_cuts_per_clip": 0.016877637130801686,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9797101449275363,
+     "boundary_recall_pairs": 0.9482758620689655
+    },
+    {
+     "order": 32,
+     "params": {
+      "half_window": 15,
+      "threshold": 9.393620714159509e-05,
+      "nms_radius": 5,
+      "threshold_quantile": 0.8
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9761677788369876,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9635036496350365,
+     "boundary_f1_multi": 0.9789864029666254,
+     "native_internal_cuts_per_clip": 0.05063291139240506,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.976878612716763,
+     "boundary_recall_pairs": 0.9482758620689655
+    },
+    {
+     "order": 33,
+     "params": {
+      "half_window": 15,
+      "threshold": 0.00015339333650175703,
+      "nms_radius": 5,
+      "threshold_quantile": 0.85
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9761677788369876,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9635036496350365,
+     "boundary_f1_multi": 0.9789864029666254,
+     "native_internal_cuts_per_clip": 0.05063291139240506,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.976878612716763,
+     "boundary_recall_pairs": 0.9482758620689655
+    },
+    {
+     "order": 34,
+     "params": {
+      "half_window": 15,
+      "threshold": 0.000342825768770509,
+      "nms_radius": 5,
+      "threshold_quantile": 0.9
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9761677788369876,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9635036496350365,
+     "boundary_f1_multi": 0.9789864029666254,
+     "native_internal_cuts_per_clip": 0.05063291139240506,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.976878612716763,
+     "boundary_recall_pairs": 0.9482758620689655
+    },
+    {
+     "order": 35,
+     "params": {
+      "half_window": 15,
+      "threshold": 0.002649482159244895,
+      "nms_radius": 5,
+      "threshold_quantile": 0.95
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9761677788369876,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9635036496350365,
+     "boundary_f1_multi": 0.9789864029666254,
+     "native_internal_cuts_per_clip": 0.05063291139240506,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.976878612716763,
+     "boundary_recall_pairs": 0.9482758620689655
+    },
+    {
+     "order": 36,
+     "params": {
+      "half_window": 15,
+      "threshold": 0.01632671413617729,
+      "nms_radius": 5,
+      "threshold_quantile": 0.97
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9761677788369876,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9635036496350365,
+     "boundary_f1_multi": 0.9789864029666254,
+     "native_internal_cuts_per_clip": 0.04219409282700422,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.976878612716763,
+     "boundary_recall_pairs": 0.9482758620689655
+    },
+    {
+     "order": 37,
+     "params": {
+      "half_window": 15,
+      "threshold": 0.1037244105000813,
+      "nms_radius": 5,
+      "threshold_quantile": 0.99
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9761677788369876,
+     "boundary_recall_multi": 0.9949748743718593,
+     "boundary_precision_multi": 0.9635036496350365,
+     "boundary_f1_multi": 0.9789864029666254,
+     "native_internal_cuts_per_clip": 0.04219409282700422,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9797101449275363,
+     "boundary_recall_pairs": 0.9482758620689655
+    },
+    {
+     "order": 38,
+     "params": {
+      "half_window": 15,
+      "threshold": 0.18811880922040627,
+      "nms_radius": 5,
+      "threshold_quantile": 0.995
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9742612011439467,
+     "boundary_recall_multi": 0.992462311557789,
+     "boundary_precision_multi": 0.9610705596107056,
+     "boundary_f1_multi": 0.9765142150803461,
+     "native_internal_cuts_per_clip": 0.029535864978902954,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9797101449275363,
+     "boundary_recall_pairs": 0.9482758620689655
+    },
+    {
+     "order": 39,
+     "params": {
+      "half_window": 15,
+      "threshold": 0.33388208731911473,
+      "nms_radius": 5,
+      "threshold_quantile": 0.999
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9653179190751445,
+     "boundary_recall_multi": 0.9698492462311558,
+     "boundary_precision_multi": 0.965,
+     "boundary_f1_multi": 0.9674185463659147,
+     "native_internal_cuts_per_clip": 0.02109704641350211,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9797101449275363,
+     "boundary_recall_pairs": 0.9482758620689655
+    }
+   ]
+  },
+  "Other_s2|own": {
+   "status": "feasible",
+   "params": {
+    "half_window": 9,
+    "threshold": 0.000355505691233718,
+    "nms_radius": 5,
+    "threshold_quantile": 0.8
+   },
+   "n_feasible": 22,
+   "grid": [
+    {
+     "order": 0,
+     "params": {
+      "half_window": 5,
+      "threshold": 0.00027760276884780503,
+      "nms_radius": 5,
+      "threshold_quantile": 0.8
+     },
+     "native_macro_f1": 0.9929417020326111,
+     "segment_f1_50_multi": 0.9584905660377359,
+     "boundary_recall_multi": 0.992462311557789,
+     "boundary_precision_multi": 0.9360189573459715,
+     "boundary_f1_multi": 0.9634146341463414,
+     "native_internal_cuts_per_clip": 0.16455696202531644,
+     "same_class_cut_rate_multi": 0.05970149253731343,
+     "segment_f1_50_pairs": 0.9627507163323782,
+     "boundary_recall_pairs": 0.9655172413793104
+    },
+    {
+     "order": 1,
+     "params": {
+      "half_window": 5,
+      "threshold": 0.0005721455130568039,
+      "nms_radius": 5,
+      "threshold_quantile": 0.85
+     },
+     "native_macro_f1": 0.9929417020326111,
+     "segment_f1_50_multi": 0.9584905660377359,
+     "boundary_recall_multi": 0.992462311557789,
+     "boundary_precision_multi": 0.9360189573459715,
+     "boundary_f1_multi": 0.9634146341463414,
+     "native_internal_cuts_per_clip": 0.16455696202531644,
+     "same_class_cut_rate_multi": 0.05970149253731343,
+     "segment_f1_50_pairs": 0.9627507163323782,
+     "boundary_recall_pairs": 0.9655172413793104
+    },
+    {
+     "order": 2,
+     "params": {
+      "half_window": 5,
+      "threshold": 0.0015375936111895199,
+      "nms_radius": 5,
+      "threshold_quantile": 0.9
+     },
+     "native_macro_f1": 0.9929417020326111,
+     "segment_f1_50_multi": 0.9584905660377359,
+     "boundary_recall_multi": 0.992462311557789,
+     "boundary_precision_multi": 0.9360189573459715,
+     "boundary_f1_multi": 0.9634146341463414,
+     "native_internal_cuts_per_clip": 0.16455696202531644,
+     "same_class_cut_rate_multi": 0.05970149253731343,
+     "segment_f1_50_pairs": 0.9627507163323782,
+     "boundary_recall_pairs": 0.9655172413793104
+    },
+    {
+     "order": 3,
+     "params": {
+      "half_window": 5,
+      "threshold": 0.010716005831490499,
+      "nms_radius": 5,
+      "threshold_quantile": 0.95
+     },
+     "native_macro_f1": 0.9929417020326111,
+     "segment_f1_50_multi": 0.9584905660377359,
+     "boundary_recall_multi": 0.992462311557789,
+     "boundary_precision_multi": 0.9360189573459715,
+     "boundary_f1_multi": 0.9634146341463414,
+     "native_internal_cuts_per_clip": 0.16455696202531644,
+     "same_class_cut_rate_multi": 0.05970149253731343,
+     "segment_f1_50_pairs": 0.9627507163323782,
+     "boundary_recall_pairs": 0.9655172413793104
+    },
+    {
+     "order": 4,
+     "params": {
+      "half_window": 5,
+      "threshold": 0.03463435929550042,
+      "nms_radius": 5,
+      "threshold_quantile": 0.97
+     },
+     "native_macro_f1": 0.9929417020326111,
+     "segment_f1_50_multi": 0.9584905660377359,
+     "boundary_recall_multi": 0.992462311557789,
+     "boundary_precision_multi": 0.9360189573459715,
+     "boundary_f1_multi": 0.9634146341463414,
+     "native_internal_cuts_per_clip": 0.16455696202531644,
+     "same_class_cut_rate_multi": 0.05970149253731343,
+     "segment_f1_50_pairs": 0.9627507163323782,
+     "boundary_recall_pairs": 0.9655172413793104
+    },
+    {
+     "order": 5,
+     "params": {
+      "half_window": 5,
+      "threshold": 0.13044703523996942,
+      "nms_radius": 5,
+      "threshold_quantile": 0.99
+     },
+     "native_macro_f1": 0.9929417020326111,
+     "segment_f1_50_multi": 0.9621212121212122,
+     "boundary_recall_multi": 0.992462311557789,
+     "boundary_precision_multi": 0.9449760765550239,
+     "boundary_f1_multi": 0.9681372549019608,
+     "native_internal_cuts_per_clip": 0.1518987341772152,
+     "same_class_cut_rate_multi": 0.05472636815920398,
+     "segment_f1_50_pairs": 0.9627507163323782,
+     "boundary_recall_pairs": 0.9655172413793104
+    },
+    {
+     "order": 6,
+     "params": {
+      "half_window": 5,
+      "threshold": 0.2006061844207284,
+      "nms_radius": 5,
+      "threshold_quantile": 0.995
+     },
+     "native_macro_f1": 0.9788251060978332,
+     "segment_f1_50_multi": 0.9657794676806084,
+     "boundary_recall_multi": 0.992462311557789,
+     "boundary_precision_multi": 0.9541062801932367,
+     "boundary_f1_multi": 0.9729064039408867,
+     "native_internal_cuts_per_clip": 0.09282700421940929,
+     "same_class_cut_rate_multi": 0.04975124378109453,
+     "segment_f1_50_pairs": 0.9627507163323782,
+     "boundary_recall_pairs": 0.9655172413793104
+    },
+    {
+     "order": 7,
+     "params": {
+      "half_window": 5,
+      "threshold": 0.39953137634531877,
+      "nms_radius": 5,
+      "threshold_quantile": 0.999
+     },
+     "native_macro_f1": 0.9712204007285974,
+     "segment_f1_50_multi": 0.9386138613861386,
+     "boundary_recall_multi": 0.914572864321608,
+     "boundary_precision_multi": 0.978494623655914,
+     "boundary_f1_multi": 0.9454545454545454,
+     "native_internal_cuts_per_clip": 0.029535864978902954,
+     "same_class_cut_rate_multi": 0.024875621890547265,
+     "segment_f1_50_pairs": 0.967930029154519,
+     "boundary_recall_pairs": 0.9310344827586207
+    },
+    {
+     "order": 8,
+     "params": {
+      "half_window": 7,
+      "threshold": 0.0003241578997931914,
+      "nms_radius": 5,
+      "threshold_quantile": 0.8
+     },
+     "native_macro_f1": 0.9856102003642988,
+     "segment_f1_50_multi": 0.9585687382297552,
+     "boundary_recall_multi": 0.992462311557789,
+     "boundary_precision_multi": 0.9316037735849056,
+     "boundary_f1_multi": 0.9610705596107056,
+     "native_internal_cuts_per_clip": 0.18143459915611815,
+     "same_class_cut_rate_multi": 0.04975124378109453,
+     "segment_f1_50_pairs": 0.9688385269121813,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 9,
+     "params": {
+      "half_window": 7,
+      "threshold": 0.0006912231371732811,
+      "nms_radius": 5,
+      "threshold_quantile": 0.85
+     },
+     "native_macro_f1": 0.9856102003642988,
+     "segment_f1_50_multi": 0.9585687382297552,
+     "boundary_recall_multi": 0.992462311557789,
+     "boundary_precision_multi": 0.9316037735849056,
+     "boundary_f1_multi": 0.9610705596107056,
+     "native_internal_cuts_per_clip": 0.18143459915611815,
+     "same_class_cut_rate_multi": 0.04975124378109453,
+     "segment_f1_50_pairs": 0.9688385269121813,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 10,
+     "params": {
+      "half_window": 7,
+      "threshold": 0.001995978529648546,
+      "nms_radius": 5,
+      "threshold_quantile": 0.9
+     },
+     "native_macro_f1": 0.9856102003642988,
+     "segment_f1_50_multi": 0.9585687382297552,
+     "boundary_recall_multi": 0.992462311557789,
+     "boundary_precision_multi": 0.9316037735849056,
+     "boundary_f1_multi": 0.9610705596107056,
+     "native_internal_cuts_per_clip": 0.18143459915611815,
+     "same_class_cut_rate_multi": 0.04975124378109453,
+     "segment_f1_50_pairs": 0.9688385269121813,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 11,
+     "params": {
+      "half_window": 7,
+      "threshold": 0.015230572953860742,
+      "nms_radius": 5,
+      "threshold_quantile": 0.95
+     },
+     "native_macro_f1": 0.9856102003642988,
+     "segment_f1_50_multi": 0.9585687382297552,
+     "boundary_recall_multi": 0.992462311557789,
+     "boundary_precision_multi": 0.9316037735849056,
+     "boundary_f1_multi": 0.9610705596107056,
+     "native_internal_cuts_per_clip": 0.18143459915611815,
+     "same_class_cut_rate_multi": 0.04975124378109453,
+     "segment_f1_50_pairs": 0.9688385269121813,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 12,
+     "params": {
+      "half_window": 7,
+      "threshold": 0.04747847686512414,
+      "nms_radius": 5,
+      "threshold_quantile": 0.97
+     },
+     "native_macro_f1": 0.9856102003642988,
+     "segment_f1_50_multi": 0.960377358490566,
+     "boundary_recall_multi": 0.992462311557789,
+     "boundary_precision_multi": 0.9360189573459715,
+     "boundary_f1_multi": 0.9634146341463414,
+     "native_internal_cuts_per_clip": 0.18143459915611815,
+     "same_class_cut_rate_multi": 0.04975124378109453,
+     "segment_f1_50_pairs": 0.9743589743589743,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 13,
+     "params": {
+      "half_window": 7,
+      "threshold": 0.15931528812429097,
+      "nms_radius": 5,
+      "threshold_quantile": 0.99
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9640151515151515,
+     "boundary_recall_multi": 0.992462311557789,
+     "boundary_precision_multi": 0.9449760765550239,
+     "boundary_f1_multi": 0.9681372549019608,
+     "native_internal_cuts_per_clip": 0.12658227848101267,
+     "same_class_cut_rate_multi": 0.04975124378109453,
+     "segment_f1_50_pairs": 0.9740634005763689,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 14,
+     "params": {
+      "half_window": 7,
+      "threshold": 0.21019890758560403,
+      "nms_radius": 5,
+      "threshold_quantile": 0.995
+     },
+     "native_macro_f1": 0.9788251060978332,
+     "segment_f1_50_multi": 0.9695817490494296,
+     "boundary_recall_multi": 0.992462311557789,
+     "boundary_precision_multi": 0.9541062801932367,
+     "boundary_f1_multi": 0.9729064039408867,
+     "native_internal_cuts_per_clip": 0.07172995780590717,
+     "same_class_cut_rate_multi": 0.04477611940298507,
+     "segment_f1_50_pairs": 0.976878612716763,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 15,
+     "params": {
+      "half_window": 7,
+      "threshold": 0.32684196075344285,
+      "nms_radius": 5,
+      "threshold_quantile": 0.999
+     },
+     "native_macro_f1": 0.9788251060978332,
+     "segment_f1_50_multi": 0.9769230769230769,
+     "boundary_recall_multi": 0.9849246231155779,
+     "boundary_precision_multi": 0.9751243781094527,
+     "boundary_f1_multi": 0.98,
+     "native_internal_cuts_per_clip": 0.029535864978902954,
+     "same_class_cut_rate_multi": 0.029850746268656716,
+     "segment_f1_50_pairs": 0.9739130434782609,
+     "boundary_recall_pairs": 0.9655172413793104
+    },
+    {
+     "order": 16,
+     "params": {
+      "half_window": 9,
+      "threshold": 0.000355505691233718,
+      "nms_radius": 5,
+      "threshold_quantile": 0.8
+     },
+     "native_macro_f1": 0.9856102003642988,
+     "segment_f1_50_multi": 0.9649289099526066,
+     "boundary_recall_multi": 0.992462311557789,
+     "boundary_precision_multi": 0.947242206235012,
+     "boundary_f1_multi": 0.9693251533742331,
+     "native_internal_cuts_per_clip": 0.1518987341772152,
+     "same_class_cut_rate_multi": 0.04975124378109453,
+     "segment_f1_50_pairs": 0.9799426934097422,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 17,
+     "params": {
+      "half_window": 9,
+      "threshold": 0.000734021516255732,
+      "nms_radius": 5,
+      "threshold_quantile": 0.85
+     },
+     "native_macro_f1": 0.9856102003642988,
+     "segment_f1_50_multi": 0.9649289099526066,
+     "boundary_recall_multi": 0.992462311557789,
+     "boundary_precision_multi": 0.947242206235012,
+     "boundary_f1_multi": 0.9693251533742331,
+     "native_internal_cuts_per_clip": 0.1518987341772152,
+     "same_class_cut_rate_multi": 0.04975124378109453,
+     "segment_f1_50_pairs": 0.9799426934097422,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 18,
+     "params": {
+      "half_window": 9,
+      "threshold": 0.0023391342635897946,
+      "nms_radius": 5,
+      "threshold_quantile": 0.9
+     },
+     "native_macro_f1": 0.9856102003642988,
+     "segment_f1_50_multi": 0.9649289099526066,
+     "boundary_recall_multi": 0.992462311557789,
+     "boundary_precision_multi": 0.947242206235012,
+     "boundary_f1_multi": 0.9693251533742331,
+     "native_internal_cuts_per_clip": 0.1518987341772152,
+     "same_class_cut_rate_multi": 0.04975124378109453,
+     "segment_f1_50_pairs": 0.9799426934097422,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 19,
+     "params": {
+      "half_window": 9,
+      "threshold": 0.01927571341756154,
+      "nms_radius": 5,
+      "threshold_quantile": 0.95
+     },
+     "native_macro_f1": 0.9856102003642988,
+     "segment_f1_50_multi": 0.9649289099526066,
+     "boundary_recall_multi": 0.992462311557789,
+     "boundary_precision_multi": 0.947242206235012,
+     "boundary_f1_multi": 0.9693251533742331,
+     "native_internal_cuts_per_clip": 0.1518987341772152,
+     "same_class_cut_rate_multi": 0.04975124378109453,
+     "segment_f1_50_pairs": 0.9799426934097422,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 20,
+     "params": {
+      "half_window": 9,
+      "threshold": 0.05778438819106214,
+      "nms_radius": 5,
+      "threshold_quantile": 0.97
+     },
+     "native_macro_f1": 0.9856102003642988,
+     "segment_f1_50_multi": 0.9649289099526066,
+     "boundary_recall_multi": 0.992462311557789,
+     "boundary_precision_multi": 0.947242206235012,
+     "boundary_f1_multi": 0.9693251533742331,
+     "native_internal_cuts_per_clip": 0.14345991561181434,
+     "same_class_cut_rate_multi": 0.04975124378109453,
+     "segment_f1_50_pairs": 0.9827586206896551,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 21,
+     "params": {
+      "half_window": 9,
+      "threshold": 0.16517937939768385,
+      "nms_radius": 5,
+      "threshold_quantile": 0.99
+     },
+     "native_macro_f1": 0.9788251060978332,
+     "segment_f1_50_multi": 0.9649289099526066,
+     "boundary_recall_multi": 0.992462311557789,
+     "boundary_precision_multi": 0.947242206235012,
+     "boundary_f1_multi": 0.9693251533742331,
+     "native_internal_cuts_per_clip": 0.09282700421940929,
+     "same_class_cut_rate_multi": 0.04975124378109453,
+     "segment_f1_50_pairs": 0.9855907780979827,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 22,
+     "params": {
+      "half_window": 9,
+      "threshold": 0.20823625570628765,
+      "nms_radius": 5,
+      "threshold_quantile": 0.995
+     },
+     "native_macro_f1": 0.9788251060978332,
+     "segment_f1_50_multi": 0.9705042816365367,
+     "boundary_recall_multi": 0.992462311557789,
+     "boundary_precision_multi": 0.9564164648910412,
+     "boundary_f1_multi": 0.9741060419235512,
+     "native_internal_cuts_per_clip": 0.07172995780590717,
+     "same_class_cut_rate_multi": 0.03980099502487562,
+     "segment_f1_50_pairs": 0.976878612716763,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 23,
+     "params": {
+      "half_window": 9,
+      "threshold": 0.3382640898955105,
+      "nms_radius": 5,
+      "threshold_quantile": 0.999
+     },
+     "native_macro_f1": 0.9788251060978332,
+     "segment_f1_50_multi": 0.9741131351869607,
+     "boundary_recall_multi": 0.9874371859296482,
+     "boundary_precision_multi": 0.9703703703703703,
+     "boundary_f1_multi": 0.9788293897882939,
+     "native_internal_cuts_per_clip": 0.02531645569620253,
+     "same_class_cut_rate_multi": 0.024875621890547265,
+     "segment_f1_50_pairs": 0.9739130434782609,
+     "boundary_recall_pairs": 0.9655172413793104
+    },
+    {
+     "order": 24,
+     "params": {
+      "half_window": 11,
+      "threshold": 0.00036835655818962014,
+      "nms_radius": 5,
+      "threshold_quantile": 0.8
+     },
+     "native_macro_f1": 0.9856102003642988,
+     "segment_f1_50_multi": 0.9630331753554502,
+     "boundary_recall_multi": 0.992462311557789,
+     "boundary_precision_multi": 0.947242206235012,
+     "boundary_f1_multi": 0.9693251533742331,
+     "native_internal_cuts_per_clip": 0.11814345991561181,
+     "same_class_cut_rate_multi": 0.04975124378109453,
+     "segment_f1_50_pairs": 0.9799426934097422,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 25,
+     "params": {
+      "half_window": 11,
+      "threshold": 0.0008180060554435543,
+      "nms_radius": 5,
+      "threshold_quantile": 0.85
+     },
+     "native_macro_f1": 0.9856102003642988,
+     "segment_f1_50_multi": 0.9630331753554502,
+     "boundary_recall_multi": 0.992462311557789,
+     "boundary_precision_multi": 0.947242206235012,
+     "boundary_f1_multi": 0.9693251533742331,
+     "native_internal_cuts_per_clip": 0.11814345991561181,
+     "same_class_cut_rate_multi": 0.04975124378109453,
+     "segment_f1_50_pairs": 0.9799426934097422,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 26,
+     "params": {
+      "half_window": 11,
+      "threshold": 0.002775123317095393,
+      "nms_radius": 5,
+      "threshold_quantile": 0.9
+     },
+     "native_macro_f1": 0.9856102003642988,
+     "segment_f1_50_multi": 0.9630331753554502,
+     "boundary_recall_multi": 0.992462311557789,
+     "boundary_precision_multi": 0.947242206235012,
+     "boundary_f1_multi": 0.9693251533742331,
+     "native_internal_cuts_per_clip": 0.11814345991561181,
+     "same_class_cut_rate_multi": 0.04975124378109453,
+     "segment_f1_50_pairs": 0.9799426934097422,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 27,
+     "params": {
+      "half_window": 11,
+      "threshold": 0.0238029586913273,
+      "nms_radius": 5,
+      "threshold_quantile": 0.95
+     },
+     "native_macro_f1": 0.9856102003642988,
+     "segment_f1_50_multi": 0.9630331753554502,
+     "boundary_recall_multi": 0.992462311557789,
+     "boundary_precision_multi": 0.947242206235012,
+     "boundary_f1_multi": 0.9693251533742331,
+     "native_internal_cuts_per_clip": 0.11814345991561181,
+     "same_class_cut_rate_multi": 0.04975124378109453,
+     "segment_f1_50_pairs": 0.9799426934097422,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 28,
+     "params": {
+      "half_window": 11,
+      "threshold": 0.06284727305020169,
+      "nms_radius": 5,
+      "threshold_quantile": 0.97
+     },
+     "native_macro_f1": 0.9856102003642988,
+     "segment_f1_50_multi": 0.9630331753554502,
+     "boundary_recall_multi": 0.992462311557789,
+     "boundary_precision_multi": 0.947242206235012,
+     "boundary_f1_multi": 0.9693251533742331,
+     "native_internal_cuts_per_clip": 0.10970464135021098,
+     "same_class_cut_rate_multi": 0.04975124378109453,
+     "segment_f1_50_pairs": 0.9827586206896551,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 29,
+     "params": {
+      "half_window": 11,
+      "threshold": 0.15593898801413236,
+      "nms_radius": 5,
+      "threshold_quantile": 0.99
+     },
+     "native_macro_f1": 0.9788251060978332,
+     "segment_f1_50_multi": 0.967680608365019,
+     "boundary_recall_multi": 0.992462311557789,
+     "boundary_precision_multi": 0.9541062801932367,
+     "boundary_f1_multi": 0.9729064039408867,
+     "native_internal_cuts_per_clip": 0.06329113924050633,
+     "same_class_cut_rate_multi": 0.04477611940298507,
+     "segment_f1_50_pairs": 0.9855907780979827,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 30,
+     "params": {
+      "half_window": 11,
+      "threshold": 0.20201609691603634,
+      "nms_radius": 5,
+      "threshold_quantile": 0.995
+     },
+     "native_macro_f1": 0.9788251060978332,
+     "segment_f1_50_multi": 0.967680608365019,
+     "boundary_recall_multi": 0.992462311557789,
+     "boundary_precision_multi": 0.9541062801932367,
+     "boundary_f1_multi": 0.9729064039408867,
+     "native_internal_cuts_per_clip": 0.05907172995780591,
+     "same_class_cut_rate_multi": 0.04477611940298507,
+     "segment_f1_50_pairs": 0.9855907780979827,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 31,
+     "params": {
+      "half_window": 11,
+      "threshold": 0.33831498027116513,
+      "nms_radius": 5,
+      "threshold_quantile": 0.999
+     },
+     "native_macro_f1": 0.9712204007285974,
+     "segment_f1_50_multi": 0.970334928229665,
+     "boundary_recall_multi": 0.9874371859296482,
+     "boundary_precision_multi": 0.9656019656019657,
+     "boundary_f1_multi": 0.9763975155279503,
+     "native_internal_cuts_per_clip": 0.016877637130801686,
+     "same_class_cut_rate_multi": 0.024875621890547265,
+     "segment_f1_50_pairs": 0.976878612716763,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 32,
+     "params": {
+      "half_window": 15,
+      "threshold": 0.0004037848995455287,
+      "nms_radius": 5,
+      "threshold_quantile": 0.8
+     },
+     "native_macro_f1": 0.9788251060978332,
+     "segment_f1_50_multi": 0.9667616334283001,
+     "boundary_recall_multi": 0.992462311557789,
+     "boundary_precision_multi": 0.9518072289156626,
+     "boundary_f1_multi": 0.971709717097171,
+     "native_internal_cuts_per_clip": 0.08860759493670886,
+     "same_class_cut_rate_multi": 0.04477611940298507,
+     "segment_f1_50_pairs": 0.9799426934097422,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 33,
+     "params": {
+      "half_window": 15,
+      "threshold": 0.000967777671471334,
+      "nms_radius": 5,
+      "threshold_quantile": 0.85
+     },
+     "native_macro_f1": 0.9788251060978332,
+     "segment_f1_50_multi": 0.9667616334283001,
+     "boundary_recall_multi": 0.992462311557789,
+     "boundary_precision_multi": 0.9518072289156626,
+     "boundary_f1_multi": 0.971709717097171,
+     "native_internal_cuts_per_clip": 0.08860759493670886,
+     "same_class_cut_rate_multi": 0.04477611940298507,
+     "segment_f1_50_pairs": 0.9799426934097422,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 34,
+     "params": {
+      "half_window": 15,
+      "threshold": 0.0038206854629945198,
+      "nms_radius": 5,
+      "threshold_quantile": 0.9
+     },
+     "native_macro_f1": 0.9788251060978332,
+     "segment_f1_50_multi": 0.9667616334283001,
+     "boundary_recall_multi": 0.992462311557789,
+     "boundary_precision_multi": 0.9518072289156626,
+     "boundary_f1_multi": 0.971709717097171,
+     "native_internal_cuts_per_clip": 0.08860759493670886,
+     "same_class_cut_rate_multi": 0.04477611940298507,
+     "segment_f1_50_pairs": 0.9799426934097422,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 35,
+     "params": {
+      "half_window": 15,
+      "threshold": 0.026442210805401715,
+      "nms_radius": 5,
+      "threshold_quantile": 0.95
+     },
+     "native_macro_f1": 0.9788251060978332,
+     "segment_f1_50_multi": 0.9667616334283001,
+     "boundary_recall_multi": 0.992462311557789,
+     "boundary_precision_multi": 0.9518072289156626,
+     "boundary_f1_multi": 0.971709717097171,
+     "native_internal_cuts_per_clip": 0.08860759493670886,
+     "same_class_cut_rate_multi": 0.04477611940298507,
+     "segment_f1_50_pairs": 0.9799426934097422,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 36,
+     "params": {
+      "half_window": 15,
+      "threshold": 0.06560581602716448,
+      "nms_radius": 5,
+      "threshold_quantile": 0.97
+     },
+     "native_macro_f1": 0.9788251060978332,
+     "segment_f1_50_multi": 0.9667616334283001,
+     "boundary_recall_multi": 0.992462311557789,
+     "boundary_precision_multi": 0.9518072289156626,
+     "boundary_f1_multi": 0.971709717097171,
+     "native_internal_cuts_per_clip": 0.08438818565400844,
+     "same_class_cut_rate_multi": 0.04477611940298507,
+     "segment_f1_50_pairs": 0.9799426934097422,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 37,
+     "params": {
+      "half_window": 15,
+      "threshold": 0.1376384236511793,
+      "nms_radius": 5,
+      "threshold_quantile": 0.99
+     },
+     "native_macro_f1": 0.9712204007285974,
+     "segment_f1_50_multi": 0.967680608365019,
+     "boundary_recall_multi": 0.992462311557789,
+     "boundary_precision_multi": 0.9541062801932367,
+     "boundary_f1_multi": 0.9729064039408867,
+     "native_internal_cuts_per_clip": 0.046413502109704644,
+     "same_class_cut_rate_multi": 0.04477611940298507,
+     "segment_f1_50_pairs": 0.9827586206896551,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 38,
+     "params": {
+      "half_window": 15,
+      "threshold": 0.18370892843317005,
+      "nms_radius": 5,
+      "threshold_quantile": 0.995
+     },
+     "native_macro_f1": 0.9712204007285974,
+     "segment_f1_50_multi": 0.967680608365019,
+     "boundary_recall_multi": 0.992462311557789,
+     "boundary_precision_multi": 0.9541062801932367,
+     "boundary_f1_multi": 0.9729064039408867,
+     "native_internal_cuts_per_clip": 0.046413502109704644,
+     "same_class_cut_rate_multi": 0.04477611940298507,
+     "segment_f1_50_pairs": 0.9855907780979827,
+     "boundary_recall_pairs": 0.9827586206896551
+    },
+    {
+     "order": 39,
+     "params": {
+      "half_window": 15,
+      "threshold": 0.3276385537293435,
+      "nms_radius": 5,
+      "threshold_quantile": 0.999
+     },
+     "native_macro_f1": 0.9712204007285974,
+     "segment_f1_50_multi": 0.9516441005802708,
+     "boundary_recall_multi": 0.9547738693467337,
+     "boundary_precision_multi": 0.9595959595959596,
+     "boundary_f1_multi": 0.9571788413098237,
+     "native_internal_cuts_per_clip": 0.008438818565400843,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9739130434782609,
+     "boundary_recall_pairs": 0.9655172413793104
+    }
+   ]
+  },
+  "Same_s2|own": {
+   "status": "feasible",
+   "params": {
+    "half_window": 7,
+    "threshold": 0.1224391107003572,
+    "nms_radius": 5,
+    "threshold_quantile": 0.995
+   },
+   "n_feasible": 14,
+   "grid": [
+    {
+     "order": 0,
+     "params": {
+      "half_window": 5,
+      "threshold": 4.0985661426894796e-05,
+      "nms_radius": 5,
+      "threshold_quantile": 0.8
+     },
+     "native_macro_f1": 0.9788251060978332,
+     "segment_f1_50_multi": 0.9723546234509056,
+     "boundary_recall_multi": 0.9899497487437185,
+     "boundary_precision_multi": 0.9586374695863747,
+     "boundary_f1_multi": 0.9740420271940667,
+     "native_internal_cuts_per_clip": 0.0759493670886076,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9798270893371758,
+     "boundary_recall_pairs": 0.9655172413793104
+    },
+    {
+     "order": 1,
+     "params": {
+      "half_window": 5,
+      "threshold": 6.361461997364855e-05,
+      "nms_radius": 5,
+      "threshold_quantile": 0.85
+     },
+     "native_macro_f1": 0.9788251060978332,
+     "segment_f1_50_multi": 0.9723546234509056,
+     "boundary_recall_multi": 0.9899497487437185,
+     "boundary_precision_multi": 0.9586374695863747,
+     "boundary_f1_multi": 0.9740420271940667,
+     "native_internal_cuts_per_clip": 0.0759493670886076,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9798270893371758,
+     "boundary_recall_pairs": 0.9655172413793104
+    },
+    {
+     "order": 2,
+     "params": {
+      "half_window": 5,
+      "threshold": 0.00013951063153760742,
+      "nms_radius": 5,
+      "threshold_quantile": 0.9
+     },
+     "native_macro_f1": 0.9788251060978332,
+     "segment_f1_50_multi": 0.9723546234509056,
+     "boundary_recall_multi": 0.9899497487437185,
+     "boundary_precision_multi": 0.9586374695863747,
+     "boundary_f1_multi": 0.9740420271940667,
+     "native_internal_cuts_per_clip": 0.0759493670886076,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9798270893371758,
+     "boundary_recall_pairs": 0.9655172413793104
+    },
+    {
+     "order": 3,
+     "params": {
+      "half_window": 5,
+      "threshold": 0.0007800556886277605,
+      "nms_radius": 5,
+      "threshold_quantile": 0.95
+     },
+     "native_macro_f1": 0.9788251060978332,
+     "segment_f1_50_multi": 0.9723546234509056,
+     "boundary_recall_multi": 0.9899497487437185,
+     "boundary_precision_multi": 0.9586374695863747,
+     "boundary_f1_multi": 0.9740420271940667,
+     "native_internal_cuts_per_clip": 0.0759493670886076,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9798270893371758,
+     "boundary_recall_pairs": 0.9655172413793104
+    },
+    {
+     "order": 4,
+     "params": {
+      "half_window": 5,
+      "threshold": 0.0036555335061909514,
+      "nms_radius": 5,
+      "threshold_quantile": 0.97
+     },
+     "native_macro_f1": 0.9788251060978332,
+     "segment_f1_50_multi": 0.9723546234509056,
+     "boundary_recall_multi": 0.9899497487437185,
+     "boundary_precision_multi": 0.9586374695863747,
+     "boundary_f1_multi": 0.9740420271940667,
+     "native_internal_cuts_per_clip": 0.06329113924050633,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9798270893371758,
+     "boundary_recall_pairs": 0.9655172413793104
+    },
+    {
+     "order": 5,
+     "params": {
+      "half_window": 5,
+      "threshold": 0.04554658639436588,
+      "nms_radius": 5,
+      "threshold_quantile": 0.99
+     },
+     "native_macro_f1": 0.9788251060978332,
+     "segment_f1_50_multi": 0.9732824427480916,
+     "boundary_recall_multi": 0.9899497487437185,
+     "boundary_precision_multi": 0.9609756097560975,
+     "boundary_f1_multi": 0.9752475247524752,
+     "native_internal_cuts_per_clip": 0.05907172995780591,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9739130434782609,
+     "boundary_recall_pairs": 0.9655172413793104
+    },
+    {
+     "order": 6,
+     "params": {
+      "half_window": 5,
+      "threshold": 0.08613153920052649,
+      "nms_radius": 5,
+      "threshold_quantile": 0.995
+     },
+     "native_macro_f1": 0.9788251060978332,
+     "segment_f1_50_multi": 0.9789674952198852,
+     "boundary_recall_multi": 0.9899497487437185,
+     "boundary_precision_multi": 0.9656862745098039,
+     "boundary_f1_multi": 0.9776674937965261,
+     "native_internal_cuts_per_clip": 0.05063291139240506,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9739130434782609,
+     "boundary_recall_pairs": 0.9655172413793104
+    },
+    {
+     "order": 7,
+     "params": {
+      "half_window": 5,
+      "threshold": 0.18690321377842956,
+      "nms_radius": 5,
+      "threshold_quantile": 0.999
+     },
+     "native_macro_f1": 0.9788251060978332,
+     "segment_f1_50_multi": 0.9779482262703739,
+     "boundary_recall_multi": 0.9899497487437185,
+     "boundary_precision_multi": 0.9728395061728395,
+     "boundary_f1_multi": 0.9813200498132005,
+     "native_internal_cuts_per_clip": 0.03375527426160337,
+     "same_class_cut_rate_multi": 0.029850746268656716,
+     "segment_f1_50_pairs": 0.9709302325581395,
+     "boundary_recall_pairs": 0.9482758620689655
+    },
+    {
+     "order": 8,
+     "params": {
+      "half_window": 7,
+      "threshold": 5.1706551340405245e-05,
+      "nms_radius": 5,
+      "threshold_quantile": 0.8
+     },
+     "native_macro_f1": 0.9856102003642988,
+     "segment_f1_50_multi": 0.9742612011439467,
+     "boundary_recall_multi": 0.9899497487437185,
+     "boundary_precision_multi": 0.9586374695863747,
+     "boundary_f1_multi": 0.9740420271940667,
+     "native_internal_cuts_per_clip": 0.08438818565400844,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9798270893371758,
+     "boundary_recall_pairs": 0.9655172413793104
+    },
+    {
+     "order": 9,
+     "params": {
+      "half_window": 7,
+      "threshold": 8.331007691893667e-05,
+      "nms_radius": 5,
+      "threshold_quantile": 0.85
+     },
+     "native_macro_f1": 0.9856102003642988,
+     "segment_f1_50_multi": 0.9742612011439467,
+     "boundary_recall_multi": 0.9899497487437185,
+     "boundary_precision_multi": 0.9586374695863747,
+     "boundary_f1_multi": 0.9740420271940667,
+     "native_internal_cuts_per_clip": 0.08438818565400844,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9798270893371758,
+     "boundary_recall_pairs": 0.9655172413793104
+    },
+    {
+     "order": 10,
+     "params": {
+      "half_window": 7,
+      "threshold": 0.00018082097336465298,
+      "nms_radius": 5,
+      "threshold_quantile": 0.9
+     },
+     "native_macro_f1": 0.9856102003642988,
+     "segment_f1_50_multi": 0.9742612011439467,
+     "boundary_recall_multi": 0.9899497487437185,
+     "boundary_precision_multi": 0.9586374695863747,
+     "boundary_f1_multi": 0.9740420271940667,
+     "native_internal_cuts_per_clip": 0.08438818565400844,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9798270893371758,
+     "boundary_recall_pairs": 0.9655172413793104
+    },
+    {
+     "order": 11,
+     "params": {
+      "half_window": 7,
+      "threshold": 0.0013646422179128214,
+      "nms_radius": 5,
+      "threshold_quantile": 0.95
+     },
+     "native_macro_f1": 0.9856102003642988,
+     "segment_f1_50_multi": 0.9742612011439467,
+     "boundary_recall_multi": 0.9899497487437185,
+     "boundary_precision_multi": 0.9586374695863747,
+     "boundary_f1_multi": 0.9740420271940667,
+     "native_internal_cuts_per_clip": 0.08438818565400844,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9798270893371758,
+     "boundary_recall_pairs": 0.9655172413793104
+    },
+    {
+     "order": 12,
+     "params": {
+      "half_window": 7,
+      "threshold": 0.005809578382548069,
+      "nms_radius": 5,
+      "threshold_quantile": 0.97
+     },
+     "native_macro_f1": 0.9788251060978332,
+     "segment_f1_50_multi": 0.9742612011439467,
+     "boundary_recall_multi": 0.9899497487437185,
+     "boundary_precision_multi": 0.9586374695863747,
+     "boundary_f1_multi": 0.9740420271940667,
+     "native_internal_cuts_per_clip": 0.06329113924050633,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9798270893371758,
+     "boundary_recall_pairs": 0.9655172413793104
+    },
+    {
+     "order": 13,
+     "params": {
+      "half_window": 7,
+      "threshold": 0.06168200143575516,
+      "nms_radius": 5,
+      "threshold_quantile": 0.99
+     },
+     "native_macro_f1": 0.9788251060978332,
+     "segment_f1_50_multi": 0.9761677788369876,
+     "boundary_recall_multi": 0.992462311557789,
+     "boundary_precision_multi": 0.9610705596107056,
+     "boundary_f1_multi": 0.9765142150803461,
+     "native_internal_cuts_per_clip": 0.05907172995780591,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9739130434782609,
+     "boundary_recall_pairs": 0.9655172413793104
+    },
+    {
+     "order": 14,
+     "params": {
+      "half_window": 7,
+      "threshold": 0.1224391107003572,
+      "nms_radius": 5,
+      "threshold_quantile": 0.995
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9761677788369876,
+     "boundary_recall_multi": 0.992462311557789,
+     "boundary_precision_multi": 0.9610705596107056,
+     "boundary_f1_multi": 0.9765142150803461,
+     "native_internal_cuts_per_clip": 0.04219409282700422,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9739130434782609,
+     "boundary_recall_pairs": 0.9655172413793104
+    },
+    {
+     "order": 15,
+     "params": {
+      "half_window": 7,
+      "threshold": 0.2224929592332351,
+      "nms_radius": 5,
+      "threshold_quantile": 0.999
+     },
+     "native_macro_f1": 0.9788251060978332,
+     "segment_f1_50_multi": 0.9789272030651341,
+     "boundary_recall_multi": 0.9899497487437185,
+     "boundary_precision_multi": 0.9704433497536946,
+     "boundary_f1_multi": 0.9800995024875622,
+     "native_internal_cuts_per_clip": 0.016877637130801686,
+     "same_class_cut_rate_multi": 0.029850746268656716,
+     "segment_f1_50_pairs": 0.9737609329446064,
+     "boundary_recall_pairs": 0.9482758620689655
+    },
+    {
+     "order": 16,
+     "params": {
+      "half_window": 9,
+      "threshold": 6.110515811025963e-05,
+      "nms_radius": 5,
+      "threshold_quantile": 0.8
+     },
+     "native_macro_f1": 0.9856102003642988,
+     "segment_f1_50_multi": 0.9733333333333334,
+     "boundary_recall_multi": 0.9899497487437185,
+     "boundary_precision_multi": 0.9563106796116505,
+     "boundary_f1_multi": 0.9728395061728395,
+     "native_internal_cuts_per_clip": 0.06329113924050633,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9798270893371758,
+     "boundary_recall_pairs": 0.9655172413793104
+    },
+    {
+     "order": 17,
+     "params": {
+      "half_window": 9,
+      "threshold": 0.00010073293387216314,
+      "nms_radius": 5,
+      "threshold_quantile": 0.85
+     },
+     "native_macro_f1": 0.9856102003642988,
+     "segment_f1_50_multi": 0.9733333333333334,
+     "boundary_recall_multi": 0.9899497487437185,
+     "boundary_precision_multi": 0.9563106796116505,
+     "boundary_f1_multi": 0.9728395061728395,
+     "native_internal_cuts_per_clip": 0.06329113924050633,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9798270893371758,
+     "boundary_recall_pairs": 0.9655172413793104
+    },
+    {
+     "order": 18,
+     "params": {
+      "half_window": 9,
+      "threshold": 0.0002209049576042633,
+      "nms_radius": 5,
+      "threshold_quantile": 0.9
+     },
+     "native_macro_f1": 0.9856102003642988,
+     "segment_f1_50_multi": 0.9733333333333334,
+     "boundary_recall_multi": 0.9899497487437185,
+     "boundary_precision_multi": 0.9563106796116505,
+     "boundary_f1_multi": 0.9728395061728395,
+     "native_internal_cuts_per_clip": 0.06329113924050633,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9798270893371758,
+     "boundary_recall_pairs": 0.9655172413793104
+    },
+    {
+     "order": 19,
+     "params": {
+      "half_window": 9,
+      "threshold": 0.001907890467480963,
+      "nms_radius": 5,
+      "threshold_quantile": 0.95
+     },
+     "native_macro_f1": 0.9788251060978332,
+     "segment_f1_50_multi": 0.9733333333333334,
+     "boundary_recall_multi": 0.9899497487437185,
+     "boundary_precision_multi": 0.9563106796116505,
+     "boundary_f1_multi": 0.9728395061728395,
+     "native_internal_cuts_per_clip": 0.05907172995780591,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9798270893371758,
+     "boundary_recall_pairs": 0.9655172413793104
+    },
+    {
+     "order": 20,
+     "params": {
+      "half_window": 9,
+      "threshold": 0.007893851874984455,
+      "nms_radius": 5,
+      "threshold_quantile": 0.97
+     },
+     "native_macro_f1": 0.9788251060978332,
+     "segment_f1_50_multi": 0.9733333333333334,
+     "boundary_recall_multi": 0.9899497487437185,
+     "boundary_precision_multi": 0.9563106796116505,
+     "boundary_f1_multi": 0.9728395061728395,
+     "native_internal_cuts_per_clip": 0.05907172995780591,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9798270893371758,
+     "boundary_recall_pairs": 0.9655172413793104
+    },
+    {
+     "order": 21,
+     "params": {
+      "half_window": 9,
+      "threshold": 0.0777622516168881,
+      "nms_radius": 5,
+      "threshold_quantile": 0.99
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9752380952380952,
+     "boundary_recall_multi": 0.992462311557789,
+     "boundary_precision_multi": 0.9587378640776699,
+     "boundary_f1_multi": 0.9753086419753086,
+     "native_internal_cuts_per_clip": 0.04219409282700422,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9826589595375722,
+     "boundary_recall_pairs": 0.9655172413793104
+    },
+    {
+     "order": 22,
+     "params": {
+      "half_window": 9,
+      "threshold": 0.14926711816097296,
+      "nms_radius": 5,
+      "threshold_quantile": 0.995
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9742612011439467,
+     "boundary_recall_multi": 0.9899497487437185,
+     "boundary_precision_multi": 0.9586374695863747,
+     "boundary_f1_multi": 0.9740420271940667,
+     "native_internal_cuts_per_clip": 0.04219409282700422,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9855072463768116,
+     "boundary_recall_pairs": 0.9655172413793104
+    },
+    {
+     "order": 23,
+     "params": {
+      "half_window": 9,
+      "threshold": 0.2806258775373611,
+      "nms_radius": 5,
+      "threshold_quantile": 0.999
+     },
+     "native_macro_f1": 0.9788251060978332,
+     "segment_f1_50_multi": 0.9789272030651341,
+     "boundary_recall_multi": 0.9899497487437185,
+     "boundary_precision_multi": 0.9704433497536946,
+     "boundary_f1_multi": 0.9800995024875622,
+     "native_internal_cuts_per_clip": 0.012658227848101266,
+     "same_class_cut_rate_multi": 0.029850746268656716,
+     "segment_f1_50_pairs": 0.9707602339181286,
+     "boundary_recall_pairs": 0.9310344827586207
+    },
+    {
+     "order": 24,
+     "params": {
+      "half_window": 11,
+      "threshold": 7.018239187287332e-05,
+      "nms_radius": 5,
+      "threshold_quantile": 0.8
+     },
+     "native_macro_f1": 0.9788251060978332,
+     "segment_f1_50_multi": 0.9733333333333334,
+     "boundary_recall_multi": 0.9899497487437185,
+     "boundary_precision_multi": 0.9563106796116505,
+     "boundary_f1_multi": 0.9728395061728395,
+     "native_internal_cuts_per_clip": 0.05907172995780591,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9798270893371758,
+     "boundary_recall_pairs": 0.9655172413793104
+    },
+    {
+     "order": 25,
+     "params": {
+      "half_window": 11,
+      "threshold": 0.00011538908292125347,
+      "nms_radius": 5,
+      "threshold_quantile": 0.85
+     },
+     "native_macro_f1": 0.9788251060978332,
+     "segment_f1_50_multi": 0.9733333333333334,
+     "boundary_recall_multi": 0.9899497487437185,
+     "boundary_precision_multi": 0.9563106796116505,
+     "boundary_f1_multi": 0.9728395061728395,
+     "native_internal_cuts_per_clip": 0.05907172995780591,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9798270893371758,
+     "boundary_recall_pairs": 0.9655172413793104
+    },
+    {
+     "order": 26,
+     "params": {
+      "half_window": 11,
+      "threshold": 0.00026080119983000634,
+      "nms_radius": 5,
+      "threshold_quantile": 0.9
+     },
+     "native_macro_f1": 0.9788251060978332,
+     "segment_f1_50_multi": 0.9733333333333334,
+     "boundary_recall_multi": 0.9899497487437185,
+     "boundary_precision_multi": 0.9563106796116505,
+     "boundary_f1_multi": 0.9728395061728395,
+     "native_internal_cuts_per_clip": 0.05907172995780591,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9798270893371758,
+     "boundary_recall_pairs": 0.9655172413793104
+    },
+    {
+     "order": 27,
+     "params": {
+      "half_window": 11,
+      "threshold": 0.0025047963914583667,
+      "nms_radius": 5,
+      "threshold_quantile": 0.95
+     },
+     "native_macro_f1": 0.9788251060978332,
+     "segment_f1_50_multi": 0.9733333333333334,
+     "boundary_recall_multi": 0.9899497487437185,
+     "boundary_precision_multi": 0.9563106796116505,
+     "boundary_f1_multi": 0.9728395061728395,
+     "native_internal_cuts_per_clip": 0.05907172995780591,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9798270893371758,
+     "boundary_recall_pairs": 0.9655172413793104
+    },
+    {
+     "order": 28,
+     "params": {
+      "half_window": 11,
+      "threshold": 0.009748107378559837,
+      "nms_radius": 5,
+      "threshold_quantile": 0.97
+     },
+     "native_macro_f1": 0.9788251060978332,
+     "segment_f1_50_multi": 0.9733333333333334,
+     "boundary_recall_multi": 0.9899497487437185,
+     "boundary_precision_multi": 0.9563106796116505,
+     "boundary_f1_multi": 0.9728395061728395,
+     "native_internal_cuts_per_clip": 0.05485232067510549,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9798270893371758,
+     "boundary_recall_pairs": 0.9655172413793104
+    },
+    {
+     "order": 29,
+     "params": {
+      "half_window": 11,
+      "threshold": 0.08626965111005526,
+      "nms_radius": 5,
+      "threshold_quantile": 0.99
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9752380952380952,
+     "boundary_recall_multi": 0.992462311557789,
+     "boundary_precision_multi": 0.9587378640776699,
+     "boundary_f1_multi": 0.9753086419753086,
+     "native_internal_cuts_per_clip": 0.04219409282700422,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9826589595375722,
+     "boundary_recall_pairs": 0.9655172413793104
+    },
+    {
+     "order": 30,
+     "params": {
+      "half_window": 11,
+      "threshold": 0.17130172630383203,
+      "nms_radius": 5,
+      "threshold_quantile": 0.995
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9742612011439467,
+     "boundary_recall_multi": 0.9899497487437185,
+     "boundary_precision_multi": 0.9586374695863747,
+     "boundary_f1_multi": 0.9740420271940667,
+     "native_internal_cuts_per_clip": 0.04219409282700422,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9855072463768116,
+     "boundary_recall_pairs": 0.9655172413793104
+    },
+    {
+     "order": 31,
+     "params": {
+      "half_window": 11,
+      "threshold": 0.32550738075047436,
+      "nms_radius": 5,
+      "threshold_quantile": 0.999
+     },
+     "native_macro_f1": 0.9788251060978332,
+     "segment_f1_50_multi": 0.9789272030651341,
+     "boundary_recall_multi": 0.9899497487437185,
+     "boundary_precision_multi": 0.9704433497536946,
+     "boundary_f1_multi": 0.9800995024875622,
+     "native_internal_cuts_per_clip": 0.012658227848101266,
+     "same_class_cut_rate_multi": 0.029850746268656716,
+     "segment_f1_50_pairs": 0.9707602339181286,
+     "boundary_recall_pairs": 0.9310344827586207
+    },
+    {
+     "order": 32,
+     "params": {
+      "half_window": 15,
+      "threshold": 8.395290870792165e-05,
+      "nms_radius": 5,
+      "threshold_quantile": 0.8
+     },
+     "native_macro_f1": 0.9788251060978332,
+     "segment_f1_50_multi": 0.9733333333333334,
+     "boundary_recall_multi": 0.9899497487437185,
+     "boundary_precision_multi": 0.9563106796116505,
+     "boundary_f1_multi": 0.9728395061728395,
+     "native_internal_cuts_per_clip": 0.05907172995780591,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9798270893371758,
+     "boundary_recall_pairs": 0.9655172413793104
+    },
+    {
+     "order": 33,
+     "params": {
+      "half_window": 15,
+      "threshold": 0.0001377665059294395,
+      "nms_radius": 5,
+      "threshold_quantile": 0.85
+     },
+     "native_macro_f1": 0.9788251060978332,
+     "segment_f1_50_multi": 0.9733333333333334,
+     "boundary_recall_multi": 0.9899497487437185,
+     "boundary_precision_multi": 0.9563106796116505,
+     "boundary_f1_multi": 0.9728395061728395,
+     "native_internal_cuts_per_clip": 0.05907172995780591,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9798270893371758,
+     "boundary_recall_pairs": 0.9655172413793104
+    },
+    {
+     "order": 34,
+     "params": {
+      "half_window": 15,
+      "threshold": 0.0003370236327948146,
+      "nms_radius": 5,
+      "threshold_quantile": 0.9
+     },
+     "native_macro_f1": 0.9788251060978332,
+     "segment_f1_50_multi": 0.9733333333333334,
+     "boundary_recall_multi": 0.9899497487437185,
+     "boundary_precision_multi": 0.9563106796116505,
+     "boundary_f1_multi": 0.9728395061728395,
+     "native_internal_cuts_per_clip": 0.05907172995780591,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9798270893371758,
+     "boundary_recall_pairs": 0.9655172413793104
+    },
+    {
+     "order": 35,
+     "params": {
+      "half_window": 15,
+      "threshold": 0.003170071400018508,
+      "nms_radius": 5,
+      "threshold_quantile": 0.95
+     },
+     "native_macro_f1": 0.9788251060978332,
+     "segment_f1_50_multi": 0.9733333333333334,
+     "boundary_recall_multi": 0.9899497487437185,
+     "boundary_precision_multi": 0.9563106796116505,
+     "boundary_f1_multi": 0.9728395061728395,
+     "native_internal_cuts_per_clip": 0.05907172995780591,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9798270893371758,
+     "boundary_recall_pairs": 0.9655172413793104
+    },
+    {
+     "order": 36,
+     "params": {
+      "half_window": 15,
+      "threshold": 0.014282610335608341,
+      "nms_radius": 5,
+      "threshold_quantile": 0.97
+     },
+     "native_macro_f1": 0.9788251060978332,
+     "segment_f1_50_multi": 0.9733333333333334,
+     "boundary_recall_multi": 0.9899497487437185,
+     "boundary_precision_multi": 0.9563106796116505,
+     "boundary_f1_multi": 0.9728395061728395,
+     "native_internal_cuts_per_clip": 0.05485232067510549,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9798270893371758,
+     "boundary_recall_pairs": 0.9655172413793104
+    },
+    {
+     "order": 37,
+     "params": {
+      "half_window": 15,
+      "threshold": 0.10356486371872214,
+      "nms_radius": 5,
+      "threshold_quantile": 0.99
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9752380952380952,
+     "boundary_recall_multi": 0.992462311557789,
+     "boundary_precision_multi": 0.9587378640776699,
+     "boundary_f1_multi": 0.9753086419753086,
+     "native_internal_cuts_per_clip": 0.04219409282700422,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9826589595375722,
+     "boundary_recall_pairs": 0.9655172413793104
+    },
+    {
+     "order": 38,
+     "params": {
+      "half_window": 15,
+      "threshold": 0.17470378767462788,
+      "nms_radius": 5,
+      "threshold_quantile": 0.995
+     },
+     "native_macro_f1": 0.9861403508771929,
+     "segment_f1_50_multi": 0.9742612011439467,
+     "boundary_recall_multi": 0.9899497487437185,
+     "boundary_precision_multi": 0.9586374695863747,
+     "boundary_f1_multi": 0.9740420271940667,
+     "native_internal_cuts_per_clip": 0.03375527426160337,
+     "same_class_cut_rate_multi": 0.03482587064676617,
+     "segment_f1_50_pairs": 0.9855072463768116,
+     "boundary_recall_pairs": 0.9655172413793104
+    },
+    {
+     "order": 39,
+     "params": {
+      "half_window": 15,
+      "threshold": 0.35789093326222093,
+      "nms_radius": 5,
+      "threshold_quantile": 0.999
+     },
+     "native_macro_f1": 0.9788251060978332,
+     "segment_f1_50_multi": 0.9641819941916747,
+     "boundary_recall_multi": 0.9597989949748744,
+     "boundary_precision_multi": 0.9670886075949368,
+     "boundary_f1_multi": 0.9634300126103404,
+     "native_internal_cuts_per_clip": 0.012658227848101266,
+     "same_class_cut_rate_multi": 0.029850746268656716,
+     "segment_f1_50_pairs": 0.967741935483871,
+     "boundary_recall_pairs": 0.9137931034482759
+    }
+   ]
+  }
+ },
+ "models": {
+  "Other_s0": {
+   "sha256": "d4fdcf48ef2f7fdeea9dfb4ef24f23e2ddd66012a5bee46e38de8ca36a0e5ea8",
+   "identity": "619d323312b7b4c9620a81305b4af5678eb45c84fcb5ce608394d63b25b8c113",
+   "frozen": true
+  },
+  "Same_s0": {
+   "sha256": "d594fe90ea275aa25af885fe9430c565f2c54ae327ea4f8a3722138a7dae5711",
+   "identity": "9275411c075581712afd13a658ad3b14bf8aa1e4b05800d5096d476a6561091f",
+   "frozen": true
+  },
+  "Other_s2": {
+   "sha256": "6d2571b17aceba0c17f15fdc4f06ec505f31b640b922c44fcfd6e5e328467d42",
+   "identity": "586965a57b4dba76a5c2c9a375f41d6c03fffb692eaf6c290834f91869c1cc5b",
+   "frozen": true
+  },
+  "Same_s2": {
+   "sha256": "ebce3644b18d720d7ab49500be2788e7555464a01748589d958e9c2084d8a8fc",
+   "identity": "972d291cce53a2b27b609e8e6e35448e0f125c09506da886660152f37ef1b30d",
+   "frozen": true
+  }
+ },
+ "notes": {
+  "primary": "each seed's committed A08 B3 numeric setting (pinned, never re-chosen)",
+  "sensitivity": "never used for promotion or to change the primary"
+ },
+ "time": "2026-10-22T19:39:05Z"
+}
