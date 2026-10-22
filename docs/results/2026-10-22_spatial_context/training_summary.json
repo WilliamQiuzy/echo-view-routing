@@ -1,0 +1,155 @@
+{
+ "stage": "training summary",
+ "seeds": [
+  0,
+  2
+ ],
+ "runs": {
+  "Full_s0": {
+   "all": {
+    "updates": 1350,
+    "loss": 0.13132566125925926,
+    "ce": 0.11469220933333334,
+    "kl": 0.016633451259259264,
+    "g_last_norm": 0.08170729888888889,
+    "accuracy": 0.9638888888888889
+   },
+   "encoder frozen (u < warm-up)": {
+    "updates": 135,
+    "loss": 0.16801587111111108,
+    "ce": 0.1553832762962963,
+    "kl": 0.012632596296296298,
+    "g_last_norm": 0.05549830962962963,
+    "accuracy": 0.9512345679012346
+   },
+   "last 270 updates": {
+    "updates": 270,
+    "loss": 0.12908564,
+    "ce": 0.11414434666666666,
+    "kl": 0.014941297777777777,
+    "g_last_norm": 0.08351046407407407,
+    "accuracy": 0.9688271604938271
+   }
+  },
+  "Restricted_s0": {
+   "all": {
+    "updates": 1350,
+    "loss": 0.13152368822222224,
+    "ce": 0.1148642851851852,
+    "kl": 0.01665940274074074,
+    "g_last_norm": 0.07644600237037037,
+    "accuracy": 0.9638888888888889
+   },
+   "encoder frozen (u < warm-up)": {
+    "updates": 135,
+    "loss": 0.16782629777777777,
+    "ce": 0.15513351481481483,
+    "kl": 0.012692779259259256,
+    "g_last_norm": 0.0575138525925926,
+    "accuracy": 0.9512345679012346
+   },
+   "last 270 updates": {
+    "updates": 270,
+    "loss": 0.1290301011111111,
+    "ce": 0.11420250481481481,
+    "kl": 0.01482759814814815,
+    "g_last_norm": 0.07788156333333333,
+    "accuracy": 0.9679012345679012
+   }
+  },
+  "Full - Restricted s0": {
+   "all": {
+    "mean_ce_difference": -0.00017207585185185186,
+    "share_full_lower": 0.4985185185185185,
+    "share_equal": 0.0007407407407407407,
+    "correct_difference": 0
+   },
+   "encoder frozen (u < warm-up)": {
+    "mean_ce_difference": 0.00024976148148147864,
+    "share_full_lower": 0.4740740740740741,
+    "share_equal": 0.007407407407407408,
+    "correct_difference": 0
+   },
+   "last 270 updates": {
+    "mean_ce_difference": -5.815814814814739e-05,
+    "share_full_lower": 0.5259259259259259,
+    "share_equal": 0.0,
+    "correct_difference": 3
+   }
+  },
+  "Full_s2": {
+   "all": {
+    "updates": 1350,
+    "loss": 0.12721075607407406,
+    "ce": 0.1122363908888889,
+    "kl": 0.014974363777777775,
+    "g_last_norm": 0.07580916807407408,
+    "accuracy": 0.9651851851851851
+   },
+   "encoder frozen (u < warm-up)": {
+    "updates": 135,
+    "loss": 0.13740140592592592,
+    "ce": 0.12401899407407407,
+    "kl": 0.013382406666666668,
+    "g_last_norm": 0.06212234444444445,
+    "accuracy": 0.9611111111111111
+   },
+   "last 270 updates": {
+    "updates": 270,
+    "loss": 0.11282442444444446,
+    "ce": 0.0995380262962963,
+    "kl": 0.013286398888888891,
+    "g_last_norm": 0.07386327777777779,
+    "accuracy": 0.9691358024691358
+   }
+  },
+  "Restricted_s2": {
+   "all": {
+    "updates": 1350,
+    "loss": 0.12711496185185187,
+    "ce": 0.11197832370370368,
+    "kl": 0.01513663725925926,
+    "g_last_norm": 0.07502295481481482,
+    "accuracy": 0.9653703703703703
+   },
+   "encoder frozen (u < warm-up)": {
+    "updates": 135,
+    "loss": 0.13720667185185187,
+    "ce": 0.12383412888888888,
+    "kl": 0.013372545185185186,
+    "g_last_norm": 0.06216032444444445,
+    "accuracy": 0.9611111111111111
+   },
+   "last 270 updates": {
+    "updates": 270,
+    "loss": 0.11280247703703705,
+    "ce": 0.09943048629629629,
+    "kl": 0.013371991481481483,
+    "g_last_norm": 0.07507022703703704,
+    "accuracy": 0.9691358024691358
+   }
+  },
+  "Full - Restricted s2": {
+   "all": {
+    "mean_ce_difference": 0.0002580671851851851,
+    "share_full_lower": 0.44,
+    "share_equal": 0.0007407407407407407,
+    "correct_difference": -3
+   },
+   "encoder frozen (u < warm-up)": {
+    "mean_ce_difference": 0.0001848651851851872,
+    "share_full_lower": 0.4074074074074074,
+    "share_equal": 0.007407407407407408,
+    "correct_difference": 0
+   },
+   "last 270 updates": {
+    "mean_ce_difference": 0.00010754000000000059,
+    "share_full_lower": 0.3888888888888889,
+    "share_equal": 0.0,
+    "correct_difference": 0
+   }
+  }
+ },
+ "notes": "training windows only; both arms see the same windows and targets each update, but their models diverge after the first update",
+ "time": "2026-10-22T07:23:58Z"
+}
