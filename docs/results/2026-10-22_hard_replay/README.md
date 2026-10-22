@@ -218,3 +218,15 @@ each seed.
 - **Frozen weights.** `models_frozen/video_hard_replay_v1/{U,H}_s{0,2}` on the server (final.pt sha 73cafe137a58,
   c45707ba43f1, 4efb1e2f3f33 and b5602a1f82b8).
 - **Server only.** Replay manifests (mappings and scores), logits, per-sequence predictions and all identifiers.
+
+## Dated boundary notes (2026-10-22, after the lead's review; no number, model, configuration or decision changed)
+
+- **H against U is a limited test.** H equalled U on 83–84% of updates. So this comparison closes only this constrained
+  replay configuration. It does not rule out other forms of hard-example or resampled training.
+- **"Confidently wrong" is a set average.** The mean CE over the A08-wrong window set stayed about unchanged. That does
+  not show every remaining error is confident, and it does not show that new labels are required.
+- **The R background is not a matched control.** A10 R is a post hoc 12-window background, not a 16-window matched
+  control. Its counts cannot strictly separate the recipe's effect from the replay's effect.
+- **Wording correction.** The configuration's training line lists the 512-d projection with the 1e-4 group. A10's
+  optimiser code, which these runs used unchanged, puts the projection in the encoder group (1e-5, frozen for the first
+  135 updates). The runs and every number above follow the code.
