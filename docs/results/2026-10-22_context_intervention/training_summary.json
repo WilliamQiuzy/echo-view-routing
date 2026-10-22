@@ -1,0 +1,155 @@
+{
+ "stage": "training summary",
+ "seeds": [
+  0,
+  2
+ ],
+ "runs": {
+  "Other_s0": {
+   "all": {
+    "updates": 1350,
+    "loss": 0.6527174148148148,
+    "ce_original": 0.12147059911111112,
+    "kl": 0.055053200296296304,
+    "ce_copy": 0.47619361562962964,
+    "accuracy_original": 0.9639506172839506,
+    "accuracy_copy": 0.8332716049382716
+   },
+   "encoder frozen (u < warm-up)": {
+    "updates": 135,
+    "loss": 1.509875834074074,
+    "ce_original": 0.15877872,
+    "kl": 0.014509988148148148,
+    "ce_copy": 1.3365871259259259,
+    "accuracy_original": 0.9506172839506173,
+    "accuracy_copy": 0.5216049382716049
+   },
+   "last 270 updates": {
+    "updates": 270,
+    "loss": 0.38262589333333336,
+    "ce_original": 0.11148489481481481,
+    "kl": 0.06746733407407407,
+    "ce_copy": 0.2036736637037037,
+    "accuracy_original": 0.9666666666666667,
+    "accuracy_copy": 0.9410493827160494
+   }
+  },
+  "Same_s0": {
+   "all": {
+    "updates": 1350,
+    "loss": 0.166923996,
+    "ce_original": 0.10459963481481481,
+    "kl": 0.02168878940740741,
+    "ce_copy": 0.04063557518518519,
+    "accuracy_original": 0.9668518518518519,
+    "accuracy_copy": 0.9884567901234568
+   },
+   "encoder frozen (u < warm-up)": {
+    "updates": 135,
+    "loss": 0.2198731711111111,
+    "ce_original": 0.14454639851851853,
+    "kl": 0.011258071851851851,
+    "ce_copy": 0.06406870074074074,
+    "accuracy_original": 0.9493827160493827,
+    "accuracy_copy": 0.9808641975308642
+   },
+   "last 270 updates": {
+    "updates": 270,
+    "loss": 0.16807416555555557,
+    "ce_original": 0.10485048037037037,
+    "kl": 0.02084414814814815,
+    "ce_copy": 0.04237954222222222,
+    "accuracy_original": 0.9679012345679012,
+    "accuracy_copy": 0.9864197530864197
+   }
+  },
+  "Other - Same s0": {
+   "all": {
+    "mean_ce_original_difference": 0.016870964296296295,
+    "correct_original_difference": -47
+   },
+   "encoder frozen (u < warm-up)": {
+    "mean_ce_original_difference": 0.01423232148148148,
+    "correct_original_difference": 2
+   },
+   "last 270 updates": {
+    "mean_ce_original_difference": 0.006634414444444445,
+    "correct_original_difference": -4
+   }
+  },
+  "Other_s2": {
+   "all": {
+    "updates": 1350,
+    "loss": 0.5922033694814814,
+    "ce_original": 0.11678091333333332,
+    "kl": 0.054909603259259254,
+    "ce_copy": 0.42051285007407413,
+    "accuracy_original": 0.9644444444444444,
+    "accuracy_copy": 0.8567901234567902
+   },
+   "encoder frozen (u < warm-up)": {
+    "updates": 135,
+    "loss": 1.4153581400000002,
+    "ce_original": 0.1345144888888889,
+    "kl": 0.012065351851851851,
+    "ce_copy": 1.268778294074074,
+    "accuracy_original": 0.9580246913580247,
+    "accuracy_copy": 0.5376543209876543
+   },
+   "last 270 updates": {
+    "updates": 270,
+    "loss": 0.36826253000000003,
+    "ce_original": 0.10588225000000001,
+    "kl": 0.05851915444444444,
+    "ce_copy": 0.20386112037037035,
+    "accuracy_original": 0.9666666666666667,
+    "accuracy_copy": 0.9361111111111111
+   }
+  },
+  "Same_s2": {
+   "all": {
+    "updates": 1350,
+    "loss": 0.16570650925925925,
+    "ce_original": 0.1061870654074074,
+    "kl": 0.01926869362962963,
+    "ce_copy": 0.040250753111111114,
+    "accuracy_original": 0.9669753086419753,
+    "accuracy_copy": 0.9887037037037038
+   },
+   "encoder frozen (u < warm-up)": {
+    "updates": 135,
+    "loss": 0.17405561407407408,
+    "ce_original": 0.12422875407407409,
+    "kl": 0.008975083703703703,
+    "ce_copy": 0.04085177925925926,
+    "accuracy_original": 0.9586419753086419,
+    "accuracy_copy": 0.9907407407407407
+   },
+   "last 270 updates": {
+    "updates": 270,
+    "loss": 0.16057245407407408,
+    "ce_original": 0.09772391999999999,
+    "kl": 0.01928275222222222,
+    "ce_copy": 0.04356579555555555,
+    "accuracy_original": 0.9712962962962963,
+    "accuracy_copy": 0.9873456790123457
+   }
+  },
+  "Other - Same s2": {
+   "all": {
+    "mean_ce_original_difference": 0.010593847925925926,
+    "correct_original_difference": -41
+   },
+   "encoder frozen (u < warm-up)": {
+    "mean_ce_original_difference": 0.010285734814814812,
+    "correct_original_difference": -1
+   },
+   "last 270 updates": {
+    "mean_ce_original_difference": 0.00815833,
+    "correct_original_difference": -15
+   }
+  }
+ },
+ "notes": "training windows only; both arms see the same 12 originals each update; their copies differ in the donor's view; models diverge after the first update",
+ "time": "2026-10-22T19:27:41Z"
+}

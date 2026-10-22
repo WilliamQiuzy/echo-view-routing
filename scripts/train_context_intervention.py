@@ -135,12 +135,12 @@ class Ctx:
         return self._m[key]
 
     def frame_paths(self, m: dict):
+        """Frame directories of every protocol training clip (one table for all arms and seeds in a process)."""
         if self._fp is None:
-            vids = {str(v) for v in m["videos"].tolist()} | {str(v) for s in (0, 1, 2) for v in self.a10.manifest(s)[0]["videos"].tolist()}
-            if vids - set(prv.allowlist(self.a10.rv, ROOT)):
-                raise SystemExit("a manifest recording is not a protocol training clip")
             from scripts.train_joint_visual_temporal import FramePaths
-            self._fp = FramePaths(prv.frame_dirs(self.a10.paths, self.a10.rv, vids))
+            self._fp = FramePaths(prv.frame_dirs(self.a10.paths, self.a10.rv, set(prv.allowlist(self.a10.rv, ROOT))))
+        if {str(v) for v in m["videos"].tolist()} - set(self._fp.dirs):
+            raise SystemExit("a manifest recording is not a protocol training clip")
         return self._fp
 
     def start(self, seed: int) -> tuple[dict, str]:
