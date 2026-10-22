@@ -1,0 +1,76 @@
+# A22, temporal density inside the window for the single CLS video model (video_temporal_density_v1), 2026-10-22 UTC.
+# This is the round's one-page task and configuration, written before any A22 preparation, check, training or evaluation
+# output. Question: with the same short time support, the same 16 input slots and the same video model, does inserting
+# real intermediate source frames (Interleaved) beat repeating the already-sampled frames (Repeated)? Can it keep short
+# true segments while holding down the short false segments that A20/A21's continuations added? A10 R (trained, A08 start,
+# A10's batches and recipe, 16 frames at 10 Hz over a longer support) is reused as the Long10 control; nothing is retrained.
+# Lead's read-only facts: all 3,364 protocol-train recordings have fps_playback 30; within A10_s0 rows 0-1,349 every
+# forward step between adjacent same-source source frames is 3 (232,793 steps), so the 10 Hz input skips intermediate raw
+# JPEGs. Seconds and Hz are the playback time axis, not a verified acquisition rate or cardiac phase.
+# Any Interleaved - Repeated difference is first attributed to the extra observed frames (appearance as well as motion
+# could explain it), never directly to motion or cardiac phase. The check pool's sessions are unseen by A22's batches, but
+# its recordings trained the A08 encoder: not a new holdout. The development halves are reused exploratory feedback; the
+# test split and EchoNet-Pediatric are not read. Conventional temporal-sampling test; no algorithmic contribution.
+experiment: video_temporal_density_v1
+
+video_temporal_density:
+  predecessors:
+    not_repeated: "V01 (multi-frame context helps, long cross-view context can mislead); V02 / A02-A04 (readouts or supervision of the same frames); V03 (denser request times, 0.5 s -> 0.1 s, not denser frames inside a window); A20/A21 (continuations whose recall gains came with short false segments); no decoder, router, hard-example resampling or spatial branch is reopened"
+    changed_condition: "the local raw frames the model sees: 7 real intermediate source frames between the same 8 old 10 Hz samples, against repeating those 8 samples, in the same 16 slots"
+  pinned:
+    A10_config: {path: configs/experiments/video_switch_head_v1.yaml, sha256: fb851c684450e48ebe031db0cc98bbbcbdd35b20b6ee88541489cf80d0124a58}
+    A10_manifest_index: {path: runs/video_switch_head_v1/manifests/index.json, sha256: eaf3c99a219b57ef0e063eecaa1fb84e0c56f44f0861ba2621ece3a4c7cec5a1}
+    A08_weights: {0: 9b144925f32fac7d725d13231a132abeb6635fa44b6fe0dbcec7f5b59d035bbc, 1: c8b09ecaf286c7b66fc0eec69fdd102f98930aaa657a7604e3204c3845a8e172, 2: f95fed7ba78cc0b5e2474c71a156356507b4588a4b324957fd5b53fe66ee8472}
+    A08_choices: {path: docs/results/2026-10-16_video_within_view/choices.json, sha256: b2a731e5f4393187ee9954f710821ac04938652f0a7d00e0381ad0b8b21cf27e}
+    A18_teacher_cache: {0: ecdd3512b0b98960b0dbed81cc8b4f2246958d58b03f40edb3b0f8552af8b1e4, 1: a28acb739f4c943680eb49caa3c3b7fc525334ed8134c3aa04c0ec088f068332, 2: d096f765e071048021ec2b0962e1c6e3c821e772802af11abc9e5a10a4fb5831}
+    Long10_R_weights: {0: 1db6ccd42f7b7212cfc282a9c60db83ed2c98a605cc29ef6637781a7b95c044b, 1: 19ac49074dd96cec11487512d2058555aa88ef5a7e4eaf3d56ff3d1c7d079211, 2: 858c4e2580d01b2a255434110eb14a8d8231558d58ba1bb992c2951e822f4e5a}
+    Long10_R_sources: "R_s0/R_s2: A10 (runs/video_switch_head_v1, committed choices R_s{k}|b3, saved development outputs); R_s1: A18 (runs/video_ensemble_teacher_v1); check-pool logits from A19's logits index"
+    A19_logits_index: {path: runs/video_b3_coverage_v1/logits/index.json, sha256: f380668e4adef2ed9a70d4fcd66caf9c738913051934095865090ee6e8058901}
+    A15_pool_manifest: {path: runs/video_router_data_v1/pool_manifest.json, sha256: 5ab124d48f48f826fd0b52542cf8cf1aa7f97e0f6b82327358406cf574a14050}
+    A19_screen: {path: runs/video_b3_coverage_v1/screen.json, sha256: 8a66a0f5cedff15ff88b69791979aed6cfa7eae5431611a87f2776e5699021fe}
+    A18_screen: {path: runs/video_ensemble_teacher_v1/evaluation/screen.json, sha256: 8fe99e0eb74775d4001d4eca43fcef122d266160f1952626f5822596578db16f}
+    A20_screen: {path: docs/results/2026-10-22_hard_replay/screen.json, sha256: 53d2f22adca111a1d1e44cea42b3fc9cc837ef4233f36989eb101ae919b55eb1}
+    crop_code: {path: echo_routing/temporal/joint_visual.py, sha256: 6aa655fda17b7f24c948183bc7bd20a075fdd01c7966a59922a3ffea47a6f048}
+  arms:
+    model: "per seed, A08 all_s{k} strictly loaded into the unchanged TargetMViT (MViTv2-S, 512-d projection, target marker, five-class CLS, 34,640,549 parameters); no branch, head, time token or gate; one model and one encoder forward per window at deployment"
+    Repeated: "slots 2i and 2i+1 hold old ref[a_i], i = 0..7"
+    Interleaved: "even slot 2i holds old ref[a_i]; odd slot 2i+1 (i = 0..6) holds one real source JPEG inside a_i's own source interval; slot 15 repeats ref[a_7] like slot 14; at most 7 slots differ from Repeated"
+    Long10: "A10 R_s0/R_s2 (A18 R_s1 if seed 1 runs): 16 frames at 10 Hz from the same A08 start with A10's batches and CE + KL; pinned weights, manifests, teacher, configuration, code, outputs and choices; never retrained or re-selected"
+  windows:
+    positions: "for each original complete sequence (N 10 Hz samples) and the old target c: a = window_frames(c, N, 8, 8) (that function's end shift and short-sequence repeats; no new clamp rule); support 0.7 s for N >= 8 (8 samples, ~0.8 s by bins) against Long10's 1.5 s (16 samples)"
+    intermediate: "for odd slot 2i+1 with a_i != a_{i+1}: left ref = (source v, ordinal f, gamma g) of a_i; next = the next planned sample of v in its own 10 Hz plan (cache frame_idx, the stride_indices grid), even if not in the fragment; at the end of v, next = n_frames (the raw frame count); mid = floor((f + next) / 2) (nearest, ties to the earlier), kept inside [f, n_frames - 1]; ordinal -> file through FramePaths' numeric-order list; gamma g; never across sources, averaged or synthesised; if mid == f (no raw frame inside the interval) the slot repeats the left frame"
+    repeats: "a_i == a_{i+1}: the odd slot repeats the left frame"
+    fallback: "fixed before training: an undecodable or missing intermediate JPEG falls back to the left old ref; counted with reasons; windows and denominators kept; old-frame handling unchanged"
+    marker: "identical in both arms, from planned times only: even slot 2i -> 2 a_i, odd slot 2i+1 (i < 7) -> a_i + a_{i+1}, slot 15 -> 2 a_7; the marker is the middle of the slots whose coordinate equals 2c (tm.marker_slot); duplicated pixels never add a mark"
+    pixels: "unchanged: gamma LUT, short side 256, centre crop 224, EchoPrime mean/std, 16 frames in slot order; no frame index, source, join, label or boundary input"
+    outputs: "only at the original stride-5 requests c (~0.5 s), nearest-centre mapping to the 10 Hz sample axis; B3 half-window, NMS, numeric thresholds, boundary tolerance, short = at most 16 samples and segment matching unchanged; no 20 Hz outputs, wider tolerance or interpolated probabilities"
+  data:
+    batches: "A10's pinned VSH manifests, rows 0-1,349 per seed (4 native, 4 change-containing constructed, 4 same-label join = 12 targets per update); sequences, targets c, classes, gamma, sources and batch order unchanged; no replay or new draw; new per-arm input manifests and pixel digests saved separately, old manifests and caches read only"
+    teacher: "each seed's frozen A08 on the original 16-frame 10 Hz long window, from A18's verified own-teacher cache (sha, manifest sha and request digests checked; cached-online parity re-checked); the same teacher for both arms"
+  loss: "mean CE + mean KL(p_own A08 long || p_student), weight 1, temperature 1, all 12 targets equally weighted; no new loss"
+  training: "Repeated_s0, Interleaved_s0, Repeated_s2, Interleaved_s2: A18's verified cached-own training step with only the student's window request replaced; A10's AdamW groups (encoder incl. projection 1e-5 frozen for u < 135, marker/classifier 1e-4, the unused head group kept for layout), weight decay 1e-4, betas (0.9, 0.999), eps 1e-8, clip 1, 1,350 updates, warm-up 135, warm-up/cosine; torch.manual_seed(seed) and CUDA seed as A10; cache reads consume no model RNG; final weights only; training monitored on training data only"
+  checks: "configuration committed before any output; windows rebuilt from the complete sequences (even refs, c and targets equal to A10's; Long10 slots equal to A10's 16 refs); synthetic window cases (source boundary, same source different fragments, gamma change, sequence ends, N < 8, repeats, raw end, odd steps, missing-JPEG fallback) with independent slot times, ordinals and markers; even slots and slot 15 bit-equal across arms, only odd slots may differ, no intermediate outside its source or interval; every source's cache plan checked against its raw frame count; input differences (windows, new ordinals, pixel differences), teacher error rate and label purity reported; no intermediate frame available anywhere = preparation not met; teacher cache parity and state; Long10 mode reproduces A18 own / A10 R loss, gradients and one update at the start and after unfreezing (loss <= 1e-4, parameters <= max(1e-5, 2 x repeat difference)); forced Interleaved = Repeated inputs reproduce loss, gradients and update; optimiser binding, encoder freeze/unfreeze; 3 + 3 resume against 6 updates; throughput and budget projection (evaluation and seed 1 reserved; an over-cap fixed comparison is recorded as not completed, never shortened)"
+  evaluation:
+    primary: "Repeated@A08, Interleaved@A08 and Long10 R@A08: each seed's committed A08 B3 numeric setting"
+    attribution: "Interleaved - Repeated tests the 7 extra raw frames; short-window arms - Long10 R compare input conditions, not pure motion or phase; Base, A14 P (seeds 0/2) and A20 H@A08 are references"
+    sensitivity: "one own-calibration choice per new model (standard 40 settings) and argmax; final weights sha and all choices committed (git object checked) before selection or the check pool is read; never used for promotion"
+    development: "both halves, full denominators; A08, frozen Ordered, Long10 R (own committed and A08-setting rows), A14 P and A20 U/H development rows reproduced"
+    check_pool: "A15's 600 multi + 200 native once after the commits; A08 and Long10 R from A19's pinned pool logits and rows"
+    rows: "multi segment F1@50, native macro-F1, both A4C/A5C directions, boundary recall/precision, FP / short FP, FN / missed short true, recovered / lost matched segments; window CE / accuracy in the original A08-defined pure/mixed, short/other, A08 right/wrong groups; each input's own target-label share as description only"
+  promotion_rule:
+    applies_to: "Repeated@A08 or Interleaved@A08 against each seed's A08 + B3 over the 4 cells"
+    signal: "mean dF >= +0.003"
+    no_reversal: "each half's two-seed mean >= -0.005 and no cell < -0.015"
+    no_harm: "mean native macro-F1 difference >= -0.003, mean boundary recall difference >= -0.010, missed short true segments <= Base's + 3"
+    feasibility: "each seed's primary calibration row meets native >= 0.980 and multi boundary recall >= 0.95"
+    decision: "if either arm meets all, Repeated_s1 and Interleaved_s1 by the same recipe without asking (Long10 R_s1 = A18's R_s1, not retrained), seed-1 choices committed before its selection; otherwise A22 closes with two seeds and no time-length, rate, insertion-count, teacher or input-branch variant"
+    attribution: "an extra-frame gain needs matched Interleaved - Repeated full-segmentation evidence; a shared change is not attributed to the new frames; Repeated better means this insertion condition adds nothing, not that motion is useless"
+  budget:
+    gpu_hours_max: 4.0
+    cpu_hours_max: 3.0             # agent active wall clock and decode/evaluation workers outside GPU time; GPU-job loaders not double-booked (A18-A21)
+    ledger: runs/video_temporal_density_v1/ledger.jsonl
+  outputs:
+    root: runs/video_temporal_density_v1
+    checkpoints: checkpoints/video_temporal_density_v1
+    frozen: models_frozen/video_temporal_density_v1/{Repeated,Interleaved}_s{seed}
+    results_dir: docs/results/2026-10-22_temporal_density
