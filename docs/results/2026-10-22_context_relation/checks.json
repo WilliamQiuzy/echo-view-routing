@@ -1,0 +1,136 @@
+{
+ "config_sha256": "9a0045d2cf9c7db1a06257c310642c77cd08eabce9d5c2d138d9bdb1b689e8d9",
+ "started": "2026-10-22T21:21:52Z",
+ "lambda": 1.0,
+ "relation_cases": {
+  "p equals q gives 0": true,
+  "torch equals the loop restatement": true,
+  "a teacher switch followed by the student gives 0": true,
+  "a constant offset from q gives 0": true,
+  "a new student jump is penalised": true,
+  "removing the teacher's switch is penalised": true,
+  "a change between groups is never a pair": true,
+  "ok": true
+ },
+ "groups": {
+  "s0": {
+   "groups_one_sequence_consecutive": true,
+   "originals_equal_A10": true,
+   "repeated_pairs": 77
+  },
+  "s2": {
+   "groups_one_sequence_consecutive": true,
+   "originals_equal_A10": true,
+   "repeated_pairs": 137
+  },
+  "ok": true
+ },
+ "lambda0_replay_of_A23_Other_s0": {
+  "updates": [
+   0,
+   136
+  ],
+  "loss_max_abs": 6.048226928623279e-06,
+  "after_unfreezing_abs": [
+   1.5060623168583476e-06,
+   6.048226928623279e-06
+  ],
+  "rel_at_start": [
+   0.06393963098526001,
+   0.0459241159260273,
+   0.020914757624268532
+  ],
+  "ok": true
+ },
+ "teacher": {
+  "cached_against_online_max_abs": 0.0,
+  "windows": 48,
+  "unchanged": true,
+  "ok": true
+ },
+ "forced_otherrel_equals_samerel": {
+  "loss_max_abs": 0.0,
+  "params_max_abs": 0.0,
+  "ok": true
+ },
+ "resume": {
+  "updates": [
+   133,
+   134,
+   135,
+   136,
+   137,
+   138
+  ],
+  "loss_max_abs": 3.5762786865234375e-07,
+  "params_max_abs": 1.0337680578231812e-05,
+  "repeat_params_max_abs": 1.0292977094650269e-05,
+  "ok": true
+ },
+ "encoder": {
+  "grad_max_before_warmup": [
+   0.0,
+   0.0
+  ],
+  "grad_max_after": [
+   0.03952501341700554,
+   0.04552111029624939,
+   0.04088472202420235,
+   0.04399159178137779
+  ],
+  "ok": true
+ },
+ "optimiser_bound": {
+  "ok": true
+ },
+ "rel_values_at_unfreezing": [
+  0.01666329614818096,
+  0.018949465826153755,
+  0.03803350031375885,
+  0.02597999759018421,
+  0.01531386561691761,
+  0.028928909450769424
+ ],
+ "gradient_share": [
+  {
+   "u": 0,
+   "base_loss": 1.2681245803833008,
+   "lambda_rel": 0.06393963098526001,
+   "base_grad_norm": 6.7338666915893555,
+   "rel_grad_norm": 2.2133829593658447,
+   "cosine": 0.16171633617067116
+  },
+  {
+   "u": 135,
+   "base_loss": 1.7645211219787598,
+   "lambda_rel": 0.05445912852883339,
+   "base_grad_norm": 17.377965927124023,
+   "rel_grad_norm": 2.9481308460235596,
+   "cosine": 0.6642422706026161
+  },
+  {
+   "u": 235,
+   "base_loss": 1.1622360944747925,
+   "lambda_rel": 0.01517119538038969,
+   "base_grad_norm": 14.398354530334473,
+   "rel_grad_norm": 0.6549549102783203,
+   "cosine": 0.21313326364376745
+  }
+ ],
+ "timing": {
+  "seconds_per_update": 1.4072900414466858,
+  "peak_gpu_memory_mib": 43435.0986328125
+ },
+ "budget": {
+  "spent": 0.014344534277915955,
+  "inference_seconds_per_window": 0.015405659874280294,
+  "evaluation_per_model_hours": 0.1406279985523886,
+  "per_run_hours": 0.5277337655425072,
+  "projection_two_seeds": 2.687791590657499,
+  "seed1_reserve": 1.3867235281897916,
+  "cap": 6.0,
+  "fits_with_seed1": true
+ },
+ "ok": true,
+ "finished": "2026-10-22T21:26:28Z"
+}
