@@ -6,6 +6,7 @@ pool; A08, frozen Ordered, R, A14 P and A19's check rows reproduced; window accu
   --stage training                training windows only: base and replay CE / accuracy per run (no evaluation data)
   --stage calibrate               U/H inference on calibration (outputs saved); the sensitivity B3 choices; choices.json
   --stage select --choices-sha S  selection inference, the check pool once, rows, comparisons, window groups, promotion
+  --stage background              post hoc, no decision: A10 R's window groups on the development halves (saved outputs)
 """
 from __future__ import annotations
 
@@ -371,13 +372,46 @@ def training_summary(ctx: thr.Ctx, seeds: list[int]) -> None:
         thr.ledger_append(ctx.ledger, f"training summary seeds {seeds} (CPU)", "cpu", started, time.time() - t0, ok, note)
 
 
+def background(ctx: thr.Ctx) -> None:
+    """Post hoc, after select and outside every rule: A10 R_s0/R_s2 (the same recipe without replay) window groups on both
+    development halves from their saved outputs, against the same A08-wrong groups. The check pool is not read again."""
+    t0, started, ok, note, out = time.time(), thr.now(), False, "", {}
+    try:
+        a8 = rsh.a08_ctx(); a8sum = json.loads((ROOT / "docs/results/2026-10-16_video_within_view/summary.json").read_text()); pins = rsh.a08_output_pins()
+        scr = json.loads((ctx.out / "evaluation" / "screen.json").read_text())["window_groups"]
+        for h in HALVES:
+            ev, seqs = a8.half(h, rso.DevAccess({h})); refs = rw.half_refs(seqs); at = {r: i for i, r in enumerate(refs)}; W = rr.half_windows(seqs, at, 5)
+            orders = np.broadcast_to(np.arange(16, dtype=np.int64), W["s"].shape).copy(); meta = window_meta(seqs, W)
+            for s in (0, 2):
+                apath = ROOT / "runs/video_within_view_v1/evaluation" / h / f"all_s{s}.npz"
+                if sha256_file(apath) != pins[h][s]:
+                    raise SystemExit(f"A08 all_s{s} {h}: the saved outputs differ from their pin")
+                la, _ = rr.cached_logits(apath, a8sum["runs"][f"all_s{s}"]["identity"], W, orders, seqs); wrong = la.argmax(1) != meta["label"]
+                if window_groups(la, meta, wrong, False) != scr[f"Base s{s}"][h]:
+                    raise SystemExit(f"Base s{s} {h}: the window groups differ from the select stage")
+                root, man, _, _ = r_reference(s); lgR = saved(root / "evaluation" / h / f"R_s{s}.npz", man["identity"], W)
+                if lgR is None:
+                    raise SystemExit(f"R_s{s} {h}: the saved outputs do not match this half's windows")
+                out.setdefault(f"R s{s}", {})[h] = window_groups(lgR, meta, wrong, True)
+        rec = {"stage": "background (post hoc, no decision)", "groups": out, "notes": "A10 R = A10's 12-window recipe from the same A08 start without replay; development halves only; the check pool was not read again", "time": thr.now()}
+        for p in (ctx.out / "evaluation" / "background_windows.json", ctx.results / "background_windows.json"):
+            thr.write_json(p, rec)
+        ok = True
+    except BaseException as e:  # noqa: BLE001 - recorded, then raised again
+        note = f"{type(e).__name__}: {str(e)[:200]}"; raise
+    finally:
+        thr.ledger_append(ctx.ledger, "background R window groups, post hoc (CPU)", "cpu", started, time.time() - t0, ok, note)
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--config", required=True); ap.add_argument("--stage", choices=("training", "calibrate", "select"), required=True); ap.add_argument("--choices-sha")
+    ap.add_argument("--config", required=True); ap.add_argument("--stage", choices=("training", "calibrate", "select", "background"), required=True); ap.add_argument("--choices-sha")
     ap.add_argument("--seeds", nargs="+", type=int, default=[0, 2]); ap.add_argument("--workers", type=int, default=6)
     a = ap.parse_args(); a.set = []; ctx = thr.Ctx(load_cfg(a), a.config)
     if a.stage == "training":
         return training_summary(ctx, a.seeds)
+    if a.stage == "background":
+        return background(ctx)
     if a.stage == "calibrate":
         return calibrate(ctx, a.seeds, a.workers)
     select(ctx, a.seeds, a.choices_sha, a.workers)
