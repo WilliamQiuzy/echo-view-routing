@@ -1,0 +1,7696 @@
+{
+ "stage": "evaluate",
+ "seeds": [
+  0,
+  2
+ ],
+ "config_sha256": "d480dc7c63c566f8128a7d2a89fd2d740540ba48e2f905e3a47a5715fc8262ff",
+ "systems": {
+  "Base s0": {
+   "selection": {
+    "segment_f1_50_multi": 0.9563492063492064,
+    "boundary_precision_multi": 0.9559585492227979,
+    "boundary_recall_multi": 0.9659685863874345,
+    "boundary_f1_multi": 0.9609375,
+    "native_macro_f1": 0.9785909601243429,
+    "native_internal_cuts_per_clip": 0.03873239436619718,
+    "same_class_cut_rate_multi": 0.021739130434782608,
+    "segment_f1_50_pairs": 0.9688249400479616,
+    "boundary_recall_pairs": 0.9857142857142858,
+    "native_recall": {
+     "PLAX": 0.9904761904761905,
+     "PSAX": 1.0,
+     "A4C": 0.9770114942528736,
+     "A5C": 1.0,
+     "SC4C": 1.0
+    },
+    "native_confusion": [
+     [
+      104,
+      1,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      68,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      85,
+      2,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      11,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      13
+     ]
+    ],
+    "A5C read as A4C": 0,
+    "A4C read as A5C": 2,
+    "native_precision": {
+     "PLAX": 1.0,
+     "PSAX": 0.9855072463768116,
+     "A4C": 1.0,
+     "A5C": 0.8461538461538461,
+     "SC4C": 1.0
+    },
+    "multi_frame_accuracy": 0.9367689325579841,
+    "native_frame_accuracy": 0.9867748722572889
+   },
+   "calibration": {
+    "segment_f1_50_multi": 0.9826923076923076,
+    "boundary_precision_multi": 0.9800995024875622,
+    "boundary_recall_multi": 0.9899497487437185,
+    "boundary_f1_multi": 0.985,
+    "native_macro_f1": 0.9929417020326111,
+    "native_internal_cuts_per_clip": 0.012658227848101266,
+    "same_class_cut_rate_multi": 0.024875621890547265,
+    "segment_f1_50_pairs": 0.9797101449275363,
+    "boundary_recall_pairs": 0.9482758620689655,
+    "native_recall": {
+     "PLAX": 1.0,
+     "PSAX": 1.0,
+     "A4C": 0.9836065573770492,
+     "A5C": 1.0,
+     "SC4C": 1.0
+    },
+    "native_confusion": [
+     [
+      80,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      71,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      60,
+      1,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      18,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      7
+     ]
+    ],
+    "A5C read as A4C": 0,
+    "A4C read as A5C": 1,
+    "native_precision": {
+     "PLAX": 1.0,
+     "PSAX": 1.0,
+     "A4C": 1.0,
+     "A5C": 0.9473684210526315,
+     "SC4C": 1.0
+    },
+    "multi_frame_accuracy": 0.9475016655562958,
+    "native_frame_accuracy": 0.9939258535223068
+   },
+   "check": {
+    "native_macro_f1": 0.9849788765451416,
+    "segment_f1_50_multi": 0.9603097773475314,
+    "boundary_recall_multi": 0.9674631418403661,
+    "boundary_precision_multi": 0.9524524524524525,
+    "boundary_f1_multi": 0.9598991172761665,
+    "native_internal_cuts_per_clip": 0.045,
+    "same_class_cut_rate_multi": 0.028763183125599234,
+    "segment_f1_50_pairs": null,
+    "boundary_recall_pairs": null,
+    "A4C read as A5C": 3,
+    "A5C read as A4C": 0
+   }
+  },
+  "W s0": {
+   "selection": {
+    "segment_f1_50_multi": 0.9563492063492064,
+    "boundary_precision_multi": 0.9559585492227979,
+    "boundary_recall_multi": 0.9659685863874345,
+    "boundary_f1_multi": 0.9609375,
+    "native_macro_f1": 0.9785909601243429,
+    "native_internal_cuts_per_clip": 0.03873239436619718,
+    "same_class_cut_rate_multi": 0.021739130434782608,
+    "segment_f1_50_pairs": 0.9688249400479616,
+    "boundary_recall_pairs": 0.9857142857142858,
+    "native_recall": {
+     "PLAX": 0.9904761904761905,
+     "PSAX": 1.0,
+     "A4C": 0.9770114942528736,
+     "A5C": 1.0,
+     "SC4C": 1.0
+    },
+    "native_confusion": [
+     [
+      104,
+      1,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      68,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      85,
+      2,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      11,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      13
+     ]
+    ],
+    "A5C read as A4C": 0,
+    "A4C read as A5C": 2,
+    "native_precision": {
+     "PLAX": 1.0,
+     "PSAX": 0.9855072463768116,
+     "A4C": 1.0,
+     "A5C": 0.8461538461538461,
+     "SC4C": 1.0
+    },
+    "multi_frame_accuracy": 0.9367689325579841,
+    "native_frame_accuracy": 0.9867748722572889
+   },
+   "calibration": {
+    "segment_f1_50_multi": 0.9826923076923076,
+    "boundary_precision_multi": 0.9800995024875622,
+    "boundary_recall_multi": 0.9899497487437185,
+    "boundary_f1_multi": 0.985,
+    "native_macro_f1": 0.9929417020326111,
+    "native_internal_cuts_per_clip": 0.012658227848101266,
+    "same_class_cut_rate_multi": 0.024875621890547265,
+    "segment_f1_50_pairs": 0.9797101449275363,
+    "boundary_recall_pairs": 0.9482758620689655,
+    "native_recall": {
+     "PLAX": 1.0,
+     "PSAX": 1.0,
+     "A4C": 0.9836065573770492,
+     "A5C": 1.0,
+     "SC4C": 1.0
+    },
+    "native_confusion": [
+     [
+      80,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      71,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      60,
+      1,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      18,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      7
+     ]
+    ],
+    "A5C read as A4C": 0,
+    "A4C read as A5C": 1,
+    "native_precision": {
+     "PLAX": 1.0,
+     "PSAX": 1.0,
+     "A4C": 1.0,
+     "A5C": 0.9473684210526315,
+     "SC4C": 1.0
+    },
+    "multi_frame_accuracy": 0.9475016655562958,
+    "native_frame_accuracy": 0.9939258535223068
+   },
+   "check": {
+    "native_macro_f1": 0.9799874921826142,
+    "segment_f1_50_multi": 0.9608830364058869,
+    "boundary_recall_multi": 0.9674631418403661,
+    "boundary_precision_multi": 0.9529293940911367,
+    "boundary_f1_multi": 0.9601412714429869,
+    "native_internal_cuts_per_clip": 0.045,
+    "same_class_cut_rate_multi": 0.027804410354745925,
+    "segment_f1_50_pairs": null,
+    "boundary_recall_pairs": null,
+    "A4C read as A5C": 3,
+    "A5C read as A4C": 1
+   }
+  },
+  "I s0": {
+   "selection": {
+    "segment_f1_50_multi": 0.9563492063492064,
+    "boundary_precision_multi": 0.9559585492227979,
+    "boundary_recall_multi": 0.9659685863874345,
+    "boundary_f1_multi": 0.9609375,
+    "native_macro_f1": 0.9785909601243429,
+    "native_internal_cuts_per_clip": 0.03873239436619718,
+    "same_class_cut_rate_multi": 0.021739130434782608,
+    "segment_f1_50_pairs": 0.9688249400479616,
+    "boundary_recall_pairs": 0.9857142857142858,
+    "native_recall": {
+     "PLAX": 0.9904761904761905,
+     "PSAX": 1.0,
+     "A4C": 0.9770114942528736,
+     "A5C": 1.0,
+     "SC4C": 1.0
+    },
+    "native_confusion": [
+     [
+      104,
+      1,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      68,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      85,
+      2,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      11,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      13
+     ]
+    ],
+    "A5C read as A4C": 0,
+    "A4C read as A5C": 2,
+    "native_precision": {
+     "PLAX": 1.0,
+     "PSAX": 0.9855072463768116,
+     "A4C": 1.0,
+     "A5C": 0.8461538461538461,
+     "SC4C": 1.0
+    },
+    "multi_frame_accuracy": 0.9367689325579841,
+    "native_frame_accuracy": 0.9867748722572889
+   },
+   "calibration": {
+    "segment_f1_50_multi": 0.9826923076923076,
+    "boundary_precision_multi": 0.9800995024875622,
+    "boundary_recall_multi": 0.9899497487437185,
+    "boundary_f1_multi": 0.985,
+    "native_macro_f1": 0.9929417020326111,
+    "native_internal_cuts_per_clip": 0.012658227848101266,
+    "same_class_cut_rate_multi": 0.024875621890547265,
+    "segment_f1_50_pairs": 0.9797101449275363,
+    "boundary_recall_pairs": 0.9482758620689655,
+    "native_recall": {
+     "PLAX": 1.0,
+     "PSAX": 1.0,
+     "A4C": 0.9836065573770492,
+     "A5C": 1.0,
+     "SC4C": 1.0
+    },
+    "native_confusion": [
+     [
+      80,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      71,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      60,
+      1,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      18,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      7
+     ]
+    ],
+    "A5C read as A4C": 0,
+    "A4C read as A5C": 1,
+    "native_precision": {
+     "PLAX": 1.0,
+     "PSAX": 1.0,
+     "A4C": 1.0,
+     "A5C": 0.9473684210526315,
+     "SC4C": 1.0
+    },
+    "multi_frame_accuracy": 0.9475016655562958,
+    "native_frame_accuracy": 0.9939258535223068
+   },
+   "check": {
+    "native_macro_f1": 0.9849788765451416,
+    "segment_f1_50_multi": 0.9608830364058869,
+    "boundary_recall_multi": 0.9674631418403661,
+    "boundary_precision_multi": 0.9529293940911367,
+    "boundary_f1_multi": 0.9601412714429869,
+    "native_internal_cuts_per_clip": 0.045,
+    "same_class_cut_rate_multi": 0.027804410354745925,
+    "segment_f1_50_pairs": null,
+    "boundary_recall_pairs": null,
+    "A4C read as A5C": 3,
+    "A5C read as A4C": 0
+   }
+  },
+  "Base s2": {
+   "selection": {
+    "segment_f1_50_multi": 0.9564356435643564,
+    "boundary_precision_multi": 0.9536082474226805,
+    "boundary_recall_multi": 0.9685863874345549,
+    "boundary_f1_multi": 0.961038961038961,
+    "native_macro_f1": 0.9785909601243429,
+    "native_internal_cuts_per_clip": 0.04225352112676056,
+    "same_class_cut_rate_multi": 0.013043478260869565,
+    "segment_f1_50_pairs": 0.9807692307692307,
+    "boundary_recall_pairs": 0.9857142857142858,
+    "native_recall": {
+     "PLAX": 0.9904761904761905,
+     "PSAX": 1.0,
+     "A4C": 0.9770114942528736,
+     "A5C": 1.0,
+     "SC4C": 1.0
+    },
+    "native_confusion": [
+     [
+      104,
+      1,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      68,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      85,
+      2,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      11,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      13
+     ]
+    ],
+    "A5C read as A4C": 0,
+    "A4C read as A5C": 2,
+    "native_precision": {
+     "PLAX": 1.0,
+     "PSAX": 0.9855072463768116,
+     "A4C": 1.0,
+     "A5C": 0.8461538461538461,
+     "SC4C": 1.0
+    },
+    "multi_frame_accuracy": 0.9361005280395696,
+    "native_frame_accuracy": 0.9876765855124737
+   },
+   "calibration": {
+    "segment_f1_50_multi": 0.9837008628954937,
+    "boundary_precision_multi": 0.9753086419753086,
+    "boundary_recall_multi": 0.992462311557789,
+    "boundary_f1_multi": 0.9838107098381071,
+    "native_macro_f1": 0.9856102003642988,
+    "native_internal_cuts_per_clip": 0.016877637130801686,
+    "same_class_cut_rate_multi": 0.029850746268656716,
+    "segment_f1_50_pairs": 0.9709302325581395,
+    "boundary_recall_pairs": 0.9482758620689655,
+    "native_recall": {
+     "PLAX": 1.0,
+     "PSAX": 1.0,
+     "A4C": 0.9836065573770492,
+     "A5C": 0.9444444444444444,
+     "SC4C": 1.0
+    },
+    "native_confusion": [
+     [
+      80,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      71,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      60,
+      1,
+      0
+     ],
+     [
+      0,
+      0,
+      1,
+      17,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      7
+     ]
+    ],
+    "A5C read as A4C": 1,
+    "A4C read as A5C": 1,
+    "native_precision": {
+     "PLAX": 1.0,
+     "PSAX": 1.0,
+     "A4C": 0.9836065573770492,
+     "A5C": 0.9444444444444444,
+     "SC4C": 1.0
+    },
+    "multi_frame_accuracy": 0.9530979347101932,
+    "native_frame_accuracy": 0.9806604761572296
+   },
+   "check": {
+    "native_macro_f1": 0.9899937460913071,
+    "segment_f1_50_multi": 0.9554608830364059,
+    "boundary_recall_multi": 0.9649211997966446,
+    "boundary_precision_multi": 0.9504256384576866,
+    "boundary_f1_multi": 0.9576185671039354,
+    "native_internal_cuts_per_clip": 0.035,
+    "same_class_cut_rate_multi": 0.027804410354745925,
+    "segment_f1_50_pairs": null,
+    "boundary_recall_pairs": null,
+    "A4C read as A5C": 2,
+    "A5C read as A4C": 0
+   }
+  },
+  "W s2": {
+   "selection": {
+    "segment_f1_50_multi": 0.9534192269573836,
+    "boundary_precision_multi": 0.9534883720930233,
+    "boundary_recall_multi": 0.9659685863874345,
+    "boundary_f1_multi": 0.9596879063719116,
+    "native_macro_f1": 0.9785909601243429,
+    "native_internal_cuts_per_clip": 0.04225352112676056,
+    "same_class_cut_rate_multi": 0.013043478260869565,
+    "segment_f1_50_pairs": 0.9807692307692307,
+    "boundary_recall_pairs": 0.9857142857142858,
+    "native_recall": {
+     "PLAX": 0.9904761904761905,
+     "PSAX": 1.0,
+     "A4C": 0.9770114942528736,
+     "A5C": 1.0,
+     "SC4C": 1.0
+    },
+    "native_confusion": [
+     [
+      104,
+      1,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      68,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      85,
+      2,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      11,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      13
+     ]
+    ],
+    "A5C read as A4C": 0,
+    "A4C read as A5C": 2,
+    "native_precision": {
+     "PLAX": 1.0,
+     "PSAX": 0.9855072463768116,
+     "A4C": 1.0,
+     "A5C": 0.8461538461538461,
+     "SC4C": 1.0
+    },
+    "multi_frame_accuracy": 0.935432123521155,
+    "native_frame_accuracy": 0.9876765855124737
+   },
+   "calibration": {
+    "segment_f1_50_multi": 0.9837008628954937,
+    "boundary_precision_multi": 0.9753086419753086,
+    "boundary_recall_multi": 0.992462311557789,
+    "boundary_f1_multi": 0.9838107098381071,
+    "native_macro_f1": 0.9856102003642988,
+    "native_internal_cuts_per_clip": 0.016877637130801686,
+    "same_class_cut_rate_multi": 0.029850746268656716,
+    "segment_f1_50_pairs": 0.9709302325581395,
+    "boundary_recall_pairs": 0.9482758620689655,
+    "native_recall": {
+     "PLAX": 1.0,
+     "PSAX": 1.0,
+     "A4C": 0.9836065573770492,
+     "A5C": 0.9444444444444444,
+     "SC4C": 1.0
+    },
+    "native_confusion": [
+     [
+      80,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      71,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      60,
+      1,
+      0
+     ],
+     [
+      0,
+      0,
+      1,
+      17,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      7
+     ]
+    ],
+    "A5C read as A4C": 1,
+    "A4C read as A5C": 1,
+    "native_precision": {
+     "PLAX": 1.0,
+     "PSAX": 1.0,
+     "A4C": 0.9836065573770492,
+     "A5C": 0.9444444444444444,
+     "SC4C": 1.0
+    },
+    "multi_frame_accuracy": 0.9530979347101932,
+    "native_frame_accuracy": 0.9806604761572296
+   },
+   "check": {
+    "native_macro_f1": 0.9849976558837318,
+    "segment_f1_50_multi": 0.9554608830364059,
+    "boundary_recall_multi": 0.9649211997966446,
+    "boundary_precision_multi": 0.9504256384576866,
+    "boundary_f1_multi": 0.9576185671039354,
+    "native_internal_cuts_per_clip": 0.035,
+    "same_class_cut_rate_multi": 0.027804410354745925,
+    "segment_f1_50_pairs": null,
+    "boundary_recall_pairs": null,
+    "A4C read as A5C": 2,
+    "A5C read as A4C": 1
+   }
+  },
+  "I s2": {
+   "selection": {
+    "segment_f1_50_multi": 0.9534192269573836,
+    "boundary_precision_multi": 0.9534883720930233,
+    "boundary_recall_multi": 0.9659685863874345,
+    "boundary_f1_multi": 0.9596879063719116,
+    "native_macro_f1": 0.9785909601243429,
+    "native_internal_cuts_per_clip": 0.04225352112676056,
+    "same_class_cut_rate_multi": 0.013043478260869565,
+    "segment_f1_50_pairs": 0.9807692307692307,
+    "boundary_recall_pairs": 0.9857142857142858,
+    "native_recall": {
+     "PLAX": 0.9904761904761905,
+     "PSAX": 1.0,
+     "A4C": 0.9770114942528736,
+     "A5C": 1.0,
+     "SC4C": 1.0
+    },
+    "native_confusion": [
+     [
+      104,
+      1,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      68,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      85,
+      2,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      11,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      13
+     ]
+    ],
+    "A5C read as A4C": 0,
+    "A4C read as A5C": 2,
+    "native_precision": {
+     "PLAX": 1.0,
+     "PSAX": 0.9855072463768116,
+     "A4C": 1.0,
+     "A5C": 0.8461538461538461,
+     "SC4C": 1.0
+    },
+    "multi_frame_accuracy": 0.935432123521155,
+    "native_frame_accuracy": 0.9876765855124737
+   },
+   "calibration": {
+    "segment_f1_50_multi": 0.9837008628954937,
+    "boundary_precision_multi": 0.9753086419753086,
+    "boundary_recall_multi": 0.992462311557789,
+    "boundary_f1_multi": 0.9838107098381071,
+    "native_macro_f1": 0.9856102003642988,
+    "native_internal_cuts_per_clip": 0.016877637130801686,
+    "same_class_cut_rate_multi": 0.029850746268656716,
+    "segment_f1_50_pairs": 0.9709302325581395,
+    "boundary_recall_pairs": 0.9482758620689655,
+    "native_recall": {
+     "PLAX": 1.0,
+     "PSAX": 1.0,
+     "A4C": 0.9836065573770492,
+     "A5C": 0.9444444444444444,
+     "SC4C": 1.0
+    },
+    "native_confusion": [
+     [
+      80,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      71,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      60,
+      1,
+      0
+     ],
+     [
+      0,
+      0,
+      1,
+      17,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      7
+     ]
+    ],
+    "A5C read as A4C": 1,
+    "A4C read as A5C": 1,
+    "native_precision": {
+     "PLAX": 1.0,
+     "PSAX": 1.0,
+     "A4C": 0.9836065573770492,
+     "A5C": 0.9444444444444444,
+     "SC4C": 1.0
+    },
+    "multi_frame_accuracy": 0.9530979347101932,
+    "native_frame_accuracy": 0.9806604761572296
+   },
+   "check": {
+    "native_macro_f1": 0.9849976558837318,
+    "segment_f1_50_multi": 0.9560333139647492,
+    "boundary_recall_multi": 0.9649211997966446,
+    "boundary_precision_multi": 0.9509018036072144,
+    "boundary_f1_multi": 0.9578602069139541,
+    "native_internal_cuts_per_clip": 0.035,
+    "same_class_cut_rate_multi": 0.027804410354745925,
+    "segment_f1_50_pairs": null,
+    "boundary_recall_pairs": null,
+    "A4C read as A5C": 2,
+    "A5C read as A4C": 1
+   }
+  }
+ },
+ "segment_counts": {
+  "Base s0": {
+   "selection": {
+    "tp": 482,
+    "fp": 24,
+    "fn": 20,
+    "pred": 506,
+    "ref": 502,
+    "f1": 0.9563492063492064,
+    "fp_short": 9,
+    "fn_short": 7,
+    "ref_short": 141,
+    "tp_short": 134,
+    "same_label_join_cuts": 5,
+    "same_label_joins": 230
+   },
+   "calibration": {
+    "tp": 511,
+    "fp": 11,
+    "fn": 7,
+    "pred": 522,
+    "ref": 518,
+    "f1": 0.9826923076923076,
+    "fp_short": 8,
+    "fn_short": 5,
+    "ref_short": 134,
+    "tp_short": 129,
+    "same_label_join_cuts": 5,
+    "same_label_joins": 201
+   },
+   "check": {
+    "tp": 2480,
+    "fp": 118,
+    "fn": 87,
+    "pred": 2598,
+    "ref": 2567,
+    "f1": 0.9603097773475314,
+    "fp_short": 73,
+    "fn_short": 38,
+    "ref_short": 681,
+    "tp_short": 643,
+    "same_label_join_cuts": 30,
+    "same_label_joins": 1043
+   }
+  },
+  "W s0": {
+   "selection": {
+    "tp": 482,
+    "fp": 24,
+    "fn": 20,
+    "pred": 506,
+    "ref": 502,
+    "f1": 0.9563492063492064,
+    "fp_short": 9,
+    "fn_short": 7,
+    "ref_short": 141,
+    "tp_short": 134,
+    "same_label_join_cuts": 5,
+    "same_label_joins": 230
+   },
+   "calibration": {
+    "tp": 511,
+    "fp": 11,
+    "fn": 7,
+    "pred": 522,
+    "ref": 518,
+    "f1": 0.9826923076923076,
+    "fp_short": 8,
+    "fn_short": 5,
+    "ref_short": 134,
+    "tp_short": 129,
+    "same_label_join_cuts": 5,
+    "same_label_joins": 201
+   },
+   "check": {
+    "tp": 2481,
+    "fp": 116,
+    "fn": 86,
+    "pred": 2597,
+    "ref": 2567,
+    "f1": 0.9608830364058869,
+    "fp_short": 73,
+    "fn_short": 38,
+    "ref_short": 681,
+    "tp_short": 643,
+    "same_label_join_cuts": 29,
+    "same_label_joins": 1043
+   }
+  },
+  "I s0": {
+   "selection": {
+    "tp": 482,
+    "fp": 24,
+    "fn": 20,
+    "pred": 506,
+    "ref": 502,
+    "f1": 0.9563492063492064,
+    "fp_short": 9,
+    "fn_short": 7,
+    "ref_short": 141,
+    "tp_short": 134,
+    "same_label_join_cuts": 5,
+    "same_label_joins": 230
+   },
+   "calibration": {
+    "tp": 511,
+    "fp": 11,
+    "fn": 7,
+    "pred": 522,
+    "ref": 518,
+    "f1": 0.9826923076923076,
+    "fp_short": 8,
+    "fn_short": 5,
+    "ref_short": 134,
+    "tp_short": 129,
+    "same_label_join_cuts": 5,
+    "same_label_joins": 201
+   },
+   "check": {
+    "tp": 2481,
+    "fp": 116,
+    "fn": 86,
+    "pred": 2597,
+    "ref": 2567,
+    "f1": 0.9608830364058869,
+    "fp_short": 73,
+    "fn_short": 38,
+    "ref_short": 681,
+    "tp_short": 643,
+    "same_label_join_cuts": 29,
+    "same_label_joins": 1043
+   }
+  },
+  "Base s2": {
+   "selection": {
+    "tp": 483,
+    "fp": 25,
+    "fn": 19,
+    "pred": 508,
+    "ref": 502,
+    "f1": 0.9564356435643564,
+    "fp_short": 13,
+    "fn_short": 7,
+    "ref_short": 141,
+    "tp_short": 134,
+    "same_label_join_cuts": 3,
+    "same_label_joins": 230
+   },
+   "calibration": {
+    "tp": 513,
+    "fp": 12,
+    "fn": 5,
+    "pred": 525,
+    "ref": 518,
+    "f1": 0.9837008628954937,
+    "fp_short": 9,
+    "fn_short": 3,
+    "ref_short": 134,
+    "tp_short": 131,
+    "same_label_join_cuts": 6,
+    "same_label_joins": 201
+   },
+   "check": {
+    "tp": 2467,
+    "fp": 130,
+    "fn": 100,
+    "pred": 2597,
+    "ref": 2567,
+    "f1": 0.9554608830364059,
+    "fp_short": 80,
+    "fn_short": 41,
+    "ref_short": 681,
+    "tp_short": 640,
+    "same_label_join_cuts": 29,
+    "same_label_joins": 1043
+   }
+  },
+  "W s2": {
+   "selection": {
+    "tp": 481,
+    "fp": 26,
+    "fn": 21,
+    "pred": 507,
+    "ref": 502,
+    "f1": 0.9534192269573836,
+    "fp_short": 14,
+    "fn_short": 7,
+    "ref_short": 141,
+    "tp_short": 134,
+    "same_label_join_cuts": 3,
+    "same_label_joins": 230
+   },
+   "calibration": {
+    "tp": 513,
+    "fp": 12,
+    "fn": 5,
+    "pred": 525,
+    "ref": 518,
+    "f1": 0.9837008628954937,
+    "fp_short": 9,
+    "fn_short": 3,
+    "ref_short": 134,
+    "tp_short": 131,
+    "same_label_join_cuts": 6,
+    "same_label_joins": 201
+   },
+   "check": {
+    "tp": 2467,
+    "fp": 130,
+    "fn": 100,
+    "pred": 2597,
+    "ref": 2567,
+    "f1": 0.9554608830364059,
+    "fp_short": 80,
+    "fn_short": 40,
+    "ref_short": 681,
+    "tp_short": 641,
+    "same_label_join_cuts": 29,
+    "same_label_joins": 1043
+   }
+  },
+  "I s2": {
+   "selection": {
+    "tp": 481,
+    "fp": 26,
+    "fn": 21,
+    "pred": 507,
+    "ref": 502,
+    "f1": 0.9534192269573836,
+    "fp_short": 14,
+    "fn_short": 7,
+    "ref_short": 141,
+    "tp_short": 134,
+    "same_label_join_cuts": 3,
+    "same_label_joins": 230
+   },
+   "calibration": {
+    "tp": 513,
+    "fp": 12,
+    "fn": 5,
+    "pred": 525,
+    "ref": 518,
+    "f1": 0.9837008628954937,
+    "fp_short": 9,
+    "fn_short": 3,
+    "ref_short": 134,
+    "tp_short": 131,
+    "same_label_join_cuts": 6,
+    "same_label_joins": 201
+   },
+   "check": {
+    "tp": 2468,
+    "fp": 128,
+    "fn": 99,
+    "pred": 2596,
+    "ref": 2567,
+    "f1": 0.9560333139647492,
+    "fp_short": 79,
+    "fn_short": 40,
+    "ref_short": 681,
+    "tp_short": 641,
+    "same_label_join_cuts": 29,
+    "same_label_joins": 1043
+   }
+  }
+ },
+ "interval_label_accuracy": {
+  "W s0": {
+   "selection": {
+    "base_intervals": 1011,
+    "label_accuracy": 0.9723046488625123
+   },
+   "calibration": {
+    "base_intervals": 934,
+    "label_accuracy": 0.9839400428265525
+   },
+   "check": {
+    "base_intervals": 2807,
+    "label_accuracy": 0.9697185607410046
+   }
+  },
+  "I s0": {
+   "selection": {
+    "base_intervals": 1011,
+    "label_accuracy": 0.9723046488625123
+   },
+   "calibration": {
+    "base_intervals": 934,
+    "label_accuracy": 0.9839400428265525
+   },
+   "check": {
+    "base_intervals": 2807,
+    "label_accuracy": 0.970074812967581
+   }
+  },
+  "Base s0": {
+   "selection": {
+    "base_intervals": 1011,
+    "label_accuracy": 0.9723046488625123
+   },
+   "calibration": {
+    "base_intervals": 934,
+    "label_accuracy": 0.9839400428265525
+   },
+   "check": {
+    "base_intervals": 2807,
+    "label_accuracy": 0.9693623085144282
+   }
+  },
+  "W s2": {
+   "selection": {
+    "base_intervals": 1013,
+    "label_accuracy": 0.9693978282329714
+   },
+   "calibration": {
+    "base_intervals": 937,
+    "label_accuracy": 0.9818569903948773
+   },
+   "check": {
+    "base_intervals": 2804,
+    "label_accuracy": 0.9689728958630528
+   }
+  },
+  "I s2": {
+   "selection": {
+    "base_intervals": 1013,
+    "label_accuracy": 0.9693978282329714
+   },
+   "calibration": {
+    "base_intervals": 937,
+    "label_accuracy": 0.9818569903948773
+   },
+   "check": {
+    "base_intervals": 2804,
+    "label_accuracy": 0.9693295292439372
+   }
+  },
+  "Base s2": {
+   "selection": {
+    "base_intervals": 1013,
+    "label_accuracy": 0.9693978282329714
+   },
+   "calibration": {
+    "base_intervals": 937,
+    "label_accuracy": 0.9818569903948773
+   },
+   "check": {
+    "base_intervals": 2804,
+    "label_accuracy": 0.9693295292439372
+   }
+  }
+ },
+ "comparisons": {
+  "s0|I - W|selection": {
+   "native macro-F1": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "native cuts per clip": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi segment F1@50": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi boundary recall": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi boundary F1": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "same-class cut rate": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi FP segments": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi FN segments": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   }
+  },
+  "s0|W - Base|selection": {
+   "native macro-F1": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "native cuts per clip": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi segment F1@50": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi boundary recall": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi boundary F1": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "same-class cut rate": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi FP segments": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi FN segments": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   }
+  },
+  "s0|I - Base|selection": {
+   "native macro-F1": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "native cuts per clip": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi segment F1@50": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi boundary recall": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi boundary F1": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "same-class cut rate": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi FP segments": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi FN segments": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   }
+  },
+  "s2|I - W|selection": {
+   "native macro-F1": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "native cuts per clip": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi segment F1@50": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi boundary recall": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi boundary F1": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "same-class cut rate": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi FP segments": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi FN segments": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   }
+  },
+  "s2|W - Base|selection": {
+   "native macro-F1": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "native cuts per clip": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi segment F1@50": {
+    "delta": -0.003016416606972827,
+    "ci95": [
+     -0.008070084506447051,
+     0.0
+    ]
+   },
+   "multi boundary recall": {
+    "delta": -0.002617801047120394,
+    "ci95": [
+     -0.008310249307479256,
+     0.0
+    ]
+   },
+   "multi boundary F1": {
+    "delta": -0.0013510546670494339,
+    "ci95": [
+     -0.004307036532948627,
+     0.0
+    ]
+   },
+   "same-class cut rate": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi FP segments": {
+    "delta": 1.0,
+    "ci95": [
+     0.0,
+     3.0
+    ]
+   },
+   "multi FN segments": {
+    "delta": 2.0,
+    "ci95": [
+     0.0,
+     5.0
+    ]
+   }
+  },
+  "s2|I - Base|selection": {
+   "native macro-F1": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "native cuts per clip": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi segment F1@50": {
+    "delta": -0.003016416606972827,
+    "ci95": [
+     -0.008070084506447051,
+     0.0
+    ]
+   },
+   "multi boundary recall": {
+    "delta": -0.002617801047120394,
+    "ci95": [
+     -0.008310249307479256,
+     0.0
+    ]
+   },
+   "multi boundary F1": {
+    "delta": -0.0013510546670494339,
+    "ci95": [
+     -0.004307036532948627,
+     0.0
+    ]
+   },
+   "same-class cut rate": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi FP segments": {
+    "delta": 1.0,
+    "ci95": [
+     0.0,
+     3.0
+    ]
+   },
+   "multi FN segments": {
+    "delta": 2.0,
+    "ci95": [
+     0.0,
+     5.0
+    ]
+   }
+  },
+  "s0|I - W|calibration": {
+   "native macro-F1": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "native cuts per clip": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi segment F1@50": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi boundary recall": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi boundary F1": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "same-class cut rate": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi FP segments": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi FN segments": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   }
+  },
+  "s0|W - Base|calibration": {
+   "native macro-F1": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "native cuts per clip": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi segment F1@50": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi boundary recall": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi boundary F1": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "same-class cut rate": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi FP segments": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi FN segments": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   }
+  },
+  "s0|I - Base|calibration": {
+   "native macro-F1": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "native cuts per clip": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi segment F1@50": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi boundary recall": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi boundary F1": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "same-class cut rate": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi FP segments": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi FN segments": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   }
+  },
+  "s2|I - W|calibration": {
+   "native macro-F1": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "native cuts per clip": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi segment F1@50": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi boundary recall": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi boundary F1": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "same-class cut rate": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi FP segments": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi FN segments": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   }
+  },
+  "s2|W - Base|calibration": {
+   "native macro-F1": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "native cuts per clip": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi segment F1@50": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi boundary recall": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi boundary F1": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "same-class cut rate": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi FP segments": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi FN segments": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   }
+  },
+  "s2|I - Base|calibration": {
+   "native macro-F1": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "native cuts per clip": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi segment F1@50": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi boundary recall": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi boundary F1": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "same-class cut rate": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi FP segments": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi FN segments": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   }
+  },
+  "s0|I - W|check": {
+   "native macro-F1": {
+    "delta": 0.00499138436252744,
+    "ci95": [
+     0.0,
+     0.016132559580058173
+    ]
+   },
+   "native cuts per clip": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi segment F1@50": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi boundary recall": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi boundary F1": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "same-class cut rate": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi FP segments": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi FN segments": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   }
+  },
+  "s0|W - Base|check": {
+   "native macro-F1": {
+    "delta": -0.00499138436252744,
+    "ci95": [
+     -0.016132559580058187,
+     0.0
+    ]
+   },
+   "native cuts per clip": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi segment F1@50": {
+    "delta": 0.0005732590583554797,
+    "ci95": [
+     -0.0007699822485470548,
+     0.0021095486701871165
+    ]
+   },
+   "multi boundary recall": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi boundary F1": {
+    "delta": 0.00024215416682038526,
+    "ci95": [
+     0.0,
+     0.0007528195573316825
+    ]
+   },
+   "same-class cut rate": {
+    "delta": -0.0009587727708533084,
+    "ci95": [
+     -0.0030273982526255057,
+     0.0
+    ]
+   },
+   "multi FP segments": {
+    "delta": -2.0,
+    "ci95": [
+     -6.0,
+     2.0
+    ]
+   },
+   "multi FN segments": {
+    "delta": -1.0,
+    "ci95": [
+     -5.0,
+     2.0
+    ]
+   }
+  },
+  "s0|I - Base|check": {
+   "native macro-F1": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "native cuts per clip": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi segment F1@50": {
+    "delta": 0.0005732590583554797,
+    "ci95": [
+     -0.0007699822485470548,
+     0.0021095486701871165
+    ]
+   },
+   "multi boundary recall": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi boundary F1": {
+    "delta": 0.00024215416682038526,
+    "ci95": [
+     0.0,
+     0.0007528195573316825
+    ]
+   },
+   "same-class cut rate": {
+    "delta": -0.0009587727708533084,
+    "ci95": [
+     -0.0030273982526255057,
+     0.0
+    ]
+   },
+   "multi FP segments": {
+    "delta": -2.0,
+    "ci95": [
+     -6.0,
+     2.0
+    ]
+   },
+   "multi FN segments": {
+    "delta": -1.0,
+    "ci95": [
+     -5.0,
+     2.0
+    ]
+   }
+  },
+  "s2|I - W|check": {
+   "native macro-F1": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "native cuts per clip": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi segment F1@50": {
+    "delta": 0.0005724309283433593,
+    "ci95": [
+     0.0,
+     0.0017626836500148789
+    ]
+   },
+   "multi boundary recall": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi boundary F1": {
+    "delta": 0.00024163981001867896,
+    "ci95": [
+     0.0,
+     0.0007506015440128937
+    ]
+   },
+   "same-class cut rate": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi FP segments": {
+    "delta": -2.0,
+    "ci95": [
+     -6.0,
+     0.0
+    ]
+   },
+   "multi FN segments": {
+    "delta": -1.0,
+    "ci95": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  "s2|W - Base|check": {
+   "native macro-F1": {
+    "delta": -0.004996090207575299,
+    "ci95": [
+     -0.016173179537560176,
+     0.0
+    ]
+   },
+   "native cuts per clip": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi segment F1@50": {
+    "delta": 0.0,
+    "ci95": [
+     -0.0011652861305845863,
+     0.001144219410315808
+    ]
+   },
+   "multi boundary recall": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi boundary F1": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "same-class cut rate": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi FP segments": {
+    "delta": 0.0,
+    "ci95": [
+     -3.0,
+     3.0
+    ]
+   },
+   "multi FN segments": {
+    "delta": 0.0,
+    "ci95": [
+     -3.0,
+     3.0
+    ]
+   }
+  },
+  "s2|I - Base|check": {
+   "native macro-F1": {
+    "delta": -0.004996090207575299,
+    "ci95": [
+     -0.016173179537560176,
+     0.0
+    ]
+   },
+   "native cuts per clip": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi segment F1@50": {
+    "delta": 0.0005724309283433593,
+    "ci95": [
+     -0.00078787849614943,
+     0.002255418119240346
+    ]
+   },
+   "multi boundary recall": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi boundary F1": {
+    "delta": 0.00024163981001867896,
+    "ci95": [
+     0.0,
+     0.0007506015440128937
+    ]
+   },
+   "same-class cut rate": {
+    "delta": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "multi FP segments": {
+    "delta": -2.0,
+    "ci95": [
+     -7.0,
+     2.0
+    ]
+   },
+   "multi FN segments": {
+    "delta": -1.0,
+    "ci95": [
+     -4.024999999999999,
+     2.0
+    ]
+   }
+  }
+ },
+ "accounting": {
+  "s0|I - W|selection": {
+   "native": {
+    "a": {
+     "tp": 280,
+     "fp": 15,
+     "fn": 4,
+     "pred": 295,
+     "ref": 284,
+     "f1": 0.9671848013816926
+    },
+    "b": {
+     "tp": 280,
+     "fp": 15,
+     "fn": 4,
+     "pred": 295,
+     "ref": 284,
+     "f1": 0.9671848013816926
+    },
+    "status": {
+     "both": 280,
+     "a only": 0,
+     "b only": 0,
+     "neither": 4
+    },
+    "recovered": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    }
+   },
+   "pairs": {
+    "a": {
+     "tp": 202,
+     "fp": 8,
+     "fn": 5,
+     "pred": 210,
+     "ref": 207,
+     "f1": 0.9688249400479616
+    },
+    "b": {
+     "tp": 202,
+     "fp": 8,
+     "fn": 5,
+     "pred": 210,
+     "ref": 207,
+     "f1": 0.9688249400479616
+    },
+    "status": {
+     "both": 202,
+     "a only": 0,
+     "b only": 0,
+     "neither": 5
+    },
+    "recovered": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    }
+   },
+   "multi": {
+    "a": {
+     "tp": 482,
+     "fp": 24,
+     "fn": 20,
+     "pred": 506,
+     "ref": 502,
+     "f1": 0.9563492063492064
+    },
+    "b": {
+     "tp": 482,
+     "fp": 24,
+     "fn": 20,
+     "pred": 506,
+     "ref": 502,
+     "f1": 0.9563492063492064
+    },
+    "status": {
+     "both": 482,
+     "a only": 0,
+     "b only": 0,
+     "neither": 20
+    },
+    "recovered": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    }
+   }
+  },
+  "s0|W - Base|selection": {
+   "native": {
+    "a": {
+     "tp": 280,
+     "fp": 15,
+     "fn": 4,
+     "pred": 295,
+     "ref": 284,
+     "f1": 0.9671848013816926
+    },
+    "b": {
+     "tp": 280,
+     "fp": 15,
+     "fn": 4,
+     "pred": 295,
+     "ref": 284,
+     "f1": 0.9671848013816926
+    },
+    "status": {
+     "both": 280,
+     "a only": 0,
+     "b only": 0,
+     "neither": 4
+    },
+    "recovered": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    }
+   },
+   "pairs": {
+    "a": {
+     "tp": 202,
+     "fp": 8,
+     "fn": 5,
+     "pred": 210,
+     "ref": 207,
+     "f1": 0.9688249400479616
+    },
+    "b": {
+     "tp": 202,
+     "fp": 8,
+     "fn": 5,
+     "pred": 210,
+     "ref": 207,
+     "f1": 0.9688249400479616
+    },
+    "status": {
+     "both": 202,
+     "a only": 0,
+     "b only": 0,
+     "neither": 5
+    },
+    "recovered": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    }
+   },
+   "multi": {
+    "a": {
+     "tp": 482,
+     "fp": 24,
+     "fn": 20,
+     "pred": 506,
+     "ref": 502,
+     "f1": 0.9563492063492064
+    },
+    "b": {
+     "tp": 482,
+     "fp": 24,
+     "fn": 20,
+     "pred": 506,
+     "ref": 502,
+     "f1": 0.9563492063492064
+    },
+    "status": {
+     "both": 482,
+     "a only": 0,
+     "b only": 0,
+     "neither": 20
+    },
+    "recovered": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    }
+   }
+  },
+  "s0|I - Base|selection": {
+   "native": {
+    "a": {
+     "tp": 280,
+     "fp": 15,
+     "fn": 4,
+     "pred": 295,
+     "ref": 284,
+     "f1": 0.9671848013816926
+    },
+    "b": {
+     "tp": 280,
+     "fp": 15,
+     "fn": 4,
+     "pred": 295,
+     "ref": 284,
+     "f1": 0.9671848013816926
+    },
+    "status": {
+     "both": 280,
+     "a only": 0,
+     "b only": 0,
+     "neither": 4
+    },
+    "recovered": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    }
+   },
+   "pairs": {
+    "a": {
+     "tp": 202,
+     "fp": 8,
+     "fn": 5,
+     "pred": 210,
+     "ref": 207,
+     "f1": 0.9688249400479616
+    },
+    "b": {
+     "tp": 202,
+     "fp": 8,
+     "fn": 5,
+     "pred": 210,
+     "ref": 207,
+     "f1": 0.9688249400479616
+    },
+    "status": {
+     "both": 202,
+     "a only": 0,
+     "b only": 0,
+     "neither": 5
+    },
+    "recovered": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    }
+   },
+   "multi": {
+    "a": {
+     "tp": 482,
+     "fp": 24,
+     "fn": 20,
+     "pred": 506,
+     "ref": 502,
+     "f1": 0.9563492063492064
+    },
+    "b": {
+     "tp": 482,
+     "fp": 24,
+     "fn": 20,
+     "pred": 506,
+     "ref": 502,
+     "f1": 0.9563492063492064
+    },
+    "status": {
+     "both": 482,
+     "a only": 0,
+     "b only": 0,
+     "neither": 20
+    },
+    "recovered": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    }
+   }
+  },
+  "s2|I - W|selection": {
+   "native": {
+    "a": {
+     "tp": 279,
+     "fp": 17,
+     "fn": 5,
+     "pred": 296,
+     "ref": 284,
+     "f1": 0.9620689655172414
+    },
+    "b": {
+     "tp": 279,
+     "fp": 17,
+     "fn": 5,
+     "pred": 296,
+     "ref": 284,
+     "f1": 0.9620689655172414
+    },
+    "status": {
+     "both": 279,
+     "a only": 0,
+     "b only": 0,
+     "neither": 5
+    },
+    "recovered": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    }
+   },
+   "pairs": {
+    "a": {
+     "tp": 204,
+     "fp": 5,
+     "fn": 3,
+     "pred": 209,
+     "ref": 207,
+     "f1": 0.9807692307692307
+    },
+    "b": {
+     "tp": 204,
+     "fp": 5,
+     "fn": 3,
+     "pred": 209,
+     "ref": 207,
+     "f1": 0.9807692307692307
+    },
+    "status": {
+     "both": 204,
+     "a only": 0,
+     "b only": 0,
+     "neither": 3
+    },
+    "recovered": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    }
+   },
+   "multi": {
+    "a": {
+     "tp": 481,
+     "fp": 26,
+     "fn": 21,
+     "pred": 507,
+     "ref": 502,
+     "f1": 0.9534192269573836
+    },
+    "b": {
+     "tp": 481,
+     "fp": 26,
+     "fn": 21,
+     "pred": 507,
+     "ref": 502,
+     "f1": 0.9534192269573836
+    },
+    "status": {
+     "both": 481,
+     "a only": 0,
+     "b only": 0,
+     "neither": 21
+    },
+    "recovered": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 1,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 1,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 1,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 2,
+     "sessions": 2,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 1,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 1
+     },
+     "short": 1,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 2,
+     "sessions": 2,
+     "few_units": true
+    }
+   }
+  },
+  "s2|W - Base|selection": {
+   "native": {
+    "a": {
+     "tp": 279,
+     "fp": 17,
+     "fn": 5,
+     "pred": 296,
+     "ref": 284,
+     "f1": 0.9620689655172414
+    },
+    "b": {
+     "tp": 279,
+     "fp": 17,
+     "fn": 5,
+     "pred": 296,
+     "ref": 284,
+     "f1": 0.9620689655172414
+    },
+    "status": {
+     "both": 279,
+     "a only": 0,
+     "b only": 0,
+     "neither": 5
+    },
+    "recovered": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    }
+   },
+   "pairs": {
+    "a": {
+     "tp": 204,
+     "fp": 5,
+     "fn": 3,
+     "pred": 209,
+     "ref": 207,
+     "f1": 0.9807692307692307
+    },
+    "b": {
+     "tp": 204,
+     "fp": 5,
+     "fn": 3,
+     "pred": 209,
+     "ref": 207,
+     "f1": 0.9807692307692307
+    },
+    "status": {
+     "both": 204,
+     "a only": 0,
+     "b only": 0,
+     "neither": 3
+    },
+    "recovered": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    }
+   },
+   "multi": {
+    "a": {
+     "tp": 481,
+     "fp": 26,
+     "fn": 21,
+     "pred": 507,
+     "ref": 502,
+     "f1": 0.9534192269573836
+    },
+    "b": {
+     "tp": 483,
+     "fp": 25,
+     "fn": 19,
+     "pred": 508,
+     "ref": 502,
+     "f1": 0.9564356435643564
+    },
+    "status": {
+     "both": 481,
+     "a only": 0,
+     "b only": 2,
+     "neither": 19
+    },
+    "recovered": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 2,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 2,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 2,
+     "xyx_a4c_a5c": 0,
+     "recordings": 2,
+     "sessions": 2,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 3,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 1,
+      "A5C": 1,
+      "SC4C": 1
+     },
+     "short": 2,
+     "long": 1,
+     "xyx_a4c_a5c": null,
+     "recordings": 6,
+     "sessions": 5,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 2,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 1,
+      "A4C": 1,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 1,
+     "long": 1,
+     "xyx_a4c_a5c": null,
+     "recordings": 5,
+     "sessions": 4,
+     "few_units": true
+    }
+   }
+  },
+  "s2|I - Base|selection": {
+   "native": {
+    "a": {
+     "tp": 279,
+     "fp": 17,
+     "fn": 5,
+     "pred": 296,
+     "ref": 284,
+     "f1": 0.9620689655172414
+    },
+    "b": {
+     "tp": 279,
+     "fp": 17,
+     "fn": 5,
+     "pred": 296,
+     "ref": 284,
+     "f1": 0.9620689655172414
+    },
+    "status": {
+     "both": 279,
+     "a only": 0,
+     "b only": 0,
+     "neither": 5
+    },
+    "recovered": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    }
+   },
+   "pairs": {
+    "a": {
+     "tp": 204,
+     "fp": 5,
+     "fn": 3,
+     "pred": 209,
+     "ref": 207,
+     "f1": 0.9807692307692307
+    },
+    "b": {
+     "tp": 204,
+     "fp": 5,
+     "fn": 3,
+     "pred": 209,
+     "ref": 207,
+     "f1": 0.9807692307692307
+    },
+    "status": {
+     "both": 204,
+     "a only": 0,
+     "b only": 0,
+     "neither": 3
+    },
+    "recovered": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    }
+   },
+   "multi": {
+    "a": {
+     "tp": 481,
+     "fp": 26,
+     "fn": 21,
+     "pred": 507,
+     "ref": 502,
+     "f1": 0.9534192269573836
+    },
+    "b": {
+     "tp": 483,
+     "fp": 25,
+     "fn": 19,
+     "pred": 508,
+     "ref": 502,
+     "f1": 0.9564356435643564
+    },
+    "status": {
+     "both": 481,
+     "a only": 0,
+     "b only": 2,
+     "neither": 19
+    },
+    "recovered": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 2,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 2,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 2,
+     "xyx_a4c_a5c": 0,
+     "recordings": 2,
+     "sessions": 2,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 2,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 1,
+      "A5C": 1,
+      "SC4C": 0
+     },
+     "short": 1,
+     "long": 1,
+     "xyx_a4c_a5c": null,
+     "recordings": 4,
+     "sessions": 3,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 1,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 1,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 1,
+     "xyx_a4c_a5c": null,
+     "recordings": 3,
+     "sessions": 2,
+     "few_units": true
+    }
+   }
+  },
+  "s0|I - W|calibration": {
+   "native": {
+    "a": {
+     "tp": 236,
+     "fp": 4,
+     "fn": 1,
+     "pred": 240,
+     "ref": 237,
+     "f1": 0.989517819706499
+    },
+    "b": {
+     "tp": 236,
+     "fp": 4,
+     "fn": 1,
+     "pred": 240,
+     "ref": 237,
+     "f1": 0.989517819706499
+    },
+    "status": {
+     "both": 236,
+     "a only": 0,
+     "b only": 0,
+     "neither": 1
+    },
+    "recovered": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    }
+   },
+   "pairs": {
+    "a": {
+     "tp": 169,
+     "fp": 3,
+     "fn": 4,
+     "pred": 172,
+     "ref": 173,
+     "f1": 0.9797101449275363
+    },
+    "b": {
+     "tp": 169,
+     "fp": 3,
+     "fn": 4,
+     "pred": 172,
+     "ref": 173,
+     "f1": 0.9797101449275363
+    },
+    "status": {
+     "both": 169,
+     "a only": 0,
+     "b only": 0,
+     "neither": 4
+    },
+    "recovered": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    }
+   },
+   "multi": {
+    "a": {
+     "tp": 511,
+     "fp": 11,
+     "fn": 7,
+     "pred": 522,
+     "ref": 518,
+     "f1": 0.9826923076923076
+    },
+    "b": {
+     "tp": 511,
+     "fp": 11,
+     "fn": 7,
+     "pred": 522,
+     "ref": 518,
+     "f1": 0.9826923076923076
+    },
+    "status": {
+     "both": 511,
+     "a only": 0,
+     "b only": 0,
+     "neither": 7
+    },
+    "recovered": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    }
+   }
+  },
+  "s0|W - Base|calibration": {
+   "native": {
+    "a": {
+     "tp": 236,
+     "fp": 4,
+     "fn": 1,
+     "pred": 240,
+     "ref": 237,
+     "f1": 0.989517819706499
+    },
+    "b": {
+     "tp": 236,
+     "fp": 4,
+     "fn": 1,
+     "pred": 240,
+     "ref": 237,
+     "f1": 0.989517819706499
+    },
+    "status": {
+     "both": 236,
+     "a only": 0,
+     "b only": 0,
+     "neither": 1
+    },
+    "recovered": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    }
+   },
+   "pairs": {
+    "a": {
+     "tp": 169,
+     "fp": 3,
+     "fn": 4,
+     "pred": 172,
+     "ref": 173,
+     "f1": 0.9797101449275363
+    },
+    "b": {
+     "tp": 169,
+     "fp": 3,
+     "fn": 4,
+     "pred": 172,
+     "ref": 173,
+     "f1": 0.9797101449275363
+    },
+    "status": {
+     "both": 169,
+     "a only": 0,
+     "b only": 0,
+     "neither": 4
+    },
+    "recovered": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    }
+   },
+   "multi": {
+    "a": {
+     "tp": 511,
+     "fp": 11,
+     "fn": 7,
+     "pred": 522,
+     "ref": 518,
+     "f1": 0.9826923076923076
+    },
+    "b": {
+     "tp": 511,
+     "fp": 11,
+     "fn": 7,
+     "pred": 522,
+     "ref": 518,
+     "f1": 0.9826923076923076
+    },
+    "status": {
+     "both": 511,
+     "a only": 0,
+     "b only": 0,
+     "neither": 7
+    },
+    "recovered": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    }
+   }
+  },
+  "s0|I - Base|calibration": {
+   "native": {
+    "a": {
+     "tp": 236,
+     "fp": 4,
+     "fn": 1,
+     "pred": 240,
+     "ref": 237,
+     "f1": 0.989517819706499
+    },
+    "b": {
+     "tp": 236,
+     "fp": 4,
+     "fn": 1,
+     "pred": 240,
+     "ref": 237,
+     "f1": 0.989517819706499
+    },
+    "status": {
+     "both": 236,
+     "a only": 0,
+     "b only": 0,
+     "neither": 1
+    },
+    "recovered": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    }
+   },
+   "pairs": {
+    "a": {
+     "tp": 169,
+     "fp": 3,
+     "fn": 4,
+     "pred": 172,
+     "ref": 173,
+     "f1": 0.9797101449275363
+    },
+    "b": {
+     "tp": 169,
+     "fp": 3,
+     "fn": 4,
+     "pred": 172,
+     "ref": 173,
+     "f1": 0.9797101449275363
+    },
+    "status": {
+     "both": 169,
+     "a only": 0,
+     "b only": 0,
+     "neither": 4
+    },
+    "recovered": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    }
+   },
+   "multi": {
+    "a": {
+     "tp": 511,
+     "fp": 11,
+     "fn": 7,
+     "pred": 522,
+     "ref": 518,
+     "f1": 0.9826923076923076
+    },
+    "b": {
+     "tp": 511,
+     "fp": 11,
+     "fn": 7,
+     "pred": 522,
+     "ref": 518,
+     "f1": 0.9826923076923076
+    },
+    "status": {
+     "both": 511,
+     "a only": 0,
+     "b only": 0,
+     "neither": 7
+    },
+    "recovered": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    }
+   }
+  },
+  "s2|I - W|calibration": {
+   "native": {
+    "a": {
+     "tp": 235,
+     "fp": 6,
+     "fn": 2,
+     "pred": 241,
+     "ref": 237,
+     "f1": 0.9832635983263598
+    },
+    "b": {
+     "tp": 235,
+     "fp": 6,
+     "fn": 2,
+     "pred": 241,
+     "ref": 237,
+     "f1": 0.9832635983263598
+    },
+    "status": {
+     "both": 235,
+     "a only": 0,
+     "b only": 0,
+     "neither": 2
+    },
+    "recovered": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    }
+   },
+   "pairs": {
+    "a": {
+     "tp": 167,
+     "fp": 4,
+     "fn": 6,
+     "pred": 171,
+     "ref": 173,
+     "f1": 0.9709302325581395
+    },
+    "b": {
+     "tp": 167,
+     "fp": 4,
+     "fn": 6,
+     "pred": 171,
+     "ref": 173,
+     "f1": 0.9709302325581395
+    },
+    "status": {
+     "both": 167,
+     "a only": 0,
+     "b only": 0,
+     "neither": 6
+    },
+    "recovered": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    }
+   },
+   "multi": {
+    "a": {
+     "tp": 513,
+     "fp": 12,
+     "fn": 5,
+     "pred": 525,
+     "ref": 518,
+     "f1": 0.9837008628954937
+    },
+    "b": {
+     "tp": 513,
+     "fp": 12,
+     "fn": 5,
+     "pred": 525,
+     "ref": 518,
+     "f1": 0.9837008628954937
+    },
+    "status": {
+     "both": 513,
+     "a only": 0,
+     "b only": 0,
+     "neither": 5
+    },
+    "recovered": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    }
+   }
+  },
+  "s2|W - Base|calibration": {
+   "native": {
+    "a": {
+     "tp": 235,
+     "fp": 6,
+     "fn": 2,
+     "pred": 241,
+     "ref": 237,
+     "f1": 0.9832635983263598
+    },
+    "b": {
+     "tp": 235,
+     "fp": 6,
+     "fn": 2,
+     "pred": 241,
+     "ref": 237,
+     "f1": 0.9832635983263598
+    },
+    "status": {
+     "both": 235,
+     "a only": 0,
+     "b only": 0,
+     "neither": 2
+    },
+    "recovered": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    }
+   },
+   "pairs": {
+    "a": {
+     "tp": 167,
+     "fp": 4,
+     "fn": 6,
+     "pred": 171,
+     "ref": 173,
+     "f1": 0.9709302325581395
+    },
+    "b": {
+     "tp": 167,
+     "fp": 4,
+     "fn": 6,
+     "pred": 171,
+     "ref": 173,
+     "f1": 0.9709302325581395
+    },
+    "status": {
+     "both": 167,
+     "a only": 0,
+     "b only": 0,
+     "neither": 6
+    },
+    "recovered": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    }
+   },
+   "multi": {
+    "a": {
+     "tp": 513,
+     "fp": 12,
+     "fn": 5,
+     "pred": 525,
+     "ref": 518,
+     "f1": 0.9837008628954937
+    },
+    "b": {
+     "tp": 513,
+     "fp": 12,
+     "fn": 5,
+     "pred": 525,
+     "ref": 518,
+     "f1": 0.9837008628954937
+    },
+    "status": {
+     "both": 513,
+     "a only": 0,
+     "b only": 0,
+     "neither": 5
+    },
+    "recovered": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    }
+   }
+  },
+  "s2|I - Base|calibration": {
+   "native": {
+    "a": {
+     "tp": 235,
+     "fp": 6,
+     "fn": 2,
+     "pred": 241,
+     "ref": 237,
+     "f1": 0.9832635983263598
+    },
+    "b": {
+     "tp": 235,
+     "fp": 6,
+     "fn": 2,
+     "pred": 241,
+     "ref": 237,
+     "f1": 0.9832635983263598
+    },
+    "status": {
+     "both": 235,
+     "a only": 0,
+     "b only": 0,
+     "neither": 2
+    },
+    "recovered": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    }
+   },
+   "pairs": {
+    "a": {
+     "tp": 167,
+     "fp": 4,
+     "fn": 6,
+     "pred": 171,
+     "ref": 173,
+     "f1": 0.9709302325581395
+    },
+    "b": {
+     "tp": 167,
+     "fp": 4,
+     "fn": 6,
+     "pred": 171,
+     "ref": 173,
+     "f1": 0.9709302325581395
+    },
+    "status": {
+     "both": 167,
+     "a only": 0,
+     "b only": 0,
+     "neither": 6
+    },
+    "recovered": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    }
+   },
+   "multi": {
+    "a": {
+     "tp": 513,
+     "fp": 12,
+     "fn": 5,
+     "pred": 525,
+     "ref": 518,
+     "f1": 0.9837008628954937
+    },
+    "b": {
+     "tp": 513,
+     "fp": 12,
+     "fn": 5,
+     "pred": 525,
+     "ref": 518,
+     "f1": 0.9837008628954937
+    },
+    "status": {
+     "both": 513,
+     "a only": 0,
+     "b only": 0,
+     "neither": 5
+    },
+    "recovered": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    }
+   }
+  },
+  "s0|I - W|check": {
+   "native": {
+    "a": {
+     "tp": 195,
+     "fp": 14,
+     "fn": 5,
+     "pred": 209,
+     "ref": 200,
+     "f1": 0.9535452322738386
+    },
+    "b": {
+     "tp": 194,
+     "fp": 15,
+     "fn": 6,
+     "pred": 209,
+     "ref": 200,
+     "f1": 0.9486552567237164
+    },
+    "status": {
+     "both": 194,
+     "a only": 1,
+     "b only": 0,
+     "neither": 5
+    },
+    "recovered": {
+     "segments": 1,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 1,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 1,
+     "xyx_a4c_a5c": 0,
+     "recordings": 1,
+     "sessions": 1,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 1,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 1,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 1,
+     "xyx_a4c_a5c": null,
+     "recordings": 1,
+     "sessions": 1,
+     "few_units": true
+    }
+   },
+   "pairs": {
+    "a": {
+     "tp": 0,
+     "fp": 0,
+     "fn": 0,
+     "pred": 0,
+     "ref": 0,
+     "f1": null
+    },
+    "b": {
+     "tp": 0,
+     "fp": 0,
+     "fn": 0,
+     "pred": 0,
+     "ref": 0,
+     "f1": null
+    },
+    "status": {
+     "both": 0,
+     "a only": 0,
+     "b only": 0,
+     "neither": 0
+    },
+    "recovered": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    }
+   },
+   "multi": {
+    "a": {
+     "tp": 2481,
+     "fp": 116,
+     "fn": 86,
+     "pred": 2597,
+     "ref": 2567,
+     "f1": 0.9608830364058869
+    },
+    "b": {
+     "tp": 2481,
+     "fp": 116,
+     "fn": 86,
+     "pred": 2597,
+     "ref": 2567,
+     "f1": 0.9608830364058869
+    },
+    "status": {
+     "both": 2481,
+     "a only": 0,
+     "b only": 0,
+     "neither": 86
+    },
+    "recovered": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    }
+   }
+  },
+  "s0|W - Base|check": {
+   "native": {
+    "a": {
+     "tp": 194,
+     "fp": 15,
+     "fn": 6,
+     "pred": 209,
+     "ref": 200,
+     "f1": 0.9486552567237164
+    },
+    "b": {
+     "tp": 195,
+     "fp": 14,
+     "fn": 5,
+     "pred": 209,
+     "ref": 200,
+     "f1": 0.9535452322738386
+    },
+    "status": {
+     "both": 194,
+     "a only": 0,
+     "b only": 1,
+     "neither": 5
+    },
+    "recovered": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 1,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 1,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 1,
+     "xyx_a4c_a5c": 0,
+     "recordings": 1,
+     "sessions": 1,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 1,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 1,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 1,
+     "xyx_a4c_a5c": null,
+     "recordings": 1,
+     "sessions": 1,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    }
+   },
+   "pairs": {
+    "a": {
+     "tp": 0,
+     "fp": 0,
+     "fn": 0,
+     "pred": 0,
+     "ref": 0,
+     "f1": null
+    },
+    "b": {
+     "tp": 0,
+     "fp": 0,
+     "fn": 0,
+     "pred": 0,
+     "ref": 0,
+     "f1": null
+    },
+    "status": {
+     "both": 0,
+     "a only": 0,
+     "b only": 0,
+     "neither": 0
+    },
+    "recovered": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    }
+   },
+   "multi": {
+    "a": {
+     "tp": 2481,
+     "fp": 116,
+     "fn": 86,
+     "pred": 2597,
+     "ref": 2567,
+     "f1": 0.9608830364058869
+    },
+    "b": {
+     "tp": 2480,
+     "fp": 118,
+     "fn": 87,
+     "pred": 2598,
+     "ref": 2567,
+     "f1": 0.9603097773475314
+    },
+    "status": {
+     "both": 2479,
+     "a only": 2,
+     "b only": 1,
+     "neither": 85
+    },
+    "recovered": {
+     "segments": 2,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 2,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 2,
+     "xyx_a4c_a5c": 0,
+     "recordings": 3,
+     "sessions": 3,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 1,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 1,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 1,
+     "xyx_a4c_a5c": 0,
+     "recordings": 1,
+     "sessions": 1,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 1,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 1,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 1,
+     "xyx_a4c_a5c": null,
+     "recordings": 1,
+     "sessions": 1,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 3,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 1,
+      "A5C": 2,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 3,
+     "xyx_a4c_a5c": null,
+     "recordings": 6,
+     "sessions": 6,
+     "few_units": true
+    }
+   }
+  },
+  "s0|I - Base|check": {
+   "native": {
+    "a": {
+     "tp": 195,
+     "fp": 14,
+     "fn": 5,
+     "pred": 209,
+     "ref": 200,
+     "f1": 0.9535452322738386
+    },
+    "b": {
+     "tp": 195,
+     "fp": 14,
+     "fn": 5,
+     "pred": 209,
+     "ref": 200,
+     "f1": 0.9535452322738386
+    },
+    "status": {
+     "both": 195,
+     "a only": 0,
+     "b only": 0,
+     "neither": 5
+    },
+    "recovered": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    }
+   },
+   "pairs": {
+    "a": {
+     "tp": 0,
+     "fp": 0,
+     "fn": 0,
+     "pred": 0,
+     "ref": 0,
+     "f1": null
+    },
+    "b": {
+     "tp": 0,
+     "fp": 0,
+     "fn": 0,
+     "pred": 0,
+     "ref": 0,
+     "f1": null
+    },
+    "status": {
+     "both": 0,
+     "a only": 0,
+     "b only": 0,
+     "neither": 0
+    },
+    "recovered": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    }
+   },
+   "multi": {
+    "a": {
+     "tp": 2481,
+     "fp": 116,
+     "fn": 86,
+     "pred": 2597,
+     "ref": 2567,
+     "f1": 0.9608830364058869
+    },
+    "b": {
+     "tp": 2480,
+     "fp": 118,
+     "fn": 87,
+     "pred": 2598,
+     "ref": 2567,
+     "f1": 0.9603097773475314
+    },
+    "status": {
+     "both": 2479,
+     "a only": 2,
+     "b only": 1,
+     "neither": 85
+    },
+    "recovered": {
+     "segments": 2,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 2,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 2,
+     "xyx_a4c_a5c": 0,
+     "recordings": 3,
+     "sessions": 3,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 1,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 1,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 1,
+     "xyx_a4c_a5c": 0,
+     "recordings": 1,
+     "sessions": 1,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 1,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 1,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 1,
+     "xyx_a4c_a5c": null,
+     "recordings": 1,
+     "sessions": 1,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 3,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 1,
+      "A5C": 2,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 3,
+     "xyx_a4c_a5c": null,
+     "recordings": 6,
+     "sessions": 6,
+     "few_units": true
+    }
+   }
+  },
+  "s2|I - W|check": {
+   "native": {
+    "a": {
+     "tp": 195,
+     "fp": 12,
+     "fn": 5,
+     "pred": 207,
+     "ref": 200,
+     "f1": 0.9582309582309583
+    },
+    "b": {
+     "tp": 195,
+     "fp": 12,
+     "fn": 5,
+     "pred": 207,
+     "ref": 200,
+     "f1": 0.9582309582309583
+    },
+    "status": {
+     "both": 195,
+     "a only": 0,
+     "b only": 0,
+     "neither": 5
+    },
+    "recovered": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    }
+   },
+   "pairs": {
+    "a": {
+     "tp": 0,
+     "fp": 0,
+     "fn": 0,
+     "pred": 0,
+     "ref": 0,
+     "f1": null
+    },
+    "b": {
+     "tp": 0,
+     "fp": 0,
+     "fn": 0,
+     "pred": 0,
+     "ref": 0,
+     "f1": null
+    },
+    "status": {
+     "both": 0,
+     "a only": 0,
+     "b only": 0,
+     "neither": 0
+    },
+    "recovered": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    }
+   },
+   "multi": {
+    "a": {
+     "tp": 2468,
+     "fp": 128,
+     "fn": 99,
+     "pred": 2596,
+     "ref": 2567,
+     "f1": 0.9560333139647492
+    },
+    "b": {
+     "tp": 2467,
+     "fp": 130,
+     "fn": 100,
+     "pred": 2597,
+     "ref": 2567,
+     "f1": 0.9554608830364059
+    },
+    "status": {
+     "both": 2467,
+     "a only": 1,
+     "b only": 0,
+     "neither": 99
+    },
+    "recovered": {
+     "segments": 1,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 1,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 1,
+     "xyx_a4c_a5c": 0,
+     "recordings": 1,
+     "sessions": 1,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 2,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 1,
+      "A5C": 1,
+      "SC4C": 0
+     },
+     "short": 1,
+     "long": 1,
+     "xyx_a4c_a5c": null,
+     "recordings": 1,
+     "sessions": 1,
+     "few_units": true
+    }
+   }
+  },
+  "s2|W - Base|check": {
+   "native": {
+    "a": {
+     "tp": 195,
+     "fp": 12,
+     "fn": 5,
+     "pred": 207,
+     "ref": 200,
+     "f1": 0.9582309582309583
+    },
+    "b": {
+     "tp": 196,
+     "fp": 11,
+     "fn": 4,
+     "pred": 207,
+     "ref": 200,
+     "f1": 0.9631449631449631
+    },
+    "status": {
+     "both": 195,
+     "a only": 0,
+     "b only": 1,
+     "neither": 4
+    },
+    "recovered": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 1,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 1,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 1,
+     "xyx_a4c_a5c": 0,
+     "recordings": 1,
+     "sessions": 1,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 1,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 1,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 1,
+     "xyx_a4c_a5c": null,
+     "recordings": 1,
+     "sessions": 1,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    }
+   },
+   "pairs": {
+    "a": {
+     "tp": 0,
+     "fp": 0,
+     "fn": 0,
+     "pred": 0,
+     "ref": 0,
+     "f1": null
+    },
+    "b": {
+     "tp": 0,
+     "fp": 0,
+     "fn": 0,
+     "pred": 0,
+     "ref": 0,
+     "f1": null
+    },
+    "status": {
+     "both": 0,
+     "a only": 0,
+     "b only": 0,
+     "neither": 0
+    },
+    "recovered": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    }
+   },
+   "multi": {
+    "a": {
+     "tp": 2467,
+     "fp": 130,
+     "fn": 100,
+     "pred": 2597,
+     "ref": 2567,
+     "f1": 0.9554608830364059
+    },
+    "b": {
+     "tp": 2467,
+     "fp": 130,
+     "fn": 100,
+     "pred": 2597,
+     "ref": 2567,
+     "f1": 0.9554608830364059
+    },
+    "status": {
+     "both": 2466,
+     "a only": 1,
+     "b only": 1,
+     "neither": 99
+    },
+    "recovered": {
+     "segments": 1,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 1,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 1,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 1,
+     "sessions": 1,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 1,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 1,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 1,
+     "xyx_a4c_a5c": 0,
+     "recordings": 1,
+     "sessions": 1,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 1,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 1,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 1,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 1,
+     "sessions": 1,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 1,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 1,
+      "SC4C": 0
+     },
+     "short": 1,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 2,
+     "sessions": 2,
+     "few_units": true
+    }
+   }
+  },
+  "s2|I - Base|check": {
+   "native": {
+    "a": {
+     "tp": 195,
+     "fp": 12,
+     "fn": 5,
+     "pred": 207,
+     "ref": 200,
+     "f1": 0.9582309582309583
+    },
+    "b": {
+     "tp": 196,
+     "fp": 11,
+     "fn": 4,
+     "pred": 207,
+     "ref": 200,
+     "f1": 0.9631449631449631
+    },
+    "status": {
+     "both": 195,
+     "a only": 0,
+     "b only": 1,
+     "neither": 4
+    },
+    "recovered": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 1,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 1,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 1,
+     "xyx_a4c_a5c": 0,
+     "recordings": 1,
+     "sessions": 1,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 1,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 1,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 1,
+     "xyx_a4c_a5c": null,
+     "recordings": 1,
+     "sessions": 1,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    }
+   },
+   "pairs": {
+    "a": {
+     "tp": 0,
+     "fp": 0,
+     "fn": 0,
+     "pred": 0,
+     "ref": 0,
+     "f1": null
+    },
+    "b": {
+     "tp": 0,
+     "fp": 0,
+     "fn": 0,
+     "pred": 0,
+     "ref": 0,
+     "f1": null
+    },
+    "status": {
+     "both": 0,
+     "a only": 0,
+     "b only": 0,
+     "neither": 0
+    },
+    "recovered": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": 0,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 0,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 0,
+     "sessions": 0,
+     "few_units": true
+    }
+   },
+   "multi": {
+    "a": {
+     "tp": 2468,
+     "fp": 128,
+     "fn": 99,
+     "pred": 2596,
+     "ref": 2567,
+     "f1": 0.9560333139647492
+    },
+    "b": {
+     "tp": 2467,
+     "fp": 130,
+     "fn": 100,
+     "pred": 2597,
+     "ref": 2567,
+     "f1": 0.9554608830364059
+    },
+    "status": {
+     "both": 2466,
+     "a only": 2,
+     "b only": 1,
+     "neither": 98
+    },
+    "recovered": {
+     "segments": 2,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 1,
+      "A5C": 1,
+      "SC4C": 0
+     },
+     "short": 1,
+     "long": 1,
+     "xyx_a4c_a5c": 0,
+     "recordings": 2,
+     "sessions": 2,
+     "few_units": true
+    },
+    "lost": {
+     "segments": 1,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 0,
+      "A5C": 1,
+      "SC4C": 0
+     },
+     "short": 0,
+     "long": 1,
+     "xyx_a4c_a5c": 0,
+     "recordings": 1,
+     "sessions": 1,
+     "few_units": true
+    },
+    "new_unmatched_pred": {
+     "segments": 1,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 1,
+      "A5C": 0,
+      "SC4C": 0
+     },
+     "short": 1,
+     "long": 0,
+     "xyx_a4c_a5c": null,
+     "recordings": 1,
+     "sessions": 1,
+     "few_units": true
+    },
+    "removed_unmatched_pred": {
+     "segments": 3,
+     "by_class": {
+      "PLAX": 0,
+      "PSAX": 0,
+      "A4C": 1,
+      "A5C": 2,
+      "SC4C": 0
+     },
+     "short": 2,
+     "long": 1,
+     "xyx_a4c_a5c": null,
+     "recordings": 3,
+     "sessions": 3,
+     "few_units": true
+    }
+   }
+  }
+ },
+ "context_rows": {
+  "A14 P s0": {
+   "selection": {
+    "segment_f1_50_multi": 0.964,
+    "boundary_precision_multi": 0.9761904761904762,
+    "boundary_recall_multi": 0.9659685863874345,
+    "boundary_f1_multi": 0.9710526315789474,
+    "native_macro_f1": 0.9785909601243429,
+    "native_internal_cuts_per_clip": 0.02464788732394366,
+    "same_class_cut_rate_multi": 0.008695652173913044,
+    "segment_f1_50_pairs": 0.963855421686747,
+    "boundary_recall_pairs": 0.9714285714285714,
+    "native_recall": {
+     "PLAX": 0.9904761904761905,
+     "PSAX": 1.0,
+     "A4C": 0.9770114942528736,
+     "A5C": 1.0,
+     "SC4C": 1.0
+    },
+    "native_confusion": [
+     [
+      104,
+      1,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      68,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      85,
+      2,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      11,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      13
+     ]
+    ],
+    "A5C read as A4C": 0,
+    "A4C read as A5C": 2,
+    "native_precision": {
+     "PLAX": 1.0,
+     "PSAX": 0.9855072463768116,
+     "A4C": 1.0,
+     "A5C": 0.8461538461538461,
+     "SC4C": 1.0
+    },
+    "multi_frame_accuracy": 0.9407793596684714,
+    "native_frame_accuracy": 0.9906221821460776
+   },
+   "calibration": {
+    "segment_f1_50_multi": 0.9855072463768116,
+    "boundary_precision_multi": 0.9899244332493703,
+    "boundary_recall_multi": 0.9874371859296482,
+    "boundary_f1_multi": 0.9886792452830189,
+    "native_macro_f1": 0.9929417020326111,
+    "native_internal_cuts_per_clip": 0.012658227848101266,
+    "same_class_cut_rate_multi": 0.014925373134328358,
+    "segment_f1_50_pairs": 0.9795918367346939,
+    "boundary_recall_pairs": 0.9310344827586207,
+    "native_recall": {
+     "PLAX": 1.0,
+     "PSAX": 1.0,
+     "A4C": 0.9836065573770492,
+     "A5C": 1.0,
+     "SC4C": 1.0
+    },
+    "native_confusion": [
+     [
+      80,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      71,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      60,
+      1,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      18,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      7
+     ]
+    ],
+    "A5C read as A4C": 0,
+    "A4C read as A5C": 1,
+    "native_precision": {
+     "PLAX": 1.0,
+     "PSAX": 1.0,
+     "A4C": 1.0,
+     "A5C": 0.9473684210526315,
+     "SC4C": 1.0
+    },
+    "multi_frame_accuracy": 0.9474350433044637,
+    "native_frame_accuracy": 0.9939258535223068
+   }
+  },
+  "A14 P s2": {
+   "selection": {
+    "segment_f1_50_multi": 0.9564356435643564,
+    "boundary_precision_multi": 0.9536082474226805,
+    "boundary_recall_multi": 0.9685863874345549,
+    "boundary_f1_multi": 0.961038961038961,
+    "native_macro_f1": 0.9785909601243429,
+    "native_internal_cuts_per_clip": 0.04225352112676056,
+    "same_class_cut_rate_multi": 0.013043478260869565,
+    "segment_f1_50_pairs": 0.9807692307692307,
+    "boundary_recall_pairs": 0.9857142857142858,
+    "native_recall": {
+     "PLAX": 0.9904761904761905,
+     "PSAX": 1.0,
+     "A4C": 0.9770114942528736,
+     "A5C": 1.0,
+     "SC4C": 1.0
+    },
+    "native_confusion": [
+     [
+      104,
+      1,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      68,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      85,
+      2,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      11,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      13
+     ]
+    ],
+    "A5C read as A4C": 0,
+    "A4C read as A5C": 2,
+    "native_precision": {
+     "PLAX": 1.0,
+     "PSAX": 0.9855072463768116,
+     "A4C": 1.0,
+     "A5C": 0.8461538461538461,
+     "SC4C": 1.0
+    },
+    "multi_frame_accuracy": 0.9361005280395696,
+    "native_frame_accuracy": 0.9876765855124737
+   },
+   "calibration": {
+    "segment_f1_50_multi": 0.9837008628954937,
+    "boundary_precision_multi": 0.9753086419753086,
+    "boundary_recall_multi": 0.992462311557789,
+    "boundary_f1_multi": 0.9838107098381071,
+    "native_macro_f1": 0.9856102003642988,
+    "native_internal_cuts_per_clip": 0.016877637130801686,
+    "same_class_cut_rate_multi": 0.029850746268656716,
+    "segment_f1_50_pairs": 0.9709302325581395,
+    "boundary_recall_pairs": 0.9482758620689655,
+    "native_recall": {
+     "PLAX": 1.0,
+     "PSAX": 1.0,
+     "A4C": 0.9836065573770492,
+     "A5C": 0.9444444444444444,
+     "SC4C": 1.0
+    },
+    "native_confusion": [
+     [
+      80,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      71,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      60,
+      1,
+      0
+     ],
+     [
+      0,
+      0,
+      1,
+      17,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      7
+     ]
+    ],
+    "A5C read as A4C": 1,
+    "A4C read as A5C": 1,
+    "native_precision": {
+     "PLAX": 1.0,
+     "PSAX": 1.0,
+     "A4C": 0.9836065573770492,
+     "A5C": 0.9444444444444444,
+     "SC4C": 1.0
+    },
+    "multi_frame_accuracy": 0.9530979347101932,
+    "native_frame_accuracy": 0.9806604761572296
+   }
+  },
+  "A20 H@A08 s0": {
+   "selection": {
+    "segment_f1_50_multi": 0.9577187807276303,
+    "boundary_precision_multi": 0.9468354430379747,
+    "boundary_recall_multi": 0.9790575916230366,
+    "boundary_f1_multi": 0.9626769626769627,
+    "native_macro_f1": 0.9785909601243429,
+    "native_internal_cuts_per_clip": 0.045774647887323945,
+    "same_class_cut_rate_multi": 0.017391304347826087,
+    "segment_f1_50_pairs": 0.9665071770334929,
+    "boundary_recall_pairs": 0.9857142857142858,
+    "native_recall": {
+     "PLAX": 0.9904761904761905,
+     "PSAX": 1.0,
+     "A4C": 0.9770114942528736,
+     "A5C": 1.0,
+     "SC4C": 1.0
+    },
+    "native_confusion": [
+     [
+      104,
+      1,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      68,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      85,
+      2,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      11,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      13
+     ]
+    ],
+    "A5C read as A4C": 0,
+    "A4C read as A5C": 2,
+    "native_precision": {
+     "PLAX": 1.0,
+     "PSAX": 0.9855072463768116,
+     "A4C": 1.0,
+     "A5C": 0.8461538461538461,
+     "SC4C": 1.0
+    },
+    "multi_frame_accuracy": 0.9405119978611055,
+    "native_frame_accuracy": 0.986053501653141
+   },
+   "calibration": {
+    "segment_f1_50_multi": 0.9865900383141762,
+    "boundary_precision_multi": 0.9753694581280788,
+    "boundary_recall_multi": 0.9949748743718593,
+    "boundary_f1_multi": 0.9850746268656716,
+    "native_macro_f1": 0.9929417020326111,
+    "native_internal_cuts_per_clip": 0.02109704641350211,
+    "same_class_cut_rate_multi": 0.024875621890547265,
+    "segment_f1_50_pairs": 0.9797101449275363,
+    "boundary_recall_pairs": 0.9482758620689655,
+    "native_recall": {
+     "PLAX": 1.0,
+     "PSAX": 1.0,
+     "A4C": 0.9836065573770492,
+     "A5C": 1.0,
+     "SC4C": 1.0
+    },
+    "native_confusion": [
+     [
+      80,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      71,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      60,
+      1,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      18,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      7
+     ]
+    ],
+    "A5C read as A4C": 0,
+    "A4C read as A5C": 1,
+    "native_precision": {
+     "PLAX": 1.0,
+     "PSAX": 1.0,
+     "A4C": 1.0,
+     "A5C": 0.9473684210526315,
+     "SC4C": 1.0
+    },
+    "multi_frame_accuracy": 0.9540306462358428,
+    "native_frame_accuracy": 0.9920407735809537
+   }
+  },
+  "A20 H@A08 s2": {
+   "selection": {
+    "segment_f1_50_multi": 0.9644268774703557,
+    "boundary_precision_multi": 0.9564102564102565,
+    "boundary_recall_multi": 0.9764397905759162,
+    "boundary_f1_multi": 0.966321243523316,
+    "native_macro_f1": 0.9785909601243429,
+    "native_internal_cuts_per_clip": 0.04225352112676056,
+    "same_class_cut_rate_multi": 0.008695652173913044,
+    "segment_f1_50_pairs": 0.9807692307692307,
+    "boundary_recall_pairs": 0.9857142857142858,
+    "native_recall": {
+     "PLAX": 0.9904761904761905,
+     "PSAX": 1.0,
+     "A4C": 0.9770114942528736,
+     "A5C": 1.0,
+     "SC4C": 1.0
+    },
+    "native_confusion": [
+     [
+      104,
+      1,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      68,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      85,
+      2,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      11,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      13
+     ]
+    ],
+    "A5C read as A4C": 0,
+    "A4C read as A5C": 2,
+    "native_precision": {
+     "PLAX": 1.0,
+     "PSAX": 0.9855072463768116,
+     "A4C": 1.0,
+     "A5C": 0.8461538461538461,
+     "SC4C": 1.0
+    },
+    "multi_frame_accuracy": 0.9440545418087026,
+    "native_frame_accuracy": 0.9876765855124737
+   },
+   "calibration": {
+    "segment_f1_50_multi": 0.9808429118773946,
+    "boundary_precision_multi": 0.9729064039408867,
+    "boundary_recall_multi": 0.992462311557789,
+    "boundary_f1_multi": 0.9825870646766169,
+    "native_macro_f1": 0.9856102003642988,
+    "native_internal_cuts_per_clip": 0.012658227848101266,
+    "same_class_cut_rate_multi": 0.029850746268656716,
+    "segment_f1_50_pairs": 0.9707602339181286,
+    "boundary_recall_pairs": 0.9310344827586207,
+    "native_recall": {
+     "PLAX": 1.0,
+     "PSAX": 1.0,
+     "A4C": 0.9836065573770492,
+     "A5C": 0.9444444444444444,
+     "SC4C": 1.0
+    },
+    "native_confusion": [
+     [
+      80,
+      0,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      71,
+      0,
+      0,
+      0
+     ],
+     [
+      0,
+      0,
+      60,
+      1,
+      0
+     ],
+     [
+      0,
+      0,
+      1,
+      17,
+      0
+     ],
+     [
+      0,
+      0,
+      0,
+      0,
+      7
+     ]
+    ],
+    "A5C read as A4C": 1,
+    "A4C read as A5C": 1,
+    "native_precision": {
+     "PLAX": 1.0,
+     "PSAX": 1.0,
+     "A4C": 0.9836065573770492,
+     "A5C": 0.9444444444444444,
+     "SC4C": 1.0
+    },
+    "multi_frame_accuracy": 0.9496335776149234,
+    "native_frame_accuracy": 0.9796132095231446
+   }
+  }
+ },
+ "gate": {
+  "W": {
+   "mean_dF": -0.0007541041517432068,
+   "dF": {
+    "s0 selection": 0.0,
+    "s0 calibration": 0.0,
+    "s2 selection": -0.003016416606972827,
+    "s2 calibration": 0.0
+   },
+   "half_means": {
+    "selection": -0.0015082083034864135,
+    "calibration": 0.0
+   },
+   "mean_dN": 0.0,
+   "mean_dBR": -0.0006544502617800985,
+   "missed_short_true": {
+    "W": 22,
+    "Base": 22
+   },
+   "calibration_feasible": {
+    "s0": true,
+    "s2": true
+   },
+   "selection_native_floor_0.973": {
+    "s0": true,
+    "s2": true
+   },
+   "signal": false,
+   "no_reversal": true,
+   "no_harm": true,
+   "feasibility": true,
+   "passes": false
+  },
+  "I": {
+   "mean_dF": -0.0007541041517432068,
+   "dF": {
+    "s0 selection": 0.0,
+    "s0 calibration": 0.0,
+    "s2 selection": -0.003016416606972827,
+    "s2 calibration": 0.0
+   },
+   "half_means": {
+    "selection": -0.0015082083034864135,
+    "calibration": 0.0
+   },
+   "mean_dN": 0.0,
+   "mean_dBR": -0.0006544502617800985,
+   "missed_short_true": {
+    "I": 22,
+    "Base": 22
+   },
+   "calibration_feasible": {
+    "s0": true,
+    "s2": true
+   },
+   "selection_native_floor_0.973": {
+    "s0": true,
+    "s2": true
+   },
+   "signal": false,
+   "no_reversal": true,
+   "no_harm": true,
+   "feasibility": true,
+   "passes": false
+  },
+  "train_seed1": false
+ },
+ "heads": {
+  "W_s0": "33540ad6517e506dca5315913c94a12255339eae1cfa28a32959618af0c1fb98",
+  "I_s0": "297c1d611e75bc87074330e1807b9e0ac020e19bb933926959b60bf5a02b2587",
+  "W_s2": "07d09ed2af83a2434eb34ed06d37b77468abe1b20a2e41706748e367f2050e83",
+  "I_s2": "616de6ebf08e3a6c51f2e33f9e55b36fee8806faf6a5ab8b0feccdfed8b9ff11"
+ },
+ "notes": {
+  "deployment": "Base + B3 runs relabelled by the new head's mean probability, then merged",
+  "check": "A15 check pool (recordings trained the encoder; not a holdout)"
+ },
+ "time": "2026-10-23T19:04:52Z"
+}
