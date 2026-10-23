@@ -1,0 +1,137 @@
+{
+ "stage": "training summary",
+ "seeds": [
+  0,
+  2
+ ],
+ "runs": {
+  "Seg_s0": {
+   "all": {
+    "updates": 1350,
+    "loss": 0.3074672964444444,
+    "ce": 0.10983961244444446,
+    "kl": 0.048135194666666666,
+    "seg": 0.14949248933333334,
+    "accuracy": 0.9667283950617284
+   },
+   "encoder frozen (u < warm-up)": {
+    "updates": 135,
+    "loss": 0.49779684444444444,
+    "ce": 0.1438658140740741,
+    "kl": 0.014040548888888888,
+    "seg": 0.3398904807407408,
+    "accuracy": 0.9506172839506173
+   },
+   "last 270 updates": {
+    "updates": 270,
+    "loss": 0.27780710333333336,
+    "ce": 0.1121464362962963,
+    "kl": 0.05082987666666667,
+    "seg": 0.11483078962962963,
+    "accuracy": 0.967283950617284
+   }
+  },
+  "R_s0": {
+   "all": {
+    "updates": 1350,
+    "loss": 0.12196258666666668,
+    "ce": 0.1060303534074074,
+    "kl": 0.015932232518518517,
+    "accuracy": 0.9668518518518519
+   },
+   "encoder frozen (u < warm-up)": {
+    "updates": 135,
+    "loss": 0.15590120296296298,
+    "ce": 0.14545071925925926,
+    "kl": 0.010450483703703703,
+    "accuracy": 0.9493827160493827
+   },
+   "last 270 updates": {
+    "updates": 270,
+    "loss": 0.11898963481481482,
+    "ce": 0.10417288666666667,
+    "kl": 0.014816745555555556,
+    "accuracy": 0.9691358024691358
+   }
+  },
+  "Seg - R s0": {
+   "all": {
+    "mean_ce_difference": 0.0038092590370370372,
+    "correct_difference": -2
+   },
+   "encoder frozen (u < warm-up)": {
+    "mean_ce_difference": -0.001584905185185185,
+    "correct_difference": 2
+   },
+   "last 270 updates": {
+    "mean_ce_difference": 0.007973549629629628,
+    "correct_difference": -6
+   }
+  },
+  "Seg_s2": {
+   "all": {
+    "updates": 1350,
+    "loss": 0.31010803866666664,
+    "ce": 0.11523823096296296,
+    "kl": 0.0431972597037037,
+    "seg": 0.15167254807407407,
+    "accuracy": 0.9657407407407408
+   },
+   "encoder frozen (u < warm-up)": {
+    "updates": 135,
+    "loss": 0.40994144444444447,
+    "ce": 0.12426592666666668,
+    "kl": 0.01151550888888889,
+    "seg": 0.27416000814814817,
+    "accuracy": 0.9592592592592593
+   },
+   "last 270 updates": {
+    "updates": 270,
+    "loss": 0.28565430814814813,
+    "ce": 0.10752608814814815,
+    "kl": 0.046394988518518525,
+    "seg": 0.13173323333333334,
+    "accuracy": 0.9697530864197531
+   }
+  },
+  "R_s2": {
+   "all": {
+    "updates": 1350,
+    "loss": 0.12107838748148149,
+    "ce": 0.10691773014814815,
+    "kl": 0.014160656740740742,
+    "accuracy": 0.967283950617284
+   },
+   "encoder frozen (u < warm-up)": {
+    "updates": 135,
+    "loss": 0.13282551481481486,
+    "ce": 0.12459216740740742,
+    "kl": 0.008233340740740742,
+    "accuracy": 0.9592592592592593
+   },
+   "last 270 updates": {
+    "updates": 270,
+    "loss": 0.11240259962962963,
+    "ce": 0.09899256407407407,
+    "kl": 0.013410037037037036,
+    "accuracy": 0.9719135802469135
+   }
+  },
+  "Seg - R s2": {
+   "all": {
+    "mean_ce_difference": 0.008320500814814814,
+    "correct_difference": -25
+   },
+   "encoder frozen (u < warm-up)": {
+    "mean_ce_difference": -0.0003262407407407393,
+    "correct_difference": 0
+   },
+   "last 270 updates": {
+    "mean_ce_difference": 0.008533524074074074,
+    "correct_difference": -7
+   }
+  }
+ },
+ "notes": "training windows only; Seg and R see the same 12 windows each update; R's loss has no L_seg (not logged); models diverge after the first update",
+ "time": "2026-10-23T02:36:02Z"
+}
