@@ -1,0 +1,78 @@
+{
+ "benchmark": "ev9v-test-ladder-v1",
+ "manifest_digest": "05fe6803f56c0a94ca8b9d704476964b78d3295ccf1c0aefdb673139c2976797",
+ "bank_digests": {
+  "pairs_test": "e86ba8f0e4b1a09992bdcc51c177719432e516884415b20f7a294426c8881bcd",
+  "multi_test": "4fa2ee196e4ba1ce629f2dcac573c0a2301b39c50d9641ff1230bf412bb21c71"
+ },
+ "checks": {
+  "natives": true,
+  "native_sessions": true,
+  "pairs": true,
+  "multi": true,
+  "multi_clips": true,
+  "pairs_digest": true,
+  "multi_digest": true
+ },
+ "counts": {
+  "native": {
+   "items": 800,
+   "samples": 46507,
+   "clips": 800,
+   "sessions": 125,
+   "true_segments": 800,
+   "true_segments_le16": 58,
+   "true_changes": 0,
+   "same_class_joins": 0,
+   "gamma_samples": {
+    "0.9": 0,
+    "1.0": 46507,
+    "1.1": 0
+   },
+   "per_class_items": [
+    275,
+    219,
+    231,
+    40,
+    35
+   ]
+  },
+  "pairs": {
+   "items": 240,
+   "samples": 10391,
+   "clips": 480,
+   "sessions": 117,
+   "true_segments": 360,
+   "true_segments_le16": 91,
+   "true_changes": 120,
+   "same_class_joins": 120,
+   "gamma_samples": {
+    "0.9": 2622,
+    "1.0": 7769,
+    "1.1": 0
+   },
+   "per_class_items": null
+  },
+  "multi": {
+   "items": 120,
+   "samples": 15287,
+   "clips": 405,
+   "sessions": 113,
+   "true_segments": 499,
+   "true_segments_le16": 122,
+   "true_changes": 379,
+   "same_class_joins": 202,
+   "gamma_samples": {
+    "0.9": 7931,
+    "1.0": 7356,
+    "1.1": 0
+   },
+   "per_class_items": null
+  }
+ },
+ "all_clips": 800,
+ "all_sessions": 125,
+ "filters": "test natives = the five-family cache index rows of the official test split (PMPALA and clips without cached frames excluded upstream); banks drawn from them",
+ "config_sha256": "69bcfc994d5b81d3eb9b698904d5697e1ac35eb69400a642ff62d66208d864d9",
+ "seconds": 3.066084146499634
+}
