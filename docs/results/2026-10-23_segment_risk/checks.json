@@ -1,0 +1,187 @@
+{
+ "config_sha256": "c57c3f8838222bc4731ccbd69338fff6ddb45ff9f95e67a3427c5e04d54e3af8",
+ "started": "2026-10-23T02:00:26Z",
+ "lambda": 1.0,
+ "cost_cases": {
+  "interior flip costs more than a boundary shift": true,
+  "shift cost (A A A A A B against A A A A B B)": 0,
+  "interior flip cost (A A B A A A against A^6)": 2,
+  "A-B-A output under A-A-A truth costs > 0": true,
+  "A-B-A output under A-B-A truth costs 0": true,
+  "erasing a true short run costs > 0": true,
+  "A24 offset example: teacher risk": 1.883999951183796,
+  "A24 offset example: student risk": 2.221000000834465,
+  "A24 offset example: non-zero change": true,
+  "cost equals echo_routing segment_f1 on 300 random patterns (mismatches)": 0,
+  "table equals segment_f1 on all 625 patterns of 4 padded groups (mismatches)": 0,
+  "autograd against finite differences (max abs)": 6.051394992739878e-10,
+  "coupled: one window's gradient depends on its neighbours": true,
+  "ok": true
+ },
+ "groups": {
+  "0": {
+   "groups": 4050,
+   "groups_with_a true change": 1350,
+   "left_pad_missing": 449,
+   "right_pad_missing": 571,
+   "sample_steps_within_groups": [
+    0,
+    3,
+    4,
+    5
+   ],
+   "distinct_cost_tables": 356,
+   "zero_cost_floor_check": true
+  },
+  "1": {
+   "groups": 4050,
+   "groups_with_a true change": 1350,
+   "left_pad_missing": 471,
+   "right_pad_missing": 597,
+   "sample_steps_within_groups": [
+    0,
+    3,
+    4,
+    5
+   ],
+   "distinct_cost_tables": 341,
+   "zero_cost_floor_check": true
+  },
+  "2": {
+   "groups": 4050,
+   "groups_with_a true change": 1350,
+   "left_pad_missing": 482,
+   "right_pad_missing": 644,
+   "sample_steps_within_groups": [
+    0,
+    3,
+    4,
+    5
+   ],
+   "distinct_cost_tables": 358,
+   "zero_cost_floor_check": true
+  },
+  "ok": true
+ },
+ "lambda0_replay": {
+  "A10 R_s0": {
+   "updates": [
+    0,
+    136
+   ],
+   "loss_max_abs": 1.9088376998765977e-06,
+   "last_two_abs": [
+    1.4110174179071677e-07,
+    2.803550720187342e-07
+   ],
+   "seg_at_start": [
+    0.258453369140625,
+    0.32681185007095337,
+    0.23939380049705505
+   ]
+  },
+  "A10 R_s2": {
+   "updates": [
+    0,
+    4
+   ],
+   "loss_max_abs": 3.983178138711185e-08,
+   "last_two_abs": [
+    1.9891929624316074e-08,
+    3.983178138711185e-08
+   ],
+   "seg_at_start": [
+    0.1698279082775116,
+    0.21693162620067596,
+    0.9499078989028931
+   ]
+  },
+  "ok": true
+ },
+ "teacher": {
+  "cached_against_online_max_abs": 0.0,
+  "windows": 48,
+  "unchanged": true,
+  "ok": true
+ },
+ "resume": {
+  "updates": [
+   133,
+   134,
+   135,
+   136,
+   137,
+   138
+  ],
+  "loss_max_abs": 3.8743019104003906e-07,
+  "params_max_abs": 2.0005740225315094e-05,
+  "repeat_params_max_abs": 2.0002946257591248e-05,
+  "ok": true
+ },
+ "encoder": {
+  "grad_max_before_warmup": [
+   0.0,
+   0.0
+  ],
+  "grad_max_after": [
+   0.02161860093474388,
+   0.02834324911236763,
+   0.030225202441215515,
+   0.02788199484348297
+  ],
+  "ok": true
+ },
+ "optimiser_bound": {
+  "ok": true
+ },
+ "seg_values_near_unfreezing": [
+  0.23492750525474548,
+  0.24502462148666382,
+  0.45465320348739624,
+  0.17463116347789764,
+  0.17479297518730164,
+  0.1622616946697235
+ ],
+ "gradient_share": [
+  {
+   "u": 0,
+   "base_loss": 0.12551258504390717,
+   "lambda_seg": 0.258453369140625,
+   "base_grad_norm": 3.144716501235962,
+   "seg_grad_norm": 4.34492826461792,
+   "cosine": 0.35160870107039327
+  },
+  {
+   "u": 135,
+   "base_loss": 0.14045223593711853,
+   "lambda_seg": 0.49751609563827515,
+   "base_grad_norm": 4.968468189239502,
+   "seg_grad_norm": 11.547577857971191,
+   "cosine": 0.8716235392230228
+  },
+  {
+   "u": 235,
+   "base_loss": 0.03333840146660805,
+   "lambda_seg": 0.16704091429710388,
+   "base_grad_norm": 0.6464755535125732,
+   "seg_grad_norm": 3.314851999282837,
+   "cosine": 0.693429699247157
+  }
+ ],
+ "timing": {
+  "seconds_per_update": 0.7188060283660889,
+  "peak_gpu_memory_mib": 22038.71826171875
+ },
+ "budget": {
+  "spent": 0.0,
+  "inference_seconds_per_window": 0.015431612730026245,
+  "evaluation_per_model_hours": 0.14086490487058959,
+  "per_run_hours": 0.2695522606372833,
+  "projection_two_seeds": 0.8208343310157458,
+  "seed1_reserve": 0.46041716550787287,
+  "cap": 6.0,
+  "fits_with_seed1": true
+ },
+ "ok": true,
+ "finished": "2026-10-23T02:03:03Z"
+}
