@@ -5,7 +5,8 @@
                                     against A13's verified cache; A08 + B3 and A14 P stored rows reproduced through the
                                     adapter), EchoPrime online/cache parity on validation pair streams, a hand case
   --stage predict  --run-id ID      predictions of every listed system (online or cached), with their checks and cost
-  --stage evaluate --run-id ID      scores, H09 reproduction of the cached external rows, paired comparisons, tables
+  --stage evaluate --run-id ID      scores, H09 reproduction of the cached external rows, paired comparisons, JSON / CSV
+  --stage report   --run-id ID      the Chinese Markdown comparison tables of a finished run
 A finished run directory is never overwritten; a new model or version runs under a new run id.
 """
 from __future__ import annotations
@@ -203,9 +204,43 @@ def evaluate(c, systems: list[str], run_id: str) -> None:
         vsh.ledger_append(c.ledger, f"evaluate run {run_id} (CPU)", "cpu", started, time.time() - t0, ok, note)
 
 
+# ----------------------------------------------------------------------------------------------- report (Chinese tables)
+ZH = {"A14_P_s0": "A14 P 局部路由 s0", "A14_P_s2": "A14 P 局部路由 s2", "A08_s0": "A08 + B3 s0", "A08_s2": "A08 + B3 s2", "STFM_numeric_s100": "STFM（数值帧序，seed 100）",
+      "ASFormer_v2_frameorder": "ASFormer v2_frameorder（B0 特征）", "EchoPrime_view_per_frame": "EchoPrime 视图分类器，逐帧", "EchoPrime_view_B3": "EchoPrime 视图分类器 + B3（验证集设置）",
+      "EchoViewCLIP_stage1_windowed": "EchoViewCLIP stage 1，滑窗"}
+COLS = [("segment F1@50, multi", "多流分段 F1@50", 4), ("clip macro-F1", "原生五类 macro-F1", 4), ("clip accuracy", "原生准确率", 4), ("boundary precision, multi", "多流边界 P", 3),
+        ("boundary recall, multi", "多流边界 R", 3), ("boundary F1, multi", "多流边界 F1", 3), ("multi FP segments", "多流 FP", 0), ("multi FP segments <= 16", "其中短", 0),
+        ("multi FN segments", "多流 FN", 0), ("multi missed true segments <= 16", "其中短", 0), ("segment F1@50, pairs", "两段流分段 F1", 4), ("boundary F1, pairs", "两段流边界 F1", 3),
+        ("native cuts per clip", "原生切点/段", 3), ("same-class cut rate, multi", "同类拼接误切率", 3), ("A4C read as A5C (clips)", "A4C→A5C", 0), ("A5C read as A4C (clips)", "A5C→A4C", 0)]
+
+
+def fmt(v: float, d: int) -> str:
+    return f"{v:.{d}f}" if d else f"{v:.1f}".rstrip("0").rstrip(".")
+
+
+def report(c, run_id: str) -> None:
+    ev = json.loads((c.out / "runs" / run_id / "evaluation.json").read_text()); V, C = ev["values"], ev["comparisons"]; systems = list(V)
+    rows = ["| 系统 | " + " | ".join(z for _, z, _ in COLS) + " |", "|---|" + "---|" * len(COLS)]
+    for n in systems:
+        rows.append(f"| {ZH.get(n, n)} | " + " | ".join(fmt(V[n][k]["value"], d) for k, _, d in COLS) + " |")
+        if n in ("A14_P_s2", "A08_s2"):
+            a = n.replace("s2", "s0"); rows.append(f"| **{ZH[n][:-3]} 两 seed 均值** | " + " | ".join(fmt((V[a][k]["value"] + V[n][k]["value"]) / 2, d) for k, _, d in COLS) + " |")
+    ext = [n for n in systems if n not in OURS]; ep = "segment F1@50, multi"
+    diff = ["| 我方 − 外部（多流分段 F1@50，95% 配对区间，按流重采样） | " + " | ".join(ZH[e] for e in ext) + " |", "|---|" + "---|" * len(ext)]
+    for a in ("A14_P", "A08"):
+        for s in (0, 2):
+            k = f"{a}_s{s}"; diff.append(f"| {ZH[k]} | " + " | ".join(f"{C[f'{k} - {e}'][ep]['diff']:+.4f} [{C[f'{k} - {e}'][ep]['diff_ci95'][0]:+.4f}, {C[f'{k} - {e}'][ep]['diff_ci95'][1]:+.4f}]" for e in ext) + " |")
+        diff.append(f"| {ZH[a + '_s0'][:-3]} 两 seed 均值（点估计） | " + " | ".join(f"{(C[f'{a}_s0 - {e}'][ep]['diff'] + C[f'{a}_s2 - {e}'][ep]['diff']) / 2:+.4f}" for e in ext) + " |")
+    rt = ["| A14 P − 同 seed A08 | " + " | ".join(z for _, z, _ in COLS[:10]) + " |", "|---|" + "---|" * 10]
+    for s in (0, 2):
+        k = f"A14_P_s{s} - A08_s{s}"; rt.append(f"| seed {s} | " + " | ".join(f"{C[k][e]['diff']:+.{max(d, 1)}f} [{C[k][e]['diff_ci95'][0]:+.{max(d, 1)}f}, {C[k][e]['diff_ci95'][1]:+.{max(d, 1)}f}]" for e, _, d in COLS[:10]) + " |")
+    out = c.results / f"comparison_{run_id}_zh.md"; out.write_text("\n".join(["## 同场主表", "", *rows, "", "## 配对差值", "", *diff, "", "## 路由相对 A08", "", *rt, ""]))
+    print(out.read_text(), flush=True)
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--config", required=True); ap.add_argument("--stage", choices=("dev-check", "predict", "evaluate"), required=True); ap.add_argument("--run-id")
+    ap.add_argument("--config", required=True); ap.add_argument("--stage", choices=("dev-check", "predict", "evaluate", "report"), required=True); ap.add_argument("--run-id")
     ap.add_argument("--systems", nargs="+"); ap.add_argument("--workers", type=int, default=6)
     a = ap.parse_args(); c = ctx_of(a.config); systems = a.systems or list(c.fb["systems"])
     if a.stage == "dev-check":
@@ -214,6 +249,8 @@ def main() -> None:
         raise SystemExit("--run-id is required")
     if a.stage == "predict":
         vsh.determinism(); return predict(c, systems, a.run_id, torch.device("cuda"), a.workers)
+    if a.stage == "report":
+        return report(c, a.run_id)
     evaluate(c, systems, a.run_id)
 
 

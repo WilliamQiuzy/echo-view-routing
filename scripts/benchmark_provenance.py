@@ -87,6 +87,9 @@ def audit(cfg: dict) -> dict:
             if line.strip():
                 v = Path(line.split()[0].replace("\\", "/")).name; ids.add(v[: -len(strip)] if strip and v.endswith(strip) else v)
         out.append(row(name, ids, f"{len(ids)} clips", [lst], T888, T800, S_test, f"all names found in the EV9V manifest: {ids <= set(man['video_id'])}; within the official train split: {ids <= train}"))
+    val = set(man.loc[man["split"] == "validation", "video_id"])
+    out.append(row("EV9V validation split (not training: decoder, threshold and router choices; STFM / EchoViewCLIP early stopping)", val, f"{len(val)} clips", ["data/manifests/ev9v_native.csv"],
+                   T888, T800, S_test, "supplementary; selection data, not gradient training"))
     ext = [{"component": "EchoPrime MViTv2-S video encoder (V01/A08 initialisation)", "status": "unknown", "evidence": ["third_party/EchoPrime/model_data/weights/echo_prime_encoder.pt"],
             "note": "pretrained by the EchoPrime authors on their own echo studies; no clip list available; overlap with EV9V cannot be verified"},
            {"component": "EchoPrime released view classifier", "status": "unknown", "evidence": ["models_frozen/echoprime_view_classifier/release_v1.0.0/view_classifier.pt"],

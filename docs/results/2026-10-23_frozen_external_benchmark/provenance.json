@@ -1,0 +1,288 @@
+{
+ "training_rows": [
+  {
+   "component": "model-development protocol train allowlist (all A-series training draws from it)",
+   "training_samples": "3364 clips",
+   "training_recordings": 3364,
+   "training_sessions": 502,
+   "test_recordings_official": 888,
+   "test_recordings_benchmark": 800,
+   "test_sessions": 127,
+   "recordings_in_official_test": 0,
+   "recordings_in_benchmark_test": 0,
+   "sessions_shared_with_test": 0,
+   "status": "verified zero intersection",
+   "evidence": [
+    "runs/20261002-051140-model_development_protocol-fa45e7f4-s0/protocol.json"
+   ],
+   "note": "allowlist subset of the official train split: True"
+  },
+  {
+   "component": "V01 Ordered (A08's start), seed 0",
+   "training_samples": "3750 updates x 8 windows = 30000 training windows",
+   "training_recordings": 3338,
+   "training_sessions": 502,
+   "test_recordings_official": 888,
+   "test_recordings_benchmark": 800,
+   "test_sessions": 127,
+   "recordings_in_official_test": 0,
+   "recordings_in_benchmark_test": 0,
+   "sessions_shared_with_test": 0,
+   "status": "verified zero intersection",
+   "evidence": [
+    "runs/raw_video_context_v1/manifests/RV_s0.npz"
+   ],
+   "note": "within the protocol allowlist: True"
+  },
+  {
+   "component": "A08 all_s0 continuation, seed 0",
+   "training_samples": "3750 updates x 8 windows = 30000 training windows",
+   "training_recordings": 3021,
+   "training_sessions": 500,
+   "test_recordings_official": 888,
+   "test_recordings_benchmark": 800,
+   "test_sessions": 127,
+   "recordings_in_official_test": 0,
+   "recordings_in_benchmark_test": 0,
+   "sessions_shared_with_test": 0,
+   "status": "verified zero intersection",
+   "evidence": [
+    "runs/video_sequence_objective_v1/manifests/VSO_s0.npz"
+   ],
+   "note": "within the protocol allowlist: True"
+  },
+  {
+   "component": "A13 H head (A11 sealed manifest), seed 0",
+   "training_samples": "1350 updates x 12 windows = 16200 training windows",
+   "training_recordings": 2519,
+   "training_sessions": 493,
+   "test_recordings_official": 888,
+   "test_recordings_benchmark": 800,
+   "test_sessions": 127,
+   "recordings_in_official_test": 0,
+   "recordings_in_benchmark_test": 0,
+   "sessions_shared_with_test": 0,
+   "status": "verified zero intersection",
+   "evidence": [
+    "runs/video_sustained_switch_v1/manifests/VSS_s0.npz"
+   ],
+   "note": "within the protocol allowlist: True"
+  },
+  {
+   "component": "V01 Ordered (A08's start), seed 2",
+   "training_samples": "3750 updates x 8 windows = 30000 training windows",
+   "training_recordings": 3330,
+   "training_sessions": 502,
+   "test_recordings_official": 888,
+   "test_recordings_benchmark": 800,
+   "test_sessions": 127,
+   "recordings_in_official_test": 0,
+   "recordings_in_benchmark_test": 0,
+   "sessions_shared_with_test": 0,
+   "status": "verified zero intersection",
+   "evidence": [
+    "runs/raw_video_context_v1/manifests/RV_s2.npz"
+   ],
+   "note": "within the protocol allowlist: True"
+  },
+  {
+   "component": "A08 all_s2 continuation, seed 2",
+   "training_samples": "3750 updates x 8 windows = 30000 training windows",
+   "training_recordings": 3044,
+   "training_sessions": 499,
+   "test_recordings_official": 888,
+   "test_recordings_benchmark": 800,
+   "test_sessions": 127,
+   "recordings_in_official_test": 0,
+   "recordings_in_benchmark_test": 0,
+   "sessions_shared_with_test": 0,
+   "status": "verified zero intersection",
+   "evidence": [
+    "runs/video_sequence_objective_v1/manifests/VSO_s2.npz"
+   ],
+   "note": "within the protocol allowlist: True"
+  },
+  {
+   "component": "A13 H head (A11 sealed manifest), seed 2",
+   "training_samples": "1350 updates x 12 windows = 16200 training windows",
+   "training_recordings": 2546,
+   "training_sessions": 495,
+   "test_recordings_official": 888,
+   "test_recordings_benchmark": 800,
+   "test_sessions": 127,
+   "recordings_in_official_test": 0,
+   "recordings_in_benchmark_test": 0,
+   "sessions_shared_with_test": 0,
+   "status": "verified zero intersection",
+   "evidence": [
+    "runs/video_sustained_switch_v1/manifests/VSS_s2.npz"
+   ],
+   "note": "within the protocol allowlist: True"
+  },
+  {
+   "component": "A14 P router seed 0: training pool (fit-set normalisation and fit zones)",
+   "training_samples": "87 fit zones from 77 pool sequences; pool 500 sequences, 1369 recordings",
+   "training_recordings": 428,
+   "training_sessions": 267,
+   "test_recordings_official": 888,
+   "test_recordings_benchmark": 800,
+   "test_sessions": 127,
+   "recordings_in_official_test": 0,
+   "recordings_in_benchmark_test": 0,
+   "sessions_shared_with_test": 0,
+   "status": "verified zero intersection",
+   "evidence": [
+    "scripts/train_local_router.py pool()",
+    "runs/video_local_router_v1/features/candidates_s0.npz"
+   ],
+   "note": "pool within the protocol allowlist: True"
+  },
+  {
+   "component": "A14 P router seed 2: training pool (fit-set normalisation and fit zones)",
+   "training_samples": "97 fit zones from 83 pool sequences; pool 500 sequences, 1369 recordings",
+   "training_recordings": 454,
+   "training_sessions": 277,
+   "test_recordings_official": 888,
+   "test_recordings_benchmark": 800,
+   "test_sessions": 127,
+   "recordings_in_official_test": 0,
+   "recordings_in_benchmark_test": 0,
+   "sessions_shared_with_test": 0,
+   "status": "verified zero intersection",
+   "evidence": [
+    "scripts/train_local_router.py pool()",
+    "runs/video_local_router_v1/features/candidates_s2.npz"
+   ],
+   "note": "pool within the protocol allowlist: True"
+  },
+  {
+   "component": "ASFormer v2_frameorder training streams",
+   "training_samples": "1500 training streams",
+   "training_recordings": 2873,
+   "training_sessions": 499,
+   "test_recordings_official": 888,
+   "test_recordings_benchmark": 800,
+   "test_sessions": 127,
+   "recordings_in_official_test": 0,
+   "recordings_in_benchmark_test": 0,
+   "sessions_shared_with_test": 0,
+   "status": "verified zero intersection",
+   "evidence": [
+    "models_frozen/asformer_official/v2_frameorder/multi_train_79f4a41af6e3.json"
+   ],
+   "note": "within the official train split: True"
+  },
+  {
+   "component": "B0 79f4a41af6e3 (ASFormer's feature encoder)",
+   "training_samples": "official train split (loader rule: manifest split == train, five-family labels)",
+   "training_recordings": 3683,
+   "training_sessions": 504,
+   "test_recordings_official": 888,
+   "test_recordings_benchmark": 800,
+   "test_sessions": 127,
+   "recordings_in_official_test": 0,
+   "recordings_in_benchmark_test": 0,
+   "sessions_shared_with_test": 0,
+   "status": "verified zero intersection",
+   "evidence": [
+    "runs/20260913-033411-b0_frame_encoder-b072725b-s0/config.resolved.yaml",
+    "data/manifests/ev9v_native.csv"
+   ],
+   "note": "derived from the training loader's split rule; no per-run clip list was saved"
+  },
+  {
+   "component": "STFM numeric s100 training list",
+   "training_samples": "3683 clips",
+   "training_recordings": 3683,
+   "training_sessions": 504,
+   "test_recordings_official": 888,
+   "test_recordings_benchmark": 800,
+   "test_sessions": 127,
+   "recordings_in_official_test": 0,
+   "recordings_in_benchmark_test": 0,
+   "sessions_shared_with_test": 0,
+   "status": "verified zero intersection",
+   "evidence": [
+    "data/stfm/EchoData/train.txt"
+   ],
+   "note": "all names found in the EV9V manifest: True; within the official train split: True"
+  },
+  {
+   "component": "EchoViewCLIP stage-1 training list",
+   "training_samples": "3683 clips",
+   "training_recordings": 3683,
+   "training_sessions": 504,
+   "test_recordings_official": 888,
+   "test_recordings_benchmark": 800,
+   "test_sessions": 127,
+   "recordings_in_official_test": 0,
+   "recordings_in_benchmark_test": 0,
+   "sessions_shared_with_test": 0,
+   "status": "verified zero intersection",
+   "evidence": [
+    "data/echoviewclip/train.txt"
+   ],
+   "note": "all names found in the EV9V manifest: True; within the official train split: True"
+  },
+  {
+   "component": "EV9V validation split (not training: decoder, threshold and router choices; STFM / EchoViewCLIP early stopping)",
+   "training_samples": "567 clips",
+   "training_recordings": 567,
+   "training_sessions": 72,
+   "test_recordings_official": 888,
+   "test_recordings_benchmark": 800,
+   "test_sessions": 127,
+   "recordings_in_official_test": 0,
+   "recordings_in_benchmark_test": 0,
+   "sessions_shared_with_test": 0,
+   "status": "verified zero intersection",
+   "evidence": [
+    "data/manifests/ev9v_native.csv"
+   ],
+   "note": "supplementary; selection data, not gradient training"
+  }
+ ],
+ "external_pretraining": [
+  {
+   "component": "EchoPrime MViTv2-S video encoder (V01/A08 initialisation)",
+   "status": "unknown",
+   "evidence": [
+    "third_party/EchoPrime/model_data/weights/echo_prime_encoder.pt"
+   ],
+   "note": "pretrained by the EchoPrime authors on their own echo studies; no clip list available; overlap with EV9V cannot be verified"
+  },
+  {
+   "component": "EchoPrime released view classifier",
+   "status": "unknown",
+   "evidence": [
+    "models_frozen/echoprime_view_classifier/release_v1.0.0/view_classifier.pt"
+   ],
+   "note": "released weights; training clip list not available; overlap with EV9V cannot be verified"
+  },
+  {
+   "component": "CLIP ViT-B/16 (EchoViewCLIP initialisation)",
+   "status": "unknown",
+   "evidence": [
+    "third_party/EchoViewCLIP"
+   ],
+   "note": "OpenAI web-image pretraining; no list; EV9V file timestamps (2022) post-date it, which makes inclusion of these recordings implausible but is not a verification"
+  },
+  {
+   "component": "ImageNet ResNet-18 (B0 and STFM backbone initialisation)",
+   "status": "unknown",
+   "evidence": [
+    "runs/20260913-033411-b0_frame_encoder-b072725b-s0/config.resolved.yaml"
+   ],
+   "note": "ImageNet-1k (2012) natural images; EV9V file timestamps (2022) post-date it; not verified against a list"
+  }
+ ],
+ "unit_notes": "recording = clip id; session = file prefix without the clip index (703 groups); patient identities unavailable, so patient overlap is unknown",
+ "test_definition": {
+  "official_test_clips": 888,
+  "benchmark_test_clips": 800,
+  "excluded": "88 PMPALA clips (no family5 label)",
+  "test_sessions": 127
+ },
+ "config_sha256": "69bcfc994d5b81d3eb9b698904d5697e1ac35eb69400a642ff62d66208d864d9",
+ "time": "2026-10-23T03:32:53Z"
+}

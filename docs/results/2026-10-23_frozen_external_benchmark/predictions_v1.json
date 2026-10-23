@@ -1,0 +1,148 @@
+{
+ "run_id": "v1",
+ "benchmark_digest": "05fe6803f56c0a94ca8b9d704476964b78d3295ccf1c0aefdb673139c2976797",
+ "config_sha256": "69bcfc994d5b81d3eb9b698904d5697e1ac35eb69400a642ff62d66208d864d9",
+ "registry_sha256": "9149bbe8cd0e4bce553b9994587e1e540918e5a4cce8ea0a315330c0d0577417",
+ "systems": {
+  "A14_P_s0": {
+   "adapter": "a14_router",
+   "weights": {
+    "a08": "9b144925f32fac7d725d13231a132abeb6635fa44b6fe0dbcec7f5b59d035bbc",
+    "a13_head": "19cb9310951c4c95ef2c0b15559959758fe2222cbc3786fe8650a9e4c0a1293f",
+    "router": "b8c785f7c312351127e80fb1206343860ca2c9c267a28954e4c75aef915c3a07"
+   },
+   "store": "runs/frozen_external_benchmark_v1/store/a08_9b144925f32f_363f7284047d",
+   "key": "363f7284047d042ad5056f05a5f4089e3467dfd264499d1d0d5d351f942854ac",
+   "zones": 55,
+   "accepted": 19,
+   "threshold": 0.8,
+   "head_threshold": 0.31476298642158546,
+   "noop_equals_base": true,
+   "accept_all_equals_alternative": true,
+   "states_unchanged": true,
+   "gpu_seconds_new": 240.6153163909912,
+   "windows_new": 14871
+  },
+  "A14_P_s2": {
+   "adapter": "a14_router",
+   "weights": {
+    "a08": "f95fed7ba78cc0b5e2474c71a156356507b4588a4b324957fd5b53fe66ee8472",
+    "a13_head": "98e8ae5ab98642b9a7de225ec3bd6946b10f034a63f7c4ce0dfde8a75abe4d7b",
+    "router": "f54d739477a2c3e469302d79ac1c2a1564174e1c46831c47f91d25b766586135"
+   },
+   "store": "runs/frozen_external_benchmark_v1/store/a08_f95fed7ba78c_0e80f3a737f7",
+   "key": "0e80f3a737f7603951e3ee9e7de4c49bd0c5d8c362a6de7b5823d9c0ececec06",
+   "zones": 60,
+   "accepted": 0,
+   "threshold": "noop",
+   "head_threshold": 0.1268617582321173,
+   "noop_equals_base": true,
+   "accept_all_equals_alternative": true,
+   "states_unchanged": true,
+   "gpu_seconds_new": 241.57995462417603,
+   "windows_new": 14871
+  },
+  "A08_s0": {
+   "adapter": "a08_b3",
+   "weights": {
+    "a08": "9b144925f32fac7d725d13231a132abeb6635fa44b6fe0dbcec7f5b59d035bbc"
+   },
+   "store": "runs/frozen_external_benchmark_v1/store/a08_9b144925f32f_363f7284047d",
+   "key": "363f7284047d042ad5056f05a5f4089e3467dfd264499d1d0d5d351f942854ac",
+   "state_unchanged": true,
+   "gpu_seconds_new": 0.0,
+   "windows_new": 0
+  },
+  "A08_s2": {
+   "adapter": "a08_b3",
+   "weights": {
+    "a08": "f95fed7ba78cc0b5e2474c71a156356507b4588a4b324957fd5b53fe66ee8472"
+   },
+   "store": "runs/frozen_external_benchmark_v1/store/a08_f95fed7ba78c_0e80f3a737f7",
+   "key": "0e80f3a737f7603951e3ee9e7de4c49bd0c5d8c362a6de7b5823d9c0ececec06",
+   "state_unchanged": true,
+   "gpu_seconds_new": 0.0,
+   "windows_new": 0
+  },
+  "STFM_numeric_s100": {
+   "adapter": "cached_probs",
+   "weights": {
+    "stfm": "c09b9f7a451a45d6b77e00b7e5b2f8fde5cece206d84e9fc0b2b859f30e08aa2"
+   },
+   "cache": "cache_v2/stfm_windowed/79f4a41af6e3_numeric_s100",
+   "files": 1160,
+   "written_utc": [
+    "2026-10-01T03:56:36Z",
+    "2026-10-01T04:06:07Z"
+   ],
+   "gpu_seconds_new": 0.0,
+   "windows_new": 0
+  },
+  "ASFormer_v2_frameorder": {
+   "adapter": "cached_probs",
+   "weights": {
+    "asformer": "991ced49d5962941d80e81b92a6e4c1b603bbcf8049491ef63e26e19f0dab062",
+    "b0_features": "79f4a41af6e36e353c86367b1a5c6b923ffe71ee596e6206d616180d183857db"
+   },
+   "cache": "cache_v2/asformer_official/79f4a41af6e3",
+   "files": 1160,
+   "written_utc": [
+    "2026-10-01T14:21:29Z",
+    "2026-10-01T14:22:32Z"
+   ],
+   "gpu_seconds_new": 0.0,
+   "windows_new": 0
+  },
+  "EchoPrime_view_per_frame": {
+   "adapter": "cached_probs",
+   "weights": {
+    "view_classifier": "046b76685de5295d151f74725d69be758c53aac3a028132e3f1f160ba5143954"
+   },
+   "cache": "cache_v2/echoprime_windowed/79f4a41af6e3",
+   "files": 1160,
+   "written_utc": [
+    "2026-10-01T02:50:03Z",
+    "2026-10-01T02:55:18Z"
+   ],
+   "gpu_seconds_new": 0.0,
+   "windows_new": 0
+  },
+  "EchoPrime_view_B3": {
+   "adapter": "cached_probs",
+   "weights": {
+    "view_classifier": "046b76685de5295d151f74725d69be758c53aac3a028132e3f1f160ba5143954"
+   },
+   "cache": "cache_v2/echoprime_windowed/79f4a41af6e3",
+   "files": 1160,
+   "written_utc": [
+    "2026-10-01T02:50:03Z",
+    "2026-10-01T02:55:18Z"
+   ],
+   "gpu_seconds_new": 0.0,
+   "windows_new": 0
+  },
+  "EchoViewCLIP_stage1_windowed": {
+   "adapter": "cached_probs",
+   "weights": {
+    "echoviewclip": "a74c7b233e79c67ca1d9b145f938283ed945378b4ccf3765d2bcc104f8dc0dfc"
+   },
+   "cache": "cache_v2/echoviewclip_windowed/79f4a41af6e3",
+   "files": 1160,
+   "written_utc": [
+    "2026-10-01T03:03:04Z",
+    "2026-10-01T03:36:26Z"
+   ],
+   "gpu_seconds_new": 0.0,
+   "windows_new": 0
+  }
+ },
+ "cost": {
+  "a08_gpu_seconds": 482.19527101516724,
+  "a08_windows": 29742,
+  "a08_seconds_per_window": 0.016212604095728844,
+  "decode_seconds": 73.2954649925232,
+  "a08_parameters": 34640549,
+  "a08_encoder_forwards_per_window": 1
+ },
+ "time": "2026-10-23T03:41:57Z"
+}
