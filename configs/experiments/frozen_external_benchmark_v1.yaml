@@ -1,0 +1,45 @@
+# A26, frozen external benchmark on the historical EV9V test (frozen_external_benchmark_v1), 2026-10-23 UTC.
+# One-page configuration, fixed and committed before this round reads any test list, frame or prediction.
+# Question: on the same historical EV9V test benchmark (H09's corrected five-family recognition and constructed-stream
+# segmentation), how do the frozen A14 P local router (seeds 0, 2) and the paired frozen A08 + B3 compare with the
+# implemented STFM, ASFormer, EchoPrime (per frame and with its validation-chosen B3) and EchoViewCLIP stage 1, and does
+# A14's local gain over A08 hold there? Exploratory same-benchmark comparison of frozen systems: no training, tuning,
+# seed/checkpoint choice or new candidate. Not an independent holdout (H01-H09 used this test) and not a claim on the
+# original papers' tasks. Authorised by the lead/user on 2026-10-22 for this named comparison; Pediatric stays unread.
+experiment: frozen_external_benchmark_v1
+
+frozen_external_benchmark:
+  benchmark:
+    id: ev9v-test-ladder-v1
+    source: "H09's joint true-order comparison (scripts/true_order_joint.py): test natives (cache index, five-family task), ladder pair and 4-8 fragment test banks"
+    ladder_config: {path: runs/20260928-001145-baselines-1b027c50-s0/config.resolved.yaml, sha256: 36ec4972a889d47387aa3ddc60a205f3eda7be09b3c298eda5979153aa8b957d}
+    recipe_seed: 1234
+    expected: {natives: 800, native_sessions: 125, pairs: 240, multi: 120, multi_clips: 405}
+    bank_digest_prefixes: {pairs_test: e86ba8f0e4b1a099, multi_test: 4fa2ee196e4ba1ce, natives_test: ac6bd193d28e5718}
+    frame_refs: {path: data/window_plans/79f4a41af6e3/plans.json, sha256: 4393d6213b329c6521dda99c91d76fee9ea4f7827175f70bcf0610071fff8049, rule: "test entries only; (recording, frame index, gamma) per 10 Hz sample; must equal cache_v2 frame_idx and variant gamma of every fragment"}
+    frame_order: "cache_v2 FRAME_ORDER numeric-2026-09-30"
+    axis: "10 Hz sample grid of each item; classes PLAX, PSAX, A4C, A5C, SC4C (family5)"
+    manifest: "built once on the server (runs/frozen_external_benchmark_v1/benchmark/); only digests and counts leave the server"
+  registry: {path: configs/benchmarks/ev9v_test_registry_v1.yaml}
+  systems: [A14_P_s0, A14_P_s2, A08_s0, A08_s2, STFM_numeric_s100, ASFormer_v2_frameorder, EchoPrime_view_per_frame, EchoPrime_view_B3, EchoViewCLIP_stage1_windowed]
+  inputs:
+    ours: "each item's full 10 Hz axis, A08's request windows (16 samples, stride 5, target marker, clamped at item ends), nearest-centre probabilities; constructed streams run whole (no reset at joins); A13 H edges and A14 zones from these outputs only; fp32"
+    external: "historical caches reused only if weights, frame refs, item lengths, class order, frame order and decoder match and H09's stored rows reproduce; otherwise rebuilt from the pinned weights"
+    forbidden: "no prediction input reads labels, joins, sources, fragment counts, purity or file identity"
+  metrics:
+    version: ev9v-benchmark-metrics-v1
+    primary: "multi (4-8 fragment) class-aware segment F1@50: same class, one-to-one, IoU >= 0.5, greedy; matched / predicted / true pooled over streams (H09)"
+    secondary: "native clip macro-F1 and accuracy (decoded majority), per-class recall, A4C->A5C and A5C->A4C; multi boundary precision / recall / F1 at 0.5 s; pair segment F1 and boundary F1 (reported apart); multi FP and short FP, FN and missed short true (short <= 16 samples); native internal cuts per clip; same-class join cut rate (multi)"
+    intervals: "paired percentile bootstrap, 2,000 draws, seed 20261001, H09 units (natives by session, pairs by stream, multi segments by stream, multi boundaries by recording); descriptive: streams reuse sources, sessions are not patients, seeds are not case samples"
+    comparisons: "A14 P and A08 (each seed and the two-seed mean) minus every external pipeline; A14 P - A08 per seed"
+    cost: "encoder forwards per window, parameters, one timing of our inference; cache reads never counted as model speed"
+  provenance_audit: "per weight: training/teacher/preprocessing data against test clips and sessions (set intersections from the actual manifests and lists), historical test evaluation use, external pretraining overlap (known / unknown), patient overlap unknown"
+  checks: "configuration and registry committed before the access record and any test read; H09's stored test rows reproduce from the caches through the new evaluator; our adapter reproduces A08 + B3 and A14 P stored development rows before the test; a hand-computed matching case; misaligned or missing items fail; weights and states unchanged; router no-op = Base, accept-all = Alternative; EchoPrime online/cache parity on validation streams"
+  budget:
+    gpu_hours_max: 6.0
+    cpu_hours_max: 4.0             # agent active wall clock and decode/evaluation workers outside GPU time; GPU-job loaders not double-booked
+    ledger: runs/frozen_external_benchmark_v1/ledger.jsonl
+  outputs:
+    root: runs/frozen_external_benchmark_v1
+    results_dir: docs/results/2026-10-23_frozen_external_benchmark
+    access_record: runs/frozen_external_benchmark_v1/access.jsonl

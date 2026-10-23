@@ -1,0 +1,73 @@
+# Model registry for the frozen EV9V test benchmark (benchmark id ev9v-test-ladder-v1). One entry per frozen system.
+# A new frozen model is added as a new entry (new name) and evaluated as a new run version; finished entries and their
+# results are never edited. Fields:
+#   adapter     how outputs on the benchmark's 10 Hz axis are produced (scripts/benchmark_adapters.py)
+#   weights     every weight file the system reads, with sha256 (checked before every run)
+#   decoder     the decoder and its saved numeric setting (never re-chosen on the benchmark)
+#   seed        the training seed of a seeded system; external single models have none
+#   provenance  training data, pretraining and historical test use (audited in the round's provenance table)
+registry: ev9v-test-registry-v1
+benchmark: ev9v-test-ladder-v1
+systems:
+  A14_P_s0: &a14
+    adapter: a14_router
+    seed: 0
+    weights:
+      a08: {path: models_frozen/video_within_view_v1/all_s0/final.pt, sha256: 9b144925f32fac7d725d13231a132abeb6635fa44b6fe0dbcec7f5b59d035bbc}
+      a13_head: {path: runs/video_frozen_switch_v1/train/H_s0/final.pt, sha256: 19cb9310951c4c95ef2c0b15559959758fe2222cbc3786fe8650a9e4c0a1293f}
+      router: {path: runs/video_local_router_v1/routers/P_s0.pt, sha256: b8c785f7c312351127e80fb1206343860ca2c9c267a28954e4c75aef915c3a07}
+    decoder: {base: "A08 choices all_s0 (B3 numeric setting)", alternative: "A13 choices H_s0 threshold", router: "A14 choices P_s0 threshold (0.8)"}
+    provenance: {training: "EV9V train split (A07/A10/A11 manifests; A14 training pool)", pretraining: "EchoPrime MViTv2-S video encoder (via V01 Ordered)", test_history: "never evaluated on test; lineage partly chosen after H01-H09 test use"}
+  A14_P_s2:
+    <<: *a14
+    seed: 2
+    weights:
+      a08: {path: models_frozen/video_within_view_v1/all_s2/final.pt, sha256: f95fed7ba78cc0b5e2474c71a156356507b4588a4b324957fd5b53fe66ee8472}
+      a13_head: {path: runs/video_frozen_switch_v1/train/H_s2/final.pt, sha256: 98e8ae5ab98642b9a7de225ec3bd6946b10f034a63f7c4ce0dfde8a75abe4d7b}
+      router: {path: runs/video_local_router_v1/routers/P_s2.pt, sha256: f54d739477a2c3e469302d79ac1c2a1564174e1c46831c47f91d25b766586135}
+    decoder: {base: "A08 choices all_s2 (B3 numeric setting)", alternative: "A13 choices H_s2 threshold", router: "A14 choices P_s2 (no-op)"}
+  A08_s0: &a08
+    adapter: a08_b3
+    seed: 0
+    weights:
+      a08: {path: models_frozen/video_within_view_v1/all_s0/final.pt, sha256: 9b144925f32fac7d725d13231a132abeb6635fa44b6fe0dbcec7f5b59d035bbc}
+    decoder: {base: "A08 choices all_s0 (B3 numeric setting)"}
+    provenance: {training: "EV9V train split (V01 / A07 manifests)", pretraining: "EchoPrime MViTv2-S video encoder", test_history: "never evaluated on test; lineage partly chosen after H01-H09 test use"}
+  A08_s2:
+    <<: *a08
+    seed: 2
+    weights:
+      a08: {path: models_frozen/video_within_view_v1/all_s2/final.pt, sha256: f95fed7ba78cc0b5e2474c71a156356507b4588a4b324957fd5b53fe66ee8472}
+    decoder: {base: "A08 choices all_s2 (B3 numeric setting)"}
+  STFM_numeric_s100:
+    adapter: cached_probs
+    cache: cache_v2/stfm_windowed/79f4a41af6e3_numeric_s100
+    weights:
+      stfm: {path: models_frozen/stfm_numeric/s100/model.ckpt, sha256: c09b9f7a451a45d6b77e00b7e5b2f8fde5cece206d84e9fc0b2b859f30e08aa2}
+    decoder: {argmax: "windowed probabilities (authors' per-window test rule, 16-sample windows, stride 5; nine codes to five families)"}
+    provenance: {training: "authors' recipe on EV9V train (numeric-frame-order patch, seed 100)", pretraining: "STFM backbone initialisation per the official code", test_history: "H01-H09 test rows; official 888-clip test"}
+  ASFormer_v2_frameorder:
+    adapter: cached_probs
+    cache: cache_v2/asformer_official/79f4a41af6e3
+    weights:
+      asformer: {path: models_frozen/asformer_official/v2_frameorder/20261001-033713-b5_asformer_official-0e15acae-s0_epoch120.model, sha256: 991ced49d5962941d80e81b92a6e4c1b603bbcf8049491ef63e26e19f0dab062}
+      b0_features: {path: checkpoints/20260913-033411-b0_frame_encoder-b072725b-s0/best.pt, sha256: 79f4a41af6e36e353c86367b1a5c6b923ffe71ee596e6206d616180d183857db}
+    decoder: {argmax: "ASFormer posteriors on B0 features (authors' constants, retrained on cache_v2 multi_train)"}
+    provenance: {training: "EV9V train multi bank (1,500 streams) on B0 features; B0 on EV9V train", pretraining: "B0 ResNet-18 ImageNet", test_history: "H08/H09 test rows"}
+  EchoPrime_view_per_frame: &ep
+    adapter: cached_probs
+    cache: cache_v2/echoprime_windowed/79f4a41af6e3
+    weights:
+      view_classifier: {path: models_frozen/echoprime_view_classifier/release_v1.0.0/view_classifier.pt, sha256: 046b76685de5295d151f74725d69be758c53aac3a028132e3f1f160ba5143954}
+    decoder: {argmax: "per 10 Hz frame (released preprocessing; 11 coarse views to five families)"}
+    provenance: {training: "released weights (EchoPrime authors' data)", pretraining: "released", test_history: "H01-H09 test rows"}
+  EchoPrime_view_B3:
+    <<: *ep
+    decoder: {b3: {half_window: 9, threshold: 0.3351074947858375, nms_radius: 5, source: "runs/_demo/permutation_mechanism_r2/echoprime_b3a.json (sha256 f95ec24a09394c4efe55cc5b6bdd74cb5eeea6d4d8087821d51e06bbd3e1b6e1), chosen on true-order validation"}}
+  EchoViewCLIP_stage1_windowed:
+    adapter: cached_probs
+    cache: cache_v2/echoviewclip_windowed/79f4a41af6e3
+    weights:
+      echoviewclip: {path: models_frozen/echoviewclip_stage1/v1/best.pth, sha256: a74c7b233e79c67ca1d9b145f938283ed945378b4ccf3765d2bcc104f8dc0dfc}
+    decoder: {argmax: "stage-1 windowed probabilities (16 frames per 1.6 s window, stride 0.5 s; nine codes to five families)"}
+    provenance: {training: "authors' stage-1 recipe on EV9V train (MP4, true order)", pretraining: "CLIP ViT-B/16 (OpenAI)", test_history: "H01-H09 test rows"}
