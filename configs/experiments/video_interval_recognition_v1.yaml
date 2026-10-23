@@ -1,0 +1,63 @@
+# A27, interval recognition supervision on the frozen A08 video representation (video_interval_recognition_v1), 2026-10-23 UTC.
+# One-page protocol, committed before any A27 training data or output. Spec: docs/superpowers/plans/2026-10-23-experiment-
+# navigation-and-recognition.md Task 4 (sha256 0d8bfc91); task sheet claude_prompts/2026-10-23-interval-recognition-training.md
+# (sha256 ff9c6405). Question: on A08's frozen 512-d recognition representation, does classifying the pooled probability of a
+# training interval (I) beat matched window-level CE (W) for the class labels of the fixed Base + B3 intervals, and does that
+# become a full-segmentation gain after relabelling and merging?
+# Predecessors: R05 span statistics on probability outputs; R06 an older image encoder; A01/A05 window-level readouts on V01
+# features; A14-A17 selected local edits; A25 a four-window expected-error surrogate; the 2026-10-23 Codex diagnostic (CPU only)
+# showed EchoViewCLIP relabelling of Base intervals lowers all four cells, so no EchoViewCLIP replacement or distillation here.
+# A27 trains only an independent copy of A08's 512->5 classifier on cached frozen embeddings, with a pooled interval loss
+# against a matched window loss and the same own-A08 retention term; a controlled condition, no algorithmic novelty claimed.
+# Development halves are reused exploratory feedback; the A15 check pool's recordings trained the encoder (not a holdout);
+# test and Pediatric are not read.
+experiment: video_interval_recognition_v1
+
+video_interval_recognition:
+  id: A27
+  pinned:
+    A08_weights: {0: 9b144925f32fac7d725d13231a132abeb6635fa44b6fe0dbcec7f5b59d035bbc, 2: f95fed7ba78cc0b5e2474c71a156356507b4588a4b324957fd5b53fe66ee8472}
+    A08_choices: {path: docs/results/2026-10-16_video_within_view/choices.json, sha256: b2a731e5f4393187ee9954f710821ac04938652f0a7d00e0381ad0b8b21cf27e}
+    A08_summary: {path: docs/results/2026-10-16_video_within_view/summary.json}
+    A15_config: {path: configs/experiments/video_router_data_v1.yaml, sha256: 0b6f6db29309eec9965e588d7e01e45f1edfa24df7b849f789936c6239a18556}
+    A15_pool_manifest: {path: runs/video_router_data_v1/pool_manifest.json, sha256: 5ab124d48f48f826fd0b52542cf8cf1aa7f97e0f6b82327358406cf574a14050}
+    A15_preparation: {path: runs/video_router_data_v1/preparation.json, sha256: a41d5155dbd9d87e05905735eefb7f773cdbb13b82dc22ec24c3b89636ca826b}
+    A15_windows: {0: 2a6b53aed829e64c7ea23dfdee8bbfa473bf383525f341b214f0731532cf7cd4, 2: c21becbd8188a326f2405e53185fb0d0fb6efc087fa494510d124b5ada3198a8}
+    A15_preds: {0: 848c4c91c0b3d2f2ad00cf95cc3ada7882d3d703318de4c7d333441c09443654, 2: af5a489b86aa9df106fabce3bd4255443fc5394aa24fa8558ea788002ed03e05}
+    dev_caches:
+      selection: {0: 3743c3ddbb90fa9f28e8a6b16852cebd1676d0c6057a6e9b2b6704c063ecb2d2, 2: 5b7f9682570908c455db1f872adf9e8891f0db307cb8dcc2087b7219d6d03b1b}
+      calibration: {0: 1304f633cf8f9ef32170cbd5ab8ead42055c82255d7652b770b229368bbaa458, 2: a3458832a910bef89f06913eb0027f21c7092c77d74e8d965d271e83e03f22e0}
+      path: "runs/video_frozen_switch_v1/evaluation/{half}/a08_s{seed}.npz (A13's frozen A08 eval logits and embeddings; equal to A08's saved outputs)"
+    check_rows: {path: runs/video_b3_coverage_v1/screen.json, sha256: 8a66a0f5cedff15ff88b69791979aed6cfa7eae5431611a87f2776e5699021fe, rows: "A08_s{seed} old (check)"}
+    pool_builder: "configs/experiments/video_b3_coverage_v1.yaml via scripts/b3_coverage.py pool() (A15's pools(), digest checked against the pinned manifest)"
+  data:
+    fit: "A15 large fit sequences (group fit: 1,500 multi streams and the fit natives); protocol-train only; never the check, development, test or Pediatric data"
+    intervals: "per fit sequence, T = reference constant-class runs; P = runs of the seed's frozen Base (A08 + B3, cached preds base, recomputed and checked), labelled by the majority reference class (ties: smallest class index); mixed P intervals kept"
+    mapping: "every interval sample maps to its nearest request centre (rr.nearest_centre, the deployed rule); unique window rows with multiplicity weights summing to 1 per interval; no interval dropped"
+    batches: "1,350 updates x 32 intervals (16 uniform with replacement from T, 16 from P), numpy default_rng([20261023, 27, seed]); identical for W and I; no balancing, mining or length search"
+  model:
+    frozen: "A08 encoder, marker, projection and original classifier (eval, unchanged); cached embeddings are the classifier input"
+    head: "copy of A08's classifier.weight (5 x 512) and classifier.bias: 2,565 trainable parameters, nothing else trainable"
+  objectives:
+    W: "mean_j sum_t w_jt * (-log p_t(y_j))"
+    I: "mean_j -log(sum_t w_jt * p_t(y_j)), by logsumexp of log w + log p"
+    retention: "both add 1.0 * mean_j sum_t w_jt * KL(q_t || p_t), q = softmax of the cached original logits (detached)"
+  training: "AdamW lr 1e-4, weight decay 1e-4, betas (0.9, 0.999), eps 1e-8, clip 1, linear warm-up 135 then cosine to 1,350 (lr_factor); copied initialisation; CPU, one thread; final weights only; seeds 0 and 2"
+  deployment: "original q makes the Base + B3 labels at A08's committed numeric setting; each Base run (RLE interval) takes argmax of the mean new-head probability over its samples (same nearest-centre mapping); adjacent equal classes merge; scored as complete sequences; no blend, gate, fallback or decoder choice"
+  checks: "copied head reproduces cached logits; zero-update adapter reproduces Base labels and the four stored Base rows; original q unchanged after training; objectives against independent numpy; uneven mappings and short intervals; a case where I != W and equal predictions giving equal CE; gradients only in the head; 3 + 3 resume = 6; merging drops a boundary; pool digest, fit/check recording and session separation, protocol-train sources"
+  evaluation:
+    sets: "selection and calibration halves (A13 caches) and the A15 check pool (600 multi + 200 native) once per frozen head, after the frozen identities are committed"
+    rows: "multi segment F1@50, native macro-F1, A4C/A5C directions, boundary recall/precision, FP / short FP, FN / missed short true (<= 16), recovered / lost segments, Base-interval label accuracy; Base, W, I; A14 P and A20 H@A08 stored rows as context"
+    comparisons: "I - W (attribution needs a consistent sign on both halves and check with paired intervals); W - Base; I - Base"
+  gate:
+    applies_to: "W and I separately against Base over the four development cells"
+    rule: "mean dF >= +0.003 (unrounded); each half's two-seed mean >= -0.005; no cell < -0.015; mean native difference >= -0.003; mean boundary-recall difference >= -0.010; missed short true summed over the four cells <= Base's sum + 3; each seed's calibration row native >= 0.980 and multi boundary recall >= 0.95; selection native floor 0.973 reported separately"
+    decision: "if either arm passes, both arms at seed 1 (fresh frozen A08 s1 pass over the pinned pool and halves); otherwise A27 closes with two seeds and no variant"
+  budget:
+    cpu_hours_max: 2.0
+    gpu_hours_max: 1.0
+    ledger: runs/video_interval_recognition_v1/ledger.jsonl
+  outputs:
+    root: runs/video_interval_recognition_v1
+    frozen: models_frozen/video_interval_recognition_v1/{W,I}_s{seed}
+    results_dir: docs/results/2026-10-23_interval_recognition
