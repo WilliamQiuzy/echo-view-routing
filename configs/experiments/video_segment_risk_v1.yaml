@@ -1,0 +1,70 @@
+# A25, minimum expected segment-error training for the single CLS video model (video_segment_risk_v1), 2026-10-23 UTC.
+# One-page task and configuration, written before any A25 preparation, check, training or evaluation output.
+# Question: starting from the strong A08 system, does adding a differentiable expected segment-error risk on short groups
+# of consecutive training windows -- which charges false short segments (isolated flips inside a true run) more than a
+# shifted boundary and protects true short runs -- reduce false short segments without losing true short ones, and raise
+# full segmentation, against the identical training without the risk?
+# Predecessors and differences: A05/A07 trained run-balanced CE and a no-blank transcript-forward likelihood (sequence
+# likelihood over run labels, durations ignored) -- closed; A08 neighbour smoothing towards zero change (all / label-masked)
+# and A24's teacher-referenced difference relation -- closed; A10/A13 switch heads, A14-A17 routers, A20 replay, A22 short
+# support and A23/A24 donor interventions -- closed. A25 is an expected-cost (minimum Bayes risk) objective whose cost is
+# a segment-matching error count (unmatched predicted + unmatched true runs at IoU >= 0.5, the F1@50 rule) over joint
+# output patterns of four consecutive windows; it couples the windows, is not a reweighted per-window CE, needs no new
+# module, data, teacher or decoder, and does not repair A23. Known approach (expected-loss training); no algorithmic
+# contribution is claimed. The check pool is not a new holdout; development halves are reused exploratory feedback;
+# test and Pediatric are not read.
+experiment: video_segment_risk_v1
+
+video_segment_risk:
+  pinned:
+    A10_config: {path: configs/experiments/video_switch_head_v1.yaml, sha256: fb851c684450e48ebe031db0cc98bbbcbdd35b20b6ee88541489cf80d0124a58}
+    A10_manifest_index: {path: runs/video_switch_head_v1/manifests/index.json, sha256: eaf3c99a219b57ef0e063eecaa1fb84e0c56f44f0861ba2621ece3a4c7cec5a1}
+    A08_weights: {0: 9b144925f32fac7d725d13231a132abeb6635fa44b6fe0dbcec7f5b59d035bbc, 1: c8b09ecaf286c7b66fc0eec69fdd102f98930aaa657a7604e3204c3845a8e172, 2: f95fed7ba78cc0b5e2474c71a156356507b4588a4b324957fd5b53fe66ee8472}
+    A08_choices: {path: docs/results/2026-10-16_video_within_view/choices.json, sha256: b2a731e5f4393187ee9954f710821ac04938652f0a7d00e0381ad0b8b21cf27e}
+    A18_teacher_cache: {0: ecdd3512b0b98960b0dbed81cc8b4f2246958d58b03f40edb3b0f8552af8b1e4, 1: a28acb739f4c943680eb49caa3c3b7fc525334ed8134c3aa04c0ec088f068332, 2: d096f765e071048021ec2b0962e1c6e3c821e772802af11abc9e5a10a4fb5831}
+    control_R_weights: {0: 1db6ccd42f7b7212cfc282a9c60db83ed2c98a605cc29ef6637781a7b95c044b, 1: 19ac49074dd96cec11487512d2058555aa88ef5a7e4eaf3d56ff3d1c7d079211, 2: 858c4e2580d01b2a255434110eb14a8d8231558d58ba1bb992c2951e822f4e5a}
+    control_R_sources: "R_s0/R_s2: A10 (runs/video_switch_head_v1: run records, update logs, saved development outputs, committed choices); R_s1: A18 (runs/video_ensemble_teacher_v1); check-pool logits from A19's logits index"
+    matching_code: {path: echo_routing/evaluate/metrics_segmentation.py, sha256: 1df403888b0d658aab0e0e0a8f8f2bfb38ef13fee39b792e8df7a2792b63510c}
+    A19_screen: {path: runs/video_b3_coverage_v1/screen.json, sha256: 8a66a0f5cedff15ff88b69791979aed6cfa7eae5431611a87f2776e5699021fe}
+    A19_logits_index: {path: runs/video_b3_coverage_v1/logits/index.json, sha256: f380668e4adef2ed9a70d4fcd66caf9c738913051934095865090ee6e8058901}
+    A18_screen: {path: runs/video_ensemble_teacher_v1/evaluation/screen.json, sha256: 8fe99e0eb74775d4001d4eca43fcef122d266160f1952626f5822596578db16f}
+    A20_screen: {path: docs/results/2026-10-22_hard_replay/screen.json, sha256: 53d2f22adca111a1d1e44cea42b3fc9cc837ef4233f36989eb101ae919b55eb1}
+    A15_pool_manifest: {path: runs/video_router_data_v1/pool_manifest.json, sha256: 5ab124d48f48f826fd0b52542cf8cf1aa7f97e0f6b82327358406cf574a14050}
+  arms:
+    Seg: "A10 R's recipe exactly (A08 all_s{k} start, A10's pinned 12 windows per update = native, change-containing constructed and same-label join groups of 4 consecutive request windows, CE + KL to the cached own A08, A10's optimiser, schedule, seeds, initialisation and dummy head group) plus lambda * L_seg"
+    control: "R = the same recipe with lambda = 0: A10's frozen R_s0/R_s2 (A18's R_s1 for seed 1) reused after a lambda = 0 replay of their logged training; never retrained"
+    model: "the unchanged TargetMViT (34,640,549 parameters), one CLS forward per window at deployment; no head, branch, router or decoder change"
+  risk:
+    group: "each of the 3 groups of 4 consecutive request windows (one sequence, consecutive centres; clip-end repeats kept as positions)"
+    pads: "one fixed, correctly predicted position on each side: the true label at the neighbouring request centre (c_first - 5, c_last + 5) of the same sequence when it exists, none at a sequence end; pads carry no gradient"
+    cost: "for an output pattern y_hat in {0..4}^4 with the pads: runs of equal class over the padded positions for truth and output; same-class one-to-one matching at IoU >= 0.5 in position units, greedy by IoU (the F1@50 rule); cost = unmatched predicted runs + unmatched true runs"
+    term: "L_seg = mean over the 3 groups of E_{y_hat ~ prod_i p_i}[cost(y_hat)] = sum over the 625 patterns of cost * prod_i p_i(y_hat_i), p = softmax(student logits); exact, differentiable through all four windows"
+    coefficient: "lambda = 1.0, fixed once; no data-dependent scaling"
+    approximations: "independent per-window sampling stands for B3's smoothing, hysteresis and NMS; request windows (0.5 s) stand for samples; groups of 4 plus 2 pads stand for whole sequences; segment labels are run classes, not B3's mean-probability labels"
+    labels: "labels define truth runs, pads and groups only; inference reads no label, boundary, source, join or purity input"
+  loss: "L = mean CE + mean KL(own A08 || student) + lambda * L_seg"
+  training: "Seg_s0, Seg_s2: 1,350 updates, warm-up 135, encoder incl. projection 1e-5 frozen for u < 135 then warm-up/cosine, marker/classifier 1e-4, unused head group kept, weight decay 1e-4, clip 1; torch.manual_seed(seed) and CUDA seed as A10; final weights only"
+  checks: "configuration committed before any output; cost recomputed by an independent loop and by echo_routing's segment_f1 on enumerated patterns; small examples (an interior flip costs more than a boundary shift with the same wrong-window count; A-B-A output costs > 0 under A-A-A truth and 0 under A-B-A truth; A24's constant-offset example gives a non-zero risk change); autograd against finite differences; groups and pads legal; lambda = 0 path reproduces A10 R_s0's logged losses over updates 0-136 within 1e-4 (and R_s2's first updates); teacher cached-online parity; optimiser binding, encoder freeze/unfreeze, real gradients; 3 + 3 resume against 6; L_seg size and gradient norm against CE + KL disclosed; timing and budget with evaluation and seed 1 reserved"
+  evaluation:
+    primary: "Seg@A08 and the control R@A08 at each seed's committed A08 B3 numeric setting"
+    comparisons: "Seg - R (the risk term); Seg - Base; R - Base (the common continuation); Seg against A14 P (seeds 0/2) and A20 H@A08"
+    sensitivity: "one own-calibration choice per new model (standard 40 settings) and argmax; R's own committed choice as its sensitivity row; final weights sha and all choices committed (git object checked) before selection or the check pool is read; never used for promotion"
+    check_pool: "A15's 600 multi + 200 native once after the commits; A08 and R from A19's pinned pool logits and rows"
+    rows: "multi segment F1@50, native macro-F1, both A4C/A5C directions, boundary recall/precision, FP / short FP, FN / missed short true, recovered / lost matched segments; window groups and A24's fixed flip diagnostics (new pure flips, wrong windows within 8 samples of a true change and farther)"
+  promotion_rule:
+    applies_to: "Seg@A08 against each seed's A08 + B3 over the 4 cells"
+    signal: "mean dF >= +0.003"
+    no_reversal: "each half's two-seed mean >= -0.005 and no cell < -0.015"
+    no_harm: "mean native macro-F1 difference >= -0.003, mean boundary recall difference >= -0.010, missed short true segments <= Base's + 3"
+    feasibility: "each seed's primary calibration row meets native >= 0.980 and multi boundary recall >= 0.95"
+    decision: "if met, Seg_s1 by the same recipe (control A18 R_s1 reused), its choices committed before its selection; otherwise A25 closes with two seeds and no coefficient, cost, group, data, input, teacher or schedule variant"
+    reading: "a mechanism gain needs Seg - R evidence that removes short false segments without a matching loss of true or short true segments; fewer cuts alone is not success"
+  budget:
+    gpu_hours_max: 6.0
+    cpu_hours_max: 4.0             # agent active wall clock and decode/evaluation workers outside GPU time; GPU-job loaders not double-booked
+    ledger: runs/video_segment_risk_v1/ledger.jsonl
+  outputs:
+    root: runs/video_segment_risk_v1
+    checkpoints: checkpoints/video_segment_risk_v1
+    frozen: models_frozen/video_segment_risk_v1/Seg_s{seed}
+    results_dir: docs/results/2026-10-23_segment_risk
