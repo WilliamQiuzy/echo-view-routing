@@ -1,0 +1,58 @@
+{
+ "config_sha256": "d480dc7c63c566f8128a7d2a89fd2d740540ba48e2f905e3a47a5715fc8262ff",
+ "unit_tests": {
+  "test_build_intervals_majority_and_ties": true,
+  "test_equal_predictions_give_equal_ce": true,
+  "test_gradients_only_in_head": true,
+  "test_interval_rows_uneven_and_short": true,
+  "test_objectives_match_numpy_and_differ": true,
+  "test_relabel_merges_and_reproduces_base": true
+ },
+ "s0": {
+  "copied_head_logits_max_abs": 5.7220458984375e-06,
+  "copied_head_argmax_agreement": 1.0,
+  "zero_update_pool_sequences_equal_base": 3187,
+  "pool_sequences": 3187,
+  "resume_params_max_abs": 0.0,
+  "original_q_unchanged": true,
+  "trainable_parameters": 2565,
+  "optimiser_parameters": 2565,
+  "seconds_per_update": 0.0012914180755615235
+ },
+ "s2": {
+  "copied_head_logits_max_abs": 5.245208740234375e-06,
+  "copied_head_argmax_agreement": 1.0,
+  "zero_update_pool_sequences_equal_base": 3187,
+  "pool_sequences": 3187,
+  "resume_params_max_abs": 0.0,
+  "original_q_unchanged": true,
+  "trainable_parameters": 2565,
+  "optimiser_parameters": 2565,
+  "seconds_per_update": 0.0012944412231445312
+ },
+ "development_zero_update": {
+  "selection": {
+   "0": {
+    "rows_equal_base": true,
+    "labels_equal_base": true
+   },
+   "2": {
+    "rows_equal_base": true,
+    "labels_equal_base": true
+   }
+  },
+  "calibration": {
+   "0": {
+    "rows_equal_base": true,
+    "labels_equal_base": true
+   },
+   "2": {
+    "rows_equal_base": true,
+    "labels_equal_base": true
+   }
+  },
+  "ok": true
+ },
+ "ok": true,
+ "finished": "2026-10-23T19:02:02Z"
+}
