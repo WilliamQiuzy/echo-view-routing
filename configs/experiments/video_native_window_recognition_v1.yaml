@@ -1,0 +1,52 @@
+# A29, interval recognition on A08's native request windows with a frozen against an adapted representation
+# (video_native_window_recognition_v1), 2026-10-24 UTC. One-page protocol committed before any A29 output. Task sheet:
+# claude_prompts/2026-10-24-native-window-recognition-training.md (sha256 97a5f426).
+# Question: keeping A08's own 16-frame, 10 Hz request windows and the nearest-centre pooling of their probabilities inside
+# each Base run (zero update = Base exactly), does adapting the recognition branch's last block, norm and projection (T)
+# classify the runs better than the frozen representation (F), and does that improve full segmentation?
+# Predecessors and differences: A27 trained a linear head on these pooled windows with an own-A08 KL (barely moved labels);
+# A28 adapted the same modules on a single evenly spaced clip per run (Init already below Base; no adaptation effect);
+# A20 hard-window replay, A22 short-support frames and A25 a four-window expected-error surrogate were shared-trunk changes;
+# R06 a frozen against last-block span classifier on the E1 image encoder. A29 restores A08's input and readout, drops the KL
+# for both arms and isolates representation adaptation as T - F. No new clip rule, sampling, decoder or teacher. Causes of
+# A27/A28 are not presumed. Development halves are reused exploratory feedback; the A15 check pool's recordings trained the
+# encoder (not a holdout); test and Pediatric are not read.
+experiment: video_native_window_recognition_v1
+
+video_native_window_recognition:
+  id: A29
+  pinned:
+    A08_weights: {0: 9b144925f32fac7d725d13231a132abeb6635fa44b6fe0dbcec7f5b59d035bbc, 2: f95fed7ba78cc0b5e2474c71a156356507b4588a4b324957fd5b53fe66ee8472}
+    A08_choices: {path: docs/results/2026-10-16_video_within_view/choices.json, sha256: b2a731e5f4393187ee9954f710821ac04938652f0a7d00e0381ad0b8b21cf27e}
+    A27_config: {path: configs/experiments/video_interval_recognition_v1.yaml, sha256: d480dc7c63c566f8128a7d2a89fd2d740540ba48e2f905e3a47a5715fc8262ff}
+    A27_intervals: {0: 6409f64a4776e55312181676de6cddfa5f83eed35cce3bae41e5de62197819c9, 2: 5d31723194a780380e8db1c9b46d9e5781634bc988df53e6b82e030d6150b718}
+    A27_intervals_path: runs/video_interval_recognition_v1/data/intervals_s{seed}.npz
+    sources: "A15 pool (pool manifest 5ab124d4; windows/preds s0 2a6b53ae / 848c4c91, s2 c21becbd / af5a489b) through A27's pins; A13 development caches through A27's pins; A19 check rows through A27's pins"
+  arms:
+    F: "independent copy of A08 all_s{k}; trains only the copied classifier (2,565 parameters) on the verified A15 / A13 cached 512-d window embeddings"
+    T: "the same copy; additionally trains encoder.blocks.15, encoder.norm and encoder.head.1 (7,497,989 trainable with the classifier) through the real request windows; earlier blocks, conv_proj, pos_encoding and marker stem frozen"
+    mode: "both arms in eval mode; gradients only on the listed parameters; the original A08 + B3 path never reads updated tensors"
+  windows: "A15's request windows exactly: stride-5 targets over the whole stream, 16 frames at 10 Hz, A08's marker, numeric frame order, gamma and preprocessing; samples map to their nearest request centre (no clamping to reference boundaries; short runs keep their mapped windows)"
+  intervals: "A27's pinned T (reference runs) and P (seed's Base runs, majority reference label, ties to the smallest class) with their multiplicity weights; A27's 1,350 x (16 T + 16 P) batches"
+  objective: "both arms: mean_j -log(sum_t w_jt softmax(z_t)[y_j]) by logsumexp; no KL, no teacher, no relation term"
+  prefix_cache: "T only: per seed, the frozen prefix (conv_proj + marker, positional encoding, blocks 0-14) of every training window, fp32, own cache key; verified window by window (cached prefix + original suffix reproduces A15's logits and argmax); one seed at a time, deleted after its training and readout"
+  training: "1,350 optimizer updates; AdamW weight decay 1e-4, betas (0.9, 0.999), eps 1e-8; classifier lr 1e-4, T representation lr 1e-5; warm-up 135 then cosine (lr_factor); clip 1 over all trainable parameters; duplicate windows of a batch computed once; final weights only; seeds 0 and 2"
+  monitoring: "training data only, fixed before training: all Base-wrong P runs and a fixed sample of 1,000 Base-correct P runs (default_rng([20261024, 29, seed])); CE, true-class margin, fixed / broken at updates 0, 270, 540, 810, 1080 and 1350; split pure / mixed and single / multi recording; final full T / P readout"
+  deployment: "original q gives the Base + B3 runs; the arm's per-sample probabilities (same nearest-centre mapping) are averaged inside each run; argmax; equal neighbours merge; complete sequences scored; Init = zero update = Base"
+  checks: "configuration first; Base four rows; zero-update F and T logits / probabilities against original q, exact argmax, sample labels, run labels and Base results on the pool and the four cells; window pixels, marker and boundaries; multiplicity, short runs, repeated requests, cross-recording runs, merging; pooled CE against numpy; whole-batch against microbatch-accumulated gradients; T at representation lr 0 equals F; optimizer binding and frozen-component hashes; resume; original q unchanged; timing and budget"
+  evaluation:
+    sets: "selection and calibration halves and the A15 check pool (600 multi + 200 native) once per frozen model, after the final weights are committed"
+    rows: "Base (= Init), F, T: fixed Base-run five-class accuracy, A4C/A5C, fixed / broken with recording and session counts; multi segment F1@50, native macro-F1, boundary P/R, FP / short FP, FN / missed short true (<= 16), recovered / lost segments; the same run-level readouts on the training pool; A27/A28/A14/A20 stored rows only as context"
+    comparisons: "T - F (attribution needs the same sign on both halves and check with paired evidence); F - Base; T - Base"
+  gate:
+    applies_to: "F and T separately against Base over the four development cells"
+    rule: "mean dF >= +0.003 (unrounded); each half's two-seed mean >= -0.005; no cell < -0.015; mean native difference >= -0.003; mean boundary-recall difference >= -0.010; missed short true summed over the four cells <= Base's + 3; each seed's calibration native >= 0.980 and multi boundary recall >= 0.95; selection native 0.973 reported separately"
+    decision: "if either arm passes, both arms at seed 1 by the same recipe (fresh A08 s1 pass for Base and the prefix cache, budget reserved); otherwise A29 closes with two seeds and no variant"
+  budget:
+    gpu_hours_max: 6.0
+    cpu_hours_max: 3.0
+    ledger: runs/video_native_window_recognition_v1/ledger.jsonl
+  outputs:
+    root: runs/video_native_window_recognition_v1
+    frozen: models_frozen/video_native_window_recognition_v1/{F,T}_s{seed}
+    results_dir: docs/results/2026-10-24_native_window_recognition
