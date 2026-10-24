@@ -161,9 +161,47 @@ def monitor(ctx: Ctx, s: int) -> dict:
 
 
 # ----------------------------------------------------------------------------------------------- prefix cache (T)
+def prefix_code_digest() -> str:
+    """The code that determines the cache content: the prefix forward, the model, and the cache builder / window rebuild."""
+    import inspect
+    h = hashlib.sha256()
+    for p in (Path(ic.__file__), Path(tm.__file__)):
+        h.update(Path(p).read_bytes())
+    for f in (build_cache, pool_windows):
+        h.update(inspect.getsource(f).encode())
+    return h.hexdigest()
+
+
 def cache_key(ctx: Ctx, s: int) -> str:
-    return hashlib.sha256(json.dumps({"a08": ctx.pin["A08_weights"][s], "rows": prep_rec(ctx, s)["cache_rows_sha256"], "pool": "5ab124d4", "code": code_digest(), "precision": "fp32 eval",
+    return hashlib.sha256(json.dumps({"a08": ctx.pin["A08_weights"][s], "rows": prep_rec(ctx, s)["cache_rows_sha256"], "pool": "5ab124d4", "code": prefix_code_digest(), "precision": "fp32 eval",
                                       "layer": "input of encoder.blocks.15"}, sort_keys=True).encode()).hexdigest()
+
+
+def restamp(ctx: Ctx, s: int, device, workers: int) -> None:
+    """One-time re-key of a cache built before the key covered only the prefix-determining code: an online spot check of
+    64 random cached windows, then the new key with the previous one and the reason kept in the record."""
+    t0, started, ok, note = time.time(), now(), False, ""
+    try:
+        cdir = ctx.out / "cache"; rec = json.loads((cdir / f"prefix_s{s}.json").read_text()); P = ctx.a27.pool(); rows = cache_rows(ctx, s); mm = np.load(cdir / f"prefix_s{s}.npy", mmap_mode="r")
+        pick = np.sort(np.random.default_rng([20261024, 29, 99, s]).choice(rows.size, size=64, replace=False)); m = ic.branch(ctx.a08(s, device), True); fit = bc.members(P, "large"); err = rel = lerr = 0.0
+        seq_of = P["W"]["seq"]; fp = t28.frame_paths(P["seqs"])
+        for ci in pick:
+            g = int(rows[ci]); qi = int(seq_of[g]); W, refs, first = pool_windows(P, [qi]); k = g - first; frames = rr.decode_frames(refs, fp, 0)
+            with torch.no_grad():
+                x, _ = ic.prefix(m, tm.to_rgb(torch.from_numpy(frames[W["ref"][[k]]]).to(device)), tm.marker_planes(torch.from_numpy(W["marker"][[k]]).long().to(device)))
+                c = torch.from_numpy(np.array(mm[ci:ci + 1])).to(device); z_on, z_ca = t_forward(m, x, device), t_forward(m, c, device)
+            err = max(err, float(np.abs(x.float().cpu().numpy()[0] - mm[ci]).max())); rel = max(rel, err / float(np.abs(mm[ci]).max())); lerr = max(lerr, float((z_on - z_ca).abs().max()))
+        _ = fit
+        if rel > 1e-5 or lerr > 1e-4:
+            raise SystemExit(f"cached prefix differs from the online prefix (relative {rel}, logits {lerr})")
+        rec.update({"restamped": {"previous_key": rec["key"], "reason": "the first key hashed the whole trainer file; an unrelated edit (the block-15 token grid in t_forward) changed it",
+                                  "spot_check_windows": 64, "spot_check_tokens_max_abs": err, "spot_check_tokens_relative": rel, "spot_check_logits_max_abs": lerr,
+                                  "note": "batch-size-dependent GPU kernels: the cache was built in batches of 32, the spot check runs batches of 1", "time": now()}, "key": cache_key(ctx, s)})
+        write_json(cdir / f"prefix_s{s}.json", rec); print(json.dumps(rec["restamped"]), flush=True); ok = True; note = f"spot check relative {rel:.2e}, logits {lerr:.2e}"
+    except BaseException as e:  # noqa: BLE001 - recorded, then raised again
+        note = f"{type(e).__name__}: {str(e)[:200]}"; raise
+    finally:
+        ledger_append(ctx.ledger, f"restamp prefix cache seed {s} (GPU job wall time)", "gpu", started, time.time() - t0, ok, note)
 
 
 def pool_windows(P: dict, seqs_idx: list[int]) -> tuple[dict, list, int]:
@@ -259,8 +297,20 @@ def f_step(head, opt, emb: torch.Tensor, I: dict, u: int) -> dict:
     opt.zero_grad(set_to_none=True); loss.backward(); gn = float(torch.nn.utils.clip_grad_norm_(head.parameters(), CLIP)); opt.step(); return {"u": int(u), "loss": float(loss.detach()), "grad_norm": gn}
 
 
+_THW: dict = {}
+
+
+def block15_thw(m, device) -> tuple:
+    """The token grid at the last block's input (after the pooling stages), read once from the model itself."""
+    if "thw" not in _THW:
+        with torch.no_grad():
+            _, thw = ic.prefix(m, torch.zeros(1, 3, 16, 224, 224, device=device), tm.marker_planes(torch.tensor([8], device=device)))
+        _THW["thw"] = tuple(int(x) for x in thw)
+    return _THW["thw"]
+
+
 def t_forward(m, tok: torch.Tensor, device) -> torch.Tensor:
-    thw = (m.encoder.pos_encoding.temporal_size,) + m.encoder.pos_encoding.spatial_size; return m.classifier(ic.suffix(m, tok.to(device, non_blocking=True), thw))
+    return m.classifier(ic.suffix(m, tok.to(device, non_blocking=True), block15_thw(m, device)))
 
 
 def t_step(m, opt, item, device, micro: int | None = None) -> dict:
@@ -568,15 +618,15 @@ def gate(rows: dict, counts: dict) -> dict:
 
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--config", required=True); ap.add_argument("--stage", choices=("prepare", "cache", "check", "train", "freeze", "evaluate"), required=True)
+    ap.add_argument("--config", required=True); ap.add_argument("--stage", choices=("prepare", "cache", "restamp", "check", "train", "freeze", "evaluate"), required=True)
     ap.add_argument("--seeds", nargs="+", type=int, default=list(SEEDS)); ap.add_argument("--workers", type=int, default=6)
     a = ap.parse_args(); a.set = []; ctx = Ctx(load_cfg(a), a.config)
     if a.stage in ("prepare", "freeze"):
         return prepare(ctx) if a.stage == "prepare" else freeze(ctx, a.seeds)
     vsh.determinism(); device = torch.device("cuda")
-    if a.stage == "cache":
+    if a.stage in ("cache", "restamp"):
         for s in a.seeds:
-            build_cache(ctx, s, device, a.workers)
+            (build_cache if a.stage == "cache" else restamp)(ctx, s, device, a.workers)
         return
     {"check": lambda: check(ctx, device, a.workers), "train": lambda: train(ctx, a.seeds, device, a.workers), "evaluate": lambda: evaluate(ctx, a.seeds, device, a.workers)}[a.stage]()
 

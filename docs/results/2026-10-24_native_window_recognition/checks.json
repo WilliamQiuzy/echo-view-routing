@@ -1,0 +1,98 @@
+{
+ "config_sha256": "76ca0246d954d92390fb123019c339da02a389ec1fc4ecd49a4dd445dcfecb81",
+ "prefix_cache": {
+  "windows": 49654,
+  "logits_max_abs_against_A15": 1.430511474609375e-06,
+  "argmax_mismatches": 0,
+  "file_bytes": 59947075712
+ },
+ "windows": {
+  "first_window_samples": [
+   0,
+   1,
+   2,
+   3,
+   4,
+   5,
+   6,
+   7,
+   8,
+   9,
+   10,
+   11,
+   12,
+   13,
+   14,
+   15
+  ],
+  "marker": 2,
+  "frames_from_refs": true
+ },
+ "zero_update": {
+  "F_logits_max_abs": 5.7220458984375e-06,
+  "T_logits_max_abs": 4.291534423828125e-06,
+  "F_argmax_equal": true,
+  "T_argmax_equal": true,
+  "F_run_labels_equal_base": true,
+  "T_run_labels_equal_base": true,
+  "F_pool_sequences_equal_base": 3187,
+  "pool_sequences": 3187
+ },
+ "base_rows_and_dev_zero_update": {
+  "selection": {
+   "0": {
+    "rows_equal_base": true,
+    "labels_equal_base": true
+   },
+   "2": {
+    "rows_equal_base": true,
+    "labels_equal_base": true
+   }
+  },
+  "calibration": {
+   "0": {
+    "rows_equal_base": true,
+    "labels_equal_base": true
+   },
+   "2": {
+    "rows_equal_base": true,
+    "labels_equal_base": true
+   }
+  },
+  "ok": true
+ },
+ "pooled_ce_against_numpy_max_abs": 2.220446049250313e-16,
+ "microbatch_grad_max_abs": 9.592622518539429e-08,
+ "grad_max": 0.06668698787689209,
+ "grads_only_trainable": true,
+ "forced_equal": {
+  "classifier_max_abs": 3.1758099794387817e-06,
+  "classifier_moved_max_abs": 0.0009985202923417091,
+  "representation_unchanged": true,
+  "prefix_unchanged": true
+ },
+ "resume_params_max_abs": 0.0,
+ "trainable": {
+  "parameters": 7497989,
+  "binds_exactly": true
+ },
+ "timing": {
+  "T_seconds_per_update_wall": 0.5508380572001139,
+  "prefix_cache_gpu_hours_seed0": 0.21092009941736858
+ },
+ "budget": {
+  "gpu_spent_incl_this_check": 0.4187404226594501,
+  "projection_two_seeds": 1.3756620798895094,
+  "parts": {
+   "remaining_prefix_caches": 0.24255811432997385,
+   "T_training": 0.41312854290008544,
+   "T_evaluation_online": 0.30123500000000003
+  },
+  "seed1_reserve": 0.9497398857800166,
+  "cap": 6.0,
+  "fits_with_seed1": true
+ },
+ "a08_file_unchanged": true,
+ "ok": true,
+ "finished": "2026-10-24T05:12:55Z"
+}
