@@ -1,0 +1,53 @@
+# A31, session-held-out interval recognition correction (video_session_correction_v1), 2026-10-24 UTC.
+# Protocol, budget and data rules committed before any A31 split, pool, statistic or output. Task sheet:
+# claude_prompts/2026-10-24-session-heldout-recognition-correction.md (sha256 8bf0900c).
+# Question: does error-focused interval sampling (E) give more net correction than uniform sampling (U) on source sessions
+# that took no part in this correction training, while keeping full segmentation? F (frozen representation, head only)
+# and T (also block 15 / norm / projection) are matched controls. Predecessors: A20 constrained hard-position window replay
+# (closed; H and U mostly identical); A27-A29 recognition branches on the full pool barely changed confident errors; A30
+# (91341d2) found no direct input/label conflicts and fittable small groups with two-way bystander changes. A31 samples
+# Base-wrong runs for an independent recognition branch and reads held-out sessions; it does not presume dilution caused
+# A29. The original A08 trained on these recordings: this is a transfer check of the correction branch, not a holdout.
+experiment: video_session_correction_v1
+
+video_session_correction:
+  id: A31
+  sources: "protocol-train clips of A15's large-fit sessions (A15 pools(): sessions outside A15's check set); A08 all_s{0,2} (9b144925 / f95fed7b) and A08's committed B3 numbers (b2a731e5); A15 builder parameters (A01 recipes / multi settings); no development, check, test or Pediatric data"
+  split:
+    folds: 2
+    rule: "sessions (session_of) sorted, permuted by numpy default_rng([20261024, 31, k]) with k = 0, assigned alternately to folds 0 / 1; all recordings of a session share a fold"
+    coverage: "every fold must hold >= 20 native-eligible clips of each of the five classes; otherwise k = 1, 2, ... in order (recorded); never chosen by Base errors or fit results"
+  pools:
+    natives: "A15's native rule inside each fold: per class at most 200 clips, at most 2 per session, default_rng([20261024, 31, fold, 4])"
+    multi: "A15's stream builder inside each fold's clips: 600 streams, make_multi_recipes with A15's n_fragments, edit variant, edit_prob, min/max length, reuse and p_same_next, default_rng([20261024, 31, fold, 2])"
+    isolation: "sessions, recordings and complete 16-reference + marker window identities disjoint between folds; all denominators, failures and drops kept; maps and ids stay on the server"
+    fixed: "the same two pools for every seed and arm; manifests and batch plans recorded with sha256 before training"
+  base_and_intervals: "per seed, A08 all_s{k} over each pool's request windows (stride 5, 16 frames at 10 Hz, marker, gamma, A08 preprocessing) gives logits, 512-d embeddings and, for T, the frozen prefix (input of encoder.blocks.15); Base = B3 at A08's committed setting; T = reference constant-class runs; P = Base runs labelled by the majority reference class (ties to the smallest); multiplicity weights by the nearest-centre mapping; public labels unchanged"
+  arms:
+    F_U: "copied classifier (2,565) on the cached embeddings; uniform P batches"
+    F_E: "copied classifier; error-focused P batches"
+    T_U: "also encoder.blocks.15, encoder.norm, encoder.head.1 (nominal 7,497,989; 6,528 of them, block 15's rel_pos_h/w/t and pool_q, get structurally zero gradient through the class-token readout: 7,491,461 effective); uniform P"
+    T_E: "the same trainable set; error-focused P"
+    common: "copies of the original A08 all_s{k}; eval-mode forwards; all original windows and multiplicities; pooled-probability CE; no KL, teacher, extra loss or augmentation; the original A08 + B3 path never changes"
+  batches:
+    T_part: "16 runs per update, uniform with replacement from the fit fold's T list, default_rng([20261024, 31, seed, fold, 0]); identical for all four arms"
+    U: "16 P runs uniform with replacement from the fit fold's P list, default_rng([20261024, 31, seed, fold, 1])"
+    E: "8 Base-wrong and 8 Base-correct P runs, each uniform with replacement from the fit fold's static sets, default_rng([20261024, 31, seed, fold, 2]); held-out labels and outputs never used"
+    shared: "F and T use exactly the same batches within a sampling arm; the error share, class / length / session frequencies and the fraction of updates where U and E P batches differ are reported"
+  training: "1,350 updates per model; AdamW weight decay 1e-4, betas (0.9, 0.999), eps 1e-8; classifier lr 1e-3, T representation lr 1e-4; linear warm-up 135 then cosine (lr_factor); clip 1 over all trainable parameters; duplicate windows of a batch computed once; final weights only; F on CPU, T on GPU from one shared frozen-prefix cache per seed (both folds, all arms), seeds run in series and each cache deleted after its seed"
+  schedule_fallback: "if the check's engineering timing projects the full 2 folds x 2 seeds x 4 arms over the GPU cap, all models are shortened together to the largest common update count that fits (warm-up and cosine rescaled proportionally), fixed and committed before formal training; never changed after a readout"
+  checks: "full input identities and fold isolation; A08 file hashes; cached prefix + original suffix against the full forward (logits, argmax) and against A15's cached logits on identical window identities; zero-update F and T run labels and merged sequences equal Base; pooled CE against numpy; whole-batch against microbatch gradients; optimizer binding, non-zero gradients and real updates; frozen parts unchanged; 3 + 3 resume; block-15 grid (8, 7, 7); cache keys over content-determining code; the GPU visibility of the A27 CPU trainer import handled in this process only; no development data as parity data"
+  readout:
+    order: "each model's final weights and sha256 committed before its held-out fold is read; training monitors the fit fold only"
+    primary: "all P runs of the held-out pool at their real proportions: Base-wrong total / fixed, Base-correct total / broken, net fixed, accuracy difference, fix rate, damage rate; A4C->A5C and A5C->A4C, five classes, native / multi, pure / mixed, short (<= 16) / long; recording and session denominators; balanced subsets only as illustration"
+    full_sequence: "frozen B3 runs relabelled by the arm, equal neighbours merged, complete sequences scored: multi segment F1@50, native macro-F1, A4C/A5C, FP / short FP, FN / missed short true, boundary P/R, recovered / lost; no decoder calibration"
+    comparisons: "E - U within each representation (primary); T - F within each sampling; each arm - Base; per fold and seed, and out-of-fold sums over both held-out folds per seed with full denominators"
+    uncertainty: "case resampling: run-level differences by a percentile bootstrap over each run's majority-recording session (2,000 draws), with the effective session count reported; streams share sessions, so segment-level differences get point estimates only; source A08 seed reported separately; stream regeneration not assessed (one generation)"
+  budget:
+    gpu_hours_max: 8.0
+    cpu_hours_max: 4.0
+    ledger: runs/video_session_correction_v1/ledger.jsonl
+  outputs:
+    root: runs/video_session_correction_v1
+    results_dir: docs/results/2026-10-24_session_correction
+    weights: "runs/video_session_correction_v1/train/{arm}_s{seed}_f{fold}/final.pt (cross-fit models, sha recorded; not candidates)"
