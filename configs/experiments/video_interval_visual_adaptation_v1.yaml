@@ -1,0 +1,58 @@
+# A28, interval recognition with a frozen against an adapted video representation (video_interval_visual_adaptation_v1),
+# 2026-10-24 UTC. One-page protocol committed before any A28 training data, pixels or output. Task sheet:
+# claude_prompts/2026-10-23-video-recognition-finetune.md (sha256 d7046d17).
+# Question: with the same video evidence from inside each interval, does letting the recognition branch's video
+# representation adapt classify intervals better than the frozen representation, and does it improve the final full
+# segmentation? The original A08 + B3 cut path is kept unchanged; the recognition branch is an independent copy.
+# Predecessors: R06 (frozen against last-block span classification on the E1 image encoder, A4C/A5C only: neither improved);
+# A27 (a head on A15's frozen window embeddings with a retention KL: barely changed labels; its causes not established);
+# A09-R1/A11/A13/A22-A25 (shared-trunk continuations: local recognition gains without full-segmentation gains). A28 is new in
+# its interval clip input (one 16-frame clip per interval, five classes), a separate branch and a matched frozen control.
+# Plain interval CE without KL is shared by both arms; differences to A27 are not attributable to removing KL or to adaptation.
+# Development halves are reused exploratory feedback; the A15 check pool's recordings trained the encoder (not a holdout);
+# test and Pediatric are not read.
+experiment: video_interval_visual_adaptation_v1
+
+video_interval_visual_adaptation:
+  id: A28
+  pinned:
+    A08_weights: {0: 9b144925f32fac7d725d13231a132abeb6635fa44b6fe0dbcec7f5b59d035bbc, 2: f95fed7ba78cc0b5e2474c71a156356507b4588a4b324957fd5b53fe66ee8472}
+    A08_choices: {path: docs/results/2026-10-16_video_within_view/choices.json, sha256: b2a731e5f4393187ee9954f710821ac04938652f0a7d00e0381ad0b8b21cf27e}
+    A27_config: {path: configs/experiments/video_interval_recognition_v1.yaml, sha256: d480dc7c63c566f8128a7d2a89fd2d740540ba48e2f905e3a47a5715fc8262ff}
+    A27_intervals: {0: 6409f64a4776e55312181676de6cddfa5f83eed35cce3bae41e5de62197819c9, 2: 5d31723194a780380e8db1c9b46d9e5781634bc988df53e6b82e030d6150b718, path: "runs/video_interval_recognition_v1/data/intervals_s{seed}.npz (T/P lists and the 1,350 x (16 T + 16 P) batches)"}
+    sources: "A15 pool (A27's pins: pool manifest 5ab124d4, windows/preds s0/s2) for training and check; A13 development caches (A27's pins) for Base on the halves"
+  arms:
+    Frozen: "independent copy of A08 all_s{k}; encoder, marker and projection frozen; trains only the copied classifier (2,565 parameters)"
+    Adapted: "the same copy; additionally trains encoder.blocks.15 (last MultiscaleBlock, 7,100,160), encoder.norm (1,536) and encoder.head.1 (768->512 projection, 393,728): 7,497,989 trainable with the classifier; earlier blocks, conv_proj, pos_encoding and marker stem frozen"
+    mode: "both arms run the branch in eval mode (dropout off); gradients only on the listed parameters"
+    original: "the original A08 parameters, probabilities, request windows and committed B3 numbers are never updated"
+  clip:
+    rule: "interval [a, b), L = b - a >= 1: slot k (0..15) shows sample a + floor((2k + 1) L / 32); long intervals are covered evenly, short ones repeat samples in time order; every request lies inside the interval"
+    marker: "target sample s[8]; marker slot = tm.marker_slot(s, s[8]) (the middle slot among those showing it)"
+    pixels: "each slot's own (recording, frame, gamma) reference, loaded with A08's load_frame_u8 preprocessing; an unreadable frame aborts the stage (nothing dropped)"
+    identity: "new interval-clip outputs carry their own cache key; A15's window embeddings are never used as clip inputs"
+  data:
+    intervals: "A27's T (reference constant-class runs) and P (seed's Base runs, majority reference label, ties to the smallest class) on A15's large fit pool, rebuilt with their sample ranges and checked equal to A27's lists; mixed P kept"
+    batches: "A27's pre-generated 1,350 x (16 T + 16 P) indices, identical for both arms"
+  objective: "mean over the 32 intervals of five-class CE on the clip's logits; no KL, no teacher"
+  training: "1,350 optimizer updates, AdamW weight decay 1e-4, betas (0.9, 0.999), eps 1e-8; classifier lr 1e-4, Adapted representation lr 1e-5; linear warm-up 135 then cosine (lr_factor); clip 1 over all trainable parameters; final weights only; seeds 0 and 2; the Frozen arm may train on its cached frozen clip embeddings (checked equal to the online path)"
+  deployment: "original A08 + B3 labels at the committed numeric setting; each Base run gets one clip and one branch forward; it takes the argmax class; adjacent equal classes merge; complete sequences are scored"
+  references: "Base (A08 + B3); Init (new clips, untrained copy; equals Frozen and Adapted at zero updates); Frozen; Adapted; stored A27 W/I, A14 P and A20 H@A08 rows as context"
+  checks: "configuration committed first; clip rule cases (L = 1, 10, 16, 40, ends, a run crossing a join); pixels equal A08's decode; split prefix/suffix forward equals the full forward; Base rows reproduced and A08 file unchanged; trainable names/counts and optimizer binding; frozen prefix unchanged after training; forced-equal (representation lr 0) Adapted path equals Frozen; 3 + 3 resume = 6; small fixed-batch sanity that both arms learn; timing and budget projection"
+  evaluation:
+    sets: "selection and calibration halves and the A15 check pool (600 multi + 200 native) once per frozen model, after the final weights are committed"
+    rows: "Base-interval five-class accuracy, A4C/A5C both directions, fixed / broken intervals with recording and session counts; multi segment F1@50, native macro-F1, boundary P/R, FP / short FP, FN / missed short true (<= 16), recovered / lost segments; parameters, forwards and time"
+    comparisons: "Adapted - Frozen (attribution needs the same sign on both halves and check, with paired intervals); Frozen - Base, Adapted - Base, Frozen - Init, Adapted - Init"
+    training_readout: "training pool only: interval accuracy, fixed / broken against Base, CE and update size"
+  gate:
+    applies_to: "Frozen and Adapted separately against Base over the four development cells"
+    rule: "mean dF >= +0.003 (unrounded); each half's two-seed mean >= -0.005; no cell < -0.015; mean native difference >= -0.003; mean boundary-recall difference >= -0.010; missed short true summed over the four cells <= Base's + 3; each seed's calibration native >= 0.980 and multi boundary recall >= 0.95; selection native 0.973 reported separately"
+    decision: "if either arm passes, both arms at seed 1 by the same recipe (fresh A08 s1 Base on the pool and halves, budget reserved); otherwise A28 closes with two seeds and no variant"
+  budget:
+    gpu_hours_max: 6.0
+    cpu_hours_max: 3.0
+    ledger: runs/video_interval_visual_adaptation_v1/ledger.jsonl
+  outputs:
+    root: runs/video_interval_visual_adaptation_v1
+    frozen: models_frozen/video_interval_visual_adaptation_v1/{Frozen,Adapted}_s{seed}
+    results_dir: docs/results/2026-10-24_interval_visual_adaptation
