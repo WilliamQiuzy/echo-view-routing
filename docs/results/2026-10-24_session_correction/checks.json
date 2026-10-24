@@ -1,0 +1,65 @@
+{
+ "config_sha256": "be88c5885ed13d6c4c660de729ea778fe357617747283b4d069f30d737443c8b",
+ "parity": {
+  "0": {
+   "full_forward_vs_cached_logits_max_abs (64 windows)": 2.86102294921875e-06,
+   "argmax_mismatches": 0,
+   "F_zero_update_logits_max_abs": 5.245208740234375e-06,
+   "T_zero_update_logits_max_abs (2,000 windows)": 3.337860107421875e-06,
+   "F_zero_update_sequences_equal_base": true
+  },
+  "1": {
+   "full_forward_vs_cached_logits_max_abs (64 windows)": 2.86102294921875e-06,
+   "argmax_mismatches": 0,
+   "F_zero_update_logits_max_abs": 4.76837158203125e-06,
+   "T_zero_update_logits_max_abs (2,000 windows)": 3.814697265625e-06,
+   "F_zero_update_sequences_equal_base": true
+  }
+ },
+ "A15_parity_on_identical_native_windows": {
+  "windows": 6583,
+  "logits_max_abs": 1.430511474609375e-06
+ },
+ "pooled_ce_numpy_max_abs": 2.220446049250313e-16,
+ "microbatch_grad_max_abs": 1.043081283569336e-07,
+ "grad_max": 0.3084133267402649,
+ "zero_grad_tensors": [
+  "encoder.blocks.15.attn.pool_q.pool.weight",
+  "encoder.blocks.15.attn.rel_pos_h",
+  "encoder.blocks.15.attn.rel_pos_t",
+  "encoder.blocks.15.attn.rel_pos_w"
+ ],
+ "forced_equal": {
+  "classifier_max_abs": 6.334856152534485e-06,
+  "classifier_moved": 0.009674940258264542,
+  "representation_unchanged": true,
+  "prefix_unchanged": true
+ },
+ "resume_params_max_abs": 0.0,
+ "trainable": {
+  "nominal": 7497989,
+  "binds_exactly": true
+ },
+ "timing": {
+  "T_seconds_per_update_wall": 0.7635493675867716,
+  "seed0_pass_hours": 0.23026726881663004
+ },
+ "budget": {
+  "spent": 0.3319287317328983,
+  "projection": 3.1527968101041584,
+  "parts": {
+   "T_training_8_models": 2.290648102760315,
+   "seed2_pass_and_cache": 0.2959293089442783,
+   "readouts_T_8_models": 0.16714533333333334,
+   "fit_readouts": 0.06714533333333333
+  },
+  "cap": 8.0
+ },
+ "schedule_decision": {
+  "updates": 1350,
+  "warmup": 135,
+  "shortened": false
+ },
+ "ok": true,
+ "finished": "2026-10-24T18:02:27Z"
+}
