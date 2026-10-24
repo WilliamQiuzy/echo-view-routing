@@ -1,0 +1,38 @@
+# A30 (diagnostic), input/supervision conflict audit and small-group fit (post_a29_supervision_fit_diagnostic_v1), 2026-10-24 UTC.
+# Protocol committed before any A30 statistic, subset or output. Task sheet:
+# claude_prompts/2026-10-24-supervision-conflict-and-small-fit-diagnostic.md (sha256 471ac683). Diagnostic only: no new
+# segmentation candidate, no full-system gate, no seed 1, no development / check / test / Pediatric reading, no label change.
+# Question: (1) do the training inputs and supervision used by A27-A29 contain direct conflicts (identical weighted inputs
+# with different interval labels) or only shared-window tension; (2) can a fixed small group of A29's training P runs,
+# Base-wrong and Base-correct, be memorised by the frozen head (F) and by the last-block adaptation (T) under one fixed
+# strong fit setting? Neither answer is a generalisation result; neither failure proves label error or absent information.
+experiment: post_a29_supervision_fit_diagnostic_v1
+
+post_a29_supervision_fit_diagnostic:
+  id: A30
+  type: diagnostic
+  sources: "A15 large-fit pool and its cached A08 window logits / embeddings and Base predictions (A27 pins); A27 T/P lists and sample ranges (A28 rebuild, checked equal); A08 all_s{0,2} original weights (A29 pins); A29's verified prefix rule (input of encoder.blocks.15, post-pooling grid read from the model)"
+  stage1_audit:
+    window_identity: "ordered 16 (recording, frame index, gamma rounded to 6 decimals as decoded) of the request window plus its marker slot; preprocessing and code fixed (A08's load_frame_u8, numeric frame order); same centre frame with other context or marker is a different input"
+    interval_identity: "weighted input multiset: (window identity, count / interval length) as exact fractions, equal identities merged; label, T/P list, native / constructed source kept"
+    reports: "(a) shared windows supervised by intervals of different labels (tension); (b) identical weighted multisets with different labels (direct conflicts): label counts, sources, Base-wrong / correct P runs affected, recordings and sessions, unavoidable-error lower bound (group size - majority count) and empirical CE lower bound (label entropy), within this exact-identity definition only; (c) same centre-frame reference with different window identities (description only); error concentration of Base-wrong P runs: native / constructed, within one fragment / across a join, pure / mixed, single / multi recording, short (<= 16) / other, weight on windows whose target-sample label differs from the interval label"
+    scope: "reference-level audit of all fit windows; no pixel decoding in stage 1; identical pixels under different references and clinical label questions not excluded"
+  stage2_fit:
+    subset: "per A08 seed 0/2, from P runs outside every direct-conflict group: up to 16 Base-wrong and 16 Base-correct, numpy default_rng([20261024, 30, seed]) permutation; wrong picks prefer distinct sessions, then distinct recordings; each correct pick matches its wrong partner's true class and length bin (<= 16, 17-40, > 40 samples), preferring unused sessions, falling back to the class, then to any; shortfalls reported, no duplicates"
+    bystanders: "the same procedure for another 16 + 16 from the remaining runs, excluding any run sharing a window identity with the fit group; recording / session overlap recorded; description only (no holdout, no selection)"
+    manifests: "private subset and bystander manifests with sha256 frozen before fitting; pixel digests of their decoded windows checked"
+    arms:
+      F: "copied A08 classifier only (2,565), on the verified cached 512-d embeddings"
+      T: "also encoder.blocks.15, encoder.norm, encoder.head.1 (7,497,989) through a small prefix cache of the selected windows only"
+    setting: "eval-mode forwards; all original windows and multiplicities; pooled-probability CE; no KL, teacher or augmentation; AdamW head lr 1e-3, T representation lr 1e-4, weight decay 0, clip 1, constant learning rates, no warm-up; 1,000 full-group updates; final weights only; identical for F and T apart from the trainable set"
+    readouts: "at updates 0, 100, 300 and 1,000: overall / Base-wrong / Base-correct CE, accuracy, true-class margin (mean and worst), fixed / broken, gradient norm and parameter movement, for the fit group and the bystanders"
+    fitted: "final training accuracy 100% and mean CE <= 0.05; per-run learned flags and max CE reported; no extension or search if not met"
+    checks: "CPU fake case first; pixels / marker / cached logits against A08; pooled CE against numpy; parameter and optimizer binding; non-zero gradients and actual updates; frozen prefix and original path unchanged"
+  budget:
+    gpu_hours_max: 2.0
+    cpu_hours_max: 2.0
+    ledger: runs/post_a29_supervision_fit_diagnostic_v1/ledger.jsonl
+  outputs:
+    root: runs/post_a29_supervision_fit_diagnostic_v1
+    results_dir: docs/results/2026-10-24_supervision_fit_diagnostic
+    weights: "runs/post_a29_supervision_fit_diagnostic_v1/fit/ (diagnostic-only, not frozen as models)"
