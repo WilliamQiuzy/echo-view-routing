@@ -1,0 +1,97 @@
+{
+ "config_sha256": "b98da9aeb2f0c1bf40d9262c5a62f90dc892ee4b92ef313292f238ce1d613f7c",
+ "unit_tests": {
+  "test_branch_trainable_sets_and_split": true,
+  "test_clip_positions_cases": true
+ },
+ "clip": {
+  "all_positions_inside_their_interval": true,
+  "pixels_equal_A08_decode": true,
+  "join_crossing_example_recordings": 2,
+  "join_crossing_example_marker": 8
+ },
+ "split_forward_max_abs": 0.0,
+ "base_rows": {
+  "selection": {
+   "0": {
+    "rows_equal_base": true,
+    "labels_equal_base": true
+   },
+   "2": {
+    "rows_equal_base": true,
+    "labels_equal_base": true
+   }
+  },
+  "calibration": {
+   "0": {
+    "rows_equal_base": true,
+    "labels_equal_base": true
+   },
+   "2": {
+    "rows_equal_base": true,
+    "labels_equal_base": true
+   }
+  },
+  "ok": true
+ },
+ "trainable": {
+  "modules": [
+   "classifier.bias",
+   "classifier.weight",
+   "encoder.blocks.15",
+   "encoder.head",
+   "encoder.norm"
+  ],
+  "parameters": 7497989,
+  "frozen_arm_parameters": 2565,
+  "optimizer_binds_exactly": true,
+  "groups": {
+   "representation": 7495424,
+   "classifier": 2565
+  }
+ },
+ "forced_equal": {
+  "updates": [
+   135,
+   144
+  ],
+  "classifier_max_abs": 4.149973392486572e-06,
+  "classifier_moved_max_abs": 0.0009917812421917915,
+  "representation_unchanged_at_lr0": true,
+  "prefix_unchanged": true
+ },
+ "resume_params_max_abs": 0.0,
+ "sanity_fixed_batch": {
+  "Frozen": {
+   "loss_first": 0.027305182069540024,
+   "loss_last": 0.006853255908936262,
+   "decreases": true
+  },
+  "Adapted": {
+   "loss_first": 0.027305180206894875,
+   "loss_last": 0.004892317112535238,
+   "decreases": true,
+   "representation_moved_norm": 1.4540566205978394
+  }
+ },
+ "a08_file_unchanged": true,
+ "timing": {
+  "adapted_seconds_per_update_wall": 0.6593698859214783,
+  "clip_embedding_wall_seconds": 0.027029621601104736
+ },
+ "budget": {
+  "gpu_spent_incl_this_check": 0.025454593631956315,
+  "projection_two_seeds": 0.9935184538397525,
+  "parts": {
+   "embed_training_intervals": 0.2196982660194238,
+   "adapted_training": 0.4945274144411087,
+   "readout": 0.11112177769343058,
+   "evaluation": 0.142716402053833
+  },
+  "seed1_reserve": 0.8840319301038981,
+  "cap": 6.0,
+  "fits_with_seed1": true
+ },
+ "ok": true,
+ "finished": "2026-10-24T02:11:21Z"
+}

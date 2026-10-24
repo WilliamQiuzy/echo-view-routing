@@ -1,0 +1,51 @@
+{
+ "config_sha256": "b98da9aeb2f0c1bf40d9262c5a62f90dc892ee4b92ef313292f238ce1d613f7c",
+ "seeds": {
+  "0": {
+   "T": {
+    "intervals": 7242,
+    "length_lt16_repeating": 1503,
+    "length_1": 0,
+    "length_ge16_even": 5739,
+    "clips_spanning_two_or_more_recordings": 1894,
+    "median_length": 27.0,
+    "max_length": 544
+   },
+   "P": {
+    "intervals": 7411,
+    "length_lt16_repeating": 1932,
+    "length_1": 0,
+    "length_ge16_even": 5479,
+    "clips_spanning_two_or_more_recordings": 4194,
+    "median_length": 25.0,
+    "max_length": 544
+   },
+   "clip_manifest_key": "5c12454159101a3f35beee9304ff1bbfb40d50a81453f5b479111fe8f938a2fe",
+   "a27_lists_equal": true
+  },
+  "2": {
+   "T": {
+    "intervals": 7242,
+    "length_lt16_repeating": 1503,
+    "length_1": 0,
+    "length_ge16_even": 5739,
+    "clips_spanning_two_or_more_recordings": 1894,
+    "median_length": 27.0,
+    "max_length": 544
+   },
+   "P": {
+    "intervals": 7366,
+    "length_lt16_repeating": 1893,
+    "length_1": 0,
+    "length_ge16_even": 5473,
+    "clips_spanning_two_or_more_recordings": 4173,
+    "median_length": 25.0,
+    "max_length": 544
+   },
+   "clip_manifest_key": "f9dfec52f502545bf46f1e8240b676893fb964ce6d220f0a7b890582f4363123",
+   "a27_lists_equal": true
+  }
+ },
+ "rule": "interval [a, b), L = b - a >= 1: slot k (0..15) shows sample a + floor((2k + 1) L / 32); long intervals are covered evenly, short ones repeat samples in time order; every request lies inside the interval",
+ "finished": "2026-10-24T02:08:51Z"
+}
