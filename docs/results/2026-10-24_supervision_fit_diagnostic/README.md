@@ -129,3 +129,14 @@ Test whether corrections of A4C/A5C errors *generalise*, before another full tra
 - **Diagnostic-only weights.** `runs/post_a29_supervision_fit_diagnostic_v1/fit/{F,T}_s{0,2}/final.pt` on the server.
   They are not frozen models and not candidates.
 - **Server only.** Private subset and conflict manifests, the small prefix caches and all identifiers.
+
+## Dated wording note (2026-10-24, after A31; metrics and records unchanged)
+
+1. **The audit's scope.** The reference audit excludes only direct conflicts under its own definition: identical ordered
+   references, gamma and marker, with identical multiplicity weights.
+2. **Window targets and context.** "No pure Base-wrong run has an off-label target window" says only that each window's
+   target sample has the run's label. It does not show that the whole 16-frame context stays inside one class.
+3. **Bystanders.** The bystander damage shows that a transferable correction was not established. It does not show that
+   the correction cannot generalise.
+4. **The 37 / 32 counts.** These count pixel-digest groups shared by more than one reference identity, not conflict
+   pairs. A complete input identity also needs the marker together with the pixel hash.
