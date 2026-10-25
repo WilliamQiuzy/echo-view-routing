@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A4C/A5C pilot reading</title>
+<style>
+:root{--fg:#1d1d1f;--mut:#666;--line:#ccc;--bg:#fff;--acc:#2456a6;--warn:#b00020}
+body{font-family:system-ui,sans-serif;color:var(--fg);background:var(--bg);margin:0 16px 40px;max-width:1200px}
+h1{font-size:20px;margin:12px 0}h2{font-size:16px;margin:16px 0 6px}
+.banner{background:#fde7e9;color:var(--warn);padding:8px;font-weight:600;margin:8px 0}
+#list button{margin:2px;padding:4px 8px;border:1px solid var(--line);background:#f7f7f7;cursor:pointer}
+#list button.on{border-color:var(--acc);background:#e8eefb}
+.st{font-size:11px;color:var(--mut)}
+#viewer{overflow:auto;max-width:100%;max-height:70vh;border:1px solid var(--line);background:#000}
+#frame{display:block;image-rendering:pixelated}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:6px 0}
+fieldset{border:1px solid var(--line);margin:8px 0}legend{font-weight:600}
+#tl{position:relative;height:96px;border:1px solid var(--line);margin:6px 0;cursor:pointer}
+.lane{position:absolute;left:0;right:0;height:20px}.lane span.lab{position:absolute;left:2px;font-size:10px;color:var(--mut)}
+.iv{position:absolute;height:14px;top:4px;opacity:.75}#cur{position:absolute;top:0;bottom:0;width:2px;background:#d00}
+#mark{position:absolute;top:0;bottom:0;background:rgba(36,86,166,.18)}
+.locked{opacity:.6;pointer-events:none}
+table{border-collapse:collapse}td,th{border:1px solid var(--line);padding:3px 6px;font-size:12px}
+pre{white-space:pre-wrap;font-size:12px;background:#f7f7f7;padding:8px}
+</style></head><body>
+<h1>A4C / A5C pilot reading</h1>
+<div id="syn"></div>
+<p class="st" id="who"></p>
+<div id="list"></div>
+<div id="work" hidden>
+<h2 id="title"></h2>
+<p class="st" id="axis"></p>
+<div class="row"><button id="b10">&laquo; 10</button><button id="b1">&lsaquo; frame</button><button id="play">play</button><button id="f1">frame &rsaquo;</button><button id="f10">10 &raquo;</button>
+<input id="slider" type="range" min="0" value="0" style="flex:1;min-width:200px"><span id="pos"></span>
+<label>zoom <input id="zoom" type="range" min="1" max="4" step="0.25" value="2"></label></div>
+<div id="viewer"><img id="frame" alt="frame"></div>
+<div id="tl"><div id="mark"></div><div id="cur"></div></div>
+<div id="form">
+<fieldset><legend>1. Whole-recording view (your judgement of the acquisition plane)</legend>
+<div class="row" id="ov"></div><div class="row">confidence: <span id="oc"></span></div></fieldset>
+<fieldset><legend>2. Intervals (frames, inclusive)</legend>
+<div class="row">mark start <button id="ms">= current frame</button> <span id="msv">–</span> mark end <button id="me">= current frame</button> <span id="mev">–</span>
+<select id="target"></select><button id="add">add interval</button><span class="st" id="ivmsg"></span></div>
+<table><thead><tr><th>field</th><th>start</th><th>end</th><th>state</th><th>time (s)</th><th></th></tr></thead><tbody id="ivs"></tbody></table>
+<p class="st">View intervals are optional: use them only where the view changes over time. Frames outside every interval stay unannotated. A structure that is not visible is recorded as such; it is never turned into a view.</p></fieldset>
+<fieldset><legend>3. Structures</legend>
+<div class="row">LVOT: <span id="lvot"></span></div><div class="row">Aortic valve: <span id="av"></span></div>
+<p class="st">"intervals" requires at least one visible / uncertain interval above. Leaving a field unanswered is different from "not visible" and "cannot judge".</p></fieldset>
+<fieldset><legend>4. Image quality</legend><div class="row" id="iq"></div><div class="row">reason <input id="qr" size="80"></div></fieldset>
+<fieldset><legend>Comments</legend><textarea id="cm" rows="2" cols="100"></textarea></fieldset>
+<fieldset id="post" hidden><legend>5. After unblinding</legend><div class="row">Does the public clip code fit this recording? <span id="lf"></span></div>
+<div class="row">review comment <input id="rc" size="80"></div></fieldset>
+</div>
+<div class="row"><button id="save">save draft</button><button id="submit"></button><button id="unb" hidden>unblind: show public label and model outputs</button><span id="msg"></span></div>
+<div id="reveal" hidden><h2>Public label and model layer (shown after your blind record)</h2><pre id="rv"></pre></div>
+<h2>Versions</h2><table><thead><tr><th>#</th><th>phase</th><th>submitted</th><th>time (UTC)</th></tr></thead><tbody id="vers"></tbody></table>
+</div>
+<p class="st" id="exp"></p>
+<script>
+const T=new URLSearchParams(location.search).get("t")||"";const Q="t="+encodeURIComponent(T);
+const VIEWS=["A4C","A5C","transitional_or_off_axis","other","cannot_judge"],CONF=["high","medium","low"],SST=["intervals","not_visible_anywhere","cannot_judge"],QUAL=["good","adequate","poor","cannot_judge"],FIT=["yes","partly","no","cannot_judge"];
+const COL={A4C:"#e15759",A5C:"#f28e2b",transitional_or_off_axis:"#b07aa1",other:"#9c755f",cannot_judge:"#999",visible:"#4e79a7",uncertain:"#a0cbe8"};
+let C=null,R=null,k=0,timer=null,ms=null,me=null,F=null;
+const $=id=>document.getElementById(id),pad=n=>String(n).padStart(6,"0");
+async function api(p,o){const r=await fetch(p+(p.includes("?")?"&":"?")+Q,o);const j=await r.json();if(!r.ok)throw new Error(j.error||r.status);return j;}
+function radios(el,name,opts,withNone){el.innerHTML=(withNone?[null,...opts]:opts).map(v=>`<label><input type="radio" name="${name}" value="${v===null?"":v}">${v===null?"unanswered":v.replaceAll("_"," ")}</label>`).join(" ");}
+function getR(name){const x=document.querySelector(`input[name=${name}]:checked`);return x&&x.value?x.value:null;}
+function setR(name,v){document.querySelectorAll(`input[name=${name}]`).forEach(i=>i.checked=(i.value===(v||"")));}
+radios($("ov"),"ov",VIEWS,1);radios($("oc"),"oc",CONF,1);radios($("lvot"),"lvot",SST,1);radios($("av"),"av",SST,1);radios($("iq"),"iq",QUAL,1);radios($("lf"),"lf",FIT,1);
+$("target").innerHTML=[...VIEWS.map(v=>`<option value="view_intervals|${v}">view: ${v.replaceAll("_"," ")}</option>`),...["visible","uncertain"].flatMap(s=>[`<option value="lvot|${s}">LVOT ${s}</option>`,`<option value="aortic_valve|${s}">aortic valve ${s}</option>`])].join("");
+async function boot(){const me_=await api("/api/me");$("who").textContent=`reader ${me_.reader}; ${me_.order.length} recordings; fixed order`;
+ if(me_.synthetic)$("syn").innerHTML='<div class="banner">SYNTHETIC ENGINEERING DATA. Records here are not expert annotation.</div>';
+ $("list").innerHTML=me_.order.map(p=>`<button data-p="${p}">${p}<br><span class="st">${me_.states[p].replaceAll("_"," ")}</span></button>`).join("");
+ document.querySelectorAll("#list button").forEach(b=>b.onclick=()=>openCase(b.dataset.p));
+ $("exp").innerHTML=`export your records: <a href="/api/export?fmt=json&${Q}">JSON</a> · <a href="/api/export?fmt=csv&${Q}">CSV</a>`;}
+async function openCase(p){stop();const j=await api(`/api/case/${p}`);C=j.case;R=j.record;k=0;ms=me=null;
+ document.querySelectorAll("#list button").forEach(b=>b.classList.toggle("on",b.dataset.p===p));$("work").hidden=false;$("title").textContent=`Recording ${p}`;
+ $("axis").textContent=`${C.n_frames} frames; ${C.source}; nominal ${C.fps_nominal} fps, ${C.fps_from_pts} fps from PTS${C.constant_rate?" (constant)":" (variable)"}; ${C.resolution_note}`;
+ $("slider").max=C.n_frames-1;F=fieldsFrom(R);fill();show();render();}
+function fieldsFrom(r){const v=r.versions;if(!v.length)return{overall_view:null,overall_confidence:null,view_intervals:[],lvot:{status:null,intervals:[]},aortic_valve:{status:null,intervals:[]},image_quality:null,quality_reason:"",comments:"",label_fit:null,review_comment:""};return JSON.parse(JSON.stringify(v[v.length-1].fields));}
+function fill(){setR("ov",F.overall_view);setR("oc",F.overall_confidence);setR("lvot",F.lvot.status);setR("av",F.aortic_valve.status);setR("iq",F.image_quality);setR("lf",F.label_fit);$("qr").value=F.quality_reason;$("cm").value=F.comments;$("rc").value=F.review_comment;}
+function read(){F.overall_view=getR("ov");F.overall_confidence=getR("oc");F.lvot.status=getR("lvot");F.aortic_valve.status=getR("av");F.image_quality=getR("iq");F.quality_reason=$("qr").value;F.comments=$("cm").value;F.label_fit=getR("lf");F.review_comment=$("rc").value;}
+function phase(){return R.unblinded?"unblinded":"blind";}
+function render(){const st=R.state;const lockBlind=st==="blind_submitted",done=st==="unblinded_submitted";
+ $("form").classList.toggle("locked",lockBlind||done);$("post").hidden=!R.unblinded;$("unb").hidden=st!=="blind_submitted";$("save").hidden=lockBlind||done;$("submit").hidden=lockBlind||done;
+ $("submit").textContent=R.unblinded?"submit post-unblinding review":"submit blind record (locks it)";
+ $("vers").innerHTML=R.versions.map(v=>`<tr><td>${v.version}</td><td>${v.phase}</td><td>${v.submitted}</td><td>${v.timestamp_utc}</td></tr>`).join("");
+ const rows=[];F.view_intervals.forEach((x,i)=>rows.push(["view_intervals",x,i]));["lvot","aortic_valve"].forEach(s=>F[s].intervals.forEach((x,i)=>rows.push([s,x,i])));
+ $("ivs").innerHTML=rows.map(([f,x,i])=>`<tr><td>${f}</td><td>${x.start}</td><td>${x.end}</td><td>${x.state}</td><td>${C.pts_time[x.start].toFixed(3)}–${C.pts_time[x.end].toFixed(3)}</td><td><button data-f="${f}" data-i="${i}">delete</button></td></tr>`).join("");
+ document.querySelectorAll("#ivs button").forEach(b=>b.onclick=()=>{const f=b.dataset.f,i=+b.dataset.i;(f==="view_intervals"?F.view_intervals:F[f].intervals).splice(i,1);render();});
+ if(R.unblinded)api(`/api/reveal/${C.pid}`).then(j=>{$("reveal").hidden=false;$("rv").textContent=JSON.stringify(j.reveal,null,1);}).catch(e=>$("msg").textContent=e.message);else $("reveal").hidden=true;
+ drawTL();}
+function drawTL(){const tl=$("tl");tl.querySelectorAll(".lane").forEach(e=>e.remove());const n=C.n_frames,w=x=>100*x/n;
+ [["view_intervals",F.view_intervals],["lvot",F.lvot.intervals],["aortic_valve",F.aortic_valve.intervals]].forEach(([name,iv],j)=>{const l=document.createElement("div");l.className="lane";l.style.top=(4+j*30)+"px";
+  l.innerHTML=`<span class="lab">${name}</span>`+iv.map(x=>`<div class="iv" style="left:${w(x.start)}%;width:${Math.max(.3,w(x.end-x.start+1))}%;background:${COL[x.state]}"></div>`).join("");tl.appendChild(l);});
+ const a=ms===null?null:Math.min(ms,me===null?ms:me),b=ms===null?null:Math.max(ms,me===null?ms:me);$("mark").style.left=a===null?"0":w(a)+"%";$("mark").style.width=a===null?"0":w(b-a+1)+"%";
+ $("cur").style.left=w(k+.5)+"%";}
+function show(){k=Math.max(0,Math.min(C.n_frames-1,k));const img=$("frame");img.src=`/media/${C.pid}/${pad(k)}.${C.frame_ext}?${Q}`;img.onload=()=>{img.style.width=(img.naturalWidth*+$("zoom").value)+"px";};
+ $("slider").value=k;$("pos").textContent=`frame ${k} / ${C.n_frames-1}  t = ${C.pts_time[k].toFixed(3)} s`;for(const d of[1,2,-1]){const j=k+d;if(j>=0&&j<C.n_frames)new Image().src=`/media/${C.pid}/${pad(j)}.${C.frame_ext}?${Q}`;}drawTL();}
+function stop(){if(timer){clearTimeout(timer);timer=null;$("play").textContent="play";}}
+function tick(){if(k>=C.n_frames-1){stop();return;}const dt=(C.pts_time[k+1]-C.pts_time[k])*1000;k++;show();timer=setTimeout(tick,Math.max(10,dt));}
+$("play").onclick=()=>{if(timer)stop();else{$("play").textContent="pause";timer=setTimeout(tick,0);}};
+$("b1").onclick=()=>{stop();k--;show();};$("f1").onclick=()=>{stop();k++;show();};$("b10").onclick=()=>{stop();k-=10;show();};$("f10").onclick=()=>{stop();k+=10;show();};
+$("slider").oninput=e=>{stop();k=+e.target.value;show();};$("zoom").oninput=()=>show();
+$("tl").onclick=e=>{const r=$("tl").getBoundingClientRect();stop();k=Math.floor((e.clientX-r.left)/r.width*C.n_frames);show();};
+document.addEventListener("keydown",e=>{if(!C||e.target.tagName==="INPUT"&&e.target.type==="text"||e.target.tagName==="TEXTAREA")return;if(e.key==="ArrowRight"){stop();k++;show();}if(e.key==="ArrowLeft"){stop();k--;show();}if(e.key===" "){e.preventDefault();$("play").click();}});
+$("ms").onclick=()=>{ms=k;$("msv").textContent=k;drawTL();};$("me").onclick=()=>{me=k;$("mev").textContent=k;drawTL();};
+$("add").onclick=()=>{if(ms===null||me===null){$("ivmsg").textContent="mark a start and an end first";return;}const[f,s]=$("target").value.split("|");const it={start:Math.min(ms,me),end:Math.max(ms,me),state:s};
+ const L=f==="view_intervals"?F.view_intervals:F[f].intervals;if(L.some(x=>!(it.end<x.start||it.start>x.end))){$("ivmsg").textContent="overlaps an interval of the same field";return;}
+ L.push(it);L.sort((a,b)=>a.start-b.start);if(f!=="view_intervals"&&!getR(f==="lvot"?"lvot":"av"))setR(f==="lvot"?"lvot":"av","intervals");ms=me=null;$("msv").textContent=$("mev").textContent="–";$("ivmsg").textContent="";render();};
+async function save(submit){read();const fields=JSON.parse(JSON.stringify(F));if(!R.unblinded){delete fields.label_fit;delete fields.review_comment;}
+ try{const j=await api(`/api/save/${C.pid}`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({phase:phase(),submit,fields})});R=j.record;F=fieldsFrom(R);fill();$("msg").textContent=submit?"submitted":"draft saved";render();boot();}
+ catch(e){$("msg").textContent="not saved: "+e.message;}}
+$("save").onclick=()=>save(false);
+$("submit").onclick=()=>{if(confirm(R.unblinded?"Submit the post-unblinding review?":"Submit the blind record? It cannot be changed afterwards; later changes become post-unblinding versions."))save(true);};
+$("unb").onclick=async()=>{if(!confirm("Show the public clip code and model outputs for this recording? Your blind record stays as submitted."))return;const j=await api(`/api/unblind/${C.pid}`,{method:"POST"});R=j.record;F=fieldsFrom(R);fill();render();boot();};
+boot().catch(e=>{document.body.innerHTML=`<p>${e.message}</p>`;});
+</script></body></html>
