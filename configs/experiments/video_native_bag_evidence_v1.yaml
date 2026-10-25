@@ -1,0 +1,43 @@
+# A34 (video_native_bag_evidence_v1), 2026-10-25 UTC: whole native recordings as bags, mean-probability (r = 1) against
+# normalised power-mean (r = 4) bag CE on a copied A08 classifier head. Committed before any A34 bag, batch, check or
+# training output. Task sheet: claude_prompts/2026-10-25-native-bag-evidence-screen.md (sha256 d8e86edd).
+# A CPU screen (GPU 0 h): cached 16-slot A08 embeddings only; no new frames, no encoder update, no new labels, no
+# development / check / test / Pediatric reading; the A08 + B3 cut path never changes.
+experiment: video_native_bag_evidence_v1
+
+native_bag_evidence:
+  id: A34
+  type: cpu_training_screen
+  question: "with each complete native recording as a bag under its public clip code, does a bag objective that lets a few windows carry the class evidence (power mean r = 4) give transferable gains over the mean-probability objective (r = 1) with everything else matched?"
+  history: "R05 (span statistics of old E1 probabilities) and R07 (old image-token / global attention readouts) are closed and not reopened; A27 / A29 / A31 trained heads / branches on T / P intervals with mean-probability CE; here only whole native bags, the same head, two fixed aggregations; no error-focused sampling, encoder adaptation, extra frames or labels"
+  data:
+    pools: "A31 fold pools runs/video_session_correction_v1/pool_{0,1}.npy (split.json sha256 checked); A15 large-fit / protocol-train sources; A31's session isolation"
+    features: "A31's cached 16-slot A08 outputs runs/video_session_correction_v1/outputs_s{0,2}_f{0,1}.npz (512-d embeddings, logits, window sequence and centre; sha256 checked against A31's cache records); read only"
+    bags: "every native entry of the fit fold's pool; one bag = all request windows of the complete recording, weight w_t = samples whose nearest centre is window t / recording samples; label = the clip code; no cropping, no constructed streams, no A32 error lists"
+    batches: "per source seed and fit fold: numpy default_rng([20261025, 34, seed, fold]).integers(0, bags, (1350, 16)), uniform over bags (the class mix as it is), identical for M and P"
+  heads:
+    init: "a copy of A08 all_s{seed}'s classifier (512 -> 5, 2,565 parameters; models_frozen/video_within_view_v1/all_s{seed}/final.pt sha256 pinned in A27); embeddings fixed; bit-identical for M and P"
+    objective: "g_c(r) = (sum_t w_t p_tc^r)^(1/r), B_c(r) = g_c(r) / sum_k g_k(r), L_r = -log B_y(r), computed in log space (log_softmax, logsumexp, log weights, zero weights masked)"
+    M: "r = 1 (the weighted mean-probability CE of A29)"
+    P: "r = 4, fixed once; no scan of r, top-k, temperature or threshold"
+    recipe: "AdamW lr 1e-3, weight decay 1e-4, warm-up 135 then cosine over 1,350 updates, gradient clip 1, batch 16 bags, final weights only, CPU single thread; exact microbatches allowed"
+    models: "source seeds 0 and 2 x fit folds 0 and 1 x {M, P} = 8 heads; no seed 1"
+  readouts:
+    rules: "every head (and Init, the copied A08 head) under two fixed readouts: r1 (weighted mean probability) and r4 (normalised power mean, r = 4), over nearest-centre sample multiplicities; Init/r1 must reproduce Base exactly; Init/r4 is not assumed equal to Base"
+    whole_bags: "all held-out native recordings as bags: accuracy, macro-F1, five classes, A4C <-> A5C"
+    runs: "all held-out A31 P runs (Base runs of the same seed): Base-wrong fixed, correct broken, net; correct A5C kept; A5C read as A4C fixed and the reverse; A32 S1 / S2 coverage where defined (seed 0 and seed 2 sets); native / constructed, pure / mixed, short / long; recordings / sessions"
+    sequences: "the unchanged A08 + B3 runs relabelled by each readout (argmax of the run aggregate), equal neighbours merged: multi segment F1@50, native macro-F1, boundary P / R, FP / short FP, FN / missed short true; per seed and fold and out of fold"
+    primary: "P - M under r4; also P - M under r1 and each of M/r1, M/r4, P/r1, P/r4 against Base; Init/r4 against Base reported so that a readout change is not counted as a training gain"
+    intervals: "constructed streams: descriptive point estimates; native runs may carry a session-cluster descriptive interval"
+  decision:
+    next_step_rule: "only if, for both source seeds (out of fold), P - M under r4 has net fixed > 0, P/r4 - Base has net fixed > 0 and segment F1@50 (mean of the two folds) above Base, correct A5C kept >= Base - 5 runs and missed short true segments <= Base + 3: one recommendation on whether a further validation is worth it; otherwise none"
+    scope: "a negative result closes only this whole-native power-mean head configuration; it does not show that weak supervision fails in general; a readout-only effect (Init/r4) is reported as such"
+  monitors: "per fit fold, before and after training: fit-bag CE under both r, class margin, fixed / broken, and gradient concentration (top window share, effective windows = 1 / sum share^2); concentration is a mathematical reading, not anatomy"
+  a33_note: "a dated scope note in A33's README: the Init rows and 'each arm against its Init as background' were in A33's protocol; only the post hoc reading of the positive Init_I32 point estimate (and the idea of it as a follow-up) was outside the main question and advancement rule; no A33 number, threshold, weight or decision changes"
+  budget:
+    gpu_hours_max: 0.0
+    cpu_hours_max: 2.0
+    ledger: runs/video_native_bag_evidence_v1/ledger.jsonl
+  outputs:
+    root: runs/video_native_bag_evidence_v1
+    results_dir: docs/results/2026-10-25_native_bag_evidence
