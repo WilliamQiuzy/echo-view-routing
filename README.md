@@ -15,9 +15,8 @@ and distinguish **semantic view changes** (A4C → PLAX) from **nuisance discont
 | `echo_routing/` | library: `ingest`, `audit`, `features`, `compose`, `temporal`, `evaluate` (+ `config`, `manifest`, `errors`) |
 | `scripts/` | thin CLIs: build manifest, train encoder, extract features, run baselines, MS-TCN, STFM adapter |
 | `configs/` | `base.yaml`, `labels.yaml` (frozen label ontology), `experiments/*.yaml` |
-| `remote/` | Mac → Nebius helpers: `sync_code.sh`, `run.sh`, `status.sh`, `pull_results.sh`, `kill.sh`, `shell.sh` |
 | `tests/` | pytest; `make test` runs the CPU suite (markers `gpu`/`data` are server-only) |
-| `docs/` | architecture, runbook, label-mapping notes, experiment ledger; `docs/proposal/` holds the research proposal (EN) and discussion brief (ZH) |
+| `docs/` | architecture, runbook, label-mapping notes, experiment ledger, pre-registered experiment plans (`docs/superpowers/plans/`), results |
 | `demo/` | Mac-side demo (`demo_cli.py`) + a few sample videos under `demo/samples/` (gitignored) |
 | `data/ runs/ checkpoints/ cache/ logs/` | server-only, gitignored |
 
@@ -58,9 +57,10 @@ Full tables: `docs/results/2026-09-17_five_baselines/five_baselines.md`. Test sp
 | MS-TCN (official) | 0.956 | 0.977 | 1.0 | 0.992 | 0.017 | 0.000 | 1.000 | 0.008 |
 | ASFormer (official) | 0.959 | 0.980 | 0.8 | 0.980 | 0.017 | 0.000 | 1.000 | 0.007 |
 
-Reproduction protocol and per-model verification: `docs/REPRODUCTION.md`; frozen checkpoints: `docs/models_frozen/` and GitHub release `baselines-v1`.
+Reproduction protocol and per-model verification: `docs/REPRODUCTION.md`; frozen checkpoint manifests with SHA-256 hashes: `docs/models_frozen/` (the weights themselves are available on request).
 
 ## Compute
 
-One Nebius L40S (46 GB) shared with an unrelated project. Our processes cap GPU memory with
-`ECHO_GPU_MEM_FRACTION` and live entirely under `/home/william/echo-view-routing`.
+One cloud NVIDIA L40S (46 GB) shared with another project; our processes cap GPU memory with
+`ECHO_GPU_MEM_FRACTION`. The helper scripts that sync code and launch jobs on that server are not part of
+the public repository.
