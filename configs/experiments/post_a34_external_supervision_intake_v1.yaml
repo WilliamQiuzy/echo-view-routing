@@ -1,0 +1,25 @@
+# Post-A34 external supervision intake (post_a34_external_supervision_intake_v1), 2026-10-25 UTC. A time-boxed resource
+# check and intake plan; no A-number, no model run, no training. Committed before any new private resource count.
+# Task sheet: claude_prompts/2026-10-25-post-a34-external-supervision-intake.md (sha256 5648e379).
+experiment: post_a34_external_supervision_intake_v1
+
+external_supervision_intake:
+  type: resource_intake
+  question: "can existing or directly obtainable human-annotated resources, or frozen weights explicitly trained on them, give A4C / A5C evidence beyond EV9V's clip codes?"
+  sources:
+    unity: "data/unity/ on the server (download logs, manifests, labels, keys, any view metadata) joined to the images actually present; official pages data.unityimaging.net (home, dataset_structure, additional, files/additional/view_index_20220705.csv); the release, licence text and the object each licence covers kept separately; the repository's earlier evaluation-only decision and its basis checked"
+    echofine: "TTE47 page, EchoForge EchoFine README and the Hugging Face EchoFine_classifier card / file list: the default Xception classifier only; class order (class_lookup), preprocessing, framework, weight size, training sources and licence; no weight download, no import, no run"
+    exclusions: "TMED-2 and CAMUS official descriptions re-checked for human A5C or local structure labels; EchoNet-Pediatric not read"
+  counts: "only human labels joinable to images actually present: A4C / A5C frames, unique cines, study / patient groups, splits, structure point / curve / mask fields; human view labels, human structure points, missing, unknown and model-derived labels kept apart; keys or class names are not samples"
+  limits:
+    downloads: "official public documents / CSV / JSON / small label packages only, 20 MB in total; no images, videos or large weights; no new agreement, account or contact"
+    data: "no development / check / test / Pediatric sample, manifest or output; no A26 runner; public labels, old resources, models, ledgers, closing decisions, the pilot tool and its records unchanged"
+    privacy: "private file names, ids and join tables stay on the server; the repository gets aggregates, minimal code and documents"
+  deliverable: "docs/results/2026-10-25_external_supervision_intake/: one compact table (source / exact release, what we actually hold, human or machine, unit, real A4C / A5C and structure counts, groups / splits, licence scope and open items, unknown overlap, what can be done now, what is missing) and one concrete next-model draft (matched training if usable human supervision exists, otherwise a frozen EchoFine evidence diagnostic if its weights and class order are confirmed, otherwise the minimum missing material); nothing is executed"
+  budget:
+    gpu_hours_max: 0.0
+    cpu_hours_max: 1.0
+    ledger: runs/post_a34_external_supervision_intake_v1/ledger.jsonl
+  outputs:
+    root: runs/post_a34_external_supervision_intake_v1
+    results_dir: docs/results/2026-10-25_external_supervision_intake
