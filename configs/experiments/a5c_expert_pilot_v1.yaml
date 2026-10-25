@@ -1,0 +1,39 @@
+# A5C expert pilot readiness (a5c_expert_pilot_v1), 2026-10-25 UTC. Annotation preparation and engineering delivery after
+# A32; not a model experiment and not a performance result. Committed before the media audit, the tool and any check.
+# Task sheet: claude_prompts/2026-10-25-a5c-expert-pilot-readiness.md (sha256 06bd3669). No training, no model run, no
+# prefix rebuild, no development / check / test / Pediatric reading; GPU 0 h.
+experiment: a5c_expert_pilot_v1
+
+a5c_expert_pilot:
+  type: annotation_preparation
+  scope: "A32's 24 fixed review cases (runs/a5c_source_external_evidence_v1/review_package, read only; its private_key.json maps cases to seed, fold, stream, run and recording); no case is added, dropped or re-chosen after looking at images or results"
+  unit: "the unique source recording: cases that share a recording share one whole-recording annotation; every original case keeps its own mapping to its stream and target run for later review"
+  media_audit:
+    source: "data/ev9v/Videos/<recording>.mp4 (original files) and data/ev9v/Images/<recording>/ (the extracted frames A08 and A32 read)"
+    checks: "ffprobe stream fps (r_frame_rate, avg_frame_rate), time base, frame count and per-frame PTS (constant or variable frame rate); Images frame count; decoded mp4 frame k against Images frame k and its neighbours; the A32 10 Hz reference (frame index into the numerically sorted Images list) -> original frame index and PTS time"
+    rule: "the annotation frame axis is the original decoded frame axis with its own PTS; a recording without a usable original is marked '10 Hz cache only' with that resolution; no interpolation, repetition or re-rendering to an assumed rate"
+  blind_ids: "per unique recording, neutral ids P01.. by numpy default_rng([20261025, 33, 1]) permutation of the recordings sorted by private id; display order is the id order"
+  tool:
+    serve: "Python standard-library HTTP server bound to 127.0.0.1 on the server; access only through the user's SSH tunnel; no public port, permission change, account or message to anyone"
+    blind_pass: "neutral id, full source recording, frame-accurate stepping, start / end marking, zoom; no set name, public label, model output, probability trace, error reason, file name or suggestive title in the page or in any response before that reader submits the blind record of that recording"
+    fields:
+      overall_view: "A4C / A5C / transitional or off-axis / other / cannot judge, with confidence"
+      view_intervals: "optional ordered, non-overlapping frame intervals with the same view codes plus cannot judge; frames outside every interval stay unannotated"
+      lvot: "visible intervals, or 'not visible anywhere', or 'cannot judge'; an 'uncertain' interval state is allowed"
+      aortic_valve: "as for lvot, recorded separately"
+      image_quality: "good / adequate / poor / cannot judge, with a reason"
+      after_unblinding: "public clip code and model layer shown only after the blind record is submitted; label fit yes / partly / no / cannot judge and a review comment are added as a new version; blind versions are never overwritten"
+    readers: "independent files per anonymous reader id (R1, R2); the tool never returns another reader's record; a second-reader entry is prepared for every recording (S1 recordings at least); agreement is not reported until real double reading exists"
+    records: "JSON per reader and recording with an append-only version list (phase, submitted, timestamp, reader id, recording blind id, frame axis sha, unblinded flag); CSV export; JSON / CSV round trip checked"
+    separation: "real annotations under runs/a5c_expert_pilot_v1/annotations/real/; synthetic engineering records only under runs/a5c_expert_pilot_v1_synthetic/ and flagged synthetic; synthetic records are never counted as expert work"
+  overlay: "export -> private overlay schema bound to the recording's frame axis sha: per original frame view code, LVOT and aortic-valve states with unknown / not visible / uncertain / cannot judge / transitional / reader disagreement kept distinct; public labels never change; structure not visible never becomes A4C; unannotated frames are unknown, never negative; 10 Hz samples take the state of their own original frame; A31's session fold rule carried through"
+  checks: "synthetic media and records through save / restore / export / import / overlay; first / last frame, short clip, variable-rate and missing-original paths; out-of-range, reversed and overlapping intervals refused; no leak in the blind page or responses; reader isolation; then 2 real cases by numpy default_rng([20261025, 33, 3]) for timeline / playback / export only, with no medical field filled"
+  training_draft: "conditional only; nothing is trained in this round"
+  budget:
+    gpu_hours_max: 0.0
+    cpu_hours_max: 2.0
+    ledger: runs/a5c_expert_pilot_v1/ledger.jsonl
+  outputs:
+    root: runs/a5c_expert_pilot_v1
+    synthetic_root: runs/a5c_expert_pilot_v1_synthetic
+    results_dir: docs/results/2026-10-25_a5c_expert_pilot
