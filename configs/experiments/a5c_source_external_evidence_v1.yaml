@@ -1,0 +1,39 @@
+# A32 (diagnostic), A5C error sources and frozen external recognition evidence (a5c_source_external_evidence_v1), 2026-10-25 UTC.
+# Protocol committed before any A32 statistic, inference or package. Task sheet:
+# claude_prompts/2026-10-24-a5c-source-and-external-evidence-diagnostic.md (sha256 ff34bb8b). Training data only (A31's two
+# fold pools from A15's large-fit sources); no development / check / test / Pediatric reading; the A26 runner and its default
+# test manifest are not used. No training, fusion fitting, threshold or decoder search; no prefix cache rebuild.
+# Question: are A31's persistent A5C errors and the correct A5C runs broken by E concentrated in few sources, tied to a
+# checkable label-mapping or input-support issue, or complemented by frozen external recognisers on the same inputs?
+experiment: a5c_source_external_evidence_v1
+
+a5c_source_external_evidence:
+  id: A32
+  type: diagnostic
+  sources: "A31 pools (split.json pool_sha256 96d1fb68 / 08255192), A31 runs and Base (base_s{0,2}.json), A31 held-out predictions (readout_s{0,2}); A08 all_s{0,2} unchanged"
+  sets:
+    S1: "true A5C P runs Base reads as A4C; 'persistent' = still A4C under all four A31 arms"
+    S2: "true A5C P runs Base gets right but F_E or T_E turns to A4C (per arm, intersection, union)"
+    S3: "true A5C P runs right under Base and all four arms (control)"
+    S4: "true A4C P runs Base reads as A5C that F_E or T_E fixes (control)"
+    reporting: "per seed and held-out fold: runs, unique recordings (each run's sources weighted by sample share), sessions, repeat uses; native / constructed, pure / mixed, short (<= 16) / long, single / multi source; top-1 / 5 / 10 source shares by run count and by unique-source weight; cross-seed overlap"
+    identity: "family5_v1 mapping (configs/labels.yaml), A4C = 2 / A5C = 3 in labels, A08 head and external maps; clip-level labels (one code per cine), constructed frame labels = fragment labels; nearest-centre mapping and marker; share of each run's window support (all 16 slots) outside the run or under another reference label; LVOT or other structure annotations: none recorded (unknown)"
+  external:
+    EchoViewCLIP: "frozen stage 1 (models_frozen/echoviewclip_stage1/v1/best.pth a74c7b23), the original scripts/run_windowed_echoviewclip.py unchanged in envs/echoviewclip: 16-frame windows at stride 5 over each stream's own references, short-side 256 / centre 224 crop, nearest-centre to samples, nine codes to family5 with PMPALA dropped (rows not renormalised)"
+    EchoPrime: "released view classifier (models_frozen/echoprime_view_classifier/release_v1.0.0 046b7668), per 10 Hz frame with its crop_and_scale and normalisation, 11 coarse views to family5 by ECHOPRIME_TO_FAMILY5 (unmapped mass dropped, not renormalised); a batched wrapper of the original runner's code path, checked against the runner on two streams"
+    support: "both pools' complete sequences, each model on the same references with its own deployed preprocessing; outputs in this round's run directory with their own keys; no shared cache that mixes development or test entries"
+    rule: "within each A08 Base run (per seed), the equal-weight mean of the external per-sample probabilities, argmax, equal neighbours merged; the only replacement rule (no gate, router, weights, temperature or decoder point)"
+    fallback: "only if the engineering timing projects the full external inference above the GPU cap: a fixed session subset per fold (sessions sorted, numpy default_rng([20261024, 32, fold]) permutation, stratified by each session's majority clip class, the largest fraction that fits), same subset for both models, denominators kept; never chosen by errors or outputs"
+  readouts:
+    runs: "all P runs at real proportions per external model and A08 seed: Base-wrong fixed, correct broken, net, A4C/A5C both directions, five classes; S1-S4 coverage, fixable counts and correct-A5C retention; error intersections / unions with A08 as reference-assisted complementarity only"
+    sequences: "the rule on complete sequences: multi segment F1@50, native macro-F1, FP / short FP, FN / missed short true, boundary P/R; per fold and seed as descriptive point estimates; native-only metrics may carry a descriptive session-cluster interval"
+    provenance: "EchoViewCLIP and A08 trained on EV9V train (these sources included); EchoPrime pretraining sources unknown"
+  review_package: "per set S1-S4 at most 6 unique recordings by numpy default_rng([20261024, 32, 9]) permutation, distinct sessions first, no repeats across seeds; server-only HTML with source video, timeline, target run, the 16 slots and marker of the run's central window, A08 / external probability traces, native / constructed identity; neutral ids; labels and outputs in collapsible layers; expert fields (LVOT visible, view per expert, comments) left blank; nothing leaves the server"
+  references: "label definitions from the EV9V dataset card, the STFM README and docs/LABEL_MAPPING.md; A4C/A5C anatomy from the ASE 2019 comprehensive TTE guideline (Mitchell et al., J Am Soc Echocardiogr 2019;32:1-64, doi:10.1016/j.echo.2018.06.004)"
+  budget:
+    gpu_hours_max: 2.0
+    cpu_hours_max: 3.0
+    ledger: runs/a5c_source_external_evidence_v1/ledger.jsonl
+  outputs:
+    root: runs/a5c_source_external_evidence_v1
+    results_dir: docs/results/2026-10-25_a5c_source_external_evidence
