@@ -289,8 +289,8 @@ first.
   - EchoViewCLIP timing on 48 streams: 0.02 h.
   - Full EchoViewCLIP run: 0.52 h.
   - The fallback session subset was not needed: the timing projected about 0.45 h for the full run.
-- **CPU.** About 1 of 3 h. Ledger stages took 0.02 h. The agent's active wall clock is booked in spans with waiting
-  excluded: 0.46 h and 0.26 h, plus a short final span for the index, memory and report. All of it is in
+- **CPU.** 0.76 of 3 h. Ledger stages took 0.02 h. The agent's active wall clock is booked in three spans with waiting
+  excluded: 0.46 h, 0.26 h and a short final span for the index, memory and report. All of it is in
   `runs/a5c_source_external_evidence_v1/ledger.jsonl` on the server.
 - **No training.** No backward pass, optimizer step or prefix-cache rebuild.
 - **Records.**
