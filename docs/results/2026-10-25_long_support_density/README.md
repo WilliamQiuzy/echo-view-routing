@@ -176,3 +176,14 @@ and short-sequence repeats.
   - Plans, held-out logits, the Init logits, the trained weights (`runs/video_long_support_density_recognition_v1/train/`)
     and all identifiers.
   - Both prefix caches (121 GB each) were deleted after their readouts.
+
+## Dated note (2026-10-25, from A34)
+
+This note narrows one phrase. No number, threshold, weight or decision changes.
+
+Answer 4 says "the comparison was not pre-registered". That is too broad.
+- **Pre-registered.** A33's protocol fixed the Init rows and the comparison of each arm against its own Init and Base16
+  as background (`model.reported_starts`, `readouts.primary`).
+- **Not pre-registered.** The post hoc reading of the positive Init_I32 point estimate, and the idea of it as a possible
+  follow-up. Neither is part of A33's main question or its advancement rule.
+- **Unchanged.** The configuration is still closed without seed 2, and Init_I32 is not a candidate.
