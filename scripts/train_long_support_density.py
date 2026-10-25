@@ -17,9 +17,13 @@ import os
 
 os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")
 os.environ.setdefault("CUDA_VISIBLE_DEVICES", "0")     # A27's CPU-only trainer import would otherwise hide the GPU
+os.environ.setdefault("PYTORCH_CUDA_ALLOC_CONF", "expandable_segments:True")     # fewer fragmentation retries; same arithmetic
 
 import argparse  # noqa: E402
 import json  # noqa: E402
+import queue  # noqa: E402
+import threading  # noqa: E402
+from concurrent.futures import ThreadPoolExecutor  # noqa: E402
 import shutil  # noqa: E402
 import subprocess  # noqa: E402
 import sys  # noqa: E402
@@ -43,7 +47,7 @@ from scripts.prepare_fold_output_correction import assert_no_ids  # noqa: E402
 
 import numpy as np  # noqa: E402
 import torch  # noqa: E402
-from torch.utils.data import DataLoader, Dataset  # noqa: E402
+from torch.utils.data import Dataset  # noqa: E402
 
 import echo_routing.temporal.interval_clips as ic  # noqa: E402
 import echo_routing.temporal.interval_recognition as ir  # noqa: E402
@@ -177,18 +181,51 @@ def online_tokens(m, F: dict, idx: np.ndarray, arm: str, fp, device) -> tuple:
 def step(m, opt, tok, inv, w, ix, y, thw, device, u: int, sch: dict, micro: int | None = MICRO) -> dict:
     """One update; interval microbatches keep each interval's windows and sum to the batch mean."""
     t31.sched(opt, u, sch); params = [p for _, p in ic.trainable(m)]; opt.zero_grad(set_to_none=True); inv, w, ix, y = (x.to(device) for x in (inv, w, ix, y)); n = int(y.shape[0]); lv = 0.0
+    tok = tok.to(device)                     # one upload per update; microbatches index it on the GPU
     for a in range(0, n, micro or n):
         sel = (ix >= a) & (ix < a + (micro or n)); r = torch.unique(inv[sel]); loc = torch.searchsorted(r, inv[sel])
-        part = t29.pooled_ce(head(m, tok[r.cpu()], thw, device)[loc], w[sel], ix[sel] - a, y[a:a + (micro or n)]).sum() / n; part.backward(); lv += float(part.detach())
+        part = t29.pooled_ce(head(m, tok[r], thw, device)[loc], w[sel], ix[sel] - a, y[a:a + (micro or n)]).sum() / n; part.backward(); lv += float(part.detach())
     gn = float(torch.nn.utils.clip_grad_norm_(params, t31.CLIP)); opt.step(); return {"u": int(u), "loss": lv, "grad_norm": gn}
 
 
 class Cache:
-    def __init__(self, ctx: Ctx, arm: str) -> None:
-        self.rec = json.loads((ctx.out / "cache" / f"prefix_{arm}.json").read_text()); self.mm = np.load(ctx.out / "cache" / f"prefix_{arm}.npy", mmap_mode="r")
+    """The arm's prefix cache. Rows are read with positioned reads (os.preadv) from parallel threads straight into one
+    buffer: the same bytes as the memory map, without page-fault storms or inter-process copies."""
+
+    def __init__(self, ctx: Ctx, arm: str, threads: int = 8) -> None:
+        p = ctx.out / "cache" / f"prefix_{arm}.npy"; self.rec = json.loads((ctx.out / "cache" / f"prefix_{arm}.json").read_text()); self.mm = np.load(p, mmap_mode="r")
+        self.fd, self.base, self.row = os.open(p, os.O_RDONLY), self.mm.offset, int(np.prod(self.mm.shape[1:])) * 4; self.pool = ThreadPoolExecutor(threads)
+
+    def _read(self, buf: np.ndarray, row: int) -> None:
+        mv, pos, got = memoryview(buf), self.base + row * self.row, 0
+        while got < self.row:
+            k = os.preadv(self.fd, [mv[got:]], pos + got)
+            if k <= 0:
+                raise OSError("short read from the prefix cache")
+            got += k
 
     def get(self, rows: np.ndarray) -> torch.Tensor:
-        rows = np.asarray(rows); order = np.argsort(rows); out = np.empty((len(rows), *self.mm.shape[1:]), np.float32); out[order] = self.mm[rows[order]]; return torch.from_numpy(out)
+        rows = np.asarray(rows, np.int64); out = np.empty((len(rows), *self.mm.shape[1:]), np.float32); flat = out.reshape(len(rows), -1).view(np.uint8)
+        list(self.pool.map(lambda i: self._read(flat[i], int(rows[i])), range(len(rows)))); return torch.from_numpy(out)
+
+
+def prefetched(ctx: Ctx, arm: str, R: dict, us, depth: int = 2):
+    """Update batches built by a background thread of this process, `depth` ahead of the GPU."""
+    c = Cache(ctx, arm); q: queue.Queue = queue.Queue(maxsize=depth); end = object()
+
+    def work() -> None:
+        try:
+            for u in us:
+                rows, w, ix, y = t29.batch_rows(R, R["bt"][u], R["bu"][u]); uq, inv = np.unique(rows.numpy(), return_inverse=True)
+                q.put((u, c.get(uq), torch.from_numpy(inv), w, ix, y))
+            q.put(end)
+        except BaseException as e:  # noqa: BLE001 - handed to the consumer
+            q.put(e)
+    threading.Thread(target=work, daemon=True).start()
+    while (item := q.get()) is not end:
+        if isinstance(item, BaseException):
+            raise item
+        yield item
 
 
 class Upd(Dataset):
@@ -342,7 +379,7 @@ def train(ctx: Ctx, arm: str, device, workers: int) -> None:
         t0, started, ok, note = time.time(), now(), False, ""
         try:
             rd = ctx.out / "train" / f"{arm}_f{f}"; rd.mkdir(parents=True, exist_ok=True); R = t31.runs(ctx.a31, SEED, f); m = branch(ctx, device); o = opt_for(m); pd0 = t28.prefix_digest(m); log = []; gs = 0.0
-            for u, tok, inv, w, ix, y in DataLoader(Upd(ctx, arm, R, range(int(sch["updates"]))), batch_size=None, num_workers=workers, prefetch_factor=2 if workers else None, pin_memory=True):
+            for u, tok, inv, w, ix, y in prefetched(ctx, arm, R, range(int(sch["updates"]))):
                 torch.cuda.synchronize(); a = time.time(); log.append(step(m, o, tok, inv, w, ix, y, thw, device, int(u), sch)); torch.cuda.synchronize(); gs += time.time() - a
                 if (int(u) + 1) % 90 == 0:
                     print(f"[{arm}_f{f}] update {int(u) + 1}/{sch['updates']}: loss {np.mean([x['loss'] for x in log[-90:]]):.4f}  {time.time() - t0:.0f} s", flush=True)
@@ -356,6 +393,23 @@ def train(ctx: Ctx, arm: str, device, workers: int) -> None:
             note = f"{type(e).__name__}: {str(e)[:200]}"; raise
         finally:
             ledger_append(ctx.ledger, f"train {arm}_f{f} (GPU job wall time)", "gpu", started, time.time() - t0, ok, note)
+
+
+def timing(ctx: Ctx, arm: str, device, n: int = 30) -> str:
+    """Engineering timing of the training loop on the real cache: a fresh branch, plan rows 0..n-1 of fold 0, nothing saved.
+    Also checks that the positioned reads return the memory map's bytes."""
+    sch = {"updates": 900, "warmup": 90}; thw = tuple(json.loads((ctx.out / "cache" / f"prefix_{arm}.json").read_text())["thw"]); R = t31.runs(ctx.a31, SEED, 0); c = Cache(ctx, arm)
+    rows = np.sort(np.random.default_rng(5).choice(c.mm.shape[0], 64, replace=False)); same = bool(np.array_equal(c.get(rows).numpy(), np.asarray(c.mm[rows])))
+    m = branch(ctx, device); o = opt_for(m); k = 0
+    for u, tok, inv, w, ix, y in prefetched(ctx, arm, R, range(n)):
+        step(m, o, tok, inv, w, ix, y, thw, device, int(u), sch); k += 1
+        if k == 5:
+            torch.cuda.synchronize(); t5 = time.time()
+    torch.cuda.synchronize(); s_ = (time.time() - t5) / (k - 5); rec = {"arm": arm, "updates_timed": k - 5, "seconds_per_update": s_, "reads_equal_memmap": same, "peak_gpu_gb": torch.cuda.max_memory_allocated() / 1e9, "discarded": True}
+    write_json(ctx.out / f"timing_{arm}.json", rec); print(json.dumps(rec), flush=True)
+    if not same:
+        raise SystemExit("positioned reads differ from the memory map")
+    return f"{s_:.2f} s/update"
 
 
 def load_trained(ctx: Ctx, arm: str, f: int, device):
@@ -460,7 +514,7 @@ def report(ctx: Ctx) -> str:
 
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--config", required=True); ap.add_argument("--stage", choices=("audit", "check", "cache", "train", "readout", "clean", "report"), required=True)
+    ap.add_argument("--config", required=True); ap.add_argument("--stage", choices=("audit", "check", "cache", "timing", "train", "readout", "clean", "report"), required=True)
     ap.add_argument("--arm", choices=ARMS); ap.add_argument("--workers", type=int, default=6)
     a = ap.parse_args(); a.set = []; ctx = Ctx(load_cfg(a), a.config); ctx.out.mkdir(parents=True, exist_ok=True)
     if a.stage in ("audit", "report"):
@@ -470,7 +524,7 @@ def main() -> None:
     t31.vsh.determinism(); device = torch.device("cuda")
     if a.stage == "train":
         return train(ctx, a.arm, device, a.workers)
-    fn = {"check": lambda: check(ctx, device, a.workers), "cache": lambda: cache(ctx, a.arm, device, a.workers), "readout": lambda: readout(ctx, a.arm, device)}[a.stage]
+    fn = {"check": lambda: check(ctx, device, a.workers), "cache": lambda: cache(ctx, a.arm, device, a.workers), "readout": lambda: readout(ctx, a.arm, device), "timing": lambda: timing(ctx, a.arm, device)}[a.stage]
     staged(ctx, f"{a.stage}{' ' + a.arm if a.arm else ''} (GPU job wall time)", "gpu", fn)
 
 
