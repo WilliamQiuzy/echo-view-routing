@@ -1,0 +1,50 @@
+# A33 (video_long_support_density_recognition_v1), 2026-10-25 UTC: long-support density recognition screen.
+# Committed before any A33 window, cache, check, timing or training output. Task sheet:
+# claude_prompts/2026-10-25-long-support-density-recognition-pilot.md (sha256 fec5b2fe).
+# Question: with the original ~1.5 s support of A08's 16 10 Hz samples kept, do real intermediate raw frames (I32) give a
+# transferable recognition gain over repeated frames (R32) in the same 32 slots, while full segmentation holds?
+# A single-source-seed (A08 all_s0) mechanism screen on A31's two session folds; not a multi-seed winner; no development /
+# check / test / Pediatric reading; public labels unchanged; the A08 + B3 cut path never changes.
+experiment: video_long_support_density_recognition_v1
+
+long_support_density:
+  id: A33
+  type: training_screen_single_source_seed
+  predecessors: "A22 (9742eb2 / ef98f1f: real intermediate frames helped native recognition but the 0.7 s support hurt full segmentation), A29-A31 (recognition branch on the original windows, U / E sampling), A32 (no external A5C evidence), expert pilot 25d44de (0 real records; not a prerequisite)"
+  data:
+    pools: "A31's pinned fold pools runs/video_session_correction_v1/pool_{0,1}.npy (split.json sha256 checked on load), A15 large-fit / protocol-train sources only"
+    runs_and_batches: "A31 seed-0 T / P runs and U plans (runs_s0_f{0,1}.npz): rows bt[u], bu[u] for u < updates of the fit fold; 16 T + 16 P intervals per update, all windows with their nearest-centre multiplicities"
+    source_check: "every recording referenced by both pools: numerically ordered raw JPEG count, the cached 10 Hz plan (step and range) and the original video's frame rate, time base and frame count; failures listed, never dropped silently"
+  windows:
+    request: "A08's stride-5 request centres c over each complete sequence, a = window_frames(c, N, 16, 16) (end shift and short-sequence repeats unchanged), outputs mapped back by nearest centre"
+    R32: "slots 2i and 2i+1 both show ref[a_i], i = 0..15"
+    I32: "even slots and slot 31 equal R32; odd slot 2i+1 (i < 15) shows the raw JPEG floor((l + r) / 2) between l = frame of a_i and r = frame of a_{i+1} only if a_i != a_{i+1}, both samples lie in the same fragment of the constructed (or native) stream, carry the same gamma, and l < floor((l + r) / 2) < r; otherwise it repeats the left frame and the reason is counted (repeated position, fragment / source / gamma boundary, no frame between); no frame outside a fragment the stream contains, no pixel averaging or synthesis"
+    marker: "A22's planned-time rule: slot coordinates 2a_i (even), a_i + a_{i+1} (odd, i < 15), 2a_15 (slot 31); the marker is the middle slot (sorted index len // 2) of those whose coordinate equals 2c; identical in both arms"
+    unchanged: "A08's frame loader (gamma, crop, normalisation), slot order, support end points, targets; no source id, boundary or label enters the input"
+  model:
+    base: "A08 all_s0 (sha256 9b144925...) and its committed B3 setting give Base16 and the runs; never modified"
+    adaptation: "a 32-frame TargetMViT: torchvision MViTv2-S built with temporal_size 32, head[-1] Linear(768, 512), A08's marker stem and classifier; every tensor bit-copied from A08 except the 16 encoder.blocks.*.attn.rel_pos_t (15 -> 31 rows), resized by torch.nn.functional.interpolate(mode='linear', align_corners=False) along the row axis (torchvision's own runtime rule); strict load; identical initial state for both arms"
+    branch: "independent eval-mode copy; trainable classifier, encoder.blocks.15, encoder.norm, encoder.head.1; the rest frozen; R32 and I32 differ only in input content"
+    reported_starts: "Init_R32 and Init_I32 (adapted, untrained) next to Base16; Init_R32 is not assumed equal to Base16"
+  training:
+    models: "R32_f0, I32_f0 (fit fold 0, held out fold 1), R32_f1, I32_f1 (fit fold 1, held out fold 0); all from the same adapted A08_s0 state"
+    recipe: "pooled-probability CE over five classes, uniform interval weights, no KL / teacher; AdamW head 1e-3, representation 1e-4, weight decay 1e-4, warm-up 90 then cosine over 900 updates, gradient clip 1, final weights only; interval microbatches allowed when memory needs them (sum of parts = batch mean)"
+    fallback: "decided once in the check stage from engineering timing and disk, before any formal update: if checks + both caches + 4 x 900 updates + readouts project above 4 GPU h, all four models use 600 updates (warm-up 60, cosine over 600, plan rows u < 600); if 600 does not fit or the disk cannot hold one arm's cache, stop and report the bottleneck"
+    cache: "per arm, one frozen-prefix cache (block-15 input, fp32) over both pools, built once, shared by its two models, deleted after that arm's readouts; free space checked before building; no copy per model, no deletion of other assets"
+  order: "checks and schedule -> per arm: cache, train f0 and f1, commit the two weight sha256 values, held-out and Init readouts, delete cache -> after both arms: one analysis"
+  readouts:
+    runs: "all held-out P runs of both folds (OOF) and per fold: Base-wrong fixed, correct broken, net; A4C<->A5C both directions; correct A5C kept; A32 S1 / S2 (seed 0) coverage; recordings / sessions; native / constructed, pure / mixed, short (<= 16) / long"
+    sequences: "Base runs relabelled by each model's per-sample probabilities (mean in run, argmax, merge): multi segment F1@50, native macro-F1, FP / short FP, FN / missed short true, boundary P / R per fold"
+    primary: "I32 - R32; each against its Init and Base16 as background only"
+    intervals: "constructed streams share sources: descriptive point estimates only; native runs may carry a session-cluster descriptive interval"
+  decision:
+    close: "I32 - R32 improves only A4C while still damaging A5C, or full segmentation is worse, or the gain is not in both folds: close this configuration; no automatic sampling / duration / interpolation / variant change"
+    seed2_rule: "only if both folds show I32 - R32 net fixed >= +10 runs, segment F1@50 I32 >= R32, missed short true segments I32 <= R32 + 3, and correct A5C kept I32 >= R32 - 5 runs: one recommendation on whether to add source seed 2 (not started)"
+    attribution: "a gain is attributed to the inserted raw frames only; not to LVOT, motion or cardiac phase without separate evidence"
+  budget:
+    gpu_hours_max: 4.0
+    cpu_hours_max: 3.0
+    ledger: runs/video_long_support_density_recognition_v1/ledger.jsonl
+  outputs:
+    root: runs/video_long_support_density_recognition_v1
+    results_dir: docs/results/2026-10-25_long_support_density
