@@ -137,3 +137,19 @@ sessions that took no part in this correction training, while keeping full segme
   - `readout_s{0,2}.json` and `report.json`.
 - **Server only.** Fold pools, manifests, run lists, batch plans, cross-fit weights, held-out predictions and all
   identifiers. The prefix caches were deleted after use, and their records were kept.
+
+## Dated note (2026-10-25, from A32)
+
+This note corrects wording only. No metric, model or stop decision changes.
+
+- **Bootstrap.** Each run is assigned to the session of its majority recording. For runs built from several sources this
+  is only an approximate cluster: it ignores the other sources and the context that constructed streams share. An
+  interval that excludes 0 is therefore not strict evidence clustered over all sources. The point estimates, and E's
+  damage in every seed and fold, stand.
+- **Order.** Answer 2 wrote the T_E − F_E figures as "+142 / +192". By the paired table and `report.json` they are
+  seed 0 +192 and seed 2 +142.
+- **Scope of "every fix with a break".** The phrase in answer 4 describes E only. Under U the net changes were +13 / +10
+  (F) and +9 / −7 (T). This round found no T_U advantage over F_U, and that is not evidence of equivalence.
+- **CPU cost.** The "about 0.9 of 4 h" line understates the ledger, which books 2.97 h of CPU. Most of it is the second
+  agent span (2.42 h), which covers all of 19:35–22:00 UTC, including the wait for T training. Both figures are within
+  the 4 h cap.

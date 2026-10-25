@@ -1,0 +1,5079 @@
+{
+ "identity": {
+  "family5_v1": {
+   "classes": [
+    "PLAX",
+    "PSAX",
+    "A4C",
+    "A5C",
+    "SC4C"
+   ],
+   "A4C": 2,
+   "A5C": 3,
+   "raw_to_family5": {
+    "PLHLA": 0,
+    "PASA": 1,
+    "PMVLSA": 1,
+    "PPMLSA": 1,
+    "PMASA": 1,
+    "A4C": 2,
+    "A5C": 3,
+    "SC4C": 4,
+    "PMPALA": null
+   }
+  },
+  "training_raw_code_pairs": {
+   "A5C->3": 217,
+   "PLHLA->0": 1120,
+   "A4C->2": 858,
+   "PMVLSA->1": 262,
+   "PASA->1": 212,
+   "SC4C->4": 195,
+   "PMASA->1": 317,
+   "PPMLSA->1": 183
+  },
+  "raw_codes_map_as_family5_v1": true,
+  "index_columns": [
+   "video_id",
+   "split",
+   "raw_label",
+   "label_index",
+   "n_samples",
+   "path"
+  ],
+  "structure_annotations": "none: the index has one clip-level code per recording and no LVOT or other structure fields",
+  "A08_head_columns": "5 logits trained on label_index (family5_v1 order); A31 outputs have 5 columns",
+  "native_labels_equal_clip_label": "1487/1487",
+  "constructed_labels_equal_fragment_clip_labels_and_sources": "1200/1200",
+  "external_maps": {
+   "EchoViewCLIP": {
+    "raw9": [
+     "PLHLA",
+     "PMASA",
+     "PMVLSA",
+     "PASA",
+     "A4C",
+     "A5C",
+     "PMPALA",
+     "PPMLSA",
+     "SC4C"
+    ],
+    "to_family5": {
+     "PLHLA": 0,
+     "PMASA": 1,
+     "PMVLSA": 1,
+     "PASA": 1,
+     "A4C": 2,
+     "A5C": 3,
+     "PMPALA": null,
+     "PPMLSA": 1,
+     "SC4C": 4
+    }
+   },
+   "EchoPrime": {
+    "views": [
+     "A2C",
+     "A3C",
+     "A4C",
+     "A5C",
+     "Apical_Doppler",
+     "Doppler_Parasternal_Long",
+     "Doppler_Parasternal_Short",
+     "Parasternal_Long",
+     "Parasternal_Short",
+     "SSN",
+     "Subcostal"
+    ],
+    "to_family5": {
+     "A4C": 2,
+     "A5C": 3,
+     "Parasternal_Long": 0,
+     "Parasternal_Short": 1,
+     "Subcostal": 4
+    }
+   }
+  },
+  "label_definitions": {
+   "A4C": "Apical 4-Chamber",
+   "A5C": "Apical 5-Chamber"
+  }
+ },
+ "seeds": {
+  "0": {
+   "sets": {
+    "A5C_all": {
+     "both_folds": {
+      "runs": 1255,
+      "native": 170,
+      "constructed": 1085,
+      "pure": 676,
+      "mixed": 579,
+      "short_le16": 406,
+      "long": 849,
+      "single_source": 530,
+      "multi_source": 725,
+      "by_src": {
+       "weight": 1254.9999999999977,
+       "recordings": 719,
+       "sessions": 305,
+       "uses_per_recording_mean": 3.2726008344923505,
+       "uses_per_recording_max": 27,
+       "recordings_used_once": 442,
+       "top_recording_share": {
+        "1": 0.017977419174841285,
+        "5": 0.06795386164442212,
+        "10": 0.11645131283537424
+       },
+       "top_session_share": {
+        "1": 0.04396485993739631,
+        "5": 0.1686165483119042,
+        "10": 0.26406605096562225
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.022253129346314324,
+        "5": 0.07788595271210014,
+        "10": 0.12517385257301808
+       },
+       "recordings_for_half_the_weight": 65,
+       "top10_recordings_share_in_reference_class_runs": 0.11645131283537424
+      },
+      "by_true_src": {
+       "weight": 1186.5190212523064,
+       "recordings": 169,
+       "sessions": 108,
+       "uses_per_recording_mean": 9.85207100591716,
+       "uses_per_recording_max": 27,
+       "recordings_used_once": 1,
+       "top_recording_share": {
+        "1": 0.019015001580516732,
+        "5": 0.07187587795578615,
+        "10": 0.12317240178260676
+       },
+       "top_session_share": {
+        "1": 0.04619802047605462,
+        "5": 0.1773272188210027,
+        "10": 0.2772132658458821
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.05917159763313609,
+        "5": 0.17159763313609466,
+        "10": 0.26627218934911245
+       },
+       "recordings_for_half_the_weight": 60,
+       "top10_recordings_share_in_reference_class_runs": 0.12317240178260676
+      }
+     },
+     "heldout_fold_0": {
+      "runs": 595,
+      "native": 75,
+      "constructed": 520,
+      "pure": 308,
+      "mixed": 287,
+      "short_le16": 202,
+      "long": 393,
+      "single_source": 244,
+      "multi_source": 351,
+      "by_src": {
+       "weight": 595.0000000000008,
+       "recordings": 355,
+       "sessions": 151,
+       "uses_per_recording_mean": 3.2056338028169016,
+       "uses_per_recording_max": 27,
+       "recordings_used_once": 218,
+       "top_recording_share": {
+        "1": 0.037918758091471834,
+        "5": 0.12044822182715408,
+        "10": 0.20691620138364114
+       },
+       "top_session_share": {
+        "1": 0.0840894724367124,
+        "5": 0.27021195386403163,
+        "10": 0.4141473784892645
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.04225352112676056,
+        "5": 0.12394366197183099,
+        "10": 0.2
+       },
+       "recordings_for_half_the_weight": 31
+      },
+      "by_true_src": {
+       "weight": 560.6543343840802,
+       "recordings": 79,
+       "sessions": 49,
+       "uses_per_recording_mean": 9.987341772151899,
+       "uses_per_recording_max": 27,
+       "recordings_used_once": 1,
+       "top_recording_share": {
+        "1": 0.040241659933319525,
+        "5": 0.12782687583408744,
+        "10": 0.2195918809020136
+       },
+       "top_session_share": {
+        "1": 0.0889877682169266,
+        "5": 0.285283011034939,
+        "10": 0.43591126295942395
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.0759493670886076,
+        "5": 0.25316455696202533,
+        "10": 0.4050632911392405
+       },
+       "recordings_for_half_the_weight": 29
+      }
+     },
+     "heldout_fold_1": {
+      "runs": 660,
+      "native": 95,
+      "constructed": 565,
+      "pure": 368,
+      "mixed": 292,
+      "short_le16": 204,
+      "long": 456,
+      "single_source": 286,
+      "multi_source": 374,
+      "by_src": {
+       "weight": 660.0000000000015,
+       "recordings": 364,
+       "sessions": 154,
+       "uses_per_recording_mean": 3.337912087912088,
+       "uses_per_recording_max": 25,
+       "recordings_used_once": 224,
+       "top_recording_share": {
+        "1": 0.0327344613381198,
+        "5": 0.1128480388200568,
+        "10": 0.19344556088198944
+       },
+       "top_session_share": {
+        "1": 0.08359984730520022,
+        "5": 0.2516030122491801,
+        "10": 0.37833870859072677
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.04395604395604396,
+        "5": 0.12637362637362637,
+        "10": 0.2032967032967033
+       },
+       "recordings_for_half_the_weight": 34
+      },
+      "by_true_src": {
+       "weight": 625.8646868682263,
+       "recordings": 90,
+       "sessions": 59,
+       "uses_per_recording_mean": 9.733333333333333,
+       "uses_per_recording_max": 25,
+       "recordings_used_once": 0,
+       "top_recording_share": {
+        "1": 0.0345198330189668,
+        "5": 0.11900288861787006,
+        "10": 0.20399628363917371
+       },
+       "top_session_share": {
+        "1": 0.08758255768244584,
+        "5": 0.2633234728469884,
+        "10": 0.3940145004434523
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.1111111111111111,
+        "5": 0.2777777777777778,
+        "10": 0.3888888888888889
+       },
+       "recordings_for_half_the_weight": 32
+      }
+     }
+    },
+    "A4C_all": {
+     "both_folds": {
+      "runs": 1554,
+      "native": 468,
+      "constructed": 1086,
+      "pure": 1002,
+      "mixed": 552,
+      "short_le16": 468,
+      "long": 1086,
+      "single_source": 865,
+      "multi_source": 689,
+      "by_src": {
+       "weight": 1553.9999999999995,
+       "recordings": 1116,
+       "sessions": 357,
+       "uses_per_recording_mean": 2.324372759856631,
+       "uses_per_recording_max": 11,
+       "recordings_used_once": 468,
+       "top_recording_share": {
+        "1": 0.0067544167544167566,
+        "5": 0.029650639341041823,
+        "10": 0.05283316442252162
+       },
+       "top_session_share": {
+        "1": 0.016532717877424115,
+        "5": 0.058396995016454685,
+        "10": 0.10307971203031256
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.021505376344086023,
+        "5": 0.06362007168458782,
+        "10": 0.10304659498207885
+       },
+       "recordings_for_half_the_weight": 197,
+       "top10_recordings_share_in_reference_class_runs": 0.05283316442252162
+      },
+      "by_true_src": {
+       "weight": 1491.798604708033,
+       "recordings": 654,
+       "sessions": 320,
+       "uses_per_recording_mean": 3.007645259938838,
+       "uses_per_recording_max": 11,
+       "recordings_used_once": 116,
+       "top_recording_share": {
+        "1": 0.007036046020714659,
+        "5": 0.030886939691833905,
+        "10": 0.05503607340393463
+       },
+       "top_session_share": {
+        "1": 0.015416028430909492,
+        "5": 0.05863669569458275,
+        "10": 0.1044879650739962
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.016819571865443424,
+        "5": 0.0672782874617737,
+        "10": 0.11314984709480122
+       },
+       "recordings_for_half_the_weight": 186,
+       "top10_recordings_share_in_reference_class_runs": 0.05503607340393463
+      }
+     },
+     "heldout_fold_0": {
+      "runs": 785,
+      "native": 231,
+      "constructed": 554,
+      "pure": 498,
+      "mixed": 287,
+      "short_le16": 244,
+      "long": 541,
+      "single_source": 437,
+      "multi_source": 348,
+      "by_src": {
+       "weight": 785.0,
+       "recordings": 551,
+       "sessions": 179,
+       "uses_per_recording_mean": 2.3611615245009077,
+       "uses_per_recording_max": 11,
+       "recordings_used_once": 216,
+       "top_recording_share": {
+        "1": 0.013371163867979154,
+        "5": 0.05226696744152289,
+        "10": 0.08500632740855983
+       },
+       "top_session_share": {
+        "1": 0.023518388900554504,
+        "5": 0.09895076992009516,
+        "10": 0.1741264667770754
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.023593466424682397,
+        "5": 0.09437386569872959,
+        "10": 0.15970961887477314
+       },
+       "recordings_for_half_the_weight": 101
+      },
+      "by_true_src": {
+       "weight": 751.4497168400343,
+       "recordings": 319,
+       "sessions": 159,
+       "uses_per_recording_mean": 3.031347962382445,
+       "uses_per_recording_max": 11,
+       "recordings_used_once": 48,
+       "top_recording_share": {
+        "1": 0.013968151695502019,
+        "5": 0.05460055213558579,
+        "10": 0.0888016397109438
+       },
+       "top_session_share": {
+        "1": 0.02397327813292392,
+        "5": 0.1022887423179766,
+        "10": 0.1787420228560319
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.025078369905956112,
+        "5": 0.10658307210031348,
+        "10": 0.1755485893416928
+       },
+       "recordings_for_half_the_weight": 95
+      }
+     },
+     "heldout_fold_1": {
+      "runs": 769,
+      "native": 237,
+      "constructed": 532,
+      "pure": 504,
+      "mixed": 265,
+      "short_le16": 224,
+      "long": 545,
+      "single_source": 428,
+      "multi_source": 341,
+      "by_src": {
+       "weight": 769.0000000000006,
+       "recordings": 565,
+       "sessions": 178,
+       "uses_per_recording_mean": 2.288495575221239,
+       "uses_per_recording_max": 11,
+       "recordings_used_once": 252,
+       "top_recording_share": {
+        "1": 0.01209362808842652,
+        "5": 0.05111541782669946,
+        "10": 0.09375081873706559
+       },
+       "top_session_share": {
+        "1": 0.033409419481816714,
+        "5": 0.10729456190875283,
+        "10": 0.1863436192523334
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.04247787610619469,
+        "5": 0.11150442477876106,
+        "10": 0.17699115044247787
+       },
+       "recordings_for_half_the_weight": 97
+      },
+      "by_true_src": {
+       "weight": 740.348887867998,
+       "recordings": 335,
+       "sessions": 161,
+       "uses_per_recording_mean": 2.985074626865672,
+       "uses_per_recording_max": 11,
+       "recordings_used_once": 68,
+       "top_recording_share": {
+        "1": 0.012561645127584987,
+        "5": 0.053093557581922614,
+        "10": 0.0973789260579773
+       },
+       "top_session_share": {
+        "1": 0.031063205578111916,
+        "5": 0.10672016308814897,
+        "10": 0.18781573189561424
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.03283582089552239,
+        "5": 0.11940298507462686,
+        "10": 0.191044776119403
+       },
+       "recordings_for_half_the_weight": 92
+      }
+     }
+    },
+    "S1": {
+     "both_folds": {
+      "runs": 103,
+      "native": 19,
+      "constructed": 84,
+      "pure": 75,
+      "mixed": 28,
+      "short_le16": 70,
+      "long": 33,
+      "single_source": 68,
+      "multi_source": 35,
+      "by_src": {
+       "weight": 103.0,
+       "recordings": 73,
+       "sessions": 63,
+       "uses_per_recording_mean": 2.0136986301369864,
+       "uses_per_recording_max": 12,
+       "recordings_used_once": 50,
+       "top_recording_share": {
+        "1": 0.11197411003236246,
+        "5": 0.36016166994087445,
+        "10": 0.5692508978650538
+       },
+       "top_session_share": {
+        "1": 0.12977346278317153,
+        "5": 0.4003131850923896,
+        "10": 0.6221057291179433
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.0410958904109589,
+        "5": 0.1643835616438356,
+        "10": 0.273972602739726
+       },
+       "recordings_for_half_the_weight": 9,
+       "top10_recordings_share_in_reference_class_runs": 0.10045406765090192
+      },
+      "by_true_src": {
+       "weight": 97.03165200391007,
+       "recordings": 38,
+       "sessions": 33,
+       "uses_per_recording_mean": 2.9473684210526314,
+       "uses_per_recording_max": 12,
+       "recordings_used_once": 15,
+       "top_recording_share": {
+        "1": 0.11886155800860297,
+        "5": 0.3823149584469116,
+        "10": 0.6042651162709033
+       },
+       "top_session_share": {
+        "1": 0.1377557363047682,
+        "5": 0.4249361647769802,
+        "10": 0.6592299985870202
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.07894736842105263,
+        "5": 0.2631578947368421,
+        "10": 0.39473684210526316
+       },
+       "recordings_for_half_the_weight": 8,
+       "top10_recordings_share_in_reference_class_runs": 0.10625186165900805
+      }
+     },
+     "heldout_fold_0": {
+      "runs": 34,
+      "native": 7,
+      "constructed": 27,
+      "pure": 25,
+      "mixed": 9,
+      "short_le16": 23,
+      "long": 11,
+      "single_source": 23,
+      "multi_source": 11,
+      "by_src": {
+       "weight": 34.0,
+       "recordings": 22,
+       "sessions": 22,
+       "uses_per_recording_mean": 2.090909090909091,
+       "uses_per_recording_max": 8,
+       "recordings_used_once": 14,
+       "top_recording_share": {
+        "1": 0.22843137254901963,
+        "5": 0.701438962681847,
+        "10": 0.9328115117014547
+       },
+       "top_session_share": {
+        "1": 0.22843137254901963,
+        "5": 0.701438962681847,
+        "10": 0.9328115117014547
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.045454545454545456,
+        "5": 0.22727272727272727,
+        "10": 0.45454545454545453
+       },
+       "recordings_for_half_the_weight": 3
+      },
+      "by_true_src": {
+       "weight": 32.582258064516125,
+       "recordings": 12,
+       "sessions": 12,
+       "uses_per_recording_mean": 3.0,
+       "uses_per_recording_max": 8,
+       "recordings_used_once": 4,
+       "top_recording_share": {
+        "1": 0.23837103773740578,
+        "5": 0.7319604640034323,
+        "10": 0.9734006567331651
+       },
+       "top_session_share": {
+        "1": 0.23837103773740578,
+        "5": 0.7319604640034323,
+        "10": 0.9734006567331651
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.08333333333333333,
+        "5": 0.4166666666666667,
+        "10": 0.8333333333333334
+       },
+       "recordings_for_half_the_weight": 3
+      }
+     },
+     "heldout_fold_1": {
+      "runs": 69,
+      "native": 12,
+      "constructed": 57,
+      "pure": 50,
+      "mixed": 19,
+      "short_le16": 47,
+      "long": 22,
+      "single_source": 45,
+      "multi_source": 24,
+      "by_src": {
+       "weight": 69.0,
+       "recordings": 51,
+       "sessions": 41,
+       "uses_per_recording_mean": 1.9803921568627452,
+       "uses_per_recording_max": 12,
+       "recordings_used_once": 36,
+       "top_recording_share": {
+        "1": 0.1671497584541063,
+        "5": 0.47367996737561957,
+        "10": 0.7307193048497397
+       },
+       "top_session_share": {
+        "1": 0.19371980676328504,
+        "5": 0.5427206851119895,
+        "10": 0.811516406299015
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.058823529411764705,
+        "5": 0.23529411764705882,
+        "10": 0.39215686274509803
+       },
+       "recordings_for_half_the_weight": 6
+      },
+      "by_true_src": {
+       "weight": 64.44939393939393,
+       "recordings": 26,
+       "sessions": 21,
+       "uses_per_recording_mean": 2.923076923076923,
+       "uses_per_recording_max": 12,
+       "recordings_used_once": 11,
+       "top_recording_share": {
+        "1": 0.1789517732964083,
+        "5": 0.5071252924372357,
+        "10": 0.7823135168973814
+       },
+       "top_session_share": {
+        "1": 0.20739786442734026,
+        "5": 0.5810407978070651,
+        "10": 0.865065782005547
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.11538461538461539,
+        "5": 0.38461538461538464,
+        "10": 0.5769230769230769
+       },
+       "recordings_for_half_the_weight": 5
+      }
+     }
+    },
+    "S1_persistent": {
+     "both_folds": {
+      "runs": 88,
+      "native": 16,
+      "constructed": 72,
+      "pure": 63,
+      "mixed": 25,
+      "short_le16": 60,
+      "long": 28,
+      "single_source": 57,
+      "multi_source": 31,
+      "by_src": {
+       "weight": 87.99999999999996,
+       "recordings": 65,
+       "sessions": 56,
+       "uses_per_recording_mean": 1.9692307692307693,
+       "uses_per_recording_max": 12,
+       "recordings_used_once": 45,
+       "top_recording_share": {
+        "1": 0.13106060606060613,
+        "5": 0.39262027744982314,
+        "10": 0.6248050281829611
+       },
+       "top_session_share": {
+        "1": 0.14053030303030312,
+        "5": 0.4353908402203859,
+        "10": 0.6753055693085023
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.046153846153846156,
+        "5": 0.16923076923076924,
+        "10": 0.2923076923076923
+       },
+       "recordings_for_half_the_weight": 8,
+       "top10_recordings_share_in_reference_class_runs": 0.10045406765090192
+      },
+      "by_true_src": {
+       "weight": 82.34831867057673,
+       "recordings": 33,
+       "sessions": 29,
+       "uses_per_recording_mean": 2.909090909090909,
+       "uses_per_recording_max": 12,
+       "recordings_used_once": 13,
+       "top_recording_share": {
+        "1": 0.14005548042177846,
+        "5": 0.41956636120039487,
+        "10": 0.6676862790611664
+       },
+       "top_session_share": {
+        "1": 0.15017509605919022,
+        "5": 0.46527232805645335,
+        "10": 0.7203082803757074
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.09090909090909091,
+        "5": 0.2727272727272727,
+        "10": 0.42424242424242425
+       },
+       "recordings_for_half_the_weight": 7,
+       "top10_recordings_share_in_reference_class_runs": 0.10625186165900805
+      }
+     },
+     "heldout_fold_0": {
+      "runs": 22,
+      "native": 5,
+      "constructed": 17,
+      "pure": 16,
+      "mixed": 6,
+      "short_le16": 16,
+      "long": 6,
+      "single_source": 15,
+      "multi_source": 7,
+      "by_src": {
+       "weight": 22.0,
+       "recordings": 15,
+       "sessions": 15,
+       "uses_per_recording_mean": 2.0,
+       "uses_per_recording_max": 7,
+       "recordings_used_once": 10,
+       "top_recording_share": {
+        "1": 0.31212121212121213,
+        "5": 0.8726783968719452,
+        "10": 0.9775171065493644
+       },
+       "top_session_share": {
+        "1": 0.31212121212121213,
+        "5": 0.8726783968719452,
+        "10": 0.9775171065493644
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.06666666666666667,
+        "5": 0.3333333333333333,
+        "10": 0.6666666666666666
+       },
+       "recordings_for_half_the_weight": 2
+      },
+      "by_true_src": {
+       "weight": 20.898924731182795,
+       "recordings": 8,
+       "sessions": 8,
+       "uses_per_recording_mean": 2.875,
+       "uses_per_recording_max": 7,
+       "recordings_used_once": 3,
+       "top_recording_share": {
+        "1": 0.3285655484667627,
+        "5": 0.9186561020786168,
+        "10": 0.9999999999999998
+       },
+       "top_session_share": {
+        "1": 0.3285655484667627,
+        "5": 0.9186561020786168,
+        "10": 0.9999999999999998
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.125,
+        "5": 0.625,
+        "10": 1.0
+       },
+       "recordings_for_half_the_weight": 2
+      }
+     },
+     "heldout_fold_1": {
+      "runs": 66,
+      "native": 11,
+      "constructed": 55,
+      "pure": 47,
+      "mixed": 19,
+      "short_le16": 44,
+      "long": 22,
+      "single_source": 42,
+      "multi_source": 24,
+      "by_src": {
+       "weight": 66.00000000000001,
+       "recordings": 50,
+       "sessions": 41,
+       "uses_per_recording_mean": 1.96,
+       "uses_per_recording_max": 12,
+       "recordings_used_once": 35,
+       "top_recording_share": {
+        "1": 0.1747474747474747,
+        "5": 0.48005935983208703,
+        "10": 0.7427216974944246
+       },
+       "top_session_share": {
+        "1": 0.18737373737373733,
+        "5": 0.5468522891250163,
+        "10": 0.8120398793126065
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.06,
+        "5": 0.22,
+        "10": 0.38
+       },
+       "recordings_for_half_the_weight": 6
+      },
+      "by_true_src": {
+       "weight": 61.449393939393936,
+       "recordings": 25,
+       "sessions": 21,
+       "uses_per_recording_mean": 2.92,
+       "uses_per_recording_max": 12,
+       "recordings_used_once": 10,
+       "top_recording_share": {
+        "1": 0.1876883170679988,
+        "5": 0.5156099306718442,
+        "10": 0.7977236046132355
+       },
+       "top_session_share": {
+        "1": 0.20124961165383687,
+        "5": 0.5861286625182022,
+        "10": 0.8682423364595934
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.12,
+        "5": 0.36,
+        "10": 0.56
+       },
+       "recordings_for_half_the_weight": 5
+      }
+     }
+    },
+    "S1_fixed_by_no_arm": {
+     "both_folds": {
+      "runs": 88,
+      "native": 16,
+      "constructed": 72,
+      "pure": 63,
+      "mixed": 25,
+      "short_le16": 60,
+      "long": 28,
+      "single_source": 57,
+      "multi_source": 31,
+      "by_src": {
+       "weight": 87.99999999999996,
+       "recordings": 65,
+       "sessions": 56,
+       "uses_per_recording_mean": 1.9692307692307693,
+       "uses_per_recording_max": 12,
+       "recordings_used_once": 45,
+       "top_recording_share": {
+        "1": 0.13106060606060613,
+        "5": 0.39262027744982314,
+        "10": 0.6248050281829611
+       },
+       "top_session_share": {
+        "1": 0.14053030303030312,
+        "5": 0.4353908402203859,
+        "10": 0.6753055693085023
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.046153846153846156,
+        "5": 0.16923076923076924,
+        "10": 0.2923076923076923
+       },
+       "recordings_for_half_the_weight": 8,
+       "top10_recordings_share_in_reference_class_runs": 0.10045406765090192
+      },
+      "by_true_src": {
+       "weight": 82.34831867057673,
+       "recordings": 33,
+       "sessions": 29,
+       "uses_per_recording_mean": 2.909090909090909,
+       "uses_per_recording_max": 12,
+       "recordings_used_once": 13,
+       "top_recording_share": {
+        "1": 0.14005548042177846,
+        "5": 0.41956636120039487,
+        "10": 0.6676862790611664
+       },
+       "top_session_share": {
+        "1": 0.15017509605919022,
+        "5": 0.46527232805645335,
+        "10": 0.7203082803757074
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.09090909090909091,
+        "5": 0.2727272727272727,
+        "10": 0.42424242424242425
+       },
+       "recordings_for_half_the_weight": 7,
+       "top10_recordings_share_in_reference_class_runs": 0.10625186165900805
+      }
+     },
+     "heldout_fold_0": {
+      "runs": 22,
+      "native": 5,
+      "constructed": 17,
+      "pure": 16,
+      "mixed": 6,
+      "short_le16": 16,
+      "long": 6,
+      "single_source": 15,
+      "multi_source": 7,
+      "by_src": {
+       "weight": 22.0,
+       "recordings": 15,
+       "sessions": 15,
+       "uses_per_recording_mean": 2.0,
+       "uses_per_recording_max": 7,
+       "recordings_used_once": 10,
+       "top_recording_share": {
+        "1": 0.31212121212121213,
+        "5": 0.8726783968719452,
+        "10": 0.9775171065493644
+       },
+       "top_session_share": {
+        "1": 0.31212121212121213,
+        "5": 0.8726783968719452,
+        "10": 0.9775171065493644
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.06666666666666667,
+        "5": 0.3333333333333333,
+        "10": 0.6666666666666666
+       },
+       "recordings_for_half_the_weight": 2
+      },
+      "by_true_src": {
+       "weight": 20.898924731182795,
+       "recordings": 8,
+       "sessions": 8,
+       "uses_per_recording_mean": 2.875,
+       "uses_per_recording_max": 7,
+       "recordings_used_once": 3,
+       "top_recording_share": {
+        "1": 0.3285655484667627,
+        "5": 0.9186561020786168,
+        "10": 0.9999999999999998
+       },
+       "top_session_share": {
+        "1": 0.3285655484667627,
+        "5": 0.9186561020786168,
+        "10": 0.9999999999999998
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.125,
+        "5": 0.625,
+        "10": 1.0
+       },
+       "recordings_for_half_the_weight": 2
+      }
+     },
+     "heldout_fold_1": {
+      "runs": 66,
+      "native": 11,
+      "constructed": 55,
+      "pure": 47,
+      "mixed": 19,
+      "short_le16": 44,
+      "long": 22,
+      "single_source": 42,
+      "multi_source": 24,
+      "by_src": {
+       "weight": 66.00000000000001,
+       "recordings": 50,
+       "sessions": 41,
+       "uses_per_recording_mean": 1.96,
+       "uses_per_recording_max": 12,
+       "recordings_used_once": 35,
+       "top_recording_share": {
+        "1": 0.1747474747474747,
+        "5": 0.48005935983208703,
+        "10": 0.7427216974944246
+       },
+       "top_session_share": {
+        "1": 0.18737373737373733,
+        "5": 0.5468522891250163,
+        "10": 0.8120398793126065
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.06,
+        "5": 0.22,
+        "10": 0.38
+       },
+       "recordings_for_half_the_weight": 6
+      },
+      "by_true_src": {
+       "weight": 61.449393939393936,
+       "recordings": 25,
+       "sessions": 21,
+       "uses_per_recording_mean": 2.92,
+       "uses_per_recording_max": 12,
+       "recordings_used_once": 10,
+       "top_recording_share": {
+        "1": 0.1876883170679988,
+        "5": 0.5156099306718442,
+        "10": 0.7977236046132355
+       },
+       "top_session_share": {
+        "1": 0.20124961165383687,
+        "5": 0.5861286625182022,
+        "10": 0.8682423364595934
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.12,
+        "5": 0.36,
+        "10": 0.56
+       },
+       "recordings_for_half_the_weight": 5
+      }
+     }
+    },
+    "S2_F_E": {
+     "both_folds": {
+      "runs": 216,
+      "native": 31,
+      "constructed": 185,
+      "pure": 130,
+      "mixed": 86,
+      "short_le16": 79,
+      "long": 137,
+      "single_source": 106,
+      "multi_source": 110,
+      "by_src": {
+       "weight": 216.00000000000009,
+       "recordings": 183,
+       "sessions": 123,
+       "uses_per_recording_mean": 1.994535519125683,
+       "uses_per_recording_max": 9,
+       "recordings_used_once": 120,
+       "top_recording_share": {
+        "1": 0.039174382716049366,
+        "5": 0.16309032017365344,
+        "10": 0.2861079025420812
+       },
+       "top_session_share": {
+        "1": 0.06493790024427276,
+        "5": 0.23632401353404092,
+        "10": 0.4021184724863945
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.060109289617486336,
+        "5": 0.14754098360655737,
+        "10": 0.23497267759562843
+       },
+       "recordings_for_half_the_weight": 22,
+       "top10_recordings_share_in_reference_class_runs": 0.0831993796282952
+      },
+      "by_true_src": {
+       "weight": 205.98824635246663,
+       "recordings": 87,
+       "sessions": 62,
+       "uses_per_recording_mean": 3.057471264367816,
+       "uses_per_recording_max": 9,
+       "recordings_used_once": 27,
+       "top_recording_share": {
+        "1": 0.04107839557111381,
+        "5": 0.17101708365064353,
+        "10": 0.300013753422342
+       },
+       "top_session_share": {
+        "1": 0.0671231815290288,
+        "5": 0.24538286925780986,
+        "10": 0.41794095010199916
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.10344827586206896,
+        "5": 0.2413793103448276,
+        "10": 0.367816091954023
+       },
+       "recordings_for_half_the_weight": 21,
+       "top10_recordings_share_in_reference_class_runs": 0.08800130428866255
+      }
+     },
+     "heldout_fold_0": {
+      "runs": 71,
+      "native": 12,
+      "constructed": 59,
+      "pure": 43,
+      "mixed": 28,
+      "short_le16": 29,
+      "long": 42,
+      "single_source": 37,
+      "multi_source": 34,
+      "by_src": {
+       "weight": 71.0,
+       "recordings": 59,
+       "sessions": 44,
+       "uses_per_recording_mean": 1.9830508474576272,
+       "uses_per_recording_max": 8,
+       "recordings_used_once": 42,
+       "top_recording_share": {
+        "1": 0.10849094567404427,
+        "5": 0.4085155376704673,
+        "10": 0.6820232144602959
+       },
+       "top_session_share": {
+        "1": 0.13983401318658764,
+        "5": 0.4851570625941441,
+        "10": 0.7607161370229946
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.06779661016949153,
+        "5": 0.2542372881355932,
+        "10": 0.423728813559322
+       },
+       "recordings_for_half_the_weight": 7
+      },
+      "by_true_src": {
+       "weight": 67.94236088014776,
+       "recordings": 25,
+       "sessions": 20,
+       "uses_per_recording_mean": 3.32,
+       "uses_per_recording_max": 8,
+       "recordings_used_once": 8,
+       "top_recording_share": {
+        "1": 0.11337341009455353,
+        "5": 0.42690013709956465,
+        "10": 0.7127165968239121
+       },
+       "top_session_share": {
+        "1": 0.14416457532573584,
+        "5": 0.5029677754520882,
+        "10": 0.7885730154389472
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.12,
+        "5": 0.4,
+        "10": 0.6
+       },
+       "recordings_for_half_the_weight": 7
+      }
+     },
+     "heldout_fold_1": {
+      "runs": 145,
+      "native": 19,
+      "constructed": 126,
+      "pure": 87,
+      "mixed": 58,
+      "short_le16": 50,
+      "long": 95,
+      "single_source": 69,
+      "multi_source": 76,
+      "by_src": {
+       "weight": 145.00000000000003,
+       "recordings": 124,
+       "sessions": 79,
+       "uses_per_recording_mean": 2.0,
+       "uses_per_recording_max": 9,
+       "recordings_used_once": 78,
+       "top_recording_share": {
+        "1": 0.05835632183908045,
+        "5": 0.22546922143323941,
+        "10": 0.37222279586553536
+       },
+       "top_session_share": {
+        "1": 0.09673507898457186,
+        "5": 0.3419271631294606,
+        "10": 0.5378777994117933
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.08870967741935484,
+        "5": 0.20967741935483872,
+        "10": 0.3064516129032258
+       },
+       "recordings_for_half_the_weight": 16
+      },
+      "by_true_src": {
+       "weight": 138.04588547231882,
+       "recordings": 62,
+       "sessions": 42,
+       "uses_per_recording_mean": 2.9516129032258065,
+       "uses_per_recording_max": 9,
+       "recordings_used_once": 19,
+       "top_recording_share": {
+        "1": 0.06129604397635895,
+        "5": 0.23682732010419377,
+        "10": 0.39097366224164104
+       },
+       "top_session_share": {
+        "1": 0.10015935212741602,
+        "5": 0.3564957537033826,
+        "10": 0.5598075071601415
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.14516129032258066,
+        "5": 0.3225806451612903,
+        "10": 0.4838709677419355
+       },
+       "recordings_for_half_the_weight": 15
+      }
+     }
+    },
+    "S2_T_E": {
+     "both_folds": {
+      "runs": 106,
+      "native": 17,
+      "constructed": 89,
+      "pure": 73,
+      "mixed": 33,
+      "short_le16": 39,
+      "long": 67,
+      "single_source": 65,
+      "multi_source": 41,
+      "by_src": {
+       "weight": 106.0,
+       "recordings": 86,
+       "sessions": 70,
+       "uses_per_recording_mean": 1.8604651162790697,
+       "uses_per_recording_max": 8,
+       "recordings_used_once": 58,
+       "top_recording_share": {
+        "1": 0.07320754716981133,
+        "5": 0.28127382894755193,
+        "10": 0.4784826336984449
+       },
+       "top_session_share": {
+        "1": 0.0881761006289308,
+        "5": 0.3762482558658159,
+        "10": 0.5976669294865142
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.05813953488372093,
+        "5": 0.1511627906976744,
+        "10": 0.26744186046511625
+       },
+       "recordings_for_half_the_weight": 11,
+       "top10_recordings_share_in_reference_class_runs": 0.08851626494073099
+      },
+      "by_true_src": {
+       "weight": 102.04837705695341,
+       "recordings": 47,
+       "sessions": 39,
+       "uses_per_recording_mean": 2.574468085106383,
+       "uses_per_recording_max": 8,
+       "recordings_used_once": 19,
+       "top_recording_share": {
+        "1": 0.07604236562889313,
+        "5": 0.29216560545397674,
+        "10": 0.49701093378220695
+       },
+       "top_session_share": {
+        "1": 0.09159054691727504,
+        "5": 0.3901644455637802,
+        "10": 0.6193731804635015
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.0851063829787234,
+        "5": 0.2553191489361702,
+        "10": 0.3829787234042553
+       },
+       "recordings_for_half_the_weight": 11,
+       "top10_recordings_share_in_reference_class_runs": 0.09362505826781431
+      }
+     },
+     "heldout_fold_0": {
+      "runs": 39,
+      "native": 5,
+      "constructed": 34,
+      "pure": 23,
+      "mixed": 16,
+      "short_le16": 14,
+      "long": 25,
+      "single_source": 22,
+      "multi_source": 17,
+      "by_src": {
+       "weight": 39.0,
+       "recordings": 37,
+       "sessions": 31,
+       "uses_per_recording_mean": 1.7837837837837838,
+       "uses_per_recording_max": 8,
+       "recordings_used_once": 26,
+       "top_recording_share": {
+        "1": 0.198974358974359,
+        "5": 0.6260369130743839,
+        "10": 0.8793236263610971
+       },
+       "top_session_share": {
+        "1": 0.20895213598960674,
+        "5": 0.709113836151307,
+        "10": 0.9048506918881626
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.05405405405405406,
+        "5": 0.2702702702702703,
+        "10": 0.43243243243243246
+       },
+       "recordings_for_half_the_weight": 4
+      },
+      "by_true_src": {
+       "weight": 36.957757705544594,
+       "recordings": 16,
+       "sessions": 14,
+       "uses_per_recording_mean": 2.8125,
+       "uses_per_recording_max": 8,
+       "recordings_used_once": 5,
+       "top_recording_share": {
+        "1": 0.2099694484126077,
+        "5": 0.6606309777889485,
+        "10": 0.9279140174388307
+       },
+       "top_session_share": {
+        "1": 0.22049858566966274,
+        "5": 0.7418047336185649,
+        "10": 0.9468545604657412
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.125,
+        "5": 0.4375,
+        "10": 0.75
+       },
+       "recordings_for_half_the_weight": 4
+      }
+     },
+     "heldout_fold_1": {
+      "runs": 67,
+      "native": 12,
+      "constructed": 55,
+      "pure": 50,
+      "mixed": 17,
+      "short_le16": 25,
+      "long": 42,
+      "single_source": 43,
+      "multi_source": 24,
+      "by_src": {
+       "weight": 67.0,
+       "recordings": 49,
+       "sessions": 39,
+       "uses_per_recording_mean": 1.9183673469387754,
+       "uses_per_recording_max": 7,
+       "recordings_used_once": 32,
+       "top_recording_share": {
+        "1": 0.09665309814563545,
+        "5": 0.38796058510110204,
+        "10": 0.6197914951311804
+       },
+       "top_session_share": {
+        "1": 0.13950248756218905,
+        "5": 0.5040166683213644,
+        "10": 0.7529620062121392
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.10204081632653061,
+        "5": 0.2653061224489796,
+        "10": 0.40816326530612246
+       },
+       "recordings_for_half_the_weight": 7
+      },
+      "by_true_src": {
+       "weight": 65.0906193514088,
+       "recordings": 31,
+       "sessions": 25,
+       "uses_per_recording_mean": 2.4516129032258065,
+       "uses_per_recording_max": 7,
+       "recordings_used_once": 14,
+       "top_recording_share": {
+        "1": 0.09948833856990202,
+        "5": 0.3993410949347687,
+        "10": 0.6379725771174476
+       },
+       "top_session_share": {
+        "1": 0.14359468015208507,
+        "5": 0.5177773763207447,
+        "10": 0.7727962685065145
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.12903225806451613,
+        "5": 0.3548387096774194,
+        "10": 0.5161290322580645
+       },
+       "recordings_for_half_the_weight": 7
+      }
+     }
+    },
+    "S2_both": {
+     "both_folds": {
+      "runs": 81,
+      "native": 10,
+      "constructed": 71,
+      "pure": 55,
+      "mixed": 26,
+      "short_le16": 34,
+      "long": 47,
+      "single_source": 49,
+      "multi_source": 32,
+      "by_src": {
+       "weight": 81.00000000000001,
+       "recordings": 73,
+       "sessions": 59,
+       "uses_per_recording_mean": 1.7123287671232876,
+       "uses_per_recording_max": 7,
+       "recordings_used_once": 49,
+       "top_recording_share": {
+        "1": 0.07994762439206882,
+        "5": 0.2822842699807469,
+        "10": 0.4884717750328542
+       },
+       "top_session_share": {
+        "1": 0.10187055742611296,
+        "5": 0.39295277200255946,
+        "10": 0.6214166559406981
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.0547945205479452,
+        "5": 0.1643835616438356,
+        "10": 0.3013698630136986
+       },
+       "recordings_for_half_the_weight": 11,
+       "top10_recordings_share_in_reference_class_runs": 0.08654198963777042
+      },
+      "by_true_src": {
+       "weight": 77.85671039028672,
+       "recordings": 41,
+       "sessions": 34,
+       "uses_per_recording_mean": 2.268292682926829,
+       "uses_per_recording_max": 7,
+       "recordings_used_once": 17,
+       "top_recording_share": {
+        "1": 0.08317532995287559,
+        "5": 0.2936808626234112,
+        "10": 0.5081927245489866
+       },
+       "top_session_share": {
+        "1": 0.10512707824179551,
+        "5": 0.4079610826904818,
+        "10": 0.6425660962779557
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.07317073170731707,
+        "5": 0.2682926829268293,
+        "10": 0.4146341463414634
+       },
+       "recordings_for_half_the_weight": 10,
+       "top10_recordings_share_in_reference_class_runs": 0.09153683594618611
+      }
+     },
+     "heldout_fold_0": {
+      "runs": 26,
+      "native": 3,
+      "constructed": 23,
+      "pure": 15,
+      "mixed": 11,
+      "short_le16": 10,
+      "long": 16,
+      "single_source": 15,
+      "multi_source": 11,
+      "by_src": {
+       "weight": 25.999999999999993,
+       "recordings": 28,
+       "sessions": 23,
+       "uses_per_recording_mean": 1.6428571428571428,
+       "uses_per_recording_max": 4,
+       "recordings_used_once": 19,
+       "top_recording_share": {
+        "1": 0.14461538461538465,
+        "5": 0.6715841503546424,
+        "10": 0.9238219125924045
+       },
+       "top_session_share": {
+        "1": 0.27223903600952787,
+        "5": 0.7577379965084885,
+        "10": 0.9579265784183818
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.07142857142857142,
+        "5": 0.35714285714285715,
+        "10": 0.5357142857142857
+       },
+       "recordings_for_half_the_weight": 4
+      },
+      "by_true_src": {
+       "weight": 24.666091038877923,
+       "recordings": 12,
+       "sessions": 10,
+       "uses_per_recording_mean": 2.5,
+       "uses_per_recording_max": 4,
+       "recordings_used_once": 3,
+       "top_recording_share": {
+        "1": 0.15243598971858188,
+        "5": 0.7079025161181364,
+        "10": 0.9737809565992411
+       },
+       "top_session_share": {
+        "1": 0.28696135618291774,
+        "5": 0.7889854893727012,
+        "10": 1.0
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.16666666666666666,
+        "5": 0.5833333333333334,
+        "10": 1.0
+       },
+       "recordings_for_half_the_weight": 4
+      }
+     },
+     "heldout_fold_1": {
+      "runs": 55,
+      "native": 7,
+      "constructed": 48,
+      "pure": 40,
+      "mixed": 15,
+      "short_le16": 24,
+      "long": 31,
+      "single_source": 34,
+      "multi_source": 21,
+      "by_src": {
+       "weight": 55.00000000000001,
+       "recordings": 45,
+       "sessions": 36,
+       "uses_per_recording_mean": 1.7555555555555555,
+       "uses_per_recording_max": 7,
+       "recordings_used_once": 30,
+       "top_recording_share": {
+        "1": 0.11774104683195591,
+        "5": 0.4019095612443727,
+        "10": 0.6317460031598012
+       },
+       "top_session_share": {
+        "1": 0.15002754820936637,
+        "5": 0.5218223252480458,
+        "10": 0.7550224035271107
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.08888888888888889,
+        "5": 0.26666666666666666,
+        "10": 0.4222222222222222
+       },
+       "recordings_for_half_the_weight": 7
+      },
+      "by_true_src": {
+       "weight": 53.19061935140882,
+       "recordings": 29,
+       "sessions": 24,
+       "uses_per_recording_mean": 2.1724137931034484,
+       "uses_per_recording_max": 7,
+       "recordings_used_once": 14,
+       "top_recording_share": {
+        "1": 0.12174623372920092,
+        "5": 0.4155812836545778,
+        "10": 0.653236051722507
+       },
+       "top_session_share": {
+        "1": 0.15387766836807287,
+        "5": 0.538319755835245,
+        "10": 0.7758596331351097
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.10344827586206896,
+        "5": 0.3448275862068966,
+        "10": 0.5172413793103449
+       },
+       "recordings_for_half_the_weight": 7
+      }
+     }
+    },
+    "S2": {
+     "both_folds": {
+      "runs": 241,
+      "native": 38,
+      "constructed": 203,
+      "pure": 148,
+      "mixed": 93,
+      "short_le16": 84,
+      "long": 157,
+      "single_source": 122,
+      "multi_source": 119,
+      "by_src": {
+       "weight": 241.0,
+       "recordings": 195,
+       "sessions": 133,
+       "uses_per_recording_mean": 2.051282051282051,
+       "uses_per_recording_max": 12,
+       "recordings_used_once": 128,
+       "top_recording_share": {
+        "1": 0.04855957320687611,
+        "5": 0.16685949596737978,
+        "10": 0.2800286662867461
+       },
+       "top_session_share": {
+        "1": 0.05986135457577976,
+        "5": 0.24036269330465138,
+        "10": 0.3971333518466288
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.05641025641025641,
+        "5": 0.13846153846153847,
+        "10": 0.2205128205128205
+       },
+       "recordings_for_half_the_weight": 23,
+       "top10_recordings_share_in_reference_class_runs": 0.0905379082500095
+      },
+      "by_true_src": {
+       "weight": 230.1799130191333,
+       "recordings": 92,
+       "sessions": 67,
+       "uses_per_recording_mean": 3.1956521739130435,
+       "uses_per_recording_max": 12,
+       "recordings_used_once": 28,
+       "top_recording_share": {
+        "1": 0.050842217243710415,
+        "5": 0.17470307465445903,
+        "10": 0.29319199790251066
+       },
+       "top_session_share": {
+        "1": 0.06180637687346925,
+        "5": 0.25021330053374485,
+        "10": 0.4124707055583905
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.09782608695652174,
+        "5": 0.22826086956521738,
+        "10": 0.34782608695652173
+       },
+       "recordings_for_half_the_weight": 21,
+       "top10_recordings_share_in_reference_class_runs": 0.09576338248150175
+      }
+     },
+     "heldout_fold_0": {
+      "runs": 84,
+      "native": 14,
+      "constructed": 70,
+      "pure": 51,
+      "mixed": 33,
+      "short_le16": 33,
+      "long": 51,
+      "single_source": 44,
+      "multi_source": 40,
+      "by_src": {
+       "weight": 83.99999999999999,
+       "recordings": 68,
+       "sessions": 51,
+       "uses_per_recording_mean": 2.014705882352941,
+       "uses_per_recording_max": 12,
+       "recordings_used_once": 49,
+       "top_recording_share": {
+        "1": 0.1393197278911565,
+        "5": 0.39678099017384744,
+        "10": 0.6502471079787909
+       },
+       "top_session_share": {
+        "1": 0.1393197278911565,
+        "5": 0.47127464061346636,
+        "10": 0.7239035705638247
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.058823529411764705,
+        "5": 0.22058823529411764,
+        "10": 0.36764705882352944
+       },
+       "recordings_for_half_the_weight": 7
+      },
+      "by_true_src": {
+       "weight": 80.2340275468144,
+       "recordings": 29,
+       "sessions": 24,
+       "uses_per_recording_mean": 3.3793103448275863,
+       "uses_per_recording_max": 12,
+       "recordings_used_once": 10,
+       "top_recording_share": {
+        "1": 0.14585902640907364,
+        "5": 0.4154048374943692,
+        "10": 0.6807679826162121
+       },
+       "top_session_share": {
+        "1": 0.14585902640907364,
+        "5": 0.4897390506200252,
+        "10": 0.750652831084915
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.10344827586206896,
+        "5": 0.3448275862068966,
+        "10": 0.5172413793103449
+       },
+       "recordings_for_half_the_weight": 7
+      }
+     },
+     "heldout_fold_1": {
+      "runs": 157,
+      "native": 24,
+      "constructed": 133,
+      "pure": 97,
+      "mixed": 60,
+      "short_le16": 51,
+      "long": 106,
+      "single_source": 78,
+      "multi_source": 79,
+      "by_src": {
+       "weight": 157.00000000000003,
+       "recordings": 127,
+       "sessions": 82,
+       "uses_per_recording_mean": 2.0708661417322833,
+       "uses_per_recording_max": 9,
+       "recordings_used_once": 79,
+       "top_recording_share": {
+        "1": 0.05389596602972398,
+        "5": 0.21460533189694084,
+        "10": 0.3706516267547938
+       },
+       "top_session_share": {
+        "1": 0.09188908568638803,
+        "5": 0.33490088314504324,
+        "10": 0.5289423412826539
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.08661417322834646,
+        "5": 0.2047244094488189,
+        "10": 0.2992125984251969
+       },
+       "recordings_for_half_the_weight": 16
+      },
+      "by_true_src": {
+       "weight": 149.94588547231885,
+       "recordings": 63,
+       "sessions": 43,
+       "uses_per_recording_mean": 3.111111111111111,
+       "uses_per_recording_max": 9,
+       "recordings_used_once": 18,
+       "top_recording_share": {
+        "1": 0.056431469526576336,
+        "5": 0.22470131142104402,
+        "10": 0.3880887109186159
+       },
+       "top_session_share": {
+        "1": 0.09487813825601277,
+        "5": 0.3482107683224426,
+        "10": 0.549514620516331
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.14285714285714285,
+        "5": 0.31746031746031744,
+        "10": 0.47619047619047616
+       },
+       "recordings_for_half_the_weight": 15
+      }
+     }
+    },
+    "S3": {
+     "both_folds": {
+      "runs": 904,
+      "native": 111,
+      "constructed": 793,
+      "pure": 449,
+      "mixed": 455,
+      "short_le16": 246,
+      "long": 658,
+      "single_source": 336,
+      "multi_source": 568,
+      "by_src": {
+       "weight": 904.0000000000005,
+       "recordings": 621,
+       "sessions": 284,
+       "uses_per_recording_mean": 2.892109500805153,
+       "uses_per_recording_max": 19,
+       "recordings_used_once": 383,
+       "top_recording_share": {
+        "1": 0.014186988562035426,
+        "5": 0.06718761536121345,
+        "10": 0.1242884194114112
+       },
+       "top_session_share": {
+        "1": 0.05534650011044682,
+        "5": 0.1912570326162165,
+        "10": 0.28325920879398886
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.02254428341384863,
+        "5": 0.07729468599033816,
+        "10": 0.12399355877616747
+       },
+       "recordings_for_half_the_weight": 56,
+       "top10_recordings_share_in_reference_class_runs": 0.09290788114322035
+      },
+      "by_true_src": {
+       "weight": 852.9074562292634,
+       "recordings": 168,
+       "sessions": 107,
+       "uses_per_recording_mean": 7.4523809523809526,
+       "uses_per_recording_max": 19,
+       "recordings_used_once": 8,
+       "top_recording_share": {
+        "1": 0.015036845517543035,
+        "5": 0.07121242034283563,
+        "10": 0.13173378931947577
+       },
+       "top_session_share": {
+        "1": 0.05849565224644358,
+        "5": 0.20206339810967094,
+        "10": 0.2983544498609594
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.05952380952380952,
+        "5": 0.17261904761904762,
+        "10": 0.26785714285714285
+       },
+       "recordings_for_half_the_weight": 52,
+       "top10_recordings_share_in_reference_class_runs": 0.0982701404244468
+      }
+     },
+     "heldout_fold_0": {
+      "runs": 475,
+      "native": 53,
+      "constructed": 422,
+      "pure": 231,
+      "mixed": 244,
+      "short_le16": 145,
+      "long": 330,
+      "single_source": 176,
+      "multi_source": 299,
+      "by_src": {
+       "weight": 475.0000000000003,
+       "recordings": 319,
+       "sessions": 145,
+       "uses_per_recording_mean": 2.9843260188087775,
+       "uses_per_recording_max": 19,
+       "recordings_used_once": 194,
+       "top_recording_share": {
+        "1": 0.027000079284379,
+        "5": 0.12347698578535495,
+        "10": 0.2200218555121429
+       },
+       "top_session_share": {
+        "1": 0.10533312863125036,
+        "5": 0.29660672489315676,
+        "10": 0.4451872264667707
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.034482758620689655,
+        "5": 0.11912225705329153,
+        "10": 0.1974921630094044
+       },
+       "recordings_for_half_the_weight": 28
+      },
+      "by_true_src": {
+       "weight": 446.0380487727498,
+       "recordings": 78,
+       "sessions": 48,
+       "uses_per_recording_mean": 8.371794871794872,
+       "uses_per_recording_max": 19,
+       "recordings_used_once": 3,
+       "top_recording_share": {
+        "1": 0.02875323684911511,
+        "5": 0.13149454045326478,
+        "10": 0.23430822024224784
+       },
+       "top_session_share": {
+        "1": 0.11185453370011661,
+        "5": 0.3141883015451989,
+        "10": 0.46915425247675047
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.07692307692307693,
+        "5": 0.2564102564102564,
+        "10": 0.41025641025641024
+       },
+       "recordings_for_half_the_weight": 26
+      }
+     },
+     "heldout_fold_1": {
+      "runs": 429,
+      "native": 58,
+      "constructed": 371,
+      "pure": 218,
+      "mixed": 211,
+      "short_le16": 101,
+      "long": 328,
+      "single_source": 160,
+      "multi_source": 269,
+      "by_src": {
+       "weight": 429.0000000000004,
+       "recordings": 302,
+       "sessions": 139,
+       "uses_per_recording_mean": 2.794701986754967,
+       "uses_per_recording_max": 15,
+       "recordings_used_once": 189,
+       "top_recording_share": {
+        "1": 0.027388134741075893,
+        "5": 0.12518685990646178,
+        "10": 0.21805296206376867
+       },
+       "top_session_share": {
+        "1": 0.09304424110800925,
+        "5": 0.2672956524542251,
+        "10": 0.3986731570609853
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.046357615894039736,
+        "5": 0.1291390728476821,
+        "10": 0.2119205298013245
+       },
+       "recordings_for_half_the_weight": 29
+      },
+      "by_true_src": {
+       "weight": 406.8694074565132,
+       "recordings": 90,
+       "sessions": 59,
+       "uses_per_recording_mean": 6.655555555555556,
+       "uses_per_recording_max": 15,
+       "recordings_used_once": 5,
+       "top_recording_share": {
+        "1": 0.02887784037972276,
+        "5": 0.13199607027621568,
+        "10": 0.22991338009445955
+       },
+       "top_session_share": {
+        "1": 0.09770926376959206,
+        "5": 0.279875367003607,
+        "10": 0.4160322509402359
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.1111111111111111,
+        "5": 0.2777777777777778,
+        "10": 0.3888888888888889
+       },
+       "recordings_for_half_the_weight": 27
+      }
+     }
+    },
+    "S4_F_E": {
+     "both_folds": {
+      "runs": 87,
+      "native": 31,
+      "constructed": 56,
+      "pure": 70,
+      "mixed": 17,
+      "short_le16": 48,
+      "long": 39,
+      "single_source": 65,
+      "multi_source": 22,
+      "by_src": {
+       "weight": 87.00000000000001,
+       "recordings": 73,
+       "sessions": 61,
+       "uses_per_recording_mean": 1.5205479452054795,
+       "uses_per_recording_max": 4,
+       "recordings_used_once": 51,
+       "top_recording_share": {
+        "1": 0.045977011494252866,
+        "5": 0.20957854406130266,
+        "10": 0.3777777777777777
+       },
+       "top_session_share": {
+        "1": 0.09501915708812259,
+        "5": 0.28946360153256695,
+        "10": 0.47632804809716345
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.0410958904109589,
+        "5": 0.1643835616438356,
+        "10": 0.3013698630136986
+       },
+       "recordings_for_half_the_weight": 15,
+       "top10_recordings_share_in_reference_class_runs": 0.038817708054161265
+      },
+      "by_true_src": {
+       "weight": 83.5355312441182,
+       "recordings": 56,
+       "sessions": 51,
+       "uses_per_recording_mean": 1.6607142857142858,
+       "uses_per_recording_max": 4,
+       "recordings_used_once": 35,
+       "top_recording_share": {
+        "1": 0.04788381590955217,
+        "5": 0.21827039418770866,
+        "10": 0.39344535405682035
+       },
+       "top_session_share": {
+        "1": 0.09895988621307449,
+        "5": 0.300670460732063,
+        "10": 0.4839856693057986
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.05357142857142857,
+        "5": 0.17857142857142858,
+        "10": 0.26785714285714285
+       },
+       "recordings_for_half_the_weight": 14,
+       "top10_recordings_share_in_reference_class_runs": 0.04043623457334754
+      }
+     },
+     "heldout_fold_0": {
+      "runs": 30,
+      "native": 10,
+      "constructed": 20,
+      "pure": 23,
+      "mixed": 7,
+      "short_le16": 15,
+      "long": 15,
+      "single_source": 21,
+      "multi_source": 9,
+      "by_src": {
+       "weight": 30.0,
+       "recordings": 29,
+       "sessions": 26,
+       "uses_per_recording_mean": 1.3793103448275863,
+       "uses_per_recording_max": 4,
+       "recordings_used_once": 22,
+       "top_recording_share": {
+        "1": 0.12000000000000001,
+        "5": 0.42970998116760833,
+        "10": 0.6192933145009417
+       },
+       "top_session_share": {
+        "1": 0.12000000000000001,
+        "5": 0.4630433145009416,
+        "10": 0.6566266478342749
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.06896551724137931,
+        "5": 0.27586206896551724,
+        "10": 0.4482758620689655
+       },
+       "recordings_for_half_the_weight": 7
+      },
+      "by_true_src": {
+       "weight": 28.62940476190476,
+       "recordings": 22,
+       "sessions": 21,
+       "uses_per_recording_mean": 1.4545454545454546,
+       "uses_per_recording_max": 4,
+       "recordings_used_once": 16,
+       "top_recording_share": {
+        "1": 0.12574484275657313,
+        "5": 0.45028178344042424,
+        "10": 0.6489411704343159
+       },
+       "top_session_share": {
+        "1": 0.12574484275657313,
+        "5": 0.4852109064283612,
+        "10": 0.6838702934222528
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.09090909090909091,
+        "5": 0.2727272727272727,
+        "10": 0.5
+       },
+       "recordings_for_half_the_weight": 6
+      }
+     },
+     "heldout_fold_1": {
+      "runs": 57,
+      "native": 21,
+      "constructed": 36,
+      "pure": 47,
+      "mixed": 10,
+      "short_le16": 33,
+      "long": 24,
+      "single_source": 44,
+      "multi_source": 13,
+      "by_src": {
+       "weight": 57.0,
+       "recordings": 44,
+       "sessions": 35,
+       "uses_per_recording_mean": 1.6136363636363635,
+       "uses_per_recording_max": 4,
+       "recordings_used_once": 29,
+       "top_recording_share": {
+        "1": 0.07017543859649122,
+        "5": 0.30935672514619883,
+        "10": 0.5426646325959827
+       },
+       "top_session_share": {
+        "1": 0.14502923976608184,
+        "5": 0.441812865497076,
+        "10": 0.6916799574694311
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.06818181818181818,
+        "5": 0.2727272727272727,
+        "10": 0.4318181818181818
+       },
+       "recordings_for_half_the_weight": 9
+      },
+      "by_true_src": {
+       "weight": 54.90612648221344,
+       "recordings": 34,
+       "sessions": 30,
+       "uses_per_recording_mean": 1.7941176470588236,
+       "uses_per_recording_max": 4,
+       "recordings_used_once": 19,
+       "top_recording_share": {
+        "1": 0.07285161522541168,
+        "5": 0.3211542037853565,
+        "10": 0.5633594288970876
+       },
+       "top_session_share": {
+        "1": 0.15056000479918413,
+        "5": 0.4574474339362308,
+        "10": 0.6996526590479617
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.08823529411764706,
+        "5": 0.2647058823529412,
+        "10": 0.4117647058823529
+       },
+       "recordings_for_half_the_weight": 9
+      }
+     }
+    },
+    "S4_T_E": {
+     "both_folds": {
+      "runs": 80,
+      "native": 34,
+      "constructed": 46,
+      "pure": 68,
+      "mixed": 12,
+      "short_le16": 44,
+      "long": 36,
+      "single_source": 63,
+      "multi_source": 17,
+      "by_src": {
+       "weight": 80.0,
+       "recordings": 70,
+       "sessions": 62,
+       "uses_per_recording_mean": 1.4,
+       "uses_per_recording_max": 4,
+       "recordings_used_once": 53,
+       "top_recording_share": {
+        "1": 0.04875,
+        "5": 0.21541666666666667,
+        "10": 0.3702696078431372
+       },
+       "top_session_share": {
+        "1": 0.09583333333333334,
+        "5": 0.2783333333333334,
+        "10": 0.4382999108734403
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.04285714285714286,
+        "5": 0.15714285714285714,
+        "10": 0.2571428571428571
+       },
+       "recordings_for_half_the_weight": 17,
+       "top10_recordings_share_in_reference_class_runs": 0.03311544527302452
+      },
+      "by_true_src": {
+       "weight": 77.25142496392496,
+       "recordings": 58,
+       "sessions": 53,
+       "uses_per_recording_mean": 1.4655172413793103,
+       "uses_per_recording_max": 4,
+       "recordings_used_once": 42,
+       "top_recording_share": {
+        "1": 0.05048450564919974,
+        "5": 0.22308110615928436,
+        "10": 0.38344365351556586
+       },
+       "top_session_share": {
+        "1": 0.09924304529329865,
+        "5": 0.28694184834801567,
+        "10": 0.4473043957042972
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.05172413793103448,
+        "5": 0.1724137931034483,
+        "10": 0.25862068965517243
+       },
+       "recordings_for_half_the_weight": 15,
+       "top10_recordings_share_in_reference_class_runs": 0.03449621268706834
+      }
+     },
+     "heldout_fold_0": {
+      "runs": 34,
+      "native": 15,
+      "constructed": 19,
+      "pure": 28,
+      "mixed": 6,
+      "short_le16": 18,
+      "long": 16,
+      "single_source": 25,
+      "multi_source": 9,
+      "by_src": {
+       "weight": 34.0,
+       "recordings": 32,
+       "sessions": 30,
+       "uses_per_recording_mean": 1.375,
+       "uses_per_recording_max": 4,
+       "recordings_used_once": 24,
+       "top_recording_share": {
+        "1": 0.10588235294117647,
+        "5": 0.36693339100346023,
+        "10": 0.5434039792387544
+       },
+       "top_session_share": {
+        "1": 0.10588235294117647,
+        "5": 0.3761245674740485,
+        "10": 0.5728157439446367
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.0625,
+        "5": 0.21875,
+        "10": 0.375
+       },
+       "recordings_for_half_the_weight": 9
+      },
+      "by_true_src": {
+       "weight": 32.816071428571426,
+       "recordings": 26,
+       "sessions": 25,
+       "uses_per_recording_mean": 1.4230769230769231,
+       "uses_per_recording_max": 4,
+       "recordings_used_once": 19,
+       "top_recording_share": {
+        "1": 0.10970234532295806,
+        "5": 0.3801715059425305,
+        "10": 0.5630087481474606
+       },
+       "top_session_share": {
+        "1": 0.10970234532295806,
+        "5": 0.3896942789740373,
+        "10": 0.5934816218482822
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.07692307692307693,
+        "5": 0.23076923076923078,
+        "10": 0.4230769230769231
+       },
+       "recordings_for_half_the_weight": 8
+      }
+     },
+     "heldout_fold_1": {
+      "runs": 46,
+      "native": 19,
+      "constructed": 27,
+      "pure": 40,
+      "mixed": 6,
+      "short_le16": 26,
+      "long": 20,
+      "single_source": 38,
+      "multi_source": 8,
+      "by_src": {
+       "weight": 46.0,
+       "recordings": 38,
+       "sessions": 32,
+       "uses_per_recording_mean": 1.4210526315789473,
+       "uses_per_recording_max": 4,
+       "recordings_used_once": 29,
+       "top_recording_share": {
+        "1": 0.08478260869565217,
+        "5": 0.3615942028985507,
+        "10": 0.5543478260869565
+       },
+       "top_session_share": {
+        "1": 0.16666666666666669,
+        "5": 0.4710144927536232,
+        "10": 0.6509222661396575
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.07894736842105263,
+        "5": 0.2894736842105263,
+        "10": 0.42105263157894735
+       },
+       "recordings_for_half_the_weight": 9
+      },
+      "by_true_src": {
+       "weight": 44.435353535353535,
+       "recordings": 32,
+       "sessions": 28,
+       "uses_per_recording_mean": 1.5,
+       "uses_per_recording_max": 4,
+       "recordings_used_once": 23,
+       "top_recording_share": {
+        "1": 0.08776795253574594,
+        "5": 0.37432656679775406,
+        "10": 0.5738673819644927
+       },
+       "top_session_share": {
+        "1": 0.17253529130958606,
+        "5": 0.48534927598827043,
+        "10": 0.6623854879407153
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.09375,
+        "5": 0.28125,
+        "10": 0.4375
+       },
+       "recordings_for_half_the_weight": 8
+      }
+     }
+    },
+    "S4": {
+     "both_folds": {
+      "runs": 103,
+      "native": 41,
+      "constructed": 62,
+      "pure": 84,
+      "mixed": 19,
+      "short_le16": 58,
+      "long": 45,
+      "single_source": 78,
+      "multi_source": 25,
+      "by_src": {
+       "weight": 103.00000000000001,
+       "recordings": 87,
+       "sessions": 74,
+       "uses_per_recording_mean": 1.4942528735632183,
+       "uses_per_recording_max": 4,
+       "recordings_used_once": 62,
+       "top_recording_share": {
+        "1": 0.038834951456310676,
+        "5": 0.17702265372168283,
+        "10": 0.31941747572815526
+       },
+       "top_session_share": {
+        "1": 0.08025889967637538,
+        "5": 0.24449838187702258,
+        "10": 0.4023353415966332
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.034482758620689655,
+        "5": 0.13793103448275862,
+        "10": 0.25287356321839083
+       },
+       "recordings_for_half_the_weight": 19,
+       "top10_recordings_share_in_reference_class_runs": 0.04000250629778304
+      },
+      "by_true_src": {
+       "weight": 99.01330902189599,
+       "recordings": 68,
+       "sessions": 62,
+       "uses_per_recording_mean": 1.6176470588235294,
+       "uses_per_recording_max": 4,
+       "recordings_used_once": 44,
+       "top_recording_share": {
+        "1": 0.04039860943457038,
+        "5": 0.18415032800591666,
+        "10": 0.33227856259934135
+       },
+       "top_session_share": {
+        "1": 0.08349045949811211,
+        "5": 0.2536696017412398,
+        "10": 0.4083289448599201
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.04411764705882353,
+        "5": 0.16176470588235295,
+        "10": 0.23529411764705882
+       },
+       "recordings_for_half_the_weight": 18,
+       "top10_recordings_share_in_reference_class_runs": 0.041670433656774475
+      }
+     },
+     "heldout_fold_0": {
+      "runs": 43,
+      "native": 18,
+      "constructed": 25,
+      "pure": 35,
+      "mixed": 8,
+      "short_le16": 23,
+      "long": 20,
+      "single_source": 32,
+      "multi_source": 11,
+      "by_src": {
+       "weight": 43.0,
+       "recordings": 39,
+       "sessions": 35,
+       "uses_per_recording_mean": 1.4102564102564104,
+       "uses_per_recording_max": 4,
+       "recordings_used_once": 29,
+       "top_recording_share": {
+        "1": 0.08372093023255814,
+        "5": 0.33874886967005957,
+        "10": 0.5175752393980848
+       },
+       "top_session_share": {
+        "1": 0.08372093023255814,
+        "5": 0.34630928918670345,
+        "10": 0.5640868673050616
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.05128205128205128,
+        "5": 0.23076923076923078,
+        "10": 0.358974358974359
+       },
+       "recordings_for_half_the_weight": 10
+      },
+      "by_true_src": {
+       "weight": 41.59607142857143,
+       "recordings": 31,
+       "sessions": 29,
+       "uses_per_recording_mean": 1.4838709677419355,
+       "uses_per_recording_max": 4,
+       "recordings_used_once": 22,
+       "top_recording_share": {
+        "1": 0.08654663472683718,
+        "5": 0.35018214210025994,
+        "10": 0.5350441647436607
+       },
+       "top_session_share": {
+        "1": 0.08654663472683718,
+        "5": 0.3579977368920408,
+        "10": 0.5831256284807925
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.06451612903225806,
+        "5": 0.22580645161290322,
+        "10": 0.3870967741935484
+       },
+       "recordings_for_half_the_weight": 9
+      }
+     },
+     "heldout_fold_1": {
+      "runs": 60,
+      "native": 23,
+      "constructed": 37,
+      "pure": 49,
+      "mixed": 11,
+      "short_le16": 35,
+      "long": 25,
+      "single_source": 46,
+      "multi_source": 14,
+      "by_src": {
+       "weight": 60.0,
+       "recordings": 48,
+       "sessions": 39,
+       "uses_per_recording_mean": 1.5625,
+       "uses_per_recording_max": 4,
+       "recordings_used_once": 33,
+       "top_recording_share": {
+        "1": 0.06666666666666667,
+        "5": 0.29388888888888887,
+        "10": 0.5155314009661836
+       },
+       "top_session_share": {
+        "1": 0.13777777777777775,
+        "5": 0.41972222222222216,
+        "10": 0.6570959595959596
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.0625,
+        "5": 0.25,
+        "10": 0.3958333333333333
+       },
+       "recordings_for_half_the_weight": 10
+      },
+      "by_true_src": {
+       "weight": 57.41723759332455,
+       "recordings": 37,
+       "sessions": 33,
+       "uses_per_recording_mean": 1.7297297297297298,
+       "uses_per_recording_max": 4,
+       "recordings_used_once": 22,
+       "top_recording_share": {
+        "1": 0.06966549015003551,
+        "5": 0.30710870241140653,
+        "10": 0.538721216040655
+       },
+       "top_session_share": {
+        "1": 0.14397534631007336,
+        "5": 0.4374412235670979,
+        "10": 0.6690537371963463
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.08108108108108109,
+        "5": 0.24324324324324326,
+        "10": 0.3783783783783784
+       },
+       "recordings_for_half_the_weight": 9
+      }
+     }
+    }
+   },
+   "recording_error_profile": {
+    "attribution": "true-class sources only",
+    "A5C_recordings": 169,
+    "with_any_A5C_read_as_A4C": 38,
+    "at_least_half_read_as_A4C": 5,
+    "all_read_as_A4C": 0,
+    "share_of_S1_weight_from_recordings_at_least_half_wrong": 0.34936547452991074,
+    "share_of_S1_weight_from_recordings_all_wrong": 0.0
+   }
+  },
+  "2": {
+   "sets": {
+    "A5C_all": {
+     "both_folds": {
+      "runs": 1230,
+      "native": 162,
+      "constructed": 1068,
+      "pure": 690,
+      "mixed": 540,
+      "short_le16": 394,
+      "long": 836,
+      "single_source": 534,
+      "multi_source": 696,
+      "by_src": {
+       "weight": 1229.9999999999977,
+       "recordings": 686,
+       "sessions": 299,
+       "uses_per_recording_mean": 3.316326530612245,
+       "uses_per_recording_max": 26,
+       "recordings_used_once": 427,
+       "top_recording_share": {
+        "1": 0.017565389082462288,
+        "5": 0.06481450799192258,
+        "10": 0.11479446905098517
+       },
+       "top_session_share": {
+        "1": 0.04472657625596038,
+        "5": 0.16901640357901174,
+        "10": 0.26442092483285423
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.021865889212827987,
+        "5": 0.07725947521865889,
+        "10": 0.12682215743440234
+       },
+       "recordings_for_half_the_weight": 65,
+       "top10_recordings_share_in_reference_class_runs": 0.11479446905098517
+      },
+      "by_true_src": {
+       "weight": 1169.75284934343,
+       "recordings": 169,
+       "sessions": 108,
+       "uses_per_recording_mean": 9.70414201183432,
+       "uses_per_recording_max": 26,
+       "recordings_used_once": 1,
+       "top_recording_share": {
+        "1": 0.018470079883588633,
+        "5": 0.0681527254879624,
+        "10": 0.1207068630026967
+       },
+       "top_session_share": {
+        "1": 0.04675376981744046,
+        "5": 0.17678365599167797,
+        "10": 0.27640407622046115
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.05917159763313609,
+        "5": 0.17159763313609466,
+        "10": 0.26627218934911245
+       },
+       "recordings_for_half_the_weight": 61,
+       "top10_recordings_share_in_reference_class_runs": 0.1207068630026967
+      }
+     },
+     "heldout_fold_0": {
+      "runs": 592,
+      "native": 73,
+      "constructed": 519,
+      "pure": 323,
+      "mixed": 269,
+      "short_le16": 206,
+      "long": 386,
+      "single_source": 253,
+      "multi_source": 339,
+      "by_src": {
+       "weight": 592.0000000000008,
+       "recordings": 338,
+       "sessions": 149,
+       "uses_per_recording_mean": 3.275147928994083,
+       "uses_per_recording_max": 26,
+       "recordings_used_once": 212,
+       "top_recording_share": {
+        "1": 0.03649565637065632,
+        "5": 0.11982343622960175,
+        "10": 0.20665115547182458
+       },
+       "top_session_share": {
+        "1": 0.08526740681128553,
+        "5": 0.2723268878107004,
+        "10": 0.41628803596994934
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.04437869822485207,
+        "5": 0.12721893491124261,
+        "10": 0.20414201183431951
+       },
+       "recordings_for_half_the_weight": 31
+      },
+      "by_true_src": {
+       "weight": 561.9941615922831,
+       "recordings": 79,
+       "sessions": 49,
+       "uses_per_recording_mean": 9.949367088607595,
+       "uses_per_recording_max": 26,
+       "recordings_used_once": 1,
+       "top_recording_share": {
+        "1": 0.038444222463476285,
+        "5": 0.12622101633039165,
+        "10": 0.2176846173858902
+       },
+       "top_session_share": {
+        "1": 0.08970443682993283,
+        "5": 0.2855251811157645,
+        "10": 0.4354626768457324
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.0759493670886076,
+        "5": 0.25316455696202533,
+        "10": 0.4050632911392405
+       },
+       "recordings_for_half_the_weight": 29
+      }
+     },
+     "heldout_fold_1": {
+      "runs": 638,
+      "native": 89,
+      "constructed": 549,
+      "pure": 367,
+      "mixed": 271,
+      "short_le16": 188,
+      "long": 450,
+      "single_source": 281,
+      "multi_source": 357,
+      "by_src": {
+       "weight": 638.0000000000009,
+       "recordings": 348,
+       "sessions": 150,
+       "uses_per_recording_mean": 3.3563218390804597,
+       "uses_per_recording_max": 22,
+       "recordings_used_once": 215,
+       "top_recording_share": {
+        "1": 0.02927750410509027,
+        "5": 0.10991981462542755,
+        "10": 0.19387056102756178
+       },
+       "top_session_share": {
+        "1": 0.08622835234299543,
+        "5": 0.25259386412042334,
+        "10": 0.38080420499582596
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.04310344827586207,
+        "5": 0.12643678160919541,
+        "10": 0.20402298850574713
+       },
+       "recordings_for_half_the_weight": 34
+      },
+      "by_true_src": {
+       "weight": 607.7586877511455,
+       "recordings": 90,
+       "sessions": 59,
+       "uses_per_recording_mean": 9.488888888888889,
+       "uses_per_recording_max": 22,
+       "recordings_used_once": 0,
+       "top_recording_share": {
+        "1": 0.030734316095364467,
+        "5": 0.11538928713716391,
+        "10": 0.20351731769275966
+       },
+       "top_session_share": {
+        "1": 0.0899869579221737,
+        "5": 0.26335714226021045,
+        "10": 0.3945635310418885
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.1111111111111111,
+        "5": 0.2777777777777778,
+        "10": 0.3888888888888889
+       },
+       "recordings_for_half_the_weight": 32
+      }
+     }
+    },
+    "A4C_all": {
+     "both_folds": {
+      "runs": 1534,
+      "native": 459,
+      "constructed": 1075,
+      "pure": 975,
+      "mixed": 559,
+      "short_le16": 440,
+      "long": 1094,
+      "single_source": 841,
+      "multi_source": 693,
+      "by_src": {
+       "weight": 1534.0000000000002,
+       "recordings": 1131,
+       "sessions": 357,
+       "uses_per_recording_mean": 2.3050397877984086,
+       "uses_per_recording_max": 11,
+       "recordings_used_once": 470,
+       "top_recording_share": {
+        "1": 0.006457770596932058,
+        "5": 0.02793921786352389,
+        "10": 0.05005693065920279
+       },
+       "top_session_share": {
+        "1": 0.015665499080352672,
+        "5": 0.05822248746595455,
+        "10": 0.10211390982635957
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.022988505747126436,
+        "5": 0.0671971706454465,
+        "10": 0.10698496905393456
+       },
+       "recordings_for_half_the_weight": 200,
+       "top10_recordings_share_in_reference_class_runs": 0.05005693065920279
+      },
+      "by_true_src": {
+       "weight": 1469.2038659472319,
+       "recordings": 654,
+       "sessions": 320,
+       "uses_per_recording_mean": 2.9801223241590216,
+       "uses_per_recording_max": 11,
+       "recordings_used_once": 115,
+       "top_recording_share": {
+        "1": 0.006742576932512355,
+        "5": 0.02917141806934571,
+        "10": 0.05226458588285187
+       },
+       "top_session_share": {
+        "1": 0.014076292280492992,
+        "5": 0.05809232898819046,
+        "10": 0.10353098707291716
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.016819571865443424,
+        "5": 0.0672782874617737,
+        "10": 0.11314984709480122
+       },
+       "recordings_for_half_the_weight": 188,
+       "top10_recordings_share_in_reference_class_runs": 0.05226458588285187
+      }
+     },
+     "heldout_fold_0": {
+      "runs": 782,
+      "native": 229,
+      "constructed": 553,
+      "pure": 492,
+      "mixed": 290,
+      "short_le16": 239,
+      "long": 543,
+      "single_source": 434,
+      "multi_source": 348,
+      "by_src": {
+       "weight": 782.0000000000003,
+       "recordings": 558,
+       "sessions": 178,
+       "uses_per_recording_mean": 2.349462365591398,
+       "uses_per_recording_max": 11,
+       "recordings_used_once": 217,
+       "top_recording_share": {
+        "1": 0.012667800633879508,
+        "5": 0.05135452224184376,
+        "10": 0.08393693297479976
+       },
+       "top_session_share": {
+        "1": 0.02364697607024972,
+        "5": 0.09818998486008805,
+        "10": 0.1752827829047253
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.02867383512544803,
+        "5": 0.1003584229390681,
+        "10": 0.16487455197132617
+       },
+       "recordings_for_half_the_weight": 101
+      },
+      "by_true_src": {
+       "weight": 747.9358480929473,
+       "recordings": 319,
+       "sessions": 159,
+       "uses_per_recording_mean": 3.018808777429467,
+       "uses_per_recording_max": 11,
+       "recordings_used_once": 49,
+       "top_recording_share": {
+        "1": 0.01324474568367355,
+        "5": 0.053693423701401705,
+        "10": 0.08775977479038605
+       },
+       "top_session_share": {
+        "1": 0.02412601710524058,
+        "5": 0.10163031480344017,
+        "10": 0.17805992698370862
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.025078369905956112,
+        "5": 0.10658307210031348,
+        "10": 0.1755485893416928
+       },
+       "recordings_for_half_the_weight": 95
+      }
+     },
+     "heldout_fold_1": {
+      "runs": 752,
+      "native": 230,
+      "constructed": 522,
+      "pure": 483,
+      "mixed": 269,
+      "short_le16": 201,
+      "long": 551,
+      "single_source": 407,
+      "multi_source": 345,
+      "by_src": {
+       "weight": 752.0000000000001,
+       "recordings": 573,
+       "sessions": 179,
+       "uses_per_recording_mean": 2.261780104712042,
+       "uses_per_recording_max": 9,
+       "recordings_used_once": 253,
+       "top_recording_share": {
+        "1": 0.009993351063829784,
+        "5": 0.04741103090172238,
+        "10": 0.08825844146987762
+       },
+       "top_session_share": {
+        "1": 0.031955951581464095,
+        "5": 0.10619437435245568,
+        "10": 0.18414653850349386
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.04537521815008726,
+        "5": 0.11343804537521815,
+        "10": 0.17975567190226877
+       },
+       "recordings_for_half_the_weight": 100
+      },
+      "by_true_src": {
+       "weight": 721.268017854284,
+       "recordings": 335,
+       "sessions": 161,
+       "uses_per_recording_mean": 2.943283582089552,
+       "uses_per_recording_max": 9,
+       "recordings_used_once": 66,
+       "top_recording_share": {
+        "1": 0.01041915045998648,
+        "5": 0.04943113288755046,
+        "10": 0.09201898093692629
+       },
+       "top_session_share": {
+        "1": 0.028673034884074952,
+        "5": 0.1055019339201754,
+        "10": 0.1850471757234804
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.03283582089552239,
+        "5": 0.11940298507462686,
+        "10": 0.191044776119403
+       },
+       "recordings_for_half_the_weight": 94
+      }
+     }
+    },
+    "S1": {
+     "both_folds": {
+      "runs": 101,
+      "native": 17,
+      "constructed": 84,
+      "pure": 71,
+      "mixed": 30,
+      "short_le16": 57,
+      "long": 44,
+      "single_source": 63,
+      "multi_source": 38,
+      "by_src": {
+       "weight": 101.0,
+       "recordings": 79,
+       "sessions": 68,
+       "uses_per_recording_mean": 1.9240506329113924,
+       "uses_per_recording_max": 12,
+       "recordings_used_once": 56,
+       "top_recording_share": {
+        "1": 0.11419141914191419,
+        "5": 0.3579384343964351,
+        "10": 0.5752991410553362
+       },
+       "top_session_share": {
+        "1": 0.137453422761631,
+        "5": 0.38524334230658086,
+        "10": 0.6173002244653849
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.0379746835443038,
+        "5": 0.17721518987341772,
+        "10": 0.26582278481012656
+       },
+       "recordings_for_half_the_weight": 9,
+       "top10_recordings_share_in_reference_class_runs": 0.09716762981224188
+      },
+      "by_true_src": {
+       "weight": 94.23849914159213,
+       "recordings": 40,
+       "sessions": 35,
+       "uses_per_recording_mean": 2.825,
+       "uses_per_recording_max": 12,
+       "recordings_used_once": 17,
+       "top_recording_share": {
+        "1": 0.12238451841221122,
+        "5": 0.3836200937339033,
+        "10": 0.6165761740250831
+       },
+       "top_session_share": {
+        "1": 0.14731554327988616,
+        "5": 0.4085511186015782,
+        "10": 0.6572578076037482
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.075,
+        "5": 0.25,
+        "10": 0.375
+       },
+       "recordings_for_half_the_weight": 8,
+       "top10_recordings_share_in_reference_class_runs": 0.10217216802347646
+      }
+     },
+     "heldout_fold_0": {
+      "runs": 34,
+      "native": 5,
+      "constructed": 29,
+      "pure": 24,
+      "mixed": 10,
+      "short_le16": 22,
+      "long": 12,
+      "single_source": 21,
+      "multi_source": 13,
+      "by_src": {
+       "weight": 34.00000000000001,
+       "recordings": 27,
+       "sessions": 27,
+       "uses_per_recording_mean": 1.8888888888888888,
+       "uses_per_recording_max": 7,
+       "recordings_used_once": 20,
+       "top_recording_share": {
+        "1": 0.19901960784313724,
+        "5": 0.7057065520705436,
+        "10": 0.9020156639505897
+       },
+       "top_session_share": {
+        "1": 0.19901960784313724,
+        "5": 0.7057065520705436,
+        "10": 0.9020156639505897
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.037037037037037035,
+        "5": 0.18518518518518517,
+        "10": 0.37037037037037035
+       },
+       "recordings_for_half_the_weight": 3
+      },
+      "by_true_src": {
+       "weight": 31.651865907653388,
+       "recordings": 14,
+       "sessions": 14,
+       "uses_per_recording_mean": 2.7142857142857144,
+       "uses_per_recording_max": 7,
+       "recordings_used_once": 7,
+       "top_recording_share": {
+        "1": 0.21378413160250673,
+        "5": 0.7580602938355289,
+        "10": 0.9689328478705718
+       },
+       "top_session_share": {
+        "1": 0.21378413160250673,
+        "5": 0.7580602938355289,
+        "10": 0.9689328478705718
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.07142857142857142,
+        "5": 0.35714285714285715,
+        "10": 0.7142857142857143
+       },
+       "recordings_for_half_the_weight": 3
+      }
+     },
+     "heldout_fold_1": {
+      "runs": 67,
+      "native": 12,
+      "constructed": 55,
+      "pure": 47,
+      "mixed": 20,
+      "short_le16": 35,
+      "long": 32,
+      "single_source": 42,
+      "multi_source": 25,
+      "by_src": {
+       "weight": 67.0,
+       "recordings": 52,
+       "sessions": 41,
+       "uses_per_recording_mean": 1.9423076923076923,
+       "uses_per_recording_max": 12,
+       "recordings_used_once": 36,
+       "top_recording_share": {
+        "1": 0.17213930348258707,
+        "5": 0.4941968727789624,
+        "10": 0.7224721629945511
+       },
+       "top_session_share": {
+        "1": 0.20720590595410046,
+        "5": 0.5468154214020707,
+        "10": 0.8176280250504953
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.057692307692307696,
+        "5": 0.2692307692307692,
+        "10": 0.40384615384615385
+       },
+       "recordings_for_half_the_weight": 6
+      },
+      "by_true_src": {
+       "weight": 62.58663323393872,
+       "recordings": 26,
+       "sessions": 21,
+       "uses_per_recording_mean": 2.8846153846153846,
+       "uses_per_recording_max": 12,
+       "recordings_used_once": 10,
+       "top_recording_share": {
+        "1": 0.18427789988676332,
+        "5": 0.5290457205522815,
+        "10": 0.7734180993520211
+       },
+       "top_session_share": {
+        "1": 0.2218172632330786,
+        "5": 0.5788504354466533,
+        "10": 0.8660967186998161
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.11538461538461539,
+        "5": 0.38461538461538464,
+        "10": 0.5769230769230769
+       },
+       "recordings_for_half_the_weight": 5
+      }
+     }
+    },
+    "S1_persistent": {
+     "both_folds": {
+      "runs": 79,
+      "native": 12,
+      "constructed": 67,
+      "pure": 51,
+      "mixed": 28,
+      "short_le16": 45,
+      "long": 34,
+      "single_source": 46,
+      "multi_source": 33,
+      "by_src": {
+       "weight": 79.0,
+       "recordings": 72,
+       "sessions": 62,
+       "uses_per_recording_mean": 1.7361111111111112,
+       "uses_per_recording_max": 7,
+       "recordings_used_once": 52,
+       "top_recording_share": {
+        "1": 0.08438818565400845,
+        "5": 0.3648040988547318,
+        "10": 0.5834965356770175
+       },
+       "top_session_share": {
+        "1": 0.11412821559820334,
+        "5": 0.4084805894591401,
+        "10": 0.6519268940732683
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.041666666666666664,
+        "5": 0.18055555555555555,
+        "10": 0.2777777777777778
+       },
+       "recordings_for_half_the_weight": 8,
+       "top10_recordings_share_in_reference_class_runs": 0.0951800179543589
+      },
+      "by_true_src": {
+       "weight": 72.48016580825877,
+       "recordings": 35,
+       "sessions": 30,
+       "uses_per_recording_mean": 2.5142857142857142,
+       "uses_per_recording_max": 7,
+       "recordings_used_once": 15,
+       "top_recording_share": {
+        "1": 0.0919791861997511,
+        "5": 0.3976194519996526,
+        "10": 0.6359840075480613
+       },
+       "top_session_share": {
+        "1": 0.12439443165885691,
+        "5": 0.4406258302226415,
+        "10": 0.7059709470563106
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.08571428571428572,
+        "5": 0.2857142857142857,
+        "10": 0.42857142857142855
+       },
+       "recordings_for_half_the_weight": 7,
+       "top10_recordings_share_in_reference_class_runs": 0.10008218586479375
+      }
+     },
+     "heldout_fold_0": {
+      "runs": 20,
+      "native": 2,
+      "constructed": 18,
+      "pure": 11,
+      "mixed": 9,
+      "short_le16": 14,
+      "long": 6,
+      "single_source": 10,
+      "multi_source": 10,
+      "by_src": {
+       "weight": 20.000000000000007,
+       "recordings": 21,
+       "sessions": 21,
+       "uses_per_recording_mean": 1.619047619047619,
+       "uses_per_recording_max": 6,
+       "recordings_used_once": 16,
+       "top_recording_share": {
+        "1": 0.2883333333333332,
+        "5": 0.7667599620493355,
+        "10": 0.9150932953826688
+       },
+       "top_session_share": {
+        "1": 0.2883333333333332,
+        "5": 0.7667599620493355,
+        "10": 0.9150932953826688
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.047619047619047616,
+        "5": 0.23809523809523808,
+        "10": 0.47619047619047616
+       },
+       "recordings_for_half_the_weight": 2
+      },
+      "by_true_src": {
+       "weight": 17.818532574320052,
+       "recordings": 9,
+       "sessions": 9,
+       "uses_per_recording_mean": 2.4444444444444446,
+       "uses_per_recording_max": 6,
+       "recordings_used_once": 4,
+       "top_recording_share": {
+        "1": 0.32363308497005794,
+        "5": 0.8606319952007553,
+        "10": 1.0
+       },
+       "top_session_share": {
+        "1": 0.32363308497005794,
+        "5": 0.8606319952007553,
+        "10": 1.0
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.1111111111111111,
+        "5": 0.5555555555555556,
+        "10": 1.0
+       },
+       "recordings_for_half_the_weight": 2
+      }
+     },
+     "heldout_fold_1": {
+      "runs": 59,
+      "native": 10,
+      "constructed": 49,
+      "pure": 40,
+      "mixed": 19,
+      "short_le16": 31,
+      "long": 28,
+      "single_source": 36,
+      "multi_source": 23,
+      "by_src": {
+       "weight": 59.00000000000001,
+       "recordings": 51,
+       "sessions": 41,
+       "uses_per_recording_mean": 1.7843137254901962,
+       "uses_per_recording_max": 7,
+       "recordings_used_once": 36,
+       "top_recording_share": {
+        "1": 0.11299435028248586,
+        "5": 0.4585230024213075,
+        "10": 0.6883723432875974
+       },
+       "top_session_share": {
+        "1": 0.15281574630945868,
+        "5": 0.5285870039650633,
+        "10": 0.7951595086731611
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.058823529411764705,
+        "5": 0.2549019607843137,
+        "10": 0.39215686274509803
+       },
+       "recordings_for_half_the_weight": 6
+      },
+      "by_true_src": {
+       "weight": 54.66163323393872,
+       "recordings": 26,
+       "sessions": 21,
+       "uses_per_recording_mean": 2.5384615384615383,
+       "uses_per_recording_max": 7,
+       "recordings_used_once": 11,
+       "top_recording_share": {
+        "1": 0.12196244920335489,
+        "5": 0.49491490726369963,
+        "10": 0.7430068560181906
+       },
+       "top_session_share": {
+        "1": 0.1649443768661501,
+        "5": 0.5644416032825191,
+        "10": 0.8491222867980166
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.11538461538461539,
+        "5": 0.38461538461538464,
+        "10": 0.5769230769230769
+       },
+       "recordings_for_half_the_weight": 6
+      }
+     }
+    },
+    "S1_fixed_by_no_arm": {
+     "both_folds": {
+      "runs": 79,
+      "native": 12,
+      "constructed": 67,
+      "pure": 51,
+      "mixed": 28,
+      "short_le16": 45,
+      "long": 34,
+      "single_source": 46,
+      "multi_source": 33,
+      "by_src": {
+       "weight": 79.0,
+       "recordings": 72,
+       "sessions": 62,
+       "uses_per_recording_mean": 1.7361111111111112,
+       "uses_per_recording_max": 7,
+       "recordings_used_once": 52,
+       "top_recording_share": {
+        "1": 0.08438818565400845,
+        "5": 0.3648040988547318,
+        "10": 0.5834965356770175
+       },
+       "top_session_share": {
+        "1": 0.11412821559820334,
+        "5": 0.4084805894591401,
+        "10": 0.6519268940732683
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.041666666666666664,
+        "5": 0.18055555555555555,
+        "10": 0.2777777777777778
+       },
+       "recordings_for_half_the_weight": 8,
+       "top10_recordings_share_in_reference_class_runs": 0.0951800179543589
+      },
+      "by_true_src": {
+       "weight": 72.48016580825877,
+       "recordings": 35,
+       "sessions": 30,
+       "uses_per_recording_mean": 2.5142857142857142,
+       "uses_per_recording_max": 7,
+       "recordings_used_once": 15,
+       "top_recording_share": {
+        "1": 0.0919791861997511,
+        "5": 0.3976194519996526,
+        "10": 0.6359840075480613
+       },
+       "top_session_share": {
+        "1": 0.12439443165885691,
+        "5": 0.4406258302226415,
+        "10": 0.7059709470563106
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.08571428571428572,
+        "5": 0.2857142857142857,
+        "10": 0.42857142857142855
+       },
+       "recordings_for_half_the_weight": 7,
+       "top10_recordings_share_in_reference_class_runs": 0.10008218586479375
+      }
+     },
+     "heldout_fold_0": {
+      "runs": 20,
+      "native": 2,
+      "constructed": 18,
+      "pure": 11,
+      "mixed": 9,
+      "short_le16": 14,
+      "long": 6,
+      "single_source": 10,
+      "multi_source": 10,
+      "by_src": {
+       "weight": 20.000000000000007,
+       "recordings": 21,
+       "sessions": 21,
+       "uses_per_recording_mean": 1.619047619047619,
+       "uses_per_recording_max": 6,
+       "recordings_used_once": 16,
+       "top_recording_share": {
+        "1": 0.2883333333333332,
+        "5": 0.7667599620493355,
+        "10": 0.9150932953826688
+       },
+       "top_session_share": {
+        "1": 0.2883333333333332,
+        "5": 0.7667599620493355,
+        "10": 0.9150932953826688
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.047619047619047616,
+        "5": 0.23809523809523808,
+        "10": 0.47619047619047616
+       },
+       "recordings_for_half_the_weight": 2
+      },
+      "by_true_src": {
+       "weight": 17.818532574320052,
+       "recordings": 9,
+       "sessions": 9,
+       "uses_per_recording_mean": 2.4444444444444446,
+       "uses_per_recording_max": 6,
+       "recordings_used_once": 4,
+       "top_recording_share": {
+        "1": 0.32363308497005794,
+        "5": 0.8606319952007553,
+        "10": 1.0
+       },
+       "top_session_share": {
+        "1": 0.32363308497005794,
+        "5": 0.8606319952007553,
+        "10": 1.0
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.1111111111111111,
+        "5": 0.5555555555555556,
+        "10": 1.0
+       },
+       "recordings_for_half_the_weight": 2
+      }
+     },
+     "heldout_fold_1": {
+      "runs": 59,
+      "native": 10,
+      "constructed": 49,
+      "pure": 40,
+      "mixed": 19,
+      "short_le16": 31,
+      "long": 28,
+      "single_source": 36,
+      "multi_source": 23,
+      "by_src": {
+       "weight": 59.00000000000001,
+       "recordings": 51,
+       "sessions": 41,
+       "uses_per_recording_mean": 1.7843137254901962,
+       "uses_per_recording_max": 7,
+       "recordings_used_once": 36,
+       "top_recording_share": {
+        "1": 0.11299435028248586,
+        "5": 0.4585230024213075,
+        "10": 0.6883723432875974
+       },
+       "top_session_share": {
+        "1": 0.15281574630945868,
+        "5": 0.5285870039650633,
+        "10": 0.7951595086731611
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.058823529411764705,
+        "5": 0.2549019607843137,
+        "10": 0.39215686274509803
+       },
+       "recordings_for_half_the_weight": 6
+      },
+      "by_true_src": {
+       "weight": 54.66163323393872,
+       "recordings": 26,
+       "sessions": 21,
+       "uses_per_recording_mean": 2.5384615384615383,
+       "uses_per_recording_max": 7,
+       "recordings_used_once": 11,
+       "top_recording_share": {
+        "1": 0.12196244920335489,
+        "5": 0.49491490726369963,
+        "10": 0.7430068560181906
+       },
+       "top_session_share": {
+        "1": 0.1649443768661501,
+        "5": 0.5644416032825191,
+        "10": 0.8491222867980166
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.11538461538461539,
+        "5": 0.38461538461538464,
+        "10": 0.5769230769230769
+       },
+       "recordings_for_half_the_weight": 6
+      }
+     }
+    },
+    "S2_F_E": {
+     "both_folds": {
+      "runs": 190,
+      "native": 25,
+      "constructed": 165,
+      "pure": 106,
+      "mixed": 84,
+      "short_le16": 66,
+      "long": 124,
+      "single_source": 84,
+      "multi_source": 106,
+      "by_src": {
+       "weight": 190.00000000000006,
+       "recordings": 173,
+       "sessions": 124,
+       "uses_per_recording_mean": 1.9421965317919074,
+       "uses_per_recording_max": 10,
+       "recordings_used_once": 121,
+       "top_recording_share": {
+        "1": 0.03941510753628255,
+        "5": 0.17619118952159657,
+        "10": 0.3161633852191874
+       },
+       "top_session_share": {
+        "1": 0.04845392168946957,
+        "5": 0.19947935191923752,
+        "10": 0.361304004084626
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.04046242774566474,
+        "5": 0.1329479768786127,
+        "10": 0.21965317919075145
+       },
+       "recordings_for_half_the_weight": 19,
+       "top10_recordings_share_in_reference_class_runs": 0.07155544404473001
+      },
+      "by_true_src": {
+       "weight": 180.47777413507424,
+       "recordings": 82,
+       "sessions": 61,
+       "uses_per_recording_mean": 2.9634146341463414,
+       "uses_per_recording_max": 10,
+       "recordings_used_once": 32,
+       "top_recording_share": {
+        "1": 0.04149469632913814,
+        "5": 0.18548724999261576,
+        "10": 0.33284454819731374
+       },
+       "top_session_share": {
+        "1": 0.05101040926019526,
+        "5": 0.2089313154542778,
+        "10": 0.3788163752701599
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.07317073170731707,
+        "5": 0.21951219512195122,
+        "10": 0.34146341463414637
+       },
+       "recordings_for_half_the_weight": 17,
+       "top10_recordings_share_in_reference_class_runs": 0.07524084786322054
+      }
+     },
+     "heldout_fold_0": {
+      "runs": 70,
+      "native": 9,
+      "constructed": 61,
+      "pure": 39,
+      "mixed": 31,
+      "short_le16": 28,
+      "long": 42,
+      "single_source": 31,
+      "multi_source": 39,
+      "by_src": {
+       "weight": 70.00000000000001,
+       "recordings": 62,
+       "sessions": 48,
+       "uses_per_recording_mean": 1.935483870967742,
+       "uses_per_recording_max": 9,
+       "recordings_used_once": 45,
+       "top_recording_share": {
+        "1": 0.0911111111111111,
+        "5": 0.4162041461968739,
+        "10": 0.6813274146575808
+       },
+       "top_session_share": {
+        "1": 0.13151778744284598,
+        "5": 0.461252481320397,
+        "10": 0.7340855003479971
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.06451612903225806,
+        "5": 0.22580645161290322,
+        "10": 0.3870967741935484
+       },
+       "recordings_for_half_the_weight": 7
+      },
+      "by_true_src": {
+       "weight": 66.53215202467577,
+       "recordings": 27,
+       "sessions": 22,
+       "uses_per_recording_mean": 3.1481481481481484,
+       "uses_per_recording_max": 9,
+       "recordings_used_once": 10,
+       "top_recording_share": {
+        "1": 0.09586008544278497,
+        "5": 0.4378979087130041,
+        "10": 0.7168401678686431
+       },
+       "top_session_share": {
+        "1": 0.13837287448006738,
+        "5": 0.48213001384265153,
+        "10": 0.7676808453396672
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.1111111111111111,
+        "5": 0.37037037037037035,
+        "10": 0.5555555555555556
+       },
+       "recordings_for_half_the_weight": 6
+      }
+     },
+     "heldout_fold_1": {
+      "runs": 120,
+      "native": 16,
+      "constructed": 104,
+      "pure": 67,
+      "mixed": 53,
+      "short_le16": 38,
+      "long": 82,
+      "single_source": 53,
+      "multi_source": 67,
+      "by_src": {
+       "weight": 120.00000000000003,
+       "recordings": 111,
+       "sessions": 76,
+       "uses_per_recording_mean": 1.945945945945946,
+       "uses_per_recording_max": 10,
+       "recordings_used_once": 76,
+       "top_recording_share": {
+        "1": 0.062407253599114046,
+        "5": 0.25640151274410844,
+        "10": 0.44170922647287464
+       },
+       "top_session_share": {
+        "1": 0.062407253599114046,
+        "5": 0.2936067026807789,
+        "10": 0.5317022816247601
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.06306306306306306,
+        "5": 0.1981981981981982,
+        "10": 0.3153153153153153
+       },
+       "recordings_for_half_the_weight": 12
+      },
+      "by_true_src": {
+       "weight": 113.94562211039849,
+       "recordings": 55,
+       "sessions": 39,
+       "uses_per_recording_mean": 2.8727272727272726,
+       "uses_per_recording_max": 10,
+       "recordings_used_once": 22,
+       "top_recording_share": {
+        "1": 0.06572319579455142,
+        "5": 0.270025130930284,
+        "10": 0.46517897041616846
+       },
+       "top_session_share": {
+        "1": 0.06572319579455142,
+        "5": 0.3068668809508905,
+        "10": 0.5549187338098572
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.10909090909090909,
+        "5": 0.3090909090909091,
+        "10": 0.4727272727272727
+       },
+       "recordings_for_half_the_weight": 11
+      }
+     }
+    },
+    "S2_T_E": {
+     "both_folds": {
+      "runs": 95,
+      "native": 13,
+      "constructed": 82,
+      "pure": 63,
+      "mixed": 32,
+      "short_le16": 37,
+      "long": 58,
+      "single_source": 51,
+      "multi_source": 44,
+      "by_src": {
+       "weight": 95.00000000000001,
+       "recordings": 85,
+       "sessions": 71,
+       "uses_per_recording_mean": 1.7411764705882353,
+       "uses_per_recording_max": 7,
+       "recordings_used_once": 59,
+       "top_recording_share": {
+        "1": 0.06503662665435518,
+        "5": 0.27811477657461037,
+        "10": 0.4633293514733958
+       },
+       "top_session_share": {
+        "1": 0.10293136349646044,
+        "5": 0.35747362824925144,
+        "10": 0.556556849121946
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.07058823529411765,
+        "5": 0.16470588235294117,
+        "10": 0.2823529411764706
+       },
+       "recordings_for_half_the_weight": 12,
+       "top10_recordings_share_in_reference_class_runs": 0.06721665450929924
+      },
+      "by_true_src": {
+       "weight": 91.4394679881522,
+       "recordings": 50,
+       "sessions": 40,
+       "uses_per_recording_mean": 2.26,
+       "uses_per_recording_max": 7,
+       "recordings_used_once": 24,
+       "top_recording_share": {
+        "1": 0.06756906692593934,
+        "5": 0.28894419834126045,
+        "10": 0.4813707839559586
+       },
+       "top_session_share": {
+        "1": 0.10693937472854434,
+        "5": 0.37139317879757444,
+        "10": 0.5782284371277795
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.12,
+        "5": 0.28,
+        "10": 0.4
+       },
+       "recordings_for_half_the_weight": 11,
+       "top10_recordings_share_in_reference_class_runs": 0.07067859257008297
+      }
+     },
+     "heldout_fold_0": {
+      "runs": 21,
+      "native": 3,
+      "constructed": 18,
+      "pure": 13,
+      "mixed": 8,
+      "short_le16": 12,
+      "long": 9,
+      "single_source": 11,
+      "multi_source": 10,
+      "by_src": {
+       "weight": 21.0,
+       "recordings": 23,
+       "sessions": 22,
+       "uses_per_recording_mean": 1.434782608695652,
+       "uses_per_recording_max": 6,
+       "recordings_used_once": 17,
+       "top_recording_share": {
+        "1": 0.2563492063492064,
+        "5": 0.5945361425656992,
+        "10": 0.8326313806609372
+       },
+       "top_session_share": {
+        "1": 0.2563492063492064,
+        "5": 0.5945361425656992,
+        "10": 0.8326313806609372
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.08695652173913043,
+        "5": 0.2608695652173913,
+        "10": 0.4782608695652174
+       },
+       "recordings_for_half_the_weight": 4
+      },
+      "by_true_src": {
+       "weight": 19.996753246753247,
+       "recordings": 14,
+       "sessions": 14,
+       "uses_per_recording_mean": 1.7142857142857142,
+       "uses_per_recording_max": 6,
+       "recordings_used_once": 8,
+       "top_recording_share": {
+        "1": 0.2692103696487525,
+        "5": 0.6243643075361166,
+        "10": 0.8744048985411499
+       },
+       "top_session_share": {
+        "1": 0.2692103696487525,
+        "5": 0.6243643075361166,
+        "10": 0.8744048985411499
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.07142857142857142,
+        "5": 0.35714285714285715,
+        "10": 0.7142857142857143
+       },
+       "recordings_for_half_the_weight": 4
+      }
+     },
+     "heldout_fold_1": {
+      "runs": 74,
+      "native": 10,
+      "constructed": 64,
+      "pure": 50,
+      "mixed": 24,
+      "short_le16": 25,
+      "long": 49,
+      "single_source": 40,
+      "multi_source": 34,
+      "by_src": {
+       "weight": 73.99999999999999,
+       "recordings": 62,
+       "sessions": 49,
+       "uses_per_recording_mean": 1.8548387096774193,
+       "uses_per_recording_max": 7,
+       "recordings_used_once": 42,
+       "top_recording_share": {
+        "1": 0.08349296665086142,
+        "5": 0.33834554650344134,
+        "10": 0.5622696629275579
+       },
+       "top_session_share": {
+        "1": 0.13214161529951007,
+        "5": 0.45261254077043556,
+        "10": 0.6819536126115074
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.0967741935483871,
+        "5": 0.22580645161290322,
+        "10": 0.3709677419354839
+       },
+       "recordings_for_half_the_weight": 9
+      },
+      "by_true_src": {
+       "weight": 71.44271474139894,
+       "recordings": 36,
+       "sessions": 26,
+       "uses_per_recording_mean": 2.4722222222222223,
+       "uses_per_recording_max": 7,
+       "recordings_used_once": 16,
+       "top_recording_share": {
+        "1": 0.08648158954384606,
+        "5": 0.3504565935362773,
+        "10": 0.5823960526590781
+       },
+       "top_session_share": {
+        "1": 0.1368716119979327,
+        "5": 0.4688137641220376,
+        "10": 0.7063640780717536
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.16666666666666666,
+        "5": 0.3888888888888889,
+        "10": 0.5555555555555556
+       },
+       "recordings_for_half_the_weight": 9
+      }
+     }
+    },
+    "S2_both": {
+     "both_folds": {
+      "runs": 62,
+      "native": 6,
+      "constructed": 56,
+      "pure": 40,
+      "mixed": 22,
+      "short_le16": 28,
+      "long": 34,
+      "single_source": 32,
+      "multi_source": 30,
+      "by_src": {
+       "weight": 61.99999999999999,
+       "recordings": 64,
+       "sessions": 57,
+       "uses_per_recording_mean": 1.546875,
+       "uses_per_recording_max": 5,
+       "recordings_used_once": 47,
+       "top_recording_share": {
+        "1": 0.07177419354838711,
+        "5": 0.31087479206324714,
+        "10": 0.5211334581283649
+       },
+       "top_session_share": {
+        "1": 0.07177419354838711,
+        "5": 0.329490728098538,
+        "10": 0.5841181436936955
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.0625,
+        "5": 0.1875,
+        "10": 0.265625
+       },
+       "recordings_for_half_the_weight": 10,
+       "top10_recordings_share_in_reference_class_runs": 0.0673487175485346
+      },
+      "by_true_src": {
+       "weight": 59.530990354674564,
+       "recordings": 40,
+       "sessions": 33,
+       "uses_per_recording_mean": 1.875,
+       "uses_per_recording_max": 5,
+       "recordings_used_once": 23,
+       "top_recording_share": {
+        "1": 0.07475098219410979,
+        "5": 0.3237681246874779,
+        "10": 0.5427471340802499
+       },
+       "top_session_share": {
+        "1": 0.07475098219410979,
+        "5": 0.3431561447306789,
+        "10": 0.6083440690847733
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.1,
+        "5": 0.3,
+        "10": 0.425
+       },
+       "recordings_for_half_the_weight": 9,
+       "top10_recordings_share_in_reference_class_runs": 0.0708174574066599
+      }
+     },
+     "heldout_fold_0": {
+      "runs": 15,
+      "native": 2,
+      "constructed": 13,
+      "pure": 10,
+      "mixed": 5,
+      "short_le16": 8,
+      "long": 7,
+      "single_source": 8,
+      "multi_source": 7,
+      "by_src": {
+       "weight": 15.000000000000002,
+       "recordings": 18,
+       "sessions": 18,
+       "uses_per_recording_mean": 1.3333333333333333,
+       "uses_per_recording_max": 5,
+       "recordings_used_once": 15,
+       "top_recording_share": {
+        "1": 0.29666666666666663,
+        "5": 0.6482236154649947,
+        "10": 0.9212394884808678
+       },
+       "top_session_share": {
+        "1": 0.29666666666666663,
+        "5": 0.6482236154649947,
+        "10": 0.9212394884808678
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.05555555555555555,
+        "5": 0.2777777777777778,
+        "10": 0.5555555555555556
+       },
+       "recordings_for_half_the_weight": 3
+      },
+      "by_true_src": {
+       "weight": 14.363419913419913,
+       "recordings": 12,
+       "sessions": 12,
+       "uses_per_recording_mean": 1.5,
+       "uses_per_recording_max": 5,
+       "recordings_used_once": 9,
+       "top_recording_share": {
+        "1": 0.3098147952802182,
+        "5": 0.6769525844531132,
+        "10": 0.9620683939137743
+       },
+       "top_session_share": {
+        "1": 0.3098147952802182,
+        "5": 0.6769525844531132,
+        "10": 0.9620683939137743
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.08333333333333333,
+        "5": 0.4166666666666667,
+        "10": 0.8333333333333334
+       },
+       "recordings_for_half_the_weight": 3
+      }
+     },
+     "heldout_fold_1": {
+      "runs": 47,
+      "native": 4,
+      "constructed": 43,
+      "pure": 30,
+      "mixed": 17,
+      "short_le16": 20,
+      "long": 27,
+      "single_source": 24,
+      "multi_source": 23,
+      "by_src": {
+       "weight": 46.99999999999999,
+       "recordings": 46,
+       "sessions": 39,
+       "uses_per_recording_mean": 1.6304347826086956,
+       "uses_per_recording_max": 5,
+       "recordings_used_once": 32,
+       "top_recording_share": {
+        "1": 0.08232108317214702,
+        "5": 0.3824032990774313,
+        "10": 0.6353249873182685
+       },
+       "top_session_share": {
+        "1": 0.0906059474928456,
+        "5": 0.4218104640165111,
+        "10": 0.7246007234025151
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.08695652173913043,
+        "5": 0.2608695652173913,
+        "10": 0.3695652173913043
+       },
+       "recordings_for_half_the_weight": 7
+      },
+      "by_true_src": {
+       "weight": 45.167570441254654,
+       "recordings": 28,
+       "sessions": 21,
+       "uses_per_recording_mean": 2.0357142857142856,
+       "uses_per_recording_max": 5,
+       "recordings_used_once": 14,
+       "top_recording_share": {
+        "1": 0.085660815299399,
+        "5": 0.39791724197375317,
+        "10": 0.6610998579787495
+       },
+       "top_session_share": {
+        "1": 0.09428179312195592,
+        "5": 0.43892313921468745,
+        "10": 0.7539974735681665
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.14285714285714285,
+        "5": 0.42857142857142855,
+        "10": 0.6071428571428571
+       },
+       "recordings_for_half_the_weight": 7
+      }
+     }
+    },
+    "S2": {
+     "both_folds": {
+      "runs": 223,
+      "native": 32,
+      "constructed": 191,
+      "pure": 129,
+      "mixed": 94,
+      "short_le16": 75,
+      "long": 148,
+      "single_source": 103,
+      "multi_source": 120,
+      "by_src": {
+       "weight": 223.00000000000023,
+       "recordings": 189,
+       "sessions": 131,
+       "uses_per_recording_mean": 2.037037037037037,
+       "uses_per_recording_max": 10,
+       "recordings_used_once": 129,
+       "top_recording_share": {
+        "1": 0.033582378618357306,
+        "5": 0.15862144986118767,
+        "10": 0.29002151886097327
+       },
+       "top_session_share": {
+        "1": 0.05012771090656382,
+        "5": 0.20788028138986878,
+        "10": 0.35586970039658183
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.042328042328042326,
+        "5": 0.12698412698412698,
+        "10": 0.20634920634920634
+       },
+       "recordings_for_half_the_weight": 20,
+       "top10_recordings_share_in_reference_class_runs": 0.08635525760297011
+      },
+      "by_true_src": {
+       "weight": 212.38625176855194,
+       "recordings": 88,
+       "sessions": 65,
+       "uses_per_recording_mean": 3.1931818181818183,
+       "uses_per_recording_max": 10,
+       "recordings_used_once": 31,
+       "top_recording_share": {
+        "1": 0.035260617716699895,
+        "5": 0.16654836659386119,
+        "10": 0.30451499646256064
+       },
+       "top_session_share": {
+        "1": 0.05263278314429457,
+        "5": 0.21764106212948306,
+        "10": 0.37173278850212194
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.07954545454545454,
+        "5": 0.2159090909090909,
+        "10": 0.32954545454545453
+       },
+       "recordings_for_half_the_weight": 19,
+       "top10_recordings_share_in_reference_class_runs": 0.09080291354816662
+      }
+     },
+     "heldout_fold_0": {
+      "runs": 76,
+      "native": 10,
+      "constructed": 66,
+      "pure": 42,
+      "mixed": 34,
+      "short_le16": 32,
+      "long": 44,
+      "single_source": 34,
+      "multi_source": 42,
+      "by_src": {
+       "weight": 76.00000000000001,
+       "recordings": 67,
+       "sessions": 51,
+       "uses_per_recording_mean": 1.9253731343283582,
+       "uses_per_recording_max": 10,
+       "recordings_used_once": 49,
+       "top_recording_share": {
+        "1": 0.09293931550186942,
+        "5": 0.40571434518133115,
+        "10": 0.6621875310442629
+       },
+       "top_session_share": {
+        "1": 0.1316611200131476,
+        "5": 0.4472062327951024,
+        "10": 0.7107805047064886
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.05970149253731343,
+        "5": 0.208955223880597,
+        "10": 0.3582089552238806
+       },
+       "recordings_for_half_the_weight": 7
+      },
+      "by_true_src": {
+       "weight": 72.16548535800911,
+       "recordings": 29,
+       "sessions": 24,
+       "uses_per_recording_mean": 3.1379310344827585,
+       "uses_per_recording_max": 10,
+       "recordings_used_once": 11,
+       "top_recording_share": {
+        "1": 0.09787764806265749,
+        "5": 0.42727198578120706,
+        "10": 0.6973728799813117
+       },
+       "top_session_share": {
+        "1": 0.13865693650307725,
+        "5": 0.46805127422162685,
+        "10": 0.7442448668564651
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.10344827586206896,
+        "5": 0.3448275862068966,
+        "10": 0.5172413793103449
+       },
+       "recordings_for_half_the_weight": 6
+      }
+     },
+     "heldout_fold_1": {
+      "runs": 147,
+      "native": 22,
+      "constructed": 125,
+      "pure": 87,
+      "mixed": 60,
+      "short_le16": 43,
+      "long": 104,
+      "single_source": 69,
+      "multi_source": 78,
+      "by_src": {
+       "weight": 147.00000000000014,
+       "recordings": 122,
+       "sessions": 80,
+       "uses_per_recording_mean": 2.098360655737705,
+       "uses_per_recording_max": 10,
+       "recordings_used_once": 80,
+       "top_recording_share": {
+        "1": 0.05094469681560326,
+        "5": 0.23020754062731907,
+        "10": 0.40393925088916754
+       },
+       "top_session_share": {
+        "1": 0.07604407845009342,
+        "5": 0.29670153216332734,
+        "10": 0.5066544165506102
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.06557377049180328,
+        "5": 0.1885245901639344,
+        "10": 0.30327868852459017
+       },
+       "recordings_for_half_the_weight": 14
+      },
+      "by_true_src": {
+       "weight": 140.22076641054278,
+       "recordings": 59,
+       "sessions": 41,
+       "uses_per_recording_mean": 3.2203389830508473,
+       "uses_per_recording_max": 10,
+       "recordings_used_once": 20,
+       "top_recording_share": {
+        "1": 0.053407712877331856,
+        "5": 0.2413373520804802,
+        "10": 0.4234684448012199
+       },
+       "top_session_share": {
+        "1": 0.07972057077077327,
+        "5": 0.31009523772939934,
+        "10": 0.5275647567368272
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.11864406779661017,
+        "5": 0.3050847457627119,
+        "10": 0.4745762711864407
+       },
+       "recordings_for_half_the_weight": 13
+      }
+     }
+    },
+    "S3": {
+     "both_folds": {
+      "runs": 900,
+      "native": 113,
+      "constructed": 787,
+      "pure": 487,
+      "mixed": 413,
+      "short_le16": 256,
+      "long": 644,
+      "single_source": 365,
+      "multi_source": 535,
+      "by_src": {
+       "weight": 900.0,
+       "recordings": 577,
+       "sessions": 279,
+       "uses_per_recording_mean": 2.9948006932409013,
+       "uses_per_recording_max": 18,
+       "recordings_used_once": 356,
+       "top_recording_share": {
+        "1": 0.014431238425729952,
+        "5": 0.06577008833230062,
+        "10": 0.1196416916485462
+       },
+       "top_session_share": {
+        "1": 0.05608700536920122,
+        "5": 0.19088836570175285,
+        "10": 0.29563670044907686
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.024263431542461005,
+        "5": 0.07972270363951472,
+        "10": 0.12824956672443674
+       },
+       "recordings_for_half_the_weight": 55,
+       "top10_recordings_share_in_reference_class_runs": 0.09234016740974553
+      },
+      "by_true_src": {
+       "weight": 857.7447650999518,
+       "recordings": 167,
+       "sessions": 106,
+       "uses_per_recording_mean": 7.425149700598802,
+       "uses_per_recording_max": 18,
+       "recordings_used_once": 9,
+       "top_recording_share": {
+        "1": 0.015142167124323364,
+        "5": 0.06901013204338574,
+        "10": 0.12553562185966133
+       },
+       "top_session_share": {
+        "1": 0.05877432520555392,
+        "5": 0.19970106464553092,
+        "10": 0.3082594815696964
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.059880239520958084,
+        "5": 0.17365269461077845,
+        "10": 0.2694610778443114
+       },
+       "recordings_for_half_the_weight": 52,
+       "top10_recordings_share_in_reference_class_runs": 0.09709607117241661
+      }
+     },
+     "heldout_fold_0": {
+      "runs": 480,
+      "native": 58,
+      "constructed": 422,
+      "pure": 257,
+      "mixed": 223,
+      "short_le16": 150,
+      "long": 330,
+      "single_source": 198,
+      "multi_source": 282,
+      "by_src": {
+       "weight": 480.0000000000003,
+       "recordings": 298,
+       "sessions": 141,
+       "uses_per_recording_mean": 3.0939597315436242,
+       "uses_per_recording_max": 18,
+       "recordings_used_once": 186,
+       "top_recording_share": {
+        "1": 0.027058572048243645,
+        "5": 0.11602222311548084,
+        "10": 0.21155540938644898
+       },
+       "top_session_share": {
+        "1": 0.10516313506725222,
+        "5": 0.3021914188668742,
+        "10": 0.44277822694692953
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.040268456375838924,
+        "5": 0.12416107382550336,
+        "10": 0.20134228187919462
+       },
+       "recordings_for_half_the_weight": 28
+      },
+      "by_true_src": {
+       "weight": 456.5934769932874,
+       "recordings": 78,
+       "sessions": 48,
+       "uses_per_recording_mean": 8.397435897435898,
+       "uses_per_recording_max": 18,
+       "recordings_used_once": 3,
+       "top_recording_share": {
+        "1": 0.028445685796225032,
+        "5": 0.12196991394217743,
+        "10": 0.22240045384395285
+       },
+       "top_session_share": {
+        "1": 0.11041193601652609,
+        "5": 0.3165423705390821,
+        "10": 0.46034793422836956
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.07692307692307693,
+        "5": 0.2564102564102564,
+        "10": 0.41025641025641024
+       },
+       "recordings_for_half_the_weight": 26
+      }
+     },
+     "heldout_fold_1": {
+      "runs": 420,
+      "native": 55,
+      "constructed": 365,
+      "pure": 230,
+      "mixed": 190,
+      "short_le16": 106,
+      "long": 314,
+      "single_source": 167,
+      "multi_source": 253,
+      "by_src": {
+       "weight": 420.0000000000006,
+       "recordings": 279,
+       "sessions": 138,
+       "uses_per_recording_mean": 2.888888888888889,
+       "uses_per_recording_max": 14,
+       "recordings_used_once": 170,
+       "top_recording_share": {
+        "1": 0.030687608376683956,
+        "5": 0.12089325864352547,
+        "10": 0.2168466546221071
+       },
+       "top_session_share": {
+        "1": 0.11076258133392856,
+        "5": 0.28547087312840935,
+        "10": 0.42301188523360506
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.05017921146953405,
+        "5": 0.13261648745519714,
+        "10": 0.21505376344086022
+       },
+       "recordings_for_half_the_weight": 28
+      },
+      "by_true_src": {
+       "weight": 401.1512881066642,
+       "recordings": 89,
+       "sessions": 58,
+       "uses_per_recording_mean": 6.573033707865169,
+       "uses_per_recording_max": 14,
+       "recordings_used_once": 6,
+       "top_recording_share": {
+        "1": 0.032129512980100944,
+        "5": 0.12657361483226723,
+        "10": 0.22703552909212785
+       },
+       "top_session_share": {
+        "1": 0.11549329525755148,
+        "5": 0.2968042130850629,
+        "10": 0.4374844306343136
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.11235955056179775,
+        "5": 0.2808988764044944,
+        "10": 0.39325842696629215
+       },
+       "recordings_for_half_the_weight": 27
+      }
+     }
+    },
+    "S4_F_E": {
+     "both_folds": {
+      "runs": 81,
+      "native": 29,
+      "constructed": 52,
+      "pure": 61,
+      "mixed": 20,
+      "short_le16": 45,
+      "long": 36,
+      "single_source": 58,
+      "multi_source": 23,
+      "by_src": {
+       "weight": 81.0,
+       "recordings": 74,
+       "sessions": 63,
+       "uses_per_recording_mean": 1.4864864864864864,
+       "uses_per_recording_max": 5,
+       "recordings_used_once": 54,
+       "top_recording_share": {
+        "1": 0.05255731922398589,
+        "5": 0.23609641387419164,
+        "10": 0.4074926629999093
+       },
+       "top_session_share": {
+        "1": 0.08148148148148147,
+        "5": 0.3001031478809257,
+        "10": 0.48117310672866226
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.04054054054054054,
+        "5": 0.14864864864864866,
+        "10": 0.28378378378378377
+       },
+       "recordings_for_half_the_weight": 14,
+       "top10_recordings_share_in_reference_class_runs": 0.03741040094761539
+      },
+      "by_true_src": {
+       "weight": 76.56728476191823,
+       "recordings": 51,
+       "sessions": 46,
+       "uses_per_recording_mean": 1.6862745098039216,
+       "uses_per_recording_max": 5,
+       "recordings_used_once": 32,
+       "top_recording_share": {
+        "1": 0.05560002382715032,
+        "5": 0.24976476027945824,
+        "10": 0.43108366459155256
+       },
+       "top_session_share": {
+        "1": 0.08619869465819949,
+        "5": 0.31747704067005217,
+        "10": 0.5090296954660509
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.058823529411764705,
+        "5": 0.19607843137254902,
+        "10": 0.29411764705882354
+       },
+       "recordings_for_half_the_weight": 13,
+       "top10_recordings_share_in_reference_class_runs": 0.03906030768346968
+      }
+     },
+     "heldout_fold_0": {
+      "runs": 31,
+      "native": 10,
+      "constructed": 21,
+      "pure": 22,
+      "mixed": 9,
+      "short_le16": 17,
+      "long": 14,
+      "single_source": 21,
+      "multi_source": 10,
+      "by_src": {
+       "weight": 31.0,
+       "recordings": 30,
+       "sessions": 25,
+       "uses_per_recording_mean": 1.4333333333333333,
+       "uses_per_recording_max": 5,
+       "recordings_used_once": 24,
+       "top_recording_share": {
+        "1": 0.13732718894009216,
+        "5": 0.4934383958862137,
+        "10": 0.6869867829829879
+       },
+       "top_session_share": {
+        "1": 0.13732718894009216,
+        "5": 0.5256964604023429,
+        "10": 0.7304960693955003
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.06666666666666667,
+        "5": 0.3333333333333333,
+        "10": 0.5
+       },
+       "recordings_for_half_the_weight": 6
+      },
+      "by_true_src": {
+       "weight": 29.062521645021643,
+       "recordings": 19,
+       "sessions": 18,
+       "uses_per_recording_mean": 1.6842105263157894,
+       "uses_per_recording_max": 5,
+       "recordings_used_once": 13,
+       "top_recording_share": {
+        "1": 0.146482225773141,
+        "5": 0.526333896944999,
+        "10": 0.732785356088352
+       },
+       "top_session_share": {
+        "1": 0.146482225773141,
+        "5": 0.5607424734688913,
+        "10": 0.7671939326122443
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.10526315789473684,
+        "5": 0.3157894736842105,
+        "10": 0.5789473684210527
+       },
+       "recordings_for_half_the_weight": 5
+      }
+     },
+     "heldout_fold_1": {
+      "runs": 50,
+      "native": 19,
+      "constructed": 31,
+      "pure": 39,
+      "mixed": 11,
+      "short_le16": 28,
+      "long": 22,
+      "single_source": 37,
+      "multi_source": 13,
+      "by_src": {
+       "weight": 50.000000000000014,
+       "recordings": 44,
+       "sessions": 38,
+       "uses_per_recording_mean": 1.5227272727272727,
+       "uses_per_recording_max": 4,
+       "recordings_used_once": 30,
+       "top_recording_share": {
+        "1": 0.07999999999999997,
+        "5": 0.35399999999999987,
+        "10": 0.5653043478260867
+       },
+       "top_session_share": {
+        "1": 0.13199999999999995,
+        "5": 0.4466666666666665,
+        "10": 0.6774581939799328
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.06818181818181818,
+        "5": 0.25,
+        "10": 0.36363636363636365
+       },
+       "recordings_for_half_the_weight": 9
+      },
+      "by_true_src": {
+       "weight": 47.50476311689659,
+       "recordings": 32,
+       "sessions": 28,
+       "uses_per_recording_mean": 1.6875,
+       "uses_per_recording_max": 4,
+       "recordings_used_once": 19,
+       "top_recording_share": {
+        "1": 0.08420208285550364,
+        "5": 0.3725942166356036,
+        "10": 0.5949975441778578
+       },
+       "top_session_share": {
+        "1": 0.13893343671158098,
+        "5": 0.47012829594322864,
+        "10": 0.7109373351865897
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.09375,
+        "5": 0.28125,
+        "10": 0.4375
+       },
+       "recordings_for_half_the_weight": 8
+      }
+     }
+    },
+    "S4_T_E": {
+     "both_folds": {
+      "runs": 63,
+      "native": 23,
+      "constructed": 40,
+      "pure": 51,
+      "mixed": 12,
+      "short_le16": 39,
+      "long": 24,
+      "single_source": 47,
+      "multi_source": 16,
+      "by_src": {
+       "weight": 63.000000000000014,
+       "recordings": 58,
+       "sessions": 52,
+       "uses_per_recording_mean": 1.396551724137931,
+       "uses_per_recording_max": 4,
+       "recordings_used_once": 42,
+       "top_recording_share": {
+        "1": 0.06349206349206347,
+        "5": 0.2504557378506958,
+        "10": 0.40918589658085447
+       },
+       "top_session_share": {
+        "1": 0.11957671957671955,
+        "5": 0.3162153750389044,
+        "10": 0.48220176959672745
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.05172413793103448,
+        "5": 0.1896551724137931,
+        "10": 0.27586206896551724
+       },
+       "recordings_for_half_the_weight": 13,
+       "top10_recordings_share_in_reference_class_runs": 0.035849938636782236
+      },
+      "by_true_src": {
+       "weight": 60.75113636363636,
+       "recordings": 45,
+       "sessions": 42,
+       "uses_per_recording_mean": 1.511111111111111,
+       "uses_per_recording_max": 4,
+       "recordings_used_once": 29,
+       "top_recording_share": {
+        "1": 0.06584238977946541,
+        "5": 0.2597270179465887,
+        "10": 0.4243329923952522
+       },
+       "top_session_share": {
+        "1": 0.12400316741799318,
+        "5": 0.3268235484837582,
+        "10": 0.49895436747864635
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.06666666666666667,
+        "5": 0.17777777777777778,
+        "10": 0.28888888888888886
+       },
+       "recordings_for_half_the_weight": 13,
+       "top10_recordings_share_in_reference_class_runs": 0.03743102447757861
+      }
+     },
+     "heldout_fold_0": {
+      "runs": 27,
+      "native": 12,
+      "constructed": 15,
+      "pure": 23,
+      "mixed": 4,
+      "short_le16": 16,
+      "long": 11,
+      "single_source": 21,
+      "multi_source": 6,
+      "by_src": {
+       "weight": 27.000000000000004,
+       "recordings": 24,
+       "sessions": 24,
+       "uses_per_recording_mean": 1.375,
+       "uses_per_recording_max": 3,
+       "recordings_used_once": 17,
+       "top_recording_share": {
+        "1": 0.09462599854756717,
+        "5": 0.40785351177508034,
+        "10": 0.6440087145969499
+       },
+       "top_session_share": {
+        "1": 0.09462599854756717,
+        "5": 0.40785351177508034,
+        "10": 0.6440087145969499
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.041666666666666664,
+        "5": 0.20833333333333334,
+        "10": 0.4166666666666667
+       },
+       "recordings_for_half_the_weight": 7
+      },
+      "by_true_src": {
+       "weight": 26.320833333333333,
+       "recordings": 20,
+       "sessions": 20,
+       "uses_per_recording_mean": 1.45,
+       "uses_per_recording_max": 3,
+       "recordings_used_once": 13,
+       "top_recording_share": {
+        "1": 0.09706766987307826,
+        "5": 0.4183775140577048,
+        "10": 0.6606263211315871
+       },
+       "top_session_share": {
+        "1": 0.09706766987307826,
+        "5": 0.4183775140577048,
+        "10": 0.6606263211315871
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.05,
+        "5": 0.25,
+        "10": 0.5
+       },
+       "recordings_for_half_the_weight": 7
+      }
+     },
+     "heldout_fold_1": {
+      "runs": 36,
+      "native": 11,
+      "constructed": 25,
+      "pure": 28,
+      "mixed": 8,
+      "short_le16": 23,
+      "long": 13,
+      "single_source": 26,
+      "multi_source": 10,
+      "by_src": {
+       "weight": 36.0,
+       "recordings": 34,
+       "sessions": 28,
+       "uses_per_recording_mean": 1.411764705882353,
+       "uses_per_recording_max": 4,
+       "recordings_used_once": 25,
+       "top_recording_share": {
+        "1": 0.1111111111111111,
+        "5": 0.4101851851851852,
+        "10": 0.6453703703703704
+       },
+       "top_session_share": {
+        "1": 0.20925925925925926,
+        "5": 0.537962962962963,
+        "10": 0.742845117845118
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.08823529411764706,
+        "5": 0.3235294117647059,
+        "10": 0.47058823529411764
+       },
+       "recordings_for_half_the_weight": 7
+      },
+      "by_true_src": {
+       "weight": 34.43030303030303,
+       "recordings": 25,
+       "sessions": 22,
+       "uses_per_recording_mean": 1.56,
+       "uses_per_recording_max": 4,
+       "recordings_used_once": 16,
+       "top_recording_share": {
+        "1": 0.11617672944904066,
+        "5": 0.42888575954937513,
+        "10": 0.6747931702165112
+       },
+       "top_session_share": {
+        "1": 0.21879950712902657,
+        "5": 0.5605527195916212,
+        "10": 0.7619257173032917
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.12,
+        "5": 0.32,
+        "10": 0.52
+       },
+       "recordings_for_half_the_weight": 7
+      }
+     }
+    },
+    "S4": {
+     "both_folds": {
+      "runs": 91,
+      "native": 33,
+      "constructed": 58,
+      "pure": 70,
+      "mixed": 21,
+      "short_le16": 51,
+      "long": 40,
+      "single_source": 65,
+      "multi_source": 26,
+      "by_src": {
+       "weight": 91.00000000000001,
+       "recordings": 82,
+       "sessions": 69,
+       "uses_per_recording_mean": 1.5,
+       "uses_per_recording_max": 5,
+       "recordings_used_once": 58,
+       "top_recording_share": {
+        "1": 0.04678178963893249,
+        "5": 0.21517530088958658,
+        "10": 0.3677367973641265
+       },
+       "top_session_share": {
+        "1": 0.08278388278388277,
+        "5": 0.2781137909709338,
+        "10": 0.44430950002378566
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.036585365853658534,
+        "5": 0.14634146341463414,
+        "10": 0.2682926829268293
+       },
+       "recordings_for_half_the_weight": 16,
+       "top10_recordings_share_in_reference_class_runs": 0.03741040094761539
+      },
+      "by_true_src": {
+       "weight": 86.50061809525157,
+       "recordings": 58,
+       "sessions": 53,
+       "uses_per_recording_mean": 1.6896551724137931,
+       "uses_per_recording_max": 5,
+       "recordings_used_once": 35,
+       "top_recording_share": {
+        "1": 0.04921517268761057,
+        "5": 0.22636777415151527,
+        "10": 0.3868648490266975
+       },
+       "top_session_share": {
+        "1": 0.08708993645615203,
+        "5": 0.2918093404129554,
+        "10": 0.46664981967005953
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.05172413793103448,
+        "5": 0.1724137931034483,
+        "10": 0.25862068965517243
+       },
+       "recordings_for_half_the_weight": 15,
+       "top10_recordings_share_in_reference_class_runs": 0.03906030768346968
+      }
+     },
+     "heldout_fold_0": {
+      "runs": 39,
+      "native": 14,
+      "constructed": 25,
+      "pure": 30,
+      "mixed": 9,
+      "short_le16": 21,
+      "long": 18,
+      "single_source": 28,
+      "multi_source": 11,
+      "by_src": {
+       "weight": 39.0,
+       "recordings": 35,
+       "sessions": 30,
+       "uses_per_recording_mean": 1.4857142857142858,
+       "uses_per_recording_max": 5,
+       "recordings_used_once": 26,
+       "top_recording_share": {
+        "1": 0.10915750915750916,
+        "5": 0.4039418751183457,
+        "10": 0.6187159898924605
+       },
+       "top_session_share": {
+        "1": 0.10915750915750916,
+        "5": 0.4295829007593714,
+        "10": 0.6476592688357393
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.05714285714285714,
+        "5": 0.2857142857142857,
+        "10": 0.42857142857142855
+       },
+       "recordings_for_half_the_weight": 7
+      },
+      "by_true_src": {
+       "weight": 37.06252164502164,
+       "recordings": 24,
+       "sessions": 23,
+       "uses_per_recording_mean": 1.7083333333333333,
+       "uses_per_recording_max": 5,
+       "recordings_used_once": 15,
+       "top_recording_share": {
+        "1": 0.1148638211376179,
+        "5": 0.4250583184949472,
+        "10": 0.6510599531493877
+       },
+       "top_session_share": {
+        "1": 0.1148638211376179,
+        "5": 0.4520397529903608,
+        "10": 0.6780413876448013
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.08333333333333333,
+        "5": 0.25,
+        "10": 0.4583333333333333
+       },
+       "recordings_for_half_the_weight": 7
+      }
+     },
+     "heldout_fold_1": {
+      "runs": 52,
+      "native": 19,
+      "constructed": 33,
+      "pure": 40,
+      "mixed": 12,
+      "short_le16": 30,
+      "long": 22,
+      "single_source": 37,
+      "multi_source": 15,
+      "by_src": {
+       "weight": 52.0,
+       "recordings": 47,
+       "sessions": 39,
+       "uses_per_recording_mean": 1.5106382978723405,
+       "uses_per_recording_max": 4,
+       "recordings_used_once": 32,
+       "top_recording_share": {
+        "1": 0.07692307692307693,
+        "5": 0.3403846153846154,
+        "10": 0.5435618729096989
+       },
+       "top_session_share": {
+        "1": 0.14487179487179486,
+        "5": 0.4487179487179488,
+        "10": 0.6751151948826367
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.06382978723404255,
+        "5": 0.2553191489361702,
+        "10": 0.3829787234042553
+       },
+       "recordings_for_half_the_weight": 9
+      },
+      "by_true_src": {
+       "weight": 49.43809645022993,
+       "recordings": 34,
+       "sessions": 30,
+       "uses_per_recording_mean": 1.6764705882352942,
+       "uses_per_recording_max": 4,
+       "recordings_used_once": 20,
+       "top_recording_share": {
+        "1": 0.08090926405362027,
+        "5": 0.3580234934372697,
+        "10": 0.5717294843615058
+       },
+       "top_session_share": {
+        "1": 0.1523791139676515,
+        "5": 0.4706222192452245,
+        "10": 0.7020141454529765
+       },
+       "top_session_share_by_unique_recordings": {
+        "1": 0.08823529411764706,
+        "5": 0.2647058823529412,
+        "10": 0.4117647058823529
+       },
+       "recordings_for_half_the_weight": 9
+      }
+     }
+    }
+   },
+   "recording_error_profile": {
+    "attribution": "true-class sources only",
+    "A5C_recordings": 169,
+    "with_any_A5C_read_as_A4C": 40,
+    "at_least_half_read_as_A4C": 7,
+    "all_read_as_A4C": 0,
+    "share_of_S1_weight_from_recordings_at_least_half_wrong": 0.4438396436173685,
+    "share_of_S1_weight_from_recordings_all_wrong": 0.0
+   }
+  }
+ },
+ "cross_seed": {
+  "S1": {
+   "heldout_fold_0": {
+    "runs_s0": 34,
+    "runs_s2": 34,
+    "identical_runs_both_seeds": 26,
+    "true_class_recordings_s0": 12,
+    "true_class_recordings_s2": 14,
+    "true_class_recordings_both_seeds": 12,
+    "recording_jaccard": 0.8571428571428571
+   },
+   "heldout_fold_1": {
+    "runs_s0": 69,
+    "runs_s2": 67,
+    "identical_runs_both_seeds": 44,
+    "true_class_recordings_s0": 26,
+    "true_class_recordings_s2": 26,
+    "true_class_recordings_both_seeds": 25,
+    "recording_jaccard": 0.9259259259259259
+   }
+  },
+  "S1_persistent": {
+   "heldout_fold_0": {
+    "runs_s0": 22,
+    "runs_s2": 20,
+    "identical_runs_both_seeds": 13,
+    "true_class_recordings_s0": 8,
+    "true_class_recordings_s2": 9,
+    "true_class_recordings_both_seeds": 7,
+    "recording_jaccard": 0.7
+   },
+   "heldout_fold_1": {
+    "runs_s0": 66,
+    "runs_s2": 59,
+    "identical_runs_both_seeds": 37,
+    "true_class_recordings_s0": 25,
+    "true_class_recordings_s2": 26,
+    "true_class_recordings_both_seeds": 24,
+    "recording_jaccard": 0.8888888888888888
+   }
+  },
+  "S2": {
+   "heldout_fold_0": {
+    "runs_s0": 84,
+    "runs_s2": 76,
+    "identical_runs_both_seeds": 45,
+    "true_class_recordings_s0": 29,
+    "true_class_recordings_s2": 29,
+    "true_class_recordings_both_seeds": 26,
+    "recording_jaccard": 0.8125
+   },
+   "heldout_fold_1": {
+    "runs_s0": 157,
+    "runs_s2": 147,
+    "identical_runs_both_seeds": 77,
+    "true_class_recordings_s0": 63,
+    "true_class_recordings_s2": 59,
+    "true_class_recordings_both_seeds": 53,
+    "recording_jaccard": 0.7681159420289855
+   }
+  },
+  "S3": {
+   "heldout_fold_0": {
+    "runs_s0": 475,
+    "runs_s2": 480,
+    "identical_runs_both_seeds": 397,
+    "true_class_recordings_s0": 78,
+    "true_class_recordings_s2": 78,
+    "true_class_recordings_both_seeds": 78,
+    "recording_jaccard": 1.0
+   },
+   "heldout_fold_1": {
+    "runs_s0": 429,
+    "runs_s2": 420,
+    "identical_runs_both_seeds": 319,
+    "true_class_recordings_s0": 90,
+    "true_class_recordings_s2": 89,
+    "true_class_recordings_both_seeds": 89,
+    "recording_jaccard": 0.9888888888888889
+   }
+  },
+  "S4": {
+   "heldout_fold_0": {
+    "runs_s0": 43,
+    "runs_s2": 39,
+    "identical_runs_both_seeds": 26,
+    "true_class_recordings_s0": 31,
+    "true_class_recordings_s2": 24,
+    "true_class_recordings_both_seeds": 22,
+    "recording_jaccard": 0.6666666666666666
+   },
+   "heldout_fold_1": {
+    "runs_s0": 60,
+    "runs_s2": 52,
+    "identical_runs_both_seeds": 30,
+    "true_class_recordings_s0": 37,
+    "true_class_recordings_s2": 34,
+    "true_class_recordings_both_seeds": 29,
+    "recording_jaccard": 0.6904761904761905
+   }
+  }
+ },
+ "window_support": {
+  "0": {
+   "heldout_fold_0": {
+    "marker_at_centre": true,
+    "weights_sum_ok": true,
+    "A5C_all": {
+     "outside": 0.15218583002918637,
+     "other_label": 0.15347363251103194,
+     "centre_inside": 0.9985994397759105
+    },
+    "S1": {
+     "outside": 0.2689569039257803,
+     "other_label": 0.11927820064976137,
+     "centre_inside": 0.9803921568627452
+    },
+    "S1_persistent": {
+     "outside": 0.24976341591559992,
+     "other_label": 0.12420646161023728,
+     "centre_inside": 0.9848484848484849
+    },
+    "S2": {
+     "outside": 0.16069776866096383,
+     "other_label": 0.1335928001708344,
+     "centre_inside": 1.0
+    },
+    "S3": {
+     "outside": 0.14265597522744225,
+     "other_label": 0.15938152415639725,
+     "centre_inside": 0.9996491228070177
+    },
+    "S4": {
+     "outside": 0.2246607771421238,
+     "other_label": 0.09086781693609647,
+     "centre_inside": 0.9844961240310078
+    }
+   },
+   "heldout_fold_1": {
+    "marker_at_centre": true,
+    "weights_sum_ok": true,
+    "A5C_all": {
+     "outside": 0.15274734068941292,
+     "other_label": 0.13079127062681928,
+     "centre_inside": 0.9955266955266955
+    },
+    "S1": {
+     "outside": 0.3126469804591911,
+     "other_label": 0.14117267804059516,
+     "centre_inside": 0.9668737060041409
+    },
+    "S1_persistent": {
+     "outside": 0.29939608563157855,
+     "other_label": 0.1396982038101172,
+     "centre_inside": 0.9747474747474747
+    },
+    "S2": {
+     "outside": 0.15730277448085547,
+     "other_label": 0.1345222850844801,
+     "centre_inside": 0.9968152866242038
+    },
+    "S3": {
+     "outside": 0.12306309466161776,
+     "other_label": 0.12665810039775355,
+     "centre_inside": 0.9996114996114998
+    },
+    "S4": {
+     "outside": 0.21721015151092277,
+     "other_label": 0.09881080228396805,
+     "centre_inside": 0.9944444444444446
+    }
+   }
+  },
+  "2": {
+   "heldout_fold_0": {
+    "marker_at_centre": true,
+    "weights_sum_ok": true,
+    "A5C_all": {
+     "outside": 0.15764143742414435,
+     "other_label": 0.15082464298324494,
+     "centre_inside": 0.9969031531531533
+    },
+    "S1": {
+     "outside": 0.30150448178045164,
+     "other_label": 0.1584091839254246,
+     "centre_inside": 0.9558823529411765
+    },
+    "S1_persistent": {
+     "outside": 0.28837656091273267,
+     "other_label": 0.19950394600655513,
+     "centre_inside": 0.9666666666666668
+    },
+    "S2": {
+     "outside": 0.17737992738561104,
+     "other_label": 0.16154105815410566,
+     "centre_inside": 1.0
+    },
+    "S3": {
+     "outside": 0.14383254324982986,
+     "other_label": 0.14750466522132888,
+     "centre_inside": 0.9993055555555556
+    },
+    "S4": {
+     "outside": 0.2442609757696357,
+     "other_label": 0.11728575499255647,
+     "centre_inside": 0.9786324786324787
+    }
+   },
+   "heldout_fold_1": {
+    "marker_at_centre": true,
+    "weights_sum_ok": true,
+    "A5C_all": {
+     "outside": 0.14971079030571838,
+     "other_label": 0.13030266938270918,
+     "centre_inside": 0.9945141065830722
+    },
+    "S1": {
+     "outside": 0.265589947677061,
+     "other_label": 0.13966834383049914,
+     "centre_inside": 0.9651741293532339
+    },
+    "S1_persistent": {
+     "outside": 0.2747601513915687,
+     "other_label": 0.15234029099707372,
+     "centre_inside": 0.9632768361581923
+    },
+    "S2": {
+     "outside": 0.14916333389243125,
+     "other_label": 0.12958132062734612,
+     "centre_inside": 0.9954648526077097
+    },
+    "S3": {
+     "outside": 0.12927130390118538,
+     "other_label": 0.1278467140412027,
+     "centre_inside": 0.9988095238095238
+    },
+    "S4": {
+     "outside": 0.20188985133100573,
+     "other_label": 0.10538958719365367,
+     "centre_inside": 0.9967948717948718
+    }
+   }
+  }
+ }
+}
