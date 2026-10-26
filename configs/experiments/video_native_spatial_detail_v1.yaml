@@ -1,0 +1,50 @@
+# A36 (video_native_spatial_detail_v1), 2026-10-26 UTC: native spatial detail recognition screen.
+# Committed before any new pixel statistic, feature extraction or training. Task sheet:
+# claude_prompts/2026-10-26-native-spatial-detail-recognition.md (sha256 546a49f3).
+# Question: with temporal support, frames, the complete field of view, the frozen A08 encoder weights, the input tensor
+# size, the training objective and compute all the same, does keeping native 320 spatial detail (H) give more
+# transferable A4C/A5C recognition evidence than the matched input reduced to 224 and back (L)?
+# No development / check / test / Pediatric reading; the A08 + B3 path, its 224 inputs, logits, embeddings, cuts and
+# settings are read only; no B3, threshold, router or calibration change; source seed 2 only by the rule below.
+experiment: video_native_spatial_detail_v1
+
+native_spatial_detail:
+  id: A36
+  type: matched_input_training_screen
+  predecessors: "R15 (old E1 image encoder, legacy crop vs fan224: geometry / field of view), A21 (whole-frame auxiliary fit to 224 with the main path trained), A28 / A29 / A31 (representation / head adaptation on the original 224 input), A33 (temporal slots), A34 / A35 (clip-code bags, frozen external recogniser), residual inventory c1ac6c0"
+  data:
+    pools: "A31 fold pools runs/video_session_correction_v1/pool_{0,1}.npy (split.json pool_sha256 96d1fb68 / 08255192)"
+    windows: "A08's 16 slots at 10 Hz (~1.5 s), stride-5 requests, marker slot, gamma and nearest-centre mapping, exactly A31's pool_W order (window identity = sequence, centre, samples)"
+    base: "source A08 all_s0 (sha256 9b144925...; all_s2 f95fed7b... only if the rule triggers), A31's cached 224 outputs outputs_s{s}_f{f}.npz (logits q, 512-d embeddings e224; sha256 checked against A31's cache records) and A31's runs / batch plans runs_s{s}_f{f}.npz (sha256 checked against base_s{s}.json)"
+  inputs:
+    decode: "A08's frame rule: numerically ordered JPEG, RGB, gamma LUT (gamma rounded to 6 decimals, applied before any geometry)"
+    geometry: "aspect-preserving resize to long side 320 with PIL BILINEAR (320 x 240 originals unchanged); centred on a 320 x 320 canvas filled with RGB(29, 28, 29); odd spare pixels: left / top get floor, right / bottom one more"
+    H: "the long-side-320 image itself on the canvas (native detail)"
+    L: "the same image resized with PIL BILINEAR to long side 224 (short side rounded), then PIL BILINEAR back to H's content size, placed on the same canvas"
+    shared: "same canvas, content box, marker, slot times, gamma and the original 0-255 mean / std normalisation applied once; nothing else differs between H and L"
+  encoder320:
+    model: "the source A08 TargetMViT, frozen, eval, no_grad, 16 slots; only the token-grid bookkeeping changes (encoder.pos_encoding.spatial_size = (80, 80)) so torchvision's runtime relative-position interpolation runs on the 320 grid; no table is trained or replaced; marker planes at 320 x 320"
+    checks: "conv-stem output grid (8, 80, 80) and every block's grid recorded; equivalence with a torchvision MViTv2-S built at spatial_size 320 whose rel_pos_h / rel_pos_w tables are materialised by the same linear rule (align_corners False); 224 path reproduces A31's cached logits / embeddings; weights unchanged before / after"
+    cache: "per source seed, arm and fold: 512-d float32 embeddings of every request window plus identity (key = source weights, grid, input / marker / gamma / preprocessing code and frame-plan sha); no pixel or prefix cache; new disk <= 5 GB"
+  head:
+    form: "z = q + g(concat(e224, e320)), g = Linear(1024, 32) -> GELU -> Linear(32, 5) (32,965 parameters); first layer weight N(0, 0.02^2) from torch.Generator seeded [20261026 + 36] per fold, bias 0; last layer weight and bias 0; bit-identical for H and L in a fold; Init = Base exactly"
+    training: "only g; per fit fold, A31's uniform U plans (bt[u], bu[u], u < 1,350: 16 T + 16 P runs, all windows with nearest-centre multiplicities), pooled-probability CE averaged over the 32 runs, no KL / smoothing / extra loss; AdamW lr 1e-3, weight decay 1e-4, warm-up 135 then cosine, clip 1, 1,350 updates, final weights only, CPU single thread"
+    models: "source 0: H_f0, L_f0, H_f1, L_f1 (fit on one fold, read once on the other); source 2 only if the rule is met"
+  deployment: "the original Base runs; each run takes the argmax of the multiplicity-weighted mean of softmax(z); equal neighbours merge; complete sequences scored; deployment cost (224 forward + 320 forward + g) measured"
+  checks: "H / L sizes, content box, marker, times, gamma identical; H content of 320 x 240 originals bit-equal to the gamma-applied original; L detail actually reduced; constant image equal in H and L, checkerboard differs; 224 parity; 320 grid / official-path parity; repeat and batch-split inference; Init = Base for every P run and complete sequence; forced H = L features give identical loss and updates; optimizer bound to g only and updating (first-layer gradient zero at step 1 is expected); 3 + 3 resume = 6; pools / folds isolated; full request denominators"
+  readouts: "all held-out P runs per fold and out of fold per source seed: Base-wrong fixed / correct broken / net, H - L net; A32 S1 recovered, correct A5C kept, both A4C / A5C directions; native / constructed, short / long, pure / mixed, recordings / sessions; multi segment F1@50, native macro-F1, boundary P / R, FP / short FP, FN / missed short true; fit-fold loss and fixes before / after; Init, H / L against Base, H - L; inference cost"
+  seed2_rule:
+    detail: "H - L net fixed >= +5 in each fold; mean segment dF (H - L) over the two folds >= +0.003 and dF >= 0 in each fold"
+    useful: "H - Base net fixed >= 0 in each fold; segment dF (H - Base) >= 0 in each fold and mean >= +0.003"
+    target: "S1 recovered >= ceil(0.10 x S1 runs) over both folds (103 -> 11); correct A5C kept >= ceil(0.98 x correct A5C runs)"
+    protect: "native macro-F1 (H - Base) >= -0.003 in each fold; missed short true over both folds <= Base + 3; boundary recall (H - Base) >= -0.005 in each fold"
+    action: "all met: train source 2 with the same recipe automatically and report both seeds; otherwise end at source 0 with no further resolution / blur / crop / head / loss / learning-rate / encoder variant"
+  scope: "a positive or negative result covers only this frozen A08 320 representation + residual head detail configuration; it does not settle high-resolution or spatial learning in general; a detail difference is not attributed to the LVOT"
+  budget:
+    gpu_hours_max: 4.0
+    cpu_hours_max: 3.0
+    new_disk_gb_max: 5
+    ledger: runs/video_native_spatial_detail_v1/ledger.jsonl
+  outputs:
+    root: runs/video_native_spatial_detail_v1
+    results_dir: docs/results/2026-10-26_native_spatial_detail
