@@ -102,7 +102,9 @@ FP, FN and their short parts are summed over the two folds.
 
 - **Direction of the changes.** W moves more runs in both A4C/A5C directions.
   - It fixes 44 A4C runs read as A5C and 8 S1 runs. S fixes 27 and 0.
-  - It breaks 32 correct A5C runs (to A4C) and 8 correct A4C runs (to A5C). S breaks 9 correct A5C runs.
+  - It breaks 32 correct A5C runs (to A4C) and 8 correct A4C runs (to A5C). S breaks 9 correct A5C runs to A4C.
+  - Dated note 2026-10-26. S loses 11 correct A5C runs in all, as the table's 1,139 shows: 9 to A4C, 1 to PLAX and 1 to
+    PSAX. The 9 above counts the A4C destination only (post-A37 diagnostic, `docs/results/2026-10-26_post_a37_context_evidence_audit/`).
   - A32's S2 runs kept as A5C fall to 75 / 84 and 137 / 157 under W, against 83 / 84 and 149 / 157 under S.
 - **Coverage.** W's fixes come from 54 recordings in 49 sessions and its breaks from 48 / 43. S's come from 28 / 27
   and 23 / 22. A run counts all its source recordings.
@@ -154,7 +156,10 @@ FP, FN and their short parts are summed over the two folds.
 5. **Cost of deployment.** W needs the Base 224 forward (16.5 ms per window in A31's pass) plus a second 224 forward on
    W (16.2 ms per window), so about twice Base's GPU time. It also decodes W's frames (2.1 ms per window on CPU
    workers).
-   - S reused e224 here. A matched deployment of S would also cost one more identical forward.
+   - S needs no second forward. Its auxiliary input is e224 itself, so its minimal deployment is the Base forward plus
+     the 32,965-parameter head. W needs two forwards with different inputs.
+   - Dated note 2026-10-26. The first version said that a matched deployment of S would cost one more identical
+     forward. That is not a necessary cost. `readout_s0.json` keeps its first wording in `forwards_S`.
    - Parameters are A08's 34.6M, shared by both forwards, plus 32,965 for the head.
 
 ## Cost and files
