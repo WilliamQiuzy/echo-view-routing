@@ -1,0 +1,60 @@
+# A38 (video_predicted_run_context_v1), 2026-10-26 UTC: predicted-run limits on the wider auxiliary window, one matched screen.
+# Committed before any new mapping statistic, feature extraction or training. Task sheet:
+# claude_prompts/2026-10-26-predicted-run-context.md (sha256 2a1a862d8d09b1995f7ed099d736079cf1866857505ecfd16152fc2f93a120b1).
+# Question: does limiting A37's auxiliary W input to the frozen Base's predicted run around the request centre (C) keep
+# more correct runs than the unlimited W, while keeping the useful A5C corrections? This is a predicted-boundary input
+# condition: not a fixed span / density variant of A37 and not A28's single interval clip replacing the recognition input.
+# The q / e224 path, the cuts and the final merge stay as they are. C changes span, repeat rate and boundary position
+# together; this round judges the whole input condition and attributes nothing to one of them. The evidence so far does
+# not show that the corrections come from visible LVOT or that cross-boundary content causes the harm.
+# No development / check / test / Pediatric reading; source seed 2 only by the rule below.
+experiment: video_predicted_run_context_v1
+
+predicted_run_context:
+  id: A38
+  type: matched_input_training_screen
+  predecessors: "A28 (one interval clip replacing the recognition input; 948eda4 / 5d1e533 / c5fddb8, closed), A31 (session folds, pools, uniform plans; d6697c8 / 5a64d06 / 5979f41 / 1ba2989), A37 (S / W, doubled offsets; d2cf83e / 16da40c / f55c1ed / 9d2a905: W recovered 8 / 103 S1 and broke 40 runs, closed at source 0), post-A37 diagnostic (771f501 / 825cb5a / cf36357 / 4f2c431: 7 of 8 fixes depend on eW, 24 of 40 breaks also vanish with eW -> e224; 22 short true segments lost = 19 relabels + 3 merges)"
+  changed_condition: "the auxiliary window of each request is clipped to the frozen Base's predicted run that contains its centre; nothing else differs from A37's W arm"
+  data:
+    pools: "A31 fold pools runs/video_session_correction_v1/pool_{0,1}.npy (sha256 96d1fb683e1a261d5be9a3cc7ec393637577bbf83b56140cec41f544c4f3b486 / 08255192dae3a90644ea062880bf6b2b298181ed12e9890d56ca04630f5adef4); complete constructed sequences and their sample axis only"
+    requests: "A31's pool_W order: stride-5 centres c, nearest-centre output map; window identity = (sequence, c); unchanged"
+    base_outputs: "A31 outputs_s{s}_f{f}.npz (logits q, 512-d e224): s0 5884435770e8b65959b22ff77f74b0c2053cadf7fd2a5a28c842104df2f1a512 / 0a99be35b0cd78d650f5014c8ddc783173e6fb849ee556d6fa2a52c73f33d360; s2 5e8042a75e7c38d2f8345c3c3bbf357039efeed530f8758a1a7c7838fe5507fb / 2b1f1e13dce2a769f4091745e531bb998bc122b58cd5f3c09d2c364d904f4a33"
+    base_runs: "A31 data/runs_s{s}_f{f}.npz (T / P runs, uniform plans bt / bu, base_labels): s0 7b28ac6c224f594ef7bf49d6307186807d91bd8577dbc192e8cece07bea7452c / 98ce5c572aa29576a098685c1d28220684e755cbea537b6739020c0387ddc026; s2 91d04d4f255b7e892343b102c736f1b69c8126a69f2e0df1f5c23f1c60d8860f / ef76e587a0db2c7b18dcbdaee5631497963ad8eb9988a929e4526d5949259ef9; base_labels = the seed's own A08 + B3 per-sample prediction (the P runs are its runs)"
+    a08: "all_s0 9b144925f32fac7d725d13231a132abeb6635fa44b6fe0dbcec7f5b59d035bbc; all_s2 f95fed7ba78cc0b5e2474c71a156356507b4588a4b324957fd5b53fe66ee8472 only if the rule triggers; each seed uses its own A08, q / e224 and predicted Base, never seed 0's boundaries"
+  inputs:
+    S: "S = window_frames(c, N, 16, 16), A08's 16 sample positions; marker = marker_slot(S, c)"
+    W: "W = clip(c + 2 * (S - c), 0, N - 1) element-wise, exactly A37 (echo_routing.temporal.wider_temporal.pool_positions, factor 2)"
+    C: "for each request, [a(c), b(c)) is the run of the frozen Base's run-length encoding (consecutive equal base_labels of the request's sequence) that contains c; C = clip(W, a(c), b(c) - 1), element-wise integers; the marker slot stays S's marker slot and C there must equal c"
+    isolation: "the mapping reads only positions, sequence lengths and the frozen Base's predicted labels; never reference labels, T boundaries, P reference labels, clip codes, S1 / harm sets or training targets; one mapping per window, shared by T batches, P batches, fit monitors and the readout; no per-interval mapping"
+    frames: "A37's pixel / marker rule for both arms: numerically ordered JPEG, RGB, gamma LUT rounded to 6 decimals, short side 256 then centre crop 224, refs taken from the sequence's own refs at the given positions; edge repeats kept; no interpolation"
+    audit: "CPU, before any feature, no reference-label statistic: an independent loop over every window re-derives the Base run, C, marker, order and range; reports windows with C != W, actual C / W span, distinct refs per window, repeated-position share, share of W slots changed by the run limit, sequences / recordings / sessions / request denominators per fold; if C equals W in every window the input condition is not realised and the round stops without a performance result"
+  encoder:
+    model: "the source A08 TargetMViT of the seed, frozen, eval, no_grad, its own 16-frame 224 grid (A37's)"
+    reuse: "source 0: A37's verified eW (runs/video_wider_temporal_evidence_v1/feats/eW_s0_f{0,1}.npy, record committed in docs/results/2026-10-26_wider_temporal_evidence/weights_s0.json; A37 feature key re-verified) is the W arm's input; eC of a window equals that window's eW when C's complete ref sequence (source, frame, gamma) and marker equal W's, otherwise it is a new forward; reuse and new-forward counts recorded; never reuse on equal centre alone. Source 2 (only if triggered): new eW of every window by the same code, then eC with the same reuse rule"
+    cache: "per seed and fold: 512-d float32 eC (and source 2 eW); key = sha256 of the mapping module, A37's mapping module, target_mvit, joint_visual, the extraction functions, A08 weights, pool sha256, the Base run file sha256, the position arrays' sha256, batch / chunk and the pixel rule; no pixel or prefix cache; new disk <= 1 GB for the round"
+  head:
+    form: "z_W = q + g_W(concat(e224, eW)), z_C = q + g_C(concat(e224, eC)); g = A37's Residual (Linear(1024, 32) -> GELU -> Linear(32, 5), 32,965 parameters), first layer from torch.Generator seeded 20261026 + 37 + fold (A37's wider_temporal.head), last layer 0; bit-identical for W and C and identical to A37; Init z = q"
+    training: "only g; per fit fold, A31's uniform U plans (bt[u], bu[u], u < 1,350: 16 T + 16 P runs with nearest-centre multiplicities), pooled-probability CE averaged over the 32 runs; no KL / new supervision / tuning; AdamW lr 1e-3, weight decay 1e-4, warm-up 135 then cosine, clip 1, 1,350 updates, final weights only, CPU single thread; per fold W then C"
+    w_reproduction: "source 0 W heads are trained afresh in this namespace from A37's eW and must reproduce A37's W heads (final.pt sha256 9fd523a95251c90dd26de0e72b3a48f427f943f79b71772ba4f772c1fcb98fd1 / 4a1c6c66dd4a9aec3a191a00c97efc2e4a02e5d017f6b6bc351253fea0a29899, updates.jsonl a93d299d926f6c0347459ce42f2e79dbb6e182a40f48bbfc0a09c7e470955c72 / dddbbdc83e7db759d6341c1ce12e8803bead718f781a29d1632858e2f1576ae6) before any readout"
+    models: "per seed: W_f0, C_f0, W_f1, C_f1; all four sha256 committed together before that seed's single held-out readout of both folds"
+  deployment: "the original Base P runs; each run takes the argmax of the multiplicity-weighted mean of softmax(z); equal neighbours merge (RLE); complete sequences scored with the original evaluator; the initial cuts are unchanged, final label boundaries can be deleted by the merge and are reported separately; cost = Base forward + one auxiliary forward on C"
+  checks: "independent mapping loop (above); online e224 equals A31's cache (<= 1e-4); C's normal path equals an explicitly stacked forward of the same frame plan (input bit-equal, output <= 1e-5); online forward on windows where C = W equals the reused eW (<= 1e-4); C = W in every window that needs no run limit; TF32 off; Init = Base on every run, sequence and A32 Base row; forced eC = eW gives identical losses and weights; optimizer bound to g only; 3 + 3 resume = 6; A08 weights, A31 outputs / runs and A37 eW unchanged; fold isolation; loaded repository modules match the committed code"
+  readouts: "per held-out fold and both folds summed: fixed / broken / net runs, both A4C / A5C directions, A32 S1 recovered, correct A5C kept, complete multi segment F1@50, native macro-F1, boundary P / R, FP / short FP, FN / missed short true, Base run boundaries deleted by the final merge; C - W and C - Base (W - Base for reference); fit-fold CE and fixes; Base and W reproduced by A37's readout function and compared with A37's readout_s0.json; actual compute cost. A37's S arm is history only, not a matched arm"
+  seed2_rule:
+    matched: "C - W net fixed >= +5 in each fold; segment dF (C - W) >= 0 in each fold and mean of the two folds >= +0.003"
+    useful: "C - Base net fixed >= 0 and segment dF (C - Base) >= 0 in each fold; mean segment dF (C - Base) >= +0.003"
+    target: "C recovers >= ceil(0.10 x S1 runs over both folds) S1 runs (source 0: 11 of 103); C keeps >= ceil(0.98 x Base-correct A5C runs) correct A5C runs (source 0: 1,127 of 1,150)"
+    protect: "native macro-F1 (C - Base) >= -0.003 in each fold; missed short true over both folds <= Base + 3; boundary recall (C - Base) >= -0.005 in each fold"
+    action: "all met at source 0: source 2 with the same recipe and its own Base denominators inside the budget, both seeds reported; otherwise this configuration closes at source 0. Never: full fit, development / check / test / Pediatric evaluation, reopening A37, router, coefficient / sampling / encoder variants; source 0 results are all kept and inputs / schedule / thresholds are not changed to pass the rule"
+  scope: "a result covers only this frozen A08 + Base-run-limited doubled offsets + residual head configuration; not passing is not equivalence and does not stop the research line"
+  budget:
+    gpu_hours_max: 2.0
+    cpu_hours_max: 2.0
+    new_disk_gb_max: 1.0
+    min_free_disk_gb: 10
+    accounting: "CPU includes the active agent / worker wall clock (waiting excluded); GPU loader time is not counted again as CPU; every failure is booked in this round's ledger; older ledgers are read only; if the checks project a cap overrun, engineering stop"
+    ledger: runs/video_predicted_run_context_v1/ledger.jsonl
+  outputs:
+    root: runs/video_predicted_run_context_v1
+    results_dir: docs/results/2026-10-26_predicted_run_context
+    coordination: runs/video_predicted_run_context_v1/coordination.json
