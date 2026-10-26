@@ -1,0 +1,47 @@
+# A35 (a5c_echofine_evidence_v1), 2026-10-26 UTC: frozen EchoFine A4C/A5C external evidence diagnostic.
+# Committed before any EchoFine inference or real-output reading. Task sheet:
+# claude_prompts/2026-10-25-echofine-frozen-evidence-diagnostic.md (sha256 c5cb28b1).
+# Revision of the intake draft (770cdef), made before any EchoFine score was seen: the full 47-class mean probability is
+# kept and a run may change only when its unique top class is a4ch-full or a5ch-full (the draft compared two columns).
+# No training, tuning, distillation or development / check / test / Pediatric reading.
+experiment: a5c_echofine_evidence_v1
+
+echofine_evidence:
+  id: A35
+  type: frozen_diagnostic
+  question: "on the same training-source frames, does a frozen recogniser trained on a different, fine-grained manual label source recover A5C runs that A08 + B3 reads as A4C while keeping correct A5C runs and full segmentation?"
+  model:
+    weights: "Hugging Face thrive-2025/EchoFine_classifier at commit 164aa2f30a1535e081c3ede401f21f0a7ca62835, file TTE47_Classifier_Model.h5 (LFS sha256 e74c6581b7da9acf82d9c1545543a13777fee544dc8b3cebafd9f74587c132a2, checked byte for byte after download)"
+    code: "EchoForge commit 94131d9b8b4668262dbe7dddddd703ae83ef96a1: class_lookup.json (sha256 f3b0f7e6...), EchoFine_classifier.py, utils/loader.py, config/registry.json"
+    classes: "47 columns in class_lookup order (checked against the file, not assumed): 7 = a4ch-full, 13 = a5ch-full, 14 = a5ch-outflow"
+    environment: "isolated envs/echofine (uv-managed CPython, tensorflow 2.13.x with pip CUDA 11 libraries if the GPU is usable); the project environment, system CUDA and other environments untouched; versions locked and recorded"
+    frozen: "tf.keras.models.load_model, inference with training=False; no fit, optimizer or new parameters; weight digest identical before and after"
+    use: "non-commercial internal frozen research diagnostic under the authors' published 'research use' statement (no separate licence file exists); weights, media and code are not redistributed"
+  inputs:
+    support: "A32's support: the 159,472 unique (recording, frame index, gamma) references of A31's two fold pools, decoded from A08's numerically ordered frame directories with A32's gamma rule (echo_routing.ingest.frames.apply_gamma when gamma != 1); Base A08 + B3 runs of seeds 0 and 2 and A32's S1-S4 sets unchanged"
+    preprocessing: "whole RGB frame as float32 in 0-255, tf.image.resize(size=(224, 224), method='bilinear', antialias=False), no crop or padding; the model's own Rescaling(1/255) is the only normalisation"
+    cache_key: "sha256 of weights, class_lookup, preprocessing description, frame plan and TensorFlow / Keras versions; a mismatched cache is refused"
+  rule: |
+    For each Base run: if the Base class is not A4C or A5C, keep it. Otherwise q = equal-weight mean of the full 47-class
+    softmax over the run's 10 Hz samples (repeated frames counted by sample multiplicity); if q's unique top class is
+    a4ch-full output A4C; if it is a5ch-full output A5C; otherwise (an unmapped top class, including a5ch-outflow and the
+    focused / colour / Doppler / M-mode classes, or a tie at the top) keep Base. Equal neighbours then merge. No
+    threshold, temperature, weighting, two-class renormalisation or other rule; nothing uses reference labels, set
+    membership, quality or source.
+  checks: "download sha, column order, output shape / sums, internal normalisation, value range; official loader single-image against the batched path on fixed training-source frames (float32 max abs <= 1e-5, same argmax), repeat inference; weights unchanged; synthetic rule cases (unmapped top no-op, full classes change, tie no-op, non-A4C/A5C Base no-op, multiplicity weights, merging); Base rows and denominators reproduced from A32 / A31 records; a short throughput / memory check that reads no classification outcome"
+  readouts:
+    main: "per source seed, both folds pooled, all P runs at real proportions (seed 0 6,788, seed 2 6,742, checked against A32): fixed / broken / net, A4C -> A5C and A5C -> A4C, S1 recovered (all S1) and persistent S1 recovered, S2 / S3 correct A5C kept, correct A5C kept rate, non-A4C/A5C runs unchanged; full sequences (multi segment F1@50, native macro-F1, boundary P / R, FP / short FP, FN / missed short true) per seed x fold and out of fold; native / constructed, short / long, pure / mixed with recordings / sessions"
+    coverage: "per set, runs whose 47-class top is a4ch-full / a5ch-full / a5ch-outflow / focused A4C (a4ch-ias, a4ch-la, a4ch-lv, a4ch-ra, a4ch-rv) / other; eligible and changed runs; unmapped probability mass and key class means; S1 recovery unconditional and within coverage (the decision uses all S1)"
+    external_context: "A32's EchoViewCLIP and EchoPrime results cited as frozen earlier results with different preprocessing and mapping; not rerun, not a matched comparison"
+  decision:
+    per_seed: "S1 recovered >= ceil(0.10 x S1 runs); correct A5C kept >= ceil(0.98 x correct A5C runs); net fixed over all P runs >= 0"
+    cells: "multi segment F1@50 not below Base in at least 3 of the 4 seed x fold cells"
+    meaning: "all met: this one frozen configuration shows a complementary signal worth further validation (not a full-system gate, winner or independent generalisation); otherwise close only this EchoFine weights / preprocessing / mapping / rule configuration, not all external recognisers"
+  intake_note: "a dated wording note in the intake README and index: same platform / institution suggests a possible common source but does not prove sample overlap; exact overlap unknown"
+  budget:
+    gpu_hours_max: 1.0
+    cpu_hours_max: 3.0
+    ledger: runs/a5c_echofine_evidence_v1/ledger.jsonl
+  outputs:
+    root: runs/a5c_echofine_evidence_v1
+    results_dir: docs/results/2026-10-26_echofine_evidence
