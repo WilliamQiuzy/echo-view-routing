@@ -5,6 +5,7 @@
   --stage extract  --seed s: frozen A08 512-d embeddings of every request window of both pools for H and L (GPU)
   --stage train    --seed s: residual heads H_f0, L_f0, H_f1, L_f1 on A31's uniform plans (CPU, single thread)
   --stage readout  --seed s: after the heads are committed, one held-out readout (+ the source-2 rule for seed 0) (CPU)
+  --stage coverage --seed s: recording / session coverage of the readout's fixed and broken runs (descriptive) (CPU)
 The A08 + B3 path supplies q, e224, Base and the runs; nothing here changes it.
 """
 from __future__ import annotations
@@ -44,6 +45,7 @@ import echo_routing.temporal.interval_recognition as ir  # noqa: E402
 import echo_routing.temporal.spatial_detail as sd  # noqa: E402
 import echo_routing.vit.target_mvit as tm  # noqa: E402
 from echo_routing.evaluate.complementarity import sha256_file  # noqa: E402
+from echo_routing.evaluate.failure_units import session_of  # noqa: E402
 
 A31_CONFIG, A32_CONFIG = "configs/experiments/video_session_correction_v1.yaml", "configs/experiments/a5c_source_external_evidence_v1.yaml"
 FOLDS, ARMS, U, WARM, CHUNK_SEQS, BATCH = (0, 1), ("H", "L"), 1350, 135, 40, 16
@@ -131,9 +133,10 @@ def extract(ctx: Ctx, s: int, device, workers: int) -> str:
     rec.update({"seed": s, "key": code_key(), "a08": t31.A08[s], "grid": list(sd.GRID), "time": now(), **acc}); write_json(fdir / f"record_s{s}.json", rec); return f"{sum(rec[str(f)]['windows'] for f in FOLDS)} windows x 2 arms"
 
 
-def feats(ctx: Ctx, s: int) -> dict:
+def feats(ctx: Ctx, s: int, pinned: bool = False) -> dict:
+    """pinned: accept the cache by the feature record committed with the heads (weights_s{s}.json) instead of the code key."""
     rec = json.loads((ctx.out / "feats" / f"record_s{s}.json").read_text())
-    if rec["key"] != code_key():
+    if (json.loads((ctx.results / f"weights_s{s}.json").read_text())["feature_record"] != rec) if pinned else (rec["key"] != code_key()):
         raise SystemExit("the feature cache belongs to other code")
     out = {"q": [], "e224": [], "H": [], "L": [], "offset": {}}; o = 0
     for f in FOLDS:
@@ -326,14 +329,38 @@ def readout(ctx: Ctx, s: int) -> str:
     publish(ctx, name, rec); print(json.dumps({"summary": rec["summary"], "oof": rec["oof"], "rule": rule}, indent=1)); return f"rule met: {rule['met']}"
 
 
+def coverage(ctx: Ctx, s: int) -> str:
+    """Recording / session coverage of fixed and broken runs (descriptive, after the readout; same committed heads).
+    A run's recordings are all its source recordings (true-class sources separately); the readout's counts must reproduce."""
+    name = f"coverage_s{s}.json"; rd = json.loads((ctx.out / f"readout_s{s}.json").read_text()); X = feats(ctx, s, pinned=True); rec = {"seed": s, "cells": {}, "oof": {}}; acc = {}
+    for h in FOLDS:
+        f = 1 - h; D = d32.fold_data(ctx.d, s, h); y, b = D["pk"]["labels"], D["pk"]["base"]; wr = b != y; cell = {}
+        for arm in ARMS:
+            with torch.no_grad():
+                z = load_head(ctx, arm, s, f)(X["q"], X["e224"], X[arm])
+            p = t29.pooled_probs(z, D["pk"], np.arange(len(y))).argmax(1); fx, br = wr & (p == y), ~wr & (p != y)
+            if (int(fx.sum()), int(br.sum())) != (rd["cells"][f"heldout_f{h}"][arm]["runs"]["all"]["fixed"], rd["cells"][f"heldout_f{h}"][arm]["runs"]["all"]["broken"]):
+                raise SystemExit("coverage does not reproduce the readout")
+            sets = {}
+            for k, m in (("fixed", fx), ("broken", br)):
+                ix = np.flatnonzero(m); recs = {v for i in ix for v in D["src"][i]}; trec = {v for i in ix for v in D["true_src"][i]}
+                sets[k] = (recs, trec); cell[f"{arm}_{k}"] = {"runs": int(m.sum()), "recordings": len(recs), "true_class_recordings": len(trec), "sessions": len({session_of(v) for v in recs})}
+            acc.setdefault(arm, []).append(sets)
+        rec["cells"][f"heldout_f{h}"] = cell
+    for arm in ARMS:
+        for k in ("fixed", "broken"):
+            recs = set().union(*[c[k][0] for c in acc[arm]]); rec["oof"][f"{arm}_{k}"] = {"recordings": len(recs), "true_class_recordings": len(set().union(*[c[k][1] for c in acc[arm]])), "sessions": len({session_of(v) for v in recs})}
+    publish(ctx, name, rec); print(json.dumps(rec, indent=1)); return "coverage reproduced the readout counts"
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--config", required=True); ap.add_argument("--stage", choices=("check", "extract", "train", "readout"), required=True); ap.add_argument("--seed", type=int, default=0); ap.add_argument("--workers", type=int, default=6)
+    ap.add_argument("--config", required=True); ap.add_argument("--stage", choices=("check", "extract", "train", "readout", "coverage"), required=True); ap.add_argument("--seed", type=int, default=0); ap.add_argument("--workers", type=int, default=6)
     a = ap.parse_args(); a.set = []; ctx = Ctx(load_cfg(a), a.config); ctx.out.mkdir(parents=True, exist_ok=True)
     if a.stage == "train":
         return train(ctx, a.seed)
-    if a.stage == "readout":
-        return staged(ctx, f"readout s{a.seed} (CPU)", "cpu", lambda: readout(ctx, a.seed))
+    if a.stage in ("readout", "coverage"):
+        return staged(ctx, f"{a.stage} s{a.seed} (CPU)", "cpu", lambda: (readout if a.stage == "readout" else coverage)(ctx, a.seed))
     t31.vsh.determinism(); device = torch.device("cuda")
     staged(ctx, f"{a.stage}{' s' + str(a.seed) if a.stage == 'extract' else ''} (GPU job wall time)", "gpu", {"check": lambda: check(ctx, device, a.workers), "extract": lambda: extract(ctx, a.seed, device, a.workers)}[a.stage])
 
