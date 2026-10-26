@@ -103,8 +103,9 @@ FP, FN and their short parts are summed over the two folds.
 - **Direction of the changes.** W moves more runs in both A4C/A5C directions.
   - It fixes 44 A4C runs read as A5C and 8 S1 runs. S fixes 27 and 0.
   - It breaks 32 correct A5C runs (to A4C) and 8 correct A4C runs (to A5C). S breaks 9 correct A5C runs to A4C.
-  - Dated note 2026-10-26. S loses 11 correct A5C runs in all, as the table's 1,139 shows: 9 to A4C, 1 to PLAX and 1 to
-    PSAX. The 9 above counts the A4C destination only (post-A37 diagnostic, `docs/results/2026-10-26_post_a37_context_evidence_audit/`).
+  - Dated note 2026-10-26. As first written, the last sentence read "S breaks 9 correct A5C runs" with no destination.
+    That was incomplete. S loses 11 correct A5C runs in all, as the table's 1,139 shows: 9 to A4C, 1 to PLAX and 1 to
+    PSAX. The 9 counts the A5C→A4C losses only (post-A37 diagnostic, `docs/results/2026-10-26_post_a37_context_evidence_audit/`).
   - A32's S2 runs kept as A5C fall to 75 / 84 and 137 / 157 under W, against 83 / 84 and 149 / 157 under S.
 - **Coverage.** W's fixes come from 54 recordings in 49 sessions and its breaks from 48 / 43. S's come from 28 / 27
   and 23 / 22. A run counts all its source recordings.

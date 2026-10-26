@@ -43,8 +43,9 @@ Units are A31 P runs of the held-out folds. A run counts every one of its source
   most 23). No other R run uses them.
 
 **Correct A5C losses (the 9 / 11 question).** S keeps 1,139 of 1,150 correct A5C runs. Its 11 losses go to A4C (9),
-PLAX (1) and PSAX (1). A37's README table ("1,139") and its prose "S breaks 9 correct A5C runs" are both right. The 9 counts
-only the A4C destination. W's 32 losses all go to A4C.
+PLAX (1) and PSAX (1). The 9 in A37's prose counts only the A5C→A4C losses. As first written, that sentence ("S breaks
+9 correct A5C runs") gave no destination, so it was incomplete. The total is the table's 11. W's 32 losses all go to
+A4C.
 - 9 of W's 32 are also broken by S, and 23 are W's alone. Two runs are broken by S only.
 - W's 40 breaks use only two transitions: A5C→A4C (32) and A4C→A5C (8). S's 16 breaks spread over eight transitions.
 
@@ -69,8 +70,9 @@ same request window. The weights, runs and decoding were unchanged:
   - It has 85 missed short true segments (W 93, Base 76) and 157 short false segments (W 137, Base 178).
   - It keeps 1,129 correct A5C runs and fixes 1 S1 run.
   - It also makes 15 new changes on runs W had left at Base.
-- **The eW-dependent part nets out.** 23 of W's 52 fixes return to Base (7 S1 and 16 A4C read as A5C), and so do 24 of
-  its 40 breaks (15 W-only D5, 8 D4 and 1 shared D5). This matches A37's W − S of about zero.
+- **The eW-dependent part nets out.** 23 of W's 52 fixes return to Base (7 S1 and 16 A4C read as A5C). 24 of its 40
+  breaks return to Base, 16 D5 and 8 D4. Of these 24, 23 are the 15 W-only D5 runs and the 8 D4 runs. The other one is
+  a D5 run that S also breaks. This matches A37's W − S of about zero.
 - **Reading limits.**
   - The substitution changes the joint input distribution the head saw in training.
   - Seven vanished S1 fixes show that they depend on this replacement of eW. They do not show that distant frames hold
@@ -99,8 +101,8 @@ classes were fixed in the scope before any computation, with priority relabel, t
 - **Single-run undo.** Restoring Base's label on one original run brings back every one of the 22 matches. No unit
   needed more than one run. This is a reference-assisted check, not a deployable intervention.
 - **What this means.** The extra missed short segments are the same A4C/A5C relabel events as D5 / D4, seen at the
-  segment level. They are not lost cuts, since the cuts are fixed. Boundary recall falls because merged runs remove
-  predicted label changes.
+  segment level. The initial Base runs and the cut generation are unchanged. A relabel followed by the RLE merge does
+  delete final predicted label boundaries, and that is where boundary recall falls.
 - **Gains.** W's 5 gains are all A4C segments from relabels. They come from W's fixes of A4C read as A5C. S also has 5
   gains, all A4C relabels.
 - **Sources.** The 22 lost segments come from 20 recordings in 19 sessions. One recording holds 3.
@@ -118,15 +120,18 @@ not cause, and no mask or rule follows).
 | L (Base run that matched) | 0.38 | 0.96 | 0.96 | 10.5 | 0.50 |
 
 - The harms sit in short runs whose S windows already cross a label change, and W adds more other-label frames there.
-- R and the unfixed S1 runs have the same share of added other-label slots (0.15). R's 8 runs are only somewhat
-  shorter and less often pure.
+- Two comparisons are kept apart.
+  - **R against the unfixed S1 runs.** Both have 0.15 added other-label slots. These fields do not show what makes the
+    8 fixed S1 runs differ from the 95 unfixed ones. R's runs are only somewhat shorter and less often pure.
+  - **R against the harms.** The means do differ: 0.15 for R, 0.26 for D5, 0.36 for D4 and 0.38 for L. These are
+    reference-label fields the model never sees, so no deployable criterion was established from them.
 
 ## Answers
 
 1. **R's 8 fixes come from 8 different A5C-coded recordings in 8 sessions**, one run each. The largest single
    recording holds 14%, and no two R runs share source frames. With eW replaced by e224, 7 of the 8 return to A4C.
 2. **W's 40 breaks are 32 A5C→A4C and 8 A4C→A5C.** S's 11 correct-A5C losses are 9 to A4C, 1 to PLAX and 1 to PSAX.
-   The 9 and the 11 differ only by destination. W's breaks move only along the A4C/A5C boundary. Nine of its 32
+   A37's prose 9 counts only the A5C→A4C losses, and without that destination it was incomplete. W's breaks move only along the A4C/A5C boundary. Nine of its 32
    A5C→A4C breaks are shared with S, and these mostly stay under the substitute (7 of 9). The W-only breaks mostly
    vanish (15 of 23).
 3. **The extra 17 missed short true segments are 22 lost minus 5 gained.** The main chain is a relabel of the matched
@@ -135,12 +140,13 @@ not cause, and no mask or rule follows).
 4. **There is not yet enough evidence for a specific new training condition.** The strongest lead is W's input-dependent
    S1 signal.
    - **Evidence.** The 8 fixes come from distinct sources, and 7 of them depend on eW under this substitution.
-   - **Against.** The eW-dependent harms are as large as the eW-dependent fixes. 24 breaks return to Base under the
-     substitute against 23 fixes, and 16 lost short segments are matched again. For the target, 7 eW-dependent S1 fixes
-     face 24 eW-dependent breaks (16 of correct A5C, 8 of correct A4C).
+   - **Against.** The eW-dependent harms are as large as the eW-dependent fixes. Under the substitute, 24 of W's breaks
+     return to Base (16 D5 and 8 D4) against 23 fixes, and 16 lost short segments are matched again. For the target,
+     the 7 eW-dependent S1 fixes face these 24 breaks. 23 of the 24 are the 15 W-only D5 runs and the 8 D4 runs.
    - **Unknowns.**
-     - No input field we described separates R from the unfixed S1 runs (added other-label slots 0.15 in both). A deployable signal that separates the
-       fixes from the harms is therefore missing.
+     - The described fields do not separate R from the unfixed S1 runs (0.15 in both). They do differ between R and
+       D5 / D4 (0.15 / 0.26 / 0.36). They are reference-label fields, though, so no deployable criterion separating fixes
+       from harms was established. This does not show that fixes and harms cannot be separated.
      - Span and sampling density were not separated.
      - Whether the frames that help R lie inside or beyond Base's predicted run was not measured. R runs are short
        (median 10 samples), and 85% of their S windows already cross a Base cut.
@@ -158,3 +164,6 @@ not cause, and no mask or rule follows).
 - **Records.** `diagnostic.json` holds id-free aggregates. Per-unit traces and source maps stay on the server under
   `runs/post_a37_context_evidence_audit_v1/private/`.
 - **Code.** `scripts/audit_post_a37_context_evidence.py`; scope `configs/experiments/post_a37_context_evidence_audit_v1.yaml`.
+- **Wording note, 2026-10-26.** After Codex's review, four passages were reworded without new computation. They cover
+  the 9 / 11 question, final label boundaries against initial cuts, the 24 / 23 break counts, and the two field
+  comparisons. No number or decision changed.
