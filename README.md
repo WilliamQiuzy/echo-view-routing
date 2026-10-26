@@ -1,5 +1,8 @@
 # echo-view-routing
 
+[![tests](https://github.com/WilliamQiuzy/echo-view-routing/actions/workflows/tests.yml/badge.svg)](https://github.com/WilliamQiuzy/echo-view-routing/actions/workflows/tests.yml)
+![Python 3.12](https://img.shields.io/badge/python-3.12-blue)
+
 **Live demo (GitHub Pages):** https://williamqiuzy.github.io/echo-view-routing/ — five published baselines on 27 real EV9V streams. Rebuild and publish with `demo/publish_pages.sh`.
 
 Selective temporal routing of echocardiography video (Harvard capstone, public-data study).
