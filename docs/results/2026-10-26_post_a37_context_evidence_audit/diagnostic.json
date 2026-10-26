@@ -1,0 +1,1201 @@
+{
+ "readout_sha256": "54273e6ae795ec2573e96e9f380b456332449b203ea3397b969bb9264486064f",
+ "reproduction": {
+  "heldout_f0": {
+   "Base": {
+    "mismatches": 0,
+    "first": [],
+    "sequences_with_rle_mismatch": 0,
+    "runs_with_label_mismatch": 0
+   },
+   "S": {
+    "mismatches": 0,
+    "first": [],
+    "sequences_with_rle_mismatch": 0,
+    "runs_with_label_mismatch": 0
+   },
+   "W": {
+    "mismatches": 0,
+    "first": [],
+    "sequences_with_rle_mismatch": 0,
+    "runs_with_label_mismatch": 0
+   },
+   "Wsub": {
+    "sequences_with_rle_mismatch": 0,
+    "runs_with_label_mismatch": 0
+   }
+  },
+  "heldout_f1": {
+   "Base": {
+    "mismatches": 0,
+    "first": [],
+    "sequences_with_rle_mismatch": 0,
+    "runs_with_label_mismatch": 0
+   },
+   "S": {
+    "mismatches": 0,
+    "first": [],
+    "sequences_with_rle_mismatch": 0,
+    "runs_with_label_mismatch": 0
+   },
+   "W": {
+    "mismatches": 0,
+    "first": [],
+    "sequences_with_rle_mismatch": 0,
+    "runs_with_label_mismatch": 0
+   },
+   "Wsub": {
+    "sequences_with_rle_mismatch": 0,
+    "runs_with_label_mismatch": 0
+   }
+  }
+ },
+ "per_fold": {
+  "heldout_f0": {
+   "Base": {
+    "segment_f1_50_multi": 0.9639065817409767,
+    "native_macro_f1": 0.977556578483542,
+    "boundary_recall_multi": 0.967644084934277,
+    "boundary_precision_multi": 0.9555666500249625,
+    "fp": 106,
+    "fp_short": 73,
+    "fn": 81,
+    "fn_short": 41,
+    "net_fixed": 0,
+    "correct_A5C_kept": 561,
+    "S1_fixed": 0
+   },
+   "S": {
+    "segment_f1_50_multi": 0.9650376666022793,
+    "native_macro_f1": 0.9851653782819965,
+    "boundary_recall_multi": 0.9671385237613751,
+    "boundary_precision_multi": 0.9569784892446224,
+    "fp": 101,
+    "fp_short": 70,
+    "fn": 80,
+    "fn_short": 41,
+    "net_fixed": 7,
+    "correct_A5C_kept": 559,
+    "S1_fixed": 0
+   },
+   "W": {
+    "segment_f1_50_multi": 0.9650621118012422,
+    "native_macro_f1": 0.9871131337428002,
+    "boundary_recall_multi": 0.9625884732052579,
+    "boundary_precision_multi": 0.9645390070921985,
+    "fp": 88,
+    "fp_short": 55,
+    "fn": 92,
+    "fn_short": 50,
+    "net_fixed": 9,
+    "correct_A5C_kept": 551,
+    "S1_fixed": 3
+   },
+   "Wsub": {
+    "segment_f1_50_multi": 0.9652106687282567,
+    "native_macro_f1": 0.9871131337428002,
+    "boundary_recall_multi": 0.9666329625884732,
+    "boundary_precision_multi": 0.9579158316633266,
+    "fp": 99,
+    "fp_short": 67,
+    "fn": 81,
+    "fn_short": 41,
+    "net_fixed": 9,
+    "correct_A5C_kept": 557,
+    "S1_fixed": 0
+   }
+  },
+  "heldout_f1": {
+   "Base": {
+    "segment_f1_50_multi": 0.9498639720171007,
+    "native_macro_f1": 0.9758316383282561,
+    "boundary_recall_multi": 0.9681397738951696,
+    "boundary_precision_multi": 0.942,
+    "fp": 156,
+    "fp_short": 105,
+    "fn": 102,
+    "fn_short": 35,
+    "net_fixed": 0,
+    "correct_A5C_kept": 589,
+    "S1_fixed": 0
+   },
+   "S": {
+    "segment_f1_50_multi": 0.9511007208260277,
+    "native_macro_f1": 0.9809701721673086,
+    "boundary_recall_multi": 0.9650565262076053,
+    "boundary_precision_multi": 0.9451434323100151,
+    "fp": 146,
+    "fp_short": 95,
+    "fn": 105,
+    "fn_short": 38,
+    "net_fixed": 5,
+    "correct_A5C_kept": 580,
+    "S1_fixed": 0
+   },
+   "W": {
+    "segment_f1_50_multi": 0.9513196480938416,
+    "native_macro_f1": 0.9789292104433269,
+    "boundary_recall_multi": 0.9630010277492291,
+    "boundary_precision_multi": 0.9517521584560691,
+    "fp": 136,
+    "fp_short": 82,
+    "fn": 113,
+    "fn_short": 43,
+    "net_fixed": 3,
+    "correct_A5C_kept": 567,
+    "S1_fixed": 5
+   },
+   "Wsub": {
+    "segment_f1_50_multi": 0.9510052703494046,
+    "native_macro_f1": 0.9808270676691728,
+    "boundary_recall_multi": 0.9630010277492291,
+    "boundary_precision_multi": 0.9479008598887203,
+    "fp": 141,
+    "fp_short": 90,
+    "fn": 110,
+    "fn_short": 44,
+    "net_fixed": 3,
+    "correct_A5C_kept": 572,
+    "S1_fixed": 1
+   }
+  }
+ },
+ "sets": {
+  "all_P": {
+   "sources": {
+    "units": 6788,
+    "recordings": 2476,
+    "sessions": 400,
+    "multi_source_units": 3490,
+    "units_per_recording_max": 38,
+    "recordings_with_2plus_units": 2094,
+    "source_frame_groups": 399,
+    "largest_group": 3179,
+    "units_sharing_frames_with_another_unit": 6438,
+    "units_sharing_frames_across_streams": 6438,
+    "streams_holding_same_frames": {
+     "mean": 8.27018267530937,
+     "max": 72,
+     "units_in_2plus_streams": 6438
+    }
+   },
+   "substitute": {
+    "runs": 6788,
+    "W_changed": 92,
+    "W_changed_kept_by_substitute": 44,
+    "W_changed_back_to_Base": 47,
+    "W_fixed": 52,
+    "W_fixed_kept": 29,
+    "W_broken": 40,
+    "W_broken_same_class": 15,
+    "W_broken_still_wrong": 16,
+    "substitute_changes_where_W_kept_Base": 15,
+    "transitions_Base_W_substitute": {
+     "A5C>A4C>A4C": 43,
+     "A5C>A4C>A5C": 32,
+     "A4C>A5C>A4C": 15,
+     "A5C>A5C>A4C": 8,
+     "PSAX>PSAX>A5C": 3,
+     "A5C>A5C>SC4C": 2,
+     "PLAX>PLAX>SC4C": 1,
+     "PSAX>PSAX>SC4C": 1,
+     "A5C>A4C>PLAX": 1,
+     "A4C>A5C>A5C": 1
+    }
+   },
+   "description": {
+    "units": 6788,
+    "mean": {
+     "other_S": 0.11380639211591699,
+     "other_W": 0.2257586721846525,
+     "new_other_W": 0.16882858468879022,
+     "rec_seam_S": 0.49938269422012893,
+     "rec_seam_W": 0.7032961411673362,
+     "label_seam_S": 0.4055613634307997,
+     "label_seam_W": 0.6030532782374229,
+     "base_cut_S": 0.4398894538932424,
+     "base_cut_W": 0.6260995150652281,
+     "base_cut_W_only": 0.18621006117198566,
+     "length": 36.32336476134355,
+     "pure": 0.5928108426635239
+    },
+    "units_with_new_other_W": 5124,
+    "units_with_W_only_base_cut": 3754,
+    "short_units": 1728,
+    "length_median": 27.0
+   }
+  },
+  "R": {
+   "sources": {
+    "units": 8,
+    "recordings": 14,
+    "sessions": 14,
+    "multi_source_units": 3,
+    "units_per_recording_max": 1,
+    "recordings_with_2plus_units": 0,
+    "source_frame_groups": 8,
+    "largest_group": 1,
+    "units_sharing_frames_with_another_unit": 0,
+    "units_sharing_frames_across_streams": 0,
+    "streams_holding_same_frames": {
+     "mean": 9.375,
+     "max": 23,
+     "units_in_2plus_streams": 8
+    }
+   },
+   "substitute": {
+    "runs": 8,
+    "W_changed": 8,
+    "W_changed_kept_by_substitute": 1,
+    "W_changed_back_to_Base": 7,
+    "W_fixed": 8,
+    "W_fixed_kept": 1,
+    "W_broken": 0,
+    "W_broken_same_class": 0,
+    "W_broken_still_wrong": 0,
+    "substitute_changes_where_W_kept_Base": 0,
+    "transitions_Base_W_substitute": {
+     "A4C>A5C>A4C": 7,
+     "A4C>A5C>A5C": 1
+    }
+   },
+   "description": {
+    "units": 8,
+    "mean": {
+     "other_S": 0.10909598214285715,
+     "other_W": 0.20498511904761907,
+     "new_other_W": 0.15262276785714285,
+     "rec_seam_S": 0.6220238095238095,
+     "rec_seam_W": 0.7767857142857143,
+     "label_seam_S": 0.46130952380952384,
+     "label_seam_W": 0.6205357142857143,
+     "base_cut_S": 0.8526785714285714,
+     "base_cut_W": 0.9017857142857143,
+     "base_cut_W_only": 0.04910714285714286,
+     "length": 17.375,
+     "pure": 0.625
+    },
+    "units_with_new_other_W": 6,
+    "units_with_W_only_base_cut": 2,
+    "short_units": 6,
+    "length_median": 10.0
+   },
+   "A5C_coded_sources": {
+    "recordings": 8,
+    "sessions": 8,
+    "weights_desc": [
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     0.95,
+     0.7,
+     0.4714
+    ],
+    "runs_per_recording_desc": [
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "max_single_recording_share": 0.14042126379137412,
+    "total_weight": 7.121428571428572
+   }
+  },
+  "S1_rest": {
+   "sources": {
+    "units": 95,
+    "recordings": 66,
+    "sessions": 59,
+    "multi_source_units": 32,
+    "units_per_recording_max": 12,
+    "recordings_with_2plus_units": 22,
+    "source_frame_groups": 36,
+    "largest_group": 10,
+    "units_sharing_frames_with_another_unit": 79,
+    "units_sharing_frames_across_streams": 79,
+    "streams_holding_same_frames": {
+     "mean": 8.421052631578947,
+     "max": 20,
+     "units_in_2plus_streams": 94
+    }
+   },
+   "substitute": {
+    "runs": 95,
+    "W_changed": 0,
+    "W_changed_kept_by_substitute": 0,
+    "W_changed_back_to_Base": 0,
+    "W_fixed": 0,
+    "W_fixed_kept": 0,
+    "W_broken": 0,
+    "W_broken_same_class": 0,
+    "W_broken_still_wrong": 0,
+    "substitute_changes_where_W_kept_Base": 0,
+    "transitions_Base_W_substitute": {}
+   },
+   "description": {
+    "units": 95,
+    "mean": {
+     "other_S": 0.1177976835769195,
+     "other_W": 0.2081960507309018,
+     "new_other_W": 0.15033576476432428,
+     "rec_seam_S": 0.488266636563988,
+     "rec_seam_W": 0.725478385864657,
+     "label_seam_S": 0.4091878913137656,
+     "label_seam_W": 0.5715310174436042,
+     "base_cut_S": 0.7949318807830705,
+     "base_cut_W": 0.9048359351457824,
+     "base_cut_W_only": 0.10990405436271183,
+     "length": 18.357894736842105,
+     "pure": 0.7368421052631579
+    },
+    "units_with_new_other_W": 60,
+    "units_with_W_only_base_cut": 31,
+    "short_units": 64,
+    "length_median": 15.0
+   },
+   "A5C_coded_sources": {
+    "recordings": 37,
+    "sessions": 33,
+    "weights_desc": [
+     11.5333,
+     7.7667,
+     6.3833,
+     5.2156,
+     5.1977,
+     4.5695,
+     4.0,
+     4.0,
+     3.9667,
+     3.8357,
+     3.5,
+     3.0,
+     3.0,
+     2.0,
+     2.0,
+     1.9,
+     1.8333,
+     1.8,
+     1.7,
+     1.7,
+     1.5667,
+     1.25,
+     1.0,
+     1.0,
+     1.0,
+     1.0,
+     0.8333,
+     0.8333,
+     0.8333,
+     0.8,
+     0.3,
+     0.225,
+     0.1333,
+     0.0667,
+     0.0667,
+     0.05,
+     0.05
+    ],
+    "runs_per_recording_desc": [
+     12,
+     8,
+     7,
+     6,
+     6,
+     5,
+     5,
+     4,
+     4,
+     4,
+     4,
+     3,
+     3,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     2,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1,
+     1
+    ],
+    "max_single_recording_share": 0.12827610579785007,
+    "total_weight": 89.91022343248149
+   }
+  },
+  "D5": {
+   "sources": {
+    "units": 32,
+    "recordings": 36,
+    "sessions": 32,
+    "multi_source_units": 15,
+    "units_per_recording_max": 4,
+    "recordings_with_2plus_units": 7,
+    "source_frame_groups": 22,
+    "largest_group": 4,
+    "units_sharing_frames_with_another_unit": 17,
+    "units_sharing_frames_across_streams": 17,
+    "streams_holding_same_frames": {
+     "mean": 9.65625,
+     "max": 28,
+     "units_in_2plus_streams": 32
+    }
+   },
+   "substitute": {
+    "runs": 32,
+    "W_changed": 32,
+    "W_changed_kept_by_substitute": 15,
+    "W_changed_back_to_Base": 16,
+    "W_fixed": 0,
+    "W_fixed_kept": 0,
+    "W_broken": 32,
+    "W_broken_same_class": 15,
+    "W_broken_still_wrong": 16,
+    "substitute_changes_where_W_kept_Base": 0,
+    "transitions_Base_W_substitute": {
+     "A5C>A4C>A5C": 16,
+     "A5C>A4C>A4C": 15,
+     "A5C>A4C>PLAX": 1
+    }
+   },
+   "description": {
+    "units": 32,
+    "mean": {
+     "other_S": 0.2031658459914337,
+     "other_W": 0.3624133359052426,
+     "new_other_W": 0.26010849685043863,
+     "rec_seam_S": 0.7151328727167142,
+     "rec_seam_W": 0.8494931897370921,
+     "label_seam_S": 0.6989881942244747,
+     "label_seam_W": 0.8183768213493823,
+     "base_cut_S": 0.7773860276036544,
+     "base_cut_W": 0.8825672612448527,
+     "base_cut_W_only": 0.10518123364119836,
+     "length": 18.6875,
+     "pure": 0.59375
+    },
+    "units_with_new_other_W": 29,
+    "units_with_W_only_base_cut": 10,
+    "short_units": 21,
+    "length_median": 15.0
+   }
+  },
+  "D5_S_and_W": {
+   "sources": {
+    "units": 9,
+    "recordings": 14,
+    "sessions": 13,
+    "multi_source_units": 5,
+    "units_per_recording_max": 2,
+    "recordings_with_2plus_units": 1,
+    "source_frame_groups": 8,
+    "largest_group": 2,
+    "units_sharing_frames_with_another_unit": 2,
+    "units_sharing_frames_across_streams": 2,
+    "streams_holding_same_frames": {
+     "mean": 10.777777777777779,
+     "max": 28,
+     "units_in_2plus_streams": 9
+    }
+   },
+   "substitute": {
+    "runs": 9,
+    "W_changed": 9,
+    "W_changed_kept_by_substitute": 7,
+    "W_changed_back_to_Base": 1,
+    "W_fixed": 0,
+    "W_fixed_kept": 0,
+    "W_broken": 9,
+    "W_broken_same_class": 7,
+    "W_broken_still_wrong": 8,
+    "substitute_changes_where_W_kept_Base": 0,
+    "transitions_Base_W_substitute": {
+     "A5C>A4C>A4C": 7,
+     "A5C>A4C>A5C": 1,
+     "A5C>A4C>PLAX": 1
+    }
+   },
+   "description": {
+    "units": 9,
+    "mean": {
+     "other_S": 0.20360449735449734,
+     "other_W": 0.3526124338624339,
+     "new_other_W": 0.2481977513227513,
+     "rec_seam_S": 0.7261904761904762,
+     "rec_seam_W": 0.9555555555555555,
+     "label_seam_S": 0.7261904761904762,
+     "label_seam_W": 0.9158730158730157,
+     "base_cut_S": 0.7555555555555556,
+     "base_cut_W": 0.9777777777777779,
+     "base_cut_W_only": 0.2222222222222222,
+     "length": 18.77777777777778,
+     "pure": 0.4444444444444444
+    },
+    "units_with_new_other_W": 9,
+    "units_with_W_only_base_cut": 5,
+    "short_units": 4,
+    "length_median": 20.0
+   }
+  },
+  "D5_W_only": {
+   "sources": {
+    "units": 23,
+    "recordings": 25,
+    "sessions": 23,
+    "multi_source_units": 10,
+    "units_per_recording_max": 4,
+    "recordings_with_2plus_units": 4,
+    "source_frame_groups": 17,
+    "largest_group": 4,
+    "units_sharing_frames_with_another_unit": 10,
+    "units_sharing_frames_across_streams": 10,
+    "streams_holding_same_frames": {
+     "mean": 9.217391304347826,
+     "max": 22,
+     "units_in_2plus_streams": 23
+    }
+   },
+   "substitute": {
+    "runs": 23,
+    "W_changed": 23,
+    "W_changed_kept_by_substitute": 8,
+    "W_changed_back_to_Base": 15,
+    "W_fixed": 0,
+    "W_fixed_kept": 0,
+    "W_broken": 23,
+    "W_broken_same_class": 8,
+    "W_broken_still_wrong": 8,
+    "substitute_changes_where_W_kept_Base": 0,
+    "transitions_Base_W_substitute": {
+     "A5C>A4C>A5C": 15,
+     "A5C>A4C>A4C": 8
+    }
+   },
+   "description": {
+    "units": 23,
+    "mean": {
+     "other_S": 0.20299419980588704,
+     "other_W": 0.3662484714872113,
+     "new_other_W": 0.2647692233612728,
+     "rec_seam_S": 0.7108059844008942,
+     "rec_seam_W": 0.8079905248516065,
+     "label_seam_S": 0.6883438230203872,
+     "label_seam_W": 0.7802261365357867,
+     "base_cut_S": 0.7859283862311711,
+     "base_cut_W": 0.8453109721667517,
+     "base_cut_W_only": 0.0593825859355803,
+     "length": 18.652173913043477,
+     "pure": 0.6521739130434783
+    },
+    "units_with_new_other_W": 20,
+    "units_with_W_only_base_cut": 5,
+    "short_units": 17,
+    "length_median": 12.0
+   }
+  },
+  "D5_S_only": {
+   "sources": {
+    "units": 2,
+    "recordings": 3,
+    "sessions": 3,
+    "multi_source_units": 1,
+    "units_per_recording_max": 1,
+    "recordings_with_2plus_units": 0,
+    "source_frame_groups": 2,
+    "largest_group": 1,
+    "units_sharing_frames_with_another_unit": 0,
+    "units_sharing_frames_across_streams": 0,
+    "streams_holding_same_frames": {
+     "mean": 11.5,
+     "max": 15,
+     "units_in_2plus_streams": 2
+    }
+   },
+   "substitute": {
+    "runs": 2,
+    "W_changed": 0,
+    "W_changed_kept_by_substitute": 0,
+    "W_changed_back_to_Base": 0,
+    "W_fixed": 0,
+    "W_fixed_kept": 0,
+    "W_broken": 0,
+    "W_broken_same_class": 0,
+    "W_broken_still_wrong": 0,
+    "substitute_changes_where_W_kept_Base": 1,
+    "transitions_Base_W_substitute": {
+     "A5C>A5C>A4C": 1
+    }
+   },
+   "description": {
+    "units": 2,
+    "mean": {
+     "other_S": 0.26420454545454547,
+     "other_W": 0.5075757575757576,
+     "new_other_W": 0.36837121212121215,
+     "rec_seam_S": 1.0,
+     "rec_seam_W": 1.0,
+     "label_seam_S": 1.0,
+     "label_seam_W": 1.0,
+     "base_cut_S": 1.0,
+     "base_cut_W": 1.0,
+     "base_cut_W_only": 0.0,
+     "length": 13.0,
+     "pure": 0.5
+    },
+    "units_with_new_other_W": 2,
+    "units_with_W_only_base_cut": 0,
+    "short_units": 2,
+    "length_median": 13.0
+   }
+  },
+  "D4": {
+   "sources": {
+    "units": 8,
+    "recordings": 12,
+    "sessions": 12,
+    "multi_source_units": 3,
+    "units_per_recording_max": 1,
+    "recordings_with_2plus_units": 0,
+    "source_frame_groups": 8,
+    "largest_group": 1,
+    "units_sharing_frames_with_another_unit": 0,
+    "units_sharing_frames_across_streams": 0,
+    "streams_holding_same_frames": {
+     "mean": 4.625,
+     "max": 12,
+     "units_in_2plus_streams": 7
+    }
+   },
+   "substitute": {
+    "runs": 8,
+    "W_changed": 8,
+    "W_changed_kept_by_substitute": 0,
+    "W_changed_back_to_Base": 8,
+    "W_fixed": 0,
+    "W_fixed_kept": 0,
+    "W_broken": 8,
+    "W_broken_same_class": 0,
+    "W_broken_still_wrong": 0,
+    "substitute_changes_where_W_kept_Base": 0,
+    "transitions_Base_W_substitute": {
+     "A4C>A5C>A4C": 8
+    }
+   },
+   "description": {
+    "units": 8,
+    "mean": {
+     "other_S": 0.2604166666666667,
+     "other_W": 0.484375,
+     "new_other_W": 0.3580729166666667,
+     "rec_seam_S": 0.9375,
+     "rec_seam_W": 1.0,
+     "label_seam_S": 0.9375,
+     "label_seam_W": 1.0,
+     "base_cut_S": 1.0,
+     "base_cut_W": 1.0,
+     "base_cut_W_only": 0.0,
+     "length": 9.125,
+     "pure": 0.625
+    },
+    "units_with_new_other_W": 8,
+    "units_with_W_only_base_cut": 0,
+    "short_units": 8,
+    "length_median": 10.0
+   }
+  },
+  "A5C_kept_by_W": {
+   "sources": {
+    "units": 1118,
+    "recordings": 689,
+    "sessions": 301,
+    "multi_source_units": 675,
+    "units_per_recording_max": 20,
+    "recordings_with_2plus_units": 266,
+    "source_frame_groups": 12,
+    "largest_group": 560,
+    "units_sharing_frames_with_another_unit": 1114,
+    "units_sharing_frames_across_streams": 1114,
+    "streams_holding_same_frames": {
+     "mean": 13.5608228980322,
+     "max": 72,
+     "units_in_2plus_streams": 1116
+    }
+   },
+   "substitute": {
+    "runs": 1118,
+    "W_changed": 0,
+    "W_changed_kept_by_substitute": 0,
+    "W_changed_back_to_Base": 0,
+    "W_fixed": 0,
+    "W_fixed_kept": 0,
+    "W_broken": 0,
+    "W_broken_same_class": 0,
+    "W_broken_still_wrong": 0,
+    "substitute_changes_where_W_kept_Base": 5,
+    "transitions_Base_W_substitute": {
+     "A5C>A5C>A4C": 3,
+     "A5C>A5C>SC4C": 2
+    }
+   },
+   "description": {
+    "units": 1118,
+    "mean": {
+     "other_S": 0.13452105415236187,
+     "other_W": 0.2632337274167915,
+     "new_other_W": 0.19595528219572192,
+     "rec_seam_S": 0.5795823334154064,
+     "rec_seam_W": 0.7984136842025324,
+     "label_seam_S": 0.46504970773522075,
+     "label_seam_W": 0.6870173096896465,
+     "base_cut_S": 0.49784983538917255,
+     "base_cut_W": 0.7104310837955875,
+     "base_cut_W_only": 0.21258124840641504,
+     "length": 31.801431127012524,
+     "pure": 0.518783542039356
+    },
+    "units_with_new_other_W": 953,
+    "units_with_W_only_base_cut": 702,
+    "short_units": 313,
+    "length_median": 25.0
+   }
+  },
+  "W_fixed": {
+   "sources": {
+    "units": 52,
+    "recordings": 54,
+    "sessions": 49,
+    "multi_source_units": 12,
+    "units_per_recording_max": 3,
+    "recordings_with_2plus_units": 12,
+    "source_frame_groups": 42,
+    "largest_group": 3,
+    "units_sharing_frames_with_another_unit": 18,
+    "units_sharing_frames_across_streams": 18,
+    "streams_holding_same_frames": {
+     "mean": 4.865384615384615,
+     "max": 23,
+     "units_in_2plus_streams": 45
+    }
+   },
+   "substitute": {
+    "runs": 52,
+    "W_changed": 52,
+    "W_changed_kept_by_substitute": 29,
+    "W_changed_back_to_Base": 23,
+    "W_fixed": 52,
+    "W_fixed_kept": 29,
+    "W_broken": 0,
+    "W_broken_same_class": 0,
+    "W_broken_still_wrong": 0,
+    "substitute_changes_where_W_kept_Base": 0,
+    "transitions_Base_W_substitute": {
+     "A5C>A4C>A4C": 28,
+     "A5C>A4C>A5C": 16,
+     "A4C>A5C>A4C": 7,
+     "A4C>A5C>A5C": 1
+    }
+   },
+   "description": null
+  },
+  "W_broken": {
+   "sources": {
+    "units": 40,
+    "recordings": 48,
+    "sessions": 43,
+    "multi_source_units": 18,
+    "units_per_recording_max": 4,
+    "recordings_with_2plus_units": 7,
+    "source_frame_groups": 30,
+    "largest_group": 4,
+    "units_sharing_frames_with_another_unit": 17,
+    "units_sharing_frames_across_streams": 17,
+    "streams_holding_same_frames": {
+     "mean": 8.65,
+     "max": 28,
+     "units_in_2plus_streams": 39
+    }
+   },
+   "substitute": {
+    "runs": 40,
+    "W_changed": 40,
+    "W_changed_kept_by_substitute": 15,
+    "W_changed_back_to_Base": 24,
+    "W_fixed": 0,
+    "W_fixed_kept": 0,
+    "W_broken": 40,
+    "W_broken_same_class": 15,
+    "W_broken_still_wrong": 16,
+    "substitute_changes_where_W_kept_Base": 0,
+    "transitions_Base_W_substitute": {
+     "A5C>A4C>A5C": 16,
+     "A5C>A4C>A4C": 15,
+     "A4C>A5C>A4C": 8,
+     "A5C>A4C>PLAX": 1
+    }
+   },
+   "description": null
+  }
+ },
+ "correct_A5C_losses": {
+  "S": {
+   "runs": 1150,
+   "kept": 1139,
+   "destinations": {
+    "A4C": 9,
+    "PSAX": 1,
+    "PLAX": 1
+   }
+  },
+  "W": {
+   "runs": 1150,
+   "kept": 1118,
+   "destinations": {
+    "A4C": 32
+   }
+  },
+  "Wsub": {
+   "runs": 1150,
+   "kept": 1129,
+   "destinations": {
+    "A4C": 18,
+    "SC4C": 2,
+    "PLAX": 1
+   }
+  }
+ },
+ "broken_by_destination": {
+  "S": {
+   "PLAX->SC4C": 1,
+   "A4C->A5C": 1,
+   "A5C->A4C": 9,
+   "A5C->PSAX": 1,
+   "A4C->PLAX": 1,
+   "PSAX->SC4C": 1,
+   "PSAX->A4C": 1,
+   "A5C->PLAX": 1
+  },
+  "W": {
+   "A4C->A5C": 8,
+   "A5C->A4C": 32
+  },
+  "Wsub": {
+   "PLAX->SC4C": 1,
+   "A5C->A4C": 18,
+   "A5C->SC4C": 2,
+   "PSAX->SC4C": 1,
+   "PSAX->A5C": 1,
+   "A5C->PLAX": 1
+  }
+ },
+ "short_segments": {
+  "W": {
+   "lost": 22,
+   "gained": 5,
+   "net_lost": 17,
+   "lost_by_class": {
+    "merge": 3,
+    "relabel": 19
+   },
+   "gained_by_class": {
+    "relabel_gain": 5
+   },
+   "lost_by_label": {
+    "A5C": 16,
+    "A4C": 6
+   },
+   "gained_by_label": {
+    "A4C": 5
+   },
+   "relabel_destination": {
+    "A4C->A5C": 5,
+    "A5C->A4C": 14
+   },
+   "relabel_absorbed_into_neighbour": 13,
+   "relabel_undo": {
+    "units": 19,
+    "restored_by_one_single_run_undo": 19,
+    "not_confirmed_by_single_run_undo": 0
+   },
+   "merge_undo": {
+    "units": 3,
+    "restored_by_one_single_run_undo": 3,
+    "not_confirmed_by_single_run_undo": 0
+   },
+   "merge_neighbour_runs": {
+    "1": 3
+   },
+   "pB_run_set": {
+    "unchanged": 3,
+    "D4": 5,
+    "D5": 14
+   },
+   "merge_neighbour_run_sets": {
+    "D4": 2,
+    "D5": 1
+   },
+   "substitute_matched_again": {
+    "lost": 16,
+    "gained_still_matched": 3
+   },
+   "per_fold": {
+    "heldout_f0": [
+     12,
+     3
+    ],
+    "heldout_f1": [
+     10,
+     2
+    ]
+   },
+   "lost_sources": {
+    "units": 22,
+    "recordings": 20,
+    "sessions": 19,
+    "multi_source_units": 0,
+    "units_per_recording_max": 3,
+    "recordings_with_2plus_units": 1,
+    "source_frame_groups": 21,
+    "largest_group": 2,
+    "units_sharing_frames_with_another_unit": 2,
+    "units_sharing_frames_across_streams": 2,
+    "streams_holding_same_frames": {
+     "mean": 5.909090909090909,
+     "max": 15,
+     "units_in_2plus_streams": 22
+    }
+   },
+   "gained_sources": {
+    "units": 5,
+    "recordings": 5,
+    "sessions": 5,
+    "multi_source_units": 0,
+    "units_per_recording_max": 1,
+    "recordings_with_2plus_units": 0,
+    "source_frame_groups": 5,
+    "largest_group": 1,
+    "units_sharing_frames_with_another_unit": 0,
+    "units_sharing_frames_across_streams": 0,
+    "streams_holding_same_frames": {
+     "mean": 3.6,
+     "max": 5,
+     "units_in_2plus_streams": 5
+    }
+   },
+   "lost_description_pB_runs": {
+    "units": 22,
+    "mean": {
+     "other_S": 0.2991506723937944,
+     "other_W": 0.5273782985355951,
+     "new_other_W": 0.37950188185684597,
+     "rec_seam_S": 0.962121212121212,
+     "rec_seam_W": 1.0,
+     "label_seam_S": 0.962121212121212,
+     "label_seam_W": 1.0,
+     "base_cut_S": 0.9647129186602871,
+     "base_cut_W": 1.0,
+     "base_cut_W_only": 0.035287081339712915,
+     "length": 12.409090909090908,
+     "pure": 0.5
+    },
+    "units_with_new_other_W": 22,
+    "units_with_W_only_base_cut": 2,
+    "short_units": 20,
+    "length_median": 10.5
+   }
+  },
+  "S": {
+   "lost": 8,
+   "gained": 5,
+   "net_lost": 3,
+   "lost_by_class": {
+    "relabel": 8
+   },
+   "gained_by_class": {
+    "relabel_gain": 5
+   },
+   "lost_by_label": {
+    "PLAX": 1,
+    "A5C": 4,
+    "A4C": 1,
+    "PSAX": 2
+   },
+   "gained_by_label": {
+    "A4C": 5
+   },
+   "relabel_destination": {
+    "PLAX->SC4C": 1,
+    "A5C->A4C": 2,
+    "A5C->PSAX": 1,
+    "A4C->PLAX": 1,
+    "PSAX->SC4C": 1,
+    "PSAX->A4C": 1,
+    "A5C->PLAX": 1
+   },
+   "relabel_absorbed_into_neighbour": 5,
+   "relabel_undo": {
+    "units": 8,
+    "restored_by_one_single_run_undo": 8,
+    "not_confirmed_by_single_run_undo": 0
+   },
+   "merge_undo": {
+    "units": 0,
+    "restored_by_one_single_run_undo": 0,
+    "not_confirmed_by_single_run_undo": 0
+   },
+   "merge_neighbour_runs": {},
+   "per_fold": {
+    "heldout_f0": [
+     3,
+     3
+    ],
+    "heldout_f1": [
+     5,
+     2
+    ]
+   },
+   "lost_sources": {
+    "units": 8,
+    "recordings": 8,
+    "sessions": 8,
+    "multi_source_units": 0,
+    "units_per_recording_max": 1,
+    "recordings_with_2plus_units": 0,
+    "source_frame_groups": 8,
+    "largest_group": 1,
+    "units_sharing_frames_with_another_unit": 0,
+    "units_sharing_frames_across_streams": 0,
+    "streams_holding_same_frames": {
+     "mean": 5.75,
+     "max": 12,
+     "units_in_2plus_streams": 8
+    }
+   },
+   "gained_sources": {
+    "units": 5,
+    "recordings": 5,
+    "sessions": 5,
+    "multi_source_units": 0,
+    "units_per_recording_max": 1,
+    "recordings_with_2plus_units": 0,
+    "source_frame_groups": 5,
+    "largest_group": 1,
+    "units_sharing_frames_with_another_unit": 0,
+    "units_sharing_frames_across_streams": 0,
+    "streams_holding_same_frames": {
+     "mean": 2.8,
+     "max": 5,
+     "units_in_2plus_streams": 4
+    }
+   }
+  },
+  "Wsub": {
+   "lost": 14,
+   "gained": 5,
+   "net_lost": 9,
+   "lost_by_class": {
+    "relabel": 13,
+    "merge": 1
+   },
+   "gained_by_class": {
+    "relabel_gain": 5
+   },
+   "lost_by_label": {
+    "PLAX": 1,
+    "A5C": 11,
+    "PSAX": 2
+   },
+   "gained_by_label": {
+    "A4C": 5
+   },
+   "relabel_destination": {
+    "PLAX->SC4C": 1,
+    "A5C->A4C": 7,
+    "A5C->SC4C": 2,
+    "PSAX->SC4C": 1,
+    "PSAX->A5C": 1,
+    "A5C->PLAX": 1
+   },
+   "relabel_absorbed_into_neighbour": 8,
+   "relabel_undo": {
+    "units": 13,
+    "restored_by_one_single_run_undo": 13,
+    "not_confirmed_by_single_run_undo": 0
+   },
+   "merge_undo": {
+    "units": 1,
+    "restored_by_one_single_run_undo": 1,
+    "not_confirmed_by_single_run_undo": 0
+   },
+   "merge_neighbour_runs": {
+    "1": 1
+   },
+   "per_fold": {
+    "heldout_f0": [
+     3,
+     3
+    ],
+    "heldout_f1": [
+     11,
+     2
+    ]
+   },
+   "lost_sources": {
+    "units": 14,
+    "recordings": 12,
+    "sessions": 11,
+    "multi_source_units": 0,
+    "units_per_recording_max": 3,
+    "recordings_with_2plus_units": 1,
+    "source_frame_groups": 13,
+    "largest_group": 2,
+    "units_sharing_frames_with_another_unit": 2,
+    "units_sharing_frames_across_streams": 2,
+    "streams_holding_same_frames": {
+     "mean": 7.142857142857143,
+     "max": 15,
+     "units_in_2plus_streams": 14
+    }
+   },
+   "gained_sources": {
+    "units": 5,
+    "recordings": 5,
+    "sessions": 5,
+    "multi_source_units": 0,
+    "units_per_recording_max": 1,
+    "recordings_with_2plus_units": 0,
+    "source_frame_groups": 5,
+    "largest_group": 1,
+    "units_sharing_frames_with_another_unit": 0,
+    "units_sharing_frames_across_streams": 0,
+    "streams_holding_same_frames": {
+     "mean": 2.8,
+     "max": 5,
+     "units_in_2plus_streams": 4
+    }
+   }
+  }
+ },
+ "scope": "diagnostic only, not a candidate system and not the S system; the substitute changes the joint feature distribution the head saw in training: a vanished change shows dependence on this input replacement, not generalisable anatomy in distant frames; a kept change does not show W was unused in training; no result selects an input, threshold or next system",
+ "finished": "2026-10-26T19:47:59Z"
+}
