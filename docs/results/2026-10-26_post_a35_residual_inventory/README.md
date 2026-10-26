@@ -28,7 +28,7 @@ not an A-numbered experiment.
 
 ## Table 1: full error table per cell (multi streams unless marked native)
 
-| Cell | Segment F1@50 | TP / FP / FN | Short FP | Missed short true / short true | Native macro-F1 | False cuts at same-class joins | Native units / unmatched / extra predicted segments |
+| Cell | Segment F1@50 | TP / FP / FN | Short FP | Missed short true / short true | Native macro-F1 | False cuts at same-class joins | Native units / FN / FP |
 |---|---|---|---|---|---|---|---|
 | s0, fold 0 | 0.9639 | 2,497 / 106 / 81 | 73 | 41 / 718 | 0.9776 | 24 / 1,022 | 740 / 14 / 55 |
 | s0, fold 1 | 0.9499 | 2,444 / 156 / 102 | 105 | 35 / 626 | 0.9758 | 23 / 1,098 | 747 / 21 / 78 |
@@ -52,11 +52,13 @@ error counts are summed over the four cells.
   - The A4C/A5C FN come from 150 distinct recordings and 109 sessions.
   - The other-class FN come from 24 recordings and 23 sessions.
 - **FP.** 95% of false segments are predicted A4C or A5C (481 / 504). Of these, 319 overlap most with a reference unit
-  of the other class of the pair, and 154 with a unit of their own class.
+  of the other class of the pair, and 154 have the same predicted class as the reference unit hosting them.
+  - The host is the unit a false segment overlaps most. That count alone does not show these segments are interior
+    splits; some may be boundary matching failures. No interior-split check was made.
 - **Reference changes.** A4C ↔ A5C changes are missed 15.8% of the time (133 / 840). All other class changes are missed
   0.6% of the time (42 / 7,008).
-- **Natives.** Unmatched natives are A4C 42 and A5C 24, against 2 PLAX. Extra predicted segments are A4C 106, A5C 132
-  and 9 other.
+- **Natives.** Native FN (unmatched native units) are A4C 42 and A5C 24, against 2 PLAX. Native FP (unmatched predicted
+  segments in native streams; 55 / 78 / 49 / 65 per cell) are A4C 106, A5C 132 and 9 other.
 
 ## Table 2: forms × class of every unmatched multi unit (four cells summed)
 
@@ -85,7 +87,8 @@ majority was checked on each side.
 
 ## Decision
 
-**No problem outside A4C/A5C ambiguity has enough coverage to support another training round.**
+**No problem outside A4C/A5C ambiguity has enough coverage to support another training round.** This is a research
+decision based on this inventory. It does not prove that the other classes cannot improve.
 - **What the other classes contribute.** Most of their errors are missed cuts next to a short segment with one side
   misread. They come to:
   - 36 unmatched unit-instances over four cells (0.6% of their units; 24 recordings, 23 sessions);
