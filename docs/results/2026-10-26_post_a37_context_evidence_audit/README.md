@@ -151,8 +151,8 @@ not cause, and no mask or rule follows).
 ## Cost and files
 
 - **GPU 0 h.**
-- **CPU about 0.4 of 0.75 h.** The job took 0.007 h (24 s wall, 28 s process CPU). The rest is the agent's active
-  time: 0.33 h through this report, plus the closing commits. The ledger
+- **CPU 0.35 of 0.75 h (ledger).** The job took 0.007 h (24 s wall, 28 s process CPU). The rest is the agent's active
+  time: 0.33 h through this report and 0.01 h for the closing commits. The ledger
   `runs/post_a37_context_evidence_audit_v1/ledger.jsonl` on the server books all of it.
 - **Disk 76 KB.**
 - **Records.** `diagnostic.json` holds id-free aggregates. Per-unit traces and source maps stay on the server under
