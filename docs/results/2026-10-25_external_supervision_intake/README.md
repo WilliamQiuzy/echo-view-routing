@@ -139,3 +139,16 @@
 - **Files.** `unity_counts.json` (aggregates), `scripts/intake_unity_counts.py`.
 - **Not in the repository.** EchoForge metadata was read from the pinned commit and is not redistributed here. Unity
   files, file names and the view index stay on the server.
+
+## Dated note (2026-10-26, from A35)
+
+This note narrows wording only. No count, decision or file changes.
+
+- **Platform and institution.** Unity and TTE47 share an annotation platform and an institution. That points to a
+  possible common source; it does not prove that any particular image is in both.
+  - Unity is therefore not described as an independent holdout for EchoFine.
+  - Overlap is not described as confirmed either.
+- **EV9V.** EchoFine and EV9V come from different institutions; that describes their sources. Without a checkable list,
+  exact overlap, including any pretraining overlap, is unknown.
+- **Model outputs.** A high class probability from EchoFine is a model prediction, not an expert annotation. A35 reads
+  one fixed configuration only.
