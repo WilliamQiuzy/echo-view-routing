@@ -12,6 +12,7 @@ import hashlib
 import inspect
 import json
 import shutil
+import subprocess
 import sys
 from pathlib import Path
 from types import SimpleNamespace
@@ -175,6 +176,9 @@ def test_the_official_decoder_falls_back_to_frames_only_when_every_token_is_null
 @needs_git
 def test_the_old_code_is_identified_by_its_digest_and_differs_only_in_allowed_functions(tmp_path):
     r = fv(V2)["revision"]
+    commit = r["original"]["code_commit"]
+    if subprocess.run(["git", "-C", str(ROOT), "cat-file", "-e", f"{commit}^{{commit}}"], capture_output=True).returncode:
+        pytest.skip("the pinned commit is not in this clone (public mirror with rewritten history, or a shallow clone)")
     rec = rv.export_old_code(ROOT, r["original"]["code_commit"], tmp_path / "old")
     assert rec["digest"] == r["original"]["code_digest"] and rv.old_code_digest(tmp_path / "old") == r["original"]["code_digest"]
     cmp = rv.compare_code(tmp_path / "old", r["allowed_code_changes"], r["allowed_added_functions"])
