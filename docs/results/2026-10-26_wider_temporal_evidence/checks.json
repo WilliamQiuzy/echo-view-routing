@@ -1,0 +1,108 @@
+{
+ "config_sha256": "e2902d65faf56f05f45b72fff56bcc95c0d4bd4280093d34650106299200d61e",
+ "tolerances": {
+  "parity": 0.0001,
+  "explicit": 1e-05,
+  "forced_w_eq_s": 0.0001,
+  "batch_split": 0.0001
+ },
+ "mapping": {
+  "0": {
+   "windows": 24585,
+   "mismatches": 0,
+   "cases": {
+    "N_lt_16": 148,
+    "N_eq_16": 56,
+    "N_ge_31": 23310,
+    "first_centre": 0,
+    "last_centre": 768,
+    "repeated_positions": 6838,
+    "crosses_a_join": 13553,
+    "one_source_two_gammas": 0
+   }
+  },
+  "1": {
+   "windows": 25774,
+   "mismatches": 0,
+   "cases": {
+    "N_lt_16": 128,
+    "N_eq_16": 16,
+    "N_ge_31": 24502,
+    "first_centre": 0,
+    "last_centre": 791,
+    "repeated_positions": 6899,
+    "crosses_a_join": 14172,
+    "one_source_two_gammas": 0
+   }
+  }
+ },
+ "features": {
+  "S_online_vs_cache_logits_max_abs": 0.0,
+  "S_online_vs_cache_emb_max_abs": 0.0,
+  "forced_W_eq_S_vs_cache_emb_max_abs": 0.0,
+  "explicit_stack_input_equal": true,
+  "explicit_stack_emb_max_abs": 0.0,
+  "repeat_max_abs": 0.0,
+  "batch_split_max_abs": 9.5367431640625e-07,
+  "W_vs_S_emb_max_abs": 3.47432279586792,
+  "W_windows_differing_from_S": 32,
+  "tf32": {
+   "matmul": false,
+   "cudnn": false
+  }
+ },
+ "weights_unchanged": true,
+ "init_equals_base": {
+  "0": {
+   "z_equals_q": true,
+   "runs_equal_base": true,
+   "sequences_equal_base": true,
+   "rows_equal_A32_base": true,
+   "P_runs": 3384,
+   "base_wrong": 109
+  },
+  "1": {
+   "z_equals_q": true,
+   "runs_equal_base": true,
+   "sequences_equal_base": true,
+   "rows_equal_A32_base": true,
+   "P_runs": 3404,
+   "base_wrong": 145
+  }
+ },
+ "identical_init": true,
+ "forced_equal": {
+  "loss_max_abs": 0.0,
+  "params_max_abs": 0.0
+ },
+ "gradients": {
+  "fc1_grad_abs_sum_step1": 0.0,
+  "fc2_grad_abs_sum_step1": 0.4061061143875122,
+  "fc1_grad_abs_sum_step2": 0.003554134164005518
+ },
+ "optimizer_binds_exactly": true,
+ "resume_3_plus_3_vs_6_max_abs": 0.0,
+ "isolation": {
+  "sessions_shared": 0,
+  "recordings_shared": 0,
+  "window_identities_shared": 0
+ },
+ "windows": {
+  "0": 24585,
+  "1": 25774
+ },
+ "timing": {
+  "windows": 329,
+  "decode_s": 0.9792404174804688,
+  "gpu_s": 5.158040523529053,
+  "seconds_per_window": 0.018654349364770582,
+  "projected_hours_per_seed": 0.300090704613765,
+  "peak_gpu_gb": 9.201599488
+ },
+ "disk": {
+  "projected_feature_gb_per_seed": 0.103135232,
+  "free_gb": 157.52638464
+ },
+ "ok": true,
+ "finished": "2026-10-26T18:11:33Z"
+}
