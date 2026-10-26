@@ -1,0 +1,47 @@
+# Post-A37 cached diagnostic (post_a37_context_evidence_audit_v1), 2026-10-26 UTC. Not a training round, no A-number.
+# Committed before any computation. Task sheet: claude_prompts/2026-10-26-post-a37-context-evidence-audit.md
+# (sha256 116fab552a6f9d3e436c0ec33cc1020cd103c01fb9c6aab1f79ecf1b60e4dee0).
+# Question: are A37's 8 recovered S1 runs spread over distinct sources and tied to the added W feature, and through
+# which interval relabels / merges do the extra missed short true segments arise? Reads only A31's two session-fold
+# training pools, source seed 0's frozen Base / S / W outputs, the heads committed in f55c1ed, the cached e224 / eW and
+# reference labels. No development / check / test / Pediatric reading, no A26 runner, no new feature, no training, no
+# threshold / ratio / donor sweep, no oracle router, no automatic variant. GPU 0 h.
+experiment: post_a37_context_evidence_audit_v1
+
+context_evidence_audit:
+  type: cached_diagnostic
+  predecessors: "A31 (session folds, P runs), A32 (S1 / S2 sets, source attribution), A36 (residual head form), A37 (d2cf83e / 16da40c / f55c1ed / 9d2a905 / 8a122ca: W - S net +2 / -2, OOF +12 each, S1 8 / 103, correct A5C 1,118, missed short 93 against 76)"
+  inputs:
+    a37_config: configs/experiments/video_wider_temporal_evidence_v1.yaml
+    heads: "S_s0_f{0,1}, W_s0_f{0,1} under runs/video_wider_temporal_evidence_v1/train, sha256 checked against weights_committed.json and the committed weights_s0.json feature record (f55c1ed)"
+    features: "A31 outputs_s0_f{0,1}.npz (q, e224), A37 eW_s0_f{0,1}.npy (sha256 from the committed record)"
+    held_out: "fold h is read with the heads fitted on fold 1 - h, exactly as A37's readout"
+  reproduction: "before any new number: Base, S and W recomputed through A37's tables() and compared with readout_s0.json for every cell (runs, changes, correct A5C, S1, counts, sequence row; integers exact, floats max abs <= 1e-9); P runs must equal the RLE runs of Base in every sequence; any mismatch stops the diagnostic"
+  sets:
+    unit: "A31 P runs of the held-out folds (A32's definitions); classes 0 PLAX, 1 PSAX, 2 A4C, 3 A5C, 4 SC4C"
+    R: "S1 runs (reference A5C, Base A4C) that W turns into A5C; control: the other S1 runs"
+    D5: "Base-correct A5C runs that W changes to another class; split into broken by both S and W / W only; plus S-only breaks; all five destination classes of S's and W's correct-A5C losses (reconciles README 1,139 / 1,150 with the prose '9 correct A5C runs')"
+    D4: "Base-correct A4C runs that W changes to A5C"
+    L: "short reference segments (<= 16 samples) of multi sequences matched by the evaluator's one-to-one matching (match_pairs, IoU >= 0.5, same label) under Base and not under W; G: short reference segments unmatched under Base and matched under W; |L| - |G| per fold must equal W's fn_short - Base's fn_short (sum 93 - 76 = 17); the same L / G columns for S"
+    sources: "per set: runs / segments, distinct source recordings and sessions over all sources of each unit (mixed units count every source), units whose source frames (recording, frame) also occur in another unit of the same set in a different stream (union-find groups: number, largest), and the number of pool streams holding the same source frames; for R additionally the A5C-coded source recordings (true_src), their per-recording weights and the largest single-recording share; aggregates only, no identifiers; streams, repeats and seeds are not independent patients"
+  substitute:
+    form: "per held-out fold, the frozen W head of the other fold with its auxiliary input replaced once: original z = q + g_W(concat(e224, eW)); substitute z = q + g_W(concat(e224, e224)); weights, runs and decoding unchanged"
+    order: "original W reproduced first (above), then the substitute computed once"
+    readouts: "all P runs and R / D5 / D4 / L / G: W fixes and breaks kept under the substitute, Base -> W -> substitute class transitions; complete-sequence segment F1@50, FP / short FP, FN / missed short, boundary P / R, native macro-F1"
+    limits: "diagnostic only, not a candidate system and not the S system; the substitute changes the joint feature distribution the head saw in training: a vanished change shows dependence on this input replacement, not generalisable anatomy in distant frames; a kept change does not show W was unused in training; no result selects an input, threshold or next system"
+  chain:
+    order: "every L unit traced privately on the server with the evaluator's matching and the RLE of Base / W predictions; pB = the Base segment matched to the reference segment t (one Base run, the unit W relabels)"
+    classes: "fixed priority, mutually exclusive, sums to |L|: (1) relabel: W's label on pB differs from t's label; (2) merge: W keeps t's label on pB, the W segment holding pB is longer than pB (same-label neighbours relabelled into it) and its IoU with t is < 0.5; (3) rematch: a W segment with t's label and IoU >= 0.5 exists but the one-to-one matching assigns it to another reference segment; (4) other (kept with a description)"
+    undo: "reference-assisted confirmation only: relabel - restore Base's label on pB alone; merge - restore Base's labels on the single W segment that holds pB; re-RLE and re-match the sequence; reports whether t is matched again; no combination search, not a deployment intervention"
+    gains: "G units by the same priority read in reverse: relabel gain (the W segment matched to t holds a Base run whose label W changed) / rematch gain (no run changed inside it) / other"
+    description: "for R / D5 / D4 / L, after the fact and with reference labels the model never saw: W slots with a label different from the target's that S lacks, cross-recording and cross-label seams in the S / W windows, whether the window crosses a Base predicted cut, unit length (<= 16 short) and pure / mixed; correlation is not cause; no mask or rule is designed from these fields"
+  answers: "(1) R's distinct recordings / sessions, reuse share, kept under the substitute; (2) the five destination classes of W's 40 breaks against S's, and whether 9 / 11 differ only by destination; (3) |L| and |G| and the main chain class; (4) at most one concrete motive for a new training condition, with evidence and unknowns, or an explicit statement of what was not separated"
+  scope: "a diagnostic of one frozen configuration; it registers no model, changes no A37 number or closing decision, and does not stop the research line; A08 + B3 stays the working reference"
+  budget:
+    gpu_hours_max: 0.0
+    cpu_hours_max: 0.75
+    ledger: runs/post_a37_context_evidence_audit_v1/ledger.jsonl
+  outputs:
+    root: runs/post_a37_context_evidence_audit_v1
+    results_dir: docs/results/2026-10-26_post_a37_context_evidence_audit
+  privacy: "per-unit sets, source maps and traces stay on the server (root/private); the repository gets id-free aggregates scanned by A32's id check"
