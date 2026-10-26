@@ -71,9 +71,9 @@ the same image reduced to long side 224 and enlarged back (L)?
 |---|---|---|---|---|---|---|---|---|---|
 | Base (= Init) | 0 / 0 / 0 | 0 | 0 / 103 | 1,150 / 1,150 | 0.9639 / 0.9499 | 0.9776 / 0.9758 | 0.968 / 0.956; 0.968 / 0.942 | 262 / 178 | 183 / 76 |
 | H | 11/6/+5; 25/15/+10; **36/21/+15** | 35 | 1 | 1,133 | 0.9644 / 0.9538 | 0.9852 / 0.9791 | 0.967 / 0.958; 0.967 / 0.950 | 236 / 151 | 185 / 77 |
-| L | 11/6/+5; 24/13/+11; **35/19/+16** | 35 | 0 | 1,135 | 0.9648 / 0.9538 | 0.9832 / 0.9791 | 0.967 / 0.958; 0.966 / 0.950 | 235 / 152 |
+| L | 11/6/+5; 24/13/+11; **35/19/+16** | 35 | 0 | 1,135 | 0.9648 / 0.9538 | 0.9832 / 0.9791 | 0.967 / 0.958; 0.966 / 0.950 | 235 / 152 | 184 / 77 |
 
-Boundary values are rounded to three decimals; fold 1 precision is 0.9505 (H) against 0.9500 (L). 184 / 77 |
+Boundary values are rounded to three decimals; fold 1 precision is 0.9505 (H) against 0.9500 (L).
 
 FP, FN and their short parts are summed over the two folds.
 
@@ -115,17 +115,17 @@ FP, FN and their short parts are summed over the two folds.
 
 ## Answers
 
-1. **No new spatial evidence.**
+1. **This screen did not establish a usable increment from native detail.**
    - On the frozen A08 encoder, native 320 detail gives the same held-out result as the matched reduced input.
      H − L is 0 / −1 net runs and −0.0004 / 0.0000 in segment F1.
    - Training does not separate them either. Fit-fold CE ends at 0.0846 against 0.0848 and 0.0984 against 0.0992, so
-     the head finds no extra fittable signal in e320 from H.
+     the head fitted no more from H's e320 than from L's.
    - The embeddings do change with detail. The head does not turn that change into A4C/A5C evidence.
-2. **A small full-segmentation gain over Base, but not from detail.**
+2. **A small full-segmentation gain over Base, not attributed to detail.**
    - Both arms raise segment F1 by about +0.002 (mean), mainly through fewer false short segments in fold 1. This is
      below the +0.003 rule.
-   - Because L matches H, the gain comes from training the residual head on the shared features, not from native
-     detail. It is the same size as A31's F_U head.
+   - L matches H, so no detail increment was established. The shared gain is about the size of A31's F_U head, which
+     is background only. The dated note below limits what the shared gain can be attributed to.
 3. **The same A4C/A5C trade as A27–A35.** The fixes are A4C runs read as A5C. Only 1 of 103 S1 runs is recovered (H),
    and correct A5C runs are lost.
 4. **Closing scope.**
@@ -135,6 +135,14 @@ FP, FN and their short parts are summed over the two folds.
      high-resolution or spatial learning in general, such as an encoder trained at native resolution. No difference
      is attributed to the LVOT.
    - Earlier closing decisions stand. This round does not stop the project. A08 + B3 stays the working reference.
+
+**Dated note (2026-10-26; wording only, numbers and the closing decision unchanged).**
+- **What H − L shows.** H − L without a gain only means that this screen established no increment from native detail.
+  It is not a test of equivalence, and it does not show that spatial detail is useless in general.
+- **What the shared gain cannot be attributed to.** There was no matched e224-only arm. The shared gain over Base
+  therefore cannot be split between the original 224 features, information common to the shared complete field of
+  view, the residual structure, or a combination of these. A31's F_U is background and does not support a strict
+  attribution.
 5. **Cost of deployment.** H would need the 224 forward (16.5 ms per window in A31's pass) plus a 320 forward (44.2 ms
    per window). The head itself is negligible on CPU (0.003 ms per window). That is about 3.7 times Base's GPU time for
    no gain over L.
