@@ -137,3 +137,15 @@ on the same P runs were EchoViewCLIP −3 / −14 and EchoPrime −186 / −185.
   per-frame probabilities, per-run predictions and identifiers.
 - **Intake note.** A dated wording note was added to the intake README: same platform and institution suggest a
   possible common source but do not prove overlap.
+
+## Dated note (2026-10-26, from the residual inventory)
+
+This note narrows wording only. No number, configuration or decision changes.
+
+Answer 5 says "four independent ways of reading these frames", and the index row says "four readers". Both overstate
+what the evidence is.
+- **What they are.** These are the outputs of four models. They are not four experts.
+- **Not statistically independent.** A08 and EchoViewCLIP were both trained on EV9V. The source relations of EchoPrime
+  and EchoFine cannot be fully checked.
+- **What agreement can settle.** Agreement among them does not establish whether a label is right or wrong, or whether
+  the LVOT is visible.

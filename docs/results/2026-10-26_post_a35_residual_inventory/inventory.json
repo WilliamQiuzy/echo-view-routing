@@ -1,0 +1,1305 @@
+{
+ "cells": {
+  "s0_f0": {
+   "changes": {
+    "multi|A4C<->A5C": 218,
+    "multi|A4C<->PLAX": 200,
+    "multi|A4C<->PSAX": 196,
+    "multi|A4C<->SC4C": 199,
+    "multi|A5C<->PLAX": 179,
+    "multi|A5C<->PSAX": 199,
+    "multi|A5C<->SC4C": 200,
+    "multi|PLAX<->PSAX": 204,
+    "multi|PLAX<->SC4C": 179,
+    "multi|PSAX<->SC4C": 204
+   },
+   "competition": {},
+   "evaluator": {
+    "counts": {
+     "f1": 0.9639065817409767,
+     "fn": 81,
+     "fn_short": 41,
+     "fp": 106,
+     "fp_short": 73,
+     "pred": 2603,
+     "ref": 2578,
+     "ref_short": 718,
+     "same_label_join_cuts": 24,
+     "same_label_joins": 1022,
+     "tp": 2497,
+     "tp_short": 677
+    },
+    "row": {
+     "A4C read as A5C": 7,
+     "A5C read as A4C": 3,
+     "boundary_f1_multi": 0.9615674453654861,
+     "boundary_precision_multi": 0.9555666500249625,
+     "boundary_recall_multi": 0.967644084934277,
+     "boundary_recall_pairs": null,
+     "native_internal_cuts_per_clip": 0.05540540540540541,
+     "native_macro_f1": 0.977556578483542,
+     "same_class_cut_rate_multi": 0.023483365949119372,
+     "segment_f1_50_multi": 0.9639065817409767,
+     "segment_f1_50_pairs": null
+    }
+   },
+   "form_recordings": {
+    "multi|boundary_shift": 3,
+    "multi|extra_cut": 14,
+    "multi|label A4C<->A5C": 17,
+    "multi|label other": 4,
+    "multi|missed_cut": 42,
+    "native|extra_cut": 3,
+    "native|label A4C<->A5C": 9,
+    "native|label other": 2
+   },
+   "form_sessions": {
+    "multi|boundary_shift": 3,
+    "multi|extra_cut": 13,
+    "multi|label A4C<->A5C": 15,
+    "multi|label other": 4,
+    "multi|missed_cut": 32,
+    "native|extra_cut": 3,
+    "native|label A4C<->A5C": 8,
+    "native|label other": 2
+   },
+   "forms": {
+    "multi|boundary_shift": {
+     "A4C": 1,
+     "A5C": 2
+    },
+    "multi|extra_cut": {
+     "A4C": 5,
+     "A5C": 7
+    },
+    "multi|label A4C<->A5C": {
+     "A4C": 15,
+     "A5C": 8
+    },
+    "multi|label other": {
+     "A4C": 2,
+     "PLAX": 2
+    },
+    "multi|missed_cut": {
+     "A4C": 15,
+     "A5C": 15,
+     "PLAX": 3,
+     "PSAX": 3,
+     "SC4C": 3
+    },
+    "native|extra_cut": {
+     "A4C": 2,
+     "A5C": 1
+    },
+    "native|label A4C<->A5C": {
+     "A4C": 6,
+     "A5C": 3
+    },
+    "native|label other": {
+     "A4C": 2
+    }
+   },
+   "forms_sum_to_fn": true,
+   "fp_by_host": {
+    "multi|A4C|host A4C": 17,
+    "multi|A4C|host A5C": 27,
+    "multi|A4C|host PLAX": 1,
+    "multi|A5C|host A4C": 37,
+    "multi|A5C|host A5C": 16,
+    "multi|PLAX|host PLAX": 2,
+    "multi|PSAX|host A4C": 1,
+    "multi|PSAX|host PLAX": 2,
+    "multi|SC4C|host A4C": 3,
+    "native|A4C|host A4C": 14,
+    "native|A4C|host A5C": 7,
+    "native|A5C|host A4C": 25,
+    "native|A5C|host A5C": 5,
+    "native|PLAX|host PLAX": 1,
+    "native|PSAX|host A4C": 1,
+    "native|PSAX|host PLAX": 1,
+    "native|SC4C|host A4C": 1
+   },
+   "fp_position": {
+    "multi|inside host": 69,
+    "multi|straddles": 37,
+    "native|inside host": 55
+   },
+   "frac_argmax_true": {
+    "multi|boundary_shift": 0.6333333333333334,
+    "multi|extra_cut": 0.5516390524051713,
+    "multi|label A4C<->A5C": 0.21775238432660493,
+    "multi|label other": 0.18294117647058822,
+    "multi|matched": 0.9370552538220089,
+    "multi|missed_cut": 0.5432645950087811,
+    "native|extra_cut": 0.610211234252155,
+    "native|label A4C<->A5C": 0.41252952434551454,
+    "native|label other": 0.0,
+    "native|matched": 0.9935806860036942
+   },
+   "missed_change_evidence": {
+    "multi|A4C<->A5C|both sides argmax-correct|both sides > 16": 2,
+    "multi|A4C<->A5C|both sides argmax-correct|shorter side <= 16": 10,
+    "multi|A4C<->A5C|both sides wrong|both sides > 16": 1,
+    "multi|A4C<->A5C|one side wrong|both sides > 16": 4,
+    "multi|A4C<->A5C|one side wrong|shorter side <= 16": 11,
+    "multi|A4C<->PSAX|both sides argmax-correct|both sides > 16": 1,
+    "multi|A4C<->PSAX|one side wrong|shorter side <= 16": 1,
+    "multi|A4C<->SC4C|one side wrong|both sides > 16": 1,
+    "multi|A5C<->PLAX|one side wrong|shorter side <= 16": 2,
+    "multi|PLAX<->PSAX|both sides argmax-correct|both sides > 16": 1,
+    "multi|PLAX<->PSAX|one side wrong|shorter side <= 16": 3,
+    "multi|PLAX<->SC4C|one side wrong|shorter side <= 16": 1,
+    "multi|PSAX<->SC4C|both sides argmax-correct|shorter side <= 16": 1,
+    "multi|PSAX<->SC4C|one side wrong|shorter side <= 16": 1
+   },
+   "missed_changes": {
+    "multi|A4C<->A5C": 28,
+    "multi|A4C<->PSAX": 2,
+    "multi|A4C<->SC4C": 1,
+    "multi|A5C<->PLAX": 2,
+    "multi|PLAX<->PSAX": 4,
+    "multi|PLAX<->SC4C": 1,
+    "multi|PSAX<->SC4C": 2
+   },
+   "multi_unit_length_quartiles": [
+    16.0,
+    24.0,
+    36.0
+   ],
+   "prob_rank": {
+    "multi|boundary_shift": {
+     "median_rank": 1.0,
+     "rank1_share": 1.0,
+     "units": 3
+    },
+    "multi|extra_cut": {
+     "median_rank": 1.0,
+     "rank1_share": 0.75,
+     "units": 12
+    },
+    "multi|label A4C<->A5C": {
+     "median_rank": 2.0,
+     "rank1_share": 0.13043478260869565,
+     "units": 23
+    },
+    "multi|label other": {
+     "median_rank": 3.0,
+     "rank1_share": 0.0,
+     "units": 4
+    },
+    "multi|matched": {
+     "median_rank": 1.0,
+     "rank1_share": 0.999199038846616,
+     "units": 2497
+    },
+    "multi|missed_cut": {
+     "median_rank": 1.0,
+     "rank1_share": 0.5128205128205128,
+     "units": 39
+    },
+    "native|extra_cut": {
+     "median_rank": 1.0,
+     "rank1_share": 0.6666666666666666,
+     "units": 3
+    },
+    "native|label A4C<->A5C": {
+     "median_rank": 2.0,
+     "rank1_share": 0.2222222222222222,
+     "units": 9
+    },
+    "native|label other": {
+     "median_rank": 2.5,
+     "rank1_share": 0.0,
+     "units": 2
+    },
+    "native|matched": {
+     "median_rank": 1.0,
+     "rank1_share": 1.0,
+     "units": 726
+    }
+   },
+   "reconcile": {
+    "evaluator_fn": 81,
+    "evaluator_fp": 106,
+    "evaluator_tp": 2497,
+    "multi_fn": 81,
+    "multi_fp": 106,
+    "multi_matched": 2497,
+    "native_matched": 726,
+    "native_pred_segments": 781,
+    "native_units": 740
+   },
+   "reconciled": true,
+   "reproduces_A32": true,
+   "totals": {
+    "fn": {
+     "multi|A4C": 38,
+     "multi|A5C": 32,
+     "multi|PLAX": 5,
+     "multi|PSAX": 3,
+     "multi|SC4C": 3,
+     "native|A4C": 10,
+     "native|A5C": 4
+    },
+    "fn_short": {
+     "multi|A4C": 18,
+     "multi|A5C": 17,
+     "multi|PLAX": 1,
+     "multi|PSAX": 3,
+     "multi|SC4C": 2,
+     "native|A4C": 0,
+     "native|A5C": 0
+    },
+    "fp": {
+     "multi|A4C": 45,
+     "multi|A5C": 53,
+     "multi|PLAX": 2,
+     "multi|PSAX": 3,
+     "multi|SC4C": 3,
+     "native|A4C": 21,
+     "native|A5C": 30,
+     "native|PLAX": 1,
+     "native|PSAX": 2,
+     "native|SC4C": 1
+    },
+    "fp_short": {
+     "multi|A4C": 33,
+     "multi|A5C": 36,
+     "multi|PLAX": 1,
+     "multi|PSAX": 3,
+     "multi|SC4C": 0,
+     "native|A4C": 6,
+     "native|A5C": 12,
+     "native|PLAX": 0,
+     "native|PSAX": 1,
+     "native|SC4C": 0
+    },
+    "pred": {
+     "multi|A4C": 538,
+     "multi|A5C": 533,
+     "multi|PLAX": 498,
+     "multi|PSAX": 525,
+     "multi|SC4C": 509,
+     "native|A4C": 211,
+     "native|A5C": 93,
+     "native|PLAX": 201,
+     "native|PSAX": 202,
+     "native|SC4C": 74
+    },
+    "pred_short": {
+     "multi|A4C": 204,
+     "multi|A5C": 186,
+     "multi|PLAX": 121,
+     "multi|PSAX": 158,
+     "multi|SC4C": 140,
+     "native|A4C": 29,
+     "native|A5C": 27,
+     "native|PLAX": 17,
+     "native|PSAX": 9,
+     "native|SC4C": 4
+    },
+    "units": {
+     "multi|A4C": 531,
+     "multi|A5C": 512,
+     "multi|PLAX": 501,
+     "multi|PSAX": 525,
+     "multi|SC4C": 509,
+     "native|A4C": 200,
+     "native|A5C": 67,
+     "native|PLAX": 200,
+     "native|PSAX": 200,
+     "native|SC4C": 73
+    },
+    "units_short": {
+     "multi|A4C": 170,
+     "multi|A5C": 170,
+     "multi|PLAX": 113,
+     "multi|PSAX": 137,
+     "multi|SC4C": 128,
+     "native|A4C": 23,
+     "native|A5C": 15,
+     "native|PLAX": 17,
+     "native|PSAX": 8,
+     "native|SC4C": 4
+    }
+   }
+  },
+  "s0_f1": {
+   "changes": {
+    "multi|A4C<->A5C": 202,
+    "multi|A4C<->PLAX": 187,
+    "multi|A4C<->PSAX": 208,
+    "multi|A4C<->SC4C": 186,
+    "multi|A5C<->PLAX": 197,
+    "multi|A5C<->PSAX": 210,
+    "multi|A5C<->SC4C": 194,
+    "multi|PLAX<->PSAX": 178,
+    "multi|PLAX<->SC4C": 172,
+    "multi|PSAX<->SC4C": 212
+   },
+   "competition": {},
+   "evaluator": {
+    "counts": {
+     "f1": 0.9498639720171007,
+     "fn": 102,
+     "fn_short": 35,
+     "fp": 156,
+     "fp_short": 105,
+     "pred": 2600,
+     "ref": 2546,
+     "ref_short": 626,
+     "same_label_join_cuts": 23,
+     "same_label_joins": 1098,
+     "tp": 2444,
+     "tp_short": 591
+    },
+    "row": {
+     "A4C read as A5C": 10,
+     "A5C read as A4C": 3,
+     "boundary_f1_multi": 0.9548910288900152,
+     "boundary_precision_multi": 0.942,
+     "boundary_recall_multi": 0.9681397738951696,
+     "boundary_recall_pairs": null,
+     "native_internal_cuts_per_clip": 0.07630522088353414,
+     "native_macro_f1": 0.9758316383282561,
+     "same_class_cut_rate_multi": 0.020947176684881604,
+     "segment_f1_50_multi": 0.9498639720171007,
+     "segment_f1_50_pairs": null
+    }
+   },
+   "form_recordings": {
+    "multi|boundary_shift": 1,
+    "multi|extra_cut": 30,
+    "multi|label A4C<->A5C": 24,
+    "multi|label other": 2,
+    "multi|missed_cut": 49,
+    "native|extra_cut": 9,
+    "native|label A4C<->A5C": 11,
+    "native|label other": 1
+   },
+   "form_sessions": {
+    "multi|boundary_shift": 1,
+    "multi|extra_cut": 28,
+    "multi|label A4C<->A5C": 20,
+    "multi|label other": 2,
+    "multi|missed_cut": 42,
+    "native|extra_cut": 9,
+    "native|label A4C<->A5C": 9,
+    "native|label other": 1
+   },
+   "forms": {
+    "multi|boundary_shift": {
+     "A4C": 1
+    },
+    "multi|extra_cut": {
+     "A4C": 8,
+     "A5C": 9
+    },
+    "multi|label A4C<->A5C": {
+     "A4C": 19,
+     "A5C": 15
+    },
+    "multi|label other": {
+     "PLAX": 1
+    },
+    "multi|missed_cut": {
+     "A4C": 20,
+     "A5C": 25,
+     "PLAX": 1,
+     "PSAX": 2,
+     "SC4C": 1
+    },
+    "native|extra_cut": {
+     "A4C": 4,
+     "A5C": 5
+    },
+    "native|label A4C<->A5C": {
+     "A4C": 8,
+     "A5C": 3
+    },
+    "native|label other": {
+     "PLAX": 1
+    }
+   },
+   "forms_sum_to_fn": true,
+   "fp_by_host": {
+    "multi|A4C|host A4C": 22,
+    "multi|A4C|host A5C": 56,
+    "multi|A4C|host PLAX": 2,
+    "multi|A5C|host A4C": 42,
+    "multi|A5C|host A5C": 30,
+    "multi|A5C|host PSAX": 1,
+    "multi|PLAX|host PLAX": 2,
+    "multi|PSAX|host A5C": 1,
+    "native|A4C|host A4C": 21,
+    "native|A4C|host A5C": 12,
+    "native|A4C|host PLAX": 1,
+    "native|A5C|host A4C": 28,
+    "native|A5C|host A5C": 15,
+    "native|PSAX|host A5C": 1
+   },
+   "fp_position": {
+    "multi|inside host": 105,
+    "multi|straddles": 51,
+    "native|inside host": 78
+   },
+   "frac_argmax_true": {
+    "multi|boundary_shift": 0.2727272727272727,
+    "multi|extra_cut": 0.5587972745469008,
+    "multi|label A4C<->A5C": 0.18920932947145608,
+    "multi|label other": 0.3,
+    "multi|matched": 0.9377441013213378,
+    "multi|missed_cut": 0.5362920778546172,
+    "native|extra_cut": 0.6465568634453317,
+    "native|label A4C<->A5C": 0.3111613355118801,
+    "native|label other": 0.0,
+    "native|matched": 0.990927135083108
+   },
+   "missed_change_evidence": {
+    "multi|A4C<->A5C|both sides argmax-correct|both sides > 16": 6,
+    "multi|A4C<->A5C|both sides argmax-correct|shorter side <= 16": 2,
+    "multi|A4C<->A5C|both sides wrong|shorter side <= 16": 1,
+    "multi|A4C<->A5C|one side wrong|both sides > 16": 10,
+    "multi|A4C<->A5C|one side wrong|shorter side <= 16": 16,
+    "multi|A4C<->PSAX|one side wrong|both sides > 16": 1,
+    "multi|A4C<->PSAX|one side wrong|shorter side <= 16": 2,
+    "multi|A5C<->PLAX|one side wrong|both sides > 16": 1,
+    "multi|A5C<->PSAX|both sides argmax-correct|both sides > 16": 1,
+    "multi|A5C<->SC4C|both sides argmax-correct|shorter side <= 16": 2
+   },
+   "missed_changes": {
+    "multi|A4C<->A5C": 35,
+    "multi|A4C<->PSAX": 3,
+    "multi|A5C<->PLAX": 1,
+    "multi|A5C<->PSAX": 1,
+    "multi|A5C<->SC4C": 2
+   },
+   "multi_unit_length_quartiles": [
+    17.0,
+    26.0,
+    38.0
+   ],
+   "prob_rank": {
+    "multi|boundary_shift": {
+     "median_rank": 2.0,
+     "rank1_share": 0.0,
+     "units": 1
+    },
+    "multi|extra_cut": {
+     "median_rank": 1.0,
+     "rank1_share": 0.8235294117647058,
+     "units": 17
+    },
+    "multi|label A4C<->A5C": {
+     "median_rank": 2.0,
+     "rank1_share": 0.08823529411764706,
+     "units": 34
+    },
+    "multi|label other": {
+     "median_rank": 2.0,
+     "rank1_share": 0.0,
+     "units": 1
+    },
+    "multi|matched": {
+     "median_rank": 1.0,
+     "rank1_share": 0.9991816693944353,
+     "units": 2444
+    },
+    "multi|missed_cut": {
+     "median_rank": 1.0,
+     "rank1_share": 0.5714285714285714,
+     "units": 49
+    },
+    "native|extra_cut": {
+     "median_rank": 1.0,
+     "rank1_share": 0.8888888888888888,
+     "units": 9
+    },
+    "native|label A4C<->A5C": {
+     "median_rank": 2.0,
+     "rank1_share": 0.09090909090909091,
+     "units": 11
+    },
+    "native|label other": {
+     "median_rank": 3.0,
+     "rank1_share": 0.0,
+     "units": 1
+    },
+    "native|matched": {
+     "median_rank": 1.0,
+     "rank1_share": 1.0,
+     "units": 726
+    }
+   },
+   "reconcile": {
+    "evaluator_fn": 102,
+    "evaluator_fp": 156,
+    "evaluator_tp": 2444,
+    "multi_fn": 102,
+    "multi_fp": 156,
+    "multi_matched": 2444,
+    "native_matched": 726,
+    "native_pred_segments": 804,
+    "native_units": 747
+   },
+   "reconciled": true,
+   "reproduces_A32": true,
+   "totals": {
+    "fn": {
+     "multi|A4C": 48,
+     "multi|A5C": 49,
+     "multi|PLAX": 2,
+     "multi|PSAX": 2,
+     "multi|SC4C": 1,
+     "native|A4C": 12,
+     "native|A5C": 8,
+     "native|PLAX": 1
+    },
+    "fn_short": {
+     "multi|A4C": 18,
+     "multi|A5C": 16,
+     "multi|PLAX": 0,
+     "multi|PSAX": 1,
+     "multi|SC4C": 0,
+     "native|A4C": 1,
+     "native|A5C": 0,
+     "native|PLAX": 0
+    },
+    "fp": {
+     "multi|A4C": 80,
+     "multi|A5C": 73,
+     "multi|PLAX": 2,
+     "multi|PSAX": 1,
+     "native|A4C": 34,
+     "native|A5C": 43,
+     "native|PSAX": 1
+    },
+    "fp_short": {
+     "multi|A4C": 55,
+     "multi|A5C": 47,
+     "multi|PLAX": 2,
+     "multi|PSAX": 1,
+     "native|A4C": 15,
+     "native|A5C": 17,
+     "native|PSAX": 1
+    },
+    "pred": {
+     "multi|A4C": 549,
+     "multi|A5C": 550,
+     "multi|PLAX": 487,
+     "multi|PSAX": 523,
+     "multi|SC4C": 491,
+     "native|A4C": 222,
+     "native|A5C": 110,
+     "native|PLAX": 199,
+     "native|PSAX": 201,
+     "native|SC4C": 72
+    },
+    "pred_short": {
+     "multi|A4C": 195,
+     "multi|A5C": 178,
+     "multi|PLAX": 119,
+     "multi|PSAX": 144,
+     "multi|SC4C": 116,
+     "native|A4C": 35,
+     "native|A5C": 19,
+     "native|PLAX": 12,
+     "native|PSAX": 13,
+     "native|SC4C": 2
+    },
+    "units": {
+     "multi|A4C": 517,
+     "multi|A5C": 526,
+     "multi|PLAX": 487,
+     "multi|PSAX": 524,
+     "multi|SC4C": 492,
+     "native|A4C": 200,
+     "native|A5C": 75,
+     "native|PLAX": 200,
+     "native|PSAX": 200,
+     "native|SC4C": 72
+    },
+    "units_short": {
+     "multi|A4C": 147,
+     "multi|A5C": 137,
+     "multi|PLAX": 96,
+     "multi|PSAX": 136,
+     "multi|SC4C": 110,
+     "native|A4C": 21,
+     "native|A5C": 2,
+     "native|PLAX": 12,
+     "native|PSAX": 12,
+     "native|SC4C": 2
+    }
+   }
+  },
+  "s2_f0": {
+   "changes": {
+    "multi|A4C<->A5C": 218,
+    "multi|A4C<->PLAX": 200,
+    "multi|A4C<->PSAX": 196,
+    "multi|A4C<->SC4C": 199,
+    "multi|A5C<->PLAX": 179,
+    "multi|A5C<->PSAX": 199,
+    "multi|A5C<->SC4C": 200,
+    "multi|PLAX<->PSAX": 204,
+    "multi|PLAX<->SC4C": 179,
+    "multi|PSAX<->SC4C": 204
+   },
+   "competition": {},
+   "evaluator": {
+    "counts": {
+     "f1": 0.9648512939358825,
+     "fn": 80,
+     "fn_short": 42,
+     "fp": 102,
+     "fp_short": 68,
+     "pred": 2600,
+     "ref": 2578,
+     "ref_short": 718,
+     "same_label_join_cuts": 23,
+     "same_label_joins": 1022,
+     "tp": 2498,
+     "tp_short": 676
+    },
+    "row": {
+     "A4C read as A5C": 4,
+     "A5C read as A4C": 3,
+     "boundary_f1_multi": 0.9643036701860231,
+     "boundary_precision_multi": 0.959,
+     "boundary_recall_multi": 0.9696663296258847,
+     "boundary_recall_pairs": null,
+     "native_internal_cuts_per_clip": 0.05,
+     "native_macro_f1": 0.9832363272569522,
+     "same_class_cut_rate_multi": 0.022504892367906065,
+     "segment_f1_50_multi": 0.9648512939358825,
+     "segment_f1_50_pairs": null
+    }
+   },
+   "form_recordings": {
+    "multi|boundary_shift": 1,
+    "multi|extra_cut": 10,
+    "multi|label A4C<->A5C": 17,
+    "multi|label other": 3,
+    "multi|missed_cut": 46,
+    "native|extra_cut": 3,
+    "native|label A4C<->A5C": 7,
+    "native|label other": 2
+   },
+   "form_sessions": {
+    "multi|boundary_shift": 1,
+    "multi|extra_cut": 10,
+    "multi|label A4C<->A5C": 15,
+    "multi|label other": 3,
+    "multi|missed_cut": 34,
+    "native|extra_cut": 3,
+    "native|label A4C<->A5C": 6,
+    "native|label other": 2
+   },
+   "forms": {
+    "multi|boundary_shift": {
+     "A5C": 1
+    },
+    "multi|extra_cut": {
+     "A4C": 3,
+     "A5C": 5,
+     "PLAX": 1
+    },
+    "multi|label A4C<->A5C": {
+     "A4C": 14,
+     "A5C": 10
+    },
+    "multi|label other": {
+     "A4C": 1,
+     "PLAX": 2
+    },
+    "multi|missed_cut": {
+     "A4C": 16,
+     "A5C": 17,
+     "PLAX": 3,
+     "PSAX": 5,
+     "SC4C": 2
+    },
+    "native|extra_cut": {
+     "A4C": 2,
+     "A5C": 1
+    },
+    "native|label A4C<->A5C": {
+     "A4C": 4,
+     "A5C": 3
+    },
+    "native|label other": {
+     "A4C": 2
+    }
+   },
+   "forms_sum_to_fn": true,
+   "fp_by_host": {
+    "multi|A4C|host A4C": 14,
+    "multi|A4C|host A5C": 29,
+    "multi|A4C|host PLAX": 1,
+    "multi|A5C|host A4C": 36,
+    "multi|A5C|host A5C": 13,
+    "multi|PLAX|host PLAX": 2,
+    "multi|PSAX|host A4C": 1,
+    "multi|PSAX|host PLAX": 3,
+    "multi|SC4C|host A4C": 3,
+    "native|A4C|host A4C": 13,
+    "native|A4C|host A5C": 5,
+    "native|A5C|host A4C": 22,
+    "native|A5C|host A5C": 5,
+    "native|PLAX|host PLAX": 1,
+    "native|PSAX|host A4C": 1,
+    "native|PSAX|host PLAX": 1,
+    "native|SC4C|host A4C": 1
+   },
+   "fp_position": {
+    "multi|inside host": 70,
+    "multi|straddles": 32,
+    "native|inside host": 49
+   },
+   "frac_argmax_true": {
+    "multi|boundary_shift": 1.0,
+    "multi|extra_cut": 0.5190228003908344,
+    "multi|label A4C<->A5C": 0.19584865391613318,
+    "multi|label other": 0.24410774410774408,
+    "multi|matched": 0.939275430824766,
+    "multi|missed_cut": 0.59247999489275,
+    "native|extra_cut": 0.6540183974824498,
+    "native|label A4C<->A5C": 0.365437462276658,
+    "native|label other": 0.0,
+    "native|matched": 0.9922903026973967
+   },
+   "missed_change_evidence": {
+    "multi|A4C<->A5C|both sides argmax-correct|both sides > 16": 6,
+    "multi|A4C<->A5C|both sides argmax-correct|shorter side <= 16": 12,
+    "multi|A4C<->A5C|both sides wrong|both sides > 16": 1,
+    "multi|A4C<->A5C|one side wrong|both sides > 16": 2,
+    "multi|A4C<->A5C|one side wrong|shorter side <= 16": 9,
+    "multi|A4C<->PSAX|both sides argmax-correct|both sides > 16": 1,
+    "multi|A4C<->PSAX|one side wrong|shorter side <= 16": 1,
+    "multi|A4C<->SC4C|one side wrong|both sides > 16": 1,
+    "multi|A5C<->PLAX|one side wrong|shorter side <= 16": 2,
+    "multi|PLAX<->PSAX|one side wrong|shorter side <= 16": 4,
+    "multi|PLAX<->SC4C|one side wrong|shorter side <= 16": 1,
+    "multi|PSAX<->SC4C|both sides argmax-correct|shorter side <= 16": 1,
+    "multi|PSAX<->SC4C|one side wrong|shorter side <= 16": 1
+   },
+   "missed_changes": {
+    "multi|A4C<->A5C": 30,
+    "multi|A4C<->PSAX": 2,
+    "multi|A4C<->SC4C": 1,
+    "multi|A5C<->PLAX": 2,
+    "multi|PLAX<->PSAX": 4,
+    "multi|PLAX<->SC4C": 1,
+    "multi|PSAX<->SC4C": 2
+   },
+   "multi_unit_length_quartiles": [
+    16.0,
+    24.0,
+    36.0
+   ],
+   "prob_rank": {
+    "multi|boundary_shift": {
+     "median_rank": 1.0,
+     "rank1_share": 1.0,
+     "units": 1
+    },
+    "multi|extra_cut": {
+     "median_rank": 1.0,
+     "rank1_share": 0.7777777777777778,
+     "units": 9
+    },
+    "multi|label A4C<->A5C": {
+     "median_rank": 2.0,
+     "rank1_share": 0.125,
+     "units": 24
+    },
+    "multi|label other": {
+     "median_rank": 2.0,
+     "rank1_share": 0.0,
+     "units": 3
+    },
+    "multi|matched": {
+     "median_rank": 1.0,
+     "rank1_share": 0.9987990392313851,
+     "units": 2498
+    },
+    "multi|missed_cut": {
+     "median_rank": 1.0,
+     "rank1_share": 0.6046511627906976,
+     "units": 43
+    },
+    "native|extra_cut": {
+     "median_rank": 1.0,
+     "rank1_share": 1.0,
+     "units": 3
+    },
+    "native|label A4C<->A5C": {
+     "median_rank": 2.0,
+     "rank1_share": 0.2857142857142857,
+     "units": 7
+    },
+    "native|label other": {
+     "median_rank": 2.5,
+     "rank1_share": 0.0,
+     "units": 2
+    },
+    "native|matched": {
+     "median_rank": 1.0,
+     "rank1_share": 0.9986263736263736,
+     "units": 728
+    }
+   },
+   "reconcile": {
+    "evaluator_fn": 80,
+    "evaluator_fp": 102,
+    "evaluator_tp": 2498,
+    "multi_fn": 80,
+    "multi_fp": 102,
+    "multi_matched": 2498,
+    "native_matched": 728,
+    "native_pred_segments": 777,
+    "native_units": 740
+   },
+   "reconciled": true,
+   "reproduces_A32": true,
+   "totals": {
+    "fn": {
+     "multi|A4C": 34,
+     "multi|A5C": 33,
+     "multi|PLAX": 6,
+     "multi|PSAX": 5,
+     "multi|SC4C": 2,
+     "native|A4C": 8,
+     "native|A5C": 4
+    },
+    "fn_short": {
+     "multi|A4C": 16,
+     "multi|A5C": 18,
+     "multi|PLAX": 2,
+     "multi|PSAX": 5,
+     "multi|SC4C": 1,
+     "native|A4C": 1,
+     "native|A5C": 0
+    },
+    "fp": {
+     "multi|A4C": 44,
+     "multi|A5C": 49,
+     "multi|PLAX": 2,
+     "multi|PSAX": 4,
+     "multi|SC4C": 3,
+     "native|A4C": 18,
+     "native|A5C": 27,
+     "native|PLAX": 1,
+     "native|PSAX": 2,
+     "native|SC4C": 1
+    },
+    "fp_short": {
+     "multi|A4C": 31,
+     "multi|A5C": 32,
+     "multi|PLAX": 1,
+     "multi|PSAX": 3,
+     "multi|SC4C": 1,
+     "native|A4C": 4,
+     "native|A5C": 11,
+     "native|PLAX": 0,
+     "native|PSAX": 1,
+     "native|SC4C": 0
+    },
+    "pred": {
+     "multi|A4C": 541,
+     "multi|A5C": 528,
+     "multi|PLAX": 497,
+     "multi|PSAX": 524,
+     "multi|SC4C": 510,
+     "native|A4C": 210,
+     "native|A5C": 90,
+     "native|PLAX": 201,
+     "native|PSAX": 202,
+     "native|SC4C": 74
+    },
+    "pred_short": {
+     "multi|A4C": 200,
+     "multi|A5C": 191,
+     "multi|PLAX": 118,
+     "multi|PSAX": 155,
+     "multi|SC4C": 142,
+     "native|A4C": 27,
+     "native|A5C": 26,
+     "native|PLAX": 17,
+     "native|PSAX": 9,
+     "native|SC4C": 4
+    },
+    "units": {
+     "multi|A4C": 531,
+     "multi|A5C": 512,
+     "multi|PLAX": 501,
+     "multi|PSAX": 525,
+     "multi|SC4C": 509,
+     "native|A4C": 200,
+     "native|A5C": 67,
+     "native|PLAX": 200,
+     "native|PSAX": 200,
+     "native|SC4C": 73
+    },
+    "units_short": {
+     "multi|A4C": 170,
+     "multi|A5C": 170,
+     "multi|PLAX": 113,
+     "multi|PSAX": 137,
+     "multi|SC4C": 128,
+     "native|A4C": 23,
+     "native|A5C": 15,
+     "native|PLAX": 17,
+     "native|PSAX": 8,
+     "native|SC4C": 4
+    }
+   }
+  },
+  "s2_f1": {
+   "changes": {
+    "multi|A4C<->A5C": 202,
+    "multi|A4C<->PLAX": 187,
+    "multi|A4C<->PSAX": 208,
+    "multi|A4C<->SC4C": 186,
+    "multi|A5C<->PLAX": 197,
+    "multi|A5C<->PSAX": 210,
+    "multi|A5C<->SC4C": 194,
+    "multi|PLAX<->PSAX": 178,
+    "multi|PLAX<->SC4C": 172,
+    "multi|PSAX<->SC4C": 212
+   },
+   "competition": {},
+   "evaluator": {
+    "counts": {
+     "f1": 0.95078125,
+     "fn": 112,
+     "fn_short": 42,
+     "fp": 140,
+     "fp_short": 90,
+     "pred": 2574,
+     "ref": 2546,
+     "ref_short": 626,
+     "same_label_join_cuts": 19,
+     "same_label_joins": 1098,
+     "tp": 2434,
+     "tp_short": 584
+    },
+    "row": {
+     "A4C read as A5C": 8,
+     "A5C read as A4C": 6,
+     "boundary_f1_multi": 0.9586734693877551,
+     "boundary_precision_multi": 0.9518743667679838,
+     "boundary_recall_multi": 0.9655704008221994,
+     "boundary_recall_pairs": null,
+     "native_internal_cuts_per_clip": 0.058902275769745646,
+     "native_macro_f1": 0.9735588972431077,
+     "same_class_cut_rate_multi": 0.017304189435336976,
+     "segment_f1_50_multi": 0.95078125,
+     "segment_f1_50_pairs": null
+    }
+   },
+   "form_recordings": {
+    "multi|boundary_shift": 1,
+    "multi|extra_cut": 21,
+    "multi|label A4C<->A5C": 31,
+    "multi|label other": 2,
+    "multi|missed_cut": 53,
+    "native|extra_cut": 8,
+    "native|label A4C<->A5C": 12,
+    "native|label other": 1
+   },
+   "form_sessions": {
+    "multi|boundary_shift": 1,
+    "multi|extra_cut": 19,
+    "multi|label A4C<->A5C": 25,
+    "multi|label other": 2,
+    "multi|missed_cut": 47,
+    "native|extra_cut": 7,
+    "native|label A4C<->A5C": 10,
+    "native|label other": 1
+   },
+   "forms": {
+    "multi|boundary_shift": {
+     "A5C": 1
+    },
+    "multi|extra_cut": {
+     "A4C": 6,
+     "A5C": 6
+    },
+    "multi|label A4C<->A5C": {
+     "A4C": 18,
+     "A5C": 22
+    },
+    "multi|label other": {
+     "PLAX": 1
+    },
+    "multi|missed_cut": {
+     "A4C": 22,
+     "A5C": 30,
+     "PLAX": 1,
+     "PSAX": 3,
+     "SC4C": 2
+    },
+    "native|extra_cut": {
+     "A4C": 6,
+     "A5C": 2
+    },
+    "native|label A4C<->A5C": {
+     "A4C": 6,
+     "A5C": 6
+    },
+    "native|label other": {
+     "PLAX": 1
+    }
+   },
+   "forms_sum_to_fn": true,
+   "fp_by_host": {
+    "multi|A4C|host A4C": 16,
+    "multi|A4C|host A5C": 56,
+    "multi|A4C|host PLAX": 2,
+    "multi|A5C|host A4C": 36,
+    "multi|A5C|host A5C": 26,
+    "multi|A5C|host PSAX": 1,
+    "multi|PLAX|host PLAX": 2,
+    "multi|PSAX|host A5C": 1,
+    "native|A4C|host A4C": 20,
+    "native|A4C|host A5C": 12,
+    "native|A4C|host PLAX": 1,
+    "native|A5C|host A4C": 22,
+    "native|A5C|host A5C": 10
+   },
+   "fp_position": {
+    "multi|inside host": 89,
+    "multi|straddles": 51,
+    "native|inside host": 65
+   },
+   "frac_argmax_true": {
+    "multi|boundary_shift": 0.5833333333333334,
+    "multi|extra_cut": 0.536143946804412,
+    "multi|label A4C<->A5C": 0.2186455352545059,
+    "multi|label other": 0.3,
+    "multi|matched": 0.9399357620121501,
+    "multi|missed_cut": 0.5972935047583793,
+    "native|extra_cut": 0.5911925857883893,
+    "native|label A4C<->A5C": 0.3642579691200168,
+    "native|label other": 0.0,
+    "native|matched": 0.9922469564693561
+   },
+   "missed_change_evidence": {
+    "multi|A4C<->A5C|both sides argmax-correct|both sides > 16": 7,
+    "multi|A4C<->A5C|both sides argmax-correct|shorter side <= 16": 3,
+    "multi|A4C<->A5C|both sides wrong|shorter side <= 16": 1,
+    "multi|A4C<->A5C|one side wrong|both sides > 16": 12,
+    "multi|A4C<->A5C|one side wrong|shorter side <= 16": 17,
+    "multi|A4C<->PSAX|one side wrong|both sides > 16": 1,
+    "multi|A4C<->PSAX|one side wrong|shorter side <= 16": 2,
+    "multi|A5C<->PLAX|both sides argmax-correct|shorter side <= 16": 1,
+    "multi|A5C<->PLAX|one side wrong|both sides > 16": 1,
+    "multi|A5C<->PSAX|both sides argmax-correct|both sides > 16": 1,
+    "multi|A5C<->PSAX|both sides argmax-correct|shorter side <= 16": 1,
+    "multi|A5C<->PSAX|one side wrong|shorter side <= 16": 1,
+    "multi|PSAX<->SC4C|both sides argmax-correct|both sides > 16": 1,
+    "multi|PSAX<->SC4C|both sides argmax-correct|shorter side <= 16": 2
+   },
+   "missed_changes": {
+    "multi|A4C<->A5C": 40,
+    "multi|A4C<->PSAX": 3,
+    "multi|A5C<->PLAX": 2,
+    "multi|A5C<->PSAX": 3,
+    "multi|PSAX<->SC4C": 3
+   },
+   "multi_unit_length_quartiles": [
+    17.0,
+    26.0,
+    38.0
+   ],
+   "prob_rank": {
+    "multi|boundary_shift": {
+     "median_rank": 1.0,
+     "rank1_share": 1.0,
+     "units": 1
+    },
+    "multi|extra_cut": {
+     "median_rank": 1.0,
+     "rank1_share": 0.75,
+     "units": 12
+    },
+    "multi|label A4C<->A5C": {
+     "median_rank": 2.0,
+     "rank1_share": 0.125,
+     "units": 40
+    },
+    "multi|label other": {
+     "median_rank": 2.0,
+     "rank1_share": 0.0,
+     "units": 1
+    },
+    "multi|matched": {
+     "median_rank": 1.0,
+     "rank1_share": 1.0,
+     "units": 2434
+    },
+    "multi|missed_cut": {
+     "median_rank": 1.0,
+     "rank1_share": 0.5689655172413793,
+     "units": 58
+    },
+    "native|extra_cut": {
+     "median_rank": 1.0,
+     "rank1_share": 0.875,
+     "units": 8
+    },
+    "native|label A4C<->A5C": {
+     "median_rank": 2.0,
+     "rank1_share": 0.16666666666666666,
+     "units": 12
+    },
+    "native|label other": {
+     "median_rank": 2.0,
+     "rank1_share": 0.0,
+     "units": 1
+    },
+    "native|matched": {
+     "median_rank": 1.0,
+     "rank1_share": 1.0,
+     "units": 726
+    }
+   },
+   "reconcile": {
+    "evaluator_fn": 112,
+    "evaluator_fp": 140,
+    "evaluator_tp": 2434,
+    "multi_fn": 112,
+    "multi_fp": 140,
+    "multi_matched": 2434,
+    "native_matched": 726,
+    "native_pred_segments": 791,
+    "native_units": 747
+   },
+   "reconciled": true,
+   "reproduces_A32": true,
+   "totals": {
+    "fn": {
+     "multi|A4C": 46,
+     "multi|A5C": 59,
+     "multi|PLAX": 2,
+     "multi|PSAX": 3,
+     "multi|SC4C": 2,
+     "native|A4C": 12,
+     "native|A5C": 8,
+     "native|PLAX": 1
+    },
+    "fn_short": {
+     "multi|A4C": 21,
+     "multi|A5C": 18,
+     "multi|PLAX": 0,
+     "multi|PSAX": 2,
+     "multi|SC4C": 1,
+     "native|A4C": 1,
+     "native|A5C": 0,
+     "native|PLAX": 0
+    },
+    "fp": {
+     "multi|A4C": 74,
+     "multi|A5C": 63,
+     "multi|PLAX": 2,
+     "multi|PSAX": 1,
+     "native|A4C": 33,
+     "native|A5C": 32
+    },
+    "fp_short": {
+     "multi|A4C": 43,
+     "multi|A5C": 44,
+     "multi|PLAX": 2,
+     "multi|PSAX": 1,
+     "native|A4C": 9,
+     "native|A5C": 11
+    },
+    "pred": {
+     "multi|A4C": 545,
+     "multi|A5C": 530,
+     "multi|PLAX": 487,
+     "multi|PSAX": 522,
+     "multi|SC4C": 490,
+     "native|A4C": 221,
+     "native|A5C": 99,
+     "native|PLAX": 199,
+     "native|PSAX": 200,
+     "native|SC4C": 72
+    },
+    "pred_short": {
+     "multi|A4C": 174,
+     "multi|A5C": 175,
+     "multi|PLAX": 114,
+     "multi|PSAX": 145,
+     "multi|SC4C": 122,
+     "native|A4C": 29,
+     "native|A5C": 13,
+     "native|PLAX": 12,
+     "native|PSAX": 12,
+     "native|SC4C": 2
+    },
+    "units": {
+     "multi|A4C": 517,
+     "multi|A5C": 526,
+     "multi|PLAX": 487,
+     "multi|PSAX": 524,
+     "multi|SC4C": 492,
+     "native|A4C": 200,
+     "native|A5C": 75,
+     "native|PLAX": 200,
+     "native|PSAX": 200,
+     "native|SC4C": 72
+    },
+    "units_short": {
+     "multi|A4C": 147,
+     "multi|A5C": 137,
+     "multi|PLAX": 96,
+     "multi|PSAX": 136,
+     "multi|SC4C": 110,
+     "native|A4C": 21,
+     "native|A5C": 2,
+     "native|PLAX": 12,
+     "native|PSAX": 12,
+     "native|SC4C": 2
+    }
+   }
+  }
+ },
+ "ok": true,
+ "union_over_cells": {
+  "multi|boundary_shift": {
+   "recordings": 5,
+   "sessions": 5
+  },
+  "multi|extra_cut": {
+   "recordings": 46,
+   "sessions": 42
+  },
+  "multi|label A4C<->A5C": {
+   "recordings": 52,
+   "sessions": 43
+  },
+  "multi|label other": {
+   "recordings": 7,
+   "sessions": 7
+  },
+  "multi|missed_cut": {
+   "recordings": 111,
+   "sessions": 87
+  },
+  "native|extra_cut": {
+   "recordings": 15,
+   "sessions": 14
+  },
+  "native|label A4C<->A5C": {
+   "recordings": 24,
+   "sessions": 21
+  },
+  "native|label other": {
+   "recordings": 3,
+   "sessions": 3
+  }
+ }
+}
