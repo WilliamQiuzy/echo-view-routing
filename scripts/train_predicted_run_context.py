@@ -236,8 +236,13 @@ def audit(ctx: Ctx, s: int) -> str:
 
 # ----------------------------------------------------------------------------------------------- check
 def loaded_code() -> dict:
-    return {str(Path(m.__file__).resolve().relative_to(ROOT)): sha256_file(Path(m.__file__)) for m in list(sys.modules.values())
-            if getattr(m, "__file__", None) and str(Path(m.__file__).resolve()).startswith(str(ROOT)) and "/.venv/" not in str(Path(m.__file__).resolve())}
+    """sha256 of every loaded repository module file (scripts / echo_routing / third_party), to compare with the committed code."""
+    out = {}
+    for m in list(sys.modules.values()):
+        p = Path(getattr(m, "__file__", None) or "").resolve()
+        if p.is_file() and p.is_relative_to(ROOT) and p.relative_to(ROOT).parts[0] in ("scripts", "echo_routing", "third_party"):
+            out[str(p.relative_to(ROOT))] = sha256_file(p)
+    return out
 
 
 def check(ctx: Ctx, device, workers: int) -> str:
