@@ -1,0 +1,57 @@
+{
+ "run": {
+  "tf": "2.13.1",
+  "keras": "2.13.1",
+  "devices": [
+   "/device:GPU:0"
+  ],
+  "tf32": false,
+  "xla_jit": "",
+  "weights_sha256": "e74c6581b7da9acf82d9c1545543a13777fee544dc8b3cebafd9f74587c132a2",
+  "lookup_sha256": "f3b0f7e699809bb64c463847bd95a6a862edaaf291732f11827deef2e0516ca6",
+  "plan_sha256": "a61e63a21c57c8ab63e7c7c059ba3540ef39ce86ea9422ad83619fa23160bf6d",
+  "rows": 159472,
+  "key": "e6ef1fcd0c7a9b7b5fb187e96c10a96f5d090a455927997411b3b6f8d281f6a4",
+  "preprocessing": "RGB float32 0-255, tf.image.resize(size=(224, 224), method='bilinear', antialias=False), no crop / pad, model-internal Rescaling(1/255)",
+  "model_input": "(None, 224, 224, 3)",
+  "model_output": "(None, 47)",
+  "finished": "2026-10-26T00:12:30Z",
+  "probs_sha256": "6501288146e7af0868cdaf0b573e3ec22739332124805019201eac8f6d716e24",
+  "weights_unchanged": true
+ },
+ "check": {
+  "official_vs_batched_max_abs": 7.748603820800781e-07,
+  "argmax_equal": true,
+  "repeat_max_abs": 0.0,
+  "batch16_vs_batch32_max_abs": 5.960464477539062e-07,
+  "row_sums": [
+   0.9999998211860657,
+   1.000000238418579
+  ],
+  "output_columns": 47,
+  "input_range": [
+   0.0,
+   254.43878173828125
+  ],
+  "rescaling_layers": [
+   [
+    "rescaling",
+    0.00392156862745098,
+    0.0
+   ]
+  ],
+  "official_weights_equal": true
+ },
+ "throughput": {
+  "frames": 2048,
+  "decode_s": 1.5700373649597168,
+  "model_s": 2.6148316860198975,
+  "projected_full_hours": 0.09051777307099353,
+  "gpu_peak_mb": 3273.97021484375
+ },
+ "check_tf32": false,
+ "first_check_failed_with_tf32_on": {
+  "official_vs_batched_max_abs": 0.0003834366798400879,
+  "batch16_vs_batch32_max_abs": 0.0004311203956604004
+ }
+}
