@@ -1,0 +1,49 @@
+# A37 (video_wider_temporal_evidence_v1), 2026-10-26 UTC: wider temporal evidence recognition screen.
+# Committed before any new input statistic, feature extraction or training. Task sheet:
+# claude_prompts/2026-10-26-wider-temporal-evidence-recognition.md (sha256 1d585eb61b89d00692ae28d1d1543e20052497e60f757ec01110fa1390a8a5f8).
+# Question: with the cuts and target times unchanged, does one more frozen video representation that reads real frames
+# further from the target (16 slots, original time offsets doubled) correct A5C read as A4C while keeping correct A5C,
+# and does it carry over to full segmentation? Span and sampling density change together (about 1.5 s / 10 Hz ->
+# about 3.0 s / 5 Hz); this round does not separate them and claims no duration, motion, cardiac-phase or anatomical
+# mechanism. No development / check / test / Pediatric reading; the A08 + B3 path, its q, e224, cuts and settings are
+# read only; no B3, threshold, router or calibration change; source seed 2 only by the rule below.
+experiment: video_wider_temporal_evidence_v1
+
+wider_temporal_evidence:
+  id: A37
+  type: matched_input_training_screen
+  predecessors: "V01 (same-window multi-frame gain; mixed-view context can hurt the target), A22 (~0.7 s support: mixed windows and short true segments gain, many short false segments inside pure segments), A33 (~1.5 s kept, 32 denser slots; no wider range), A34 (whole-recording bag heads on 1.5 s window representations), A36 (spatial detail H / L on a 320 canvas, 3cadf73 / 63649ef / c978579 / 74ed9b2 / 1cb049a / c58b19b / b53e237), A29 / A31 / A32 (native windows, session folds, S1 sources)"
+  data:
+    pools: "A31 fold pools runs/video_session_correction_v1/pool_{0,1}.npy (sha256 96d1fb683e1a261d5be9a3cc7ec393637577bbf83b56140cec41f544c4f3b486 / 08255192dae3a90644ea062880bf6b2b298181ed12e9890d56ca04630f5adef4); the complete constructed sequences and their sample axis only, never frames outside a sequence"
+    requests: "A31's pool_W order: stride-5 centres c from window_centres, nearest-centre output assignment; window identity = (sequence, c)"
+    base: "source A08 all_s0 (sha256 9b144925f32fac7d725d13231a132abeb6635fa44b6fe0dbcec7f5b59d035bbc; all_s2 f95fed7ba78cc0b5e2474c71a156356507b4588a4b324957fd5b53fe66ee8472 only if the rule triggers); A31 outputs_s{s}_f{f}.npz (logits q, 512-d e224; s0 5884435770e8b659... / 0a99be35b0cd78d6..., s2 5e8042a75e7c38d2... / 2b1f1e13dce2a769..., checked against A31's cache records); runs / plans runs_s{s}_f{f}.npz (s0 7b28ac6c224f594e... / 98ce5c572aa29576..., s2 91d04d4f255b7e89... / ef76e587a0db2c7b..., checked against base_s{s}.json)"
+  inputs:
+    S: "S = window_frames(c, N, 16, 16): A08's 16 sample positions (the Original-span arm); its embedding is the cached e224, verified bit for bit on sampled windows instead of a second identical forward"
+    W: "W = clip(c + 2 * (S - c), 0, N - 1), element-wise integers; 16 slots; marker = marker_slot(S, c) for both arms, and W at the marker slot must equal c in every window"
+    frames: "both arms: A08's frame rule (numerically ordered JPEG, RGB, gamma LUT rounded to 6 decimals, short side 256 then centre crop 224, original 0-255 mean / std once), refs taken from the sequence's own refs at the given positions; edge repeats kept; no interpolation, no new raw time point, no size-32 linspace, no change of request centre"
+    audit: "index statistics only, before any feature: actual W span (samples), distinct refs per window, share of W slots outside S's sample range, clamped and repeated positions, sequences with N < 16 / N < 31, request / recording / session denominators; no labels, S1 or model output; if W equals S in every window the input condition is not realised and the round stops without a performance result"
+  encoder:
+    model: "the source A08 TargetMViT, frozen, eval, no_grad, its own 16-frame 224 grid; no table adaptation, no encoder training"
+    cache: "per source seed and fold: 512-d float32 eW of every request window; e224 reused; key = sha256 of the feature-defining code only (the mapping / frame module, target_mvit, joint_visual, the extraction functions) plus weights, pools, batch size and chunking; no prefix or pixel cache; new disk <= 2 GB"
+  head:
+    form: "z_S = q + g_S(concat(e224, e224)), z_W = q + g_W(concat(e224, eW)); g = Linear(1024, 32) -> GELU -> Linear(32, 5) (32,965 parameters); first layer N(0, 0.02^2) from torch.Generator seeded 20261026 + 37 + fold, bias 0; last layer 0; bit-identical for S and W in a fold; Init z = q"
+    training: "only g; per fit fold, A31's uniform U plans (bt[u], bu[u], u < 1,350: 16 T + 16 P runs with nearest-centre multiplicities), pooled-probability CE averaged over the 32 runs, no KL / error emphasis / class balance / new teacher / relation / smoothing; AdamW lr 1e-3, weight decay 1e-4, warm-up 135 then cosine, clip 1, 1,350 updates, final weights only, CPU single thread; order per fold S then W"
+    models: "source 0: S_f0, W_f0, S_f1, W_f1; all four sha256 committed before one readout of both held-out folds; source 2 only if the rule is met (four new heads, no reuse)"
+  deployment: "the original Base runs; each run takes the argmax of the multiplicity-weighted mean of softmax(z); equal neighbours merge; complete sequences scored; cost = Base forward + one auxiliary forward (W) against cache reuse (S); parameters, forwards and time reported"
+  checks: "independent-loop S / W recomputation (N < 16, N = 16, long sequences, first / last centres, repeats, constructed joins, one source under different gamma); W's marker ref equals S's target ref; ordered, in range, inside the sequence; labels never read by the mapping; online S logits / embeddings equal A31's cache (max abs <= 1e-4, A36 measured 0.0); W normal path equals an explicitly stacked forward of the same frame plan (input bit-equal, output max abs <= 1e-5); forced W = S through the W path equals e224 (<= 1e-4); repeat 0, batch split <= 1e-4, TF32 off; Init = Base on every run, sequence and segment metric; forced eW = e224 gives identical loss and weights each step; optimizer bound to g only; first-layer gradient zero at step 1, nonzero later; 3 + 3 resume = 6; source weights unchanged; old Base rows, denominators and fold isolation reproduced; readout verifies the feature record committed with the head sha256"
+  readouts: "all held-out P runs per fold and out of fold: fixed / broken / net, both A4C / A5C directions, A32 S1 recovered, correct A5C kept, native / constructed, short / long, pure / mixed, recordings / sessions; multi segment F1@50, native macro-F1, boundary P / R, FP / short FP, FN / missed short true; fit-fold CE and fixes before / after; Init, S / W against Base, W - S; after the weights are frozen only: label mix of the extra context and the actual input increment on S1 runs (reference-based description, no rule, selection or variant); cost"
+  seed2_rule:
+    wider: "W - S net fixed >= +5 in each fold; mean segment dF (W - S) >= +0.003 and dF >= 0 in each fold"
+    useful: "W - Base net fixed >= 0 in each fold; segment dF (W - Base) >= 0 in each fold and mean >= +0.003"
+    target: "S1 recovered >= ceil(0.10 x S1 runs) over both folds (103 -> 11); correct A5C kept >= ceil(0.98 x correct A5C runs)"
+    protect: "native macro-F1 (W - Base) >= -0.003 in each fold; missed short true over both folds <= Base + 3; boundary recall (W - Base) >= -0.005 in each fold"
+    action: "all met: train source 2 with the same recipe inside the budget and report both seeds; otherwise end at source 0 with no span / rate / head / loss / encoder variant"
+  scope: "a result covers only this frozen A08 + doubled time offsets + residual head configuration; no usable difference is not mathematical equivalence and does not show that longer temporal support or video learning is useless; S / W shared gains are not attributed to wider context"
+  budget:
+    gpu_hours_max: 2.0
+    cpu_hours_max: 2.0
+    new_disk_gb_max: 2
+    ledger: runs/video_wider_temporal_evidence_v1/ledger.jsonl
+  outputs:
+    root: runs/video_wider_temporal_evidence_v1
+    results_dir: docs/results/2026-10-26_wider_temporal_evidence
