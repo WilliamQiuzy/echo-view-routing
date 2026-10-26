@@ -1,0 +1,23 @@
+# Post-A35 residual error inventory (post_a35_residual_error_inventory_v1), 2026-10-26 UTC. A cached-output diagnostic
+# of the current Base on the training-source pools; no A-number, no model run, no training. Committed before any
+# inventory computation. Task sheet: claude_prompts/2026-10-25-post-a35-residual-error-inventory.md (sha256 b5b4884c).
+experiment: post_a35_residual_error_inventory_v1
+
+residual_error_inventory:
+  type: cached_diagnostic
+  question: "beyond A4C/A5C confusion, which residual full-segmentation errors of the current Base (A08 + B3) have real counts and source coverage on the training-source pools?"
+  inputs: "A31's two fold pools (split.json sha256 checked), A31 seed 0 / 2 window outputs (cached logits, sha256 checked against A31's records), A31 Base runs (runs_s{0,2}_f{0,1}.npz), the reference labels and fragment manifests of the pools; nothing is re-inferred, no pixel is decoded, no development / check / test / Pediatric file is read, the A26 runner and Codex's catalog script defaults are not run"
+  reproduction: "per seed x held-out fold cell: the original evaluator (b3_coverage.evalset / evaluate_pool, one-to-one same-class IoU >= 0.5 matching) reproduces A31 / A32 / A35's Base multi segment F1@50, TP / FP / FN, short FP, missed short true and native macro-F1 exactly; unit-level counts (failure_units.segment_counts) must reconcile with the evaluator"
+  units: "failure_units definitions: a unit is a reference segment (a run of same-class fragments; a same-class join is not a boundary); natives are single-unit streams"
+  forms: "failure_units.unit_outcomes with its original fixed priority and tolerances (iou 0.5, near 10 samples = 1 s, hit 5): label (a predicted segment of another class overlaps at IoU >= 0.5), missed_cut (an edge change without a matched predicted change), extra_cut (an unmatched predicted change inside), boundary_shift (otherwise); every unmatched unit gets exactly one form, and the forms must sum to FN; units with a same-class predicted segment at IoU >= 0.5 that lost the one-to-one matching are disclosed separately ('competition'); forms are morphology, not causes"
+  counts: "FN by true class and FP by predicted class with their totals; native / multi; short (<= 16 samples) / long plus a fixed length description (quartiles); reference change pairs (A4C <-> A5C, other pairs) with missed changes; false cuts at same-class joins; distinct recordings / sessions per cell (sources of every unit kept, multi-source units not assigned to one source; seeds share sources and are never summed as patients)"
+  probabilities: "from the existing per-sample probabilities only: the true class's rank of the unit-mean probability, the fraction of samples whose argmax is the true class, and, for a missed change, whether the per-sample argmax majority on each side already names that side's reference class; B3 candidate scores were not saved, so only kept cuts are described"
+  limits: "no new stream, decoder setting, threshold, merged A4C/A5C class, removed hard case or changed scoring; no oracle repair system; A08 trained on these recordings, so this is an error inventory against EV9V references, not a holdout or clinical truth"
+  deliverable: "docs/results/2026-10-26_post_a35_residual_inventory/: README, aggregate JSON, the minimal script; two tables (full error table; form x class table) and one decision; a dated scope note on A35's 'four independent ways' / 'four readers' wording"
+  budget:
+    gpu_hours_max: 0.0
+    cpu_hours_max: 1.0
+    ledger: runs/post_a35_residual_error_inventory_v1/ledger.jsonl
+  outputs:
+    root: runs/post_a35_residual_error_inventory_v1
+    results_dir: docs/results/2026-10-26_post_a35_residual_inventory
