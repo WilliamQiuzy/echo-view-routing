@@ -126,7 +126,7 @@ majority was checked on each side.
 
 ## Cost and files
 
-- **GPU 0 h. CPU about 0.2 of 1 h:**
+- **GPU 0 h. CPU 0.13 of 1 h:**
   - one failed attempt (a JSON-key error after computation, booked by hand);
   - the inventory and a class-group union;
   - the agent's active wall clock.
