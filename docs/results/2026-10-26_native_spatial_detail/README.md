@@ -142,7 +142,7 @@ FP, FN and their short parts are summed over the two folds.
 ## Cost and files
 
 - **GPU 1.30 of 4 h:** the check (0.008 h) and seed-0 extraction (1.296 h).
-- **CPU about 0.5 of 3 h:**
+- **CPU 0.42 of 3 h:**
   - four heads, the readout and coverage: under 0.01 h;
   - one failed coverage start: the feature-cache key covered the whole script, and adding the coverage stage changed
     it. It stopped at once and is booked. The rerun checks the cache against the feature record committed with the
