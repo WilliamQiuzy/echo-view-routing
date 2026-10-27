@@ -1,0 +1,40 @@
+{
+ "batch": "fold 0, update 7, C partner (the failed gate's batch)",
+ "fp32_direct_microbatch1_vs_batch8x2": {
+  "max_abs": 2.7024070732295513e-06,
+  "grad_max": 0.1070403903722763,
+  "relative": 2.5246610777771236e-05,
+  "normwise_relative": 1.4129268187085781e-05,
+  "max_abs_tensor": "encoder.blocks.3.project.weight"
+ },
+ "fp32_decomposed_vs_direct_microbatch1": {
+  "max_abs": 2.2351741790771484e-08,
+  "grad_max": 0.10704030096530914,
+  "relative": 2.0881613363564342e-07,
+  "normwise_relative": 1.0381559430740127e-07,
+  "max_abs_tensor": "classifier.weight"
+ },
+ "fp64_microbatch1_vs_batch8x2": {
+  "max_abs": 1.6306400674181987e-16,
+  "grad_max": 0.10704029678266741,
+  "relative": 1.5233889632509327e-15,
+  "normwise_relative": 1.845801555440488e-15,
+  "max_abs_tensor": "encoder.blocks.0.mlp.3.weight"
+ },
+ "fp32_direct_microbatch1_vs_fp64": {
+  "max_abs": 8.318251015748982e-06,
+  "grad_max": 0.10704029678266748,
+  "relative": 7.771139716324027e-05,
+  "normwise_relative": 2.693554391463011e-05,
+  "max_abs_tensor": "encoder.blocks.1.project.weight"
+ },
+ "fp32_direct_batch8x2_vs_fp64": {
+  "max_abs": 8.386237563695912e-06,
+  "grad_max": 0.10704029678266748,
+  "relative": 7.834654626120073e-05,
+  "normwise_relative": 2.392157269736658e-05,
+  "max_abs_tensor": "encoder.blocks.1.project.weight"
+ },
+ "limit_relative": 1e-05,
+ "finished": "2026-10-27T22:50:11Z"
+}
