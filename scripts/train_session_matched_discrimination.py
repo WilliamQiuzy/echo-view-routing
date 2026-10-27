@@ -63,6 +63,9 @@ LR_ENC, LR_NEW, CLIP = 1e-5, 1e-4, 1.0
 SCH = {"updates": U, "warmup": WARM}
 LIMITS = {"loss": 1e-4, "params": 1e-5}
 TOL = {"parity": 1e-4, "grad_rel": 1e-5, "formula": 1e-8}   # float64; torch softplus (threshold 20) deviates <= e^-20 / 4 from log1p(exp)
+REQUIRED_GATES = {"isolation", "plan", "numerics", "pixels", "init_state", "init_online_parity", "patched_forward", "base_from_cache", "formula", "rank_gradient_path", "microbatch_parity_fp64",
+                  "production_gradient_fp32", "skip_pool_parity", "binding", "real_update", "repeat", "forced_identity", "resume", "C_not_S", "split_monitor", "readout_label_free", "a08_files", "memory",
+                  "projection", "disk"}
 EXPECTED_BANK = {0: {"native_recordings": 740, "sessions": 35, "A4C_recordings": 55, "A5C_recordings": 48, "pairs": 77},
                  1: {"native_recordings": 747, "sessions": 44, "A4C_recordings": 72, "A5C_recordings": 54, "pairs": 89}}
 A4C, A5C = sp.A4C, sp.A5C
@@ -409,8 +412,11 @@ def gradient_checks(ctx: Ctx, s: int, F_: Fold, device) -> dict:
     b = Batches(F_, s, [7])[0]; u, _, u8, mk, y = t40.on_device(b, device); rgb = tm.to_rgb(u8); par = sp.PARTNER["C"]; out = {}
     m = build(ctx, s, device); sp.total_loss(logits16(m, rgb, mk), y, par)[0].backward(); g_mb = grads(m); m.zero_grad(set_to_none=True)
     out["zero_gradient_tensors_CE_plus_rank"] = sorted(k for k, v in g_mb.items() if float(v.abs().sum()) == 0)
-    sp.total_loss(torch.cat([m(rgb[:8], mk[:8]), m(rgb[8:], mk[8:])]), y, par)[0].backward(); g_b = grads(m); out["microbatch1_vs_batch_8_plus_8_fp32"] = rel(g_mb, g_b); m.zero_grad(set_to_none=True)
-    m.double(); mb, b88 = [slice(w, w + 1) for w in range(PER)], [slice(0, 8), slice(8, 16)]; g64 = decomposed(m, rgb.double(), mk.double(), y, par, mb)
+    sp.total_loss(torch.cat([m(rgb[:8], mk[:8]), m(rgb[8:], mk[8:])]), y, par)[0].backward(); g_b = grads(m); m.zero_grad(set_to_none=True)
+    out["microbatch1_vs_batch_8_plus_8_fp32"] = {**rel(g_mb, g_b), "status": "original FP32 grouping gate; failed 1e-5 at check attempt 1; recorded, not gated (never an original-gate pass)"}
+    mb, b88 = [slice(w, w + 1) for w in range(PER)], [slice(0, 8), slice(8, 16)]
+    out["fp32_formal_16_graphs_vs_per_window_chain_rule"] = {**rel(g_mb, decomposed(m, rgb, mk, y, par, mb)), "status": "gated (production FP32 gradient; Codex A42-CHECK-PRODUCTION-GRADIENT)"}
+    m.double(); g64 = decomposed(m, rgb.double(), mk.double(), y, par, mb)
     out["microbatch1_vs_batch_8_plus_8_fp64"] = rel(g64, decomposed(m, rgb.double(), mk.double(), y, par, b88)); out["fp32_microbatch1_vs_fp64"] = rel(g_mb, g64); out["fp32_batch_8_plus_8_vs_fp64"] = rel(g_b, g64)
     del m, g64, g_b; torch.cuda.empty_cache()
     mo = build(ctx, s, device, patched=False); torch.use_deterministic_algorithms(True, warn_only=True)
@@ -484,14 +490,16 @@ def check(ctx: Ctx, device, workers: int) -> str:
                          "cap_h": ctx.v["budget"]["gpu_hours_max"], "windows": nw, "seconds_per_update_used": spu, **tm_}
     free = shutil.disk_usage(ctx.out).free / 1e9; res["disk"] = {"free_gb": free, "per_model_final_gb": 4 * res["training"]["binding"]["parameters"] / 1e9, "resume_gb": 12 * res["training"]["binding"]["parameters"] / 1e9,
                                                                  "min_free_gb": ctx.v["budget"]["min_free_disk_gb"]}
-    res["loaded_code_sha256"] = t38.loaded_code(); res["failed"] = check_failures(res); res["ok"] = not res["failed"]; res["finished"] = now(); publish(ctx, "checks.json", res)
+    gs = gates(res); res["enforced_gates"] = {k: bool(v) for k, v in sorted(gs.items())}; res["required_gates_missing"] = sorted(REQUIRED_GATES - set(gs))
+    res["loaded_code_sha256"] = t38.loaded_code(); res["failed"] = sorted(k for k, v in gs.items() if not v) + res["required_gates_missing"]; res["ok"] = not res["failed"]; res["finished"] = now(); publish(ctx, "checks.json", res)
     print(json.dumps({k: v for k, v in res.items() if k not in ("loaded_code_sha256", "plan")}, indent=1, default=str)[:12000], flush=True)
     if not res["ok"]:
         raise SystemExit(f"checks failed: {res['failed']}")
     return f"{spu:.2f} s per update; source-0 projection {proj:.2f} GPU h"
 
 
-def check_failures(r: dict) -> list[str]:
+def gates(r: dict) -> dict:
+    """Every enforced check gate, one dictionary item each (attempt 2 lost skip_pool_parity to an inline comment)."""
     I, Fm, G, T, Pr, N = r["init"], r["formula"], r["gradients"], r["training"], r["projection"], r["numerics"]; lim = lambda d: d["loss_max_abs"] <= LIMITS["loss"] and d["params_max_abs"] <= LIMITS["params"]  # noqa: E731
     conds = {"isolation": not any(r["plan"]["isolation"].values()),
              "plan": all(all(r["plan"][str(f)][k] for k in ("bank_equals_expected", "grid_equals_A07_windows", "original8_valid_900", "extra8_valid_900", "four_distinct_sessions_900", "S_edges_same_session",
@@ -506,7 +514,9 @@ def check_failures(r: dict) -> list[str]:
              and abs(Fm["CE_denominator_16_coef_0.5_at_zero_logits"]["total"] - Fm["CE_denominator_16_coef_0.5_at_zero_logits"]["expected_total"]) < 1e-12
              and all(Fm[f"real_fit_logits_{a}"]["ce_ref_abs"] <= 1e-5 and Fm[f"real_fit_logits_{a}"]["rank_ref_abs"] <= 1e-5 for a in ARMS),
              "rank_gradient_path": all(Fm["rank_only_gradient_path"].values()),
-             "microbatch_parity": G["microbatch1_vs_batch_8_plus_8_fp64"]["relative"] <= TOL["grad_rel"],   # FP64 gate (amendment after check attempt 1) "skip_pool_parity": G["patched_vs_original_maxpool_backward"]["relative"] <= TOL["grad_rel"] and G["warn_only_restored_false"],
+             "microbatch_parity_fp64": G["microbatch1_vs_batch_8_plus_8_fp64"]["relative"] <= TOL["grad_rel"],
+             "production_gradient_fp32": G["fp32_formal_16_graphs_vs_per_window_chain_rule"]["relative"] <= TOL["grad_rel"],
+             "skip_pool_parity": G["patched_vs_original_maxpool_backward"]["relative"] <= TOL["grad_rel"] and G["warn_only_restored_false"],
              "binding": T["binding"]["all_trainable"] and T["binding"]["binds_exactly"] and T["binding"]["encoder_group_is_encoder_incl_projection"] and T["binding"]["eval_mode"]
              and T["binding"]["new_group"] == ["marker_stem.weight", "classifier.weight", "classifier.bias"],
              "real_update": T["real_update_S_6"]["optimizer_steps"] == [6] and all(v["tensors_moved"] > 0 for v in T["real_update_S_6"]["moved"].values()),
@@ -514,7 +524,7 @@ def check_failures(r: dict) -> list[str]:
              "C_not_S": T["C_differs_from_S"]["params_max_abs"] > 0, "split_monitor": T["split_monitor_leaves_update_unchanged"]["params_max_abs"] <= LIMITS["params"] and T["split_monitor_leaves_update_unchanged"]["split_recorded"],
              "readout_label_free": all(r["readout_label_free"][k] for k in ("run_probs_equal", "sequence_relabel_equal", "window_grid_equal")), "a08_files": r["a08_files_unchanged"],
              "memory": T["timing"]["peak_gpu_gb_training"] <= 40.0, "projection": Pr["source0_total_h"] <= Pr["cap_h"], "disk": r["disk"]["free_gb"] >= r["disk"]["min_free_gb"]}
-    return sorted(k for k, v in conds.items() if not v)
+    return conds
 
 
 # ----------------------------------------------------------------------------------------------- readout
