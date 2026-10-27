@@ -1,5 +1,5 @@
 {
- "config_sha256": "6d7f89da372c64304b89595179f4e301503e565147073e2021fdc36416698bc0",
+ "config_sha256": "940a3277925733d5b39c430d0f8b0596e2432b86ff1de96cd100dce2cde3ff4c",
  "tolerances": {
   "parity": 0.0001,
   "grad_rel": 1e-05,
@@ -228,7 +228,14 @@
   "microbatch1_vs_batch_8_plus_8_fp32": {
    "max_abs": 2.7024070732295513e-06,
    "grad_max": 0.1070403903722763,
-   "relative": 2.5246610777771236e-05
+   "relative": 2.5246610777771236e-05,
+   "status": "original FP32 grouping gate; failed 1e-5 at check attempt 1; recorded, not gated (never an original-gate pass)"
+  },
+  "fp32_formal_16_graphs_vs_per_window_chain_rule": {
+   "max_abs": 2.2351741790771484e-08,
+   "grad_max": 0.10704030841588974,
+   "relative": 2.0881611910091854e-07,
+   "status": "gated (production FP32 gradient; Codex A42-CHECK-PRODUCTION-GRADIENT)"
   },
   "microbatch1_vs_batch_8_plus_8_fp64": {
    "max_abs": 1.6306400674181987e-16,
@@ -246,9 +253,9 @@
    "relative": 7.834654626120073e-05
   },
   "patched_vs_original_maxpool_backward": {
-   "max_abs": 2.9802322387695312e-08,
+   "max_abs": 2.2351741790771484e-08,
    "grad_max": 0.10704030096530914,
-   "relative": 2.784215115141912e-07
+   "relative": 2.0881613363564342e-07
   },
   "warn_only_restored_false": true
  },
@@ -366,9 +373,9 @@
    "params_max_abs": 0.0
   },
   "timing": {
-   "seconds_per_update_gpu_C_6": 1.6516592899958293,
-   "seconds_per_update_gpu_C_30": 1.6683176040649415,
-   "seconds_per_update_wall_C_30_incl_build_and_loader": 1.7172121047973632,
+   "seconds_per_update_gpu_C_6": 1.6203161875406902,
+   "seconds_per_update_gpu_C_30": 1.6369986931482952,
+   "seconds_per_update_wall_C_30_incl_build_and_loader": 1.6849093516667684,
    "peak_gpu_gb_training": 25.357500928
   },
   "split_monitor_leaves_update_unchanged": {
@@ -388,27 +395,55 @@
  },
  "a08_files_unchanged": true,
  "projection": {
-  "spent_gpu_h_incl_this_check": 0.11705266336599986,
-  "train_4x900_h": 1.9747939205169676,
-  "readout_h": 0.5593914115477493,
+  "spent_gpu_h_incl_this_check": 0.1734267074531979,
+  "train_4x900_h": 1.9376457544167833,
+  "readout_h": 0.5532074756755957,
   "reserve_h": 0.5,
-  "source0_total_h": 3.151237995430717,
-  "source2_if_triggered_h": 2.534185332064717,
+  "source0_total_h": 3.1642799375455772,
+  "source2_if_triggered_h": 2.490853230092379,
   "cap_h": 4.0,
   "windows": 50359,
-  "seconds_per_update_used": 1.7172121047973632,
-  "seconds_per_window_two_models": 0.03477309580813063,
-  "gpu_ms_per_window_one_model": 15.967484325804609,
-  "decode_ms_per_window": 2.8381271565214115
+  "seconds_per_update_used": 1.6849093516667684,
+  "seconds_per_window_two_models": 0.034388687699399095,
+  "gpu_ms_per_window_one_model": 15.690250441114953,
+  "decode_ms_per_window": 3.0081868171691895
  },
  "disk": {
-  "free_gb": 153.989632,
+  "free_gb": 153.989152768,
   "per_model_final_gb": 0.138562196,
   "resume_gb": 0.415686588,
   "min_free_gb": 15
  },
+ "enforced_gates": {
+  "C_not_S": true,
+  "a08_files": true,
+  "base_from_cache": true,
+  "binding": true,
+  "disk": true,
+  "forced_identity": true,
+  "formula": true,
+  "init_online_parity": true,
+  "init_state": true,
+  "isolation": true,
+  "memory": true,
+  "microbatch_parity_fp64": true,
+  "numerics": true,
+  "patched_forward": true,
+  "pixels": true,
+  "plan": true,
+  "production_gradient_fp32": true,
+  "projection": true,
+  "rank_gradient_path": true,
+  "readout_label_free": true,
+  "real_update": true,
+  "repeat": true,
+  "resume": true,
+  "skip_pool_parity": true,
+  "split_monitor": true
+ },
+ "required_gates_missing": [],
  "loaded_code_sha256": {
-  "scripts/train_session_matched_discrimination.py": "147ed0eb065d9cb75ebae14157bd904312380a9eb956e06bfd4fdb225ce8ede5",
+  "scripts/train_session_matched_discrimination.py": "f13c16e088ff59c8bbcf87f9afa69216a0fafab5f54dc45ccb1f0da6ec633ab6",
   "echo_routing/__init__.py": "33db227288bf38247e08e7f2f2cda3bcdf3dc8cb12c336ff4a3460b59291b1a1",
   "echo_routing/errors.py": "f3b5fc100f786c6c869be117206efd26d31bfcdd0e94f084c8dd562ffbb526ea",
   "echo_routing/config.py": "8feb743415779dc1d20d84b32b8425e2be63bded62bf0b5a700670c25ce74d5a",
@@ -553,5 +588,5 @@
  },
  "failed": [],
  "ok": true,
- "finished": "2026-10-27T22:56:11Z"
+ "finished": "2026-10-27T23:02:04Z"
 }
