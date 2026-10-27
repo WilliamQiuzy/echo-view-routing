@@ -57,7 +57,7 @@ FOLDS, ARMS, U, WARM, PER, LOG_EVERY, SAVE_EVERY = (0, 1), ("G", "E"), 900, 90, 
 LR_LORA, LR_HEAD, CLIP, READ_BATCH = 1e-4, 1e-3, 1.0, 32
 SCH = {"updates": U, "warmup": WARM}
 LIMITS = {"loss": 1e-3, "params": 1e-4}
-TOL = {"parity_bf16": 1e-3, "parity_fp32": 1e-4, "formula_rel": 1e-5, "microbatch_rel": 1e-4, "checkpointing_rel": 1e-5}
+TOL = {"parity_bf16": 1e-3, "parity_fp32": 1e-4, "formula_rel": 1e-5, "microbatch_fp64_rel": 1e-8, "checkpointing_rel": 1e-5}   # FP64 microbatch gate since check attempt 2
 DRAW_BASE, DRAW_ROUND = 20261027, 41
 FILES = {"G": "vitl.pt", "E": "vitl-vmix22m-pt220-c55.pt"}
 A4C, A5C = d32.A4C, d32.A5C
@@ -432,8 +432,28 @@ def rel(ga: dict, gb: dict) -> dict:
     return {"max_abs": d, "grad_max": mx, "cosine": float(F.cosine_similarity(va, vb, dim=0))}
 
 
+def fp64_microbatch(ctx: Ctx, u8: torch.Tensor, mk: torch.Tensor, y: torch.Tensor, device) -> dict:
+    """Batch coupling test: the whole recogniser in FP64 (math SDPA), check-only nonzero B, 2 windows: batch CE gradient against
+    microbatch-1 accumulation of CE / 2 (FP32 differences are round-off amplified through the encoder; see check attempt 1)."""
+    m = build(ctx, "E", 0, 0, device, bf16=False); g = torch.Generator().manual_seed(11)
+    with torch.no_grad():
+        for x in m.loras:
+            x.B.copy_(torch.randn(x.B.shape, generator=g) * 0.02)
+    m.double(); x64 = jl.jepa_input(u8[:2]).double()
+
+    def logits(x: torch.Tensor, k: torch.Tensor) -> torch.Tensor:
+        gr = jl.token_grid(m.encoder(x)); t = torch.div(k.long(), 2, rounding_mode="floor")
+        return m.head(torch.cat([gr[torch.arange(gr.shape[0], device=gr.device), t].mean(1), gr.mean((1, 2))], 1))
+
+    F.cross_entropy(logits(x64, mk[:2]), y[:2]).backward(); gb = grads(m); m.zero_grad(set_to_none=True)
+    for w in range(2):
+        (F.cross_entropy(logits(x64[w:w + 1], mk[w:w + 1]), y[w:w + 1]) / 2).backward()
+    return {**rel(grads(m), gb), "windows": 2, "dtype": "float64"}
+
+
 def gradient_checks(ctx: Ctx, F_: Fold, device) -> dict:
-    """Check-only nonzero B; microbatch-1 accumulation = batch gradient; checkpointing on / off; then the real zero-B start."""
+    """Check-only nonzero B; microbatch-1 accumulation = batch gradient (FP64 gate; FP32 / BF16 recorded); checkpointing on / off;
+    then the real zero-B start."""
     m = build(ctx, "E", 0, F_.f, device); g = torch.Generator().manual_seed(11)
     with torch.no_grad():
         for x in m.loras:
@@ -446,7 +466,7 @@ def gradient_checks(ctx: Ctx, F_: Fold, device) -> dict:
         out[f"microbatch_vs_batch_{mode}"] = rel(grads(m), gb); m.zero_grad(set_to_none=True)
         m.encoder.use_activation_checkpointing = False; F.cross_entropy(m(u8[:2], mk[:2]), y[:2]).backward(); g_off = grads(m); m.zero_grad(set_to_none=True)
         m.encoder.use_activation_checkpointing = True; F.cross_entropy(m(u8[:2], mk[:2]), y[:2]).backward(); out[f"checkpointing_on_vs_off_{mode}"] = rel(grads(m), g_off); m.zero_grad(set_to_none=True)
-    del m; torch.cuda.empty_cache()
+    del m; torch.cuda.empty_cache(); out["microbatch_vs_batch_fp64"] = fp64_microbatch(ctx, u8, mk, y, device); torch.cuda.empty_cache()
     m = build(ctx, "E", 0, F_.f, device); F.cross_entropy(m(u8[:1], mk[:1]), y[:1]).backward(); g0 = group_norms(m); d0 = grads(m)
     out["real_zero_B_start"] = {**g0, "A_grad_tensors_zero": int(sum(float(v.abs().sum()) == 0 for k, v in d0.items() if k.endswith(".A"))), "B_grad_tensors_nonzero": int(sum(float(v.abs().sum()) > 0 for k, v in d0.items() if k.endswith(".B"))),
                                 "head_grad_nonzero": float(d0["head.weight"].abs().sum()) > 0, "all_finite": all(bool(torch.isfinite(v).all()) for v in d0.values())}
@@ -490,7 +510,7 @@ def readout_timing(ctx: Ctx, device, workers: int) -> dict:
     for b in range(0, len(rows), READ_BATCH):
         ks = np.arange(b, min(b + READ_BATCH, len(rows))); torch.cuda.synchronize(); t1 = time.time(); forward(m, fr, idx[ks], F_.W["marker"][rows[ks]], device); torch.cuda.synchronize(); g += time.time() - t1
     del m; torch.cuda.empty_cache()
-    return {"windows": int(len(rows)), "gpu_ms_per_window_one_model": 1e3 * g / len(rows), "decode_ms_per_window": 1e3 * td / len(rows), "peak_gpu_gb_readout": torch.cuda.max_memory_allocated() / 1e9}
+    return {"timing_windows": int(len(rows)), "gpu_ms_per_window_one_model": 1e3 * g / len(rows), "decode_ms_per_window": 1e3 * td / len(rows), "peak_gpu_gb_readout": torch.cuda.max_memory_allocated() / 1e9}
 
 
 def forward(m: jl.Recogniser, frames: np.ndarray, idx: np.ndarray, marker: np.ndarray, device) -> torch.Tensor:
@@ -502,7 +522,8 @@ def check(ctx: Ctx, device, workers: int) -> str:
     s = 0; t_start = time.time(); src = sources(ctx)
     res = {"config_sha256": sha256_file(ROOT / ctx.config), "sources_sha256": sha256_file(ctx.results / "sources.json"), "tolerances": TOL, "limits": LIMITS, "contract": jl.CONTRACT,
            "numerics": {"tf32_matmul": torch.backends.cuda.matmul.allow_tf32, "tf32_cudnn": torch.backends.cudnn.allow_tf32, "cudnn_deterministic": torch.backends.cudnn.deterministic,
-                        "cudnn_benchmark": torch.backends.cudnn.benchmark, "deterministic_warn_only": torch.is_deterministic_algorithms_warn_only_enabled()}}
+                        "cudnn_benchmark": torch.backends.cudnn.benchmark, "deterministic_algorithms": torch.are_deterministic_algorithms_enabled(),
+                        "deterministic_warn_only": torch.is_deterministic_algorithms_warn_only_enabled()}}
     res["upstream"] = verify_upstream(); res["encoder_files"] = {a: sha256_file(ctx.src / f"encoder_{a}.pt") == src["encoders"][a]["sha256"] for a in ARMS}
     sp = json.loads((ctx.a31.out / "split.json").read_text()); res["isolation"] = sp["isolation"]; res["pool_sha256"] = sp["pool_sha256"]; res["groups"] = group_checks(ctx, s)
     F0 = Fold(ctx, 0); b = batches(F0, s, [0])[0]; u, rows, u8c, mk_c, y = b; rows = rows.numpy()
@@ -529,7 +550,7 @@ def check_ok(r: dict) -> bool:
     up = r["upstream"]
     return bool(up["clean"] and up["commit"] == jl.COMMIT and up["all_equal"] and up["src_path"] == ["third_party/EchoJEPA/src"] and up["pydeps"]["in_round_dir"] and all(r["encoder_files"].values())
                 and not any(r["isolation"].values()) and all(g["grid_equals_A07_windows"] and g["draws_valid_900"] and g["draw_repeat_equal"] and g["eligible_streams"] > 0 for g in r["groups"].values())
-                and not r["numerics"]["tf32_matmul"] and not r["numerics"]["tf32_cudnn"] and r["numerics"]["cudnn_deterministic"] and not r["numerics"]["cudnn_benchmark"] and r["numerics"]["deterministic_warn_only"]
+                and not r["numerics"]["tf32_matmul"] and not r["numerics"]["tf32_cudnn"] and r["numerics"]["cudnn_deterministic"] and not r["numerics"]["cudnn_benchmark"] and r["numerics"]["deterministic_algorithms"] and not r["numerics"]["deterministic_warn_only"]
                 and r["pixels_equal_A31_path"] and r["identical_arm_pixels"]
                 and T["conv_thw"] == [8, 14, 14] and T["patch_tokens_equal_conv_time_major_loop"] == 0 and T["rope_positions_time_major"] and T["readout_vs_loop_max_abs"] <= 1e-6 and T["marker_16_rejected"]
                 and T["input_normalisation_max_abs"] <= 1e-6 and T["input_shape"] == [1, 3, 16, 224, 224]
@@ -539,7 +560,7 @@ def check_ok(r: dict) -> bool:
                 and I["trainable_identical_E_G"] and I["fold_inits_differ"] and I["B_zero_and_head_bias_zero"] and I["trainable_count_requires_grad"] == jl.TRAINABLE == I["trainable_count_list"] == 796677
                 and not I["base_requires_grad_any"] and I["bases_differ"] and I["lora_wrappers"] == 24 and I["global_rng_untouched_by_init"]
                 and all(all(v[k] for k in ("runs_equal_base", "sequences_equal_base", "rows_equal_A32_base")) for v in r["base_reproduced"].values())
-                and Gr["microbatch_vs_batch_fp32"]["max_abs"] <= TOL["microbatch_rel"] * Gr["microbatch_vs_batch_fp32"]["grad_max"]
+                and Gr["microbatch_vs_batch_fp64"]["max_abs"] <= TOL["microbatch_fp64_rel"] * Gr["microbatch_vs_batch_fp64"]["grad_max"]
                 and Gr["checkpointing_on_vs_off_fp32"]["max_abs"] <= TOL["checkpointing_rel"] * Gr["checkpointing_on_vs_off_fp32"]["grad_max"]
                 and Gr["real_zero_B_start"]["B_grad_tensors_nonzero"] == 24 and Gr["real_zero_B_start"]["head_grad_nonzero"] and Gr["real_zero_B_start"]["all_finite"]
                 and Tr["binding"]["binds_exactly_trainable"] and Tr["binding"]["bound_parameters"] == jl.TRAINABLE
@@ -656,7 +677,7 @@ def main() -> None:
         return staged(ctx, "extract strict target_encoder E / G (CPU)", "cpu", lambda: extract(ctx))
     if a.stage == "freeze":
         return staged(ctx, f"freeze s{a.seed} (CPU)", "cpu", lambda: freeze(ctx, a.seed, a.commit, a.manifest_sha))
-    t31.vsh.determinism(); device = torch.device("cuda")
+    t31.vsh.determinism(); torch.use_deterministic_algorithms(True, warn_only=False); device = torch.device("cuda")   # deterministic SDPA backward (check attempt 1)
     if a.stage == "train":
         return train(ctx, a.seed, device, a.workers)
     fn = {"check": lambda: check(ctx, device, a.workers), "readout": lambda: readout(ctx, a.seed, device, a.workers)}[a.stage]
