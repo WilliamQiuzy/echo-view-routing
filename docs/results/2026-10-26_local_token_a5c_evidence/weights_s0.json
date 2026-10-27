@@ -1,0 +1,144 @@
+{
+ "seed": 0,
+ "heads": {
+  "G_s0_f0": {
+   "arm": "G",
+   "seed": 0,
+   "fit_fold": 0,
+   "updates": 1350,
+   "final_sha256": "08c32584e01001a9f630e3d832c8132edf34ff4348321dfa90f8129d2befb257",
+   "updates_sha256": "5da32b6a4d1d89c7b884b851fd67b39d169d555633d9910cc200d49cae8d4591",
+   "fit_before": {
+    "pooled_ce_T_and_P": 0.13155332207679749,
+    "base_wrong": 109,
+    "fixed": 0,
+    "broken": 0
+   },
+   "fit_after": {
+    "pooled_ce_T_and_P": 0.08759139478206635,
+    "base_wrong": 109,
+    "fixed": 24,
+    "broken": 3
+   },
+   "seconds": 3.4474244117736816
+  },
+  "P_s0_f0": {
+   "arm": "P",
+   "seed": 0,
+   "fit_fold": 0,
+   "updates": 1350,
+   "final_sha256": "5d9001a1d36f78bafa229d717b45398b4e5d0f1320586e86aa9e1176a73a9b0b",
+   "updates_sha256": "7efdbe19ef08369e90bbaabdb0ad068cdf404d243fe06d082ee6124bd79071a0",
+   "fit_before": {
+    "pooled_ce_T_and_P": 0.13155332207679749,
+    "base_wrong": 109,
+    "fixed": 0,
+    "broken": 0
+   },
+   "fit_after": {
+    "pooled_ce_T_and_P": 0.08881742507219315,
+    "base_wrong": 109,
+    "fixed": 21,
+    "broken": 2
+   },
+   "seconds": 3.2180287837982178
+  },
+  "G_s0_f1": {
+   "arm": "G",
+   "seed": 0,
+   "fit_fold": 1,
+   "updates": 1350,
+   "final_sha256": "928624fe1b2c35352d2fa228efa430b7d2117f3efec165465f301be300d2995e",
+   "updates_sha256": "fcd33af42095dbe1a5d9982470cb84a0f0264cd4fd5ac8cbb09cedf69837e09e",
+   "fit_before": {
+    "pooled_ce_T_and_P": 0.1404068022966385,
+    "base_wrong": 145,
+    "fixed": 0,
+    "broken": 0
+   },
+   "fit_after": {
+    "pooled_ce_T_and_P": 0.10141268372535706,
+    "base_wrong": 145,
+    "fixed": 19,
+    "broken": 3
+   },
+   "seconds": 3.2889981269836426
+  },
+  "P_s0_f1": {
+   "arm": "P",
+   "seed": 0,
+   "fit_fold": 1,
+   "updates": 1350,
+   "final_sha256": "866f12fd75c428f766b47a02e17ab86a4ffa7e9d003ed70ba26d9e4c9b924f91",
+   "updates_sha256": "5c7e9cd011603bdba7c26ccb4caa84e2f463a766a52d9e6bc1a83e3c9ad4e704",
+   "fit_before": {
+    "pooled_ce_T_and_P": 0.1404068022966385,
+    "base_wrong": 145,
+    "fixed": 0,
+    "broken": 0
+   },
+   "fit_after": {
+    "pooled_ce_T_and_P": 0.10122768580913544,
+    "base_wrong": 145,
+    "fixed": 20,
+    "broken": 4
+   },
+   "seconds": 3.269456148147583
+  }
+ },
+ "feature_record": {
+  "0": {
+   "windows": 24585,
+   "G_sha256": "40c6895329c9f39eaf05d4ce68fca4f8b5b825c73329f7d85beb0596f8422a24",
+   "P_sha256": "f32c704ac57eb58204d38166b55c2b7146519e2398cf7211145d2ba9fe8e6a48",
+   "requests_sha256": "17b1f4126b54e1e7aa57d388f678a5b5eeaf7e04d1c24580f20abc87930811fb",
+   "q_vs_A31_max_abs": 0.0,
+   "e224_vs_A31_max_abs": 0.0,
+   "finite": true
+  },
+  "1": {
+   "windows": 25774,
+   "G_sha256": "1334ea820ac8b26273e256bdd3bfe8fc535fa0786f8611e2039eaae5bcb3b00f",
+   "P_sha256": "e53e9831f46c583772a36adc4fa7b5ab1c1c4f80d35e8763071a8b7c8ff79641",
+   "requests_sha256": "8182462ddf855543e34857f62134e5a5c377a1f8986a4318b45f90631d04f6ee",
+   "q_vs_A31_max_abs": 0.0,
+   "e224_vs_A31_max_abs": 0.0,
+   "finite": true
+  },
+  "seed": 0,
+  "key": "9712ac4bab554e593e452ad390b848c7821eadf9a650ea6de6a82ec3f73bb567",
+  "a08": "9b144925f32fac7d725d13231a132abeb6635fa44b6fe0dbcec7f5b59d035bbc",
+  "contract": "encoder.norm output U [B, 393, 768]; CLS = U[:, 0] excluded; V = encoder.head(U[:, 1:]) token by token (eval); eG = V.mean(1), eP = V.amax(1)",
+  "time": "2026-10-27T03:29:56Z",
+  "gpu_seconds": 817.4871888160706,
+  "decode_seconds": 116.6627140045166,
+  "description": {
+   "distinct_argmax_tokens_of_512_channels_quantiles_5_25_50_75_95": [
+    148.0,
+    161.0,
+    171.0,
+    179.0,
+    191.0
+   ],
+   "argmax_time_index_share": [
+    0.20967919090927142,
+    0.10812212067356382,
+    0.08767661471881888,
+    0.08686583455787446,
+    0.11392665505421076,
+    0.07953026178289879,
+    0.11147220767390138,
+    0.20272711462946047
+   ],
+   "l2_norm_mean": {
+    "e224": 30.848125457763672,
+    "G": 19.12331199645996,
+    "P": 33.037052154541016,
+    "P_minus_G": 25.888622283935547
+   },
+   "note": "label-free; a channel maximum's token index is not a location, structure or phase"
+  }
+ },
+ "config_sha256": "1904e99113c838b7e4042b1397ac650aaeefb11d32755d514fc200d2ab842e64",
+ "written": "2026-10-27T03:31:37Z"
+}
