@@ -393,14 +393,13 @@ def mask_checks(rgb: torch.Tensor, s: int, f: int, u: int) -> dict:
 
 
 def token_checks(a08, rgb: torch.Tensor, mk: torch.Tensor) -> dict:
-    enc = a08.encoder; seen = {}
-    h1 = enc.conv_proj.register_forward_hook(lambda _m, _i, o: seen.__setitem__("conv", o.detach().clone())); h2 = enc.blocks[0].register_forward_pre_hook(lambda _m, a: seen.__setitem__("b0", (a[0].detach().clone(), a[1])))
+    enc = a08.encoder; seen = {}; h2 = enc.blocks[0].register_forward_pre_hook(lambda _m, a: seen.__setitem__("b0", (a[0].detach().clone(), a[1])))   # embed refuses a conv_proj hook
     try:
         with torch.no_grad():
-            e0 = a08.embed(rgb, mk); q0 = a08.classifier(e0)
+            e0 = a08.embed(rgb, mk); q0 = a08.classifier(e0); conv = enc.conv_proj(rgb); exp = (conv + a08.marker_stem(mk.to(conv.dtype))).flatten(2).transpose(1, 2)
     finally:
-        h1.remove(); h2.remove()
-    exp = (seen["conv"] + a08.marker_stem(mk.to(seen["conv"].dtype))).flatten(2).transpose(1, 2); e, u = mf.embed_with_tokens_grad(a08, rgb, mk); g = mf.token_grid(u)
+        h2.remove()
+    e, u = mf.embed_with_tokens_grad(a08, rgb, mk); g = mf.token_grid(u)
     loop = max(float((g[:, t, y * 7 + x] - u[:, 1 + t * 49 + y * 7 + x]).abs().max()) for t in range(8) for y in range(7) for x in range(7))
     err = False
     try:
