@@ -1,0 +1,33 @@
+{
+ "inputs": "fit fold 0, update 3's first 2 training windows",
+ "fp64_tokens_batch_vs_single_max_abs": 2.7213609143927897e-10,
+ "fp64_tokens_abs_max": 40.86003814659459,
+ "fp64_grad_batch_vs_micro": {
+  "max_abs": 3.483915170243712e-09,
+  "grad_max": 12.948973560606065,
+  "cosine": 0.9999999999999999,
+  "by_group": {
+   "head": {
+    "max_abs": 3.483915170243712e-09,
+    "grad_max": 12.948973560606065,
+    "rel": 2.6904952380493166e-10,
+    "worst_tensor": "head.weight"
+   },
+   "A": {
+    "max_abs": 1.0308760442501175e-09,
+    "grad_max": 0.35985307288144125,
+    "rel": 2.8647137455173388e-09,
+    "worst_tensor": "lora.5.A"
+   },
+   "B": {
+    "max_abs": 2.5643256962304406e-10,
+    "grad_max": 0.14705501193132023,
+    "rel": 1.7437866704115255e-09,
+    "worst_tensor": "lora.23.B"
+   }
+  }
+ },
+ "fp32_single_vs_fp64_tokens_max_abs": 0.1318858869877476,
+ "fp32_single_vs_fp64_tokens_rel_l2": 0.0003578070795622777,
+ "fp32_single_vs_fp64_token_rows_over_0.1": 1
+}

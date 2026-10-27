@@ -1,0 +1,198 @@
+{
+ "config_sha256": "aa78caa36a1e354be529e31506b0be52b2d2f80ae7ecbd22588edfbc7c0da766",
+ "upstream": {
+  "commit": "77208e1a8521c0e82f79579eebe4b22f46c5ccbd",
+  "pinned": "77208e1a8521c0e82f79579eebe4b22f46c5ccbd",
+  "clean": true,
+  "files": {
+   "src/masks/utils.py": {
+    "module": "src.masks.utils",
+    "equal_pinned_blob": true
+   },
+   "src/models/utils/modules.py": {
+    "module": "src.models.utils.modules",
+    "equal_pinned_blob": true
+   },
+   "src/models/utils/patch_embed.py": {
+    "module": "src.models.utils.patch_embed",
+    "equal_pinned_blob": true
+   },
+   "src/models/utils/pos_embs.py": {
+    "module": "src.models.utils.pos_embs",
+    "equal_pinned_blob": true
+   },
+   "src/models/vision_transformer.py": {
+    "module": "src.models.vision_transformer",
+    "equal_pinned_blob": true
+   },
+   "src/utils/tensors.py": {
+    "module": "src.utils.tensors",
+    "equal_pinned_blob": true
+   }
+  },
+  "pydeps": {
+   "einops": "0.8.1",
+   "file": "third_party/a41_pydeps/einops/__init__.py",
+   "in_round_dir": true
+  },
+  "all_equal": true,
+  "src_path": [
+   "third_party/EchoJEPA/src"
+  ]
+ },
+ "encoders": {
+  "G": {
+   "top_level_keys": [
+    "batch_size",
+    "encoder",
+    "epoch",
+    "loss",
+    "lr",
+    "opt",
+    "predictor",
+    "scaler",
+    "target_encoder",
+    "world_size"
+   ],
+   "raw_keys": 292,
+   "prefixes_stripped": [
+    "module."
+   ],
+   "dropped": [],
+   "loaded_keys": 292,
+   "expected_keys": 292,
+   "parameters": 303885312,
+   "source_dtypes": [
+    "torch.float32"
+   ],
+   "epoch": 40,
+   "reload_equal": true,
+   "sha256": "76075f10935110966175cbcf0b27e34caea8501eda9242b45fe4fb0eac819b3a",
+   "bytes": 1215629515
+  },
+  "E": {
+   "top_level_keys": [
+    "batch_size",
+    "encoder",
+    "epoch",
+    "itr",
+    "loss",
+    "lr",
+    "opt",
+    "predictor",
+    "scaler",
+    "target_encoder",
+    "world_size"
+   ],
+   "raw_keys": 292,
+   "prefixes_stripped": [
+    "module."
+   ],
+   "dropped": [],
+   "loaded_keys": 292,
+   "expected_keys": 292,
+   "parameters": 303885312,
+   "source_dtypes": [
+    "torch.float32"
+   ],
+   "epoch": 56,
+   "reload_equal": true,
+   "sha256": "40aa4b7979587ae9999c8538d7851372bbb2f99d12ebf9aac7b0ad8da47e37c8",
+   "bytes": 1215629515
+  }
+ },
+ "downloads": {
+  "G": {
+   "file": "vitl.pt",
+   "url": "https://dl.fbaipublicfiles.com/vjepa2/vitl.pt",
+   "bytes": 5127726842,
+   "sha256": "5346856ec9df69487fe72a25bf2632aaa8112df33fb67708e3f7374edc1f7012",
+   "downloaded_at": "2026-10-27T14:34:37Z",
+   "drive_file_id": null,
+   "drive_folder": null,
+   "head_http_status": "200",
+   "head_content_length": "5127726842",
+   "get_status_final_url_bytes": [
+    "200",
+    "https://dl.fbaipublicfiles.com/vjepa2/vitl.pt",
+    "5127726842"
+   ]
+  },
+  "E": {
+   "file": "vitl-vmix22m-pt220-c55.pt",
+   "url": "https://drive.google.com/uc?id=1T_ubAMpDMEByH7V6TJu9iT5Yf9IxlDBB",
+   "bytes": 5127744286,
+   "sha256": "c1f43dfb2bac17a8fa15aabee2558e936e3f7e631c33ed369c15f90688adc3e0",
+   "downloaded_at": "2026-10-27T14:35:03Z",
+   "drive_file_id": "1T_ubAMpDMEByH7V6TJu9iT5Yf9IxlDBB",
+   "drive_folder": "https://drive.google.com/drive/folders/1RFEXMe8TTcABMBz4H_qtiLB43K9jD_lf",
+   "head_http_status": null,
+   "head_content_length": null,
+   "get_status_final_url_bytes": null
+  }
+ },
+ "E_vs_G": {
+  "relative_l2": 0.5954558403848966,
+  "identical_tensors": 0,
+  "tensors": 292
+ },
+ "architecture": {
+  "blocks": 24,
+  "dim": 1024,
+  "heads": 16,
+  "pos_embed_is_none": true,
+  "qkv": [
+   3072,
+   1024
+  ],
+  "norm_eps": 1e-06,
+  "use_rope": true,
+  "uniform_power": true
+ },
+ "contract": {
+  "encoder": {
+   "img_size": [
+    224,
+    224
+   ],
+   "num_frames": 16,
+   "patch_size": 16,
+   "tubelet_size": 2,
+   "use_rope": true,
+   "uniform_power": true,
+   "use_sdpa": true,
+   "use_activation_checkpointing": true,
+   "use_silu": false,
+   "wide_silu": true
+  },
+  "lora": {
+   "rank": 8,
+   "alpha": 16,
+   "scale": 2.0,
+   "A_std": 0.02,
+   "B": "zeros",
+   "targets": "blocks.*.attn.qkv"
+  },
+  "readout": "concat(tokens[:, floor(m / 2)].mean(space), tokens.mean(time, space)) -> Linear(2048, 5)",
+  "input": {
+   "mean": [
+    0.485,
+    0.456,
+    0.406
+   ],
+   "std": [
+    0.229,
+    0.224,
+    0.225
+   ],
+   "scale": "1 / 255"
+  },
+  "trainable": {
+   "lora": 786432,
+   "head": 10245,
+   "total": 796677
+  },
+  "init_generator": "2026102741 + 10 s + f: blocks 0..23 A, then head weight"
+ },
+ "written": "2026-10-27T14:50:21Z"
+}
