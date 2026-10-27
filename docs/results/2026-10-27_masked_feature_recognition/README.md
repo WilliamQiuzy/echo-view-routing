@@ -117,9 +117,10 @@ None resumed.
 
 FP, FN and their short parts are summed over the two folds.
 
-**H − R, the matched comparison, is exactly 0 in every count of both folds.** That covers fixed, broken, S1, kept,
-segment / native / boundary scores, FP / FN and deleted boundaries. H and R are different models (frozen sha256 b313d8af
-/ 59d6a544 and ec496a9f / 098166c0), but the trunk difference above changes no run's argmax. H − Base = R − Base:
+**H − R, the matched comparison, is exactly 0 in every reported aggregate of both folds.** That covers fixed, broken,
+the change table by direction, per-class run accuracy, confusion, S1, kept, segment / native / boundary scores, FP / FN
+and deleted boundaries. H and R are different models (frozen sha256 b313d8af / 59d6a544 and ec496a9f / 098166c0). The
+readout publishes aggregates only, so identical per-run labels are not separately verified. H − Base = R − Base:
 
 | Contrast, fold | Net runs | S1 fixed | Correct A5C / A4C kept | Segment dF | Native macro-F1 | Boundary R | Boundary P | FP / short FP | FN / missed short |
 |---|---|---|---|---|---|---|---|---|---|
@@ -152,10 +153,10 @@ segment / native / boundary scores, FP / FN and deleted boundaries. H and R are 
 
 ## Answers
 
-1. **At this coefficient, the masked-HOG target changes no held-out decision.** H learned to predict masked HOG
-   (fit-batch MSE 0.089 → 0.036, against R's unchanged 0.090). Its trunk also ends measurably different from R's. But
-   H − R is 0 in every run and sequence count of both folds, including S1 (1 and 1 of 103). The main question is
-   answered negatively for this configuration.
+1. **At this coefficient, the masked-HOG target produces no measured held-out difference.** H learned to predict
+   masked HOG (fit-batch MSE 0.089 → 0.036, against R's unchanged 0.090), and its trunk ends measurably different from
+   R's. But H − R is 0 in every reported run and sequence aggregate of both folds, including S1 (1 and 1 of 103). The
+   main question is answered negatively for this configuration.
 2. **Why it was small.** λ was fixed by the pre-set rule, 0.25 × the median CE / HOG trunk-gradient ratio of four
    fit batches (≈ 0.028). During training the scaled auxiliary gradient was a median 3% / 12% of the CE gradient on the
    trunk before clipping. This describes what the fixed rule produced. It is not evidence that a larger coefficient
@@ -202,4 +203,5 @@ segment / native / boundary scores, FP / FN and deleted boundaries. H and R are 
   splits, rows / masks sha256) and `readout_s0.json`.
 - **Code.** `scripts/train_masked_feature.py`, `echo_routing/temporal/masked_feature.py` and
   `tests/test_masked_feature.py` (10 tests).
-- **Server only.** Trained weights, per-update logs, per-run predictions and all identifiers.
+- **Server only.** Trained weights, decoders, per-update logs, job logs and all identifiers. The readout kept
+  per-window logits and per-run labels in memory only; no per-run prediction file was saved.
