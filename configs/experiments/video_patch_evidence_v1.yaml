@@ -1,0 +1,60 @@
+# A39 (video_patch_evidence_v1), 2026-10-27 UTC: projected non-CLS token channel max (P) against channel mean (G) as the
+# auxiliary input of a zero-output residual head on the frozen A08's original request windows. One matched screen.
+# Committed before any new token statistic, model forward or training. Task sheet:
+# claude_prompts/2026-10-26-local-token-a5c-evidence.md (sha256 2066f26637a1fd2416f6f3c91f7dc4e3c50f24af48b5fb2591c8e12c651160a8).
+# Question: on the same final non-CLS tokens of the unchanged A08 forward, does the per-channel maximum of the projected
+# tokens (P) give transferable A5C recognition evidence that the per-channel mean (G) does not, while the complete A08 + B3
+# system does not get worse? Exploratory and falsifiable; it is not known that the tokens carry LVOT information. The final
+# tokens have interacted with each other and with CLS, and different channel maxima can come from different times /
+# positions: nothing here is a structure location, cardiac phase or expert evidence. The projection was trained for CLS.
+# No development / check / test / Pediatric reading; source seed 2 only by the rule below.
+experiment: video_patch_evidence_v1
+
+patch_evidence:
+  id: A39
+  type: matched_descriptor_training_screen
+  predecessors: "V02 (docs/results/2026-10-11_target_patch_readout: global / target-time patch means replaced the main readout with end-to-end continued training; closed), R07 (docs/results/2026-10-04_local_readout: frozen E1 image-token attention, ASRF intervals; closed), A34 (docs/results/2026-10-25_native_bag_evidence: power mean of window class probabilities over whole recordings, not tokens inside a window; 65dc067 / aa2b259 / bfe043b, closed), A37 (docs/results/2026-10-26_wider_temporal_evidence: S / W doubled offsets with this residual head form; d2cf83e / 16da40c / f55c1ed / 9d2a905, closed at source 0), A38 (docs/results/2026-10-26_predicted_run_context: Base-run-limited W; 161c2be / 5139f71 / 1808303 / bdf94a4 / 7d6a693, closed at source 0: S1 1 / 103, correct A5C 1,114 / 1,150). A27-A38's added recognition branches read the 512-d CLS summary"
+  changed_condition: "the auxiliary 512-d input of the residual head is a pooled descriptor of the projected 392 non-CLS final tokens of the same original forward that gives q / e224: channel max (P) against channel mean (G). Not a CLS replacement, not V02 reopened, no change of the clip-code training target, no A37 / A38 window, no clip and no predicted-boundary limit"
+  data:
+    pools: "A31 fold pools runs/video_session_correction_v1/pool_{0,1}.npy (sha256 96d1fb683e1a261d5be9a3cc7ec393637577bbf83b56140cec41f544c4f3b486 / 08255192dae3a90644ea062880bf6b2b298181ed12e9890d56ca04630f5adef4); split.json e03100941d77e1fe64a825e4f2a4f7ef038a5725bcf943a55db15a983ef29d6d (sessions / recordings / window identities shared 0)"
+    requests: "A31's pool_W order: stride-5 centres c of the complete constructed sequences, S = window_frames(c, N, 16, 16) (A08's 16 samples, 10 Hz, about 1.5 s), marker = marker_slot(S, c), nearest-centre output map; unchanged"
+    base_outputs: "A31 outputs_s{s}_f{f}.npz (logits q, 512-d e224): s0 5884435770e8b65959b22ff77f74b0c2053cadf7fd2a5a28c842104df2f1a512 / 0a99be35b0cd78d650f5014c8ddc783173e6fb849ee556d6fa2a52c73f33d360; s2 5e8042a75e7c38d2f8345c3c3bbf357039efeed530f8758a1a7c7838fe5507fb / 2b1f1e13dce2a769f4091745e531bb998bc122b58cd5f3c09d2c364d904f4a33; prefix records cache/prefix_s0.json 8b69387e85db36ac81064692f31d102e4023cb6838f3abd343936ccd0873025c, cache/prefix_s2.json cdc60c76daa262937072663001811e71d637dedc54eba0b2add06b3624b6c3f0"
+    base_runs: "A31 data/runs_s{s}_f{f}.npz (T / P runs, uniform plans bt / bu, base_labels): s0 7b28ac6c224f594ef7bf49d6307186807d91bd8577dbc192e8cece07bea7452c / 98ce5c572aa29576a098685c1d28220684e755cbea537b6739020c0387ddc026; s2 91d04d4f255b7e892343b102c736f1b69c8126a69f2e0df1f5c23f1c60d8860f / ef76e587a0db2c7b18dcbdaee5631497963ad8eb9988a929e4526d5949259ef9"
+    a08: "models_frozen/video_within_view_v1/all_s0/final.pt 9b144925f32fac7d725d13231a132abeb6635fa44b6fe0dbcec7f5b59d035bbc; all_s2 f95fed7ba78cc0b5e2474c71a156356507b4588a4b324957fd5b53fe66ee8472 only if the rule triggers; each seed uses its own A08, q / e224, Base and runs"
+    pixels: "A08 frame rule (A37's chunk_frames on S): numerically ordered JPEG, RGB, gamma LUT rounded to 6 decimals, short side 256 then centre crop 224; A08 marker planes; 16 slots"
+    not_read: "development / check / test / EchoNet-Pediatric; the A26 runner; S1 / harm sets for any training sample"
+  tokens:
+    capture: "U = the output of encoder.norm of the original TargetMViT.embed forward, shape [B, 393, 768] (CLS + 8 x 7 x 7 = 392 non-CLS tokens, already normalised), captured by a read-only forward hook that returns nothing (clone of the output), registered for one call after asserting encoder.norm has no hook and removed in finally; TargetMViT.embed / classifier run as before and give e224 / q"
+    projection: "V = encoder.head(U[:, 1:]) with the frozen eval projection (dropout inactive, Linear(768, 512)): [B, 392, 512]"
+    descriptors: "eG = V.mean(1), eP = V.amax(1), float32, 512-d each; projection token by token first, pooling second; no extra norm, L2 normalisation, temperature, top-k, attention or ROI; amax never exchanged with the projection"
+    scope: "pooling reduces the joint time-space token axis (8 x 7 x 7); not a spatial-only intervention; a channel maximum is not a location"
+  encoder:
+    model: "the seed's source A08 TargetMViT, frozen, eval, no_grad, its own 16-frame 224 grid; one forward per request window gives q, e224 (compared with A31's cache), eG and eP together"
+    cache: "per seed and fold: eG and eP, 512-d float32 each (about 0.21 GB per seed); no tokens, pixels or prefix cache. Key = sha256 of target_mvit, joint_visual, the token functions' source (capture, projection, pooling), the extraction / frame functions' source, the token layer and order string, A08 weights, pool sha256, the request arrays' sha256 (seq, centre, S, marker), batch / chunk and the pixel rule; no reporting code"
+  head:
+    form: "z_G = q + g_G(concat(e224, eG)), z_P = q + g_P(concat(e224, eP)); g = the existing Residual (Linear(1024, 32) -> GELU -> Linear(32, 5), 32,965 parameters), first layer from torch.Generator seeded 20261026 + 39 + fit fold, last layer 0; bit-identical for G and P; Init z = q"
+    training: "only g; per fit fold, A31's uniform U plans (bt[u], bu[u], u < 1,350: 16 T + 16 P runs with nearest-centre multiplicities), pooled-probability CE averaged over the 32 runs; AdamW lr 1e-3, weight decay 1e-4, warm-up 135 then cosine, clip 1, 1,350 real updates, final weights only, CPU single thread; no KL, error emphasis, class balancing or tuning; per fold G then P (A36's step / fit monitor)"
+    models: "per seed: G_f0, P_f0, G_f1, P_f1; the four sha256 and the feature record committed together, the git objects verified, before that seed's single held-out readout of both folds (fit f -> read 1 - f)"
+  deployment: "the original Base P runs; each run takes the argmax of the multiplicity-weighted mean of softmax(z); equal neighbours merge (RLE); complete sequences scored with the original evaluator; the initial cuts are unchanged, final label boundaries can be deleted by relabel + merge and are reported. Cost: Base's one forward plus the hook clone, the 392-token projection, pooling and the head; both descriptors come from Base's forward (no second encoder pass); the extra cost is measured, not claimed free"
+  checks: "hooked and unhooked q / e224 identical; online q / e224 equal A31's cache (<= 1e-4); U shape [B, 393, 768], grid (8, 7, 7) read from the network, encoder.head(U[:, 0]) equals e224 (CLS at index 0, excluded from V); independent per-token / per-window loop pooling equals the vectorised eG / eP; eG equals W . mean(U[:, 1:]) + b and V equals an explicit per-token matmul; finite; TF32 off; repeat and batch split; A08 state digest unchanged and no hook left; synthetic: max >= mean channel-wise, identical tokens give eP = eG; Init = Base on every P run, sequence and A32 Base row; forced eP = eG gives identical losses and weights; optimizer bound to g only; 3 + 3 resume = 6; fold isolation; loaded repository modules match the committed code; timing / disk projection within the caps. Engineering checks may use Init or forced equality, never a trained head's held-out outputs"
+  readouts: "per held-out fold and OOF for Base / G / P: fixed / broken / net runs and both A4C / A5C directions (change table); recall and confusion of all true-A5C runs; A32 S1 recovered; Base-correct A5C and A4C kept; S1-fixed true-class (A5C-coded) source recordings, sessions, reuse and top share with the S1 denominators; complete multi segment F1@50, native macro-F1, boundary P / R, FP / short FP, FN / missed short true, Base boundaries deleted by the merge; P - G, P - Base, G - Base; fit-fold CE and fixes; Init; measured compute cost. No significance claim where sources / matching are not independent"
+  seed2_rule:
+    target: "S1 recovered (P) - S1 recovered (G) >= +1 in each held-out fold and >= +5 over both folds"
+    signal: "P recovers >= ceil(0.10 x S1 runs over both folds) S1 runs (source 0: 11 of 103), from >= 3 distinct A5C-coded source recordings over both folds and >= 1 in each held-out fold; a mixed run counts only its sources whose clip code is the run's reference class (A5C); full sources and reuse denominators reported"
+    retain: "P keeps >= ceil(0.98 x Base-correct A5C runs) correct A5C runs (source 0: 1,127 of 1,150) and, over both folds, >= G's kept - 3; P keeps >= ceil(0.98 x Base-correct A4C runs) correct A4C runs and, over both folds, >= G's kept - 3"
+    net: "in each fold: P - Base net fixed >= 0 and P - G net fixed >= 0"
+    system: "in each fold: segment F1 (P - Base) >= 0, segment F1 (P - G) >= 0, native macro-F1 (P - Base) >= -0.003, boundary recall (P - Base) >= -0.005; missed short true over both folds <= Base + 3"
+    action: "all met at source 0: source 2 with the same recipe, its own A08 / Base denominators and both folds (new eG / eP, four heads, freeze, one readout), reported for whether the target increment and protections repeat; otherwise this configuration closes at source 0. Even if met it is no new strongest model or independent confirmation (A08 trained on these recordings; the folds hold out only the head's fine-tuning sessions). Never: full fit, development / check / test / Pediatric evaluation, third seed, new pool / head / layer / loss variant; source 0 results are all kept and inputs / schedule / thresholds are not changed to pass the rule"
+  scope: "a result covers only frozen A08 + projected final-token channel max / mean + this residual head; not passing is not equivalence and does not disprove patch / local evidence in general"
+  reuse: "A31 loaders / plans / evaluator (scripts/train_session_correction.py), A32 fold data / masks / change table / id guard (scripts/diagnose_a5c_evidence.py), A36 step / fit monitor / tables / staged / publish (scripts/train_native_spatial_detail.py), A37 chunk_frames / coverage (scripts/train_wider_temporal_evidence.py), A38 loaded_code / boundaries (scripts/train_predicted_run_context.py), Residual (echo_routing/temporal/spatial_detail.py); read only"
+  budget:
+    gpu_hours_max: 2.0
+    cpu_hours_max: 2.0
+    new_disk_gb_max: 1.0
+    min_free_disk_gb: 10
+    accounting: "CPU includes the active agent / worker wall clock (waiting excluded); GPU loader time is not counted again as CPU; every failure is booked in this round's ledger; older ledgers are read only; if the checks project a cap overrun, engineering stop"
+    ledger: runs/video_patch_evidence_v1/ledger.jsonl
+  outputs:
+    root: runs/video_patch_evidence_v1
+    results_dir: docs/results/2026-10-26_local_token_a5c_evidence
+    coordination: runs/video_patch_evidence_v1/coordination.json
