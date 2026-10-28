@@ -69,8 +69,29 @@ def audit(ctx):
         for qi,q in enumerate(F.seqs):
             rows=np.flatnonzero(F.W['seq']==qi);cent=F.W['centre'][rows];maps[qi]=rows[np.abs(np.arange(len(q['labels']))[:,None]-cent[None,:]).argmin(axis=1)]
         preds={'Base':base.copy()};scoremeans={};memberships=0;emb=a.t.t31.outputs(ctx.a31,0,h)['emb'];parity={}
+        fitF=a.t.Fold(ctx,0,1-h)
+        expected_rows=[]
+        for pp in fitF.pl:
+            parts=[]
+            for i in pp:
+                lo,hi=fitF.pk['offsets'][int(i):int(i)+2]
+                parts.extend((fitF.pk['rows'][lo:hi]-fitF.off).tolist())
+            expected_rows.append(np.asarray(parts,np.int64))
+        raft,_weight,weightpath=a.raft_model('cuda');flow_subset_error=0.
+        for j in [0,len(pairrefs)//2,len(pairrefs)-1]:
+            pair=pairrefs[j];images=[]
+            for vid,frame,gamma in pair:
+                paths=F.fp(vid);images.append(a.t.jv.load_frame_u8(paths[min(int(frame),len(paths)-1)],round(float(gamma),6)))
+            z=torch.from_numpy(np.stack(images)).permute(0,3,1,2).to('cuda').float()/255*2-1
+            with torch.no_grad():raw=raft(z[:1],z[1:],num_flow_updates=12)[-1][0].cpu().numpy()
+            expected=np.clip(raw.reshape(2,56,4,56,4).mean((2,4))/8,-4,4).astype(np.float16).astype(np.float32)
+            flow_subset_error=max(flow_subset_error,float(np.max(abs(expected-bank[j].astype(np.float32)))))
+        assert flow_subset_error<.002 and a.sha(weightpath)==flow['raft_weight_sha256'];del raft
         for arm in ['F','S']:
             key=f'{arm}_f{1-h}';rd=a.OUT/'train'/key;man=w['models'][key];assert a.sha(rd/'final.pt')==man['final_sha256'] and a.sha(rd/'updates.jsonl')==man['updates_sha256'];logs=[json.loads(v) for v in (rd/'updates.jsonl').read_text().splitlines()];assert [v['u'] for v in logs]==list(range(600));opt=torch.load(rd/'optimizer_steps.pt',map_location='cpu',weights_only=True);assert set(opt['steps'])=={600};assert sum(v['n_occ'] for v in logs)==[14778,15528][1-h]
+            for log,expected in zip(logs,expected_rows):
+                assert log['rows_sha256']==a.digest(expected) and log['n_occ']==len(expected) and log['pid']==man['pid'] and log['device']=='NVIDIA L40S'
+            assert all(any(v['grad_sq'][group]>0 for v in logs[1:]) for group in ['motion','appearance','fusion'])
             state=torch.load(rd/'final.pt',map_location='cuda',weights_only=True);init,_=a.new_model(1-h,'cuda');initial=init.state_dict();assert len(state)==man['state_tensors'] and all(torch.isfinite(v).all() and not torch.equal(v,initial[k]) for k,v in state.items());del init
             select=np.array([0,len(F.need)//2,len(F.need)-1]);x=direct_input(bank,inp['pairs'][select],F.W['marker'][F.need[select]],np.asarray(perms)[select] if arm=='S' else None);e=torch.as_tensor(np.asarray(emb[F.need[select]],np.float32),device='cuda');xt=torch.tensor(x,device='cuda')
             for zero in [False,True]:
@@ -101,7 +122,7 @@ def audit(ctx):
         pair={}
         for typ,mask in [('fix',(base==2)&(y==3)),('harm',(base==2)&(y==2))]:
             ff=mask&(preds['F']==3);ss=mask&(preds['S']==3);pair[typ]={'shared':int((ff&ss).sum()),'F_only':int((ff&~ss).sum()),'S_only':int((ss&~ff).sum())}
-        out[str(h)]={'memberships_explicitly_recounted':memberships,'all_pairs_and_permutations_reconstructed':True,'functional_network_parity':parity,'paired_F_S':pair,'heldout_auroc':{name:auc(means[(base==2)&(y==3)],means[(base==2)&(y==2)]) for name,means in scoremeans.items()},'run_labels_disagree_F_S':int((preds['F']!=preds['S']).sum()),'input_source_sessions':len(all_sessions)};cells[h]=cell;labels.append(y)
+        out[str(h)]={'memberships_explicitly_recounted':memberships,'all_pairs_and_permutations_reconstructed':True,'functional_network_parity':parity,'fixed3_pair_fresh_flow_parity_max_abs':flow_subset_error,'all600_actual_input_row_hashes_verified':True,'paired_F_S':pair,'heldout_auroc':{name:auc(means[(base==2)&(y==3)],means[(base==2)&(y==2)]) for name,means in scoremeans.items()},'run_labels_disagree_F_S':int((preds['F']!=preds['S']).sum()),'input_source_sessions':len(all_sessions)};cells[h]=cell;labels.append(y)
     yy=np.concatenate(labels);bb=np.concatenate(allpred['Base']);oof={}
     for name,pp in allpred.items():
         p=np.concatenate(pp);fx=int(((bb!=yy)&(p==yy)).sum());ha=int(((bb==yy)&(p!=yy)).sum());v={'fixed':fx,'broken':ha,'net':fx-ha,'A5C_fixed':int(((bb==2)&(yy==3)&(p==3)).sum()),'correct_A4C_harmed':int(((bb==2)&(yy==2)&(p==3)).sum()),'F1_mean':float(np.mean([cells[h][name]['F1'] for h in [0,1]])),'missed_short':sum(cells[h][name]['short'] for h in [0,1]),'boundaries_deleted':sum(cells[h][name]['deleted'] for h in [0,1])};assert v==r['oof'][name];oof[name]=v
