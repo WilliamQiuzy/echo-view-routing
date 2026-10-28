@@ -210,7 +210,14 @@ threshold search, expert/pseudo supervision, dev/check/test/Pediatric read, A26 
 
 ## Resources and closeout
 
-See `resources_closeout.json` and `ledger_closeout.jsonl` for the final actual-time accounting. GPU includes the failed
+Result/readout/audit commit: `2bbb107e2f763a8512b3706ccd515fb3d3b5d652`.
+
+The closed worker/takeover ledger through 19:36:23 UTC totals **2.943622 GPU h / 6**, **0.865615 active CPU h / 3**,
+and approximately **0.56 GB / 3** new round artifacts. It includes actual documentation and the first result commit.
+Final resource publication and git-object verification are terminal root metadata work after that cutoff, separately
+disclosed in coordination/review; earlier root research/reviews were not precisely metered.
+
+See `resources_closeout.json` and `ledger_closeout.jsonl` for the actual-time accounting. GPU includes the failed
 check, successful checks, all four training jobs/full-fit scores, one readout and process-bootstrap gaps. CPU preserves
 prior active spans, corrects out the check wait, adds recovered active work between training polls and the Codex takeover,
 independent cached-score audit and actual closing. Explicit idle waits and the Claude quota outage are excluded. Earlier

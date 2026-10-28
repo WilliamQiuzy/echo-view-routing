@@ -1,0 +1,46 @@
+{
+  "as_of": "2026-10-28T19:36:23Z",
+  "ledger_sha256": "944d3360dd44a9dea659eb9c5411ebbc53ba93849dc9988ef87922951e519e6f",
+  "hours": {
+    "gpu": 2.9436219962516956,
+    "cpu": 0.8656145862995784
+  },
+  "budget": {
+    "gpu_hours": 6,
+    "cpu_hours": 3,
+    "new_disk_gb": 3
+  },
+  "new_artifact_bytes": 559145312,
+  "failed_gpu_check_included": true,
+  "no_retraining_after_takeover": true,
+  "readout_count": 1,
+  "readout_launch": {
+    "pid": 2891670,
+    "launched_at": "2026-10-28T19:20:48.498476+00:00",
+    "argv": [
+      ".venv/bin/python",
+      "-u",
+      "scripts/train_risk_constrained_a5c.py",
+      "--config",
+      "configs/experiments/video_risk_constrained_a5c_v1.yaml",
+      "--stage",
+      "readout",
+      "--seed",
+      "0",
+      "--workers",
+      "6"
+    ],
+    "log": "runs/video_risk_constrained_a5c_v1/logs/readout_s0.log",
+    "manifest_commit": "629ccb9b458181143844df1fea3d9a74b57e2f83",
+    "scope": "one original-card opposite-fold readout, no training"
+  },
+  "root_audit_scope": "Earlier Codex research/review/heartbeat inspections outside worker ledger were not precisely timed; disclosed, not reported as zero. Measured prior metadata/audit bodies total about2.61s. Current takeover active work and independent audit body charged above; final documentation/commit closeout to be appended with actual timestamps. No future closing or quota waiting precharged.",
+  "storage_scope": "Only A44 run and result directories; shared immutable A08/A31 inputs reused, no persistent pixel/feature cache. Code/config/tests and local aggregate copies are small additional files.",
+  "gpu_state": "0 MiB, 0 %",
+  "manifest_commit": "629ccb9b458181143844df1fea3d9a74b57e2f83",
+  "result_commit": "2bbb107e2f763a8512b3706ccd515fb3d3b5d652",
+  "readout_sha256": "e29807067f64f1a90ba545264d802979ad2cc68a5f0c01318f872af4797de4fa",
+  "independent_audit_sha256": "3fa8710077e8c99dc466392bbb8655bd9de9c30df451154c82ba0d7dc6983b30",
+  "root_terminal_scope": "Resource snapshot and its git commit plus final server/local/git-object SHA verification are terminal root metadata work after this cutoff; actual additional duration is disclosed in final private coordination/review, with no new computation/model job. Earlier unmetered root research/reviews remain disclosed separately. This snapshot contains no future charge.",
+  "source2": "Not triggered: C and N absolute gates fail. Latest user also explicitly prohibited further training."
+}
