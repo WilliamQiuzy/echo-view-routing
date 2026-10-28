@@ -224,5 +224,7 @@ def main():
     ctx=a45.context();started=t.now();st=time.time();ok=False;kind='cpu' if args.stage in ['prepare','freeze'] else 'gpu'
     try:
         r={'prepare':lambda:prepare(ctx),'flow':lambda:flow(ctx),'check':lambda:checks(ctx),'train':lambda:train(ctx),'freeze':lambda:freeze(args.commit,args.manifest_sha),'readout':lambda:readout(ctx)}[args.stage]();ok=True;print(json.dumps(r,indent=1,default=float),flush=True)
-    finally:t.ledger_append(OUT/'ledger.jsonl',f'A46 {args.stage} actual stage wall',kind,started,time.time()-st,ok,'bootstrap outside stage and root active intervals accounted separately; GPU stage wall includes pixel I/O')
+    finally:
+        t.ledger_append(OUT/'ledger.jsonl',f'A46 {args.stage} actual stage wall',kind,started,time.time()-st,ok,'bootstrap outside stage and root active intervals accounted separately; GPU stage wall includes pixel I/O')
+        if kind=='gpu':t.ledger_append(OUT/'ledger.jsonl',f'A46 {args.stage} actual process CPU incl imports','cpu',started,time.process_time(),ok,'process CPU seconds, in addition to GPU stage wall; no idle wall charge')
 if __name__=='__main__':main()
