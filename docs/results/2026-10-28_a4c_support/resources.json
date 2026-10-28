@@ -1,23 +1,26 @@
 {
-  "as_of": "2026-10-28T20:10:06Z",
+  "as_of": "2026-10-28T20:13:59Z",
   "actual_charged_hours": {
-    "cpu": 0.44659559435314605,
+    "cpu": 0.5113178165753682,
     "gpu": 0.0
   },
-  "cpu_cap_including_review_upper_bound": 0.46937337213092384,
+  "cpu_cap_including_review_upper_bound": 0.534095594353146,
   "review_scope": "One read-only plan reviewer. Its actual backend/active duration was not separately metered. The whole observed launch window from protocol commit19:53:46 to first post-completion clock19:55:08 is at most82s. This past-window upper bound is used for shared-cap verification, not booked as actual expenditure and not called zero. No execution helpers or Claude.",
   "budget": {
     "cpu_hours": 3,
     "gpu_hours": 6,
     "new_disk_gb": 3
   },
-  "new_artifact_bytes_so_far": 32494368,
-  "ledger_sha256": "9afb1167ce0baf78120c5054492d564c20263958dcb02a65d45a59c9c1c67240",
+  "new_artifact_bytes_so_far": 32557396,
+  "ledger_sha256": "1370446a161cd7cf0e00cbdba2e47a00ce4261cab572cd47ff84f447d51285b9",
   "failures": "Expected RED tests before implementation; unused pytest import lint finding repaired before training; one missing local scp destination created; one orchestration JS syntax error executed no action. No failed scientific training job, no parameter/protocol change. Work covered in owner span.",
   "actual_training": "CPU PID2903859,4x600 optimizer updates, source0 only, measured CPU stage7.582193s (second-resolution endpoints20:01:25\u201320:01:33); no GPU",
   "actual_readout": "One CPU stage20:04:37\u201320:04:48; baseline A44 scalar caches reused, no new A44 inference",
   "source0_only": true,
   "no_A46": true,
   "manifest_commit": "dd2595b93a4a7f8dbd1679b60213802ce9fc781b",
-  "next_terminal_scope": "Result commit/publication/git-server SHA verification after this cutoff will be measured retrospectively in a private terminal receipt. No future closing charge."
+  "next_terminal_scope": "Result commit/publication/git-server SHA verification after this cutoff will be measured retrospectively in a private terminal receipt. No future closing charge.",
+  "result_commit": "9145613fc0cd2be3e74126c8c96d98e627ca7274",
+  "merged_focused_tests": "18 passed; pre-existing A44 requires_grad->float warning retained",
+  "worktree_cleanup": "Clean merged isolated worktree and merged branch removed; all commits retained on frame-order-fix"
 }
