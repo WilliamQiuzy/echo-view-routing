@@ -2,7 +2,6 @@ import importlib
 import importlib.util
 import copy
 import numpy as np
-import pytest
 import torch
 
 def api():
