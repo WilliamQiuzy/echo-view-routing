@@ -156,12 +156,25 @@ positive (D)?
   Training used whole native recordings, while deployment scores Base-predicted runs, often short or inside constructed
   streams: a bag-to-interval shift. Sessions are not verified patients. There is no expert truth.
 
-## Cost (ledger `runs/video_a5c_witness_mil_v1/ledger.jsonl`, server)
+## Cost (ledger `runs/video_a5c_witness_mil_v1/ledger.jsonl`, server; append-only)
 
-- GPU 2.36 of 6 h: checks 0.106 (attempt 1 failed, 0.053), training 2.075 (0.48 / 0.48 / 0.55 / 0.56), readout 0.181
-  (28.5 ms per eligible row per specialist; Base's pass 16.5 ms per window). No source 2.
-- CPU 0.74 of 3 h as of 05:50 UTC (agent active spans plus CPU jobs; idle training / readout polls excluded). Codex's metadata feasibility,
-  reviews and audits are outside this ledger.
+- GPU 2.37 of 6 h. Stage / model timers 2.362 h: checks 0.106 (attempt 1 failed, 0.053), training 2.076 (0.48 / 0.48 /
+  0.55 / 0.56), readout 0.181 (28.5 ms per eligible row per specialist; Base's pass 16.5 ms per window). Those timers
+  start inside each process and exclude its imports, contexts, fold build and final publish: 5.6–7.7 s per process,
+  0.0068 h in total, measured after closure from each launch log's birth time to its last output's modification time
+  and ledgered separately. No source 2.
+- CPU 1.01 of 3 h as of 05:59 UTC, metered from actual intervals only (idle training / readout polls are not charged):
+  - wall-clock agent spans 1–6 (0.755 h) and CPU jobs (dry run, freeze, cache recount; 0.005 h);
+  - active intervals recovered after closure from the session stream timestamps (tool result → next tool call):
+    0.167 h inside the training-poll window 03:31:00–05:33:59 UTC, which span 3 had left unmetered (README draft
+    37.8 s, recount script 35.6 s, 130 status / poll turns), and 0.018 h inside the readout-poll window;
+  - 0.003 h of CPU-process bootstrap outside the dry-run / freeze timers, and this closeout's active span (the part
+    after 05:59 UTC is in the ledger).
+  - The wall-clock spans are not pure active time: span 2 includes 0.037 h of polling the two check jobs and span 1 a
+    120 s stalled `git commit`; they stay as recorded. Charging both poll windows in full would add at most 2.05 h +
+    0.17 h of mostly idle time; that is a loose upper bound, not usage.
+- Codex's metadata feasibility, reviews and independent audits (including its final cached-score / full-sequence /
+  gate audit: 93 assertions, 0 discrepancies) ran outside this ledger.
 - New disk 0.54 GB (four final models + heads, logs, private readout cache); no resume or pixel cache left; 143 GB free.
 - Files: `checks.json`, `checks_attempt1.json`, `weights_s0.json`, `readout_s0.json` (aggregate). The private row
   scores / run labels (`readout_cache_s0.npz`, sha256 in `readout_s0.json`) stay on the server; an independent
