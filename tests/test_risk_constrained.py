@@ -82,9 +82,12 @@ def test_weighted_mean_deploy_explicit_and_one_way():
     pk = _pk(); sc = np.arange(12, dtype=np.float64) - 3.0; el = pk["base"] == 2
     r = rc.run_weighted_mean(pk, sc, 100, el)
     assert r[3] == -np.inf and r[2] == pytest.approx(0.25 * (-1) + 0.75 * 0) and r[0] == pytest.approx(0.5 * -3 + 0.5 * -2)
-    nearest = np.asarray([100, 100, 101, 101, 101, 101, 102, 103, 103, 103, 104, 104, 105, 105, 106, 106, 107, 107, 107, 107, 108, 108, 109, 109])
+    # the independent nearest map is FOLD-LOCAL (A27 nearest_rows convention) while pk rows are global (+100): no offset inside the helper
+    nearest_local = np.asarray([100, 100, 101, 101, 101, 101, 102, 103, 103, 103, 104, 104, 105, 105, 106, 106, 107, 107, 107, 107, 108, 108, 109, 109]) - 100
     for i in (0, 1, 2, 4, 5):
-        assert rc.run_weighted_mean_explicit(pk, sc, 100, i, nearest) == pytest.approx(r[i])
+        assert rc.run_weighted_mean_explicit(pk, sc, i, nearest_local) == pytest.approx(r[i])
+        er, ew = rc.explicit_membership(nearest_local, int(pk["a"][i]), int(pk["b"][i])); mr, mw = rc.members(pk, i, 100)
+        assert er.tolist() == mr.tolist() and np.abs(ew - mw).max() < 1e-12
     assert r[4] == pytest.approx(3.5) and r[5] == pytest.approx(5.0)
     out = rc.one_way(pk["base"], r)
     assert out.tolist() == [2, 2, 2, 3, 3, 3] and pk["base"].tolist() == [2, 2, 2, 3, 2, 2]

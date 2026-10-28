@@ -171,9 +171,11 @@ def run_weighted_mean(pk: dict, scores: np.ndarray, off: int, eligible: np.ndarr
     return r
 
 
-def run_weighted_mean_explicit(pk: dict, scores: np.ndarray, off: int, i: int, nearest: np.ndarray) -> float:
-    """Independent check: the plain mean of the samples' window scores over the run's original samples [a, b)."""
-    a, b = int(pk["a"][i]), int(pk["b"][i]); return float(np.mean([float(scores[int(nearest[t]) - int(off)]) for t in range(a, b)]))
+def run_weighted_mean_explicit(pk: dict, scores: np.ndarray, i: int, nearest_local: np.ndarray) -> float:
+    """Independent check: the plain mean of the samples' window scores over the run's original samples [a, b).
+    `nearest_local` maps each sample of the run's sequence to its FOLD-LOCAL window row (A27's nearest_rows convention),
+    the same frame as `scores`; no offset is applied here (the stored pk rows are global and are converted by `members`)."""
+    a, b = int(pk["a"][i]), int(pk["b"][i]); return float(np.mean([float(scores[int(nearest_local[t])]) for t in range(a, b)]))
 
 
 def feasibility(r: np.ndarray, negatives: np.ndarray, positives: np.ndarray) -> dict:

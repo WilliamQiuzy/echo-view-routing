@@ -67,7 +67,7 @@ LR = {"encoder_trunk": 1e-5, "marker_stem": 1e-4, "projection": 1e-4, "scalar_he
 CLIP, FROZEN = 1.0, ("classifier.",)
 SCH = {"updates": U, "warmup": WARM}
 LIMITS = {"loss": 1e-4, "params": 1e-5}
-TOL = {"grad_rel": 1e-5, "formula": 1e-8, "replay_abs": 1e-5, "parity": 1e-4, "peak_gpu_gb": 40.0, "roundoff_grad_rel": 1e-6, "membership": 1e-12}
+TOL = {"grad_rel": 1e-5, "formula": 1e-8, "replay_abs": 1e-5, "parity": 1e-4, "peak_gpu_gb": 40.0, "roundoff_grad_rel": 1e-6, "membership": 1e-12, "constant_mean_fp64": 1e-12}
 PINS = {"pools": {"0": "96d1fb683e1a261d5be9a3cc7ec393637577bbf83b56140cec41f544c4f3b486", "1": "08255192dae3a90644ea062880bf6b2b298181ed12e9890d56ca04630f5adef4"},
         "split": "e03100941d77e1fe64a825e4f2a4f7ef038a5725bcf943a55db15a983ef29d6d",
         "outputs": {0: {"0": "5884435770e8b65959b22ff77f74b0c2053cadf7fd2a5a28c842104df2f1a512", "1": "0a99be35b0cd78d650f5014c8ddc783173e6fb849ee556d6fa2a52c73f33d360"},
@@ -394,12 +394,15 @@ def list_checks(ctx: Ctx, s: int) -> dict:
     for f in FOLDS:
         F_ = Fold(ctx, s, f); pk, seqs, W = F_.pk, F_.seqs, F_.W; L = F_.L; near = t27.nearest_rows(W, seqs); nW = len(W["seq"]); ex = EXPECTED_LISTS.get(s, {}).get(f); ep = EXPECTED_PLAN.get(s, {}).get(f)
         order_ok = all(np.all(np.diff(L[k]) > 0) for k in L) and set(L["eligible"]) == set(L["positives"]) | set(L["negatives"]) | set(L["other"]) and not (set(L["positives"]) & set(L["negatives"]))
+        # A27's nearest_rows gives FOLD-LOCAL window rows per sample (the same frame as pool_W / scores); the stored pk rows are global (+ off)
+        local_conv = all(bool(np.array_equal(np.unique(near[qi]), np.unique(near[qi][np.isin(near[qi], np.flatnonzero(W["seq"] == qi))]))) and near[qi].min() >= 0 and near[qi].max() < nW for qi in range(len(seqs)))
+        glob_conv = bool(pk["rows"].min() >= F_.off and pk["rows"].max() < F_.off + nW)
         mem = wsum = inside = unique = True; maxdev = 0.0; sc = g.normal(size=nW)
         for i in range(len(pk["labels"])):
-            rows, w = rc.members(pk, i, F_.off); er, ew = rc.explicit_membership(near[int(pk["seq"][i])] - F_.off, int(pk["a"][i]), int(pk["b"][i]))
+            rows, w = rc.members(pk, i, F_.off); er, ew = rc.explicit_membership(near[int(pk["seq"][i])], int(pk["a"][i]), int(pk["b"][i]))
             mem &= bool(np.array_equal(rows, er) and np.abs(w - ew).max() <= TOL["membership"]); wsum &= abs(w.sum() - 1) <= TOL["membership"]; inside &= bool(rows.min() >= 0 and rows.max() < nW); unique &= len(np.unique(rows)) == len(rows)
             if F_.el[i]:
-                maxdev = max(maxdev, abs(float(np.dot(w, sc[rows])) - rc.run_weighted_mean_explicit(pk, sc, F_.off, i, near[int(pk["seq"][i])])))
+                maxdev = max(maxdev, abs(float(np.dot(w, sc[rows])) - rc.run_weighted_mean_explicit(pk, sc, i, near[int(pk["seq"][i])])))
         al = True
         for qi, q in enumerate(seqs):
             ks = np.flatnonzero(pk["seq"] == qi); lab = F_.base_labels[sum(len(x["labels"]) for x in seqs[:qi]):][:len(q["labels"])]
@@ -408,6 +411,7 @@ def list_checks(ctx: Ctx, s: int) -> dict:
         e = rc.exposure(pk, pl); rec_f = {str(r[0]) for q in seqs for r in q["refs"]}; other = t31.load_pool(ctx.a31, 1 - f); rec_o = {str(r[0]) for q in other for r in q["refs"]}
         out[str(f)] = {"counts": {k: int(len(v)) for k, v in L.items()}, "expected": ex, "counts_equal_expected": ex is None or {k: len(L[k]) for k in ex} == ex, "lists_in_P_order_and_disjoint": bool(order_ok),
                        "eligible_is_base_A4C": bool(np.array_equal(L["eligible"], np.flatnonzero(pk["base"] == A4C))), "positives_are_S1": bool(np.array_equal(L["positives"], np.flatnonzero((pk["base"] == A4C) & (pk["labels"] == A5C)))),
+                       "nearest_map_fold_local_convention": bool(local_conv), "stored_rows_global_convention": glob_conv, "fold_offset": int(F_.off),
                        "membership_equals_repeated_sample_loop": bool(mem), "weights_sum_1": bool(wsum), "rows_inside_fold": bool(inside), "rows_unique_per_run": bool(unique), "weighted_mean_vs_explicit_mean_max_abs": maxdev,
                        "run_alignment_with_base_sequences": bool(al), "P_runs": int(len(pk["labels"])), "grid": nW, "eligible_rows": int(len(F_.need)),
                        "recordings_in_other_pool": len(rec_f & rec_o), "sessions_in_other_pool": len({session_of(x) for x in rec_f} & {session_of(x) for x in rec_o}),
@@ -486,18 +490,24 @@ def formula_checks() -> dict:
                                                   "grad_max_abs": float(np.abs(st.grad.numpy() - ref["g"]).max()), "finite": bool(torch.isfinite(L) and torch.isfinite(st.grad).all()),
                                                   "inactive_negative_windows_zero_grad": bool(all((st.grad.numpy()[seg == k] == 0).all() for k in range(1, 4) if 1.0 + ref["r"][k] <= 0)) if arm == "N" else None,
                                                   "active_negatives": int(sum(1.0 + ref["r"][k] > 0 for k in range(1, 4)))}
-    # kinks: r = -1 (ReLU derivative 0), r = 0 (decision = no edit; hinge active), huge
-    r = torch.tensor([0.0, -1.0, 0.0, -1e3], requires_grad=True); L, A, B, H = rc.objective(r, "N", 2.0); L.backward()
-    out["kinks_N"] = {"H": float(H), "H_expected": 1.0 / 3, "grad": r.grad.tolist(), "grad_expected": [-0.5, 0.0, 2.0 / 3, 0.0], "loss_finite": bool(torch.isfinite(L))}
-    r2 = torch.tensor([1e3, 1e3, -1e3, 5.0], requires_grad=True); L2, A2, B2, H2 = rc.objective(r2, "C", 0.0); L2.backward()
+    # kinks in float64 (independent reference precision; production stays FP32 and is gated by the two-pass check): r = -1 (ReLU derivative 0),
+    # r = 0 (decision = no edit; hinge active), huge
+    r = torch.tensor([0.0, -1.0, 0.0, -1e3], dtype=torch.float64, requires_grad=True); L, A, B, H = rc.objective(r, "N", 2.0); L.backward(); ge = [-0.5, 0.0, 2.0 / 3, 0.0]
+    out["kinks_N"] = {"dtype": str(r.dtype), "H": float(H), "H_expected": 1.0 / 3, "H_abs": abs(float(H) - 1.0 / 3), "grad": r.grad.tolist(), "grad_expected": ge, "grad_max_abs": float(max(abs(a - b) for a, b in zip(r.grad.tolist(), ge))),
+                      "loss_finite": bool(torch.isfinite(L))}
+    r32 = torch.tensor([0.0, -1.0, 0.0, -1e3], requires_grad=True); L32, _, _, H32 = rc.objective(r32, "N", 2.0); L32.backward()
+    out["kinks_N_fp32_diagnostic"] = {"H": float(H32), "grad": r32.grad.tolist(), "H_abs": abs(float(H32) - 1.0 / 3), "grad_max_abs": float(max(abs(a - b) for a, b in zip(r32.grad.tolist(), ge))), "status": "FP32 round-off, not a gate"}
+    r2 = torch.tensor([1e3, 1e3, -1e3, 5.0], dtype=torch.float64, requires_grad=True); L2, A2, B2, H2 = rc.objective(r2, "C", 0.0); L2.backward()
     out["huge_C"] = {"finite": bool(torch.isfinite(L2) and torch.isfinite(r2.grad).all()), "A": float(A2)}
-    # dual recurrence
+    # dual recurrence (independently computed expectations; the low clip needs lambda + 0.1 (H - alpha) < 0, e.g. 0.0005 + 0.1 (0 - 0.01) = -0.0005 -> 0;
+    # 0.005 + 0.1 (0 - 0.01) = 0.004 does NOT clip)
     seq = [1.0]; Hs = [0.0, 0.01, 0.51, 1.5, 0.0, 400.0, 0.0, 0.0]
     for h in Hs:
         seq.append(rc.dual_update(seq[-1], h))
     exp = [1.0, 0.999, 0.999, 1.049, 1.198, 1.197, 41.196, 41.195, 41.194]
-    out["dual"] = {"trajectory": seq, "expected": exp, "max_abs": float(max(abs(a - b) for a, b in zip(seq, exp))), "clip_low": rc.dual_update(0.0, 0.0) == 0.0 and rc.dual_update(0.005, 0.0) == 0.0,
-                   "clip_high": rc.dual_update(100.0, 5.0) == 100.0 and rc.dual_update(99.9999, 1.0) == 100.0, "feasible_no_change_alpha": rc.dual_update(3.0, rc.ALPHA) == 3.0,
+    out["dual"] = {"trajectory": seq, "expected": exp, "max_abs": float(max(abs(a - b) for a, b in zip(seq, exp))), "clip_low": rc.dual_update(0.0, 0.0) == 0.0 and rc.dual_update(0.0005, 0.0) == 0.0 and rc.dual_update(0.001, 0.0) == 0.0,
+                   "low_non_clipping_0.005_to_0.004": abs(rc.dual_update(0.005, 0.0) - 0.004) <= 1e-15, "clip_high": rc.dual_update(100.0, 5.0) == 100.0 and rc.dual_update(99.9999, 1.0) == 100.0,
+                   "high_non_clipping_99.99_stays": abs(rc.dual_update(99.99, 0.05) - 99.994) <= 1e-12, "feasible_no_change_alpha": rc.dual_update(3.0, rc.ALPHA) == 3.0,
                    "constants": {"alpha": rc.ALPHA, "lambda0": rc.LAMBDA0, "step": rc.DUAL_STEP, "range": [rc.LAMBDA_MIN, rc.LAMBDA_MAX]}}
     return out
 
@@ -633,9 +643,10 @@ def one_way_checks(ctx: Ctx, s: int) -> dict:
         t0_ = tables_pred(p0, D, a8.cfg, P, ev); tb = tables(X["q"], D, off, a8.cfg, P, ev); js = lambda x: json.loads(json.dumps(x, default=float))  # noqa: E731
         same = all(js(t0_[k]) == js(tb[k]) for k in ("runs", "changes", "correct_A5C_kept", "S1_fixed", "S2_kept", "sequence_row", "counts")) and bool(np.array_equal(t0_["pred"], tb["pred"]))
         rnd = g.normal(size=nW).astype(np.float32); rr_ = rc.run_weighted_mean(pk, rnd, off, el); pr = rc.one_way(pk["base"], rr_); pk2 = {**pk, "labels": np.zeros_like(pk["labels"])}; pr2 = rc.one_way(pk2["base"], rc.run_weighted_mean(pk2, rnd, off, pk2["base"] == A4C))
-        edr = rc.edit_sequences(D["base_preds"], pk, D["seqs"], pr); mdev = max(abs(rr_[i] - rc.run_weighted_mean_explicit(pk, rnd, off, int(i), near[int(pk["seq"][i])])) for i in np.flatnonzero(el))
-        out[f"heldout_f{h}"] = {"eligible_runs": int(el.sum()), "eligible_unique_rows": int(len(need)), "full_grid": int(nW), "rows_inside_fold": bool(need.min() >= off and need.max() < off + nW),
-                                "expected": EXPECTED_ELIGIBLE.get(s, {}).get(h), "run_alignment": al, "init_r_all_minus_2": bool(np.all(r[el] == -2.0)), "init_pred_equals_base": bool(np.array_equal(p0, pk["base"])),
+        edr = rc.edit_sequences(D["base_preds"], pk, D["seqs"], pr); mdev = max(abs(rr_[i] - rc.run_weighted_mean_explicit(pk, rnd, int(i), near[int(pk["seq"][i])])) for i in np.flatnonzero(el))
+        out[f"heldout_f{h}"] = {"eligible_runs": int(el.sum()), "eligible_unique_rows": int(len(need)), "full_grid": int(nW), "rows_inside_fold": bool(need.min() >= off and need.max() < off + nW), "fold_offset": int(off),
+                                "expected": EXPECTED_ELIGIBLE.get(s, {}).get(h), "run_alignment": al, "init_r_max_abs_dev_from_minus_2": float(np.abs(r[el] + 2.0).max()), "init_r_bitexact_minus_2_runs": int((r[el] == -2.0).sum()),
+                                "init_r_all_negative": bool(np.all(r[el] < 0)), "init_pred_equals_base": bool(np.array_equal(p0, pk["base"])),
                                 "init_sequences_equal_base": all(np.array_equal(t0_["preds"][q["id"]], D["base_preds"][q["id"]]) for q in D["seqs"]), "init_tables_equal_Base_tables": same,
                                 "random_scores_non_A4C_unchanged": bool(np.array_equal(pr[~el], pk["base"][~el])), "random_scores_changes_only_2_to_3": bool(set(zip(pk["base"][pr != pk["base"]].tolist(), pr[pr != pk["base"]].tolist())) <= {(A4C, A5C)}),
                                 "random_scores_changed": int((pr != pk["base"]).sum()), "label_free_decision": bool(np.array_equal(pr, pr2)), "weighted_mean_vs_explicit_sample_mean_max_abs": float(mdev),
@@ -683,19 +694,55 @@ def check(ctx: Ctx, device, workers: int) -> str:
     return f"{spw:.3f} s per occurrence; source-0 projection {proj:.2f} GPU h"
 
 
-def gates(r: dict) -> dict:
-    """Every enforced check gate, one dictionary item each; a missing required gate fails the check."""
-    Ls, O, Fr, I, Fm, G, T, Pr, N = r["lists"], r["one_way"], r["frames"], r["init"], r["formula"], r["gradients"], r["training"], r["projection"], r["numerics"]
-    lim = lambda d: d["loss_max_abs"] <= LIMITS["loss"] and d["params_max_abs"] <= LIMITS["params"]  # noqa: E731
+CPU_GATES = {"isolation", "inputs", "lists", "membership", "plan", "formula", "dual", "one_way_synthetic", "eligible_counts", "run_alignment", "init_equals_base", "readout_label_free", "deploy_mean"}
+
+
+def cpucheck(ctx: Ctx, s: int) -> str:
+    """(CPU, no pixels / model) lists, membership, plans, one-way / Init-constant tables and formula references of both folds,
+    with the CPU subset of the enforced gates; written to cpucheck_s{s}.json (never a substitute for the GPU check)."""
+    res = {"config_sha256": sha256_file(ROOT / ctx.config), "lists": list_checks(ctx, s), "one_way": one_way_checks(ctx, s), "formula": formula_checks()}
+    g = {k: v for k, v in gates(res, cpu_only=True).items() if k in CPU_GATES}; res["cpu_gates"] = {k: bool(v) for k, v in sorted(g.items())}; res["failed"] = sorted(k for k, v in g.items() if not v)
+    res["ok"] = not res["failed"] and set(g) == CPU_GATES; res["finished"] = now(); write_json(ctx.out / f"cpucheck_s{s}.json", json.loads(json.dumps(res, default=float)))
+    print(json.dumps({"cpu_gates": res["cpu_gates"], "failed": res["failed"], "ok": res["ok"], "init_r_dev": {h: res["one_way"][h]["init_r_max_abs_dev_from_minus_2"] for h in ("heldout_f0", "heldout_f1")},
+                      "membership_dev": {f: res["lists"][f]["weighted_mean_vs_explicit_mean_max_abs"] for f in ("0", "1")}, "kinks": res["formula"]["kinks_N"], "dual": {k: v for k, v in res["formula"]["dual"].items() if k != "trajectory"}}, indent=1))
+    if not res["ok"]:
+        raise SystemExit(f"cpu checks failed: {res['failed']}")
+    return f"cpu gates ok ({len(g)})"
+
+
+def gates(r: dict, cpu_only: bool = False) -> dict:
+    """Every enforced check gate, one dictionary item each; a missing required gate fails the check. With cpu_only, only the
+    gates computable from lists / one_way / formula are returned."""
+    Ls, O, Fm = r["lists"], r["one_way"], r["formula"]
     lk = lambda f: Ls[str(f)]  # noqa: E731
-    ex = EXPECTED_ELIGIBLE[0]; up = T["updates_1_5"]; RU = T["real_update_C_6"]
-    return {"isolation": not any(Ls["isolation"].values()) and all(lk(f)["recordings_in_other_pool"] == 0 and lk(f)["sessions_in_other_pool"] == 0 for f in FOLDS),
+    ex = EXPECTED_ELIGIBLE[0]
+    cpu = {"isolation": not any(Ls["isolation"].values()) and all(lk(f)["recordings_in_other_pool"] == 0 and lk(f)["sessions_in_other_pool"] == 0 for f in FOLDS),
             "inputs": all(Ls["pins"][k] for k in ("pools_equal", "split_equal", "runs_equal", "outputs_equal", "a08_equal")),
             "lists": all(lk(f)["counts_equal_expected"] and lk(f)["lists_in_P_order_and_disjoint"] and lk(f)["eligible_is_base_A4C"] and lk(f)["positives_are_S1"] for f in FOLDS),
-            "membership": all(lk(f)["membership_equals_repeated_sample_loop"] and lk(f)["weights_sum_1"] and lk(f)["rows_inside_fold"] and lk(f)["rows_unique_per_run"] and lk(f)["weighted_mean_vs_explicit_mean_max_abs"] <= 1e-9
-                              and lk(f)["run_alignment_with_base_sequences"] for f in FOLDS),
+            "membership": all(lk(f)["nearest_map_fold_local_convention"] and lk(f)["stored_rows_global_convention"] and lk(f)["membership_equals_repeated_sample_loop"] and lk(f)["weights_sum_1"] and lk(f)["rows_inside_fold"]
+                              and lk(f)["rows_unique_per_run"] and lk(f)["weighted_mean_vs_explicit_mean_max_abs"] <= 1e-9 and lk(f)["run_alignment_with_base_sequences"] for f in FOLDS),
             "plan": all(lk(f)["plan"]["updates"] == U and lk(f)["plan"]["shape"] == [U, 4] and lk(f)["plan"]["sha_equal_expected"] and lk(f)["plan"]["repeat_equal"] and lk(f)["plan"]["explicit_rng_equal"] and lk(f)["plan"]["positives_in_list"]
                         and lk(f)["plan"]["negatives_in_list"] and lk(f)["plan"]["all_positives_drawn"] and lk(f)["plan"]["all_negatives_drawn"] and lk(f)["plan"]["same_update_duplicate_negatives"] == 0 and lk(f)["plan"]["exposure_equal_expected"] for f in FOLDS),
+            "formula": all(v["r_max_abs"] <= TOL["formula"] and v["loss_abs"] <= TOL["formula"] and v["A_abs"] <= TOL["formula"] and v["B_abs"] <= TOL["formula"] and v["H_abs"] <= TOL["formula"] and v["grad_max_abs"] <= TOL["formula"] and v["finite"]
+                           and v["inactive_negative_windows_zero_grad"] is not False for k, v in Fm.items() if k not in ("kinks_N", "kinks_N_fp32_diagnostic", "huge_C", "dual"))
+            and Fm["kinks_N"]["dtype"] == "torch.float64" and Fm["kinks_N"]["H_abs"] <= 1e-12 and Fm["kinks_N"]["grad_max_abs"] <= 1e-12 and Fm["kinks_N"]["loss_finite"] and Fm["huge_C"]["finite"],
+            "dual": Fm["dual"]["max_abs"] <= 1e-12 and Fm["dual"]["clip_low"] and Fm["dual"]["low_non_clipping_0.005_to_0.004"] and Fm["dual"]["clip_high"] and Fm["dual"]["high_non_clipping_99.99_stays"] and Fm["dual"]["feasible_no_change_alpha"]
+            and Fm["dual"]["constants"] == {"alpha": 0.01, "lambda0": 1.0, "step": 0.1, "range": [0.0, 100.0]},
+            "one_way_synthetic": O["synthetic_rule"]["result"] == O["synthetic_rule"]["expected"] and O["synthetic_rule"]["input_unchanged"] and O["synthetic_merge"]["edited"] == O["synthetic_merge"]["expected"]
+            and O["synthetic_merge"]["boundaries_before_after"] == [4, 3],
+            "eligible_counts": all(O[f"heldout_f{h}"]["eligible_runs"] == ex[h]["runs"] and O[f"heldout_f{h}"]["eligible_unique_rows"] == ex[h]["rows"] and O[f"heldout_f{h}"]["full_grid"] == ex[h]["grid"]
+                                   and O[f"heldout_f{h}"]["rows_inside_fold"] for h in FOLDS),
+            "run_alignment": all(O[f"heldout_f{h}"]["run_alignment"] for h in FOLDS),
+            "init_equals_base": all(O[f"heldout_f{h}"][k] for h in FOLDS for k in ("init_r_all_negative", "init_pred_equals_base", "init_sequences_equal_base", "init_tables_equal_Base_tables"))
+            and all(O[f"heldout_f{h}"]["init_r_max_abs_dev_from_minus_2"] <= TOL["constant_mean_fp64"] for h in FOLDS),
+            "readout_label_free": all(O[f"heldout_f{h}"][k] for h in FOLDS for k in ("label_free_decision", "random_scores_non_A4C_unchanged", "random_scores_changes_only_2_to_3", "random_sequences_change_only_changed_runs")),
+            "deploy_mean": all(O[f"heldout_f{h}"]["weighted_mean_vs_explicit_sample_mean_max_abs"] <= 1e-5 for h in FOLDS)}
+    if cpu_only:
+        return cpu
+    Fr, I, G, T, Pr, N = r["frames"], r["init"], r["gradients"], r["training"], r["projection"], r["numerics"]
+    lim = lambda d: d["loss_max_abs"] <= LIMITS["loss"] and d["params_max_abs"] <= LIMITS["params"]  # noqa: E731
+    up = T["updates_1_5"]; RU = T["real_update_C_6"]
+    return {**cpu,
             "numerics": not N["tf32_matmul"] and not N["tf32_cudnn"] and N["cudnn_deterministic"] and not N["cudnn_benchmark"] and N["deterministic"] and not N["deterministic_warn_only"],
             "pixels": Fr["pixels_equal_independent_decode"] and Fr["repeat_equal"] and Fr["rows_weights_slots_equal_plan"], "markers": Fr["markers_equal_W"] and Fr["markers_equal_marker_slot"],
             "init_state": I["init_state_equals_A08"] and I["identical_arm_start"] and I["patched_blocks"] == [1, 3, 14],
@@ -703,10 +750,6 @@ def gates(r: dict) -> dict:
             "init_score_constant": I["init_scores_all_minus_2"]["all_exactly_minus_2"],
             "init_online_parity": I["init_online_fit_logits_vs_A31_cache_max_abs"] <= TOL["parity"] and I["classifier_of_embed_equals_forward"], "patched_forward": I["patched_equals_original_forward_bitwise"] and I["no_hook_left"],
             "base_from_cache": all(all(v[k] for k in ("runs_equal_base", "sequences_equal_base", "rows_equal_A32_base")) for v in I["Base_from_cached_q"].values()),
-            "formula": all(v["r_max_abs"] <= TOL["formula"] and v["loss_abs"] <= TOL["formula"] and v["A_abs"] <= TOL["formula"] and v["B_abs"] <= TOL["formula"] and v["H_abs"] <= TOL["formula"] and v["grad_max_abs"] <= TOL["formula"] and v["finite"]
-                           and v["inactive_negative_windows_zero_grad"] is not False for k, v in Fm.items() if k not in ("kinks_N", "huge_C", "dual"))
-            and Fm["kinks_N"]["H"] == Fm["kinks_N"]["H_expected"] and max(abs(a - b) for a, b in zip(Fm["kinks_N"]["grad"], Fm["kinks_N"]["grad_expected"])) <= 1e-12 and Fm["kinks_N"]["loss_finite"] and Fm["huge_C"]["finite"],
-            "dual": Fm["dual"]["max_abs"] <= 1e-12 and Fm["dual"]["clip_low"] and Fm["dual"]["clip_high"] and Fm["dual"]["feasible_no_change_alpha"] and Fm["dual"]["constants"] == {"alpha": 0.01, "lambda0": 1.0, "step": 0.1, "range": [0.0, 100.0]},
             "two_pass_fp32": all(G[f"two_pass_vs_retained_{a}"]["relative"] <= TOL["grad_rel"] and G[f"two_pass_vs_retained_{a}"]["all_groups_nonzero"] and G[f"two_pass_vs_retained_{a}"]["loss_abs"] <= 1e-5 for a in ARMS),
             "replay_scores": all(G[f"two_pass_vs_retained_{a}"]["pass1_vs_replay_max_abs"] <= TOL["replay_abs"] and G[f"two_pass_vs_retained_{a}"]["pass1_vs_retained_scores_max_abs"] <= TOL["replay_abs"] for a in ARMS) and all(x["replay_max_abs"] <= TOL["replay_abs"] for x in up),
             "zero_loss_negatives": G["two_pass_vs_retained_N"]["zero_grad_negative_windows"] == 0 if G["two_pass_vs_retained_N"]["active_negatives"] == 3 else G["two_pass_vs_retained_N"]["zero_grad_negative_windows"] > 0,
@@ -722,14 +765,6 @@ def gates(r: dict) -> dict:
             "repeat": lim(T["repeat_6_C"]), "forced_C_objective": lim(T["forced_C_objective_N_vs_C"]) and T["forced_C_objective_N_vs_C"]["lambda_unchanged"] and T["forced_C_objective_N_vs_C"]["formal_arms_unchanged"],
             "resume": lim(T["resume_3_plus_3_N"]) and T["resume_3_plus_3_N"]["lambda_max_abs"] <= 1e-12 and T["resume_3_plus_3_N"]["lambda_restored"],
             "N_not_C": T["N_differs_from_C"]["params_max_abs"] > 0,
-            "one_way_synthetic": O["synthetic_rule"]["result"] == O["synthetic_rule"]["expected"] and O["synthetic_rule"]["input_unchanged"] and O["synthetic_merge"]["edited"] == O["synthetic_merge"]["expected"]
-            and O["synthetic_merge"]["boundaries_before_after"] == [4, 3],
-            "eligible_counts": all(O[f"heldout_f{h}"]["eligible_runs"] == ex[h]["runs"] and O[f"heldout_f{h}"]["eligible_unique_rows"] == ex[h]["rows"] and O[f"heldout_f{h}"]["full_grid"] == ex[h]["grid"]
-                                   and O[f"heldout_f{h}"]["rows_inside_fold"] for h in FOLDS),
-            "run_alignment": all(O[f"heldout_f{h}"]["run_alignment"] for h in FOLDS),
-            "init_equals_base": all(O[f"heldout_f{h}"][k] for h in FOLDS for k in ("init_r_all_minus_2", "init_pred_equals_base", "init_sequences_equal_base", "init_tables_equal_Base_tables")),
-            "readout_label_free": all(O[f"heldout_f{h}"][k] for h in FOLDS for k in ("label_free_decision", "random_scores_non_A4C_unchanged", "random_scores_changes_only_2_to_3", "random_sequences_change_only_changed_runs")),
-            "deploy_mean": all(O[f"heldout_f{h}"]["weighted_mean_vs_explicit_sample_mean_max_abs"] <= 1e-5 for h in FOLDS),
             "a08_files": r["a08_files_unchanged"], "memory": T["timing"]["peak_gpu_gb_training"] <= TOL["peak_gpu_gb"], "projection": Pr["source0_total_h"] <= Pr["cap_h"], "disk": r["disk"]["free_gb"] >= r["disk"]["min_free_gb"]}
 
 
@@ -861,13 +896,15 @@ def rule_of(rec: dict, s1recs: dict, dry: bool = False) -> tuple[dict, dict, dic
 
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--config", required=True); ap.add_argument("--stage", choices=("plan", "check", "train", "freeze", "readout"), required=True); ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--config", required=True); ap.add_argument("--stage", choices=("plan", "cpucheck", "check", "train", "freeze", "readout"), required=True); ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--workers", type=int, default=6); ap.add_argument("--commit", default=""); ap.add_argument("--manifest-sha", default=""); ap.add_argument("--dry-run", action="store_true")
     a = ap.parse_args(); a.set = []; ctx = Ctx(load_cfg(a), a.config); ctx.out.mkdir(parents=True, exist_ok=True)
     if a.stage == "plan":
         def run_plan():
             r = plan_stage(ctx, a.seed); write_json(ctx.out / f"plan_s{a.seed}.json", {**r, "finished": now()}); print(json.dumps(r, indent=1, default=str)); return f"ok {r['ok']}; sha f0 {r['0']['plan_sha256'][:12]} f1 {r['1']['plan_sha256'][:12]}"
         return staged(ctx, f"plan s{a.seed} (CPU, metadata only)", "cpu", run_plan)
+    if a.stage == "cpucheck":
+        return staged(ctx, f"cpu check s{a.seed} (lists / membership / one-way / formula, no pixels)", "cpu", lambda: cpucheck(ctx, a.seed))
     if a.stage == "freeze":
         return staged(ctx, f"freeze s{a.seed} (CPU)", "cpu", lambda: freeze(ctx, a.seed, a.commit, a.manifest_sha))
     if a.stage == "readout" and a.dry_run:
