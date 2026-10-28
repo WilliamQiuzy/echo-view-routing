@@ -1,0 +1,169 @@
+{
+  "ok": true,
+  "folds": {
+    "0": {
+      "memberships_explicitly_recounted": 2996,
+      "all_pairs_and_permutations_reconstructed": true,
+      "functional_network_parity": {
+        "F": 4.76837158203125e-07,
+        "Z_F": 0.0,
+        "S": 1.1920928955078125e-07,
+        "Z_S": 0.0
+      },
+      "fixed3_pair_fresh_flow_parity_max_abs": 0.00048828125,
+      "all600_actual_input_row_hashes_verified": true,
+      "paired_F_S": {
+        "fix": {
+          "shared": 24,
+          "F_only": 0,
+          "S_only": 0
+        },
+        "harm": {
+          "shared": 86,
+          "F_only": 3,
+          "S_only": 3
+        }
+      },
+      "heldout_auroc": {
+        "F": 0.8526116328884495,
+        "Z_F": 0.8490278464326907,
+        "S": 0.8505107925523151,
+        "Z_S": 0.8491514252759927
+      },
+      "run_labels_disagree_F_S": 6,
+      "input_source_sessions": 189
+    },
+    "1": {
+      "memberships_explicitly_recounted": 3084,
+      "all_pairs_and_permutations_reconstructed": true,
+      "functional_network_parity": {
+        "F": 0.0,
+        "Z_F": 9.5367431640625e-07,
+        "S": 1.1920928955078125e-07,
+        "Z_S": 9.5367431640625e-07
+      },
+      "fixed3_pair_fresh_flow_parity_max_abs": 0.00048828125,
+      "all600_actual_input_row_hashes_verified": true,
+      "paired_F_S": {
+        "fix": {
+          "shared": 31,
+          "F_only": 3,
+          "S_only": 11
+        },
+        "harm": {
+          "shared": 58,
+          "F_only": 14,
+          "S_only": 42
+        }
+      },
+      "heldout_auroc": {
+        "F": 0.8403931081669466,
+        "Z_F": 0.8643610955609463,
+        "S": 0.8385270883871369,
+        "Z_S": 0.838008749559412
+      },
+      "run_labels_disagree_F_S": 70,
+      "input_source_sessions": 189
+    }
+  },
+  "oof": {
+    "Base": {
+      "fixed": 0,
+      "broken": 0,
+      "net": 0,
+      "A5C_fixed": 0,
+      "correct_A4C_harmed": 0,
+      "F1_mean": 0.9568852768790387,
+      "missed_short": 76,
+      "boundaries_deleted": 0
+    },
+    "F": {
+      "fixed": 58,
+      "broken": 161,
+      "net": -103,
+      "A5C_fixed": 58,
+      "correct_A4C_harmed": 161,
+      "F1_mean": 0.9472591880995478,
+      "missed_short": 131,
+      "boundaries_deleted": 156
+    },
+    "S": {
+      "fixed": 66,
+      "broken": 189,
+      "net": -123,
+      "A5C_fixed": 66,
+      "correct_A4C_harmed": 189,
+      "F1_mean": 0.9458040241325245,
+      "missed_short": 139,
+      "boundaries_deleted": 182
+    },
+    "Z_F": {
+      "fixed": 33,
+      "broken": 104,
+      "net": -71,
+      "A5C_fixed": 33,
+      "correct_A4C_harmed": 104,
+      "F1_mean": 0.9484338420522509,
+      "missed_short": 117,
+      "boundaries_deleted": 87
+    },
+    "Z_S": {
+      "fixed": 66,
+      "broken": 191,
+      "net": -125,
+      "A5C_fixed": 66,
+      "correct_A4C_harmed": 191,
+      "F1_mean": 0.9453086857465058,
+      "missed_short": 140,
+      "boundaries_deleted": 183
+    }
+  },
+  "gates": {
+    "F": {
+      "S1_ok": true,
+      "source_ok": true,
+      "A4C_ok": false,
+      "nonA4C_invariant": true,
+      "net_per_fold_ok": false,
+      "net_oof_ok": false,
+      "F1_per_fold_ok": false,
+      "F1_mean_ok": false,
+      "native_ok": false,
+      "boundary_recall_ok": false,
+      "short_misses_ok": false,
+      "not_noop": true,
+      "passed": false
+    },
+    "S": {
+      "S1_ok": true,
+      "source_ok": true,
+      "A4C_ok": false,
+      "nonA4C_invariant": true,
+      "net_per_fold_ok": false,
+      "net_oof_ok": false,
+      "F1_per_fold_ok": false,
+      "F1_mean_ok": false,
+      "native_ok": false,
+      "boundary_recall_ok": false,
+      "short_misses_ok": false,
+      "not_noop": true,
+      "passed": false
+    }
+  },
+  "representation_contribution": {
+    "fix_each_fold": false,
+    "fix_plus5_oof": false,
+    "harms_no_more_each_fold": true,
+    "net_plus5_oof": true,
+    "F1_each_fold": true,
+    "absolute_F": false,
+    "passed": false
+  },
+  "full_network_subset_max_abs": 9.5367431640625e-07,
+  "input_model_cache_shas_verified": true,
+  "all_four_600_optimizer_counters_verified": true,
+  "every_state_tensor_independently_moved": true,
+  "audit_code_sha256": "598e771f14b45514d7f429205d7071f8159ca7eb1c64b71d17e83c28abf90453",
+  "private_score_cache_sha256": "9810ddd79cd2dd7125ae8a70ae367f7a75768dcb1610253fd18f670d5dc8430c",
+  "written": "2026-10-28T21:00:54Z"
+}

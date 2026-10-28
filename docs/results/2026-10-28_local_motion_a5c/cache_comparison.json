@@ -1,0 +1,264 @@
+{
+  "scope": "descriptive immutable cache overlaps, after once readout; no new classifier/threshold/model forward",
+  "folds": {
+    "0": {
+      "F_vs_S": {
+        "fix": {
+          "shared": 24,
+          "first_only": 0,
+          "second_only": 0
+        },
+        "harm": {
+          "shared": 86,
+          "first_only": 3,
+          "second_only": 3
+        },
+        "all_label_disagreements": 6
+      },
+      "F_vs_Z_F": {
+        "fix": {
+          "shared": 24,
+          "first_only": 0,
+          "second_only": 0
+        },
+        "harm": {
+          "shared": 89,
+          "first_only": 0,
+          "second_only": 3
+        },
+        "all_label_disagreements": 3
+      },
+      "S_vs_Z_S": {
+        "fix": {
+          "shared": 24,
+          "first_only": 0,
+          "second_only": 0
+        },
+        "harm": {
+          "shared": 89,
+          "first_only": 0,
+          "second_only": 1
+        },
+        "all_label_disagreements": 1
+      },
+      "F_vs_A44_C": {
+        "fix": {
+          "shared": 6,
+          "first_only": 18,
+          "second_only": 0
+        },
+        "harm": {
+          "shared": 20,
+          "first_only": 69,
+          "second_only": 0
+        },
+        "all_label_disagreements": 87
+      },
+      "F_vs_A44_N": {
+        "fix": {
+          "shared": 14,
+          "first_only": 10,
+          "second_only": 0
+        },
+        "harm": {
+          "shared": 52,
+          "first_only": 37,
+          "second_only": 12
+        },
+        "all_label_disagreements": 59
+      }
+    },
+    "1": {
+      "F_vs_S": {
+        "fix": {
+          "shared": 31,
+          "first_only": 3,
+          "second_only": 11
+        },
+        "harm": {
+          "shared": 58,
+          "first_only": 14,
+          "second_only": 42
+        },
+        "all_label_disagreements": 70
+      },
+      "F_vs_Z_F": {
+        "fix": {
+          "shared": 9,
+          "first_only": 25,
+          "second_only": 0
+        },
+        "harm": {
+          "shared": 11,
+          "first_only": 61,
+          "second_only": 1
+        },
+        "all_label_disagreements": 87
+      },
+      "S_vs_Z_S": {
+        "fix": {
+          "shared": 42,
+          "first_only": 0,
+          "second_only": 0
+        },
+        "harm": {
+          "shared": 100,
+          "first_only": 0,
+          "second_only": 1
+        },
+        "all_label_disagreements": 1
+      },
+      "F_vs_A44_C": {
+        "fix": {
+          "shared": 5,
+          "first_only": 29,
+          "second_only": 1
+        },
+        "harm": {
+          "shared": 2,
+          "first_only": 70,
+          "second_only": 0
+        },
+        "all_label_disagreements": 100
+      },
+      "F_vs_A44_N": {
+        "fix": {
+          "shared": 10,
+          "first_only": 24,
+          "second_only": 2
+        },
+        "harm": {
+          "shared": 10,
+          "first_only": 62,
+          "second_only": 2
+        },
+        "all_label_disagreements": 90
+      }
+    }
+  },
+  "oof_overlaps": {
+    "F_vs_S": {
+      "fix": {
+        "shared": 55,
+        "first_only": 3,
+        "second_only": 11
+      },
+      "harm": {
+        "shared": 144,
+        "first_only": 17,
+        "second_only": 45
+      },
+      "all_label_disagreements": 76
+    },
+    "F_vs_Z_F": {
+      "fix": {
+        "shared": 33,
+        "first_only": 25,
+        "second_only": 0
+      },
+      "harm": {
+        "shared": 100,
+        "first_only": 61,
+        "second_only": 4
+      },
+      "all_label_disagreements": 90
+    },
+    "S_vs_Z_S": {
+      "fix": {
+        "shared": 66,
+        "first_only": 0,
+        "second_only": 0
+      },
+      "harm": {
+        "shared": 189,
+        "first_only": 0,
+        "second_only": 2
+      },
+      "all_label_disagreements": 2
+    },
+    "F_vs_A44_C": {
+      "fix": {
+        "shared": 11,
+        "first_only": 47,
+        "second_only": 1
+      },
+      "harm": {
+        "shared": 22,
+        "first_only": 139,
+        "second_only": 0
+      },
+      "all_label_disagreements": 187
+    },
+    "F_vs_A44_N": {
+      "fix": {
+        "shared": 24,
+        "first_only": 34,
+        "second_only": 2
+      },
+      "harm": {
+        "shared": 62,
+        "first_only": 99,
+        "second_only": 14
+      },
+      "all_label_disagreements": 149
+    }
+  },
+  "counts": {
+    "0": {
+      "F": {
+        "fix": 24,
+        "harm": 89
+      },
+      "S": {
+        "fix": 24,
+        "harm": 89
+      },
+      "Z_F": {
+        "fix": 24,
+        "harm": 92
+      },
+      "Z_S": {
+        "fix": 24,
+        "harm": 90
+      },
+      "A44_C": {
+        "fix": 6,
+        "harm": 20
+      },
+      "A44_N": {
+        "fix": 14,
+        "harm": 64
+      }
+    },
+    "1": {
+      "F": {
+        "fix": 34,
+        "harm": 72
+      },
+      "S": {
+        "fix": 42,
+        "harm": 100
+      },
+      "Z_F": {
+        "fix": 9,
+        "harm": 12
+      },
+      "Z_S": {
+        "fix": 42,
+        "harm": 101
+      },
+      "A44_C": {
+        "fix": 6,
+        "harm": 2
+      },
+      "A44_N": {
+        "fix": 12,
+        "harm": 12
+      }
+    }
+  },
+  "A44_cache_sha256": "526ab49bc0b69af56b23f8a1757921695127b834e642761080b9f3f8bcf7a5ef",
+  "A46_cache_sha256": "9810ddd79cd2dd7125ae8a70ae367f7a75768dcb1610253fd18f670d5dc8430c",
+  "code_sha256": "6bd43fac47e5eadb0469effa141ee0141f76c90655d141f280b357ce8873a843",
+  "written": "2026-10-28T21:08:10.472534+00:00"
+}

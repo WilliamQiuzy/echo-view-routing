@@ -1,0 +1,58 @@
+{
+  "as_of_utc": "2026-10-28T21:16:17.149815+00:00",
+  "charged_gpu_wall_hours": 0.18764327599628872,
+  "gpu_stage_wall_includes_CPU_IO_and_failed_projection": true,
+  "gpu_bootstrap_charges": [
+    {
+      "receipt": "flow.receipt.json",
+      "seconds_charged_upper": 6.374322
+    },
+    {
+      "receipt": "check_attempt1.receipt.json",
+      "seconds_charged_upper": 8.161652
+    },
+    {
+      "receipt": "check_attempt2.receipt.json",
+      "seconds_charged_upper": 7.273811
+    },
+    {
+      "receipt": "check.receipt.json",
+      "seconds_charged_upper": 6.298465
+    },
+    {
+      "receipt": "train.receipt.json",
+      "seconds_charged_upper": 6.581916
+    },
+    {
+      "receipt": "readout.receipt.json",
+      "seconds_charged_upper": 6.062926
+    },
+    {
+      "receipt": "audit.receipt.json",
+      "seconds_charged_upper": 7.030387
+    }
+  ],
+  "gpu_idle_between_jobs_charged": false,
+  "gpu_shutdown_tail_outside_stage_timers_separately_metered": false,
+  "gpu_all_job_elapsed_span_upper_bound_hours": 0.45815953388888886,
+  "gpu_elapsed_span_bound_is_not_spending_and_includes_idle": true,
+  "charged_cpu_hours": 1.1711945182944024,
+  "CPU_accounting": "Measured server process CPU for GPU workers plus CPU/control stages and conservative active-owner wall proxy; not physical LLM-backend CPU. No empty scheduled waiting interval. Initial pre-clock/context activity and reviewer backend not separately metered.",
+  "reviewer_observed_past_window_upper_seconds_not_actual_spend": 425,
+  "cpu_cap_check_with_reviewer_window_upper_hours": 1.289250073849958,
+  "new_server_bytes": 569841964,
+  "new_server_gb_decimal": 0.569841964,
+  "local_public_code_and_aggregates_extra_gb_upper": 0.01,
+  "caps": {
+    "gpu_hours": 6,
+    "cpu_hours": 3,
+    "new_gb": 3
+  },
+  "cap_pass": true,
+  "actual_closing_after_cutoff": "Timed separately in the single private ledger and final closing receipt, never precharged",
+  "ledger_snapshot_sha256": "5c0a3ee2ebee1faab3d0b49dadd30c3618879722ed793c9e179877987cea3876",
+  "no_active_round_jobs": true,
+  "no_active_gpu_processes": true,
+  "model_head_input_Base_SHA_verified": true,
+  "disk_scope": "Server bytes observed immediately before writing this resource/ledger snapshot; final metadata adds less than0.01GB and is covered by the separate metadata allowance."
+}
