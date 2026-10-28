@@ -836,10 +836,12 @@ def rule_of(rec: dict, s1recs: dict, dry: bool = False) -> tuple[dict, dict, dic
              "native_each_fold_ge_-0.003": all(d_(arm, "Base", h, "native_macro_f1") >= -0.003 for h in FOLDS), "boundary_recall_each_fold_ge_-0.005": all(d_(arm, "Base", h, "boundary_recall_multi") >= -0.005 for h in FOLDS),
              "missed_short": tot(arm, "counts", "fn_short"), "missed_short_Base": tot("Base", "counts", "fn_short"), "missed_short_le_Base_plus_3": tot(arm, "counts", "fn_short") <= tot("Base", "counts", "fn_short") + 3,
              "changed_runs_oof": rec["oof"][arm]["changed_runs"], "not_a_no_op": rec["oof"][arm]["changed_runs"] > 0}
-        g["passed"] = all(v for v in g.values() if isinstance(v, bool)); out[arm] = g
+        g["package_passed"] = all(v for v in g.values() if isinstance(v, bool)); g["passed"] = g["package_passed"]; out[arm] = g
+    # N's absolute gate = the common package gate AND full-fit H <= alpha in BOTH fit models (the source-2 trigger uses this combined boolean)
+    Hs = {f"N_f{1 - h}": C_(h)["fit_only"]["N"]["full_fit"]["update_600"]["H_full_fit"] for h in FOLDS} if not dry else {}
+    out["N"]["full_fit_H_600"] = Hs; out["N"]["full_fit_feasible_both"] = (all(v <= rc.ALPHA for v in Hs.values()) if Hs else None)
+    out["N"]["passed"] = bool(out["N"]["package_passed"] and out["N"]["full_fit_feasible_both"] is True); out["N"]["constraint_qualified_success"] = out["N"]["passed"]
     if not dry:
-        Hs = {f"N_f{1 - h}": C_(h)["fit_only"]["N"]["full_fit"]["update_600"]["H_full_fit"] for h in FOLDS}
-        out["N"]["full_fit_H_600"] = Hs; out["N"]["full_fit_feasible_both"] = all(v <= rc.ALPHA for v in Hs.values()); out["N"]["constraint_qualified_success"] = out["N"]["passed"] and out["N"]["full_fit_feasible_both"]
         out["N"]["full_fit_false_promotions_600"] = {f"N_f{1 - h}": C_(h)["fit_only"]["N"]["full_fit"]["update_600"]["false_promotions"] for h in FOLDS}
         out["C"]["full_fit_H_600"] = {f"C_f{1 - h}": C_(h)["fit_only"]["C"]["full_fit"]["update_600"]["H_full_fit"] for h in FOLDS}
     hC, hN = [harm4("C", h) for h in FOLDS], [harm4("N", h) for h in FOLDS]; s1C, s1N = [C_(h)["C"]["S1_fixed"]["fixed"] for h in FOLDS], [C_(h)["N"]["S1_fixed"]["fixed"] for h in FOLDS]
