@@ -1,0 +1,28 @@
+# A45 Codex-owned one-class A4C support verification. Full fixed contract linked below.
+experiment: video_a4c_support_v1
+a4c_support:
+  task: A45
+  owner: Codex
+  contract: docs/superpowers/plans/2026-10-28-a4c-support-training.md
+  seed: 0
+  folds: [0, 1]
+  arms: [A, U]
+  input: original_A08_weighted_mean_run_embedding_512
+  architecture: [512, 128, 32, 128, 512]
+  expected_parameters: 140064
+  updates: 600
+  batch_size: 32
+  noise_std: 0.1
+  lr: 0.001
+  weight_decay: 0.0001
+  clip: 1.0
+  cpu_threads: 1
+  calibration_alpha: 0.01
+  calibration_min_negatives: 99
+  primary_proposal: frozen_A44_N_source0
+  secondary_proposal: frozen_A44_C_source0
+  a44_manifest_sha256: 2f7cfae0c41b442f0374d0d2b5566f89bfaf2d762cd7d2f4eac99b654f7ecb02
+  a44_cache_sha256: 526ab49bc0b69af56b23f8a1757921695127b834e642761080b9f3f8bcf7a5ef
+  budget: {gpu_hours: 6, cpu_hours: 3, new_disk_gb: 3}
+  root: runs/video_a4c_support_v1
+  results: docs/results/2026-10-28_a4c_support
