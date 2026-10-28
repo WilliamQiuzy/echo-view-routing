@@ -143,7 +143,7 @@ def checks(ctx):
     gb=torch.cat([p.grad.flatten().double() for p in m.parameters()]);rel=float(torch.linalg.vector_norm(ga-gb)/torch.linalg.vector_norm(ga));scoredev=float((torch.cat(s2)-scores.detach()).abs().max());assert rel<1e-4 and scoredev<1e-4
     # Maximum planned actual CNN batch, for memory/runtime projection, with true backward.
     ue=int(np.argmax([len(F.occ(u)[0]) for u in range(U)]));torch.cuda.reset_peak_memory_stats();maxrec=step(m,o,F,ue,'F');mem=torch.cuda.max_memory_allocated()/1e9;assert mem<40
-    total_est=sum(np.mean([len(t.Fold(ctx,0,f).occ(u)[0]) for u in range(U)]) for f in [0,1])*2*U*maxrec['seconds']/maxrec['n_occ'];assert total_est<5*3600
+    exposure=json.loads((OUT/'preparation.json').read_text());total_est=sum(exposure[str(f)]['exposure']['occurrences_mean_update'] for f in [0,1])*2*U*maxrec['seconds']/maxrec['n_occ'];assert total_est<5*3600
     # Frozen RAFT official transform, batching parity and elementary displacement sanity.
     raft,w,wp=raft_model('cuda');pair=json.loads((OUT/'pairrefs_f0.json').read_text())[0];fr=t.t37.rr.decode_frames([tuple(pair[0]),tuple(pair[1])],F.fp,0);im=torch.from_numpy(fr).permute(0,3,1,2).to('cuda');p,q=w.transforms()(im[:1],im[1:]);assert torch.equal(p,im[:1].float()/255*2-1)
     with torch.no_grad():
