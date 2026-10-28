@@ -1,0 +1,4462 @@
+{
+  "cells": {
+    "heldout_f0": {
+      "Base": {
+        "runs": {
+          "all": {
+            "runs": 3384,
+            "base_wrong": 109,
+            "fixed": 0,
+            "base_correct": 3275,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "A4C_to_A5C_errors": {
+            "runs": 65,
+            "base_wrong": 65,
+            "fixed": 0,
+            "base_correct": 0,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "A5C_to_A4C_errors": {
+            "runs": 34,
+            "base_wrong": 34,
+            "fixed": 0,
+            "base_correct": 0,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "native": {
+            "runs": 781,
+            "base_wrong": 35,
+            "fixed": 0,
+            "base_correct": 746,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "multi": {
+            "runs": 2603,
+            "base_wrong": 74,
+            "fixed": 0,
+            "base_correct": 2529,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "pure": {
+            "runs": 2007,
+            "base_wrong": 80,
+            "fixed": 0,
+            "base_correct": 1927,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "mixed": {
+            "runs": 1377,
+            "base_wrong": 29,
+            "fixed": 0,
+            "base_correct": 1348,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "short_le16": {
+            "runs": 895,
+            "base_wrong": 62,
+            "fixed": 0,
+            "base_correct": 833,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "long": {
+            "runs": 2489,
+            "base_wrong": 47,
+            "fixed": 0,
+            "base_correct": 2442,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_0": {
+            "runs": 703,
+            "base_wrong": 4,
+            "fixed": 0,
+            "base_correct": 699,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_1": {
+            "runs": 722,
+            "base_wrong": 0,
+            "fixed": 0,
+            "base_correct": 722,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_2": {
+            "runs": 785,
+            "base_wrong": 71,
+            "fixed": 0,
+            "base_correct": 714,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_3": {
+            "runs": 595,
+            "base_wrong": 34,
+            "fixed": 0,
+            "base_correct": 561,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_4": {
+            "runs": 579,
+            "base_wrong": 0,
+            "fixed": 0,
+            "base_correct": 579,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "sessions": 199
+        },
+        "changes": {
+          "fixed": {},
+          "broken": {},
+          "run_accuracy_by_class": {
+            "0": {
+              "base": 0.9943100995732574,
+              "new": 0.9943100995732574,
+              "runs": 703
+            },
+            "1": {
+              "base": 1.0,
+              "new": 1.0,
+              "runs": 722
+            },
+            "2": {
+              "base": 0.9095541401273886,
+              "new": 0.9095541401273886,
+              "runs": 785
+            },
+            "3": {
+              "base": 0.9428571428571428,
+              "new": 0.9428571428571428,
+              "runs": 595
+            },
+            "4": {
+              "base": 1.0,
+              "new": 1.0,
+              "runs": 579
+            }
+          }
+        },
+        "correct_A5C_kept": {
+          "runs": 561,
+          "kept": 561
+        },
+        "S1_fixed": {
+          "runs": 34,
+          "fixed": 0
+        },
+        "S2_kept": {
+          "runs": 84,
+          "kept": 84
+        },
+        "sequence_row": {
+          "native_macro_f1": 0.977556578483542,
+          "segment_f1_50_multi": 0.9639065817409767,
+          "boundary_recall_multi": 0.967644084934277,
+          "boundary_precision_multi": 0.9555666500249625,
+          "boundary_f1_multi": 0.9615674453654861,
+          "native_internal_cuts_per_clip": 0.05540540540540541,
+          "same_class_cut_rate_multi": 0.023483365949119372,
+          "segment_f1_50_pairs": null,
+          "boundary_recall_pairs": null,
+          "A4C read as A5C": 7,
+          "A5C read as A4C": 3
+        },
+        "counts": {
+          "tp": 2497,
+          "fp": 106,
+          "fn": 81,
+          "pred": 2603,
+          "ref": 2578,
+          "f1": 0.9639065817409767,
+          "fp_short": 73,
+          "fn_short": 41,
+          "ref_short": 718,
+          "tp_short": 677,
+          "same_label_join_cuts": 24,
+          "same_label_joins": 1022
+        },
+        "boundaries": {
+          "base_boundaries": 2044,
+          "final_boundaries": 2044,
+          "deleted_by_merge": 0
+        },
+        "correct_A4C_kept": {
+          "runs": 714,
+          "kept": 714
+        },
+        "confusion": {
+          "true_A5C": {
+            "runs": 595,
+            "recall": 0.9428571428571428,
+            "pred_counts": {
+              "0": 0,
+              "1": 0,
+              "2": 34,
+              "3": 561,
+              "4": 0
+            }
+          },
+          "true_A4C": {
+            "runs": 785,
+            "recall": 0.9095541401273886,
+            "pred_counts": {
+              "0": 0,
+              "1": 2,
+              "2": 714,
+              "3": 65,
+              "4": 4
+            }
+          }
+        },
+        "S1_fixed_sources": {
+          "runs": 0,
+          "true_class_recordings": 0,
+          "sessions": 0,
+          "concentration": {
+            "recordings": 0
+          }
+        },
+        "non_A4C_unchanged": true,
+        "changed": 0
+      },
+      "C": {
+        "runs": {
+          "all": {
+            "runs": 3384,
+            "base_wrong": 109,
+            "fixed": 6,
+            "base_correct": 3275,
+            "broken": 20,
+            "net_fixed": -14,
+            "accuracy_difference": -0.004137115839243499,
+            "fix_rate": 0.05504587155963303,
+            "damage_rate": 0.0061068702290076335,
+            "sessions_with_fixes": 4,
+            "sessions_with_breaks": 17
+          },
+          "A4C_to_A5C_errors": {
+            "runs": 65,
+            "base_wrong": 65,
+            "fixed": 0,
+            "base_correct": 0,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "A5C_to_A4C_errors": {
+            "runs": 34,
+            "base_wrong": 34,
+            "fixed": 6,
+            "base_correct": 0,
+            "broken": 0,
+            "net_fixed": 6,
+            "accuracy_difference": 0.17647058823529413,
+            "fix_rate": 0.17647058823529413,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 4,
+            "sessions_with_breaks": 0
+          },
+          "native": {
+            "runs": 781,
+            "base_wrong": 35,
+            "fixed": 0,
+            "base_correct": 746,
+            "broken": 4,
+            "net_fixed": -4,
+            "accuracy_difference": -0.005121638924455826,
+            "fix_rate": 0.0,
+            "damage_rate": 0.005361930294906166,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 4
+          },
+          "multi": {
+            "runs": 2603,
+            "base_wrong": 74,
+            "fixed": 6,
+            "base_correct": 2529,
+            "broken": 16,
+            "net_fixed": -10,
+            "accuracy_difference": -0.00384172109104879,
+            "fix_rate": 0.08108108108108109,
+            "damage_rate": 0.006326611308817715,
+            "sessions_with_fixes": 4,
+            "sessions_with_breaks": 15
+          },
+          "pure": {
+            "runs": 2007,
+            "base_wrong": 80,
+            "fixed": 4,
+            "base_correct": 1927,
+            "broken": 15,
+            "net_fixed": -11,
+            "accuracy_difference": -0.005480817140009965,
+            "fix_rate": 0.05,
+            "damage_rate": 0.007784120394395433,
+            "sessions_with_fixes": 3,
+            "sessions_with_breaks": 12
+          },
+          "mixed": {
+            "runs": 1377,
+            "base_wrong": 29,
+            "fixed": 2,
+            "base_correct": 1348,
+            "broken": 5,
+            "net_fixed": -3,
+            "accuracy_difference": -0.002178649237472767,
+            "fix_rate": 0.06896551724137931,
+            "damage_rate": 0.00370919881305638,
+            "sessions_with_fixes": 2,
+            "sessions_with_breaks": 5
+          },
+          "short_le16": {
+            "runs": 895,
+            "base_wrong": 62,
+            "fixed": 5,
+            "base_correct": 833,
+            "broken": 10,
+            "net_fixed": -5,
+            "accuracy_difference": -0.00558659217877095,
+            "fix_rate": 0.08064516129032258,
+            "damage_rate": 0.012004801920768308,
+            "sessions_with_fixes": 4,
+            "sessions_with_breaks": 10
+          },
+          "long": {
+            "runs": 2489,
+            "base_wrong": 47,
+            "fixed": 1,
+            "base_correct": 2442,
+            "broken": 10,
+            "net_fixed": -9,
+            "accuracy_difference": -0.0036159100040176776,
+            "fix_rate": 0.02127659574468085,
+            "damage_rate": 0.004095004095004095,
+            "sessions_with_fixes": 1,
+            "sessions_with_breaks": 8
+          },
+          "class_0": {
+            "runs": 703,
+            "base_wrong": 4,
+            "fixed": 0,
+            "base_correct": 699,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_1": {
+            "runs": 722,
+            "base_wrong": 0,
+            "fixed": 0,
+            "base_correct": 722,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_2": {
+            "runs": 785,
+            "base_wrong": 71,
+            "fixed": 0,
+            "base_correct": 714,
+            "broken": 20,
+            "net_fixed": -20,
+            "accuracy_difference": -0.025477707006369428,
+            "fix_rate": 0.0,
+            "damage_rate": 0.028011204481792718,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 17
+          },
+          "class_3": {
+            "runs": 595,
+            "base_wrong": 34,
+            "fixed": 6,
+            "base_correct": 561,
+            "broken": 0,
+            "net_fixed": 6,
+            "accuracy_difference": 0.010084033613445379,
+            "fix_rate": 0.17647058823529413,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 4,
+            "sessions_with_breaks": 0
+          },
+          "class_4": {
+            "runs": 579,
+            "base_wrong": 0,
+            "fixed": 0,
+            "base_correct": 579,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "sessions": 199
+        },
+        "changes": {
+          "fixed": {
+            "3<-2": 6
+          },
+          "broken": {
+            "2->3": 20
+          },
+          "run_accuracy_by_class": {
+            "0": {
+              "base": 0.9943100995732574,
+              "new": 0.9943100995732574,
+              "runs": 703
+            },
+            "1": {
+              "base": 1.0,
+              "new": 1.0,
+              "runs": 722
+            },
+            "2": {
+              "base": 0.9095541401273886,
+              "new": 0.8840764331210191,
+              "runs": 785
+            },
+            "3": {
+              "base": 0.9428571428571428,
+              "new": 0.9529411764705882,
+              "runs": 595
+            },
+            "4": {
+              "base": 1.0,
+              "new": 1.0,
+              "runs": 579
+            }
+          }
+        },
+        "correct_A5C_kept": {
+          "runs": 561,
+          "kept": 561
+        },
+        "S1_fixed": {
+          "runs": 34,
+          "fixed": 6
+        },
+        "S2_kept": {
+          "runs": 84,
+          "kept": 84
+        },
+        "sequence_row": {
+          "native_macro_f1": 0.9720283520819495,
+          "segment_f1_50_multi": 0.9614565175285686,
+          "boundary_recall_multi": 0.9646107178968655,
+          "boundary_precision_multi": 0.9612090680100756,
+          "boundary_f1_multi": 0.9629068887206662,
+          "native_internal_cuts_per_clip": 0.051351351351351354,
+          "same_class_cut_rate_multi": 0.019569471624266144,
+          "segment_f1_50_pairs": null,
+          "boundary_recall_pairs": null,
+          "A4C read as A5C": 10,
+          "A5C read as A4C": 3
+        },
+        "counts": {
+          "tp": 2482,
+          "fp": 103,
+          "fn": 96,
+          "pred": 2585,
+          "ref": 2578,
+          "f1": 0.9614565175285686,
+          "fp_short": 66,
+          "fn_short": 51,
+          "ref_short": 718,
+          "tp_short": 667,
+          "same_label_join_cuts": 20,
+          "same_label_joins": 1022
+        },
+        "boundaries": {
+          "base_boundaries": 2044,
+          "final_boundaries": 2023,
+          "deleted_by_merge": 21
+        },
+        "correct_A4C_kept": {
+          "runs": 714,
+          "kept": 694
+        },
+        "confusion": {
+          "true_A5C": {
+            "runs": 595,
+            "recall": 0.9529411764705882,
+            "pred_counts": {
+              "0": 0,
+              "1": 0,
+              "2": 28,
+              "3": 567,
+              "4": 0
+            }
+          },
+          "true_A4C": {
+            "runs": 785,
+            "recall": 0.8840764331210191,
+            "pred_counts": {
+              "0": 0,
+              "1": 2,
+              "2": 694,
+              "3": 85,
+              "4": 4
+            }
+          }
+        },
+        "S1_fixed_sources": {
+          "runs": 6,
+          "true_class_recordings": 5,
+          "sessions": 5,
+          "concentration": {
+            "weight": 5.783333333333333,
+            "recordings": 5,
+            "sessions": 5,
+            "uses_per_recording_mean": 1.4,
+            "uses_per_recording_max": 2,
+            "recordings_used_once": 3,
+            "top_recording_share": {
+              "1": 0.3371757925072046,
+              "5": 0.9999999999999999,
+              "10": 0.9999999999999999
+            },
+            "top_session_share": {
+              "1": 0.3371757925072046,
+              "5": 0.9999999999999999,
+              "10": 0.9999999999999999
+            },
+            "top_session_share_by_unique_recordings": {
+              "1": 0.2,
+              "5": 1.0,
+              "10": 1.0
+            },
+            "recordings_for_half_the_weight": 2
+          }
+        },
+        "non_A4C_unchanged": true,
+        "changed": 26
+      },
+      "N": {
+        "runs": {
+          "all": {
+            "runs": 3384,
+            "base_wrong": 109,
+            "fixed": 14,
+            "base_correct": 3275,
+            "broken": 64,
+            "net_fixed": -50,
+            "accuracy_difference": -0.014775413711583925,
+            "fix_rate": 0.12844036697247707,
+            "damage_rate": 0.019541984732824428,
+            "sessions_with_fixes": 8,
+            "sessions_with_breaks": 34
+          },
+          "A4C_to_A5C_errors": {
+            "runs": 65,
+            "base_wrong": 65,
+            "fixed": 0,
+            "base_correct": 0,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "A5C_to_A4C_errors": {
+            "runs": 34,
+            "base_wrong": 34,
+            "fixed": 14,
+            "base_correct": 0,
+            "broken": 0,
+            "net_fixed": 14,
+            "accuracy_difference": 0.4117647058823529,
+            "fix_rate": 0.4117647058823529,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 8,
+            "sessions_with_breaks": 0
+          },
+          "native": {
+            "runs": 781,
+            "base_wrong": 35,
+            "fixed": 2,
+            "base_correct": 746,
+            "broken": 12,
+            "net_fixed": -10,
+            "accuracy_difference": -0.012804097311139564,
+            "fix_rate": 0.05714285714285714,
+            "damage_rate": 0.0160857908847185,
+            "sessions_with_fixes": 2,
+            "sessions_with_breaks": 9
+          },
+          "multi": {
+            "runs": 2603,
+            "base_wrong": 74,
+            "fixed": 12,
+            "base_correct": 2529,
+            "broken": 52,
+            "net_fixed": -40,
+            "accuracy_difference": -0.01536688436419516,
+            "fix_rate": 0.16216216216216217,
+            "damage_rate": 0.02056148675365757,
+            "sessions_with_fixes": 7,
+            "sessions_with_breaks": 32
+          },
+          "pure": {
+            "runs": 2007,
+            "base_wrong": 80,
+            "fixed": 10,
+            "base_correct": 1927,
+            "broken": 45,
+            "net_fixed": -35,
+            "accuracy_difference": -0.017438963627304436,
+            "fix_rate": 0.125,
+            "damage_rate": 0.0233523611831863,
+            "sessions_with_fixes": 6,
+            "sessions_with_breaks": 25
+          },
+          "mixed": {
+            "runs": 1377,
+            "base_wrong": 29,
+            "fixed": 4,
+            "base_correct": 1348,
+            "broken": 19,
+            "net_fixed": -15,
+            "accuracy_difference": -0.010893246187363835,
+            "fix_rate": 0.13793103448275862,
+            "damage_rate": 0.014094955489614243,
+            "sessions_with_fixes": 4,
+            "sessions_with_breaks": 17
+          },
+          "short_le16": {
+            "runs": 895,
+            "base_wrong": 62,
+            "fixed": 7,
+            "base_correct": 833,
+            "broken": 31,
+            "net_fixed": -24,
+            "accuracy_difference": -0.026815642458100558,
+            "fix_rate": 0.11290322580645161,
+            "damage_rate": 0.03721488595438175,
+            "sessions_with_fixes": 6,
+            "sessions_with_breaks": 22
+          },
+          "long": {
+            "runs": 2489,
+            "base_wrong": 47,
+            "fixed": 7,
+            "base_correct": 2442,
+            "broken": 33,
+            "net_fixed": -26,
+            "accuracy_difference": -0.010445962233828847,
+            "fix_rate": 0.14893617021276595,
+            "damage_rate": 0.013513513513513514,
+            "sessions_with_fixes": 4,
+            "sessions_with_breaks": 21
+          },
+          "class_0": {
+            "runs": 703,
+            "base_wrong": 4,
+            "fixed": 0,
+            "base_correct": 699,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_1": {
+            "runs": 722,
+            "base_wrong": 0,
+            "fixed": 0,
+            "base_correct": 722,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_2": {
+            "runs": 785,
+            "base_wrong": 71,
+            "fixed": 0,
+            "base_correct": 714,
+            "broken": 64,
+            "net_fixed": -64,
+            "accuracy_difference": -0.08152866242038216,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0896358543417367,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 34
+          },
+          "class_3": {
+            "runs": 595,
+            "base_wrong": 34,
+            "fixed": 14,
+            "base_correct": 561,
+            "broken": 0,
+            "net_fixed": 14,
+            "accuracy_difference": 0.023529411764705882,
+            "fix_rate": 0.4117647058823529,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 8,
+            "sessions_with_breaks": 0
+          },
+          "class_4": {
+            "runs": 579,
+            "base_wrong": 0,
+            "fixed": 0,
+            "base_correct": 579,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "sessions": 199
+        },
+        "changes": {
+          "fixed": {
+            "3<-2": 14
+          },
+          "broken": {
+            "2->3": 64
+          },
+          "run_accuracy_by_class": {
+            "0": {
+              "base": 0.9943100995732574,
+              "new": 0.9943100995732574,
+              "runs": 703
+            },
+            "1": {
+              "base": 1.0,
+              "new": 1.0,
+              "runs": 722
+            },
+            "2": {
+              "base": 0.9095541401273886,
+              "new": 0.8280254777070064,
+              "runs": 785
+            },
+            "3": {
+              "base": 0.9428571428571428,
+              "new": 0.9663865546218487,
+              "runs": 595
+            },
+            "4": {
+              "base": 1.0,
+              "new": 1.0,
+              "runs": 579
+            }
+          }
+        },
+        "correct_A5C_kept": {
+          "runs": 561,
+          "kept": 561
+        },
+        "S1_fixed": {
+          "runs": 34,
+          "fixed": 14
+        },
+        "S2_kept": {
+          "runs": 84,
+          "kept": 84
+        },
+        "sequence_row": {
+          "native_macro_f1": 0.9671440810434844,
+          "segment_f1_50_multi": 0.9536604361370716,
+          "boundary_recall_multi": 0.9585439838220424,
+          "boundary_precision_multi": 0.9683350357507661,
+          "boundary_f1_multi": 0.9634146341463414,
+          "native_internal_cuts_per_clip": 0.041891891891891894,
+          "same_class_cut_rate_multi": 0.01761252446183953,
+          "segment_f1_50_pairs": null,
+          "boundary_recall_pairs": null,
+          "A4C read as A5C": 15,
+          "A5C read as A4C": 1
+        },
+        "counts": {
+          "tp": 2449,
+          "fp": 109,
+          "fn": 129,
+          "pred": 2558,
+          "ref": 2578,
+          "f1": 0.9536604361370716,
+          "fp_short": 59,
+          "fn_short": 67,
+          "ref_short": 718,
+          "tp_short": 651,
+          "same_label_join_cuts": 18,
+          "same_label_joins": 1022
+        },
+        "boundaries": {
+          "base_boundaries": 2044,
+          "final_boundaries": 1989,
+          "deleted_by_merge": 55
+        },
+        "correct_A4C_kept": {
+          "runs": 714,
+          "kept": 650
+        },
+        "confusion": {
+          "true_A5C": {
+            "runs": 595,
+            "recall": 0.9663865546218487,
+            "pred_counts": {
+              "0": 0,
+              "1": 0,
+              "2": 20,
+              "3": 575,
+              "4": 0
+            }
+          },
+          "true_A4C": {
+            "runs": 785,
+            "recall": 0.8280254777070064,
+            "pred_counts": {
+              "0": 0,
+              "1": 2,
+              "2": 650,
+              "3": 129,
+              "4": 4
+            }
+          }
+        },
+        "S1_fixed_sources": {
+          "runs": 14,
+          "true_class_recordings": 9,
+          "sessions": 9,
+          "concentration": {
+            "weight": 13.650000000000002,
+            "recordings": 9,
+            "sessions": 9,
+            "uses_per_recording_mean": 1.7777777777777777,
+            "uses_per_recording_max": 4,
+            "recordings_used_once": 6,
+            "top_recording_share": {
+              "1": 0.29059829059829057,
+              "5": 0.7948717948717948,
+              "10": 1.0
+            },
+            "top_session_share": {
+              "1": 0.29059829059829057,
+              "5": 0.7948717948717948,
+              "10": 1.0
+            },
+            "top_session_share_by_unique_recordings": {
+              "1": 0.1111111111111111,
+              "5": 0.5555555555555556,
+              "10": 1.0
+            },
+            "recordings_for_half_the_weight": 3
+          }
+        },
+        "non_A4C_unchanged": true,
+        "changed": 78
+      },
+      "N_A": {
+        "runs": {
+          "all": {
+            "runs": 3384,
+            "base_wrong": 109,
+            "fixed": 0,
+            "base_correct": 3275,
+            "broken": 1,
+            "net_fixed": -1,
+            "accuracy_difference": -0.0002955082742316785,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0003053435114503817,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 1
+          },
+          "A4C_to_A5C_errors": {
+            "runs": 65,
+            "base_wrong": 65,
+            "fixed": 0,
+            "base_correct": 0,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "A5C_to_A4C_errors": {
+            "runs": 34,
+            "base_wrong": 34,
+            "fixed": 0,
+            "base_correct": 0,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "native": {
+            "runs": 781,
+            "base_wrong": 35,
+            "fixed": 0,
+            "base_correct": 746,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "multi": {
+            "runs": 2603,
+            "base_wrong": 74,
+            "fixed": 0,
+            "base_correct": 2529,
+            "broken": 1,
+            "net_fixed": -1,
+            "accuracy_difference": -0.000384172109104879,
+            "fix_rate": 0.0,
+            "damage_rate": 0.00039541320680110717,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 1
+          },
+          "pure": {
+            "runs": 2007,
+            "base_wrong": 80,
+            "fixed": 0,
+            "base_correct": 1927,
+            "broken": 1,
+            "net_fixed": -1,
+            "accuracy_difference": -0.0004982561036372695,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0005189413596263622,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 1
+          },
+          "mixed": {
+            "runs": 1377,
+            "base_wrong": 29,
+            "fixed": 0,
+            "base_correct": 1348,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "short_le16": {
+            "runs": 895,
+            "base_wrong": 62,
+            "fixed": 0,
+            "base_correct": 833,
+            "broken": 1,
+            "net_fixed": -1,
+            "accuracy_difference": -0.0011173184357541898,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0012004801920768306,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 1
+          },
+          "long": {
+            "runs": 2489,
+            "base_wrong": 47,
+            "fixed": 0,
+            "base_correct": 2442,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_0": {
+            "runs": 703,
+            "base_wrong": 4,
+            "fixed": 0,
+            "base_correct": 699,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_1": {
+            "runs": 722,
+            "base_wrong": 0,
+            "fixed": 0,
+            "base_correct": 722,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_2": {
+            "runs": 785,
+            "base_wrong": 71,
+            "fixed": 0,
+            "base_correct": 714,
+            "broken": 1,
+            "net_fixed": -1,
+            "accuracy_difference": -0.0012738853503184713,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0014005602240896359,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 1
+          },
+          "class_3": {
+            "runs": 595,
+            "base_wrong": 34,
+            "fixed": 0,
+            "base_correct": 561,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_4": {
+            "runs": 579,
+            "base_wrong": 0,
+            "fixed": 0,
+            "base_correct": 579,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "sessions": 199
+        },
+        "changes": {
+          "fixed": {},
+          "broken": {
+            "2->3": 1
+          },
+          "run_accuracy_by_class": {
+            "0": {
+              "base": 0.9943100995732574,
+              "new": 0.9943100995732574,
+              "runs": 703
+            },
+            "1": {
+              "base": 1.0,
+              "new": 1.0,
+              "runs": 722
+            },
+            "2": {
+              "base": 0.9095541401273886,
+              "new": 0.9082802547770701,
+              "runs": 785
+            },
+            "3": {
+              "base": 0.9428571428571428,
+              "new": 0.9428571428571428,
+              "runs": 595
+            },
+            "4": {
+              "base": 1.0,
+              "new": 1.0,
+              "runs": 579
+            }
+          }
+        },
+        "correct_A5C_kept": {
+          "runs": 561,
+          "kept": 561
+        },
+        "S1_fixed": {
+          "runs": 34,
+          "fixed": 0
+        },
+        "S2_kept": {
+          "runs": 84,
+          "kept": 84
+        },
+        "sequence_row": {
+          "native_macro_f1": 0.977556578483542,
+          "segment_f1_50_multi": 0.9635205558772437,
+          "boundary_recall_multi": 0.967644084934277,
+          "boundary_precision_multi": 0.9555666500249625,
+          "boundary_f1_multi": 0.9615674453654861,
+          "native_internal_cuts_per_clip": 0.05540540540540541,
+          "same_class_cut_rate_multi": 0.023483365949119372,
+          "segment_f1_50_pairs": null,
+          "boundary_recall_pairs": null,
+          "A4C read as A5C": 7,
+          "A5C read as A4C": 3
+        },
+        "counts": {
+          "tp": 2496,
+          "fp": 107,
+          "fn": 82,
+          "pred": 2603,
+          "ref": 2578,
+          "f1": 0.9635205558772437,
+          "fp_short": 74,
+          "fn_short": 41,
+          "ref_short": 718,
+          "tp_short": 677,
+          "same_label_join_cuts": 24,
+          "same_label_joins": 1022
+        },
+        "boundaries": {
+          "base_boundaries": 2044,
+          "final_boundaries": 2044,
+          "deleted_by_merge": 0
+        },
+        "correct_A4C_kept": {
+          "runs": 714,
+          "kept": 713
+        },
+        "confusion": {
+          "true_A5C": {
+            "runs": 595,
+            "recall": 0.9428571428571428,
+            "pred_counts": {
+              "0": 0,
+              "1": 0,
+              "2": 34,
+              "3": 561,
+              "4": 0
+            }
+          },
+          "true_A4C": {
+            "runs": 785,
+            "recall": 0.9082802547770701,
+            "pred_counts": {
+              "0": 0,
+              "1": 2,
+              "2": 713,
+              "3": 66,
+              "4": 4
+            }
+          }
+        },
+        "S1_fixed_sources": {
+          "runs": 0,
+          "true_class_recordings": 0,
+          "sessions": 0,
+          "concentration": {
+            "recordings": 0
+          }
+        },
+        "non_A4C_unchanged": true,
+        "changed": 1
+      },
+      "N_U": {
+        "runs": {
+          "all": {
+            "runs": 3384,
+            "base_wrong": 109,
+            "fixed": 0,
+            "base_correct": 3275,
+            "broken": 1,
+            "net_fixed": -1,
+            "accuracy_difference": -0.0002955082742316785,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0003053435114503817,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 1
+          },
+          "A4C_to_A5C_errors": {
+            "runs": 65,
+            "base_wrong": 65,
+            "fixed": 0,
+            "base_correct": 0,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "A5C_to_A4C_errors": {
+            "runs": 34,
+            "base_wrong": 34,
+            "fixed": 0,
+            "base_correct": 0,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "native": {
+            "runs": 781,
+            "base_wrong": 35,
+            "fixed": 0,
+            "base_correct": 746,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "multi": {
+            "runs": 2603,
+            "base_wrong": 74,
+            "fixed": 0,
+            "base_correct": 2529,
+            "broken": 1,
+            "net_fixed": -1,
+            "accuracy_difference": -0.000384172109104879,
+            "fix_rate": 0.0,
+            "damage_rate": 0.00039541320680110717,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 1
+          },
+          "pure": {
+            "runs": 2007,
+            "base_wrong": 80,
+            "fixed": 0,
+            "base_correct": 1927,
+            "broken": 1,
+            "net_fixed": -1,
+            "accuracy_difference": -0.0004982561036372695,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0005189413596263622,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 1
+          },
+          "mixed": {
+            "runs": 1377,
+            "base_wrong": 29,
+            "fixed": 0,
+            "base_correct": 1348,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "short_le16": {
+            "runs": 895,
+            "base_wrong": 62,
+            "fixed": 0,
+            "base_correct": 833,
+            "broken": 1,
+            "net_fixed": -1,
+            "accuracy_difference": -0.0011173184357541898,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0012004801920768306,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 1
+          },
+          "long": {
+            "runs": 2489,
+            "base_wrong": 47,
+            "fixed": 0,
+            "base_correct": 2442,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_0": {
+            "runs": 703,
+            "base_wrong": 4,
+            "fixed": 0,
+            "base_correct": 699,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_1": {
+            "runs": 722,
+            "base_wrong": 0,
+            "fixed": 0,
+            "base_correct": 722,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_2": {
+            "runs": 785,
+            "base_wrong": 71,
+            "fixed": 0,
+            "base_correct": 714,
+            "broken": 1,
+            "net_fixed": -1,
+            "accuracy_difference": -0.0012738853503184713,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0014005602240896359,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 1
+          },
+          "class_3": {
+            "runs": 595,
+            "base_wrong": 34,
+            "fixed": 0,
+            "base_correct": 561,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_4": {
+            "runs": 579,
+            "base_wrong": 0,
+            "fixed": 0,
+            "base_correct": 579,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "sessions": 199
+        },
+        "changes": {
+          "fixed": {},
+          "broken": {
+            "2->3": 1
+          },
+          "run_accuracy_by_class": {
+            "0": {
+              "base": 0.9943100995732574,
+              "new": 0.9943100995732574,
+              "runs": 703
+            },
+            "1": {
+              "base": 1.0,
+              "new": 1.0,
+              "runs": 722
+            },
+            "2": {
+              "base": 0.9095541401273886,
+              "new": 0.9082802547770701,
+              "runs": 785
+            },
+            "3": {
+              "base": 0.9428571428571428,
+              "new": 0.9428571428571428,
+              "runs": 595
+            },
+            "4": {
+              "base": 1.0,
+              "new": 1.0,
+              "runs": 579
+            }
+          }
+        },
+        "correct_A5C_kept": {
+          "runs": 561,
+          "kept": 561
+        },
+        "S1_fixed": {
+          "runs": 34,
+          "fixed": 0
+        },
+        "S2_kept": {
+          "runs": 84,
+          "kept": 84
+        },
+        "sequence_row": {
+          "native_macro_f1": 0.977556578483542,
+          "segment_f1_50_multi": 0.9635205558772437,
+          "boundary_recall_multi": 0.967644084934277,
+          "boundary_precision_multi": 0.9555666500249625,
+          "boundary_f1_multi": 0.9615674453654861,
+          "native_internal_cuts_per_clip": 0.05540540540540541,
+          "same_class_cut_rate_multi": 0.023483365949119372,
+          "segment_f1_50_pairs": null,
+          "boundary_recall_pairs": null,
+          "A4C read as A5C": 7,
+          "A5C read as A4C": 3
+        },
+        "counts": {
+          "tp": 2496,
+          "fp": 107,
+          "fn": 82,
+          "pred": 2603,
+          "ref": 2578,
+          "f1": 0.9635205558772437,
+          "fp_short": 74,
+          "fn_short": 41,
+          "ref_short": 718,
+          "tp_short": 677,
+          "same_label_join_cuts": 24,
+          "same_label_joins": 1022
+        },
+        "boundaries": {
+          "base_boundaries": 2044,
+          "final_boundaries": 2044,
+          "deleted_by_merge": 0
+        },
+        "correct_A4C_kept": {
+          "runs": 714,
+          "kept": 713
+        },
+        "confusion": {
+          "true_A5C": {
+            "runs": 595,
+            "recall": 0.9428571428571428,
+            "pred_counts": {
+              "0": 0,
+              "1": 0,
+              "2": 34,
+              "3": 561,
+              "4": 0
+            }
+          },
+          "true_A4C": {
+            "runs": 785,
+            "recall": 0.9082802547770701,
+            "pred_counts": {
+              "0": 0,
+              "1": 2,
+              "2": 713,
+              "3": 66,
+              "4": 4
+            }
+          }
+        },
+        "S1_fixed_sources": {
+          "runs": 0,
+          "true_class_recordings": 0,
+          "sessions": 0,
+          "concentration": {
+            "recordings": 0
+          }
+        },
+        "non_A4C_unchanged": true,
+        "changed": 1
+      },
+      "C_A": {
+        "runs": {
+          "all": {
+            "runs": 3384,
+            "base_wrong": 109,
+            "fixed": 0,
+            "base_correct": 3275,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "A4C_to_A5C_errors": {
+            "runs": 65,
+            "base_wrong": 65,
+            "fixed": 0,
+            "base_correct": 0,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "A5C_to_A4C_errors": {
+            "runs": 34,
+            "base_wrong": 34,
+            "fixed": 0,
+            "base_correct": 0,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "native": {
+            "runs": 781,
+            "base_wrong": 35,
+            "fixed": 0,
+            "base_correct": 746,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "multi": {
+            "runs": 2603,
+            "base_wrong": 74,
+            "fixed": 0,
+            "base_correct": 2529,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "pure": {
+            "runs": 2007,
+            "base_wrong": 80,
+            "fixed": 0,
+            "base_correct": 1927,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "mixed": {
+            "runs": 1377,
+            "base_wrong": 29,
+            "fixed": 0,
+            "base_correct": 1348,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "short_le16": {
+            "runs": 895,
+            "base_wrong": 62,
+            "fixed": 0,
+            "base_correct": 833,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "long": {
+            "runs": 2489,
+            "base_wrong": 47,
+            "fixed": 0,
+            "base_correct": 2442,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_0": {
+            "runs": 703,
+            "base_wrong": 4,
+            "fixed": 0,
+            "base_correct": 699,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_1": {
+            "runs": 722,
+            "base_wrong": 0,
+            "fixed": 0,
+            "base_correct": 722,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_2": {
+            "runs": 785,
+            "base_wrong": 71,
+            "fixed": 0,
+            "base_correct": 714,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_3": {
+            "runs": 595,
+            "base_wrong": 34,
+            "fixed": 0,
+            "base_correct": 561,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_4": {
+            "runs": 579,
+            "base_wrong": 0,
+            "fixed": 0,
+            "base_correct": 579,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "sessions": 199
+        },
+        "changes": {
+          "fixed": {},
+          "broken": {},
+          "run_accuracy_by_class": {
+            "0": {
+              "base": 0.9943100995732574,
+              "new": 0.9943100995732574,
+              "runs": 703
+            },
+            "1": {
+              "base": 1.0,
+              "new": 1.0,
+              "runs": 722
+            },
+            "2": {
+              "base": 0.9095541401273886,
+              "new": 0.9095541401273886,
+              "runs": 785
+            },
+            "3": {
+              "base": 0.9428571428571428,
+              "new": 0.9428571428571428,
+              "runs": 595
+            },
+            "4": {
+              "base": 1.0,
+              "new": 1.0,
+              "runs": 579
+            }
+          }
+        },
+        "correct_A5C_kept": {
+          "runs": 561,
+          "kept": 561
+        },
+        "S1_fixed": {
+          "runs": 34,
+          "fixed": 0
+        },
+        "S2_kept": {
+          "runs": 84,
+          "kept": 84
+        },
+        "sequence_row": {
+          "native_macro_f1": 0.977556578483542,
+          "segment_f1_50_multi": 0.9639065817409767,
+          "boundary_recall_multi": 0.967644084934277,
+          "boundary_precision_multi": 0.9555666500249625,
+          "boundary_f1_multi": 0.9615674453654861,
+          "native_internal_cuts_per_clip": 0.05540540540540541,
+          "same_class_cut_rate_multi": 0.023483365949119372,
+          "segment_f1_50_pairs": null,
+          "boundary_recall_pairs": null,
+          "A4C read as A5C": 7,
+          "A5C read as A4C": 3
+        },
+        "counts": {
+          "tp": 2497,
+          "fp": 106,
+          "fn": 81,
+          "pred": 2603,
+          "ref": 2578,
+          "f1": 0.9639065817409767,
+          "fp_short": 73,
+          "fn_short": 41,
+          "ref_short": 718,
+          "tp_short": 677,
+          "same_label_join_cuts": 24,
+          "same_label_joins": 1022
+        },
+        "boundaries": {
+          "base_boundaries": 2044,
+          "final_boundaries": 2044,
+          "deleted_by_merge": 0
+        },
+        "correct_A4C_kept": {
+          "runs": 714,
+          "kept": 714
+        },
+        "confusion": {
+          "true_A5C": {
+            "runs": 595,
+            "recall": 0.9428571428571428,
+            "pred_counts": {
+              "0": 0,
+              "1": 0,
+              "2": 34,
+              "3": 561,
+              "4": 0
+            }
+          },
+          "true_A4C": {
+            "runs": 785,
+            "recall": 0.9095541401273886,
+            "pred_counts": {
+              "0": 0,
+              "1": 2,
+              "2": 714,
+              "3": 65,
+              "4": 4
+            }
+          }
+        },
+        "S1_fixed_sources": {
+          "runs": 0,
+          "true_class_recordings": 0,
+          "sessions": 0,
+          "concentration": {
+            "recordings": 0
+          }
+        },
+        "non_A4C_unchanged": true,
+        "changed": 0
+      },
+      "C_U": {
+        "runs": {
+          "all": {
+            "runs": 3384,
+            "base_wrong": 109,
+            "fixed": 0,
+            "base_correct": 3275,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "A4C_to_A5C_errors": {
+            "runs": 65,
+            "base_wrong": 65,
+            "fixed": 0,
+            "base_correct": 0,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "A5C_to_A4C_errors": {
+            "runs": 34,
+            "base_wrong": 34,
+            "fixed": 0,
+            "base_correct": 0,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "native": {
+            "runs": 781,
+            "base_wrong": 35,
+            "fixed": 0,
+            "base_correct": 746,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "multi": {
+            "runs": 2603,
+            "base_wrong": 74,
+            "fixed": 0,
+            "base_correct": 2529,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "pure": {
+            "runs": 2007,
+            "base_wrong": 80,
+            "fixed": 0,
+            "base_correct": 1927,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "mixed": {
+            "runs": 1377,
+            "base_wrong": 29,
+            "fixed": 0,
+            "base_correct": 1348,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "short_le16": {
+            "runs": 895,
+            "base_wrong": 62,
+            "fixed": 0,
+            "base_correct": 833,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "long": {
+            "runs": 2489,
+            "base_wrong": 47,
+            "fixed": 0,
+            "base_correct": 2442,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_0": {
+            "runs": 703,
+            "base_wrong": 4,
+            "fixed": 0,
+            "base_correct": 699,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_1": {
+            "runs": 722,
+            "base_wrong": 0,
+            "fixed": 0,
+            "base_correct": 722,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_2": {
+            "runs": 785,
+            "base_wrong": 71,
+            "fixed": 0,
+            "base_correct": 714,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_3": {
+            "runs": 595,
+            "base_wrong": 34,
+            "fixed": 0,
+            "base_correct": 561,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_4": {
+            "runs": 579,
+            "base_wrong": 0,
+            "fixed": 0,
+            "base_correct": 579,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "sessions": 199
+        },
+        "changes": {
+          "fixed": {},
+          "broken": {},
+          "run_accuracy_by_class": {
+            "0": {
+              "base": 0.9943100995732574,
+              "new": 0.9943100995732574,
+              "runs": 703
+            },
+            "1": {
+              "base": 1.0,
+              "new": 1.0,
+              "runs": 722
+            },
+            "2": {
+              "base": 0.9095541401273886,
+              "new": 0.9095541401273886,
+              "runs": 785
+            },
+            "3": {
+              "base": 0.9428571428571428,
+              "new": 0.9428571428571428,
+              "runs": 595
+            },
+            "4": {
+              "base": 1.0,
+              "new": 1.0,
+              "runs": 579
+            }
+          }
+        },
+        "correct_A5C_kept": {
+          "runs": 561,
+          "kept": 561
+        },
+        "S1_fixed": {
+          "runs": 34,
+          "fixed": 0
+        },
+        "S2_kept": {
+          "runs": 84,
+          "kept": 84
+        },
+        "sequence_row": {
+          "native_macro_f1": 0.977556578483542,
+          "segment_f1_50_multi": 0.9639065817409767,
+          "boundary_recall_multi": 0.967644084934277,
+          "boundary_precision_multi": 0.9555666500249625,
+          "boundary_f1_multi": 0.9615674453654861,
+          "native_internal_cuts_per_clip": 0.05540540540540541,
+          "same_class_cut_rate_multi": 0.023483365949119372,
+          "segment_f1_50_pairs": null,
+          "boundary_recall_pairs": null,
+          "A4C read as A5C": 7,
+          "A5C read as A4C": 3
+        },
+        "counts": {
+          "tp": 2497,
+          "fp": 106,
+          "fn": 81,
+          "pred": 2603,
+          "ref": 2578,
+          "f1": 0.9639065817409767,
+          "fp_short": 73,
+          "fn_short": 41,
+          "ref_short": 718,
+          "tp_short": 677,
+          "same_label_join_cuts": 24,
+          "same_label_joins": 1022
+        },
+        "boundaries": {
+          "base_boundaries": 2044,
+          "final_boundaries": 2044,
+          "deleted_by_merge": 0
+        },
+        "correct_A4C_kept": {
+          "runs": 714,
+          "kept": 714
+        },
+        "confusion": {
+          "true_A5C": {
+            "runs": 595,
+            "recall": 0.9428571428571428,
+            "pred_counts": {
+              "0": 0,
+              "1": 0,
+              "2": 34,
+              "3": 561,
+              "4": 0
+            }
+          },
+          "true_A4C": {
+            "runs": 785,
+            "recall": 0.9095541401273886,
+            "pred_counts": {
+              "0": 0,
+              "1": 2,
+              "2": 714,
+              "3": 65,
+              "4": 4
+            }
+          }
+        },
+        "S1_fixed_sources": {
+          "runs": 0,
+          "true_class_recordings": 0,
+          "sessions": 0,
+          "concentration": {
+            "recordings": 0
+          }
+        },
+        "non_A4C_unchanged": true,
+        "changed": 0
+      }
+    },
+    "heldout_f1": {
+      "Base": {
+        "runs": {
+          "all": {
+            "runs": 3404,
+            "base_wrong": 145,
+            "fixed": 0,
+            "base_correct": 3259,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "A4C_to_A5C_errors": {
+            "runs": 70,
+            "base_wrong": 70,
+            "fixed": 0,
+            "base_correct": 0,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "A5C_to_A4C_errors": {
+            "runs": 69,
+            "base_wrong": 69,
+            "fixed": 0,
+            "base_correct": 0,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "native": {
+            "runs": 804,
+            "base_wrong": 42,
+            "fixed": 0,
+            "base_correct": 762,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "multi": {
+            "runs": 2600,
+            "base_wrong": 103,
+            "fixed": 0,
+            "base_correct": 2497,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "pure": {
+            "runs": 2017,
+            "base_wrong": 110,
+            "fixed": 0,
+            "base_correct": 1907,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "mixed": {
+            "runs": 1387,
+            "base_wrong": 35,
+            "fixed": 0,
+            "base_correct": 1352,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "short_le16": {
+            "runs": 833,
+            "base_wrong": 91,
+            "fixed": 0,
+            "base_correct": 742,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "long": {
+            "runs": 2571,
+            "base_wrong": 54,
+            "fixed": 0,
+            "base_correct": 2517,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_0": {
+            "runs": 689,
+            "base_wrong": 3,
+            "fixed": 0,
+            "base_correct": 686,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_1": {
+            "runs": 723,
+            "base_wrong": 1,
+            "fixed": 0,
+            "base_correct": 722,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_2": {
+            "runs": 769,
+            "base_wrong": 70,
+            "fixed": 0,
+            "base_correct": 699,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_3": {
+            "runs": 660,
+            "base_wrong": 71,
+            "fixed": 0,
+            "base_correct": 589,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_4": {
+            "runs": 563,
+            "base_wrong": 0,
+            "fixed": 0,
+            "base_correct": 563,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "sessions": 199
+        },
+        "changes": {
+          "fixed": {},
+          "broken": {},
+          "run_accuracy_by_class": {
+            "0": {
+              "base": 0.9956458635703919,
+              "new": 0.9956458635703919,
+              "runs": 689
+            },
+            "1": {
+              "base": 0.9986168741355463,
+              "new": 0.9986168741355463,
+              "runs": 723
+            },
+            "2": {
+              "base": 0.9089726918075423,
+              "new": 0.9089726918075423,
+              "runs": 769
+            },
+            "3": {
+              "base": 0.8924242424242425,
+              "new": 0.8924242424242425,
+              "runs": 660
+            },
+            "4": {
+              "base": 1.0,
+              "new": 1.0,
+              "runs": 563
+            }
+          }
+        },
+        "correct_A5C_kept": {
+          "runs": 589,
+          "kept": 589
+        },
+        "S1_fixed": {
+          "runs": 69,
+          "fixed": 0
+        },
+        "S2_kept": {
+          "runs": 157,
+          "kept": 157
+        },
+        "sequence_row": {
+          "native_macro_f1": 0.9758316383282561,
+          "segment_f1_50_multi": 0.9498639720171007,
+          "boundary_recall_multi": 0.9681397738951696,
+          "boundary_precision_multi": 0.942,
+          "boundary_f1_multi": 0.9548910288900152,
+          "native_internal_cuts_per_clip": 0.07630522088353414,
+          "same_class_cut_rate_multi": 0.020947176684881604,
+          "segment_f1_50_pairs": null,
+          "boundary_recall_pairs": null,
+          "A4C read as A5C": 10,
+          "A5C read as A4C": 3
+        },
+        "counts": {
+          "tp": 2444,
+          "fp": 156,
+          "fn": 102,
+          "pred": 2600,
+          "ref": 2546,
+          "f1": 0.9498639720171007,
+          "fp_short": 105,
+          "fn_short": 35,
+          "ref_short": 626,
+          "tp_short": 591,
+          "same_label_join_cuts": 23,
+          "same_label_joins": 1098
+        },
+        "boundaries": {
+          "base_boundaries": 2057,
+          "final_boundaries": 2057,
+          "deleted_by_merge": 0
+        },
+        "correct_A4C_kept": {
+          "runs": 699,
+          "kept": 699
+        },
+        "confusion": {
+          "true_A5C": {
+            "runs": 660,
+            "recall": 0.8924242424242425,
+            "pred_counts": {
+              "0": 0,
+              "1": 2,
+              "2": 69,
+              "3": 589,
+              "4": 0
+            }
+          },
+          "true_A4C": {
+            "runs": 769,
+            "recall": 0.9089726918075423,
+            "pred_counts": {
+              "0": 0,
+              "1": 0,
+              "2": 699,
+              "3": 70,
+              "4": 0
+            }
+          }
+        },
+        "S1_fixed_sources": {
+          "runs": 0,
+          "true_class_recordings": 0,
+          "sessions": 0,
+          "concentration": {
+            "recordings": 0
+          }
+        },
+        "non_A4C_unchanged": true,
+        "changed": 0
+      },
+      "C": {
+        "runs": {
+          "all": {
+            "runs": 3404,
+            "base_wrong": 145,
+            "fixed": 6,
+            "base_correct": 3259,
+            "broken": 2,
+            "net_fixed": 4,
+            "accuracy_difference": 0.0011750881316098707,
+            "fix_rate": 0.041379310344827586,
+            "damage_rate": 0.000613685179502915,
+            "sessions_with_fixes": 4,
+            "sessions_with_breaks": 2
+          },
+          "A4C_to_A5C_errors": {
+            "runs": 70,
+            "base_wrong": 70,
+            "fixed": 0,
+            "base_correct": 0,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "A5C_to_A4C_errors": {
+            "runs": 69,
+            "base_wrong": 69,
+            "fixed": 6,
+            "base_correct": 0,
+            "broken": 0,
+            "net_fixed": 6,
+            "accuracy_difference": 0.08695652173913043,
+            "fix_rate": 0.08695652173913043,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 4,
+            "sessions_with_breaks": 0
+          },
+          "native": {
+            "runs": 804,
+            "base_wrong": 42,
+            "fixed": 2,
+            "base_correct": 762,
+            "broken": 0,
+            "net_fixed": 2,
+            "accuracy_difference": 0.0024875621890547263,
+            "fix_rate": 0.047619047619047616,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 2,
+            "sessions_with_breaks": 0
+          },
+          "multi": {
+            "runs": 2600,
+            "base_wrong": 103,
+            "fixed": 4,
+            "base_correct": 2497,
+            "broken": 2,
+            "net_fixed": 2,
+            "accuracy_difference": 0.0007692307692307692,
+            "fix_rate": 0.038834951456310676,
+            "damage_rate": 0.0008009611533840609,
+            "sessions_with_fixes": 3,
+            "sessions_with_breaks": 2
+          },
+          "pure": {
+            "runs": 2017,
+            "base_wrong": 110,
+            "fixed": 4,
+            "base_correct": 1907,
+            "broken": 1,
+            "net_fixed": 3,
+            "accuracy_difference": 0.001487357461576599,
+            "fix_rate": 0.03636363636363636,
+            "damage_rate": 0.0005243838489774515,
+            "sessions_with_fixes": 3,
+            "sessions_with_breaks": 1
+          },
+          "mixed": {
+            "runs": 1387,
+            "base_wrong": 35,
+            "fixed": 2,
+            "base_correct": 1352,
+            "broken": 1,
+            "net_fixed": 1,
+            "accuracy_difference": 0.0007209805335255948,
+            "fix_rate": 0.05714285714285714,
+            "damage_rate": 0.0007396449704142012,
+            "sessions_with_fixes": 2,
+            "sessions_with_breaks": 1
+          },
+          "short_le16": {
+            "runs": 833,
+            "base_wrong": 91,
+            "fixed": 5,
+            "base_correct": 742,
+            "broken": 1,
+            "net_fixed": 4,
+            "accuracy_difference": 0.004801920768307323,
+            "fix_rate": 0.054945054945054944,
+            "damage_rate": 0.0013477088948787063,
+            "sessions_with_fixes": 3,
+            "sessions_with_breaks": 1
+          },
+          "long": {
+            "runs": 2571,
+            "base_wrong": 54,
+            "fixed": 1,
+            "base_correct": 2517,
+            "broken": 1,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.018518518518518517,
+            "damage_rate": 0.0003972983710766786,
+            "sessions_with_fixes": 1,
+            "sessions_with_breaks": 1
+          },
+          "class_0": {
+            "runs": 689,
+            "base_wrong": 3,
+            "fixed": 0,
+            "base_correct": 686,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_1": {
+            "runs": 723,
+            "base_wrong": 1,
+            "fixed": 0,
+            "base_correct": 722,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_2": {
+            "runs": 769,
+            "base_wrong": 70,
+            "fixed": 0,
+            "base_correct": 699,
+            "broken": 2,
+            "net_fixed": -2,
+            "accuracy_difference": -0.002600780234070221,
+            "fix_rate": 0.0,
+            "damage_rate": 0.002861230329041488,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 2
+          },
+          "class_3": {
+            "runs": 660,
+            "base_wrong": 71,
+            "fixed": 6,
+            "base_correct": 589,
+            "broken": 0,
+            "net_fixed": 6,
+            "accuracy_difference": 0.00909090909090909,
+            "fix_rate": 0.08450704225352113,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 4,
+            "sessions_with_breaks": 0
+          },
+          "class_4": {
+            "runs": 563,
+            "base_wrong": 0,
+            "fixed": 0,
+            "base_correct": 563,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "sessions": 199
+        },
+        "changes": {
+          "fixed": {
+            "3<-2": 6
+          },
+          "broken": {
+            "2->3": 2
+          },
+          "run_accuracy_by_class": {
+            "0": {
+              "base": 0.9956458635703919,
+              "new": 0.9956458635703919,
+              "runs": 689
+            },
+            "1": {
+              "base": 0.9986168741355463,
+              "new": 0.9986168741355463,
+              "runs": 723
+            },
+            "2": {
+              "base": 0.9089726918075423,
+              "new": 0.9063719115734721,
+              "runs": 769
+            },
+            "3": {
+              "base": 0.8924242424242425,
+              "new": 0.9015151515151515,
+              "runs": 660
+            },
+            "4": {
+              "base": 1.0,
+              "new": 1.0,
+              "runs": 563
+            }
+          }
+        },
+        "correct_A5C_kept": {
+          "runs": 589,
+          "kept": 589
+        },
+        "S1_fixed": {
+          "runs": 69,
+          "fixed": 6
+        },
+        "S2_kept": {
+          "runs": 157,
+          "kept": 157
+        },
+        "sequence_row": {
+          "native_macro_f1": 0.9758316383282561,
+          "segment_f1_50_multi": 0.950787784477728,
+          "boundary_recall_multi": 0.9681397738951696,
+          "boundary_precision_multi": 0.9443609022556391,
+          "boundary_f1_multi": 0.9561025120527785,
+          "native_internal_cuts_per_clip": 0.07095046854082998,
+          "same_class_cut_rate_multi": 0.020036429872495445,
+          "segment_f1_50_pairs": null,
+          "boundary_recall_pairs": null,
+          "A4C read as A5C": 10,
+          "A5C read as A4C": 3
+        },
+        "counts": {
+          "tp": 2444,
+          "fp": 151,
+          "fn": 102,
+          "pred": 2595,
+          "ref": 2546,
+          "f1": 0.950787784477728,
+          "fp_short": 101,
+          "fn_short": 35,
+          "ref_short": 626,
+          "tp_short": 591,
+          "same_label_join_cuts": 22,
+          "same_label_joins": 1098
+        },
+        "boundaries": {
+          "base_boundaries": 2057,
+          "final_boundaries": 2048,
+          "deleted_by_merge": 9
+        },
+        "correct_A4C_kept": {
+          "runs": 699,
+          "kept": 697
+        },
+        "confusion": {
+          "true_A5C": {
+            "runs": 660,
+            "recall": 0.9015151515151515,
+            "pred_counts": {
+              "0": 0,
+              "1": 2,
+              "2": 63,
+              "3": 595,
+              "4": 0
+            }
+          },
+          "true_A4C": {
+            "runs": 769,
+            "recall": 0.9063719115734721,
+            "pred_counts": {
+              "0": 0,
+              "1": 0,
+              "2": 697,
+              "3": 72,
+              "4": 0
+            }
+          }
+        },
+        "S1_fixed_sources": {
+          "runs": 6,
+          "true_class_recordings": 4,
+          "sessions": 4,
+          "concentration": {
+            "weight": 5.642857142857143,
+            "recordings": 4,
+            "sessions": 4,
+            "uses_per_recording_mean": 1.5,
+            "uses_per_recording_max": 2,
+            "recordings_used_once": 2,
+            "top_recording_share": {
+              "1": 0.35443037974683544,
+              "5": 1.0,
+              "10": 1.0
+            },
+            "top_session_share": {
+              "1": 0.35443037974683544,
+              "5": 1.0,
+              "10": 1.0
+            },
+            "top_session_share_by_unique_recordings": {
+              "1": 0.25,
+              "5": 1.0,
+              "10": 1.0
+            },
+            "recordings_for_half_the_weight": 2
+          }
+        },
+        "non_A4C_unchanged": true,
+        "changed": 8
+      },
+      "N": {
+        "runs": {
+          "all": {
+            "runs": 3404,
+            "base_wrong": 145,
+            "fixed": 12,
+            "base_correct": 3259,
+            "broken": 12,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.08275862068965517,
+            "damage_rate": 0.00368211107701749,
+            "sessions_with_fixes": 6,
+            "sessions_with_breaks": 7
+          },
+          "A4C_to_A5C_errors": {
+            "runs": 70,
+            "base_wrong": 70,
+            "fixed": 0,
+            "base_correct": 0,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "A5C_to_A4C_errors": {
+            "runs": 69,
+            "base_wrong": 69,
+            "fixed": 12,
+            "base_correct": 0,
+            "broken": 0,
+            "net_fixed": 12,
+            "accuracy_difference": 0.17391304347826086,
+            "fix_rate": 0.17391304347826086,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 6,
+            "sessions_with_breaks": 0
+          },
+          "native": {
+            "runs": 804,
+            "base_wrong": 42,
+            "fixed": 4,
+            "base_correct": 762,
+            "broken": 5,
+            "net_fixed": -1,
+            "accuracy_difference": -0.0012437810945273632,
+            "fix_rate": 0.09523809523809523,
+            "damage_rate": 0.006561679790026247,
+            "sessions_with_fixes": 4,
+            "sessions_with_breaks": 4
+          },
+          "multi": {
+            "runs": 2600,
+            "base_wrong": 103,
+            "fixed": 8,
+            "base_correct": 2497,
+            "broken": 7,
+            "net_fixed": 1,
+            "accuracy_difference": 0.0003846153846153846,
+            "fix_rate": 0.07766990291262135,
+            "damage_rate": 0.002803364036844213,
+            "sessions_with_fixes": 5,
+            "sessions_with_breaks": 5
+          },
+          "pure": {
+            "runs": 2017,
+            "base_wrong": 110,
+            "fixed": 10,
+            "base_correct": 1907,
+            "broken": 9,
+            "net_fixed": 1,
+            "accuracy_difference": 0.0004957858205255329,
+            "fix_rate": 0.09090909090909091,
+            "damage_rate": 0.0047194546407970635,
+            "sessions_with_fixes": 6,
+            "sessions_with_breaks": 6
+          },
+          "mixed": {
+            "runs": 1387,
+            "base_wrong": 35,
+            "fixed": 2,
+            "base_correct": 1352,
+            "broken": 3,
+            "net_fixed": -1,
+            "accuracy_difference": -0.0007209805335255948,
+            "fix_rate": 0.05714285714285714,
+            "damage_rate": 0.0022189349112426036,
+            "sessions_with_fixes": 2,
+            "sessions_with_breaks": 3
+          },
+          "short_le16": {
+            "runs": 833,
+            "base_wrong": 91,
+            "fixed": 7,
+            "base_correct": 742,
+            "broken": 3,
+            "net_fixed": 4,
+            "accuracy_difference": 0.004801920768307323,
+            "fix_rate": 0.07692307692307693,
+            "damage_rate": 0.004043126684636119,
+            "sessions_with_fixes": 4,
+            "sessions_with_breaks": 3
+          },
+          "long": {
+            "runs": 2571,
+            "base_wrong": 54,
+            "fixed": 5,
+            "base_correct": 2517,
+            "broken": 9,
+            "net_fixed": -4,
+            "accuracy_difference": -0.0015558148580318942,
+            "fix_rate": 0.09259259259259259,
+            "damage_rate": 0.003575685339690107,
+            "sessions_with_fixes": 2,
+            "sessions_with_breaks": 6
+          },
+          "class_0": {
+            "runs": 689,
+            "base_wrong": 3,
+            "fixed": 0,
+            "base_correct": 686,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_1": {
+            "runs": 723,
+            "base_wrong": 1,
+            "fixed": 0,
+            "base_correct": 722,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_2": {
+            "runs": 769,
+            "base_wrong": 70,
+            "fixed": 0,
+            "base_correct": 699,
+            "broken": 12,
+            "net_fixed": -12,
+            "accuracy_difference": -0.015604681404421327,
+            "fix_rate": 0.0,
+            "damage_rate": 0.017167381974248927,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 7
+          },
+          "class_3": {
+            "runs": 660,
+            "base_wrong": 71,
+            "fixed": 12,
+            "base_correct": 589,
+            "broken": 0,
+            "net_fixed": 12,
+            "accuracy_difference": 0.01818181818181818,
+            "fix_rate": 0.16901408450704225,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 6,
+            "sessions_with_breaks": 0
+          },
+          "class_4": {
+            "runs": 563,
+            "base_wrong": 0,
+            "fixed": 0,
+            "base_correct": 563,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "sessions": 199
+        },
+        "changes": {
+          "fixed": {
+            "3<-2": 12
+          },
+          "broken": {
+            "2->3": 12
+          },
+          "run_accuracy_by_class": {
+            "0": {
+              "base": 0.9956458635703919,
+              "new": 0.9956458635703919,
+              "runs": 689
+            },
+            "1": {
+              "base": 0.9986168741355463,
+              "new": 0.9986168741355463,
+              "runs": 723
+            },
+            "2": {
+              "base": 0.9089726918075423,
+              "new": 0.893368010403121,
+              "runs": 769
+            },
+            "3": {
+              "base": 0.8924242424242425,
+              "new": 0.9106060606060606,
+              "runs": 660
+            },
+            "4": {
+              "base": 1.0,
+              "new": 1.0,
+              "runs": 563
+            }
+          }
+        },
+        "correct_A5C_kept": {
+          "runs": 589,
+          "kept": 589
+        },
+        "S1_fixed": {
+          "runs": 69,
+          "fixed": 12
+        },
+        "S2_kept": {
+          "runs": 157,
+          "kept": 157
+        },
+        "sequence_row": {
+          "native_macro_f1": 0.9726600782893691,
+          "segment_f1_50_multi": 0.9503407984420643,
+          "boundary_recall_multi": 0.9676258992805755,
+          "boundary_precision_multi": 0.9467068878833584,
+          "boundary_f1_multi": 0.9570520965692503,
+          "native_internal_cuts_per_clip": 0.0642570281124498,
+          "same_class_cut_rate_multi": 0.01912568306010929,
+          "segment_f1_50_pairs": null,
+          "boundary_recall_pairs": null,
+          "A4C read as A5C": 13,
+          "A5C read as A4C": 2
+        },
+        "counts": {
+          "tp": 2440,
+          "fp": 149,
+          "fn": 106,
+          "pred": 2589,
+          "ref": 2546,
+          "f1": 0.9503407984420643,
+          "fp_short": 102,
+          "fn_short": 37,
+          "ref_short": 626,
+          "tp_short": 589,
+          "same_label_join_cuts": 21,
+          "same_label_joins": 1098
+        },
+        "boundaries": {
+          "base_boundaries": 2057,
+          "final_boundaries": 2037,
+          "deleted_by_merge": 20
+        },
+        "correct_A4C_kept": {
+          "runs": 699,
+          "kept": 687
+        },
+        "confusion": {
+          "true_A5C": {
+            "runs": 660,
+            "recall": 0.9106060606060606,
+            "pred_counts": {
+              "0": 0,
+              "1": 2,
+              "2": 57,
+              "3": 601,
+              "4": 0
+            }
+          },
+          "true_A4C": {
+            "runs": 769,
+            "recall": 0.893368010403121,
+            "pred_counts": {
+              "0": 0,
+              "1": 0,
+              "2": 687,
+              "3": 82,
+              "4": 0
+            }
+          }
+        },
+        "S1_fixed_sources": {
+          "runs": 12,
+          "true_class_recordings": 7,
+          "sessions": 7,
+          "concentration": {
+            "weight": 11.642857142857142,
+            "recordings": 7,
+            "sessions": 7,
+            "uses_per_recording_mean": 1.8571428571428572,
+            "uses_per_recording_max": 3,
+            "recordings_used_once": 2,
+            "top_recording_share": {
+              "1": 0.25276073619631906,
+              "5": 0.9098159509202454,
+              "10": 1.0
+            },
+            "top_session_share": {
+              "1": 0.25276073619631906,
+              "5": 0.9098159509202454,
+              "10": 1.0
+            },
+            "top_session_share_by_unique_recordings": {
+              "1": 0.14285714285714285,
+              "5": 0.7142857142857143,
+              "10": 1.0
+            },
+            "recordings_for_half_the_weight": 3
+          }
+        },
+        "non_A4C_unchanged": true,
+        "changed": 24
+      },
+      "N_A": {
+        "runs": {
+          "all": {
+            "runs": 3404,
+            "base_wrong": 145,
+            "fixed": 0,
+            "base_correct": 3259,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "A4C_to_A5C_errors": {
+            "runs": 70,
+            "base_wrong": 70,
+            "fixed": 0,
+            "base_correct": 0,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "A5C_to_A4C_errors": {
+            "runs": 69,
+            "base_wrong": 69,
+            "fixed": 0,
+            "base_correct": 0,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "native": {
+            "runs": 804,
+            "base_wrong": 42,
+            "fixed": 0,
+            "base_correct": 762,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "multi": {
+            "runs": 2600,
+            "base_wrong": 103,
+            "fixed": 0,
+            "base_correct": 2497,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "pure": {
+            "runs": 2017,
+            "base_wrong": 110,
+            "fixed": 0,
+            "base_correct": 1907,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "mixed": {
+            "runs": 1387,
+            "base_wrong": 35,
+            "fixed": 0,
+            "base_correct": 1352,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "short_le16": {
+            "runs": 833,
+            "base_wrong": 91,
+            "fixed": 0,
+            "base_correct": 742,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "long": {
+            "runs": 2571,
+            "base_wrong": 54,
+            "fixed": 0,
+            "base_correct": 2517,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_0": {
+            "runs": 689,
+            "base_wrong": 3,
+            "fixed": 0,
+            "base_correct": 686,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_1": {
+            "runs": 723,
+            "base_wrong": 1,
+            "fixed": 0,
+            "base_correct": 722,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_2": {
+            "runs": 769,
+            "base_wrong": 70,
+            "fixed": 0,
+            "base_correct": 699,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_3": {
+            "runs": 660,
+            "base_wrong": 71,
+            "fixed": 0,
+            "base_correct": 589,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_4": {
+            "runs": 563,
+            "base_wrong": 0,
+            "fixed": 0,
+            "base_correct": 563,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "sessions": 199
+        },
+        "changes": {
+          "fixed": {},
+          "broken": {},
+          "run_accuracy_by_class": {
+            "0": {
+              "base": 0.9956458635703919,
+              "new": 0.9956458635703919,
+              "runs": 689
+            },
+            "1": {
+              "base": 0.9986168741355463,
+              "new": 0.9986168741355463,
+              "runs": 723
+            },
+            "2": {
+              "base": 0.9089726918075423,
+              "new": 0.9089726918075423,
+              "runs": 769
+            },
+            "3": {
+              "base": 0.8924242424242425,
+              "new": 0.8924242424242425,
+              "runs": 660
+            },
+            "4": {
+              "base": 1.0,
+              "new": 1.0,
+              "runs": 563
+            }
+          }
+        },
+        "correct_A5C_kept": {
+          "runs": 589,
+          "kept": 589
+        },
+        "S1_fixed": {
+          "runs": 69,
+          "fixed": 0
+        },
+        "S2_kept": {
+          "runs": 157,
+          "kept": 157
+        },
+        "sequence_row": {
+          "native_macro_f1": 0.9758316383282561,
+          "segment_f1_50_multi": 0.9498639720171007,
+          "boundary_recall_multi": 0.9681397738951696,
+          "boundary_precision_multi": 0.942,
+          "boundary_f1_multi": 0.9548910288900152,
+          "native_internal_cuts_per_clip": 0.07630522088353414,
+          "same_class_cut_rate_multi": 0.020947176684881604,
+          "segment_f1_50_pairs": null,
+          "boundary_recall_pairs": null,
+          "A4C read as A5C": 10,
+          "A5C read as A4C": 3
+        },
+        "counts": {
+          "tp": 2444,
+          "fp": 156,
+          "fn": 102,
+          "pred": 2600,
+          "ref": 2546,
+          "f1": 0.9498639720171007,
+          "fp_short": 105,
+          "fn_short": 35,
+          "ref_short": 626,
+          "tp_short": 591,
+          "same_label_join_cuts": 23,
+          "same_label_joins": 1098
+        },
+        "boundaries": {
+          "base_boundaries": 2057,
+          "final_boundaries": 2057,
+          "deleted_by_merge": 0
+        },
+        "correct_A4C_kept": {
+          "runs": 699,
+          "kept": 699
+        },
+        "confusion": {
+          "true_A5C": {
+            "runs": 660,
+            "recall": 0.8924242424242425,
+            "pred_counts": {
+              "0": 0,
+              "1": 2,
+              "2": 69,
+              "3": 589,
+              "4": 0
+            }
+          },
+          "true_A4C": {
+            "runs": 769,
+            "recall": 0.9089726918075423,
+            "pred_counts": {
+              "0": 0,
+              "1": 0,
+              "2": 699,
+              "3": 70,
+              "4": 0
+            }
+          }
+        },
+        "S1_fixed_sources": {
+          "runs": 0,
+          "true_class_recordings": 0,
+          "sessions": 0,
+          "concentration": {
+            "recordings": 0
+          }
+        },
+        "non_A4C_unchanged": true,
+        "changed": 0
+      },
+      "N_U": {
+        "runs": {
+          "all": {
+            "runs": 3404,
+            "base_wrong": 145,
+            "fixed": 0,
+            "base_correct": 3259,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "A4C_to_A5C_errors": {
+            "runs": 70,
+            "base_wrong": 70,
+            "fixed": 0,
+            "base_correct": 0,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "A5C_to_A4C_errors": {
+            "runs": 69,
+            "base_wrong": 69,
+            "fixed": 0,
+            "base_correct": 0,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "native": {
+            "runs": 804,
+            "base_wrong": 42,
+            "fixed": 0,
+            "base_correct": 762,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "multi": {
+            "runs": 2600,
+            "base_wrong": 103,
+            "fixed": 0,
+            "base_correct": 2497,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "pure": {
+            "runs": 2017,
+            "base_wrong": 110,
+            "fixed": 0,
+            "base_correct": 1907,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "mixed": {
+            "runs": 1387,
+            "base_wrong": 35,
+            "fixed": 0,
+            "base_correct": 1352,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "short_le16": {
+            "runs": 833,
+            "base_wrong": 91,
+            "fixed": 0,
+            "base_correct": 742,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "long": {
+            "runs": 2571,
+            "base_wrong": 54,
+            "fixed": 0,
+            "base_correct": 2517,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_0": {
+            "runs": 689,
+            "base_wrong": 3,
+            "fixed": 0,
+            "base_correct": 686,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_1": {
+            "runs": 723,
+            "base_wrong": 1,
+            "fixed": 0,
+            "base_correct": 722,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_2": {
+            "runs": 769,
+            "base_wrong": 70,
+            "fixed": 0,
+            "base_correct": 699,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_3": {
+            "runs": 660,
+            "base_wrong": 71,
+            "fixed": 0,
+            "base_correct": 589,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_4": {
+            "runs": 563,
+            "base_wrong": 0,
+            "fixed": 0,
+            "base_correct": 563,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "sessions": 199
+        },
+        "changes": {
+          "fixed": {},
+          "broken": {},
+          "run_accuracy_by_class": {
+            "0": {
+              "base": 0.9956458635703919,
+              "new": 0.9956458635703919,
+              "runs": 689
+            },
+            "1": {
+              "base": 0.9986168741355463,
+              "new": 0.9986168741355463,
+              "runs": 723
+            },
+            "2": {
+              "base": 0.9089726918075423,
+              "new": 0.9089726918075423,
+              "runs": 769
+            },
+            "3": {
+              "base": 0.8924242424242425,
+              "new": 0.8924242424242425,
+              "runs": 660
+            },
+            "4": {
+              "base": 1.0,
+              "new": 1.0,
+              "runs": 563
+            }
+          }
+        },
+        "correct_A5C_kept": {
+          "runs": 589,
+          "kept": 589
+        },
+        "S1_fixed": {
+          "runs": 69,
+          "fixed": 0
+        },
+        "S2_kept": {
+          "runs": 157,
+          "kept": 157
+        },
+        "sequence_row": {
+          "native_macro_f1": 0.9758316383282561,
+          "segment_f1_50_multi": 0.9498639720171007,
+          "boundary_recall_multi": 0.9681397738951696,
+          "boundary_precision_multi": 0.942,
+          "boundary_f1_multi": 0.9548910288900152,
+          "native_internal_cuts_per_clip": 0.07630522088353414,
+          "same_class_cut_rate_multi": 0.020947176684881604,
+          "segment_f1_50_pairs": null,
+          "boundary_recall_pairs": null,
+          "A4C read as A5C": 10,
+          "A5C read as A4C": 3
+        },
+        "counts": {
+          "tp": 2444,
+          "fp": 156,
+          "fn": 102,
+          "pred": 2600,
+          "ref": 2546,
+          "f1": 0.9498639720171007,
+          "fp_short": 105,
+          "fn_short": 35,
+          "ref_short": 626,
+          "tp_short": 591,
+          "same_label_join_cuts": 23,
+          "same_label_joins": 1098
+        },
+        "boundaries": {
+          "base_boundaries": 2057,
+          "final_boundaries": 2057,
+          "deleted_by_merge": 0
+        },
+        "correct_A4C_kept": {
+          "runs": 699,
+          "kept": 699
+        },
+        "confusion": {
+          "true_A5C": {
+            "runs": 660,
+            "recall": 0.8924242424242425,
+            "pred_counts": {
+              "0": 0,
+              "1": 2,
+              "2": 69,
+              "3": 589,
+              "4": 0
+            }
+          },
+          "true_A4C": {
+            "runs": 769,
+            "recall": 0.9089726918075423,
+            "pred_counts": {
+              "0": 0,
+              "1": 0,
+              "2": 699,
+              "3": 70,
+              "4": 0
+            }
+          }
+        },
+        "S1_fixed_sources": {
+          "runs": 0,
+          "true_class_recordings": 0,
+          "sessions": 0,
+          "concentration": {
+            "recordings": 0
+          }
+        },
+        "non_A4C_unchanged": true,
+        "changed": 0
+      },
+      "C_A": {
+        "runs": {
+          "all": {
+            "runs": 3404,
+            "base_wrong": 145,
+            "fixed": 0,
+            "base_correct": 3259,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "A4C_to_A5C_errors": {
+            "runs": 70,
+            "base_wrong": 70,
+            "fixed": 0,
+            "base_correct": 0,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "A5C_to_A4C_errors": {
+            "runs": 69,
+            "base_wrong": 69,
+            "fixed": 0,
+            "base_correct": 0,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "native": {
+            "runs": 804,
+            "base_wrong": 42,
+            "fixed": 0,
+            "base_correct": 762,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "multi": {
+            "runs": 2600,
+            "base_wrong": 103,
+            "fixed": 0,
+            "base_correct": 2497,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "pure": {
+            "runs": 2017,
+            "base_wrong": 110,
+            "fixed": 0,
+            "base_correct": 1907,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "mixed": {
+            "runs": 1387,
+            "base_wrong": 35,
+            "fixed": 0,
+            "base_correct": 1352,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "short_le16": {
+            "runs": 833,
+            "base_wrong": 91,
+            "fixed": 0,
+            "base_correct": 742,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "long": {
+            "runs": 2571,
+            "base_wrong": 54,
+            "fixed": 0,
+            "base_correct": 2517,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_0": {
+            "runs": 689,
+            "base_wrong": 3,
+            "fixed": 0,
+            "base_correct": 686,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_1": {
+            "runs": 723,
+            "base_wrong": 1,
+            "fixed": 0,
+            "base_correct": 722,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_2": {
+            "runs": 769,
+            "base_wrong": 70,
+            "fixed": 0,
+            "base_correct": 699,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_3": {
+            "runs": 660,
+            "base_wrong": 71,
+            "fixed": 0,
+            "base_correct": 589,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_4": {
+            "runs": 563,
+            "base_wrong": 0,
+            "fixed": 0,
+            "base_correct": 563,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "sessions": 199
+        },
+        "changes": {
+          "fixed": {},
+          "broken": {},
+          "run_accuracy_by_class": {
+            "0": {
+              "base": 0.9956458635703919,
+              "new": 0.9956458635703919,
+              "runs": 689
+            },
+            "1": {
+              "base": 0.9986168741355463,
+              "new": 0.9986168741355463,
+              "runs": 723
+            },
+            "2": {
+              "base": 0.9089726918075423,
+              "new": 0.9089726918075423,
+              "runs": 769
+            },
+            "3": {
+              "base": 0.8924242424242425,
+              "new": 0.8924242424242425,
+              "runs": 660
+            },
+            "4": {
+              "base": 1.0,
+              "new": 1.0,
+              "runs": 563
+            }
+          }
+        },
+        "correct_A5C_kept": {
+          "runs": 589,
+          "kept": 589
+        },
+        "S1_fixed": {
+          "runs": 69,
+          "fixed": 0
+        },
+        "S2_kept": {
+          "runs": 157,
+          "kept": 157
+        },
+        "sequence_row": {
+          "native_macro_f1": 0.9758316383282561,
+          "segment_f1_50_multi": 0.9498639720171007,
+          "boundary_recall_multi": 0.9681397738951696,
+          "boundary_precision_multi": 0.942,
+          "boundary_f1_multi": 0.9548910288900152,
+          "native_internal_cuts_per_clip": 0.07630522088353414,
+          "same_class_cut_rate_multi": 0.020947176684881604,
+          "segment_f1_50_pairs": null,
+          "boundary_recall_pairs": null,
+          "A4C read as A5C": 10,
+          "A5C read as A4C": 3
+        },
+        "counts": {
+          "tp": 2444,
+          "fp": 156,
+          "fn": 102,
+          "pred": 2600,
+          "ref": 2546,
+          "f1": 0.9498639720171007,
+          "fp_short": 105,
+          "fn_short": 35,
+          "ref_short": 626,
+          "tp_short": 591,
+          "same_label_join_cuts": 23,
+          "same_label_joins": 1098
+        },
+        "boundaries": {
+          "base_boundaries": 2057,
+          "final_boundaries": 2057,
+          "deleted_by_merge": 0
+        },
+        "correct_A4C_kept": {
+          "runs": 699,
+          "kept": 699
+        },
+        "confusion": {
+          "true_A5C": {
+            "runs": 660,
+            "recall": 0.8924242424242425,
+            "pred_counts": {
+              "0": 0,
+              "1": 2,
+              "2": 69,
+              "3": 589,
+              "4": 0
+            }
+          },
+          "true_A4C": {
+            "runs": 769,
+            "recall": 0.9089726918075423,
+            "pred_counts": {
+              "0": 0,
+              "1": 0,
+              "2": 699,
+              "3": 70,
+              "4": 0
+            }
+          }
+        },
+        "S1_fixed_sources": {
+          "runs": 0,
+          "true_class_recordings": 0,
+          "sessions": 0,
+          "concentration": {
+            "recordings": 0
+          }
+        },
+        "non_A4C_unchanged": true,
+        "changed": 0
+      },
+      "C_U": {
+        "runs": {
+          "all": {
+            "runs": 3404,
+            "base_wrong": 145,
+            "fixed": 0,
+            "base_correct": 3259,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "A4C_to_A5C_errors": {
+            "runs": 70,
+            "base_wrong": 70,
+            "fixed": 0,
+            "base_correct": 0,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "A5C_to_A4C_errors": {
+            "runs": 69,
+            "base_wrong": 69,
+            "fixed": 0,
+            "base_correct": 0,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "native": {
+            "runs": 804,
+            "base_wrong": 42,
+            "fixed": 0,
+            "base_correct": 762,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "multi": {
+            "runs": 2600,
+            "base_wrong": 103,
+            "fixed": 0,
+            "base_correct": 2497,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "pure": {
+            "runs": 2017,
+            "base_wrong": 110,
+            "fixed": 0,
+            "base_correct": 1907,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "mixed": {
+            "runs": 1387,
+            "base_wrong": 35,
+            "fixed": 0,
+            "base_correct": 1352,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "short_le16": {
+            "runs": 833,
+            "base_wrong": 91,
+            "fixed": 0,
+            "base_correct": 742,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "long": {
+            "runs": 2571,
+            "base_wrong": 54,
+            "fixed": 0,
+            "base_correct": 2517,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_0": {
+            "runs": 689,
+            "base_wrong": 3,
+            "fixed": 0,
+            "base_correct": 686,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_1": {
+            "runs": 723,
+            "base_wrong": 1,
+            "fixed": 0,
+            "base_correct": 722,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_2": {
+            "runs": 769,
+            "base_wrong": 70,
+            "fixed": 0,
+            "base_correct": 699,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_3": {
+            "runs": 660,
+            "base_wrong": 71,
+            "fixed": 0,
+            "base_correct": 589,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "class_4": {
+            "runs": 563,
+            "base_wrong": 0,
+            "fixed": 0,
+            "base_correct": 563,
+            "broken": 0,
+            "net_fixed": 0,
+            "accuracy_difference": 0.0,
+            "fix_rate": 0.0,
+            "damage_rate": 0.0,
+            "sessions_with_fixes": 0,
+            "sessions_with_breaks": 0
+          },
+          "sessions": 199
+        },
+        "changes": {
+          "fixed": {},
+          "broken": {},
+          "run_accuracy_by_class": {
+            "0": {
+              "base": 0.9956458635703919,
+              "new": 0.9956458635703919,
+              "runs": 689
+            },
+            "1": {
+              "base": 0.9986168741355463,
+              "new": 0.9986168741355463,
+              "runs": 723
+            },
+            "2": {
+              "base": 0.9089726918075423,
+              "new": 0.9089726918075423,
+              "runs": 769
+            },
+            "3": {
+              "base": 0.8924242424242425,
+              "new": 0.8924242424242425,
+              "runs": 660
+            },
+            "4": {
+              "base": 1.0,
+              "new": 1.0,
+              "runs": 563
+            }
+          }
+        },
+        "correct_A5C_kept": {
+          "runs": 589,
+          "kept": 589
+        },
+        "S1_fixed": {
+          "runs": 69,
+          "fixed": 0
+        },
+        "S2_kept": {
+          "runs": 157,
+          "kept": 157
+        },
+        "sequence_row": {
+          "native_macro_f1": 0.9758316383282561,
+          "segment_f1_50_multi": 0.9498639720171007,
+          "boundary_recall_multi": 0.9681397738951696,
+          "boundary_precision_multi": 0.942,
+          "boundary_f1_multi": 0.9548910288900152,
+          "native_internal_cuts_per_clip": 0.07630522088353414,
+          "same_class_cut_rate_multi": 0.020947176684881604,
+          "segment_f1_50_pairs": null,
+          "boundary_recall_pairs": null,
+          "A4C read as A5C": 10,
+          "A5C read as A4C": 3
+        },
+        "counts": {
+          "tp": 2444,
+          "fp": 156,
+          "fn": 102,
+          "pred": 2600,
+          "ref": 2546,
+          "f1": 0.9498639720171007,
+          "fp_short": 105,
+          "fn_short": 35,
+          "ref_short": 626,
+          "tp_short": 591,
+          "same_label_join_cuts": 23,
+          "same_label_joins": 1098
+        },
+        "boundaries": {
+          "base_boundaries": 2057,
+          "final_boundaries": 2057,
+          "deleted_by_merge": 0
+        },
+        "correct_A4C_kept": {
+          "runs": 699,
+          "kept": 699
+        },
+        "confusion": {
+          "true_A5C": {
+            "runs": 660,
+            "recall": 0.8924242424242425,
+            "pred_counts": {
+              "0": 0,
+              "1": 2,
+              "2": 69,
+              "3": 589,
+              "4": 0
+            }
+          },
+          "true_A4C": {
+            "runs": 769,
+            "recall": 0.9089726918075423,
+            "pred_counts": {
+              "0": 0,
+              "1": 0,
+              "2": 699,
+              "3": 70,
+              "4": 0
+            }
+          }
+        },
+        "S1_fixed_sources": {
+          "runs": 0,
+          "true_class_recordings": 0,
+          "sessions": 0,
+          "concentration": {
+            "recordings": 0
+          }
+        },
+        "non_A4C_unchanged": true,
+        "changed": 0
+      }
+    }
+  },
+  "oof": {
+    "Base": {
+      "fixed": 0,
+      "broken": 0,
+      "net": 0,
+      "A5C_fixed": 0,
+      "correct_A4C_harmed": 0,
+      "F1_mean": 0.9568852768790387,
+      "missed_short": 76,
+      "boundaries_deleted": 0
+    },
+    "N": {
+      "fixed": 26,
+      "broken": 76,
+      "net": -50,
+      "A5C_fixed": 26,
+      "correct_A4C_harmed": 76,
+      "F1_mean": 0.952000617289568,
+      "missed_short": 104,
+      "boundaries_deleted": 75
+    },
+    "C": {
+      "fixed": 12,
+      "broken": 22,
+      "net": -10,
+      "A5C_fixed": 12,
+      "correct_A4C_harmed": 22,
+      "F1_mean": 0.9561221510031483,
+      "missed_short": 86,
+      "boundaries_deleted": 30
+    },
+    "N_A": {
+      "fixed": 0,
+      "broken": 1,
+      "net": -1,
+      "A5C_fixed": 0,
+      "correct_A4C_harmed": 1,
+      "F1_mean": 0.9566922639471722,
+      "missed_short": 76,
+      "boundaries_deleted": 0
+    },
+    "N_U": {
+      "fixed": 0,
+      "broken": 1,
+      "net": -1,
+      "A5C_fixed": 0,
+      "correct_A4C_harmed": 1,
+      "F1_mean": 0.9566922639471722,
+      "missed_short": 76,
+      "boundaries_deleted": 0
+    },
+    "C_A": {
+      "fixed": 0,
+      "broken": 0,
+      "net": 0,
+      "A5C_fixed": 0,
+      "correct_A4C_harmed": 0,
+      "F1_mean": 0.9568852768790387,
+      "missed_short": 76,
+      "boundaries_deleted": 0
+    },
+    "C_U": {
+      "fixed": 0,
+      "broken": 0,
+      "net": 0,
+      "A5C_fixed": 0,
+      "correct_A4C_harmed": 0,
+      "F1_mean": 0.9568852768790387,
+      "missed_short": 76,
+      "boundaries_deleted": 0
+    }
+  },
+  "gates": {
+    "N_A": {
+      "S1_ok": false,
+      "source_ok": false,
+      "A4C_ok": true,
+      "nonA4C_invariant": true,
+      "net_per_fold_ok": false,
+      "net_oof_ok": false,
+      "F1_per_fold_ok": false,
+      "F1_mean_ok": false,
+      "native_ok": true,
+      "boundary_recall_ok": true,
+      "short_misses_ok": true,
+      "not_noop": true,
+      "passed": false
+    },
+    "N_U": {
+      "S1_ok": false,
+      "source_ok": false,
+      "A4C_ok": true,
+      "nonA4C_invariant": true,
+      "net_per_fold_ok": false,
+      "net_oof_ok": false,
+      "F1_per_fold_ok": false,
+      "F1_mean_ok": false,
+      "native_ok": true,
+      "boundary_recall_ok": true,
+      "short_misses_ok": true,
+      "not_noop": true,
+      "passed": false
+    },
+    "C_A": {
+      "S1_ok": false,
+      "source_ok": false,
+      "A4C_ok": true,
+      "nonA4C_invariant": true,
+      "net_per_fold_ok": true,
+      "net_oof_ok": false,
+      "F1_per_fold_ok": true,
+      "F1_mean_ok": false,
+      "native_ok": true,
+      "boundary_recall_ok": true,
+      "short_misses_ok": true,
+      "not_noop": false,
+      "passed": false
+    },
+    "C_U": {
+      "S1_ok": false,
+      "source_ok": false,
+      "A4C_ok": true,
+      "nonA4C_invariant": true,
+      "net_per_fold_ok": true,
+      "net_oof_ok": false,
+      "F1_per_fold_ok": true,
+      "F1_mean_ok": false,
+      "native_ok": true,
+      "boundary_recall_ok": true,
+      "short_misses_ok": true,
+      "not_noop": false,
+      "passed": false
+    }
+  },
+  "primary_contribution": {
+    "retain80_each_fold": true,
+    "harms_no_more_each_fold": true,
+    "harms_5_fewer_oof": false,
+    "net5_more_oof": false,
+    "F1_no_less_each_fold": true,
+    "absolute_A_passed": false,
+    "passed": false
+  },
+  "frozen": {
+    "commit": "dd2595b93a4a7f8dbd1679b60213802ce9fc781b",
+    "manifest_sha256": "a9f794b3657668f96f69a5dee373c598acd37a25be6c6ae18549fa8746339b3e",
+    "written": "2026-10-28T20:03:08Z"
+  },
+  "private_cache_sha256": "20627bded4a1a158115f565a242e2c3c38ef769bcab47bdcb3858f35b449a279",
+  "written": "2026-10-28T20:04:48Z"
+}
