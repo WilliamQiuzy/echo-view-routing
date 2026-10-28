@@ -65,7 +65,9 @@ LR = {"encoder_trunk": 1e-5, "marker_stem": 1e-4, "witness": 1e-3}
 CLIP, HEAD_PARAMS, FROZEN = 1.0, 197_761, ("encoder.head.", "classifier.")
 SCH = {"updates": U, "warmup": WARM}
 LIMITS = {"loss": 1e-4, "params": 1e-5}
-TOL = {"grad_rel": 1e-5, "formula": 1e-8, "attention_fp64": 1e-10, "replay_abs": 1e-5, "parity": 1e-4, "peak_gpu_gb": 40.0}
+TOL = {"grad_rel": 1e-5, "formula": 1e-8, "attention_fp64": 1e-10, "replay_abs": 1e-5, "parity": 1e-4, "peak_gpu_gb": 40.0, "roundoff_grad_rel": 1e-6}
+KEY_NORM_BIAS = ("key LayerNorm bias (attn.pool_k.norm_act.0.bias): it adds one vector to every key, shifting each query's logits by a constant; softmax is invariant, so the exact gradient is 0 "
+                 "and only round-off reaches it (amendment after check attempt 1)")
 EXPECTED_BAGS = {0: {"A4C": 200, "A5C": 67, "mean": (11.59, 10.09), "max": (102, 100)}, 1: {"A4C": 200, "A5C": 75, "mean": (12.00, 12.37), "max": (72, 58)}}
 EXPECTED_ELIGIBLE = {0: {0: {"runs": 749, "rows": 5030, "grid": 24585}, 1: {"runs": 771, "rows": 5437, "grid": 25774}}}   # source seed -> held-out fold
 REQUIRED_GATES = {"isolation", "bags", "plan", "numerics", "pixels", "markers", "init_state", "init_head", "init_score_constant", "init_online_parity", "patched_forward", "base_from_cache",
@@ -565,13 +567,16 @@ def mech_run(ctx: Ctx, s: int, F_: Fold, arm: str, us, device, workers: int, sta
     positive = force_positive or wm.POSITIVE[arm]; m, head = build(ctx, s, F_.f, device); opt = make_opt(m, head)
     if state is not None:
         load_state(m, head, opt, state)
-    log, seen = [], {}
+    log, seen, gmax = [], {}, {}
     names = {id(p): f"m.{n}" for n, p in m.named_parameters()} | {id(p): f"h.{n}" for n, p in head.named_parameters()}
 
     def on_grads(u: int) -> None:
         seen[u] = {names[id(p)] for p in trainable(m, head) if p.grad is not None and float(p.grad.abs().sum()) > 0}
+        if u >= 1:                                                       # per-tensor max |grad| after the zero-output update 0
+            for p in trainable(m, head):
+                gmax[names[id(p)]] = max(gmax.get(names[id(p)], 0.0), 0.0 if p.grad is None else float(p.grad.abs().max()))
 
-    g = run_updates(m, head, opt, F_, s, us, positive, device, workers, log, on_grads=on_grads if track else None); return m, head, opt, log, g, seen
+    g = run_updates(m, head, opt, F_, s, us, positive, device, workers, log, on_grads=on_grads if track else None); return m, head, opt, log, g, seen, gmax
 
 
 def training_checks(ctx: Ctx, s: int, F_: Fold, device, workers: int) -> dict:
@@ -598,6 +603,9 @@ def training_checks(ctx: Ctx, s: int, F_: Fold, device, workers: int) -> dict:
                                              "max_abs": float(max((fin[k] - init[k]).abs().max() for k in fin if f_(k)))} for g_, f_ in grp.items()},
                               "unchanged_tensors": sorted(k for k in fin if torch.equal(fin[k], init[k])), "optimizer_steps": sorted({int(v["step"]) for v in da[2].state_dict()["state"].values()}),
                               "optimizer_state_tensors": len(da[2].state_dict()["state"]), "zero_gradient_trainable_tensors_updates_1_5": sorted(tr - nz15), "update0_nonzero_gradient_tensors": sorted(da[5][0])}
+    gm = da[6]; tmax = max(v for k, v in gm.items() if grp["encoder_trunk"](k)); res["real_update_D_6"]["trunk_max_abs_grad_updates_1_5"] = tmax
+    res["real_update_D_6"]["unchanged_trainable"] = {k: {"max_abs_grad_updates_1_5": gm[k], "relative_to_trunk_max": gm[k] / tmax, "structural_reason": KEY_NORM_BIAS if k.endswith(".attn.pool_k.norm_act.0.bias") else None}
+                                                     for k in res["real_update_D_6"]["unchanged_tensors"] if k in tr}
     db = mech_run(ctx, s, F_, "D", us, device, workers); res["repeat_6_D"] = {"loss_max_abs": L(da, db), "params_max_abs": P(da, db)}; del db; torch.cuda.empty_cache()
     ma = mech_run(ctx, s, F_, "M", us, device, workers); res["M_differs_from_D"] = {"params_max_abs": P(ma, da), "l5_first_updates": [[x["l5"] for x in ma[3][:3]], [x["l5"] for x in da[3][:3]]]}
     fd = mech_run(ctx, s, F_, "M", us, device, workers, force_positive="dense")        # the M arm's path, positive term forced to dense
@@ -721,7 +729,9 @@ def gates(r: dict) -> dict:
             "first_step_zero": T["update0"]["g_encoder_trunk"] == 0 and T["update0"]["g_marker_stem"] == 0 and T["update0"]["g_attention"] == 0 and T["update0"]["g_scorer"] > 0,
             "genuine_gradients": all(all(np.isfinite(x[k]) and x[k] > 0 for k in ("g_encoder_trunk", "g_marker_stem", "g_attention", "g_scorer")) for x in up),
             "real_update": T["real_update_D_6"]["optimizer_steps"] == [6] and all(v["tensors_moved"] > 0 for v in T["real_update_D_6"]["moved"].values())
-            and all(k.startswith(("m.encoder.head.", "m.classifier.")) or k in T["real_update_D_6"]["zero_gradient_trainable_tensors_updates_1_5"] for k in T["real_update_D_6"]["unchanged_tensors"]),
+            and all(k.startswith(("m.encoder.head.", "m.classifier.")) or k in T["real_update_D_6"]["zero_gradient_trainable_tensors_updates_1_5"]
+                    or (k in T["real_update_D_6"]["unchanged_trainable"] and T["real_update_D_6"]["unchanged_trainable"][k]["structural_reason"] is not None
+                        and T["real_update_D_6"]["unchanged_trainable"][k]["relative_to_trunk_max"] <= TOL["roundoff_grad_rel"]) for k in T["real_update_D_6"]["unchanged_tensors"]),
             "repeat": lim(T["repeat_6_D"]), "forced_dense": lim(T["forced_dense_M_vs_D"]) and T["forced_dense_M_vs_D"]["formal_map_unchanged"], "resume": lim(T["resume_3_plus_3_M"]),
             "M_not_D": T["M_differs_from_D"]["params_max_abs"] > 0,
             "one_way_synthetic": O["synthetic_rule"]["result"] == O["synthetic_rule"]["expected"] and O["synthetic_rule"]["input_unchanged"] and O["synthetic_merge"]["edited"] == O["synthetic_merge"]["expected"]
