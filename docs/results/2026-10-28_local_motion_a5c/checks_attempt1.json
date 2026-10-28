@@ -1,0 +1,11 @@
+{
+  "ok": false,
+  "stage": "pretraining_check",
+  "failure": "CUDA adaptive_avg_pool3d_backward has no deterministic implementation with warn_only=False",
+  "formal_training_started": false,
+  "optimizer_step_completed": false,
+  "repair": "same adaptive-pool bins via explicit deterministic slicing means; independent FP64 value/gradient parity, strict determinism retained",
+  "prior_protocol_commit": "3568f33",
+  "prior_code_commit": "58ff0f6",
+  "charge": "actual failed stage in shared ledger"
+}
