@@ -48,6 +48,21 @@ def motion_inputs(bank, pair_index, markers, perms=None):
     return torch.cat([z,mark],dim=1)
 
 
+class DeterministicPool(nn.Module):
+    """Exact adaptive(1,4,4) bins via slice means: deterministic CUDA backward.
+
+    PyTorch's adaptive_avg_pool3d CUDA backward is nondeterministic. These
+    floor/ceil bins implement the same mathematical operator, including overlap.
+    """
+    def forward(self,x):
+        h,w=x.shape[-2:]
+        out=[]
+        for i in range(4):
+            for j in range(4):
+                out.append(x[:,:,:,i*h//4:((i+1)*h+3)//4,j*w//4:((j+1)*w+3)//4].mean((2,3,4)))
+        return torch.stack(out,dim=-1).reshape(x.shape[0],x.shape[1],1,4,4)
+
+
 class MotionRepair(nn.Module):
     """Learn local spatiotemporal displacement, fuse with frozen RGB appearance."""
     def __init__(self):
@@ -56,7 +71,7 @@ class MotionRepair(nn.Module):
             nn.Conv3d(3,16,(3,5,5),(1,2,2),(1,2,2)),nn.GroupNorm(4,16),nn.SiLU(),
             nn.Conv3d(16,32,3,(1,2,2),1),nn.GroupNorm(8,32),nn.SiLU(),
             nn.Conv3d(32,64,3,(1,2,2),1),nn.GroupNorm(8,64),nn.SiLU(),
-            nn.AdaptiveAvgPool3d((1,4,4)),nn.Flatten(),nn.Linear(1024,128),nn.GELU())
+            DeterministicPool(),nn.Flatten(),nn.Linear(1024,128),nn.GELU())
         self.appearance=nn.LayerNorm(512)
         self.fusion=nn.Sequential(nn.Linear(640,128),nn.GELU(),nn.Linear(128,1))
         nn.init.zeros_(self.fusion[-1].weight)

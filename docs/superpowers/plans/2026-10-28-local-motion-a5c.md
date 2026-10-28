@@ -62,6 +62,8 @@
 
 ## Implementation tasks
 
+Pre-training engineering correction,2026-10-28 20:40UTC: attempt1 stopped before its first optimizer step because CUDA adaptive_avg_pool3d backward has no deterministic implementation. Keep strict determinism and the same adaptive(1,4,4) floor/ceil bins, implemented with explicit slice means and stacking. Independent FP64 forward/gradient parity is required before retry. No architecture parameters, training target, input, batch, gate, pooling geometry or formal output changed. Failed check/CPU/GPU time and original log are retained.
+
 ### Task1: contract and metadata
 - [ ] Commit this protocol and YAML config; advisory read-only plan review and repairs before dependent work.
 - [ ] On server prepare fixed pair maps/counts from eligible input references; full expected train lists/plans, frozen SHA and byte/time forecast. Refuse infeasible budget before flow extraction.

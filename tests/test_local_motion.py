@@ -9,6 +9,17 @@ from echo_routing.temporal import local_motion as m
 torch.set_num_threads(1)
 
 
+def test_explicit_pool_equals_adaptive_pool_values_and_gradients():
+    x=torch.randn(2,3,5,7,7,dtype=torch.float64,requires_grad=True)
+    y=m.DeterministicPool()(x)
+    ref=torch.nn.functional.adaptive_avg_pool3d(x,(1,4,4))
+    v=torch.randn_like(y)
+    a=torch.autograd.grad((v*y).sum(),x,retain_graph=True)[0]
+    b=torch.autograd.grad((v*ref).sum(),x)[0]
+    assert torch.allclose(y,ref,atol=1e-14,rtol=0)
+    assert torch.allclose(a,b,atol=1e-14,rtol=0)
+
+
 def test_pair_identity_rejects_splices_repeats_and_noncontiguous_frames():
     a = ('recording', 3, 1.)
     assert m.valid_pair(a, ('recording', 6, 1.))
