@@ -5,7 +5,7 @@ import tarfile
 import numpy as np
 import pytest
 
-from scripts.lvot_caliper_contract import normalized_calipers, verify_publisher_object, stream_verified_tar
+from scripts.lvot_caliper_contract import normalized_calipers, verify_publisher_object, stream_verified_tar, bind_main_lvot_caliper
 
 
 def test_publisher_hashes_reject_corruption_and_size_mismatch():
@@ -66,3 +66,44 @@ def test_streamed_archive_blocks_path_escape(tmp_path):
     with pytest.raises(ValueError, match="path"):
         stream_verified_tar(io.BytesIO(body), {"size": len(body), "lfs": {
             "oid": hashlib.sha256(body).hexdigest()}}, {"chosen"}, tmp_path, 100)
+
+
+def _metadata():
+    points = [[.001, .06], [.009, .08]]
+    a = {"content_types": ["2d_brightness_mode"],
+         "frame_counts_by_content_type": {"2d_brightness_mode": 1},
+         "arrays": [{"name": "annotations/measurement_000_points", "shape": [2, 2],
+                     "units": "physical_xy_m", "coordinate_system": "physical_xy_m"}],
+         "recording_manifest": {"annotations": [{"kind": "measurement",
+             "target": {"type": "recording", "semantic_id": "global"},
+             "value": {"zarr_path": "annotations/measurement_000_points"},
+             "links": {"coordinate_type": "spatial", "geometry_kind": "caliper",
+                       "measure_id": "Cardiac/2D/Dimension/LVOT Diam",
+                       "measurement_kind": "dimension_lvot_diam", "point_count": 2,
+                       "init_from_cad": False, "source_entry_ref": {"element_index": 2}}}],
+             "sectors": [{"semantic_id": "bmode",
+                "frames": {"zarr_path": "data/2d_brightness_mode"},
+                "geometry": dict(sample_type="Tissue(8)", depth_start_m=.02,
+                                 depth_end_m=.12, tilt_rad=0., width_rad=1.),
+                "overlays": {"physical_points": [{"points": points}]}}]}}
+    return a, np.array(points)
+
+
+def test_main_schema_keeps_global_link_and_derived_geometry_join_separate():
+    a, points = _metadata()
+    result = bind_main_lvot_caliper(a, {"annotations/measurement_000_points": points})
+    assert result["original_target"]["semantic_id"] == "global"
+    assert result["binding_method"] == "unique_sector_overlay_geometry_join"
+    assert result["target_path"] == "annotations/measurement_000_points"
+
+
+@pytest.mark.parametrize("change", ["no_overlay", "two_matches", "cad", "second_sector", "other_stream"])
+def test_main_schema_rejects_global_label_without_unique_binding(change):
+    a, points = _metadata(); m = a["recording_manifest"]
+    if change == "no_overlay": m["sectors"][0]["overlays"] = {}
+    if change == "two_matches": m["sectors"][0]["overlays"]["physical_points"] *= 2
+    if change == "cad": m["annotations"][0]["links"]["init_from_cad"] = True
+    if change == "second_sector": m["sectors"] *= 2
+    if change == "other_stream": a["content_types"].append("1d_pulsed_wave_doppler")
+    with pytest.raises(ValueError):
+        bind_main_lvot_caliper(a, {"annotations/measurement_000_points": points})

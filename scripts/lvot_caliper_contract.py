@@ -9,6 +9,64 @@ import tarfile
 import numpy as np
 
 
+def bind_main_lvot_caliper(attrs, decoded_targets):
+    """Bind the main exporter global named caliper by a unique sector geometry join.
+
+    Caller decodes targets from fully publisher-verified archive objects only.
+    This establishes a weak clinical measurement location, never view/absence truth.
+    """
+    if attrs.get("content_types") != ["2d_brightness_mode"]:
+        raise ValueError("exclusive B-mode content required")
+    if attrs.get("frame_counts_by_content_type") != {"2d_brightness_mode": 1}:
+        raise ValueError("exactly one static B-mode frame required")
+    manifest = attrs["recording_manifest"]
+    sectors = manifest.get("sectors", [])
+    if len(sectors) != 1 or sectors[0].get("semantic_id") != "bmode":
+        raise ValueError("exactly one B-mode sector required")
+    sector = sectors[0]
+    if sector.get("frames", {}).get("zarr_path") != "data/2d_brightness_mode":
+        raise ValueError("explicit B-mode sector frame binding required")
+    if sector.get("geometry", {}).get("sample_type") != "Tissue(8)":
+        raise ValueError("native tissue sample required")
+    named = [a for a in manifest.get("annotations", [])
+             if a.get("kind") == "measurement" and
+             a.get("links", {}).get("measurement_kind") == "dimension_lvot_diam"]
+    if len(named) != 1:
+        raise ValueError("one named LVOT diameter measurement required")
+    annotation = named[0]
+    links = annotation["links"]
+    if (links.get("measure_id") != "Cardiac/2D/Dimension/LVOT Diam" or
+        links.get("coordinate_type") != "spatial" or links.get("geometry_kind") != "caliper" or
+        links.get("point_count") != 2 or links.get("init_from_cad") is not False or
+        not links.get("source_entry_ref") or links.get("burned_in_only", False)):
+        raise ValueError("LVOT clinical caliper provenance mismatch")
+    path = annotation.get("value", {}).get("zarr_path")
+    metadata = [v for v in attrs.get("arrays", []) if v.get("name") == path]
+    if (len(metadata) != 1 or metadata[0].get("shape") != [2, 2] or
+        metadata[0].get("units") != "physical_xy_m" or
+        metadata[0].get("coordinate_system") != "physical_xy_m"):
+        raise ValueError("physical two-endpoint array metadata required")
+    points = np.asarray(decoded_targets[path], dtype=np.float64)
+    geometry = normalized_calipers(points, sector["geometry"])
+    def same(other):
+        other = np.asarray(other, dtype=np.float64)
+        return other.shape == (2, 2) and (np.allclose(points, other, atol=5e-7, rtol=0) or
+                                        np.allclose(points[::-1], other, atol=5e-7, rtol=0))
+    matches = [v for v in sector.get("overlays", {}).get("physical_points", [])
+               if same(v.get("points", []))]
+    if len(matches) != 1:
+        raise ValueError("unique sector-owned overlay match required")
+    for other in manifest.get("annotations", []):
+        other_path = other.get("value", {}).get("zarr_path")
+        if other is annotation or other.get("kind") != "measurement":
+            continue
+        if other_path in decoded_targets and same(decoded_targets[other_path]):
+            raise ValueError("alternative measurement geometry binding")
+    return {"target_path": path, "original_target": annotation.get("target"),
+            "binding_method": "unique_sector_overlay_geometry_join",
+            "measure_id": links["measure_id"], "geometry": geometry}
+
+
 def stream_verified_tar(source, metadata, selected_prefixes, destination, max_retained_bytes):
     """Retain selected members in quarantine; admission requires returned full SHA proof.
 
