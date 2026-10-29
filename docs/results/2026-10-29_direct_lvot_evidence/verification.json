@@ -1,0 +1,32 @@
+{
+  "ok": true,
+  "model_training_activated": false,
+  "new_EV9V_readout": false,
+  "source_gate_failed_independently_confirmed": true,
+  "new_contract_tests": 14,
+  "relevant_existing_tests": 22,
+  "test_total_passed": 36,
+  "test_command": "python -m pytest -q tests/test_lvot_caliper_contract.py tests/test_operator_site.py tests/test_valve_localized.py tests/test_clinical_pretraining.py",
+  "code_current_actual_git_blob_and_server_SHA_equal": {
+    "scripts/lvot_caliper_contract.py": "914a7f7b759a25a67a6b0bfe5b40d0bb6a443ff7ad9432eafb40ef4794cc4a4c",
+    "scripts/prepare_lvot_public_source.py": "5f3fff6833d2bf06e21974262ba33a3ecc343df6867af9c09dddfe25e18cf485",
+    "scripts/admit_lvot_public_source.py": "367cef150946d4f8f91d7a6e87ee92463d28e387d4150eabc406391c71aad92e",
+    "scripts/audit_lvot_public_source.py": "a5e8f92b5edd57fb2790991b76a3f9322780c15866779f2a5d1959febbcfae08"
+  },
+  "loaded_preparation_helper_actual_git_commit": "00df529",
+  "preparation_selection_actual_git_commit": "ab0f8ca",
+  "selection_commit_precedes_acquisition_seconds": 32.102567195892334,
+  "deadline_tightening_commit_after_acquisition_seconds": 12.897432804107666,
+  "schema_clarification_commit": "67ab1ad",
+  "schema_clarification_before_main_target_decoding": true,
+  "Base_sha256_matches_prior_frozen_manifest": true,
+  "Base_sha256": "9b144925f32fac7d725d13231a132abeb6635fa44b6fe0dbcec7f5b59d035bbc",
+  "no_new_model_processes_or_GPU_jobs": true,
+  "matching_heartbeat_inventory": [],
+  "prohibited_data_paths_read": false,
+  "source_binding_scope": "weak clinical measurement location only; not expert anatomy/visibility/A5C absence",
+  "publisher_full_archive_verification": "one complete streaming hash check; persisted selected member hashes independently recomputed; no second full download",
+  "failed_archive_bytes_global_residual": 4341936128,
+  "failed_archive_per_attempt_byte_counts_available": false,
+  "audit_limitation": "Individual failed-stream byte telemetry was not retained. Their combined traffic is exactly included by the global byte counter; successful archive byte/proof receipts are exact. Root/reviewer/process CPU use conservative scope bounds, not precise platform CPU telemetry."
+}
