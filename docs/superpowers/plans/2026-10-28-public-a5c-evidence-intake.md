@@ -51,3 +51,10 @@ Attempt1 reached its300-request implementation ceiling after19660800bytes and re
 ## Cached-index engineering amendment
 
 Attempt2 was owner-interrupted after710pages/46530560bytes to avoid spending the remaining traffic walking chunk headers. Its original receipt/code and cached pages remain. The cached header index found2414 checksum-valid headers across9 recordings in monotone recording order. One indexed lookup now reuses those pages and is limited to10MB extra/120new requests; it must locate and checksum-validate the exact requested .zmetadata member and parse its JSON. A search miss is a sample-access limit, not evidence that LVOT labels do not exist. Same examination, same metadata-only target selection, cumulative traffic including a conservative interrupted-response page remains below100MB.
+
+## Final bounded target lookup
+
+The indexed lookup failed because its search pivot fell inside a data payload with no header in the bounded neighborhood; its receipt and20 fetched pages are retained. The fixed first annotated PW target is recording rank11 of49 in this same examination. A final lookup follows exact next-header offsets from the latest cached checksum-valid preceding header instead of searching raw payload. It reuses both page caches, has a10MB/120request additional cap, and verifies the exact member name and JSON. Combined sample traffic including conservative interruption tails remains<100MB. No second examination, label reassignment or model input is introduced.
+
+## Closure
+Fixed sample audit closed at03:27UTC: spectral target, no qualified B-mode frame target. See result README and preserved receipts. PanEcho matched-state A47 card proceeds separately under the shared cap.

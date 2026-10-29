@@ -1,0 +1,165 @@
+{
+  "retrieved_utc": "2026-10-29T02:54:23.544197+00:00",
+  "scope": "bounded official-source intake, not an exhaustive survey or legal opinion; noncommercial research only, attribution/license conditions remain",
+  "resources": [
+    {
+      "id": "EchoXFlow",
+      "urls": [
+        "https://huggingface.co/datasets/Ahus-AIM/EchoXFlow",
+        "https://github.com/Ahus-AIM/EchoXFlow",
+        "https://arxiv.org/html/2605.05447v2"
+      ],
+      "dataset_revision": "7a36922880061791519a8f01553c15cad5df564f",
+      "code_revision": "61f027e02118106379682d2cf286faa060130541",
+      "published_license": "CC-BY-NC-SA-4.0 for dataset and tooling",
+      "availability": "ungated, actual pinned metadata downloaded on server and SHA verified; no full dataset download",
+      "supervision": "operator-created/adjusted measurements and Doppler sampling sites; dense contours are predominantly apical LV, not LVOT masks",
+      "view_labels": "EchoPrime/EchoFine predictions; not human A5C labels",
+      "overlap": "EV9V/protected-source exact overlap unknown; patient grouping within EchoXFlow is separately provided",
+      "status": "licensed lead, but inspected LVOT Trace targets spectral PW data; static sampling-gate fields do not qualify a per-frame B-mode target; no anatomy training launched",
+      "snapshot_sha256": {
+        "echoxflow-hf.md": "88ceff80cbeadd4c387bcdf7279dedc62aa0e17b5639422482c7970ec293f0db",
+        "echoxflow-github.md": "4ac8e19778ccf5cc0377e4c73673a56c5e7f6aeb253f6ebf785818c45b248629",
+        "echoxflow.md": "aa537b5af00c8abaeb970fd2d36301c5da7ba7f77485dde7c13e51f5db48af02"
+      }
+    },
+    {
+      "id": "AoVdetector",
+      "urls": [
+        "https://huggingface.co/CardiovascularImagingVHIR/AoVdetector",
+        "https://github.com/CardiovascularImagingVallHebron/AoVdetector"
+      ],
+      "model_revision": "d35108887c9bcd432d852da103e684db6c2fd969",
+      "code_revision": "cb59a4b0398db42997dcad87cdebf99980e87c3f",
+      "published_license": "weights CC-BY-NC-SA-4.0; no GitHub repository license found",
+      "availability": "ungated weight file listed, not downloaded",
+      "supervision": "valve bounding boxes for PSAX/PLAX/3CH; source training code uses those three labels plus background",
+      "limitations": "no A5C/A4C transfer validation; reported label-match and view accuracy are not A5C discrimination; source code uses row-level train_test_split, no documented patient grouping",
+      "overlap": "not established",
+      "status": "interesting anatomical prior, insufficient target-transfer evidence to prefer it over new direct supervision",
+      "snapshot_sha256": {
+        "aovdetector-hf.md": "d82e79e692e556ca5c40294dbc78c8d026113d4d2930a931fd69cb5ff89ad568",
+        "aovdetector.md": "78692b94a13f01783a188a137e86a3b6fbc6b7029a2278ce90ff83da30fbb265"
+      }
+    },
+    {
+      "id": "PanEcho",
+      "urls": [
+        "https://github.com/CarDS-Yale/PanEcho",
+        "https://github.com/CarDS-Yale/PanEcho/blob/main/LICENSES.md",
+        "https://github.com/CarDS-Yale/PanEcho/blob/main/content/tasks.md"
+      ],
+      "code_revision": "836c46ef6bc4eace50b7dc36704ecef2d33affde",
+      "published_license": "model weights CC-BY-NC-SA-4.0; other materials AGPLv3",
+      "availability": "released checkpoint and transfer-learning interface, not downloaded",
+      "supervision": "39 study-level reporting tasks including LVOT diameter, aortic valve structure/stenosis and hemodynamics",
+      "limitations": "study-level labels are not frame-level valve visibility; no official A5C-specific evidence located in this intake",
+      "overlap": "exact pretraining overlap unknown",
+      "status": "selected for A47 matched frozen-pretrained-state screen against ImageNet ConvNeXt-Tiny; actual checkpoint acquisition and strict SHA/loading gates precede any feature forward",
+      "snapshot_sha256": {
+        "panecho.md": "f0fb41ca7a7388645961531096f8b65f0352b0d909dc9d5242cbfe16e2e49eb8",
+        "panecho-license.md": "438e5de958b1a3d8661fd0f356c4c2dbd84d4770ce2911e004546f1ba73bf783",
+        "panecho-tasks.md": "961d6c337b2004bf2039bce62291a178d8539e80525de65ef8924bf5875911bb"
+      }
+    },
+    {
+      "id": "EchoFM-SekeunKim",
+      "urls": [
+        "https://github.com/SekeunKim/EchoFM",
+        "https://huggingface.co/sekeun/EchoFM"
+      ],
+      "code_revision": "f5b6821211a530fe82df9c06dc74105a5d510638",
+      "model_revision": "7cad99f6adcb0e209dd4a8134af22dc2d3e59bf6",
+      "published_license": "HF card says CC-BY-NC-4.0; GitHub says CC-BY-NC-ND-4.0 and allows noncommercial academic use; license mismatch unresolved",
+      "availability": "weight file listed, not downloaded",
+      "supervision": "masked video modeling and physiological periodicity; no new human LVOT target identified",
+      "limitations": "do not equate ND with a ban on all private training; do not claim A41 disproves this model",
+      "overlap": "unknown",
+      "status": "not selected: neither a resolved release license nor specific new A5C evidence established",
+      "snapshot_sha256": {
+        "echofm.md": "112888f9d8add5fe49bc2936c5bf35609e6364153c17adfa9cccfd619cf1c30e",
+        "echofm-hf.md": "fcd30c200ca19c96d4e04650bdb617cd7dcd8544127a26964f2a71b2c0bd7204"
+      }
+    },
+    {
+      "id": "Echo-Vision-FM",
+      "urls": [
+        "https://github.com/ZiyangZhang0511/Echo-Vison-FM",
+        "https://www.nature.com/articles/s41467-025-66340-4"
+      ],
+      "code_revision": "c5663d479c710a8aec203120c106eed6331efb27",
+      "published_license": "not established from inspected repository",
+      "availability": "pretrained release link exists; no download",
+      "supervision": "public-echo video pretraining; no newly verified A5C structure target",
+      "overlap": "not established",
+      "status": "no executable anatomically grounded advantage established; distinct from SekeunKim EchoFM",
+      "snapshot_sha256": {
+        "echo-vision-fm.md": "bf8b896daf7bd980f39752432e924789b50e4497913a6bf782606df477105bcf"
+      }
+    },
+    {
+      "id": "MedSapiens",
+      "urls": [
+        "https://github.com/xmed-lab/MedSapiens"
+      ],
+      "code_revision": "b7bdac6bb3f260f8df785cc20728309573b6f88f",
+      "published_license": "SAPIENS license plus Apache-2.0 portions; not blanket MIT",
+      "availability": "general and echo-LVH download/training interfaces; not downloaded",
+      "supervision": "echo example is EchoNet-LVH PLAX wall/cavity measurements, not apical LVOT/A5C annotation",
+      "overlap": "not established",
+      "status": "available landmark framework, wrong verified target for this next round",
+      "snapshot_sha256": {
+        "medsapiens.md": "485e1a204d22fbb1a36597f02dd28ea84e6922f849cd3c729335968ce0f8f357"
+      }
+    },
+    {
+      "id": "EchoNet-Segmentation-Measurements",
+      "urls": [
+        "https://github.com/echonet/measurements/tree/main/Segmentation",
+        "https://www.medrxiv.org/content/10.64898/2026.06.23.26356383v1"
+      ],
+      "published_license": "preprint CC-BY-NC-4.0 is not a weight/data license; release-specific weights terms not established here",
+      "availability": "model/code links and released weights, no raw training patients",
+      "supervision": "atrial masks and spectral VTI envelopes, including LVOT VTI; not an LVOT B-mode mask",
+      "overlap": "not established",
+      "status": "a spectral-envelope model cannot be presented as visual LVOT localization",
+      "snapshot_sha256": {
+        "echonet-segmentation.md": "562eee3f0c4e31b05e3f3c23aac00039dc289976cc8e16caa77c4cdf187f10da",
+        "echonet-measurements.md": "02583df6be6099391ddb7cba8c7a35f0e22b3938b1cf207a2143d09e18927d77",
+        "echonet-seg-readme.md": "302ff8ddf179809d1609c946b99a723e2b0e9ddde2f4d65b005ee409a145e457"
+      }
+    },
+    {
+      "id": "Unity",
+      "urls": [
+        "https://data.unityimaging.net/",
+        "https://data.unityimaging.net/additional.html",
+        "https://data.unityimaging.net/u4s.html"
+      ],
+      "published_license": "release datasets CC-BY-NC-ND-4.0; additional page CC-BY-NC-SA-4.0; weights generally CC-BY-4.0, task pages may differ",
+      "availability": "previously held; not read or trained in this intake",
+      "supervision": "previous audit:144 A5C frames with aortic-valve point; A4C off states are plane-scheme labels, not independent per-frame absence",
+      "status": "existing evaluation-only repository restriction retained; no reinterpretation of ND as absolute private-training prohibition",
+      "snapshot_sha256": {
+        "unity-home.md": "a55facf5a16cb646fa3e45adbee5e4ff51aaf3c56d83ff14c8e5a8272d391165",
+        "unity-additional.md": "0c644b5556fbba79e6adb7b113dc8fe5e7eb9a904da38e1f338bd7e5d60b7317",
+        "unity-u4s.md": "917e0ea1eacc2998c48234b6480b0147c8ba6068d694b3050a6ffd8187842754"
+      }
+    },
+    {
+      "id": "EchoApex-and-measurement-grounded-EchoVLM",
+      "urls": [
+        "https://arxiv.org/html/2410.11092v2",
+        "https://arxiv.org/html/2512.12107v1"
+      ],
+      "published_license": "article license is not model license",
+      "availability": "no verified official obtainable checkpoint for these exact titles in bounded search; HF EchoVLM hits correspond to different authors/model",
+      "supervision": "papers report clinical/segmentation/landmark transfer; measurement-grounded EchoVLM landmark task is EchoNet-LVH",
+      "status": "no executable checkpoint contract established; not a claim that none exists anywhere",
+      "snapshot_sha256": {
+        "echovlm-grounded.md": "e279fcdb462d0110a2a5fd7bb86e9c325b504190ab041e1202465e72145ea790"
+      }
+    }
+  ],
+  "updated_utc": "2026-10-29T03:47:10Z"
+}

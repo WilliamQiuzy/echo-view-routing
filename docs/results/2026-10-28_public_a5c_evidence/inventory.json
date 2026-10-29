@@ -1,0 +1,107 @@
+{
+  "array_field_names": [
+    "arrays/array_id",
+    "arrays/array_path",
+    "arrays/content_types",
+    "arrays/coordinate_system",
+    "arrays/data_sha256",
+    "arrays/dtype",
+    "arrays/recording_id",
+    "arrays/recording_zarr_path",
+    "arrays/role",
+    "arrays/shape",
+    "arrays/units"
+  ],
+  "arrays": 728251,
+  "contains_expert_view_labels": false,
+  "license": {
+    "@type": "CreativeWork",
+    "name": "CC-BY-NC-SA-4.0"
+  },
+  "lvot_candidate_modes": {},
+  "lvot_named_exams": 0,
+  "lvot_named_recordings": 0,
+  "metadata_bytes": 705276151,
+  "metadata_sha256": "8e90e77079cce8804073ff281558d6c4b5f343117ab042e8791427cd0e369454",
+  "record_set_contracts": {
+    "arrays": {
+      "fields": [
+        "array_id",
+        "recording_id",
+        "recording_zarr_path",
+        "array_path",
+        "content_types",
+        "role",
+        "dtype",
+        "shape",
+        "data_sha256",
+        "units",
+        "coordinate_system"
+      ],
+      "rows": 728251
+    },
+    "merged_recordings": {
+      "fields": [
+        "merged_recording_id",
+        "recording_id",
+        "annotation_document_ids"
+      ],
+      "rows": 1585
+    },
+    "recording_links": {
+      "fields": [
+        "source_recording_id",
+        "annotation_document_id",
+        "panel_role_id",
+        "linked_frame_array_id",
+        "linked_timestamp_array_id"
+      ],
+      "rows": 1951
+    },
+    "recordings": {
+      "fields": [
+        "exam_id",
+        "recording_id",
+        "zarr_path",
+        "modes",
+        "content_types",
+        "frame_counts_by_content_type",
+        "median_delta_time_by_content_type",
+        "array_paths"
+      ],
+      "rows": 36036
+    },
+    "streams": {
+      "fields": [
+        "array_id",
+        "recording_id",
+        "timestamp_array_id",
+        "sample_count",
+        "clock_status",
+        "duration_s",
+        "median_delta_s",
+        "largest_gap_s",
+        "large_gap_count",
+        "reset_count",
+        "repeated_time_count",
+        "nonfinite_time_count",
+        "depth_start_m",
+        "depth_end_m",
+        "radial_spacing_m",
+        "azimuth_spacing_rad",
+        "elevation_spacing_rad",
+        "velocity_scale_status",
+        "velocity_scale_min_mps",
+        "velocity_scale_max_mps",
+        "velocity_scale_change_count",
+        "excluded_source_frame_count",
+        "heart_rate_bpm",
+        "calibration_status"
+      ],
+      "rows": 98982
+    }
+  },
+  "recordings": 36036,
+  "revision": "7a36922880061791519a8f01553c15cad5df564f",
+  "target_array_paths": {}
+}
