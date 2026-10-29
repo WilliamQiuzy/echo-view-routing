@@ -43,3 +43,7 @@ New files: this plan; `docs/results/2026-10-28_public_a5c_evidence/README.md`, `
 ## Pre-sample amendment (metadata only)
 
 The pinned manifest contains36036 recording entries,728251 arrays and no LVOT-named array path; annotation paths are encoded, so zero name matches is not absence of LVOT annotations. The fixed schema-sample rule is now the lexicographically first examination with at least one recording containing both PW Doppler and B-mode; inspect consolidated metadata of its PW+B-mode recordings only. Stop at the first verified LVOT-measurement/site binding or at the original100MB/one-exam limit. No model view classifier or EV9V outcome selects this sample. Report sampling coverage rather than extrapolating its label availability to all examinations.
+
+## Engineering amendment before sample attempt2
+
+Attempt1 reached its300-request implementation ceiling after19660800bytes and retained its failed receipt. Exact HTTP206/range/USTAR checks passed. The physical sample remains the same one examination and total sample traffic remains<=100MB: attempt2 gets<=80MB,1200requests,900seconds and persists fetched pages. Only its PW+B-mode recordings with measurement arrays are requested, selected using the already downloaded metadata, not a view or outcome. An extra512-byte range preflight is also counted. No model condition, scientific gate or forbidden data changes.

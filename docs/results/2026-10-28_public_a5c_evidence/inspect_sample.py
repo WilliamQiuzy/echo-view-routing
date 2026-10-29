@@ -18,6 +18,8 @@ class Ranges(io.RawIOBase):
         self.url, self.size, self.pos = url, size, 0
         self.cache, self.page, self.transferred, self.requests = {}, 65536, 0, 0
         self.started = time.monotonic()
+        self.cache_dir = ROOT / 'ranges_attempt2'
+        self.cache_dir.mkdir(exist_ok=True)
 
     def readable(self):
         return True
@@ -44,7 +46,7 @@ class Ranges(io.RawIOBase):
             start = self.pos // self.page * self.page
             end = min(self.size, start + self.page) - 1
             if start not in self.cache:
-                if self.transferred + end - start + 1 > 100000000 or self.requests >= 300 or time.monotonic() - self.started > 240:
+                if self.transferred + end - start + 1 > 80000000 or self.requests >= 1200 or time.monotonic() - self.started > 900:
                     raise RuntimeError('sample traffic/request/time limit reached')
                 req = urllib.request.Request(self.url, headers={'Range': f'bytes={start}-{end}'})
                 with urllib.request.urlopen(req, timeout=20) as r:
@@ -55,6 +57,7 @@ class Ranges(io.RawIOBase):
                 if len(b) != end - start + 1:
                     raise ValueError('range response length wrong')
                 self.cache[start] = b
+                (self.cache_dir / f'{start:012d}.bin').write_bytes(b)
                 self.transferred += len(b)
                 self.requests += 1
             offset = self.pos - start
@@ -69,7 +72,7 @@ def run():
     selection = json.loads((ROOT / 'sample_selection.private.json').read_text())
     exam = selection['exam']
     package = json.loads((ROOT / 'package_manifest.json').read_text())
-    wanted = {r['recordings/zarr_path'] + '/.zmetadata' for r in selection['recordings']}
+    wanted = {r['recordings/zarr_path'] + '/.zmetadata' for r in selection['recordings'] if any(p.startswith('annotations/measurement_') for p in r['recordings/array_paths'])}
     stream = Ranges(f'https://huggingface.co/datasets/Ahus-AIM/EchoXFlow/resolve/{REV}/exams/{exam}.tar', package['tar_bytes'][exam])
     try:
         assert stream.read(512)[257:262] == b'ustar', 'uncompressed USTAR preflight failed'
@@ -121,4 +124,4 @@ if __name__ == '__main__':
         receipt = {'ok': ok, 'started_unix': start, 'finished_unix': time.time(), 'wall_seconds': time.time() - start,
                    'process_cpu_seconds': time.process_time() - cpu, 'gpu_hours': 0,
                    'script_sha256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest()}
-        (ROOT / 'sample_receipt.json').write_text(json.dumps(receipt, indent=2))
+        (ROOT / 'sample_receipt.attempt2.json').write_text(json.dumps(receipt, indent=2))
