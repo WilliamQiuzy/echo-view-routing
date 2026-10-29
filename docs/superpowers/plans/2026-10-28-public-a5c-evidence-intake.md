@@ -39,3 +39,7 @@ Before every dependent stage: inspect the preceding receipt, validate hashes/lim
 ## Files and verification
 
 New files: this plan; `docs/results/2026-10-28_public_a5c_evidence/README.md`, `sources.json`, `inventory.json`, `audit.json` and reproducible metadata inspection code if used. Public summaries contain no recording/session identifiers or per-case labels. The server contains source metadata and any permitted sample. Verify all copied aggregate SHAs against their actual git blobs before closing; record current head and preserved staged-diff SHA. No broad repository rewrites or unrelated tests.
+
+## Pre-sample amendment (metadata only)
+
+The pinned manifest contains36036 recording entries,728251 arrays and no LVOT-named array path; annotation paths are encoded, so zero name matches is not absence of LVOT annotations. The fixed schema-sample rule is now the lexicographically first examination with at least one recording containing both PW Doppler and B-mode; inspect consolidated metadata of its PW+B-mode recordings only. Stop at the first verified LVOT-measurement/site binding or at the original100MB/one-exam limit. No model view classifier or EV9V outcome selects this sample. Report sampling coverage rather than extrapolating its label availability to all examinations.
