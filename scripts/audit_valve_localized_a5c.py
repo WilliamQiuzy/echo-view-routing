@@ -30,6 +30,15 @@ def auc(pos,neg):
     return float(((pos[:,None]>neg[None,:]).sum()+.5*(pos[:,None]==neg[None,:]).sum())/(len(pos)*len(neg)))
 
 
+def softplus_reference(x):
+    """Independent stable formula, including torch's beta1/threshold20 branch.
+
+    logaddexp stays finite for extreme finite inputs. At20 the nonlinear
+    branch remains active, including its derivative.
+    """
+    return torch.where(x>20,x,torch.logaddexp(torch.zeros_like(x),x))
+
+
 def audit(ctx,source):
     a.pins(ctx,source)
     result=json.loads((a.OUT/f'readout_s{source}.json').read_text());weights=json.loads((a.OUT/f'weights_s{source}.json').read_text());prep=json.loads((a.OUT/f'preparation_s{source}.json').read_text());source_man=json.loads((a.OUT/'sources.json').read_text());cache=np.load(a.OUT/f'private_readout_s{source}.npz',allow_pickle=False)
@@ -94,7 +103,7 @@ def audit(ctx,source):
             err=float(abs(ss-cache[f'score_{arm}_h{h}'][select]).max());maximum=max(maximum,err);assert err<1e-4
             parity[arm]={'independent_normalization_resize_four_scale_head_max_abs':err,'full_source_original_loader':True}
             # Independently differentiable scalar formula and functional head in float64.
-            prod=a.vl.ValveHead().cuda().double();prod.load_state_dict(hs);xd=x.detach().double();ed=e.double();ww=torch.tensor([1.,0.,1.,1.,1.],device='cuda',dtype=torch.float64);slots=torch.tensor([0,1,1,2,3],device='cuda');take=torch.tensor([0,1,1,2,2],device='cuda');prod.zero_grad(set_to_none=True);loss,_=a.cp.loss_from_scores(prod(xd[take],ed[take]),ww,slots);loss.backward();ga=torch.cat([z.grad.flatten() for z in prod.parameters()]);ind={k:v.detach().double().requires_grad_() for k,v in hs.items()};s=functional_model(ind,xd[take],ed[take]);rr=torch.stack([sum(s[j]*ww[j] for j in range(5) if int(slots[j])==k) for k in range(4)]);ll=torch.logaddexp(rr.new_zeros(()),-rr[0])+torch.logaddexp(rr.new_zeros(3),rr[1:]).mean();grads=torch.autograd.grad(ll,list(ind.values()));gb=torch.cat([z.flatten() for z in grads]);gerr=float(torch.linalg.vector_norm(ga-gb)/torch.linalg.vector_norm(ga));diag={'gradient_relative':gerr,'gradient_max_abs':float((ga-gb).abs().max()),'production_gradient_norm':float(torch.linalg.vector_norm(ga)),'functional_gradient_norm':float(torch.linalg.vector_norm(gb)),'head_forward_max_abs':float((prod(xd[take],ed[take])-s).abs().max()),'loss_abs_difference':float(abs(loss.detach()-ll.detach())),'max_abs_fixed_subset_score':float(s.detach().abs().max())};a.write(a.OUT/f'gradient_diagnostic_s{source}_h{h}_{arm}.private.json',diag);assert gerr<1e-10,json.dumps(diag);parity[arm]['functional_head_gradient_relative']=gerr
+            prod=a.vl.ValveHead().cuda().double();prod.load_state_dict(hs);xd=x.detach().double();ed=e.double();ww=torch.tensor([1.,0.,1.,1.,1.],device='cuda',dtype=torch.float64);slots=torch.tensor([0,1,1,2,3],device='cuda');take=torch.tensor([0,1,1,2,2],device='cuda');prod.zero_grad(set_to_none=True);loss,_=a.cp.loss_from_scores(prod(xd[take],ed[take]),ww,slots);loss.backward();ga=torch.cat([z.grad.flatten() for z in prod.parameters()]);ind={k:v.detach().double().requires_grad_() for k,v in hs.items()};s=functional_model(ind,xd[take],ed[take]);rr=torch.stack([sum(s[j]*ww[j] for j in range(5) if int(slots[j])==k) for k in range(4)]);ll=softplus_reference(-rr[0])+softplus_reference(rr[1:]).mean();exact=torch.logaddexp(rr.new_zeros(()),-rr[0])+torch.logaddexp(rr.new_zeros(3),rr[1:]).mean();matherr=float(abs(ll.detach()-exact.detach()));assert matherr<=4.2e-9;grads=torch.autograd.grad(ll,list(ind.values()));gb=torch.cat([z.flatten() for z in grads]);gerr=float(torch.linalg.vector_norm(ga-gb)/torch.linalg.vector_norm(ga));diag={'gradient_relative':gerr,'gradient_max_abs':float((ga-gb).abs().max()),'production_gradient_norm':float(torch.linalg.vector_norm(ga)),'functional_gradient_norm':float(torch.linalg.vector_norm(gb)),'head_forward_max_abs':float((prod(xd[take],ed[take])-s).abs().max()),'loss_abs_difference':float(abs(loss.detach()-ll.detach())),'exact_math_loss_difference':matherr,'max_abs_fixed_subset_score':float(s.detach().abs().max())};a.write(a.OUT/f'gradient_diagnostic_s{source}_h{h}_{arm}.private.json',diag);assert gerr<1e-10,json.dumps(diag);parity[arm]['functional_head_gradient_relative']=gerr;parity[arm]['exact_math_loss_difference']=matherr
             del full,pyramid,prod,ind,state,hs,x,xd,ed,ga,gb;torch.cuda.empty_cache()
             runmeans=np.full(len(base),-np.inf);pred=base.copy();lookup={int(row):float(s) for row,s in zip(F.need,cache[f'score_{arm}_h{h}'])}
             for i in np.flatnonzero(base==2):

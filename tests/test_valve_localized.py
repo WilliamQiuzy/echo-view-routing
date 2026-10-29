@@ -4,7 +4,23 @@ import importlib.util
 import pytest
 import torch
 import copy
+import ast
+from pathlib import Path
 from torch import nn
+
+
+def test_independent_softplus_reference_preserves_production_threshold_and_math_bound():
+    nodes=ast.parse(Path('scripts/audit_valve_localized_a5c.py').read_text()).body
+    found=[n for n in nodes if isinstance(n,ast.FunctionDef) and n.name=='softplus_reference']
+    assert len(found)==1,'threshold-aware independent reference missing'
+    ns={'torch':torch};exec(compile(ast.Module(body=found,type_ignores=[]),'independent_reference','exec'),ns)
+    x=torch.tensor([-1000.,-25.,0.,20.,20.00000001,21.51,25.,1000.],dtype=torch.float64,requires_grad=True)
+    a=ns['softplus_reference'](x);b=torch.nn.functional.softplus(x)
+    ga=torch.autograd.grad(a.sum(),x,retain_graph=True)[0];gb=torch.autograd.grad(b.sum(),x)[0]
+    assert torch.allclose(a,b,atol=1e-12,rtol=1e-12) and torch.allclose(ga,gb,atol=1e-12,rtol=1e-12)
+    exact=torch.logaddexp(torch.zeros_like(x),x)
+    assert float((a-exact).abs().max().detach())<=2.1e-9
+    assert float((ga-torch.sigmoid(x)).abs().max().detach())<=2.1e-9
 
 
 def core():
