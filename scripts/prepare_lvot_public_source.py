@@ -22,7 +22,7 @@ def freeze():
  aggregate={'phase':'preparation_frozen_before_media','revision':REV,'repo':REPO,'archive_count':len(rows),'archive_bytes':sum(v['publisher_object']['size'] for v in rows),'potential_records':len({v['record'] for r in rows for v in r['candidates']}),'selection_sha256':hashlib.sha256(body).hexdigest(),'per_fold_exams':{str(f):sum(r['fold']==f for r in rows) for f in range(5)},'code_sha256':hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest(),'helper_sha256':hashlib.sha256(pathlib.Path('scripts/lvot_caliper_contract.py').read_bytes()).hexdigest(),'gpu_hours':0}
  (P/'preparation_freeze.json').write_text(json.dumps(aggregate,indent=2)); print(json.dumps(aggregate,indent=2))
 def run():
- plan=json.loads((P/'preparation_selection.private.json').read_text()); t=time.time(); deadline=t+plan['deadline_seconds']; lock=threading.Lock(); state={'traffic_bytes':0}; (P/'archive_receipts').mkdir(exist_ok=True); (P/'archive_quarantine').mkdir(exist_ok=True)
+ plan=json.loads((P/'preparation_selection.private.json').read_text()); t=time.time(); deadline=min(t+plan['deadline_seconds'], (P/'preparation_selection.private.json').stat().st_mtime+plan['deadline_seconds']); lock=threading.Lock(); state={'traffic_bytes':0}; (P/'archive_receipts').mkdir(exist_ok=True); (P/'archive_quarantine').mkdir(exist_ok=True)
  def work(row):
   e=row['exam']; receipt=P/'archive_receipts'/ (e+'.private.json'); dst=P/'archive_quarantine'/e
   if receipt.exists(): raise RuntimeError('no automatic repeat of existing exam')
