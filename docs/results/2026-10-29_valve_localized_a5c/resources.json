@@ -1,5 +1,5 @@
 {
-  "snapshot_utc": "2026-10-29T06:37:50.986144+00:00",
+  "snapshot_utc": "2026-10-29T06:45:18.119297+00:00",
   "server_snapshot_utc": "2026-10-29T06:33:54.212464+00:00",
   "server_stage_GPU_hours": 0.7581032550334931,
   "completed_GPU_processes": 7,
@@ -21,14 +21,14 @@
     ],
     [
       "2026-10-29T06:21:53Z",
-      "2026-10-29T06:37:50.986144+00:00"
+      "2026-10-29T06:45:18.119297+00:00"
     ]
   ],
-  "root_active_wall_proxy_hours": 1.4944405955555555,
+  "root_active_wall_proxy_hours": 1.6186442491666666,
   "past_advisory_review_scope_upper_allowance_hours": 0.15,
   "past_unmetered_qualification_acquisition_local_tests_tools_CPU_allowance_hours": 0.1,
   "past_monitor_overhead_and_short_interstitial_review_allowance_hours": 0.02,
-  "charged_CPU_hours": 2.557559485743889,
+  "charged_CPU_hours": 2.681763139355,
   "new_server_bytes_by_namespace": {
     "video_valve_localized_a5c_v1": 444935449,
     "a48_valve_source_intake_v1": 548696996,
@@ -48,5 +48,5 @@
   "scope": "Includes source qualification/acquisition failures, strict deterministic pool failure, first/diagnostic/final GPU audit, formal train/readout, recorded process imports, conservative past bootstrap bounds and root/reviewer proxies. Empty monitor waiting is excluded. Proxy/allowance charges are not platform CPU telemetry. No future work is precharged.",
   "active_round_processes": [],
   "all_artifact_and_budget_checks": true,
-  "terminal_scope": "Snapshot includes actual root closing through snapshot_utc; final integration/automation cleanup tail is updated before the final reply."
+  "terminal_scope": "Actual root/round work through snapshot_utc, including the first main integration, post-integration22 tests and heartbeat deletion. The later metadata fast-forward, server closure and owned-worktree cleanup are measured after execution in local/server runs/video_valve_localized_a5c_v1/final_resource_receipt.json; no future work is precharged."
 }
