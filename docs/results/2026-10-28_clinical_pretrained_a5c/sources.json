@@ -1,0 +1,94 @@
+{
+  "panecho_code_revision": "836c46ef6bc4eace50b7dc36704ecef2d33affde",
+  "panecho_sources_sha256": {
+    "src/models.py": "b211b3c81c76fcb6ed39cf258970e859c2bda74f2be6870f46556a4cd7873d43",
+    "hubconf.py": "af099781d65a17da64a9773475be128e4addcc211dbb4308f7f7dee55f7e459d",
+    "README.md": "f481a1603036608ae7fbffbbbd538ff536d6f9864c985bea43e87bc90c44e9e7",
+    "LICENSES.md": "438e5de958b1a3d8661fd0f356c4c2dbd84d4770ce2911e004546f1ba73bf783",
+    "content/tasks.md": "961d6c337b2004bf2039bce62291a178d8539e80525de65ef8924bf5875911bb"
+  },
+  "downloads": {
+    "P": {
+      "url": "https://github.com/CarDS-Yale/PanEcho/releases/download/v1.0/panecho.pt",
+      "bytes": 505054604,
+      "sha256": "896a279d2e5d669dd762adb2077e948ec38087006d2b4001657b87a132e2da35",
+      "safe_weights_only_load": true
+    },
+    "G": {
+      "url": "https://download.pytorch.org/models/convnext_tiny-983f1562.pth",
+      "bytes": 114419221,
+      "sha256": "983f1562536e84ff750a1576fb08e54de751dbf2e17c0d8a4a13704341fdcd3d",
+      "safe_weights_only_load": true
+    }
+  },
+  "image_states": {
+    "P": {
+      "sha256": "318e0960ae7f8080b2690335cb0800d95e545d48c23720322ec5c3aa86125a32",
+      "bytes": 111322555,
+      "keys": 180,
+      "parameters": 27820128
+    },
+    "G": {
+      "sha256": "cc1beaa05303a7756e2dde53c1e6af60f45f1f2cc5e6fd10599316758a141f2b",
+      "bytes": 111322555,
+      "keys": 180,
+      "parameters": 27820128
+    }
+  },
+  "clinical_heads_unused": [
+    "AORoot_head",
+    "AVPkVel(m|s)_head",
+    "AVRegurg_head",
+    "AVStenosis_head",
+    "AVStructure_head",
+    "EF_head",
+    "E|EAvg_head",
+    "GLS_head",
+    "IVSd_head",
+    "LAIDs2D_head",
+    "LASize_head",
+    "LAVol_head",
+    "LVDiastolicFunction_head",
+    "LVEDV_head",
+    "LVESV_head",
+    "LVIDd_head",
+    "LVIDs_head",
+    "LVOT20mmHg_head",
+    "LVOTDiam_head",
+    "LVPWd_head",
+    "LVSV_head",
+    "LVSize_head",
+    "LVSystolicFunction_head",
+    "LVWallMotionAbnormalities_head",
+    "LVWallThickness-increased-any_head",
+    "LVWallThickness-increased-modsev_head",
+    "MVRegurgitation_head",
+    "MVStenosis_head",
+    "RADimensionM-L(cm)_head",
+    "RAP-8-or-higher_head",
+    "RASize_head",
+    "RVIDd_head",
+    "RVSP_head",
+    "RVSVel_head",
+    "RVSize_head",
+    "RVSystolicFunction_head",
+    "TAPSE_head",
+    "TVPkGrad_head",
+    "TVRegurgitation_head",
+    "pericardial-effusion_head"
+  ],
+  "temporal_transformer_unused": true,
+  "changed_image_tensors_P_vs_G": 180,
+  "weights_license": "CC-BY-NC-SA-4.0",
+  "upstream_other_materials_license": "AGPLv3",
+  "torch": "2.14.0+cu130",
+  "torchvision": "0.29.0+cu130",
+  "torchvision_convnext_source_sha256": "5c00c412bc79e5c650f887dfe0d21aa8028903a3bbeae1a95c3b0fdfbdaf55c2",
+  "code_sha256": {
+    "scripts/train_clinical_pretrained_a5c.py": "e159f0e05d51a3358de939e5743833f60f3df25523db2398a2b6133d22a12181",
+    "echo_routing/temporal/clinical_pretraining.py": "a86488972349e619f8b5fc527fb694cda3b9fa3b2a4e698d070b8173eb40fb67"
+  },
+  "config_sha256": "1a69ba22af935412784ed7a5d789e75d1429666969415e2a2032137b810b587c",
+  "contract_sha256": "cacebf7374f99a3a5fd06b3129d79742ce242bb48d9e38575c8a649a07fae91b",
+  "written": "2026-10-29T03:52:40Z"
+}
