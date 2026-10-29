@@ -3,8 +3,69 @@
 No downloader, model, inferred annotation, clipping or target fallback.
 """
 import hashlib
+from pathlib import Path, PurePosixPath
+import tarfile
 
 import numpy as np
+
+
+def stream_verified_tar(source, metadata, selected_prefixes, destination, max_retained_bytes):
+    """Retain selected members in quarantine; admission requires returned full SHA proof.
+
+    Includes unselected payload and trailing bytes in the publisher archive digest.
+    Caller enforces network/time/global storage limits and deletes failed quarantine.
+    """
+    if not metadata.get("lfs"):
+        raise ValueError("streamed archive requires publisher LFS SHA256")
+    expected = metadata["lfs"].get("oid", metadata["lfs"].get("sha256"))
+    destination = Path(destination)
+    class Reader:
+        def __init__(self):
+            self.count = 0
+            self.digest = hashlib.sha256()
+        def read(self, n=-1):
+            data = source.read(n)
+            self.count += len(data)
+            if self.count > metadata["size"]:
+                raise ValueError("publisher archive size exceeded")
+            self.digest.update(data)
+            return data
+    reader = Reader()
+    retained = 0
+    members = []
+    with tarfile.open(fileobj=reader, mode="r|", bufsize=1024 * 1024) as archive:
+        for member in archive:
+            path = PurePosixPath(member.name)
+            if path.is_absolute() or ".." in path.parts:
+                raise ValueError("unsafe archive path")
+            if not any(member.name == prefix or member.name.startswith(prefix + "/")
+                       for prefix in selected_prefixes):
+                continue
+            if member.isdir():
+                continue
+            if not member.isfile():
+                raise ValueError("selected archive member must be a regular file")
+            if retained + member.size > max_retained_bytes:
+                raise ValueError("retained archive byte cap exceeded")
+            target = destination.joinpath(*path.parts)
+            if target.exists():
+                raise ValueError("duplicate archive member")
+            target.parent.mkdir(parents=True, exist_ok=True)
+            body = archive.extractfile(member).read()
+            if len(body) != member.size:
+                raise ValueError("truncated archive member")
+            target.write_bytes(body)
+            retained += len(body)
+            members.append({"name": member.name, "bytes": len(body),
+                            "sha256": hashlib.sha256(body).hexdigest()})
+    while reader.read(8 * 1024 * 1024):
+        pass
+    if reader.count != metadata["size"]:
+        raise ValueError("publisher archive size mismatch")
+    if reader.digest.hexdigest() != expected:
+        raise ValueError("publisher archive hash mismatch")
+    return {"publisher_verified": True, "bytes": reader.count,
+            "sha256": reader.digest.hexdigest(), "retained_bytes": retained, "members": members}
 
 
 def verify_publisher_object(body, metadata):
