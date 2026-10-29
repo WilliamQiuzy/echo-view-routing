@@ -47,3 +47,7 @@ The pinned manifest contains36036 recording entries,728251 arrays and no LVOT-na
 ## Engineering amendment before sample attempt2
 
 Attempt1 reached its300-request implementation ceiling after19660800bytes and retained its failed receipt. Exact HTTP206/range/USTAR checks passed. The physical sample remains the same one examination and total sample traffic remains<=100MB: attempt2 gets<=80MB,1200requests,900seconds and persists fetched pages. Only its PW+B-mode recordings with measurement arrays are requested, selected using the already downloaded metadata, not a view or outcome. An extra512-byte range preflight is also counted. No model condition, scientific gate or forbidden data changes.
+
+## Cached-index engineering amendment
+
+Attempt2 was owner-interrupted after710pages/46530560bytes to avoid spending the remaining traffic walking chunk headers. Its original receipt/code and cached pages remain. The cached header index found2414 checksum-valid headers across9 recordings in monotone recording order. One indexed lookup now reuses those pages and is limited to10MB extra/120new requests; it must locate and checksum-validate the exact requested .zmetadata member and parse its JSON. A search miss is a sample-access limit, not evidence that LVOT labels do not exist. Same examination, same metadata-only target selection, cumulative traffic including a conservative interrupted-response page remains below100MB.
