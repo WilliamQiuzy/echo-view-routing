@@ -119,3 +119,22 @@ def test_one_way_deployment_strict_zero_and_non_a4c_invariance():
     assert np.array_equal(cp.deploy(base,score), [0,1,2,2,3,3,4])
     assert np.array_equal(base,[0,1,2,2,2,3,4])
     with pytest.raises(ValueError): cp.deploy(base,np.full(7,np.nan))
+
+
+def test_independent_functional_auditor_matches_trained_head():
+    cp=core()
+    name='scripts.audit_clinical_pretrained_a5c'
+    assert importlib.util.find_spec(name) is not None, 'A47 independent auditor is not implemented'
+    audit=importlib.import_module(name)
+    torch.manual_seed(47);m=cp.ClinicalRepair().double();x,e,_,_=fixture_batch()
+    with torch.no_grad():m.fusion[2].weight.fill_(.01)
+    assert torch.allclose(m(x,e),audit.functional_model(m.state_dict(),x,e),atol=1e-12,rtol=1e-12)
+
+
+def test_actual_release_task_identity_keeps_documentation_discrepancy():
+    cp=core()
+    assert hasattr(cp,'clinical_head_names'), 'actual checkpoint task-head verification missing'
+    names=['LVOTDiam_head','AVStructure_head']+[f'other_{i}_head' for i in range(38)]
+    weights={n+'.1.weight':torch.zeros(1,768) for n in names}
+    assert cp.clinical_head_names(weights)==sorted(names)
+    with pytest.raises(ValueError):cp.clinical_head_names(dict(list(weights.items())[:-1]))

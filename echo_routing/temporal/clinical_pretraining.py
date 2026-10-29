@@ -42,6 +42,14 @@ def extract_image_state(source, expected, arm):
     return state
 
 
+def clinical_head_names(weights):
+    names=sorted({k.split('.')[0] for k in weights if k.split('.')[0].endswith('_head')})
+    # Official prose advertises39 tasks; the pinned released state actually has40.
+    if len(names)!=40 or not {'LVOTDiam_head','AVStructure_head'}.issubset(names):
+        raise ValueError('pinned release clinical-head identity mismatch')
+    return names
+
+
 class ClinicalRepair(nn.Module):
     def __init__(self):
         super().__init__()

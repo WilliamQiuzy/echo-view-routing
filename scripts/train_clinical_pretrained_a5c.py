@@ -129,7 +129,7 @@ def acquire():
         if arm=='P':assert p.stat().st_size==505054604
         obj=torch.load(p,map_location='cpu',weights_only=True)
         if arm=='P':
-            head_names=sorted({k.split('.')[0] for k in obj['weights'] if k.split('.')[0].endswith('_head')});assert len(head_names)==39
+            head_names=cp.clinical_head_names(obj['weights'])
         state=cp.extract_image_state(obj,expected.state_dict(),arm)
         expected.load_state_dict(state,strict=True);torch.save(state,src/f'{arm}.pt')
         downloads[arm]={'url':url,'bytes':p.stat().st_size,'sha256':sha(p),'safe_weights_only_load':True}

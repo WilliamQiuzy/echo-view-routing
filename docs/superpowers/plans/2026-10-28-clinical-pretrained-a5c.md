@@ -56,6 +56,8 @@ Use exactly A44 C's600-update cyclic whole-run plan (one positive, three correct
 
 ## Shared resource cap
 
+**Pre-forward release-identity correction:** official prose describes39 tasks, but the exact published v1.0 checkpoint contains40 named clinical heads, including LVOTDiam and AVStructure. Initial acquisition stopped before any forward at the original39-head assertion. Preserve that failed receipt; require the actual40-head identity and record every name. All task heads and the temporal Transformer remain unused. This corrects the source manifest contract before computation and changes neither encoder state nor model/input/loss/plan/deployment conditions.
+
 GPU6h, CPU3h, new disk3GB for the entire search/intake/A47 task, including prior intake metadata/ranges, failures, startup, source2 if triggered, active owner/reviewer work and actual closing. Disclose unmetered initial source-search scope and separately bound it; no idle scheduled wait charged as compute and no future time precharged. Strict pre-feature map byte forecast; remove only re-downloadable original acquisition duplicates after committed SHA evidence if needed. Do not delete old round artifacts. Record process CPU separately from GPU stage wall and root active-wall proxy, with explicit as-of bounds.
 
 ## Implementation tasks/files
