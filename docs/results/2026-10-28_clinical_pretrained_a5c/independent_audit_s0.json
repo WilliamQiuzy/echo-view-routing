@@ -1,0 +1,161 @@
+{
+  "ok": true,
+  "source": 0,
+  "folds": {
+    "0": {
+      "every_marker_reference_reconstructed": true,
+      "eligible_memberships_explicitly_expanded": 1498,
+      "all600_optimizer_and_actual_rows_verified": true,
+      "paired_P_G": {
+        "fix": {
+          "shared": 1,
+          "P_only": 2,
+          "G_only": 1
+        },
+        "harm": {
+          "shared": 4,
+          "P_only": 9,
+          "G_only": 2
+        }
+      },
+      "functional_and_feature_parity": {
+        "P": {
+          "functional_head_max_abs": 0.0,
+          "fresh_source_map_fp16_max_abs": 0.001953125,
+          "functional_gradient_relative": 7.954780956733799e-23
+        },
+        "G": {
+          "functional_head_max_abs": 0.0,
+          "fresh_source_map_fp16_max_abs": 0.001953125,
+          "functional_gradient_relative": 1.490337937575156e-16
+        }
+      },
+      "heldout_A5C_vs_correctA4C_AUROC": {
+        "P": 0.8002142033283902,
+        "G": 0.8203163618388531
+      },
+      "run_label_disagreements_P_G": 14,
+      "sessions": 200,
+      "S1_denominator": 34,
+      "correctA4C_denominator": 714
+    },
+    "1": {
+      "every_marker_reference_reconstructed": true,
+      "eligible_memberships_explicitly_expanded": 1542,
+      "all600_optimizer_and_actual_rows_verified": true,
+      "paired_P_G": {
+        "fix": {
+          "shared": 0,
+          "P_only": 2,
+          "G_only": 2
+        },
+        "harm": {
+          "shared": 0,
+          "P_only": 2,
+          "G_only": 8
+        }
+      },
+      "functional_and_feature_parity": {
+        "P": {
+          "functional_head_max_abs": 9.5367431640625e-07,
+          "fresh_source_map_fp16_max_abs": 0.0009765625,
+          "functional_gradient_relative": 2.3714193292558414e-20
+        },
+        "G": {
+          "functional_head_max_abs": 2.384185791015625e-07,
+          "fresh_source_map_fp16_max_abs": 0.0009765625,
+          "functional_gradient_relative": 0.0
+        }
+      },
+      "heldout_A5C_vs_correctA4C_AUROC": {
+        "P": 0.8073852916174244,
+        "G": 0.8074682258298604
+      },
+      "run_label_disagreements_P_G": 14,
+      "sessions": 200,
+      "S1_denominator": 69,
+      "correctA4C_denominator": 699
+    }
+  },
+  "oof": {
+    "Base": {
+      "fixed": 0,
+      "broken": 0,
+      "net": 0,
+      "A5C_fixed": 0,
+      "correct_A4C_harmed": 0,
+      "F1_mean": 0.9568852768790387,
+      "missed_short": 76,
+      "boundaries_deleted": 0
+    },
+    "P": {
+      "fixed": 5,
+      "broken": 15,
+      "net": -10,
+      "A5C_fixed": 5,
+      "correct_A4C_harmed": 15,
+      "F1_mean": 0.9561576516942047,
+      "missed_short": 80,
+      "boundaries_deleted": 15
+    },
+    "G": {
+      "fixed": 4,
+      "broken": 14,
+      "net": -10,
+      "A5C_fixed": 4,
+      "correct_A4C_harmed": 14,
+      "F1_mean": 0.956350170496575,
+      "missed_short": 80,
+      "boundaries_deleted": 13
+    }
+  },
+  "gates": {
+    "P": {
+      "S1_ok": false,
+      "source_ok": true,
+      "A4C_ok": false,
+      "nonA4C_invariant": true,
+      "net_per_fold_ok": false,
+      "net_oof_ok": false,
+      "F1_per_fold_ok": false,
+      "F1_mean_ok": false,
+      "native_ok": false,
+      "boundary_recall_ok": true,
+      "short_misses_ok": false,
+      "not_noop": true,
+      "passed": false
+    },
+    "G": {
+      "S1_ok": false,
+      "source_ok": true,
+      "A4C_ok": true,
+      "nonA4C_invariant": true,
+      "net_per_fold_ok": false,
+      "net_oof_ok": false,
+      "F1_per_fold_ok": false,
+      "F1_mean_ok": false,
+      "native_ok": false,
+      "boundary_recall_ok": true,
+      "short_misses_ok": false,
+      "not_noop": true,
+      "passed": false
+    }
+  },
+  "pretrained_state_increment": {
+    "fix_each_fold": true,
+    "fix_plus5_oof": false,
+    "harms_no_more_each_fold": false,
+    "net_plus5_oof": false,
+    "F1_each_fold": false,
+    "absolute_P": false,
+    "passed": false
+  },
+  "functional_network_subset_max_abs": 9.5367431640625e-07,
+  "four_actual600_updates_verified": true,
+  "all_state_tensors_moved": true,
+  "frozen_source_encoder_and_A08_hashes_unchanged": true,
+  "input_session_isolation": true,
+  "audit_code_sha256": "0acf406d76e24b24fbff9e13dc9b99b381f2b19fefd2fe92b04d774495eb018d",
+  "private_score_cache_sha256": "94795996af5af87356ca227666908e6cfdb8dbda858c6e1c0b9dc03822d4896b",
+  "written": "2026-10-29T03:59:21Z"
+}
