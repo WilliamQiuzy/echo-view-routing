@@ -1,0 +1,52 @@
+{
+  "snapshot_utc": "2026-10-29T06:37:50.986144+00:00",
+  "server_snapshot_utc": "2026-10-29T06:33:54.212464+00:00",
+  "server_stage_GPU_hours": 0.7581032550334931,
+  "completed_GPU_processes": 7,
+  "past_bootstrap_upper_seconds_per_completed_GPU_process": 10,
+  "charged_GPU_hours": 0.7775476994779376,
+  "server_measured_process_CPU_hours": 0.7931188901883334,
+  "root_active_wall_proxy_intervals_UTC": [
+    [
+      "2026-10-29T04:30:00Z",
+      "2026-10-29T05:36:30Z"
+    ],
+    [
+      "2026-10-29T05:43:55Z",
+      "2026-10-29T05:44:35Z"
+    ],
+    [
+      "2026-10-29T06:10:28Z",
+      "2026-10-29T06:17:00Z"
+    ],
+    [
+      "2026-10-29T06:21:53Z",
+      "2026-10-29T06:37:50.986144+00:00"
+    ]
+  ],
+  "root_active_wall_proxy_hours": 1.4944405955555555,
+  "past_advisory_review_scope_upper_allowance_hours": 0.15,
+  "past_unmetered_qualification_acquisition_local_tests_tools_CPU_allowance_hours": 0.1,
+  "past_monitor_overhead_and_short_interstitial_review_allowance_hours": 0.02,
+  "charged_CPU_hours": 2.557559485743889,
+  "new_server_bytes_by_namespace": {
+    "video_valve_localized_a5c_v1": 444935449,
+    "a48_valve_source_intake_v1": 548696996,
+    "a48_anatomical_qualification_v1": 37078442
+  },
+  "Mac_public_evidence_cache_du_kib": 3408,
+  "Mac_isolated_worktree_du_kib": 61344,
+  "additional_git_main_copy_and_receipts_upper_bytes": 10000000,
+  "new_live_bytes_upper": 1107016935,
+  "new_peak_bytes_upper": 1707016935,
+  "peak_extra_checkpoint_bound_note": "At most current resume.pt and resume.tmp; each <300MB from27.1M FP32 full-state elements plus two18.58M FP32 Adam moments and logs. Conservatively added atop all final artifacts. RAM pixels are not disk caches.",
+  "caps": {
+    "GPU_hours": 6,
+    "CPU_hours": 3,
+    "new_bytes": 3000000000
+  },
+  "scope": "Includes source qualification/acquisition failures, strict deterministic pool failure, first/diagnostic/final GPU audit, formal train/readout, recorded process imports, conservative past bootstrap bounds and root/reviewer proxies. Empty monitor waiting is excluded. Proxy/allowance charges are not platform CPU telemetry. No future work is precharged.",
+  "active_round_processes": [],
+  "all_artifact_and_budget_checks": true,
+  "terminal_scope": "Snapshot includes actual root closing through snapshot_utc; final integration/automation cleanup tail is updated before the final reply."
+}

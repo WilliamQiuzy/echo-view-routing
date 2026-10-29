@@ -1,0 +1,32 @@
+{
+  "retained": [
+    {
+      "phase": "operator-site public-data qualification",
+      "status": "not admitted",
+      "reason": "raw array SHA vs published undefined data_sha256; no model trained"
+    },
+    {
+      "phase": "source acquisition",
+      "status": "strict load passed after documented migration",
+      "reason": "official COCO FPN v1 names vs runtime v2,16 aliases only, no missing fill"
+    },
+    {
+      "phase": "production check attempt1",
+      "status": "failed and charged",
+      "reason": "strict deterministic CUDA adaptive pooling backward unavailable; exact-bin GEMM verified before formal training"
+    },
+    {
+      "phase": "independent audit attempt1 and diagnostic",
+      "status": "failed and charged",
+      "reason": "reference omitted existing torch softplus>20 linear branch; head output exact, loss difference6.391e-10; no model or once-cache change"
+    },
+    {
+      "phase": "reference boundary unit check",
+      "status": "red then green",
+      "reason": "initial clamp reference derivative failed at exactly20; final stable where/logaddexp reference matches production and analytical bound"
+    }
+  ],
+  "complete_heldout_inference_repeats": 0,
+  "training_recipe_changes_after_formal_start": 0,
+  "final_audit_gate_relaxed": false
+}
