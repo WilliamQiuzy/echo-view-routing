@@ -28,6 +28,23 @@ def canonical_backbone(raw,expected):
     return state,renamed
 
 
+def bin_pool(x):
+    """Same floor/ceil adaptive-average bins, deterministic GEMM backward.
+
+    CUDA adaptive_avg_pool2d backward is atomic/nondeterministic in the pinned
+    runtime. Separable normalized indicator matrices implement identical bins.
+    """
+    mats=[]
+    for length in x.shape[-2:]:
+        bins=torch.arange(14,device=x.device)
+        start=torch.div(bins*length,14,rounding_mode='floor')
+        end=torch.div((bins+1)*length+13,14,rounding_mode='floor')
+        at=torch.arange(length,device=x.device)
+        mat=((at[None,:]>=start[:,None])&(at[None,:]<end[:,None])).to(x.dtype)
+        mats.append(mat/(end-start).to(x.dtype)[:,None])
+    return torch.matmul(torch.matmul(mats[0],x),mats[1].T)
+
+
 def pyramid_maps(outputs):
     if not all(str(i) in outputs for i in range(4)):
         raise ValueError('all four spatial pyramid scales required')
@@ -36,7 +53,7 @@ def pyramid_maps(outputs):
         x=outputs[str(i)]
         if x.ndim!=4 or x.shape[1]!=256:
             raise ValueError('expected 256-channel spatial pyramid')
-        parts.append(F.adaptive_avg_pool2d(x,(14,14)))
+        parts.append(bin_pool(x))
     return torch.cat(parts,dim=1)
 
 

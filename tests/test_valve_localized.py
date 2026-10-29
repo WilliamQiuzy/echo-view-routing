@@ -38,6 +38,16 @@ def test_four_pyramid_scales_are_all_used_in_fixed_order():
     with pytest.raises(ValueError):m.pyramid_maps({'0':maps['0']})
 
 
+def test_deterministic_bin_pool_matches_exact_adaptive_bins_and_gradients():
+    m=core();assert hasattr(m,'bin_pool'),'deterministic adaptive-bin implementation missing'
+    for h,w in [(25,25),(50,100),(7,7)]:
+        x=torch.randn(2,3,h,w,dtype=torch.float64,requires_grad=True)
+        a=m.bin_pool(x);b=torch.nn.functional.adaptive_avg_pool2d(x,(14,14))
+        assert torch.allclose(a,b,atol=1e-12,rtol=1e-12)
+        v=torch.randn_like(a);ga=torch.autograd.grad(a,x,v)[0];gb=torch.autograd.grad(b,x,v)[0]
+        assert torch.allclose(ga,gb,atol=1e-12,rtol=1e-12)
+
+
 def test_only_layer4_and_fpn_are_trainable():
     m=core();assert hasattr(m,'set_trainable'),'backbone binding missing'
     b=nn.Module();b.body=nn.ModuleDict({'layer3':nn.Linear(2,2),'layer4':nn.Linear(2,2)});b.fpn=nn.ModuleDict({'inner':nn.Linear(2,2),'out':nn.Linear(2,2)})
