@@ -1,0 +1,49 @@
+valve_localized_a5c:
+  id: video_valve_localized_a5c_v1
+  owner: Codex
+  arms: [R, G]
+  source0: 0
+  conditional_source: 2
+  folds: [0, 1]
+  updates: 600
+  warmup: 60
+  backbone_lr: 0.00001
+  head_lr: 0.001
+  weight_decay: 0.0001
+  gradient_clip: 1.0
+  microbatch: 4
+  seed: 2026102948
+  precision: float32
+  deterministic: true
+  trainable_backbone: [body.layer4, fpn]
+  frozen_batch_norm_eps: 0.0
+  pyramid_levels: ['0', '1', '2', '3']
+  pyramid_pool_size: [14, 14]
+  pyramid_channels_concatenated: 1024
+  head_parameters: 294281
+  image_input: original_marker_RGB224
+  transform:
+    min_size: 800
+    max_size: 1333
+    size_divisible: 32
+    mean: [0.485, 0.456, 0.406]
+    std: [0.229, 0.224, 0.225]
+  source_weights:
+    R_revision: d35108887c9bcd432d852da103e684db6c2fd969
+    R_sha256: 20951944cad682ea8dfa8ca9635ac12411123453b6f4b9c6702fa958974b8557
+    R_license: CC-BY-NC-SA-4.0
+    G_enum: FasterRCNN_ResNet50_FPN_Weights.COCO_V1
+    root: runs/a48_valve_source_intake_v1
+  objective: original_A44_C_complete_weighted_mean_BCE
+  threshold: 0
+  only_base_class: 2
+  replacement_class: 3
+  outputs:
+    root: runs/video_valve_localized_a5c_v1
+    results: docs/results/2026-10-29_valve_localized_a5c
+  budget:
+    gpu_hours: 6
+    cpu_hours: 3
+    new_bytes: 3000000000
+    task_begin_utc: '2026-10-29T04:30:00Z'
+    includes_qualification_and_source_intake: true
