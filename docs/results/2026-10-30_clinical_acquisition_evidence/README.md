@@ -1,4 +1,6 @@
-# A50 — clinical acquisition-purpose evidence
+# A50-PW — clinical acquisition-purpose evidence
+
+**Navigation alias:** this source-qualification branch's frozen cards, git objects and runtime namespace keep their original internal A50 identity. The index uses **A50-PW** to distinguish it from another owner's existing A50 external-test entry. That unrelated dirty index row is preserved verbatim; no source protocol, run identity, data or result is renamed or changed by this documentation alias.
 
 **Completed and independently audited; closed at source quantity before any model.** The200 fixed examination slots yielded25 admissible LVOT/mitral-purpose pairs, including19fit and6heldout. The predeclared minima were80/64/16. Each purpose has25 distinct native images, with no crossfold exact duplicates. The image/object contract passes, but the fixed paired cohort is too small for the planned comparison. No representation model, EV9V repair, A5C fix/harm or complete-segmentation readout exists for A50; these metrics are unavailable, not0/0.
 
