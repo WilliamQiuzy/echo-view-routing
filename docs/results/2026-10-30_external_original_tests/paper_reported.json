@@ -1,0 +1,18 @@
+{
+  "kind": "author_reported_original_test_results_not_project_reruns",
+  "review_date": "2026-10-30",
+  "results": [
+    {"dataset":"CSMC internal test","classes":58,"n":4000,"model":"EchoPrime","accuracy":null,"f1":null,"ovr_auc":0.997,"source":"https://www.nature.com/articles/s41586-025-09850-x","location":"Interpretable view weighting; Methods: Evaluation and benchmarking","evidence":"EchoPrime paper","A08_same_protocol":"Not evaluated"},
+    {"dataset":"Guangdong ID test","classes":38,"n":4625,"model":"EchoViewCLIP","accuracy":0.968,"f1":0.957,"ovr_auc":null,"source":"https://papers.miccai.org/miccai-2025/paper/4443_paper.pdf","location":"Table 1, standard view recognition; dataset and implementation paragraphs","evidence":"EchoViewCLIP Table 1","A08_same_protocol":"Not evaluated"},
+    {"dataset":"Guangdong ID test","classes":38,"n":4625,"model":"EchoPrime, fine-tuned 30 epochs","accuracy":0.903,"f1":0.900,"ovr_auc":null,"source":"https://papers.miccai.org/miccai-2025/paper/4443_paper.pdf","location":"Table 1, EchoPrime row, standard view recognition; implementation paragraph","evidence":"EchoViewCLIP Table 1","A08_same_protocol":"Not evaluated"}
+  ],
+  "limits": [
+    "These are literature references, not matched comparisons against A08. No A08 result was measured on either original test.",
+    "AUROC is not accuracy or F1. Different test datasets and class spaces must not be ranked together.",
+    "EchoViewCLIP Table 1 and the results paragraph report standard-view accuracy 0.968; its abstract instead says 96.1%. This record explicitly uses Table 1, not the inconsistent abstract.",
+    "EchoViewCLIP Table 1 reports F1 without specifying its averaging convention in the evaluated paragraphs. It is not relabeled macro-F1 here.",
+    "EchoViewCLIP Table 1 AUROC values describe OOD recognition, not standard-view classification; they are intentionally omitted from the view AUROC column.",
+    "The EchoPrime row on Guangdong is the EchoViewCLIP authors' fine-tuned baseline, not the original EchoPrime paper's CSMC checkpoint score.",
+    "Original pixels/complete expert labels are not obtained; frozen A08 has five outputs rather than the original 38/58 classes. Full native-task comparison remains unmeasured."
+  ]
+}

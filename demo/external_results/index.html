@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="A08 versus STFM on the original EV9V test: verified scores, class-level errors, external source checks and data access limits.">
+  <meta name="description" content="Verified EV9V model comparisons and clearly identified original-paper results.">
   <title>EV9V: A08 vs STFM</title>
   <link rel="stylesheet" href="style.css">
   <script defer src="data.js"></script>
@@ -11,49 +11,28 @@
 </head>
 <body>
   <main>
-    <header>
-      <div class="title-row"><h1>EV9V: A08 vs STFM</h1><span class="edition">30 OCT 2026</span></div>
-      <p class="lede" id="summary">Loading verified aggregate results.</p>
-    </header>
-
-    <section aria-label="A08 versus STFM on EV9V">
-      <div class="table-wrap"><table><thead><tr><th>Model</th><th>Seed</th><th>Recordings</th><th>Accuracy</th><th>Five-class macro-F1<br><small>95% interval</small></th><th>A4C / A5C recall</th></tr></thead><tbody id="original-body"></tbody></table></div>
-      <p class="note">Shared test: 800 recordings / 125 sessions; A4C n=231, A5C n=40. STFM uses its native 10-key-frame whole-video rule. A08 uses frozen target windows + B3, then one majority-vote label per recording. PSAX probabilities are combined; unsupported predictions remain errors. STFM uses existing numeric-frame-order s100 weights. “Prior once” changes inference fusion only; it does not reproduce the newer official training recipe.</p>
-      <p class="finding">A08 has higher accuracy; STFM has higher macro-F1. Paired difference intervals cross zero for both metrics, so these results do not establish overall superiority.</p>
-      <details><summary>Per-class scores and metric definitions</summary>
-        <div class="table-wrap"><table><thead><tr><th>EV9V class</th><th>Recordings</th><th>Share of test</th><th>A08 precision</th><th>A08 recall</th><th>A08 F1</th><th>STFM F1</th></tr></thead><tbody id="class-body"></tbody></table></div>
-        <p class="note">A08 values average the three frozen seeds; STFM uses its native rule. Accuracy = correctly classified recordings / all recordings. Precision = correct predictions of a class / all predictions of that class. Recall = correct predictions of a class / all true recordings of that class. F1 = 2 × precision × recall / (precision + recall). Macro-F1 averages the five class F1 scores with equal weight, so each class contributes 20%, even when it is rare.</p>
-        <p class="note" id="metric-example"></p>
-      </details>
-      <details><summary>Paired differences and uncertainty</summary><div class="table-wrap"><table><thead><tr><th>A08 three-seed mean minus</th><th>Accuracy difference<br><small>percentage points · 95% interval</small></th><th>Macro-F1 difference<br><small>percentage points · 95% interval</small></th></tr></thead><tbody id="paired-body"></tbody></table></div><p class="note">2,000 paired resamples of the same 125 sessions / 800 recordings; percentile intervals. Averaging three fixed-model scores is not prediction ensembling and does not measure retraining uncertainty.</p></details>
-      <details><summary>STFM nine-code task and A08 direct argmax</summary><div class="table-wrap"><table><thead><tr><th>Model / condition</th><th>Task / recordings</th><th>Accuracy</th><th>Macro-F1</th></tr></thead><tbody id="original-detail-body"></tbody></table></div><p class="note">The original nine-code STFM endpoint includes all 888 test recordings. A08 has five outputs, so it has no complete nine-code score. Historical STFM weights differ from the new official training recipe.</p></details>
+    <h1>EV9V: A08 vs STFM</h1>
+    <section aria-label="Matched EV9V native classification">
+      <div class="table-wrap"><table><thead><tr><th>Dataset</th><th>Model / version</th><th>Seed</th><th>Recordings</th><th>Accuracy</th><th>Macro-F1</th><th>A4C recall</th><th>A5C recall</th></tr></thead><tbody id="original-body"></tbody></table></div>
     </section>
-
-    <section aria-label="A08 on external cardiac sources">
-      <p class="context">A08 was also run on the official EchoNet-Dynamic, EchoNet-LVH and CAMUS test sources. These are single-view source-label checks, not comparisons against the papers’ EF, wall-thickness or segmentation results.</p>
-      <div class="table-wrap"><table><thead><tr><th>Dataset</th><th>Source label / recordings</th><th>Label agreement / recall<br><small>Three-seed mean · 95% interval</small></th><th>Correct by source label<br><small>s0 / s1 / s2</small></th><th>Internal cuts / recording<br><small>Mean</small></th></tr></thead><tbody id="external-body"></tbody></table></div>
-      <p class="note">All five predicted classes are retained. Single-class checks do not establish five-class performance. CAMUS measures nominal “4CH code → A4C” agreement: some 4CH clips may be A5C, so an A5C prediction is not necessarily a clinical error. Bootstrap units: recordings for Dynamic/LVH (patient relationships unknown), patients for CAMUS. Upstream pretraining overlap is unknown. Three seeds do not create more independent cases.</p>
-      <details><summary>Individual seeds and direct argmax</summary><div class="table-wrap"><table><thead><tr><th>Dataset</th><th>Decoder</th><th>Seed</th><th>Recall</th><th>Internal cuts / recording</th></tr></thead><tbody id="seed-body"></tbody></table></div></details>
+    <section aria-label="EV9V class comparison">
+      <div class="table-wrap"><table><thead><tr><th>EV9V class</th><th>Recordings</th><th>A08 F1 (three-seed mean)</th><th>STFM F1 (s100)</th></tr></thead><tbody id="class-body"></tbody></table></div>
     </section>
-
-    <section aria-label="Historical EV9V model comparison">
-      <p class="context">The earlier A26 comparison on EV9V is retained below: A08 versus EchoViewCLIP, STFM, ASFormer and EchoPrime. This uses the historical protocol, with 800 native recordings, 240 two-part streams / 360 true segments, and 120 multi-part streams / 499 true segments (122 short).</p>
-      <div class="table-wrap"><table><thead><tr><th>Model on EV9V</th><th>Native classification<br>Macro-F1</th><th>Two-part streams<br>Segment F1@50</th><th>Multi-part streams<br>Segment F1@50</th><th>False segments<br><small>Short subset</small></th><th>Missed true segments<br><small>Short subset</small></th></tr></thead><tbody id="history-body"></tbody></table></div>
-      <p class="note">Segment F1@50 uses same-class, one-to-one matches at temporal IoU ≥0.5, aggregated across streams. A08 is the s0/s2 mean; other rows are one frozen version each. Streams reuse recordings; constructed joins are not natural scanning transitions. “Short” means ≤16 samples at 10 Hz. Rankings differ across classification and segmentation. This historical protocol is separate from the new native test above.</p>
+    <section aria-label="Paired EV9V differences">
+      <div class="table-wrap"><table><thead><tr><th>A08 mean − STFM native</th><th>Difference (percentage points)</th><th>95% CI (125 paired sessions)</th></tr></thead><tbody id="paired-body"></tbody></table></div>
     </section>
-
-    <section aria-label="Original test data availability">
-      <p class="context">The review covered 13 model groups. A direct comparison requires original inputs, trustworthy labels and a matching prediction task. Some tests are unavailable; others are public but incompatible. No new independent five-class or A4C/A5C cine test was obtained.</p>
-      <div class="table-wrap"><table class="access-table"><thead><tr><th>Model</th><th>Original test task / dataset</th><th>Status</th><th>Official source and limitation</th></tr></thead><tbody id="access-body"></tbody></table></div>
-      <details><summary>Other resources and frozen model identity</summary><div id="resource-notes"></div><p class="note">A model-generated view code is not independent expert test truth. EchoXFlow pseudo-labels do not replace expert labels; static images are not repeated into artificial videos.</p></details>
-      <details><summary>Execution and verification receipts</summary><div class="table-wrap"><table><thead><tr><th>Execution item</th><th>Measured</th><th>Scope</th></tr></thead><tbody id="execution-body"></tbody></table></div><p class="note">GPU job elapsed time includes decoding, CPU work and loading; measured forward time is not cloud billing time. LVH CSV rates disagreed with container timing. All 343 PTS sequences were qualified and corrected before the first LVH forward; completed EV9V/Dynamic caches were retained. Failed attempts remain recorded.</p></details>
+    <section aria-label="Historical matched EV9V benchmark">
+      <div class="table-wrap"><table><thead><tr><th>EV9V protocol</th><th>Model</th><th>Native macro-F1 (800 recordings)</th><th>Segment F1@50 (240 two-part streams)</th><th>Segment F1@50 (120 multi-part streams)</th></tr></thead><tbody id="history-body"></tbody></table></div>
     </section>
-
-    <footer>
-      <p id="verification-note"></p>
-      <div class="downloads"><a href="results.json" download>Aggregate JSON ↗</a><a href="results.csv" download>Results CSV ↗</a></div>
-      <p class="fine">Aggregate results only. Raw media, patient/session identifiers and case-level predictions remain on the server.</p>
-    </footer>
+    <section aria-label="Original paper results, A08 not evaluated">
+      <div class="table-wrap"><table class="paper-table"><thead><tr><th>Original test / classes</th><th>Videos</th><th>Published model</th><th>Published accuracy</th><th>Published F1</th><th>Published mean OvR AUROC</th><th>A08 on same protocol</th><th>Source</th></tr></thead><tbody id="paper-body"></tbody></table></div>
+    </section>
+    <section aria-label="Original test availability">
+      <div class="table-wrap"><table class="access-table"><thead><tr><th>External model</th><th>Original test task / dataset</th><th>Matched A08 comparison status</th><th>Source</th></tr></thead><tbody id="access-body"></tbody></table></div>
+    </section>
+    <section aria-label="Evaluation protocol and downloads">
+      <div class="table-wrap"><table class="protocol-table"><thead><tr><th>Evaluation setting</th><th>Value</th></tr></thead><tbody id="protocol-body"></tbody></table></div>
+    </section>
   </main>
 </body>
 </html>
