@@ -1,0 +1,27 @@
+{
+  "phase": "exact_labels_frozen_before_native_images",
+  "revision": "7a36922880061791519a8f01553c15cad5df564f",
+  "selection_sha256": "b3bc2e8216da3d61dca5cc0538ca9fae993d07ed4a26d8cf48009c946426bebc",
+  "metadata_inventory_private_sha256": "a3ff7f99258cdfe52cf9f9c55ae8fc4f719cc0cc70cae92bcb85790c63285c0a",
+  "croissant_sha256": "8e90e77079cce8804073ff281558d6c4b5f343117ab042e8791427cd0e369454",
+  "exact_whitelist": [
+    {
+      "measurement_kind": "aortic_lvot_trace_manual",
+      "measure_id": "Cardiac/SD/Aortic/LVOT Trace/Manual",
+      "purpose": "LVOT"
+    },
+    {
+      "measurement_kind": "mitral_valve_mv_e_a_velocity",
+      "measure_id": "Cardiac/SD/Mitral Valve/MV E/A Velocity",
+      "purpose": "MITRAL_INFLOW"
+    }
+  ],
+  "code_sha256": {
+    "scripts/qualify_clinical_acquisition_contract.py": "d639f2eb7b4741107d091f44f04d5f0a1c4a3ee81caa8ed4eecd02bab868cfb3",
+    "echo_routing/temporal/clinical_acquisition_source.py": "bf3c054e6a9c17d66afcf4014aa7b7a711809c7bfca824d4193097e9e4e34dbc"
+  },
+  "is_anatomy_or_visibility_truth": false,
+  "merged_identity_policy": "Only same-version catalog unique exact canonical identity, identical disposition, same exam and empty alias annotation documents; count canonical acquisition once. Unknown or contradictory spectral inventory excluded.",
+  "source_schema_definition": "Recordings that stored a physical acquisition already published by another recording of the same exam; their annotation documents live in that recording under the listed document IDs.",
+  "metadata_review": "Independent plan reviewer approved the schema-backed identity case before native image decoding."
+}

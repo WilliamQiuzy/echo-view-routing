@@ -92,3 +92,44 @@ def test_no_silent_purpose_label_inference(change):
     if change == "unknown": ann["links"]["measurement_kind"] = "unrecognised"
     with pytest.raises(ValueError):
         acquisition_purpose(attrs, {("lvot_manual", "LVOT manual"): "LVOT", ("mitral_manual", "Mitral manual"): "Mitral"})
+
+
+def test_conflicting_global_measurement_inventory_is_not_ignored():
+    from echo_routing.temporal.clinical_acquisition_source import acquisition_purpose
+    attrs = metadata()
+    attrs["recording_manifest"]["annotations"].append({"kind": "measurement_inventory",
+        "links": {"measurements": [{"measurement_kind": "mitral_manual",
+                                    "measure_id": "Cardiac/SD/Mitral/Manual"}]}})
+    with pytest.raises(ValueError, match="inventory"):
+        acquisition_purpose(attrs, {("lvot_manual", "LVOT manual"): "LVOT"})
+
+
+def test_merged_identity_needs_version_matched_catalog_proof():
+    from echo_routing.temporal.clinical_acquisition_source import acquisition_purpose
+    attrs = metadata()
+    attrs.update(recording_id="canonical", exam_id="exam",
+        merged_sources=[{"recording_id": "duplicate", "disposition": "identical",
+                         "annotation_document_ids": []}])
+    allowed = {("lvot_manual", "LVOT manual"): "LVOT"}
+    with pytest.raises(ValueError, match="catalog"):
+        acquisition_purpose(attrs, allowed)
+    proof = {"duplicate": {"recording_id": "canonical", "annotation_document_ids": []}}
+    result = acquisition_purpose(attrs, allowed, merged_catalog=proof)
+    assert result["purpose"] == "LVOT"
+    proof["duplicate"]["recording_id"] = "other"
+    with pytest.raises(ValueError, match="identity"):
+        acquisition_purpose(attrs, allowed, merged_catalog=proof)
+
+
+def test_native_frame_validation_compares_independent_bytes_and_grid():
+    import numpy as np
+    from echo_routing.temporal.clinical_acquisition_source import validate_static
+    a = np.arange(12, dtype=np.uint8).reshape(1, 3, 4)
+    z = {"shape": [1, 3, 4], "chunks": [1, 3, 4], "dtype": "|u1", "order": "C", "filters": None}
+    g = {"grid_size": [3, 4]}
+    result = validate_static(z, g, a, a.tobytes())
+    assert np.array_equal(result, a)
+    with pytest.raises(ValueError, match="independent"):
+        validate_static(z, g, a, bytes(12))
+    with pytest.raises(ValueError, match="grid"):
+        validate_static(z, {"grid_size": [4, 3]}, a, a.tobytes())

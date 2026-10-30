@@ -72,11 +72,20 @@ class VerifiedArchive:
                 "resolved_regular_member": regular.name}
 
 
-def acquisition_purpose(attrs, allowed):
+def acquisition_purpose(attrs, allowed, *, merged_catalog=None):
     """Return only a declared weak acquisition purpose under an exact whitelist.
 
     Does not identify which structure is present/absent in any individual frame.
     """
+    for source in attrs.get("merged_sources", []):
+        if merged_catalog is None:
+            raise ValueError("version-matched merged identity catalog required")
+        entry = merged_catalog.get(source.get("recording_id"))
+        if (not entry or source.get("disposition") != "identical" or
+            entry.get("recording_id") != attrs.get("recording_id") or
+            entry.get("annotation_document_ids") != source.get("annotation_document_ids") or
+            entry.get("annotation_document_ids")):
+            raise ValueError("unresolved merged acquisition identity")
     if set(attrs.get("content_types", [])) != {"2d_brightness_mode", "1d_pulsed_wave_doppler"}:
         raise ValueError("exclusive B-mode plus blood PW acquisition required")
     counts = attrs.get("frame_counts_by_content_type", {})
@@ -111,5 +120,31 @@ def acquisition_purpose(attrs, allowed):
                          "source_entry_ref": links["source_entry_ref"]})
     if len(purposes) != 1:
         raise ValueError("absent or conflicting clinical acquisition purpose")
+    for annotation in manifest.get("annotations", []):
+        if annotation.get("kind") != "measurement_inventory":
+            continue
+        for item in annotation.get("links", {}).get("measurements", []):
+            key = (item.get("measurement_kind"), item.get("measure_id"))
+            if str(key[1]).startswith("Cardiac/SD/") and (key not in allowed or allowed[key] not in purposes):
+                raise ValueError("conflicting or unknown spectral clinical inventory")
     return {"purpose": purposes.pop(), "label_unit": "acquisition_purpose",
             "is_visibility_or_view_truth": False, "evidence": evidence}
+
+
+def validate_static(zarray, geometry, canonical, independent_bytes):
+    """Verify native byte/layout/grid parity, without treating it as anatomy truth."""
+    import numpy as np
+    shape = zarray["shape"]
+    if (len(shape) != 3 or shape[0] != 1 or shape != zarray["chunks"] or
+        np.dtype(zarray["dtype"]) != np.dtype("uint8") or
+        zarray.get("order") != "C" or zarray.get("filters")):
+        raise ValueError("one unfiltered single-chunk uint8 static image required")
+    if list(geometry.get("grid_size", [])) != shape[1:]:
+        raise ValueError("native image grid mismatch")
+    raw = np.asarray(canonical)
+    if list(raw.shape) != shape or raw.dtype != np.uint8:
+        raise ValueError("canonical native shape/dtype mismatch")
+    body = bytes(independent_bytes)
+    if len(body) != raw.size or raw.tobytes(order="C") != body:
+        raise ValueError("canonical and independent native bytes differ")
+    return raw.copy()
