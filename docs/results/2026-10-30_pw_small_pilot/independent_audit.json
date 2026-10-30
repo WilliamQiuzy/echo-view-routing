@@ -1,0 +1,102 @@
+{
+  "all_independent_checks_pass": true,
+  "models": {
+    "L": {
+      "actual_updates_recounted": 600,
+      "live_tensors_changed": 28,
+      "frozen_tensors_unchanged": true
+    },
+    "S": {
+      "actual_updates_recounted": 600,
+      "live_tensors_changed": 28,
+      "frozen_tensors_unchanged": true
+    }
+  },
+  "fit_own_training_labels_correct_of38": {
+    "L": 38,
+    "S": 38
+  },
+  "functional_head_max_score_error": 1.5154753434387658e-06,
+  "fresh_fixed_fit_subset_max_score_error": 0.0,
+  "independent_head_gradient_max_abs_error": 1.4533391308989285e-17,
+  "metrics": {
+    "fit": {
+      "L": {
+        "correct": 38,
+        "total": 38,
+        "accuracy": 1.0,
+        "AUROC": 1.0,
+        "pair_order_points": 19.0,
+        "pairs": 19
+      },
+      "S": {
+        "correct": 20,
+        "total": 38,
+        "accuracy": 0.5263157894736842,
+        "AUROC": 0.5124653739612188,
+        "pair_order_points": 10.0,
+        "pairs": 19
+      },
+      "geometry": {
+        "correct": 26,
+        "total": 38,
+        "accuracy": 0.6842105263157895,
+        "AUROC": 0.7576177285318559,
+        "pair_order_points": 13.5,
+        "pairs": 19
+      },
+      "constant": {
+        "correct": 19,
+        "total": 38,
+        "accuracy": 0.5,
+        "AUROC": 0.5,
+        "pair_order_points": 9.5,
+        "pairs": 19
+      }
+    },
+    "heldout": {
+      "L": {
+        "correct": 10,
+        "total": 12,
+        "accuracy": 0.8333333333333334,
+        "AUROC": 0.9444444444444444,
+        "pair_order_points": 6.0,
+        "pairs": 6
+      },
+      "S": {
+        "correct": 6,
+        "total": 12,
+        "accuracy": 0.5,
+        "AUROC": 0.3333333333333333,
+        "pair_order_points": 2.0,
+        "pairs": 6
+      },
+      "geometry": {
+        "correct": 4,
+        "total": 12,
+        "accuracy": 0.3333333333333333,
+        "AUROC": 0.375,
+        "pair_order_points": 2.5,
+        "pairs": 6
+      },
+      "constant": {
+        "correct": 6,
+        "total": 12,
+        "accuracy": 0.5,
+        "AUROC": 0.5,
+        "pair_order_points": 3.0,
+        "pairs": 6
+      }
+    }
+  },
+  "descriptive_directional_signal": true,
+  "EV9V_promotion_authorized": false,
+  "score_cache_sha256": "d066c51f2ca6ba18d983501a3ad2f3b4bda65ea5e43a1961d423c9dade7f91ef",
+  "model_forwards_on_heldout_during_audit": 0,
+  "scope": "Small source-task diagnosis only; six heldout exams, patient counts unavailable; no A5C/A4C/final-segmentation result.",
+  "wall_seconds": 5.0391974449157715,
+  "process_CPU_seconds": 4.7417398969999995,
+  "GPU_wall_upper_hours": 0.0013997782601250543,
+  "finished_unix": 1793371716.2421944,
+  "audit_code_sha256": "26e9e104d661b82a36340c3500998a6855eee673dab34509e4434ce12082b8fe"
+}
