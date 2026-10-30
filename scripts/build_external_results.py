@@ -105,12 +105,13 @@ def payload():
     return {'summary':'800 recordings · five shared view classes · three frozen A08 seeds. STFM’s original test is EV9V, already used in this project; this is not new external confirmation.',
         'external':ext,'seed_rows':seedrows,'original':original,'original_details':details,'history':historical,
         'availability':read('availability.json'),'paired_original':paired,'class_breakdown':class_rows,
+        'paper_reported':read('paper_reported.json'),
         'metric_example_s0_A5C':classes[0][3],'resources':read('resources.json'),
         'model_identity':f'A08 all-neighbour-smoothed video Transformer + frozen B3; s0/s1/s2; weight SHA prefixes: {short}',
         'verification_note':'Independent recount reproduced full label sequences, counts and metrics from saved logits. Development-logit, frame-rate, window and target-marker checks passed. Intervals are descriptive grouped bootstrap intervals for fixed models. Patient independence and upstream pretraining overlap remain limited or unknown.',
         'verification':verify,'uncertainty':unc,'native_results':native,'stfm_original_results':stfm,
         'source_hashes':{name:hashlib.sha256((RESULT/name).read_bytes()).hexdigest() for name in
-            ['native_results.json','stfm_native_results.json','verification.json','uncertainty.json','availability.json','input_audit.json','resources.json']}}
+            ['native_results.json','stfm_native_results.json','verification.json','uncertainty.json','availability.json','input_audit.json','resources.json','paper_reported.json']}}
 
 
 def build(out):
@@ -126,10 +127,21 @@ def build(out):
     (out/'results.json').write_text(text)
     (out/'data.js').write_text('window.EXTERNAL_RESULTS = '+text.replace('</',r'<\/')+';\n')
     with (out/'results.csv').open('w',newline='') as f:
-        w=csv.writer(f);w.writerow(['table','dataset_or_model','condition','n','accuracy_or_recall','macro_f1'])
-        for r in data['external']:w.writerow(['external',r['name'],'A08 fixed B3 three-seed mean',r['n'],r['mean_recall'],''])
-        for r in data['original']:w.writerow(['original_shared',r['name'],r['seed'],r['n'],r['accuracy'],r['macro_f1']])
-        for r in data['original_details']:w.writerow(['original_detail',r['name'],r['population'],'',r['accuracy'],r['macro_f1']])
+        w=csv.writer(f,lineterminator='\n')
+        w.writerow(['table','dataset','model','condition','n','metric','value','evidence'])
+        for r in [data['original'][0],data['original'][4]]:
+            for key in ['accuracy','macro_f1','a4c','a5c']:
+                w.writerow(['matched_native','EV9V shared five',r['name'],r['seed'],r['n'],key,r[key],'A50 independent recount'])
+        for r in data['class_breakdown']:
+            for key,name in [('a08_f1','A08 three-seed mean'),('stfm_f1','STFM native s100')]:
+                w.writerow(['matched_class','EV9V',name,r['name'],r['n'],'F1',r[key],'A50 audited confusion'])
+        for r in data['history']:
+            for key in ['native','pairs','multi']:
+                w.writerow(['historical_matched','EV9V',r['name'],'A26',{'native':800,'pairs':240,'multi':120}[key],key,r[key],'A26 frozen report'])
+        for r in data['paper_reported']['results']:
+            for key in ['accuracy','f1','ovr_auc']:
+                if r[key] is not None:
+                    w.writerow(['paper_reported',r['dataset'],r['model'],str(r['classes'])+' classes; A08 not evaluated',r['n'],key,r[key],r['source']])
     print(json.dumps({'out':str(out),'published_files':['index.html','style.css','app.js','data.js','results.json','results.csv'],
         'result_sha256':hashlib.sha256(text.encode()).hexdigest(),'source_sequences':sum(EXPECTED.values())}))
 
