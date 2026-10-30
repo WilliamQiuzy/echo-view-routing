@@ -133,3 +133,18 @@ def test_native_frame_validation_compares_independent_bytes_and_grid():
         validate_static(z, g, a, bytes(12))
     with pytest.raises(ValueError, match="grid"):
         validate_static(z, {"grid_size": [4, 3]}, a, a.tobytes())
+
+
+def test_fixed_pool_uses_only_modality_counts_and_stable_exam_fold_order():
+    from echo_routing.temporal.clinical_acquisition_source import fixed_exam_pool
+    def row(e, r, frames=1):
+        return {"recordings/exam_id": e, "recordings/recording_id": r,
+            "recordings/content_types": ["2d_brightness_mode", "1d_pulsed_wave_doppler"],
+            "recordings/frame_counts_by_content_type": {"2d_brightness_mode": frames, "1d_pulsed_wave_doppler": 2}}
+    rows = [row("b", "b2"), row("a", "a1"), row("a", "a2"), row("b", "b1"),
+            row("c", "c1"), row("c", "c2"), row("no_pair", "n1")]
+    chosen = fixed_exam_pool(rows, {"a": 1, "b": 1, "c": 0, "no_pair": 0}, per_fold=1)
+    assert chosen == [{"exam": "c", "provider_fold": 0}, {"exam": "a", "provider_fold": 1}]
+    # A repeated catalog identity must never manufacture the second acquisition.
+    with pytest.raises(ValueError, match="duplicate"):
+        fixed_exam_pool(rows + [row("no_pair", "n1")], {"a": 1, "b": 1, "c": 0, "no_pair": 0})

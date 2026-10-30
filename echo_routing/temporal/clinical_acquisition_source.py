@@ -148,3 +148,23 @@ def validate_static(zarray, geometry, canonical, independent_bytes):
     if len(body) != raw.size or raw.tobytes(order="C") != body:
         raise ValueError("canonical and independent native bytes differ")
     return raw.copy()
+
+
+def fixed_exam_pool(recordings, provider_folds, per_fold=40):
+    """Metadata-only stable slots; failures do not create replacement exams."""
+    counts, seen = {}, set()
+    for row in recordings:
+        identity = row["recordings/recording_id"]
+        if identity in seen:
+            raise ValueError("duplicate canonical catalog recording")
+        seen.add(identity)
+        modes = set(row.get("recordings/content_types", []))
+        frames = row.get("recordings/frame_counts_by_content_type", {})
+        if (modes == {"2d_brightness_mode", "1d_pulsed_wave_doppler"} and
+            frames.get("2d_brightness_mode") == 1 and frames.get("1d_pulsed_wave_doppler", 0) > 0):
+            exam = row["recordings/exam_id"]
+            counts[exam] = counts.get(exam, 0) + 1
+    return [{"exam": exam, "provider_fold": fold}
+            for fold in range(5)
+            for exam in sorted(e for e, count in counts.items()
+                               if count >= 2 and provider_folds.get(e) == fold)[:per_fold]]
