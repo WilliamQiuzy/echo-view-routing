@@ -50,6 +50,58 @@ def validate_audit_binding(verification,files):
             raise ValueError('stale independent audit binding: '+key)
 
 
+def benchmark_review():
+    """Bind the new read-only design recount to the historical result files."""
+    folder=ROOT/'docs/results/2026-10-23_frozen_external_benchmark'
+    audit=read('test_design_audit.json')
+    if audit.get('passed') is not True:raise ValueError('test design recount must pass')
+    for key,name in [('A26_evaluation','evaluation_v1.json'),('summary','benchmark_summary.json')]:
+        if hashlib.sha256((folder/name).read_bytes()).hexdigest()!=audit['hashes'][key]:
+            raise ValueError('stale benchmark review binding')
+    evaluation=json.loads((folder/'evaluation_v1.json').read_text());values=evaluation['values']
+    if audit['benchmark_digest']!=evaluation['benchmark_digest'] or not audit.get('H09_A26_shared_rows_exact'):
+        raise ValueError('benchmark identity or legacy-row agreement missing')
+    if len(audit['H09_rows'])!=12 or set(audit['A26_native_and_band_recount'])!=set(values):
+        raise ValueError('incomplete model review')
+    if hashlib.sha256((ROOT/'scripts/audit_test_design.py').read_bytes()).hexdigest()!=audit['hashes']['audit_script']:
+        raise ValueError('design audit script differs from executed version')
+    names={'A08_s0':'A08 video Transformer + B3 · s0','A08_s2':'A08 video Transformer + B3 · s2',
+        'A14_P_s0':'A14 local router · s0','A14_P_s2':'A14 local router · s2',
+        'EchoViewCLIP_stage1_windowed':'EchoViewCLIP stage 1 · EV9V trained',
+        'STFM_numeric_s100':'STFM · numeric frame order · s100',
+        'ASFormer_v2_frameorder':'ASFormer v2 · B0 features',
+        'EchoPrime_view_B3':'EchoPrime released 11-view head + B3',
+        'EchoPrime_view_per_frame':'EchoPrime released 11-view head · per frame'}
+    rows=[];recalls=[]
+    for key,title in names.items():
+        v=values[key];checked=audit['A26_native_and_band_recount'][key]
+        if abs(checked['native_macro_f1']-v['clip macro-F1']['value'])>1e-12:raise ValueError('native recount mismatch')
+        rows.append({'name':title,'source':'A26','ours':key.startswith(('A08','A14')),
+            **{dst:v[src]['value'] for dst,src in [('native','clip macro-F1'),('pairs','segment F1@50, pairs'),
+                ('multi','segment F1@50, multi'),('cuts','native cuts per clip')]}})
+        recalls.append({'name':title,'accuracy':v['clip accuracy']['value'],
+            **{c:v['recall '+c]['value'] for c in ['PLAX','PSAX','A4C','A5C','SC4C']},
+            'fp':v['multi FP segments']['value'],'fn':v['multi FN segments']['value']})
+    shared={'B5 ASFormer v2','B6 STFM windowed, numeric-order model','B7 EchoViewCLIP windowed',
+        'B8 EchoPrime per frame','B8 + audited B3 (EchoPrime setting)'}
+    legacy_names={'B0 frame classifier':'ResNet-18 frame classifier',
+        'B1 smoothing':'ResNet-18 + smoothing','B2 HMM':'ResNet-18 + HMM',
+        'B3 change points, default':'ResNet-18 + B3 (default)',
+        'B3 change points, audited':'ResNet-18 + B3 (validation-selected)',
+        'B4 MS-TCN v2':'MS-TCN v2 · B0 features','B8 + HMM':'EchoPrime released 11-view head + HMM'}
+    for r in audit['H09_rows']:
+        if r['name'] in shared:continue
+        rows.append({'name':legacy_names[r['name']],'source':'H09','ours':False,
+            **{dst:r[src] for dst,src in [('native','clip macro-F1'),('pairs','segment F1@50, pairs'),
+                ('multi','segment F1@50, multi'),('cuts','native cuts per clip')]}})
+    return {'audit':audit,'all_models':rows,'class_recalls':recalls,
+        'class_coverage':[{'name':c,'native':audit['counts']['native']['per_class_fragments'][c],
+            'pair_fragments':audit['counts']['pairs']['per_class_fragments'][c],
+            'multi_fragments':audit['counts']['multi']['per_class_fragments'][c],
+            'multi_recordings':audit['counts']['multi']['per_class_unique_recordings'][c]}
+            for c in ['PLAX','PSAX','A4C','A5C','SC4C']]}
+
+
 def payload():
     native,verify,stfm,unc=read('native_results.json'),read('verification.json'),read('stfm_native_results.json'),read('uncertainty.json')
     validate_aggregate_inputs(native,verify,stfm)
@@ -105,13 +157,13 @@ def payload():
     return {'summary':'800 recordings · five shared view classes · three frozen A08 seeds. STFM’s original test is EV9V, already used in this project; this is not new external confirmation.',
         'external':ext,'seed_rows':seedrows,'original':original,'original_details':details,'history':historical,
         'availability':read('availability.json'),'paired_original':paired,'class_breakdown':class_rows,
-        'paper_reported':read('paper_reported.json'),
+        'paper_reported':read('paper_reported.json'),'benchmark_review':benchmark_review(),
         'metric_example_s0_A5C':classes[0][3],'resources':read('resources.json'),
         'model_identity':f'A08 all-neighbour-smoothed video Transformer + frozen B3; s0/s1/s2; weight SHA prefixes: {short}',
         'verification_note':'Independent recount reproduced full label sequences, counts and metrics from saved logits. Development-logit, frame-rate, window and target-marker checks passed. Intervals are descriptive grouped bootstrap intervals for fixed models. Patient independence and upstream pretraining overlap remain limited or unknown.',
         'verification':verify,'uncertainty':unc,'native_results':native,'stfm_original_results':stfm,
         'source_hashes':{name:hashlib.sha256((RESULT/name).read_bytes()).hexdigest() for name in
-            ['native_results.json','stfm_native_results.json','verification.json','uncertainty.json','availability.json','input_audit.json','resources.json','paper_reported.json']}}
+            ['native_results.json','stfm_native_results.json','verification.json','uncertainty.json','availability.json','input_audit.json','resources.json','paper_reported.json','test_design_audit.json']}}
 
 
 def build(out):
@@ -135,9 +187,9 @@ def build(out):
         for r in data['class_breakdown']:
             for key,name in [('a08_f1','A08 three-seed mean'),('stfm_f1','STFM native s100')]:
                 w.writerow(['matched_class','EV9V',name,r['name'],r['n'],'F1',r[key],'A50 audited confusion'])
-        for r in data['history']:
+        for r in data['benchmark_review']['all_models']:
             for key in ['native','pairs','multi']:
-                w.writerow(['historical_matched','EV9V',r['name'],'A26',{'native':800,'pairs':240,'multi':120}[key],key,r[key],'A26 frozen report'])
+                w.writerow(['historical_matched','EV9V',r['name'],r['source'],{'native':800,'pairs':240,'multi':120}[key],key,r[key],r['source']+' frozen report'])
         for r in data['paper_reported']['results']:
             for key in ['accuracy','f1','ovr_auc']:
                 if r[key] is not None:

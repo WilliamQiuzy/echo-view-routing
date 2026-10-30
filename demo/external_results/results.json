@@ -676,6 +676,1202 @@
       "Original pixels/complete expert labels are not obtained; frozen A08 has five outputs rather than the original 38/58 classes. Full native-task comparison remains unmeasured."
     ]
   },
+  "benchmark_review": {
+    "audit": {
+      "passed": true,
+      "kind": "read_only_frozen_benchmark_design_recount",
+      "created_utc": "2026-10-30T14:39:09Z",
+      "benchmark_digest": "05fe6803f56c0a94ca8b9d704476964b78d3295ccf1c0aefdb673139c2976797",
+      "counts": {
+        "native": {
+          "items": 800,
+          "samples": 46507,
+          "unique_recordings": 800,
+          "sessions": 125,
+          "fragments": 800,
+          "true_segments": 800,
+          "short_true_segments_le16": 58,
+          "physical_joins": 0,
+          "semantic_changes": 0,
+          "cross_session_joins": 0,
+          "gamma_variant_changes_at_joins": 0,
+          "repeated_recording_within_same_stream": 0,
+          "fragment_seconds_min_q25_median_q75_max": [
+            0.9,
+            2.6,
+            3.9,
+            6.9,
+            53.5
+          ],
+          "merged_true_segment_seconds_min_q25_median_q75_max": [
+            0.9,
+            2.6,
+            3.9,
+            6.9,
+            53.5
+          ],
+          "per_class_samples": {
+            "PLAX": 21941,
+            "PSAX": 10151,
+            "A4C": 10816,
+            "A5C": 1736,
+            "SC4C": 1863
+          },
+          "per_class_fragments": {
+            "PLAX": 275,
+            "PSAX": 219,
+            "A4C": 231,
+            "A5C": 40,
+            "SC4C": 35
+          },
+          "per_class_true_segments": {
+            "PLAX": 275,
+            "PSAX": 219,
+            "A4C": 231,
+            "A5C": 40,
+            "SC4C": 35
+          },
+          "per_class_unique_recordings": {
+            "PLAX": 275,
+            "PSAX": 219,
+            "A4C": 231,
+            "A5C": 40,
+            "SC4C": 35
+          },
+          "semantic_transition_counts": [
+            [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          "gamma_samples": {
+            "0.9": 0,
+            "1.0": 46507,
+            "1.1": 0
+          },
+          "pair_cells": {}
+        },
+        "pairs": {
+          "items": 240,
+          "samples": 10391,
+          "unique_recordings": 480,
+          "sessions": 117,
+          "fragments": 480,
+          "true_segments": 360,
+          "short_true_segments_le16": 91,
+          "physical_joins": 240,
+          "semantic_changes": 120,
+          "cross_session_joins": 238,
+          "gamma_variant_changes_at_joins": 120,
+          "repeated_recording_within_same_stream": 0,
+          "fragment_seconds_min_q25_median_q75_max": [
+            1.0,
+            1.5,
+            2.0,
+            2.8,
+            4.0
+          ],
+          "merged_true_segment_seconds_min_q25_median_q75_max": [
+            1.0,
+            1.6,
+            2.65,
+            3.8,
+            7.9
+          ],
+          "per_class_samples": {
+            "PLAX": 5133,
+            "PSAX": 3766,
+            "A4C": 1408,
+            "A5C": 84,
+            "SC4C": 0
+          },
+          "per_class_fragments": {
+            "PLAX": 231,
+            "PSAX": 174,
+            "A4C": 71,
+            "A5C": 4,
+            "SC4C": 0
+          },
+          "per_class_true_segments": {
+            "PLAX": 166,
+            "PSAX": 121,
+            "A4C": 71,
+            "A5C": 2,
+            "SC4C": 0
+          },
+          "per_class_unique_recordings": {
+            "PLAX": 231,
+            "PSAX": 174,
+            "A4C": 71,
+            "A5C": 4,
+            "SC4C": 0
+          },
+          "semantic_transition_counts": [
+            [
+              0,
+              29,
+              52,
+              0,
+              0
+            ],
+            [
+              20,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              19,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          "gamma_samples": {
+            "0.9": 2622,
+            "1.0": 7769,
+            "1.1": 0
+          },
+          "pair_cells": {
+            "same_original": 60,
+            "same_gamma": 60,
+            "different_original": 60,
+            "different_gamma": 60
+          }
+        },
+        "multi": {
+          "items": 120,
+          "samples": 15287,
+          "unique_recordings": 405,
+          "sessions": 113,
+          "fragments": 701,
+          "true_segments": 499,
+          "short_true_segments_le16": 122,
+          "physical_joins": 581,
+          "semantic_changes": 379,
+          "cross_session_joins": 575,
+          "gamma_variant_changes_at_joins": 295,
+          "repeated_recording_within_same_stream": 0,
+          "fragment_seconds_min_q25_median_q75_max": [
+            1.0,
+            1.5,
+            2.0,
+            2.8,
+            4.0
+          ],
+          "merged_true_segment_seconds_min_q25_median_q75_max": [
+            1.0,
+            1.7,
+            2.6,
+            3.7,
+            18.0
+          ],
+          "per_class_samples": {
+            "PLAX": 3376,
+            "PSAX": 3049,
+            "A4C": 3188,
+            "A5C": 3150,
+            "SC4C": 2524
+          },
+          "per_class_fragments": {
+            "PLAX": 149,
+            "PSAX": 140,
+            "A4C": 154,
+            "A5C": 151,
+            "SC4C": 107
+          },
+          "per_class_true_segments": {
+            "PLAX": 104,
+            "PSAX": 97,
+            "A4C": 107,
+            "A5C": 108,
+            "SC4C": 83
+          },
+          "per_class_unique_recordings": {
+            "PLAX": 111,
+            "PSAX": 107,
+            "A4C": 114,
+            "A5C": 39,
+            "SC4C": 34
+          },
+          "semantic_transition_counts": [
+            [
+              0,
+              18,
+              22,
+              21,
+              22
+            ],
+            [
+              18,
+              0,
+              18,
+              16,
+              11
+            ],
+            [
+              23,
+              22,
+              0,
+              26,
+              13
+            ],
+            [
+              24,
+              19,
+              30,
+              0,
+              19
+            ],
+            [
+              12,
+              18,
+              13,
+              14,
+              0
+            ]
+          ],
+          "gamma_samples": {
+            "0.9": 7931,
+            "1.0": 7356,
+            "1.1": 0
+          },
+          "pair_cells": {}
+        }
+      },
+      "A26_native_and_band_recount": {
+        "A14_P_s0": {
+          "native_accuracy": 0.9775,
+          "native_macro_f1": 0.9484549375583384,
+          "native_confusion": [
+            [
+              275,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              219,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              217,
+              12,
+              2
+            ],
+            [
+              0,
+              0,
+              3,
+              37,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              1,
+              34
+            ]
+          ],
+          "native_internal_cuts": 13,
+          "multi_accuracy_bands": {
+            "near_semantic_change_le08s": {
+              "correct": 4886,
+              "samples": 5868,
+              "accuracy": 0.832651670074983
+            },
+            "outside_change_band": {
+              "correct": 8961,
+              "samples": 9419,
+              "accuracy": 0.9513748805605691
+            }
+          }
+        },
+        "A14_P_s2": {
+          "native_accuracy": 0.9825,
+          "native_macro_f1": 0.9585370541531347,
+          "native_confusion": [
+            [
+              275,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              219,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              220,
+              9,
+              2
+            ],
+            [
+              0,
+              0,
+              2,
+              38,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              1,
+              34
+            ]
+          ],
+          "native_internal_cuts": 23,
+          "multi_accuracy_bands": {
+            "near_semantic_change_le08s": {
+              "correct": 4898,
+              "samples": 5868,
+              "accuracy": 0.834696659850034
+            },
+            "outside_change_band": {
+              "correct": 9025,
+              "samples": 9419,
+              "accuracy": 0.9581696570761228
+            }
+          }
+        },
+        "A08_s0": {
+          "native_accuracy": 0.9775,
+          "native_macro_f1": 0.9484549375583384,
+          "native_confusion": [
+            [
+              275,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              219,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              217,
+              12,
+              2
+            ],
+            [
+              0,
+              0,
+              3,
+              37,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              1,
+              34
+            ]
+          ],
+          "native_internal_cuts": 25,
+          "multi_accuracy_bands": {
+            "near_semantic_change_le08s": {
+              "correct": 4900,
+              "samples": 5868,
+              "accuracy": 0.8350374914792092
+            },
+            "outside_change_band": {
+              "correct": 9024,
+              "samples": 9419,
+              "accuracy": 0.9580634886930672
+            }
+          }
+        },
+        "A08_s2": {
+          "native_accuracy": 0.9825,
+          "native_macro_f1": 0.9585370541531347,
+          "native_confusion": [
+            [
+              275,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              219,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              220,
+              9,
+              2
+            ],
+            [
+              0,
+              0,
+              2,
+              38,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              1,
+              34
+            ]
+          ],
+          "native_internal_cuts": 23,
+          "multi_accuracy_bands": {
+            "near_semantic_change_le08s": {
+              "correct": 4898,
+              "samples": 5868,
+              "accuracy": 0.834696659850034
+            },
+            "outside_change_band": {
+              "correct": 9025,
+              "samples": 9419,
+              "accuracy": 0.9581696570761228
+            }
+          }
+        },
+        "STFM_numeric_s100": {
+          "native_accuracy": 0.9825,
+          "native_macro_f1": 0.9596268824889631,
+          "native_confusion": [
+            [
+              275,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              219,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              1,
+              223,
+              7,
+              0
+            ],
+            [
+              0,
+              1,
+              4,
+              35,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              1,
+              34
+            ]
+          ],
+          "native_internal_cuts": 101,
+          "multi_accuracy_bands": {
+            "near_semantic_change_le08s": {
+              "correct": 4606,
+              "samples": 5868,
+              "accuracy": 0.7849352419904567
+            },
+            "outside_change_band": {
+              "correct": 8844,
+              "samples": 9419,
+              "accuracy": 0.9389531797430725
+            }
+          }
+        },
+        "ASFormer_v2_frameorder": {
+          "native_accuracy": 0.9825,
+          "native_macro_f1": 0.9558519059280697,
+          "native_confusion": [
+            [
+              275,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              218,
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              228,
+              2,
+              1
+            ],
+            [
+              0,
+              0,
+              9,
+              31,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              1,
+              34
+            ]
+          ],
+          "native_internal_cuts": 111,
+          "multi_accuracy_bands": {
+            "near_semantic_change_le08s": {
+              "correct": 5249,
+              "samples": 5868,
+              "accuracy": 0.8945126107702794
+            },
+            "outside_change_band": {
+              "correct": 8663,
+              "samples": 9419,
+              "accuracy": 0.9197367024100223
+            }
+          }
+        },
+        "EchoPrime_view_per_frame": {
+          "native_accuracy": 0.97875,
+          "native_macro_f1": 0.943459031209738,
+          "native_confusion": [
+            [
+              275,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              218,
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              230,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              13,
+              27,
+              0
+            ],
+            [
+              0,
+              0,
+              1,
+              1,
+              33
+            ]
+          ],
+          "native_internal_cuts": 1298,
+          "multi_accuracy_bands": {
+            "near_semantic_change_le08s": {
+              "correct": 5158,
+              "samples": 5868,
+              "accuracy": 0.8790047716428084
+            },
+            "outside_change_band": {
+              "correct": 8273,
+              "samples": 9419,
+              "accuracy": 0.8783310330183671
+            }
+          }
+        },
+        "EchoPrime_view_B3": {
+          "native_accuracy": 0.97875,
+          "native_macro_f1": 0.943459031209738,
+          "native_confusion": [
+            [
+              275,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              218,
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              230,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              13,
+              27,
+              0
+            ],
+            [
+              0,
+              0,
+              1,
+              1,
+              33
+            ]
+          ],
+          "native_internal_cuts": 31,
+          "multi_accuracy_bands": {
+            "near_semantic_change_le08s": {
+              "correct": 5042,
+              "samples": 5868,
+              "accuracy": 0.8592365371506476
+            },
+            "outside_change_band": {
+              "correct": 8423,
+              "samples": 9419,
+              "accuracy": 0.8942562904766961
+            }
+          }
+        },
+        "EchoViewCLIP_stage1_windowed": {
+          "native_accuracy": 0.98875,
+          "native_macro_f1": 0.9719364414178454,
+          "native_confusion": [
+            [
+              275,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              219,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              226,
+              5,
+              0
+            ],
+            [
+              0,
+              0,
+              3,
+              37,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              1,
+              34
+            ]
+          ],
+          "native_internal_cuts": 78,
+          "multi_accuracy_bands": {
+            "near_semantic_change_le08s": {
+              "correct": 4801,
+              "samples": 5868,
+              "accuracy": 0.8181663258350375
+            },
+            "outside_change_band": {
+              "correct": 8776,
+              "samples": 9419,
+              "accuracy": 0.9317337296952968
+            }
+          }
+        }
+      },
+      "H09_rows": [
+        {
+          "name": "B0 frame classifier",
+          "clip macro-F1": 0.9436211874365167,
+          "segment F1@50, pairs": 0.722635494155154,
+          "segment F1@50, multi": 0.46629213483146065,
+          "native cuts per clip": 1.8375
+        },
+        {
+          "name": "B1 smoothing",
+          "clip macro-F1": 0.9468959588937453,
+          "segment F1@50, pairs": 0.9714285714285714,
+          "segment F1@50, multi": 0.8263695450324977,
+          "native cuts per clip": 0.24125
+        },
+        {
+          "name": "B2 HMM",
+          "clip macro-F1": 0.9395061728395062,
+          "segment F1@50, pairs": 0.964769647696477,
+          "segment F1@50, multi": 0.8043282236248873,
+          "native cuts per clip": 0.21125
+        },
+        {
+          "name": "B3 change points, default",
+          "clip macro-F1": 0.9427251783442274,
+          "segment F1@50, pairs": 0.956989247311828,
+          "segment F1@50, multi": 0.8076923076923077,
+          "native cuts per clip": 0.285
+        },
+        {
+          "name": "B3 change points, audited",
+          "clip macro-F1": 0.9302463549522374,
+          "segment F1@50, pairs": 0.9875862068965517,
+          "segment F1@50, multi": 0.8706118355065195,
+          "native cuts per clip": 0.0525
+        },
+        {
+          "name": "B4 MS-TCN v2",
+          "clip macro-F1": 0.9468514705166354,
+          "segment F1@50, pairs": 0.9621621621621622,
+          "segment F1@50, multi": 0.8235294117647058,
+          "native cuts per clip": 0.1475
+        },
+        {
+          "name": "B5 ASFormer v2",
+          "clip macro-F1": 0.9558519059280697,
+          "segment F1@50, pairs": 0.9807162534435262,
+          "segment F1@50, multi": 0.8563106796116505,
+          "native cuts per clip": 0.13875
+        },
+        {
+          "name": "B6 STFM windowed, numeric-order model",
+          "clip macro-F1": 0.9596268824889631,
+          "segment F1@50, pairs": 0.970954356846473,
+          "segment F1@50, multi": 0.859086491739553,
+          "native cuts per clip": 0.12625
+        },
+        {
+          "name": "B7 EchoViewCLIP windowed",
+          "clip macro-F1": 0.9719364414178454,
+          "segment F1@50, pairs": 0.9889196675900277,
+          "segment F1@50, multi": 0.8667305848513902,
+          "native cuts per clip": 0.0975
+        },
+        {
+          "name": "B8 EchoPrime per frame",
+          "clip macro-F1": 0.943459031209738,
+          "segment F1@50, pairs": 0.7427341227125942,
+          "segment F1@50, multi": 0.4957678355501814,
+          "native cuts per clip": 1.6225
+        },
+        {
+          "name": "B8 + HMM",
+          "clip macro-F1": 0.9268651093600615,
+          "segment F1@50, pairs": 0.9768076398362893,
+          "segment F1@50, multi": 0.8074766355140187,
+          "native cuts per clip": 0.13375
+        },
+        {
+          "name": "B8 + audited B3 (EchoPrime setting)",
+          "clip macro-F1": 0.943459031209738,
+          "segment F1@50, pairs": 0.9875862068965517,
+          "segment F1@50, multi": 0.8510204081632653,
+          "native cuts per clip": 0.03875
+        }
+      ],
+      "H09_A26_shared_rows_exact": true,
+      "hashes": {
+        "manifest": "ade2ed919900fdbfd29c0fd0c779d7a18f35fe74aa121db467d9468ea87ccfda",
+        "A26_evaluation": "e7702bc66b3b2bc018263a9d60bad5b382c1d197124d15e90c19aa1b95d34a8f",
+        "summary": "f3583f36925fa484824b8f7423793a7048c17660b5d0742a9ce77e0295243d0c",
+        "audit_script": "bf5f58468879f244bd7594f0ccce977a35610a3dc0e186846f47a0c8cff05c22",
+        "A14_P_s0_labels": "2d1a09fd5fd905d350fba5f9bfc119f08edebb0d7acea2cf5a2fcf8fe02523dd",
+        "A14_P_s2_labels": "e0595eb1afb0a5e259821b2f5a551aade32a46939c919f249bfd94206f2827a8",
+        "A08_s0_labels": "e19ba07ed42eda845fc031b2d33248491909769e5cc8515223a0c41588b1a00e",
+        "A08_s2_labels": "e0595eb1afb0a5e259821b2f5a551aade32a46939c919f249bfd94206f2827a8",
+        "STFM_numeric_s100_labels": "9b1a0fd3f68db48cd9cbba1620f0a4baa589fb61fff255f8e0bb1a029adc0c2f",
+        "ASFormer_v2_frameorder_labels": "4df3d5e212b391cb8afb43aaca08ac0b0bbf2576dad5ccbf48ea4fd979dbf5aa",
+        "EchoPrime_view_per_frame_labels": "e36ed8e721189538205b04ed68121ee8b8482d90186983108d171b855f349961",
+        "EchoPrime_view_B3_labels": "457c828ef985d8fd817a995b2989c91822ef8525c89653ef195e2f885e931e68",
+        "EchoViewCLIP_stage1_windowed_labels": "ad188409f963df254fcc3e4343a663793ba1d227b4ecb67de0ba463936888e44",
+        "H09_joint": "39e75487b94843fad5f7e5350d27bd17a11e0bed1892cc7807e37e209f14582f"
+      },
+      "model_forwards": 0,
+      "GPU_seconds": 0,
+      "elapsed_wall_seconds": 0.4807279680389911,
+      "limits": [
+        "Read-only saved-label audit; no model or raw pixels reloaded. No recipes regenerated.",
+        "Near-change band is a fixed eight-sample half-window; differences are descriptive, confounded by class/duration and do not isolate causal effects of construction.",
+        "Recording sessions are not verified patients; repeated sources across constructed streams are dependent.",
+        "H09 rows are historical corrected same-bank whole-pipeline results, not original-paper task scores."
+      ]
+    },
+    "all_models": [
+      {
+        "name": "A08 video Transformer + B3 · s0",
+        "source": "A26",
+        "ours": true,
+        "native": 0.9484549375583384,
+        "pairs": 0.9777777777777777,
+        "multi": 0.918918918918919,
+        "cuts": 0.03125
+      },
+      {
+        "name": "A08 video Transformer + B3 · s2",
+        "source": "A26",
+        "ours": true,
+        "native": 0.9585370541531347,
+        "pairs": 0.9791955617198336,
+        "multi": 0.918918918918919,
+        "cuts": 0.02875
+      },
+      {
+        "name": "A14 local router · s0",
+        "source": "A26",
+        "ours": true,
+        "native": 0.9484549375583384,
+        "pairs": 0.9791376912378303,
+        "multi": 0.9149797570850202,
+        "cuts": 0.01625
+      },
+      {
+        "name": "A14 local router · s2",
+        "source": "A26",
+        "ours": true,
+        "native": 0.9585370541531347,
+        "pairs": 0.9791955617198336,
+        "multi": 0.918918918918919,
+        "cuts": 0.02875
+      },
+      {
+        "name": "EchoViewCLIP stage 1 · EV9V trained",
+        "source": "A26",
+        "ours": false,
+        "native": 0.9719364414178454,
+        "pairs": 0.9889196675900277,
+        "multi": 0.8667305848513902,
+        "cuts": 0.0975
+      },
+      {
+        "name": "STFM · numeric frame order · s100",
+        "source": "A26",
+        "ours": false,
+        "native": 0.9596268824889631,
+        "pairs": 0.970954356846473,
+        "multi": 0.859086491739553,
+        "cuts": 0.12625
+      },
+      {
+        "name": "ASFormer v2 · B0 features",
+        "source": "A26",
+        "ours": false,
+        "native": 0.9558519059280697,
+        "pairs": 0.9807162534435262,
+        "multi": 0.8563106796116505,
+        "cuts": 0.13875
+      },
+      {
+        "name": "EchoPrime released 11-view head + B3",
+        "source": "A26",
+        "ours": false,
+        "native": 0.943459031209738,
+        "pairs": 0.9875862068965517,
+        "multi": 0.8510204081632653,
+        "cuts": 0.03875
+      },
+      {
+        "name": "EchoPrime released 11-view head · per frame",
+        "source": "A26",
+        "ours": false,
+        "native": 0.943459031209738,
+        "pairs": 0.7427341227125942,
+        "multi": 0.4957678355501814,
+        "cuts": 1.6225
+      },
+      {
+        "name": "ResNet-18 frame classifier",
+        "source": "H09",
+        "ours": false,
+        "native": 0.9436211874365167,
+        "pairs": 0.722635494155154,
+        "multi": 0.46629213483146065,
+        "cuts": 1.8375
+      },
+      {
+        "name": "ResNet-18 + smoothing",
+        "source": "H09",
+        "ours": false,
+        "native": 0.9468959588937453,
+        "pairs": 0.9714285714285714,
+        "multi": 0.8263695450324977,
+        "cuts": 0.24125
+      },
+      {
+        "name": "ResNet-18 + HMM",
+        "source": "H09",
+        "ours": false,
+        "native": 0.9395061728395062,
+        "pairs": 0.964769647696477,
+        "multi": 0.8043282236248873,
+        "cuts": 0.21125
+      },
+      {
+        "name": "ResNet-18 + B3 (default)",
+        "source": "H09",
+        "ours": false,
+        "native": 0.9427251783442274,
+        "pairs": 0.956989247311828,
+        "multi": 0.8076923076923077,
+        "cuts": 0.285
+      },
+      {
+        "name": "ResNet-18 + B3 (validation-selected)",
+        "source": "H09",
+        "ours": false,
+        "native": 0.9302463549522374,
+        "pairs": 0.9875862068965517,
+        "multi": 0.8706118355065195,
+        "cuts": 0.0525
+      },
+      {
+        "name": "MS-TCN v2 · B0 features",
+        "source": "H09",
+        "ours": false,
+        "native": 0.9468514705166354,
+        "pairs": 0.9621621621621622,
+        "multi": 0.8235294117647058,
+        "cuts": 0.1475
+      },
+      {
+        "name": "EchoPrime released 11-view head + HMM",
+        "source": "H09",
+        "ours": false,
+        "native": 0.9268651093600615,
+        "pairs": 0.9768076398362893,
+        "multi": 0.8074766355140187,
+        "cuts": 0.13375
+      }
+    ],
+    "class_recalls": [
+      {
+        "name": "A08 video Transformer + B3 · s0",
+        "accuracy": 0.9775,
+        "PLAX": 1.0,
+        "PSAX": 1.0,
+        "A4C": 0.9393939393939394,
+        "A5C": 0.925,
+        "SC4C": 0.9714285714285714,
+        "fp": 41.0,
+        "fn": 40.0
+      },
+      {
+        "name": "A08 video Transformer + B3 · s2",
+        "accuracy": 0.9825,
+        "PLAX": 1.0,
+        "PSAX": 1.0,
+        "A4C": 0.9523809523809523,
+        "A5C": 0.95,
+        "SC4C": 0.9714285714285714,
+        "fp": 41.0,
+        "fn": 40.0
+      },
+      {
+        "name": "A14 local router · s0",
+        "accuracy": 0.9775,
+        "PLAX": 1.0,
+        "PSAX": 1.0,
+        "A4C": 0.9393939393939394,
+        "A5C": 0.925,
+        "SC4C": 0.9714285714285714,
+        "fp": 37.0,
+        "fn": 47.0
+      },
+      {
+        "name": "A14 local router · s2",
+        "accuracy": 0.9825,
+        "PLAX": 1.0,
+        "PSAX": 1.0,
+        "A4C": 0.9523809523809523,
+        "A5C": 0.95,
+        "SC4C": 0.9714285714285714,
+        "fp": 41.0,
+        "fn": 40.0
+      },
+      {
+        "name": "EchoViewCLIP stage 1 · EV9V trained",
+        "accuracy": 0.98875,
+        "PLAX": 1.0,
+        "PSAX": 1.0,
+        "A4C": 0.9783549783549783,
+        "A5C": 0.925,
+        "SC4C": 0.9714285714285714,
+        "fp": 92.0,
+        "fn": 47.0
+      },
+      {
+        "name": "STFM · numeric frame order · s100",
+        "accuracy": 0.9825,
+        "PLAX": 1.0,
+        "PSAX": 1.0,
+        "A4C": 0.9653679653679653,
+        "A5C": 0.875,
+        "SC4C": 0.9714285714285714,
+        "fp": 88.0,
+        "fn": 57.0
+      },
+      {
+        "name": "ASFormer v2 · B0 features",
+        "accuracy": 0.9825,
+        "PLAX": 1.0,
+        "PSAX": 0.9954337899543378,
+        "A4C": 0.987012987012987,
+        "A5C": 0.775,
+        "SC4C": 0.9714285714285714,
+        "fp": 90.0,
+        "fn": 58.0
+      },
+      {
+        "name": "EchoPrime released 11-view head + B3",
+        "accuracy": 0.97875,
+        "PLAX": 1.0,
+        "PSAX": 0.9954337899543378,
+        "A4C": 0.9956709956709957,
+        "A5C": 0.675,
+        "SC4C": 0.9428571428571428,
+        "fp": 64.0,
+        "fn": 82.0
+      },
+      {
+        "name": "EchoPrime released 11-view head · per frame",
+        "accuracy": 0.97875,
+        "PLAX": 1.0,
+        "PSAX": 0.9954337899543378,
+        "A4C": 0.9956709956709957,
+        "A5C": 0.675,
+        "SC4C": 0.9428571428571428,
+        "fp": 745.0,
+        "fn": 89.0
+      }
+    ],
+    "class_coverage": [
+      {
+        "name": "PLAX",
+        "native": 275,
+        "pair_fragments": 231,
+        "multi_fragments": 149,
+        "multi_recordings": 111
+      },
+      {
+        "name": "PSAX",
+        "native": 219,
+        "pair_fragments": 174,
+        "multi_fragments": 140,
+        "multi_recordings": 107
+      },
+      {
+        "name": "A4C",
+        "native": 231,
+        "pair_fragments": 71,
+        "multi_fragments": 154,
+        "multi_recordings": 114
+      },
+      {
+        "name": "A5C",
+        "native": 40,
+        "pair_fragments": 4,
+        "multi_fragments": 151,
+        "multi_recordings": 39
+      },
+      {
+        "name": "SC4C",
+        "native": 35,
+        "pair_fragments": 0,
+        "multi_fragments": 107,
+        "multi_recordings": 34
+      }
+    ]
+  },
   "metric_example_s0_A5C": {
     "name": "A5C",
     "n": 40,
@@ -6340,6 +7536,7 @@
     "availability.json": "b50aea5e5b5ffe712a9bc76024bcc61e0fd221f8dcc98413cb7d4902e7c0a0b4",
     "input_audit.json": "322133d4c220f5ea53ef82ddbd92e4325e6286e0a1bf0b2e9905e989e1dd4bc2",
     "resources.json": "646b69f3da09fb14b5e6773d4e4d2393924ab6e045183fc35da120a63252b439",
-    "paper_reported.json": "3a76c454c541b18cfc202c9f670ed00c4c50d178a4ecb8eab2a4d253b73d85af"
+    "paper_reported.json": "3a76c454c541b18cfc202c9f670ed00c4c50d178a4ecb8eab2a4d253b73d85af",
+    "test_design_audit.json": "9f3c6f36f8c0423b4bf3cd3dafe96052ca4c98687ad45c77d2d550fb21af5989"
   }
 }

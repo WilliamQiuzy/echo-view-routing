@@ -3,26 +3,35 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="Verified EV9V model comparisons and clearly identified original-paper results.">
-  <title>EV9V: A08 vs STFM</title>
+  <meta name="description" content="EV9V test construction, class coverage, all matched frozen-model scores and evaluation limitations.">
+  <title>EV9V: Test Construction &amp; Model Results</title>
   <link rel="stylesheet" href="style.css">
   <script defer src="data.js"></script>
   <script defer src="app.js"></script>
 </head>
 <body>
   <main>
-    <h1>EV9V: A08 vs STFM</h1>
-    <section aria-label="Matched EV9V native classification">
-      <div class="table-wrap"><table><thead><tr><th>Dataset</th><th>Model / version</th><th>Seed</th><th>Recordings</th><th>Accuracy</th><th>Macro-F1</th><th>A4C recall</th><th>A5C recall</th></tr></thead><tbody id="original-body"></tbody></table></div>
+    <h1>EV9V: Test Construction &amp; Model Results</h1>
+    <section aria-label="How the test benchmark was constructed">
+      <div class="table-wrap"><table class="construction-table"><thead><tr><th>EV9V test</th><th>Construction</th><th>Items</th><th>Unique recordings / sessions</th><th>True segments</th><th>True view changes</th><th>Short true segments (≤1.6 s)</th></tr></thead><tbody id="construction-body"></tbody></table></div>
     </section>
-    <section aria-label="EV9V class comparison">
-      <div class="table-wrap"><table><thead><tr><th>EV9V class</th><th>Recordings</th><th>A08 F1 (three-seed mean)</th><th>STFM F1 (s100)</th></tr></thead><tbody id="class-body"></tbody></table></div>
+    <section aria-label="All completed matched model and decoder comparisons">
+      <div class="table-wrap"><table><thead><tr><th>Model / frozen version</th><th>Record</th><th>Classification macro-F1 (800 native clips)</th><th>Segment F1@50 (240 pair streams)</th><th>Segment F1@50 (120 multi streams)</th><th>Internal cuts / native clip</th></tr></thead><tbody id="all-models-body"></tbody></table></div>
     </section>
-    <section aria-label="Paired EV9V differences">
-      <div class="table-wrap"><table><thead><tr><th>A08 mean − STFM native</th><th>Difference (percentage points)</th><th>95% CI (125 paired sessions)</th></tr></thead><tbody id="paired-body"></tbody></table></div>
+    <section aria-label="Actual class coverage, not assumed balance">
+      <div class="table-wrap"><table><thead><tr><th>View class</th><th>Native recordings</th><th>Pair-stream fragments</th><th>Multi-stream fragments</th><th>Unique multi-stream source recordings</th></tr></thead><tbody id="coverage-body"></tbody></table></div>
     </section>
-    <section aria-label="Historical matched EV9V benchmark">
-      <div class="table-wrap"><table><thead><tr><th>EV9V protocol</th><th>Model</th><th>Native macro-F1 (800 recordings)</th><th>Segment F1@50 (240 two-part streams)</th><th>Segment F1@50 (120 multi-part streams)</th></tr></thead><tbody id="history-body"></tbody></table></div>
+    <section aria-label="Benchmark validity and limitations">
+      <div class="table-wrap"><table class="review-table"><thead><tr><th>Design check</th><th>Observed evidence</th><th>Interpretation</th></tr></thead><tbody id="review-body"></tbody></table></div>
+    </section>
+    <section aria-label="Native class recall and segmentation error counts">
+      <div class="table-wrap"><table><thead><tr><th>A26 model / seed</th><th>Native accuracy</th><th>PLAX recall</th><th>PSAX recall</th><th>A4C recall</th><th>A5C recall</th><th>SC4C recall</th><th>Multi false segments</th><th>Multi missed segments</th></tr></thead><tbody id="recall-body"></tbody></table></div>
+    </section>
+    <section aria-label="What was trained and how each system was adapted">
+      <div class="table-wrap"><table class="review-table"><thead><tr><th>Pipeline</th><th>Training / weights</th><th>Inference on this benchmark</th></tr></thead><tbody id="implementation-body"></tbody></table></div>
+    </section>
+    <section aria-label="Separate original-native inference protocol">
+      <div class="table-wrap"><table><thead><tr><th>Native protocol</th><th>Model / version</th><th>Seed</th><th>Recordings</th><th>Accuracy</th><th>Macro-F1</th><th>A4C recall</th><th>A5C recall</th></tr></thead><tbody id="original-body"></tbody></table></div>
     </section>
     <section aria-label="Original paper results, A08 not evaluated">
       <div class="table-wrap"><table class="paper-table"><thead><tr><th>Original test / classes</th><th>Videos</th><th>Published model</th><th>Published accuracy</th><th>Published F1</th><th>Published mean OvR AUROC</th><th>A08 on same protocol</th><th>Source</th></tr></thead><tbody id="paper-body"></tbody></table></div>
@@ -30,8 +39,8 @@
     <section aria-label="Original test availability">
       <div class="table-wrap"><table class="access-table"><thead><tr><th>External model</th><th>Original test task / dataset</th><th>Matched A08 comparison status</th><th>Source</th></tr></thead><tbody id="access-body"></tbody></table></div>
     </section>
-    <section aria-label="Evaluation protocol and downloads">
-      <div class="table-wrap"><table class="protocol-table"><thead><tr><th>Evaluation setting</th><th>Value</th></tr></thead><tbody id="protocol-body"></tbody></table></div>
+    <section aria-label="Evaluation definitions and reproduction">
+      <div class="table-wrap"><table class="protocol-table"><thead><tr><th>Evaluation setting</th><th>Definition / evidence</th></tr></thead><tbody id="protocol-body"></tbody></table></div>
     </section>
   </main>
 </body>
