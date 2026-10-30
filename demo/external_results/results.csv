@@ -2,14 +2,14 @@ table,dataset_or_model,condition,n,accuracy_or_recall,macro_f1
 external,EchoNet-Dynamic,A08 fixed B3 three-seed mean,1277,0.9477943095797442,
 external,EchoNet-LVH,A08 fixed B3 three-seed mean,343,0.9572400388726919,
 external,CAMUS,A08 fixed B3 three-seed mean,50,0.7333333333333334,
-original_shared,视频Transformer＋固定B3（A08）,0 / 1 / 2 均值,800,0.9804166666666667,0.9537008163877992
-original_shared,A08＋固定B3,0,800,0.9775,0.9484549375583384
-original_shared,A08＋固定B3,1,800,0.98125,0.9541104574519246
-original_shared,A08＋固定B3,2,800,0.9825,0.9585370541531347
-original_shared,STFM 原生规则（旧冻结权重）,100,800,0.97,0.9653393303239074
-original_shared,STFM 先验加一次（同一旧权重）,100,800,0.96875,0.9648485905168421
-original_detail,STFM 原生规则（旧冻结权重）,九码 / 888,,0.9448198198198198,0.9093818329259263
-original_detail,STFM 先验加一次（同一旧权重）,九码 / 888,,0.9448198198198198,0.9093818329259263
-original_detail,A08 直接argmax，s0,五类 / 800,,0.98,0.9537862999628717
-original_detail,A08 直接argmax，s1,五类 / 800,,0.98375,0.9585063893140198
-original_detail,A08 直接argmax，s2,五类 / 800,,0.9825,0.9585370541531347
+original_shared,A08 video Transformer + frozen B3,Mean of 0 / 1 / 2,800,0.9804166666666667,0.9537008163877992
+original_shared,A08 + frozen B3,0,800,0.9775,0.9484549375583384
+original_shared,A08 + frozen B3,1,800,0.98125,0.9541104574519246
+original_shared,A08 + frozen B3,2,800,0.9825,0.9585370541531347
+original_shared,STFM native rule (frozen legacy weights),100,800,0.97,0.9653393303239074
+original_shared,STFM prior once (same legacy weights),100,800,0.96875,0.9648485905168421
+original_detail,STFM native rule (frozen legacy weights),Nine codes / 888,,0.9448198198198198,0.9093818329259263
+original_detail,STFM prior once (same legacy weights),Nine codes / 888,,0.9448198198198198,0.9093818329259263
+original_detail,"A08 direct argmax, s0",Five classes / 800,,0.98,0.9537862999628717
+original_detail,"A08 direct argmax, s1",Five classes / 800,,0.98375,0.9585063893140198
+original_detail,"A08 direct argmax, s2",Five classes / 800,,0.9825,0.9585370541531347

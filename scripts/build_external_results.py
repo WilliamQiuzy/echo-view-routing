@@ -30,6 +30,19 @@ def read(name):return json.loads((RESULT/name).read_text())
 def mean(values):return sum(values)/len(values)
 
 
+def per_class_metrics(result):
+    """Derive readable class diagnostics from the already-audited confusion."""
+    matrix=result['confusion'];rows=[]
+    for i,name in enumerate(['PLAX','PSAX','A4C','A5C','SC4C']):
+        support=sum(matrix[i]);predicted=sum(row[i] for row in matrix);correct=matrix[i][i]
+        rows.append({'name':name,'n':support,'correct':correct,'predicted':predicted,
+            'precision':correct/predicted if predicted else 0.,'recall':correct/support if support else 0.,
+            'f1':2*correct/(support+predicted) if support+predicted else 0.})
+    if abs(mean([r['f1'] for r in rows])-result['five_class_macro_f1'])>1e-12:
+        raise ValueError('per-class diagnostics disagree with audited macro-F1')
+    return rows
+
+
 def validate_audit_binding(verification,files):
     for key,path in files.items():
         actual=hashlib.sha256(Path(path).read_bytes()).hexdigest()
@@ -44,8 +57,9 @@ def payload():
         ('stfm_native_results','stfm_native_results.json'),('uncertainty','uncertainty.json')]})
     ext=[];seedrows=[]
     names={'ev9v':'EV9V','dynamic':'EchoNet-Dynamic','lvh':'EchoNet-LVH','camus':'CAMUS'}
-    labels={'dynamic':'A4C','lvh':'PLAX','camus':'4CH码 → A4C'}
-    notes={'dynamic':'官方TEST；患者关系未知','lvh':'官方test；按录像去重','camus':'官方testing；半周期0.18–0.51秒；4CH码未经切面复核'}
+    labels={'dynamic':'A4C','lvh':'PLAX','camus':'4CH code → A4C'}
+    notes={'dynamic':'Official TEST; patient relationships unknown','lvh':'Official test; distinct recordings',
+        'camus':'Official testing; 0.18–0.51 s half-cycles; source code not view-adjudicated'}
     for d in ['dynamic','lvh','camus']:
         rows=[native[d][f'frozen_B3_s{s}'] for s in range(3)];u=unc['datasets'][d]
         ext.append({'name':names[d],'label':labels[d],'n':EXPECTED[d],'mean_recall':mean([r['accuracy'] for r in rows]),
@@ -53,40 +67,47 @@ def payload():
             'cuts_per_clip':mean([r['internal_cuts_per_clip'] for r in rows]),'note':notes[d]})
         for dec in ['frozen_B3','argmax']:
             for s in range(3):
-                r=native[d][f'{dec}_s{s}'];seedrows.append({'dataset':names[d],'decoder':'固定B3' if dec=='frozen_B3' else '直接argmax',
+                r=native[d][f'{dec}_s{s}'];seedrows.append({'dataset':names[d],'decoder':'Frozen B3' if dec=='frozen_B3' else 'Direct argmax',
                     'seed':s,'recall':r['accuracy'],'cuts_per_clip':r['internal_cuts_per_clip']})
     ours=[native['ev9v'][f'frozen_B3_s{s}'] for s in range(3)];u=unc['datasets']['ev9v']
-    original=[{'name':'视频Transformer＋固定B3（A08）','ours':True,'seed':'0 / 1 / 2 均值','n':800,
+    original=[{'name':'A08 video Transformer + frozen B3','ours':True,'seed':'Mean of 0 / 1 / 2','n':800,
         'accuracy':mean([r['accuracy'] for r in ours]),'macro_f1':mean([r['five_class_macro_f1'] for r in ours]),
         'macro_ci95':u['mean_B3']['macro_ci95'],'a4c':mean([r['class_recall']['A4C'] for r in ours]),'a5c':mean([r['class_recall']['A5C'] for r in ours])}]
     for s,r in enumerate(ours):
-        original.append({'name':'A08＋固定B3','ours':True,'seed':str(s),'n':800,'accuracy':r['accuracy'],
+        original.append({'name':'A08 + frozen B3','ours':True,'seed':str(s),'n':800,'accuracy':r['accuracy'],
             'macro_f1':r['five_class_macro_f1'],'macro_ci95':u['models'][f'frozen_B3_s{s}']['macro_f1_ci95'],
             'a4c':r['class_recall']['A4C'],'a5c':r['class_recall']['A5C']})
     details=[]
-    for key,title in [('legacy_per_key_prior','STFM 原生规则（旧冻结权重）'),('corrected_prior_once_same_old_weights','STFM 先验加一次（同一旧权重）')]:
+    for key,title in [('legacy_per_key_prior','STFM native rule (frozen legacy weights)'),('corrected_prior_once_same_old_weights','STFM prior once (same legacy weights)')]:
         r=stfm[key]['shared_five_family'];ci=unc['baseline'][key]
         original.append({'name':title,'ours':False,'seed':'100','n':800,'accuracy':r['accuracy'],'macro_f1':r['five_class_macro_f1'],
             'macro_ci95':ci['macro_f1_ci95'],'a4c':r['class_recall']['A4C'],'a5c':r['class_recall']['A5C']})
-        r=stfm[key]['original_nine_code'];details.append({'name':title,'ours':False,'population':'九码 / 888','accuracy':r['accuracy'],'macro_f1':r['macro_f1']})
+        r=stfm[key]['original_nine_code'];details.append({'name':title,'ours':False,'population':'Nine codes / 888','accuracy':r['accuracy'],'macro_f1':r['macro_f1']})
     for s in range(3):
-        r=native['ev9v'][f'argmax_s{s}'];details.append({'name':f'A08 直接argmax，s{s}','ours':True,'population':'五类 / 800','accuracy':r['accuracy'],'macro_f1':r['five_class_macro_f1']})
+        r=native['ev9v'][f'argmax_s{s}'];details.append({'name':f'A08 direct argmax, s{s}','ours':True,'population':'Five classes / 800','accuracy':r['accuracy'],'macro_f1':r['five_class_macro_f1']})
     old=json.loads((ROOT/'docs/results/2026-10-23_frozen_external_benchmark/evaluation_v1.json').read_text())['values']
     historical=[]
-    groups=[(['A08_s0','A08_s2'],'A08＋B3（s0/s2均值）',True),(['EchoViewCLIP_stage1_windowed'],'EchoViewCLIP stage1',False),
-        (['STFM_numeric_s100'],'STFM 数值帧序 s100',False),(['ASFormer_v2_frameorder'],'ASFormer（EV9V适应）',False),
-        (['EchoPrime_view_B3'],'EchoPrime＋B3',False),(['EchoPrime_view_per_frame'],'EchoPrime 逐帧',False)]
+    groups=[(['A08_s0','A08_s2'],'A08 + B3 (s0/s2 mean)',True),(['EchoViewCLIP_stage1_windowed'],'EchoViewCLIP stage1',False),
+        (['STFM_numeric_s100'],'STFM numeric frame order, s100',False),(['ASFormer_v2_frameorder'],'ASFormer (EV9V adaptation)',False),
+        (['EchoPrime_view_B3'],'EchoPrime + B3',False),(['EchoPrime_view_per_frame'],'EchoPrime per frame',False)]
     keys={'native':'clip macro-F1','pairs':'segment F1@50, pairs','multi':'segment F1@50, multi',
         'fp':'multi FP segments','fp_short':'multi FP segments <= 16','fn':'multi FN segments','fn_short':'multi missed true segments <= 16'}
     for ids,title,isours in groups:
         historical.append({'name':title,'ours':isours,**{k:mean([old[i][v]['value'] for i in ids]) for k,v in keys.items()}})
     paired=[{'name':title,**unc['paired_original'][key]['mean_B3']} for key,title in
-        [('legacy_per_key_prior','STFM 原生规则'),('corrected_prior_once_same_old_weights','STFM 先验加一次（同旧权重）')]]
+        [('legacy_per_key_prior','STFM native rule'),('corrected_prior_once_same_old_weights','STFM prior once (same weights)')]]
+    classes=[per_class_metrics(r) for r in ours]
+    baseline_classes=per_class_metrics(stfm['legacy_per_key_prior']['shared_five_family'])
+    class_rows=[{'name':base['name'],'n':base['n'],'share':base['n']/800,
+        **{f'a08_{key}':mean([seed[i][key] for seed in classes]) for key in ['precision','recall','f1']},
+        'stfm_f1':base['f1']} for i,base in enumerate(baseline_classes)]
     prep=read('preparation.json');short=', '.join(v['sha256'][:12] for v in prep['weights'].values())
-    return {'summary':'A08的3个冻结种子已完成2,470条来源序列。可取得且兼容的原始切面test来自STFM的EV9V；另完成3个外部来源检查。尚无新的独立A4C/A5C cine测试证据。',
+    return {'summary':'800 recordings · five shared view classes · three frozen A08 seeds. STFM’s original test is EV9V, already used in this project; this is not new external confirmation.',
         'external':ext,'seed_rows':seedrows,'original':original,'original_details':details,'history':historical,
-        'availability':read('availability.json'),'paired_original':paired,'resources':read('resources.json'),'model_identity':f'A08全相邻平滑视频Transformer＋冻结B3；s0/s1/s2；权重SHA前缀：{short}',
-        'verification_note':'逐例缓存已独立重建概率、完整标签序列、计数和指标；开发集输出复现、原始帧率/窗口/标记核查通过。95%区间为固定模型下分组重采样的描述性区间；患者独立性和上游预训练重叠仍有限制。',
+        'availability':read('availability.json'),'paired_original':paired,'class_breakdown':class_rows,
+        'metric_example_s0_A5C':classes[0][3],'resources':read('resources.json'),
+        'model_identity':f'A08 all-neighbour-smoothed video Transformer + frozen B3; s0/s1/s2; weight SHA prefixes: {short}',
+        'verification_note':'Independent recount reproduced full label sequences, counts and metrics from saved logits. Development-logit, frame-rate, window and target-marker checks passed. Intervals are descriptive grouped bootstrap intervals for fixed models. Patient independence and upstream pretraining overlap remain limited or unknown.',
         'verification':verify,'uncertainty':unc,'native_results':native,'stfm_original_results':stfm,
         'source_hashes':{name:hashlib.sha256((RESULT/name).read_bytes()).hexdigest() for name in
             ['native_results.json','stfm_native_results.json','verification.json','uncertainty.json','availability.json','input_audit.json','resources.json']}}

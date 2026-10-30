@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="冻结心超切面模型的原始测试集比较、外部来源检查与完整证据边界。">
-  <title>外部测试 · Echo View Routing</title>
+  <meta name="description" content="A08 versus STFM on the original EV9V test: verified scores, class-level errors, external source checks and data access limits.">
+  <title>EV9V: A08 vs STFM</title>
   <link rel="stylesheet" href="style.css">
   <script defer src="data.js"></script>
   <script defer src="app.js"></script>
@@ -12,45 +12,47 @@
 <body>
   <main>
     <header>
-      <div class="eyebrow">HARVARD CAPSTONE / ECHO VIEW ROUTING</div>
-      <div class="title-row"><h1>外部测试，逐项对照。</h1><span class="edition">30 OCT 2026</span></div>
-      <p class="lede" id="summary">正在读取已核验的汇总结果。</p>
-      <nav aria-label="页面目录"><a href="#external">外部来源</a><a href="#original">原始切面测试</a><a href="#history">分段背景</a><a href="#access">数据可获取性</a></nav>
+      <div class="title-row"><h1>EV9V: A08 vs STFM</h1><span class="edition">30 OCT 2026</span></div>
+      <p class="lede" id="summary">Loading verified aggregate results.</p>
     </header>
 
-    <section id="external">
-      <div class="section-head"><span class="number">01</span><div><h2>冻结模型在外部来源上表现如何？</h2><p>同一A08模型、固定B3参数；三种子分别运行。这里测试切面识别，不与原论文的EF、壁厚或分割指标比较。</p></div></div>
-      <div class="table-wrap"><table><thead><tr><th>官方测试来源</th><th>切面 / 数量</th><th>来源标签一致率 / 召回<br><small>三种子均值 · 95%区间</small></th><th>按来源标签正确数<br><small>s0 / s1 / s2</small></th><th>内部切换 / 段<br><small>均值</small></th></tr></thead><tbody id="external-body"></tbody></table></div>
-      <p class="note">单类来源保留全部五类预测，按来源标签计分；不能代表完整五类准确率。CAMUS为“4CH码→A4C”的名义标签一致率，部分4CH可能实际是A5C，预测A5C不一定是临床错误。Dynamic/LVH按录像重采样，患者关系未知；CAMUS按患者重采样。上游预训练重叠未知。三种子不增加独立样本数。</p>
-      <details><summary>查看每个种子与直接argmax对照</summary><div class="table-wrap"><table><thead><tr><th>来源</th><th>输出</th><th>种子</th><th>召回</th><th>内部切换 / 段</th></tr></thead><tbody id="seed-body"></tbody></table></div></details>
+    <section aria-label="A08 versus STFM on EV9V">
+      <div class="table-wrap"><table><thead><tr><th>Model</th><th>Seed</th><th>Recordings</th><th>Accuracy</th><th>Five-class macro-F1<br><small>95% interval</small></th><th>A4C / A5C recall</th></tr></thead><tbody id="original-body"></tbody></table></div>
+      <p class="note">Shared test: 800 recordings / 125 sessions; A4C n=231, A5C n=40. STFM uses its native 10-key-frame whole-video rule. A08 uses frozen target windows + B3, then one majority-vote label per recording. PSAX probabilities are combined; unsupported predictions remain errors. STFM uses existing numeric-frame-order s100 weights. “Prior once” changes inference fusion only; it does not reproduce the newer official training recipe.</p>
+      <p class="finding">A08 has higher accuracy; STFM has higher macro-F1. Paired difference intervals cross zero for both metrics, so these results do not establish overall superiority.</p>
+      <details><summary>Per-class scores and metric definitions</summary>
+        <div class="table-wrap"><table><thead><tr><th>EV9V class</th><th>Recordings</th><th>Share of test</th><th>A08 precision</th><th>A08 recall</th><th>A08 F1</th><th>STFM F1</th></tr></thead><tbody id="class-body"></tbody></table></div>
+        <p class="note">A08 values average the three frozen seeds; STFM uses its native rule. Accuracy = correctly classified recordings / all recordings. Precision = correct predictions of a class / all predictions of that class. Recall = correct predictions of a class / all true recordings of that class. F1 = 2 × precision × recall / (precision + recall). Macro-F1 averages the five class F1 scores with equal weight, so each class contributes 20%, even when it is rare.</p>
+        <p class="note" id="metric-example"></p>
+      </details>
+      <details><summary>Paired differences and uncertainty</summary><div class="table-wrap"><table><thead><tr><th>A08 three-seed mean minus</th><th>Accuracy difference<br><small>percentage points · 95% interval</small></th><th>Macro-F1 difference<br><small>percentage points · 95% interval</small></th></tr></thead><tbody id="paired-body"></tbody></table></div><p class="note">2,000 paired resamples of the same 125 sessions / 800 recordings; percentile intervals. Averaging three fixed-model scores is not prediction ensembling and does not measure retraining uncertainty.</p></details>
+      <details><summary>STFM nine-code task and A08 direct argmax</summary><div class="table-wrap"><table><thead><tr><th>Model / condition</th><th>Task / recordings</th><th>Accuracy</th><th>Macro-F1</th></tr></thead><tbody id="original-detail-body"></tbody></table></div><p class="note">The original nine-code STFM endpoint includes all 888 test recordings. A08 has five outputs, so it has no complete nine-code score. Historical STFM weights differ from the new official training recipe.</p></details>
     </section>
 
-    <section id="original">
-      <div class="section-head"><span class="number">02</span><div><h2>在对方原始切面测试集上比较</h2><p>STFM原始测试集就是EV9V。使用官方test中的800段共同五类录像；原始888段九码任务另列。该数据已有历史使用，不能作为独立外部确认。</p></div></div>
-      <div class="table-wrap"><table><thead><tr><th>系统</th><th>种子</th><th>录像数</th><th>准确率</th><th>五类macro-F1</th><th>A4C / A5C召回</th></tr></thead><tbody id="original-body"></tbody></table></div>
-      <p class="note">共同支持范围为800段 / 125个session；A4C召回分母231段，A5C分母40段。STFM使用原生整段视频的10关键帧规则；A08使用冻结的目标窗口+B3。共同类别合并PSAX概率，保留不支持类别为错误。STFM为现有数值帧序s100权重；“先验加一次”只修正推理汇总，没有重新训练为新版官方配方。</p>
-      <p class="finding">A08准确率更高，STFM的macro-F1更高。配对差值区间均跨零，目前不能据此宣称整体优胜。</p>
-      <details><summary>查看配对差值与不确定性</summary><div class="table-wrap"><table><thead><tr><th>A08三种子均值 减去</th><th>准确率差 / 百分点</th><th>macro-F1差 / 百分点</th></tr></thead><tbody id="paired-body"></tbody></table></div><p class="note">相同800段、按125个session配对重采样2,000次；95%百分位区间。平均三个固定模型的得分，不是预测集成，也不包括重新训练的不确定性。</p></details>
-      <details><summary>查看STFM原始九码端点与A08直接argmax</summary><div class="table-wrap"><table><thead><tr><th>条件</th><th>类别 / 数量</th><th>准确率</th><th>macro-F1</th></tr></thead><tbody id="original-detail-body"></tbody></table></div><p class="note">冻结A08只有五类输出，不报告不存在的完整九类成绩。STFM新官方训练配方与这些历史权重不同。</p></details>
+    <section aria-label="A08 on external cardiac sources">
+      <p class="context">A08 was also run on the official EchoNet-Dynamic, EchoNet-LVH and CAMUS test sources. These are single-view source-label checks, not comparisons against the papers’ EF, wall-thickness or segmentation results.</p>
+      <div class="table-wrap"><table><thead><tr><th>Dataset</th><th>Source label / recordings</th><th>Label agreement / recall<br><small>Three-seed mean · 95% interval</small></th><th>Correct by source label<br><small>s0 / s1 / s2</small></th><th>Internal cuts / recording<br><small>Mean</small></th></tr></thead><tbody id="external-body"></tbody></table></div>
+      <p class="note">All five predicted classes are retained. Single-class checks do not establish five-class performance. CAMUS measures nominal “4CH code → A4C” agreement: some 4CH clips may be A5C, so an A5C prediction is not necessarily a clinical error. Bootstrap units: recordings for Dynamic/LVH (patient relationships unknown), patients for CAMUS. Upstream pretraining overlap is unknown. Three seeds do not create more independent cases.</p>
+      <details><summary>Individual seeds and direct argmax</summary><div class="table-wrap"><table><thead><tr><th>Dataset</th><th>Decoder</th><th>Seed</th><th>Recall</th><th>Internal cuts / recording</th></tr></thead><tbody id="seed-body"></tbody></table></div></details>
     </section>
 
-    <section id="history">
-      <div class="section-head"><span class="number">03</span><div><h2>已有分段优势，适用于什么条件？</h2><p>历史A26原协议，保留原值。原生800段；两段流240条、360个真段；多段流120条、499个真段，其中122个短真段。</p></div></div>
-      <div class="table-wrap"><table><thead><tr><th>系统</th><th>原生分类<br>macro-F1</th><th>两段流<br>segment F1@50</th><th>多段流<br>segment F1@50</th><th>多段流假段<br><small>其中短假段</small></th><th>漏真段<br><small>其中短真段</small></th></tr></thead><tbody id="history-body"></tbody></table></div>
-      <p class="note">segment F1@50：同类别、时间IoU≥0.5、一对一匹配后按流汇总。A08为s0/s2均值，其余为一个冻结版本。流复用录像，拼接处不等于真实连续扫查转场。“短”指≤16个10Hz样本。原生、两段流、多段流排名不同；此表与上方新原生协议不混算。</p>
+    <section aria-label="Historical EV9V model comparison">
+      <p class="context">The earlier A26 comparison on EV9V is retained below: A08 versus EchoViewCLIP, STFM, ASFormer and EchoPrime. This uses the historical protocol, with 800 native recordings, 240 two-part streams / 360 true segments, and 120 multi-part streams / 499 true segments (122 short).</p>
+      <div class="table-wrap"><table><thead><tr><th>Model on EV9V</th><th>Native classification<br>Macro-F1</th><th>Two-part streams<br>Segment F1@50</th><th>Multi-part streams<br>Segment F1@50</th><th>False segments<br><small>Short subset</small></th><th>Missed true segments<br><small>Short subset</small></th></tr></thead><tbody id="history-body"></tbody></table></div>
+      <p class="note">Segment F1@50 uses same-class, one-to-one matches at temporal IoU ≥0.5, aggregated across streams. A08 is the s0/s2 mean; other rows are one frozen version each. Streams reuse recordings; constructed joins are not natural scanning transitions. “Short” means ≤16 samples at 10 Hz. Rankings differ across classification and segmentation. This historical protocol is separate from the new native test above.</p>
     </section>
 
-    <section id="access">
-      <div class="section-head"><span class="number">04</span><div><h2>每个外部模型：原test能否取得、能否比较？</h2><p>需要同时有原始输入、可信标签和匹配输出。未取得或任务不兼容的项目保留明确状态，不填写零分或替代指标。</p></div></div>
-      <div class="table-wrap"><table class="access-table"><thead><tr><th>外部模型</th><th>原始测试任务</th><th>处置</th><th>官方来源与限制</th></tr></thead><tbody id="access-body"></tbody></table></div>
-      <details><summary>其他资料与当前模型身份</summary><div id="resource-notes"></div><p class="note">现有专家/患者标签不因模型同意而成立。EchoXFlow的模型生成切面码不替代专家测试真值；静态图片不重复成伪视频。</p></details>
-      <details><summary>运行与复核记录</summary><div class="table-wrap"><table><thead><tr><th>执行项</th><th>实测</th><th>范围</th></tr></thead><tbody id="execution-body"></tbody></table></div><p class="note">GPU作业总时长包含解码、CPU工作和加载；前向计时不是云服务器计费时长。LVH的CSV帧率与容器不符，首次LVH前向前按全343段PTS核验并修正；先前已完成的EV9V/Dynamic缓存保留。未删除失败尝试。</p></details>
+    <section aria-label="Original test data availability">
+      <p class="context">The review covered 13 model groups. A direct comparison requires original inputs, trustworthy labels and a matching prediction task. Some tests are unavailable; others are public but incompatible. No new independent five-class or A4C/A5C cine test was obtained.</p>
+      <div class="table-wrap"><table class="access-table"><thead><tr><th>Model</th><th>Original test task / dataset</th><th>Status</th><th>Official source and limitation</th></tr></thead><tbody id="access-body"></tbody></table></div>
+      <details><summary>Other resources and frozen model identity</summary><div id="resource-notes"></div><p class="note">A model-generated view code is not independent expert test truth. EchoXFlow pseudo-labels do not replace expert labels; static images are not repeated into artificial videos.</p></details>
+      <details><summary>Execution and verification receipts</summary><div class="table-wrap"><table><thead><tr><th>Execution item</th><th>Measured</th><th>Scope</th></tr></thead><tbody id="execution-body"></tbody></table></div><p class="note">GPU job elapsed time includes decoding, CPU work and loading; measured forward time is not cloud billing time. LVH CSV rates disagreed with container timing. All 343 PTS sequences were qualified and corrected before the first LVH forward; completed EV9V/Dynamic caches were retained. Failed attempts remain recorded.</p></details>
     </section>
 
     <footer>
-      <div><strong>可复核的数字</strong><p id="verification-note"></p></div>
-      <div class="downloads"><a href="results.json" download>汇总 JSON ↗</a><a href="results.csv" download>结果 CSV ↗</a></div>
-      <p class="fine">仅发布聚合结果。录像、患者/session标识、逐例预测与原始媒体保留在服务器。</p>
+      <p id="verification-note"></p>
+      <div class="downloads"><a href="results.json" download>Aggregate JSON ↗</a><a href="results.csv" download>Results CSV ↗</a></div>
+      <p class="fine">Aggregate results only. Raw media, patient/session identifiers and case-level predictions remain on the server.</p>
     </footer>
   </main>
 </body>

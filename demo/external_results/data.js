@@ -1,5 +1,5 @@
 window.EXTERNAL_RESULTS = {
-  "summary": "A08的3个冻结种子已完成2,470条来源序列。可取得且兼容的原始切面test来自STFM的EV9V；另完成3个外部来源检查。尚无新的独立A4C/A5C cine测试证据。",
+  "summary": "800 recordings · five shared view classes · three frozen A08 seeds. STFM’s original test is EV9V, already used in this project; this is not new external confirmation.",
   "external": [
     {
       "name": "EchoNet-Dynamic",
@@ -16,7 +16,7 @@ window.EXTERNAL_RESULTS = {
         1210
       ],
       "cuts_per_clip": 0.007047768206734534,
-      "note": "官方TEST；患者关系未知"
+      "note": "Official TEST; patient relationships unknown"
     },
     {
       "name": "EchoNet-LVH",
@@ -33,11 +33,11 @@ window.EXTERNAL_RESULTS = {
         333
       ],
       "cuts_per_clip": 0.0,
-      "note": "官方test；按录像去重"
+      "note": "Official test; distinct recordings"
     },
     {
       "name": "CAMUS",
-      "label": "4CH码 → A4C",
+      "label": "4CH code → A4C",
       "n": 50,
       "mean_recall": 0.7333333333333334,
       "ci95": [
@@ -50,132 +50,132 @@ window.EXTERNAL_RESULTS = {
         38
       ],
       "cuts_per_clip": 0.0,
-      "note": "官方testing；半周期0.18–0.51秒；4CH码未经切面复核"
+      "note": "Official testing; 0.18–0.51 s half-cycles; source code not view-adjudicated"
     }
   ],
   "seed_rows": [
     {
       "dataset": "EchoNet-Dynamic",
-      "decoder": "固定B3",
+      "decoder": "Frozen B3",
       "seed": 0,
       "recall": 0.9483163664839468,
       "cuts_per_clip": 0.007830853563038372
     },
     {
       "dataset": "EchoNet-Dynamic",
-      "decoder": "固定B3",
+      "decoder": "Frozen B3",
       "seed": 1,
       "recall": 0.9475332811276429,
       "cuts_per_clip": 0.0031323414252153485
     },
     {
       "dataset": "EchoNet-Dynamic",
-      "decoder": "固定B3",
+      "decoder": "Frozen B3",
       "seed": 2,
       "recall": 0.9475332811276429,
       "cuts_per_clip": 0.010180109631949883
     },
     {
       "dataset": "EchoNet-Dynamic",
-      "decoder": "直接argmax",
+      "decoder": "Direct argmax",
       "seed": 0,
       "recall": 0.9475332811276429,
       "cuts_per_clip": 0.09945184025058731
     },
     {
       "dataset": "EchoNet-Dynamic",
-      "decoder": "直接argmax",
+      "decoder": "Direct argmax",
       "seed": 1,
       "recall": 0.9467501957713391,
       "cuts_per_clip": 0.11511354737666406
     },
     {
       "dataset": "EchoNet-Dynamic",
-      "decoder": "直接argmax",
+      "decoder": "Direct argmax",
       "seed": 2,
       "recall": 0.9451840250587314,
       "cuts_per_clip": 0.09866875489428348
     },
     {
       "dataset": "EchoNet-LVH",
-      "decoder": "固定B3",
+      "decoder": "Frozen B3",
       "seed": 0,
       "recall": 0.924198250728863,
       "cuts_per_clip": 0.0
     },
     {
       "dataset": "EchoNet-LVH",
-      "decoder": "固定B3",
+      "decoder": "Frozen B3",
       "seed": 1,
       "recall": 0.9766763848396501,
       "cuts_per_clip": 0.0
     },
     {
       "dataset": "EchoNet-LVH",
-      "decoder": "固定B3",
+      "decoder": "Frozen B3",
       "seed": 2,
       "recall": 0.9708454810495627,
       "cuts_per_clip": 0.0
     },
     {
       "dataset": "EchoNet-LVH",
-      "decoder": "直接argmax",
+      "decoder": "Direct argmax",
       "seed": 0,
       "recall": 0.9183673469387755,
       "cuts_per_clip": 0.11078717201166181
     },
     {
       "dataset": "EchoNet-LVH",
-      "decoder": "直接argmax",
+      "decoder": "Direct argmax",
       "seed": 1,
       "recall": 0.9708454810495627,
       "cuts_per_clip": 0.11661807580174927
     },
     {
       "dataset": "EchoNet-LVH",
-      "decoder": "直接argmax",
+      "decoder": "Direct argmax",
       "seed": 2,
       "recall": 0.9766763848396501,
       "cuts_per_clip": 0.09620991253644315
     },
     {
       "dataset": "CAMUS",
-      "decoder": "固定B3",
+      "decoder": "Frozen B3",
       "seed": 0,
       "recall": 0.8,
       "cuts_per_clip": 0.0
     },
     {
       "dataset": "CAMUS",
-      "decoder": "固定B3",
+      "decoder": "Frozen B3",
       "seed": 1,
       "recall": 0.64,
       "cuts_per_clip": 0.0
     },
     {
       "dataset": "CAMUS",
-      "decoder": "固定B3",
+      "decoder": "Frozen B3",
       "seed": 2,
       "recall": 0.76,
       "cuts_per_clip": 0.0
     },
     {
       "dataset": "CAMUS",
-      "decoder": "直接argmax",
+      "decoder": "Direct argmax",
       "seed": 0,
       "recall": 0.8,
       "cuts_per_clip": 0.0
     },
     {
       "dataset": "CAMUS",
-      "decoder": "直接argmax",
+      "decoder": "Direct argmax",
       "seed": 1,
       "recall": 0.64,
       "cuts_per_clip": 0.0
     },
     {
       "dataset": "CAMUS",
-      "decoder": "直接argmax",
+      "decoder": "Direct argmax",
       "seed": 2,
       "recall": 0.76,
       "cuts_per_clip": 0.0
@@ -183,9 +183,9 @@ window.EXTERNAL_RESULTS = {
   ],
   "original": [
     {
-      "name": "视频Transformer＋固定B3（A08）",
+      "name": "A08 video Transformer + frozen B3",
       "ours": true,
-      "seed": "0 / 1 / 2 均值",
+      "seed": "Mean of 0 / 1 / 2",
       "n": 800,
       "accuracy": 0.9804166666666667,
       "macro_f1": 0.9537008163877992,
@@ -197,7 +197,7 @@ window.EXTERNAL_RESULTS = {
       "a5c": 0.9166666666666666
     },
     {
-      "name": "A08＋固定B3",
+      "name": "A08 + frozen B3",
       "ours": true,
       "seed": "0",
       "n": 800,
@@ -211,7 +211,7 @@ window.EXTERNAL_RESULTS = {
       "a5c": 0.925
     },
     {
-      "name": "A08＋固定B3",
+      "name": "A08 + frozen B3",
       "ours": true,
       "seed": "1",
       "n": 800,
@@ -225,7 +225,7 @@ window.EXTERNAL_RESULTS = {
       "a5c": 0.875
     },
     {
-      "name": "A08＋固定B3",
+      "name": "A08 + frozen B3",
       "ours": true,
       "seed": "2",
       "n": 800,
@@ -239,7 +239,7 @@ window.EXTERNAL_RESULTS = {
       "a5c": 0.95
     },
     {
-      "name": "STFM 原生规则（旧冻结权重）",
+      "name": "STFM native rule (frozen legacy weights)",
       "ours": false,
       "seed": "100",
       "n": 800,
@@ -253,7 +253,7 @@ window.EXTERNAL_RESULTS = {
       "a5c": 0.95
     },
     {
-      "name": "STFM 先验加一次（同一旧权重）",
+      "name": "STFM prior once (same legacy weights)",
       "ours": false,
       "seed": "100",
       "n": 800,
@@ -269,44 +269,44 @@ window.EXTERNAL_RESULTS = {
   ],
   "original_details": [
     {
-      "name": "STFM 原生规则（旧冻结权重）",
+      "name": "STFM native rule (frozen legacy weights)",
       "ours": false,
-      "population": "九码 / 888",
+      "population": "Nine codes / 888",
       "accuracy": 0.9448198198198198,
       "macro_f1": 0.9093818329259263
     },
     {
-      "name": "STFM 先验加一次（同一旧权重）",
+      "name": "STFM prior once (same legacy weights)",
       "ours": false,
-      "population": "九码 / 888",
+      "population": "Nine codes / 888",
       "accuracy": 0.9448198198198198,
       "macro_f1": 0.9093818329259263
     },
     {
-      "name": "A08 直接argmax，s0",
+      "name": "A08 direct argmax, s0",
       "ours": true,
-      "population": "五类 / 800",
+      "population": "Five classes / 800",
       "accuracy": 0.98,
       "macro_f1": 0.9537862999628717
     },
     {
-      "name": "A08 直接argmax，s1",
+      "name": "A08 direct argmax, s1",
       "ours": true,
-      "population": "五类 / 800",
+      "population": "Five classes / 800",
       "accuracy": 0.98375,
       "macro_f1": 0.9585063893140198
     },
     {
-      "name": "A08 直接argmax，s2",
+      "name": "A08 direct argmax, s2",
       "ours": true,
-      "population": "五类 / 800",
+      "population": "Five classes / 800",
       "accuracy": 0.9825,
       "macro_f1": 0.9585370541531347
     }
   ],
   "history": [
     {
-      "name": "A08＋B3（s0/s2均值）",
+      "name": "A08 + B3 (s0/s2 mean)",
       "ours": true,
       "native": 0.9534959958557365,
       "pairs": 0.9784866697488057,
@@ -328,7 +328,7 @@ window.EXTERNAL_RESULTS = {
       "fn_short": 11.0
     },
     {
-      "name": "STFM 数值帧序 s100",
+      "name": "STFM numeric frame order, s100",
       "ours": false,
       "native": 0.9596268824889631,
       "pairs": 0.970954356846473,
@@ -339,7 +339,7 @@ window.EXTERNAL_RESULTS = {
       "fn_short": 21.0
     },
     {
-      "name": "ASFormer（EV9V适应）",
+      "name": "ASFormer (EV9V adaptation)",
       "ours": false,
       "native": 0.9558519059280697,
       "pairs": 0.9807162534435262,
@@ -350,7 +350,7 @@ window.EXTERNAL_RESULTS = {
       "fn_short": 16.0
     },
     {
-      "name": "EchoPrime＋B3",
+      "name": "EchoPrime + B3",
       "ours": false,
       "native": 0.943459031209738,
       "pairs": 0.9875862068965517,
@@ -361,7 +361,7 @@ window.EXTERNAL_RESULTS = {
       "fn_short": 23.0
     },
     {
-      "name": "EchoPrime 逐帧",
+      "name": "EchoPrime per frame",
       "ours": false,
       "native": 0.943459031209738,
       "pairs": 0.7427341227125942,
@@ -543,7 +543,7 @@ window.EXTERNAL_RESULTS = {
   },
   "paired_original": [
     {
-      "name": "STFM 原生规则",
+      "name": "STFM native rule",
       "n_cases": 800,
       "groups": 125,
       "grouping": "paired sessions; identical case membership",
@@ -559,7 +559,7 @@ window.EXTERNAL_RESULTS = {
       ]
     },
     {
-      "name": "STFM 先验加一次（同旧权重）",
+      "name": "STFM prior once (same weights)",
       "n_cases": 800,
       "groups": 125,
       "grouping": "paired sessions; identical case membership",
@@ -575,6 +575,62 @@ window.EXTERNAL_RESULTS = {
       ]
     }
   ],
+  "class_breakdown": [
+    {
+      "name": "PLAX",
+      "n": 275,
+      "share": 0.34375,
+      "a08_precision": 1.0,
+      "a08_recall": 1.0,
+      "a08_f1": 1.0,
+      "stfm_f1": 1.0
+    },
+    {
+      "name": "PSAX",
+      "n": 219,
+      "share": 0.27375,
+      "a08_precision": 1.0,
+      "a08_recall": 1.0,
+      "a08_f1": 1.0,
+      "stfm_f1": 0.9645390070921985
+    },
+    {
+      "name": "A4C",
+      "n": 231,
+      "share": 0.28875,
+      "a08_precision": 0.9851093985455219,
+      "a08_recall": 0.9509379509379509,
+      "a08_f1": 0.9676802431209272,
+      "stfm_f1": 0.982532751091703
+    },
+    {
+      "name": "A5C",
+      "n": 40,
+      "share": 0.05,
+      "a08_precision": 0.7818733850129199,
+      "a08_recall": 0.9166666666666666,
+      "a08_f1": 0.8430773599448299,
+      "stfm_f1": 0.8941176470588236
+    },
+    {
+      "name": "SC4C",
+      "n": 35,
+      "share": 0.04375,
+      "a08_precision": 0.9444444444444443,
+      "a08_recall": 0.9714285714285714,
+      "a08_f1": 0.9577464788732394,
+      "stfm_f1": 0.9855072463768116
+    }
+  ],
+  "metric_example_s0_A5C": {
+    "name": "A5C",
+    "n": 40,
+    "correct": 37,
+    "predicted": 50,
+    "precision": 0.74,
+    "recall": 0.925,
+    "f1": 0.8222222222222222
+  },
   "resources": {
     "terminal_receipts": {
       "external_original_test_v1.log": {
@@ -711,8 +767,8 @@ window.EXTERNAL_RESULTS = {
     },
     "accounting_limit": "GPU job wall includes loading, decoding and CPU work; measured forward is not GPU rental time. Process CPU receipts are not total agent/development/source-audit CPU; no complete dollar or cloud reservation charge is claimed. No new dataset download was required; existing server data were reused. Protocol/check wall is separate. Initial failed LVH job and all four audit attempts are retained. Storage is file bytes for this run, excluding shared existing data/models and local/hosting copies."
   },
-  "model_identity": "A08全相邻平滑视频Transformer＋冻结B3；s0/s1/s2；权重SHA前缀：9b144925f32f, c8b09ecaf286, f95fed7ba78c",
-  "verification_note": "逐例缓存已独立重建概率、完整标签序列、计数和指标；开发集输出复现、原始帧率/窗口/标记核查通过。95%区间为固定模型下分组重采样的描述性区间；患者独立性和上游预训练重叠仍有限制。",
+  "model_identity": "A08 all-neighbour-smoothed video Transformer + frozen B3; s0/s1/s2; weight SHA prefixes: 9b144925f32f, c8b09ecaf286, f95fed7ba78c",
+  "verification_note": "Independent recount reproduced full label sequences, counts and metrics from saved logits. Development-logit, frame-rate, window and target-marker checks passed. Intervals are descriptive grouped bootstrap intervals for fixed models. Patient independence and upstream pretraining overlap remain limited or unknown.",
   "verification": {
     "passed": true,
     "created_utc": "2026-10-30T04:40:31Z",
