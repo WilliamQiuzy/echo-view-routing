@@ -22,13 +22,13 @@ Predecessors: A08 (working reference, all-neighbour MViTv2-S plus saved B3); A26
 
 **Readout:** fixed per-video majority over 10 Hz predictions, raw argmax and frozen B3 separately; supported class recalls, full five-class confusion, native false cuts and durations. Macro-F1 only where the complete shared label support is appropriate. Source checks with one true class get class recall and its denominator, not a misleading five-class ranking. Exact decoded frame counts and timing; no failed-case dropping. Bootstrap by patient when known, otherwise session or recording with explicit limitation. Source overlap unknown stays unknown.
 
-**Resources:** initial shared evaluation envelope 12 GPU h, 12 active CPU h, 8 GB new persistent storage, one GPU queue, memory fraction 0.6. Time actual jobs/checks/failures and retain receipts. Measure a label-free timing subset before scheduling full work. Do not train a new head or tune thresholds to rescue outcomes. Acquisition checks stop on unavailable pixels/truth or an incompatible target; record the exact missing prerequisite rather than substituting pseudo-labels.
+**Resources:** initial shared evaluation envelope 12 GPU h, 12 active CPU h, 8 GB new persistent storage, one GPU queue, memory fraction 0.6. Time actual jobs/checks/failures and retain receipts. Stage acquisition and measure a label-free timing subset before scheduling full work. A resource limit is a pending condition, never an unavailable/incompatible disposition or a completion claim; revise a resource forecast prospectively if required by the authorized scope. Do not train a new head or tune thresholds to rescue outcomes. Acquisition checks stop on unavailable pixels/truth or an incompatible target; record the exact missing prerequisite rather than substituting pseudo-labels.
 
 ## Task 1: Availability and preparation
 
 **Files:** create `configs/experiments/external_original_test_v1.yaml`, `docs/results/2026-10-30_external_original_tests/availability.json`; private server manifests under `runs/external_original_test_v1/private/`.
 
-- [ ] Audit each external model against official source/test access and target compatibility.
+- [ ] Audit each external model against official source/test access and target compatibility. Starting roster: STFM, EchoViewCLIP, EchoPrime, ASFormer, MS-TCN, ASRF, FACT, EchoFine/TTE47, EchoJEPA/V-JEPA, PanEcho and AoVdetector; also record intake-only representation models and resources separately.
 - [ ] Pin source versions, all model SHA256s, native split membership and decoder numbers.
 - [ ] Commit protocol/config before new target inference; log access and preparation receipts.
 
@@ -56,6 +56,6 @@ Predecessors: A08 (working reference, all-neighbour MViTv2-S plus saved B3); A26
 
 - [ ] Build concise tables directly from verified aggregate JSON: original-test availability, completed shared-task scores, auxiliary source-shift scores, native/pair/multi context, timing and limitations.
 - [ ] Remove dependency on unavailable case/video bundles; include source links and downloadable aggregate CSV/JSON only.
-- [ ] Archive obsolete generated demo pages and builders by dependency, with traceable paths; preserve annotation tooling, original reports and unrelated dirty/staged work.
+- [ ] Archive an enumerated set of clean tracked obsolete generated demo pages and builders by dependency, with traceable paths; preserve annotation tooling, original reports and ALL pre-existing untracked files and unrelated dirty/staged work.
 - [ ] Validate figures/denominators/links, desktop/mobile rendering, no runtime errors, and no per-case identifiers/media.
 - [ ] Publish private Site, verify deployment and current local entrypoint, update A50/index and final resources. Complete only after every obtainable compatible comparison has a verified outcome and all other models have an evidence-backed access/compatibility disposition.
