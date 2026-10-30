@@ -1,0 +1,102 @@
+{
+  "all_source_provenance_and_audit_checks_pass": true,
+  "source_quantity_gate": false,
+  "model_training_activated": false,
+  "source_identity_git_objects": [
+    {
+      "commit": "84c59e44f0ac51adbcdf37394a1080af363b8600",
+      "path": "scripts/qualify_clinical_acquisition.py",
+      "sha256": "c6533bed1bf1302ce9b3ae737732fccea8d7b5c91be515672b317bc8d2a8bdf7"
+    },
+    {
+      "commit": "84c59e44f0ac51adbcdf37394a1080af363b8600",
+      "path": "echo_routing/temporal/clinical_acquisition_source.py",
+      "sha256": "5e11a89d99f05d6f9cd78dc2a72a8522700a2b2e07feb65f0c5149ac5cf67bcc"
+    },
+    {
+      "commit": "5d7a551177f6a6006dbff8c9e2d3d338350851e0",
+      "path": "scripts/qualify_clinical_acquisition_contract.py",
+      "sha256": "d639f2eb7b4741107d091f44f04d5f0a1c4a3ee81caa8ed4eecd02bab868cfb3"
+    },
+    {
+      "commit": "5d7a551177f6a6006dbff8c9e2d3d338350851e0",
+      "path": "echo_routing/temporal/clinical_acquisition_source.py",
+      "sha256": "bf3c054e6a9c17d66afcf4014aa7b7a711809c7bfca824d4193097e9e4e34dbc"
+    },
+    {
+      "commit": "5e28edd5c4bf3456f42f5b739c72b2033cda4024",
+      "path": "scripts/prepare_clinical_acquisition_cohort.py",
+      "sha256": "70b2c073d1a1435fec018cde2af517739d205fa7afa15ed8049a258800791a78"
+    },
+    {
+      "commit": "5e28edd5c4bf3456f42f5b739c72b2033cda4024",
+      "path": "echo_routing/temporal/clinical_acquisition_source.py",
+      "sha256": "e913cda164a177792b802aca7ba534e25fd9471db2bbc2be74206df8850cdc2c"
+    },
+    {
+      "commit": "febf71dc21da18b1177162753f1aba5ef050313e",
+      "path": "scripts/prepare_clinical_acquisition_cohort.py",
+      "sha256": "4c11c321026eeac5f3a5f0dd668f8a017e289281edc38709f03b515d9577f219"
+    },
+    {
+      "commit": "febf71dc21da18b1177162753f1aba5ef050313e",
+      "path": "echo_routing/temporal/clinical_acquisition_source.py",
+      "sha256": "200b85232a3a346c03fc568ad876f4a144fdf42523f82f4ac529ad109b53c1e5"
+    }
+  ],
+  "commit_precedes_dependent_stage": [
+    {
+      "commit": "84c59e44f0ac51adbcdf37394a1080af363b8600",
+      "commit_unix": 1793334404,
+      "dependent_stage_started_unix": 1793334419.0201485,
+      "commit_precedes_stage": true
+    },
+    {
+      "commit": "5d7a551177f6a6006dbff8c9e2d3d338350851e0",
+      "commit_unix": 1793335093,
+      "dependent_stage_started_unix": 1793335109.3531864,
+      "commit_precedes_stage": true
+    },
+    {
+      "commit": "5e28edd5c4bf3456f42f5b739c72b2033cda4024",
+      "commit_unix": 1793335723,
+      "dependent_stage_started_unix": 1793335746.5786874,
+      "commit_precedes_stage": true
+    },
+    {
+      "commit": "febf71dc21da18b1177162753f1aba5ef050313e",
+      "commit_unix": 1793335967,
+      "dependent_stage_started_unix": 1793336014.9721582,
+      "commit_precedes_stage": true
+    },
+    {
+      "commit": "bebcfbbacc6e2ac40d924da99c96b72396ab5878",
+      "commit_unix": 1793339679,
+      "dependent_stage_started_unix": 1793339683.4733276,
+      "commit_precedes_stage": true
+    }
+  ],
+  "server_Mac_public_aggregate_SHA_match": true,
+  "public_artifact_SHA256": {
+    "source_freeze.json": "347ca0374d4ea3b44c394fa31a5d8c5470c045f8da1777989cf4c8a8f233b722",
+    "cohort_freeze.json": "257fae436d4334ac8086f60154197655e2423490c567c906561ba398340485e0",
+    "contract_result.json": "14d8f9a8a2f22413f7c0d9efacae101f1585696062cb6a9749ced4118a2553cf",
+    "cohort_result.json": "2592abc751abfccc9010a868b5710f4342126388ce602a45821e8b37b56d621f",
+    "independent_source_audit.json": "5e5aba6ffee26067a438e76da17c61dfc23134cb7accbb7d4e06564f796bf4d7",
+    "cohort_acquire_receipt.json": "80bd113e277b0dc2a89a6129739f7c76adf8c29b208ae4e3e31c18bf9feacd72",
+    "cohort_freeze_receipt.json": "e0e5a790c4d0a50234805de109056bb9ffe34289cfb1a3e838c95eadb0ed810f",
+    "contract_receipt.json": "7010766a21c97159dcccb4ba8b39026dafbae95448ae19aa27832fa0ea5887f4",
+    "freeze_receipt.json": "95c3a356e620ddc777f33a4001360fe3019f70739e03a93aeb9671dc2de3e2b3",
+    "inventory_receipt.json": "069b4bb274789060835fbabecd8f955b5320f16af8364cac5143f1b2fba771ab",
+    "cohort_resume_dispatch.json": "ece7f051624cdf157dfa15fa72458a2c4445f3196a9f7f288a71669b8df06c71",
+    "bootstrap_failure.json": "8f71dc8647a500365409e0f3d2c51cb3937e9d35f05c5f4b86864048f580684d"
+  },
+  "independent_source_audit_SHA256": "5e5aba6ffee26067a438e76da17c61dfc23134cb7accbb7d4e06564f796bf4d7",
+  "focused_tests_passed": 27,
+  "model_forwards": 0,
+  "model_updates": 0,
+  "GPU_hours": 0,
+  "new_EV9V_readout": false,
+  "owned_source_processes_alive": [],
+  "scientific_scope": "Source contract success and fixed-cohort quantity failure; no trained A5C comparison. No source selection, label, numerical quantity gate or old experiment was changed by closure."
+}

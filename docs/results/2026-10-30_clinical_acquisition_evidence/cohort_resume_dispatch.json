@@ -1,0 +1,29 @@
+{
+  "phase": "same_fixed_cohort_environment_recovery",
+  "pid": 3468047,
+  "started_unix": 1793336014.9721582,
+  "source_commit": "febf71dc21da18b1177162753f1aba5ef050313e",
+  "original_source_commit": "5e28edd5c4bf3456f42f5b739c72b2033cda4024",
+  "resumes_at_original_slot": 3,
+  "preflight": {
+    "executable": "/home/william/echo-view-routing/.venv/bin/python",
+    "prefix": "/home/william/echo-view-routing/.venv",
+    "numpy": "2.5.2",
+    "zarr": "3.1.5",
+    "numcodecs": "0.16.3"
+  },
+  "preflight_child_CPU_seconds": 0.32657899999999995,
+  "model_process": false,
+  "model_forwards": 0,
+  "GPU_hours": 0,
+  "command": [
+    "/home/william/echo-view-routing/.venv/bin/python",
+    "scripts/prepare_clinical_acquisition_cohort.py",
+    "--stage",
+    "acquire",
+    "--commit",
+    "febf71dc21da18b1177162753f1aba5ef050313e",
+    "--resume-contract",
+    "docs/results/2026-10-30_clinical_acquisition_evidence/cohort_resume_contract.json"
+  ]
+}
