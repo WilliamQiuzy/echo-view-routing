@@ -1,0 +1,21 @@
+{
+  "kind": "independent_read_only_CPU_source_and_window_audit",
+  "created_utc": "2026-10-30",
+  "camus": {
+    "split_rows": 50, "unique_ids": 50, "arrays_checked": 50, "all_checks_passed": 50,
+    "total_frames": 988, "total_voxels": 302382378, "nonfinite_pixels": 0, "fractional_pixels": 0,
+    "global_min": 0, "global_max": 255, "time_frames_range": [10, 28],
+    "duration_seconds_range": [0.18050541516245489, 0.5054151624548736],
+    "xy_dimensions_min": [354, 292], "xy_dimensions_max": [865, 714],
+    "axes_counts": {"L,P,S": 50}, "dtype_counts": {"float32": 50},
+    "header_z_spacing": 1, "nifti_slope": 1, "nifti_intercept": 0,
+    "ed_es_span_matches_time": 50, "uint8_cast_lossless": true,
+    "elapsed_audit_seconds": 4.91621994972229,
+    "limit": "Storage orientation verified, not anatomical view adjudication. Original 4CH clip codes can include A5C. Half-cycle support is much shorter than normal 1.5s A08 input."
+  },
+  "window_parity": {
+    "sample_lengths": [1, 3, 16, 17, 80, 171], "window_counts": [1, 1, 4, 4, 16, 35],
+    "old_half_windows_equal_new": true, "old_marker_slot_equal_new": true
+  },
+  "method": "All50 official-testing NIfTI arrays scanned for finite integer-valued pixels, nontrivial range, source shape/dtype/axes/scaling, positive Info FrameRate, ED/ES temporal length. Window outputs independently compared to original rr.half_windows and tm.marker_slot. No model forward or target-based choice."
+}

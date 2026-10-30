@@ -1,0 +1,1079 @@
+{
+  "method": {
+    "bootstrap_draws": 2000,
+    "bootstrap_rng_seed": 20261030,
+    "interval": "percentile 2.5%,97.5%; whole-group sampling with replacement",
+    "case_weighting": "recordings within sampled groups retain their multiplicity",
+    "seed_mean": "same groups/cases resampled for all three seeds; arithmetic mean of their metrics; no 3n pooling"
+  },
+  "datasets": {
+    "ev9v": {
+      "groups": 125,
+      "n_cases": 800,
+      "models": {
+        "argmax_s0": {
+          "correct": 784,
+          "accuracy": 0.98,
+          "accuracy_ci95": [
+            0.9689181681681681,
+            0.9888205684730657
+          ],
+          "macro_f1": 0.9537862999628717,
+          "macro_f1_ci95": [
+            0.9265025014712707,
+            0.9735649986779907
+          ],
+          "class_recall": {
+            "PLAX": 1.0,
+            "PSAX": 1.0,
+            "A4C": 0.9437229437229437,
+            "A5C": 0.95,
+            "SC4C": 0.9714285714285714
+          },
+          "cuts_per_clip": 0.11,
+          "cuts_per_clip_ci95": [
+            0.05917681673347723,
+            0.17023750517498987
+          ]
+        },
+        "argmax_s1": {
+          "correct": 787,
+          "accuracy": 0.98375,
+          "accuracy_ci95": [
+            0.9738899604755066,
+            0.9918927103415663
+          ],
+          "macro_f1": 0.9585063893140198,
+          "macro_f1_ci95": [
+            0.9327435380728426,
+            0.9788632361806713
+          ],
+          "class_recall": {
+            "PLAX": 1.0,
+            "PSAX": 1.0,
+            "A4C": 0.974025974025974,
+            "A5C": 0.85,
+            "SC4C": 0.9714285714285714
+          },
+          "cuts_per_clip": 0.0925,
+          "cuts_per_clip_ci95": [
+            0.04760895883777239,
+            0.14423543689320384
+          ]
+        },
+        "argmax_s2": {
+          "correct": 786,
+          "accuracy": 0.9825,
+          "accuracy_ci95": [
+            0.9719620207896242,
+            0.9907897762639187
+          ],
+          "macro_f1": 0.9585370541531347,
+          "macro_f1_ci95": [
+            0.9317336693702476,
+            0.9778512360780716
+          ],
+          "class_recall": {
+            "PLAX": 1.0,
+            "PSAX": 1.0,
+            "A4C": 0.9523809523809523,
+            "A5C": 0.95,
+            "SC4C": 0.9714285714285714
+          },
+          "cuts_per_clip": 0.12125,
+          "cuts_per_clip_ci95": [
+            0.06451036866359447,
+            0.187602911727726
+          ]
+        },
+        "frozen_B3_s0": {
+          "correct": 782,
+          "accuracy": 0.9775,
+          "accuracy_ci95": [
+            0.9654730574670416,
+            0.9875
+          ],
+          "macro_f1": 0.9484549375583384,
+          "macro_f1_ci95": [
+            0.9204902689610867,
+            0.9691976367302841
+          ],
+          "class_recall": {
+            "PLAX": 1.0,
+            "PSAX": 1.0,
+            "A4C": 0.9393939393939394,
+            "A5C": 0.925,
+            "SC4C": 0.9714285714285714
+          },
+          "cuts_per_clip": 0.03125,
+          "cuts_per_clip_ci95": [
+            0.012345679012345678,
+            0.05428282699174781
+          ]
+        },
+        "frozen_B3_s1": {
+          "correct": 785,
+          "accuracy": 0.98125,
+          "accuracy_ci95": [
+            0.970974333738186,
+            0.9898250795964556
+          ],
+          "macro_f1": 0.9541104574519246,
+          "macro_f1_ci95": [
+            0.9272087958004457,
+            0.9742288802006409
+          ],
+          "class_recall": {
+            "PLAX": 1.0,
+            "PSAX": 1.0,
+            "A4C": 0.961038961038961,
+            "A5C": 0.875,
+            "SC4C": 0.9714285714285714
+          },
+          "cuts_per_clip": 0.025,
+          "cuts_per_clip_ci95": [
+            0.012149565017843537,
+            0.039370881119479624
+          ]
+        },
+        "frozen_B3_s2": {
+          "correct": 786,
+          "accuracy": 0.9825,
+          "accuracy_ci95": [
+            0.9719620207896242,
+            0.9907897762639187
+          ],
+          "macro_f1": 0.9585370541531347,
+          "macro_f1_ci95": [
+            0.9317336693702476,
+            0.9778512360780716
+          ],
+          "class_recall": {
+            "PLAX": 1.0,
+            "PSAX": 1.0,
+            "A4C": 0.9523809523809523,
+            "A5C": 0.95,
+            "SC4C": 0.9714285714285714
+          },
+          "cuts_per_clip": 0.02875,
+          "cuts_per_clip_ci95": [
+            0.013397075257500326,
+            0.04551976652730056
+          ]
+        }
+      },
+      "mean_B3": {
+        "accuracy": 0.9804166666666667,
+        "ci95": [
+          0.9696960119526491,
+          0.9890910506938545
+        ],
+        "macro_f1": 0.9537008163877992,
+        "macro_ci95": [
+          0.927289354776908,
+          0.9729133148774649
+        ],
+        "class_recall": {
+          "PLAX": 1.0,
+          "PSAX": 1.0,
+          "A4C": 0.9509379509379509,
+          "A5C": 0.9166666666666666,
+          "SC4C": 0.9714285714285714
+        },
+        "class_recall_ci95": {
+          "PLAX": [
+            1.0,
+            1.0
+          ],
+          "PSAX": [
+            1.0,
+            1.0
+          ],
+          "A4C": [
+            0.9195388416902659,
+            0.9758288880713695
+          ],
+          "A5C": [
+            0.8455284552845529,
+            0.9785114247311827
+          ],
+          "SC4C": [
+            0.9,
+            1.0
+          ]
+        },
+        "cuts_per_clip": 0.028333333333333335,
+        "cuts_per_clip_ci95": [
+          0.013001844328023093,
+          0.045360214423115566
+        ]
+      },
+      "grouping": "session; patient identity unknown"
+    },
+    "dynamic": {
+      "groups": 1277,
+      "n_cases": 1277,
+      "models": {
+        "argmax_s0": {
+          "correct": 1210,
+          "accuracy": 0.9475332811276429,
+          "accuracy_ci95": [
+            0.9350039154267815,
+            0.9592795614722005
+          ],
+          "macro_f1": null,
+          "macro_f1_ci95": null,
+          "class_recall": {
+            "PLAX": null,
+            "PSAX": null,
+            "A4C": 0.9475332811276429,
+            "A5C": null,
+            "SC4C": null
+          },
+          "cuts_per_clip": 0.09945184025058731,
+          "cuts_per_clip_ci95": [
+            0.07515661707126077,
+            0.12764291307752546
+          ]
+        },
+        "argmax_s1": {
+          "correct": 1209,
+          "accuracy": 0.9467501957713391,
+          "accuracy_ci95": [
+            0.9342012529365702,
+            0.9584964761158966
+          ],
+          "macro_f1": null,
+          "macro_f1_ci95": null,
+          "class_recall": {
+            "PLAX": null,
+            "PSAX": null,
+            "A4C": 0.9467501957713391,
+            "A5C": null,
+            "SC4C": null
+          },
+          "cuts_per_clip": 0.11511354737666406,
+          "cuts_per_clip_ci95": [
+            0.0908379013312451,
+            0.14252153484729835
+          ]
+        },
+        "argmax_s2": {
+          "correct": 1207,
+          "accuracy": 0.9451840250587314,
+          "accuracy_ci95": [
+            0.93265465935787,
+            0.9569303054032889
+          ],
+          "macro_f1": null,
+          "macro_f1_ci95": null,
+          "class_recall": {
+            "PLAX": null,
+            "PSAX": null,
+            "A4C": 0.9451840250587314,
+            "A5C": null,
+            "SC4C": null
+          },
+          "cuts_per_clip": 0.09866875489428348,
+          "cuts_per_clip_ci95": [
+            0.07439310884886452,
+            0.12685982772122162
+          ]
+        },
+        "frozen_B3_s0": {
+          "correct": 1211,
+          "accuracy": 0.9483163664839468,
+          "accuracy_ci95": [
+            0.9357870007830854,
+            0.9592795614722005
+          ],
+          "macro_f1": null,
+          "macro_f1_ci95": null,
+          "class_recall": {
+            "PLAX": null,
+            "PSAX": null,
+            "A4C": 0.9483163664839468,
+            "A5C": null,
+            "SC4C": null
+          },
+          "cuts_per_clip": 0.007830853563038372,
+          "cuts_per_clip_ci95": [
+            0.0031323414252153485,
+            0.01331245105716523
+          ]
+        },
+        "frozen_B3_s1": {
+          "correct": 1210,
+          "accuracy": 0.9475332811276429,
+          "accuracy_ci95": [
+            0.934984338292874,
+            0.9592795614722005
+          ],
+          "macro_f1": null,
+          "macro_f1_ci95": null,
+          "class_recall": {
+            "PLAX": null,
+            "PSAX": null,
+            "A4C": 0.9475332811276429,
+            "A5C": null,
+            "SC4C": null
+          },
+          "cuts_per_clip": 0.0031323414252153485,
+          "cuts_per_clip_ci95": [
+            0.0007830853563038371,
+            0.006264682850430697
+          ]
+        },
+        "frozen_B3_s2": {
+          "correct": 1210,
+          "accuracy": 0.9475332811276429,
+          "accuracy_ci95": [
+            0.9350039154267815,
+            0.9592795614722005
+          ],
+          "macro_f1": null,
+          "macro_f1_ci95": null,
+          "class_recall": {
+            "PLAX": null,
+            "PSAX": null,
+            "A4C": 0.9475332811276429,
+            "A5C": null,
+            "SC4C": null
+          },
+          "cuts_per_clip": 0.010180109631949883,
+          "cuts_per_clip_ci95": [
+            0.004698512137823023,
+            0.015681284259984232
+          ]
+        }
+      },
+      "mean_B3": {
+        "accuracy": 0.9477943095797442,
+        "ci95": [
+          0.936309057687288,
+          0.9582354476637954
+        ],
+        "macro_f1": null,
+        "macro_ci95": null,
+        "class_recall": {
+          "PLAX": null,
+          "PSAX": null,
+          "A4C": 0.9477943095797442,
+          "A5C": null,
+          "SC4C": null
+        },
+        "class_recall_ci95": {
+          "PLAX": null,
+          "PSAX": null,
+          "A4C": [
+            0.936309057687288,
+            0.9582354476637954
+          ],
+          "A5C": null,
+          "SC4C": null
+        },
+        "cuts_per_clip": 0.007047768206734535,
+        "cuts_per_clip_ci95": [
+          0.0033933698773166276,
+          0.011224223440355
+        ]
+      },
+      "grouping": "recording; patient identity unknown"
+    },
+    "lvh": {
+      "groups": 343,
+      "n_cases": 343,
+      "models": {
+        "argmax_s0": {
+          "correct": 315,
+          "accuracy": 0.9183673469387755,
+          "accuracy_ci95": [
+            0.8892128279883382,
+            0.9446064139941691
+          ],
+          "macro_f1": null,
+          "macro_f1_ci95": null,
+          "class_recall": {
+            "PLAX": 0.9183673469387755,
+            "PSAX": null,
+            "A4C": null,
+            "A5C": null,
+            "SC4C": null
+          },
+          "cuts_per_clip": 0.11078717201166181,
+          "cuts_per_clip_ci95": [
+            0.06705539358600583,
+            0.16326530612244897
+          ]
+        },
+        "argmax_s1": {
+          "correct": 333,
+          "accuracy": 0.9708454810495627,
+          "accuracy_ci95": [
+            0.9533527696793003,
+            0.9883381924198251
+          ],
+          "macro_f1": null,
+          "macro_f1_ci95": null,
+          "class_recall": {
+            "PLAX": 0.9708454810495627,
+            "PSAX": null,
+            "A4C": null,
+            "A5C": null,
+            "SC4C": null
+          },
+          "cuts_per_clip": 0.11661807580174927,
+          "cuts_per_clip_ci95": [
+            0.06997084548104957,
+            0.17201166180758018
+          ]
+        },
+        "argmax_s2": {
+          "correct": 335,
+          "accuracy": 0.9766763848396501,
+          "accuracy_ci95": [
+            0.9591836734693877,
+            0.9912536443148688
+          ],
+          "macro_f1": null,
+          "macro_f1_ci95": null,
+          "class_recall": {
+            "PLAX": 0.9766763848396501,
+            "PSAX": null,
+            "A4C": null,
+            "A5C": null,
+            "SC4C": null
+          },
+          "cuts_per_clip": 0.09620991253644315,
+          "cuts_per_clip_ci95": [
+            0.04956268221574344,
+            0.1457725947521866
+          ]
+        },
+        "frozen_B3_s0": {
+          "correct": 317,
+          "accuracy": 0.924198250728863,
+          "accuracy_ci95": [
+            0.8950437317784257,
+            0.9504373177842566
+          ],
+          "macro_f1": null,
+          "macro_f1_ci95": null,
+          "class_recall": {
+            "PLAX": 0.924198250728863,
+            "PSAX": null,
+            "A4C": null,
+            "A5C": null,
+            "SC4C": null
+          },
+          "cuts_per_clip": 0.0,
+          "cuts_per_clip_ci95": [
+            0.0,
+            0.0
+          ]
+        },
+        "frozen_B3_s1": {
+          "correct": 335,
+          "accuracy": 0.9766763848396501,
+          "accuracy_ci95": [
+            0.9591836734693877,
+            0.9912536443148688
+          ],
+          "macro_f1": null,
+          "macro_f1_ci95": null,
+          "class_recall": {
+            "PLAX": 0.9766763848396501,
+            "PSAX": null,
+            "A4C": null,
+            "A5C": null,
+            "SC4C": null
+          },
+          "cuts_per_clip": 0.0,
+          "cuts_per_clip_ci95": [
+            0.0,
+            0.0
+          ]
+        },
+        "frozen_B3_s2": {
+          "correct": 333,
+          "accuracy": 0.9708454810495627,
+          "accuracy_ci95": [
+            0.9532798833819242,
+            0.9883381924198251
+          ],
+          "macro_f1": null,
+          "macro_f1_ci95": null,
+          "class_recall": {
+            "PLAX": 0.9708454810495627,
+            "PSAX": null,
+            "A4C": null,
+            "A5C": null,
+            "SC4C": null
+          },
+          "cuts_per_clip": 0.0,
+          "cuts_per_clip_ci95": [
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "mean_B3": {
+        "accuracy": 0.9572400388726919,
+        "ci95": [
+          0.9397473275024296,
+          0.9727891156462585
+        ],
+        "macro_f1": null,
+        "macro_ci95": null,
+        "class_recall": {
+          "PLAX": 0.9572400388726919,
+          "PSAX": null,
+          "A4C": null,
+          "A5C": null,
+          "SC4C": null
+        },
+        "class_recall_ci95": {
+          "PLAX": [
+            0.9397473275024296,
+            0.9727891156462585
+          ],
+          "PSAX": null,
+          "A4C": null,
+          "A5C": null,
+          "SC4C": null
+        },
+        "cuts_per_clip": 0.0,
+        "cuts_per_clip_ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "grouping": "recording; patient identity unknown"
+    },
+    "camus": {
+      "groups": 50,
+      "n_cases": 50,
+      "models": {
+        "argmax_s0": {
+          "correct": 40,
+          "accuracy": 0.8,
+          "accuracy_ci95": [
+            0.68,
+            0.9
+          ],
+          "macro_f1": null,
+          "macro_f1_ci95": null,
+          "class_recall": {
+            "PLAX": null,
+            "PSAX": null,
+            "A4C": 0.8,
+            "A5C": null,
+            "SC4C": null
+          },
+          "cuts_per_clip": 0.0,
+          "cuts_per_clip_ci95": [
+            0.0,
+            0.0
+          ]
+        },
+        "argmax_s1": {
+          "correct": 32,
+          "accuracy": 0.64,
+          "accuracy_ci95": [
+            0.5,
+            0.76
+          ],
+          "macro_f1": null,
+          "macro_f1_ci95": null,
+          "class_recall": {
+            "PLAX": null,
+            "PSAX": null,
+            "A4C": 0.64,
+            "A5C": null,
+            "SC4C": null
+          },
+          "cuts_per_clip": 0.0,
+          "cuts_per_clip_ci95": [
+            0.0,
+            0.0
+          ]
+        },
+        "argmax_s2": {
+          "correct": 38,
+          "accuracy": 0.76,
+          "accuracy_ci95": [
+            0.64,
+            0.86
+          ],
+          "macro_f1": null,
+          "macro_f1_ci95": null,
+          "class_recall": {
+            "PLAX": null,
+            "PSAX": null,
+            "A4C": 0.76,
+            "A5C": null,
+            "SC4C": null
+          },
+          "cuts_per_clip": 0.0,
+          "cuts_per_clip_ci95": [
+            0.0,
+            0.0
+          ]
+        },
+        "frozen_B3_s0": {
+          "correct": 40,
+          "accuracy": 0.8,
+          "accuracy_ci95": [
+            0.68,
+            0.9
+          ],
+          "macro_f1": null,
+          "macro_f1_ci95": null,
+          "class_recall": {
+            "PLAX": null,
+            "PSAX": null,
+            "A4C": 0.8,
+            "A5C": null,
+            "SC4C": null
+          },
+          "cuts_per_clip": 0.0,
+          "cuts_per_clip_ci95": [
+            0.0,
+            0.0
+          ]
+        },
+        "frozen_B3_s1": {
+          "correct": 32,
+          "accuracy": 0.64,
+          "accuracy_ci95": [
+            0.5,
+            0.76
+          ],
+          "macro_f1": null,
+          "macro_f1_ci95": null,
+          "class_recall": {
+            "PLAX": null,
+            "PSAX": null,
+            "A4C": 0.64,
+            "A5C": null,
+            "SC4C": null
+          },
+          "cuts_per_clip": 0.0,
+          "cuts_per_clip_ci95": [
+            0.0,
+            0.0
+          ]
+        },
+        "frozen_B3_s2": {
+          "correct": 38,
+          "accuracy": 0.76,
+          "accuracy_ci95": [
+            0.64,
+            0.86
+          ],
+          "macro_f1": null,
+          "macro_f1_ci95": null,
+          "class_recall": {
+            "PLAX": null,
+            "PSAX": null,
+            "A4C": 0.76,
+            "A5C": null,
+            "SC4C": null
+          },
+          "cuts_per_clip": 0.0,
+          "cuts_per_clip_ci95": [
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "mean_B3": {
+        "accuracy": 0.7333333333333334,
+        "ci95": [
+          0.62,
+          0.84
+        ],
+        "macro_f1": null,
+        "macro_ci95": null,
+        "class_recall": {
+          "PLAX": null,
+          "PSAX": null,
+          "A4C": 0.7333333333333334,
+          "A5C": null,
+          "SC4C": null
+        },
+        "class_recall_ci95": {
+          "PLAX": null,
+          "PSAX": null,
+          "A4C": [
+            0.62,
+            0.84
+          ],
+          "A5C": null,
+          "SC4C": null
+        },
+        "cuts_per_clip": 0.0,
+        "cuts_per_clip_ci95": [
+          0.0,
+          0.0
+        ]
+      },
+      "grouping": "patient"
+    }
+  },
+  "baseline": {
+    "legacy_per_key_prior": {
+      "correct": 776,
+      "accuracy": 0.97,
+      "accuracy_ci95": [
+        0.9560849957365962,
+        0.9823866067608044
+      ],
+      "macro_f1": 0.9653393303239074,
+      "macro_f1_ci95": [
+        0.9443289195031562,
+        0.9817716679757521
+      ],
+      "class_recall": {
+        "PLAX": 1.0,
+        "PSAX": 0.9315068493150684,
+        "A4C": 0.974025974025974,
+        "A5C": 0.95,
+        "SC4C": 0.9714285714285714
+      },
+      "cuts_per_clip": 0.0,
+      "cuts_per_clip_ci95": [
+        0.0,
+        0.0
+      ],
+      "groups": 125,
+      "grouping": "session",
+      "n_cases": 800,
+      "original_nine_code": {
+        "correct": 839,
+        "accuracy": 0.9448198198198198,
+        "accuracy_ci95": [
+          0.9267702462854759,
+          0.960972548465208
+        ],
+        "macro_f1": 0.9093818329259263,
+        "macro_f1_ci95": [
+          0.8804780393935637,
+          0.9336983786706657
+        ],
+        "class_recall": {
+          "PLHLA": 1.0,
+          "PMASA": 0.7916666666666666,
+          "PMVLSA": 0.88,
+          "PASA": 0.7317073170731707,
+          "A4C": 0.974025974025974,
+          "A5C": 0.95,
+          "PMPALA": 0.9545454545454546,
+          "PPMLSA": 0.9285714285714286,
+          "SC4C": 0.9714285714285714
+        },
+        "cuts_per_clip": 0.0,
+        "cuts_per_clip_ci95": [
+          0.0,
+          0.0
+        ],
+        "groups": 127,
+        "n_cases": 888,
+        "grouping": "session"
+      }
+    },
+    "corrected_prior_once_same_old_weights": {
+      "correct": 775,
+      "accuracy": 0.96875,
+      "accuracy_ci95": [
+        0.9551085861505177,
+        0.981391262550737
+      ],
+      "macro_f1": 0.9648485905168421,
+      "macro_f1_ci95": [
+        0.9438606220276203,
+        0.9810514346625023
+      ],
+      "class_recall": {
+        "PLAX": 1.0,
+        "PSAX": 0.9269406392694064,
+        "A4C": 0.974025974025974,
+        "A5C": 0.95,
+        "SC4C": 0.9714285714285714
+      },
+      "cuts_per_clip": 0.0,
+      "cuts_per_clip_ci95": [
+        0.0,
+        0.0
+      ],
+      "groups": 125,
+      "grouping": "session",
+      "n_cases": 800,
+      "original_nine_code": {
+        "correct": 839,
+        "accuracy": 0.9448198198198198,
+        "accuracy_ci95": [
+          0.9267702462854759,
+          0.960972548465208
+        ],
+        "macro_f1": 0.9093818329259263,
+        "macro_f1_ci95": [
+          0.8804780393935637,
+          0.9336983786706657
+        ],
+        "class_recall": {
+          "PLHLA": 1.0,
+          "PMASA": 0.7916666666666666,
+          "PMVLSA": 0.88,
+          "PASA": 0.7317073170731707,
+          "A4C": 0.974025974025974,
+          "A5C": 0.95,
+          "PMPALA": 0.9545454545454546,
+          "PPMLSA": 0.9285714285714286,
+          "SC4C": 0.9714285714285714
+        },
+        "cuts_per_clip": 0.0,
+        "cuts_per_clip_ci95": [
+          0.0,
+          0.0
+        ],
+        "groups": 127,
+        "n_cases": 888,
+        "grouping": "session"
+      }
+    }
+  },
+  "paired_original": {
+    "legacy_per_key_prior": {
+      "frozen_B3_s0": {
+        "n_cases": 800,
+        "groups": 125,
+        "grouping": "paired sessions; identical case membership",
+        "accuracy_difference": 0.007500000000000062,
+        "accuracy_difference_ci95": [
+          -0.0072391765648525674,
+          0.02329045305123534
+        ],
+        "macro_f1_difference": -0.016884392765568967,
+        "macro_f1_difference_ci95": [
+          -0.03932570270354843,
+          0.002690093764338994
+        ]
+      },
+      "frozen_B3_s1": {
+        "n_cases": 800,
+        "groups": 125,
+        "grouping": "paired sessions; identical case membership",
+        "accuracy_difference": 0.011249999999999982,
+        "accuracy_difference_ci95": [
+          -0.0022165460641090317,
+          0.02575601018591124
+        ],
+        "macro_f1_difference": -0.01122887287198282,
+        "macro_f1_difference_ci95": [
+          -0.033380798361273875,
+          0.007979311711727154
+        ]
+      },
+      "frozen_B3_s2": {
+        "n_cases": 800,
+        "groups": 125,
+        "grouping": "paired sessions; identical case membership",
+        "accuracy_difference": 0.012500000000000067,
+        "accuracy_difference_ci95": [
+          -0.001212951432129522,
+          0.027058327125353412
+        ],
+        "macro_f1_difference": -0.00680227617077267,
+        "macro_f1_difference_ci95": [
+          -0.026171721212643335,
+          0.010349726348247679
+        ]
+      },
+      "argmax_s0": {
+        "n_cases": 800,
+        "groups": 125,
+        "grouping": "paired sessions; identical case membership",
+        "accuracy_difference": 0.010000000000000009,
+        "accuracy_difference_ci95": [
+          -0.003937396906414359,
+          0.025159111979753925
+        ],
+        "macro_f1_difference": -0.011553030361035721,
+        "macro_f1_difference_ci95": [
+          -0.032226579140136276,
+          0.00699575924673786
+        ]
+      },
+      "argmax_s1": {
+        "n_cases": 800,
+        "groups": 125,
+        "grouping": "paired sessions; identical case membership",
+        "accuracy_difference": 0.01375000000000004,
+        "accuracy_difference_ci95": [
+          0.0,
+          0.028185792047364457
+        ],
+        "macro_f1_difference": -0.0068329410098876275,
+        "macro_f1_difference_ci95": [
+          -0.029927153471960174,
+          0.013005946049379066
+        ]
+      },
+      "argmax_s2": {
+        "n_cases": 800,
+        "groups": 125,
+        "grouping": "paired sessions; identical case membership",
+        "accuracy_difference": 0.012500000000000067,
+        "accuracy_difference_ci95": [
+          -0.001212951432129522,
+          0.027058327125353412
+        ],
+        "macro_f1_difference": -0.00680227617077267,
+        "macro_f1_difference_ci95": [
+          -0.026171721212643335,
+          0.010349726348247679
+        ]
+      },
+      "mean_B3": {
+        "n_cases": 800,
+        "groups": 125,
+        "grouping": "paired sessions; identical case membership",
+        "accuracy_difference": 0.01041666666666674,
+        "accuracy_difference_ci95": [
+          -0.003162784031686394,
+          0.02504975957647753
+        ],
+        "macro_f1_difference": -0.011638513936108152,
+        "macro_f1_difference_ci95": [
+          -0.031128556970807696,
+          0.006529581212555601
+        ]
+      }
+    },
+    "corrected_prior_once_same_old_weights": {
+      "frozen_B3_s0": {
+        "n_cases": 800,
+        "groups": 125,
+        "grouping": "paired sessions; identical case membership",
+        "accuracy_difference": 0.008750000000000036,
+        "accuracy_difference_ci95": [
+          -0.006267250404492217,
+          0.024739905631188153
+        ],
+        "macro_f1_difference": -0.0163936529585037,
+        "macro_f1_difference_ci95": [
+          -0.0388257720054002,
+          0.003157117813562867
+        ]
+      },
+      "frozen_B3_s1": {
+        "n_cases": 800,
+        "groups": 125,
+        "grouping": "paired sessions; identical case membership",
+        "accuracy_difference": 0.012499999999999956,
+        "accuracy_difference_ci95": [
+          -0.0013495732574680063,
+          0.027311049122736884
+        ],
+        "macro_f1_difference": -0.010738133064917554,
+        "macro_f1_difference_ci95": [
+          -0.03310000570357144,
+          0.008712765876509192
+        ]
+      },
+      "frozen_B3_s2": {
+        "n_cases": 800,
+        "groups": 125,
+        "grouping": "paired sessions; identical case membership",
+        "accuracy_difference": 0.01375000000000004,
+        "accuracy_difference_ci95": [
+          0.0,
+          0.0285732076143035
+        ],
+        "macro_f1_difference": -0.006311536363707404,
+        "macro_f1_difference_ci95": [
+          -0.02561032580974802,
+          0.010933829440454148
+        ]
+      },
+      "argmax_s0": {
+        "n_cases": 800,
+        "groups": 125,
+        "grouping": "paired sessions; identical case membership",
+        "accuracy_difference": 0.011249999999999982,
+        "accuracy_difference_ci95": [
+          -0.002874823553135736,
+          0.026698835761483464
+        ],
+        "macro_f1_difference": -0.011062290553970455,
+        "macro_f1_difference_ci95": [
+          -0.031715187546153434,
+          0.007432769407829613
+        ]
+      },
+      "argmax_s1": {
+        "n_cases": 800,
+        "groups": 125,
+        "grouping": "paired sessions; identical case membership",
+        "accuracy_difference": 0.015000000000000013,
+        "accuracy_difference_ci95": [
+          0.0012870012870012104,
+          0.029851192068332148
+        ],
+        "macro_f1_difference": -0.006342201202822362,
+        "macro_f1_difference_ci95": [
+          -0.02939299924159245,
+          0.013557039659754643
+        ]
+      },
+      "argmax_s2": {
+        "n_cases": 800,
+        "groups": 125,
+        "grouping": "paired sessions; identical case membership",
+        "accuracy_difference": 0.01375000000000004,
+        "accuracy_difference_ci95": [
+          0.0,
+          0.0285732076143035
+        ],
+        "macro_f1_difference": -0.006311536363707404,
+        "macro_f1_difference_ci95": [
+          -0.02561032580974802,
+          0.010933829440454148
+        ]
+      },
+      "mean_B3": {
+        "n_cases": 800,
+        "groups": 125,
+        "grouping": "paired sessions; identical case membership",
+        "accuracy_difference": 0.011666666666666714,
+        "accuracy_difference_ci95": [
+          -0.0021355626070874213,
+          0.026810520939734326
+        ],
+        "macro_f1_difference": -0.011147774129042887,
+        "macro_f1_difference_ci95": [
+          -0.03071250312010729,
+          0.006890299335647024
+        ]
+      }
+    }
+  },
+  "limits": [
+    "EV9V is the historically accessed STFM source test, not external or held-out confirmation.",
+    "Dynamic A4C and LVH PLAX are source-code recall checks, not EF or wall-thickness endpoints.",
+    "CAMUS official 4CH source codes are not expert adjudication of A4C versus A5C.",
+    "CAMUS half-cycle clips span approximately 0.18 to 0.51 seconds; short input support limits interpretation.",
+    "EV9V clusters are sessions, not confirmed patients; Dynamic/LVH patient identities are unknown.",
+    "CAMUS clusters are official patient identities; unknown pretraining/source overlap remains unknown.",
+    "Clip labels are weak supervision; no clinical natural-transition or local-anatomy result is established.",
+    "No source pixel reload or model forward is performed. Cached input-pixel digests are checked for form only.",
+    "Media size/mtime, source-metadata hashes, video container timing and CAMUS header length are rechecked; these are not raw-media byte hashes.",
+    "The prospective LVH timing correction retains v1 EV9V/Dynamic caches; LVH/CAMUS use the explicitly bound v2 protocol. Cache chronology uses filesystem timestamps, not recorded model-forward start times.",
+    "Protocol pins only its declared source modules; unpinned transitive/library/environment dependencies cannot be retroactively frozen.",
+    "Baseline caches have no per-case preprocessing/sampling/timing receipt; only logits shape, identity, manifest duration and declared input recipe can be audited.",
+    "Per-case GPU timing is not stored in prediction caches; inference resource accounting requires the separate terminal/resource receipts.",
+    "STFM whole-file classification emits no internal cuts by construction; zero cuts is not a stability result.",
+    "Bootstrap intervals describe this fixed evaluation and grouping; they are not a clinical or finite-sample guarantee."
+  ]
+}

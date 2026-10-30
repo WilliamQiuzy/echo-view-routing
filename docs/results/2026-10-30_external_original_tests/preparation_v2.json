@@ -1,0 +1,71 @@
+{
+  "created_utc": "2026-10-30T04:22:18Z",
+  "config_sha256": "66c0b8ed020761080f231a0d1fd6f81b42d8e7f709e7b73df4d3fa5549500e37",
+  "manifest_sha256": "d719bbbc2648f16b97cd93fc679f6fdc423d5928fe71a9e84d02727f194af0bc",
+  "weights": {
+    "0": {
+      "path": "models_frozen/video_within_view_v1/all_s0/final.pt",
+      "sha256": "9b144925f32fac7d725d13231a132abeb6635fa44b6fe0dbcec7f5b59d035bbc",
+      "b3": {
+        "half_window": 7,
+        "threshold": 0.19660949291632382,
+        "nms_radius": 5,
+        "threshold_quantile": 0.999
+      }
+    },
+    "1": {
+      "path": "models_frozen/video_within_view_v1/all_s1/final.pt",
+      "sha256": "c8b09ecaf286c7b66fc0eec69fdd102f98930aaa657a7604e3204c3845a8e172",
+      "b3": {
+        "half_window": 7,
+        "threshold": 0.19178023769888614,
+        "nms_radius": 5,
+        "threshold_quantile": 0.999
+      }
+    },
+    "2": {
+      "path": "models_frozen/video_within_view_v1/all_s2/final.pt",
+      "sha256": "f95fed7ba78cc0b5e2474c71a156356507b4588a4b324957fd5b53fe66ee8472",
+      "b3": {
+        "half_window": 9,
+        "threshold": 0.25063810737320275,
+        "nms_radius": 5,
+        "threshold_quantile": 0.999
+      }
+    }
+  },
+  "counts": {
+    "ev9v": 800,
+    "dynamic": 1277,
+    "lvh": 343,
+    "camus": 50
+  },
+  "code_sha256": {
+    "scripts/external_original_tests.py": "c127ff446acfaf25186b1482cd1a1acd6bcab073c5a33a741198697bbfa71186",
+    "echo_routing/evaluate/external_native.py": "140b576d3cecb4b17a33a8c9c9111268fa098ba23efdeaf2280d81dda438013b",
+    "echo_routing/vit/target_mvit.py": "6b8199420fd813571820e441c0f16b1c75ae9cb889a656b527d747c182afecf8",
+    "echo_routing/temporal/joint_visual.py": "6aa655fda17b7f24c948183bc7bd20a075fdd01c7966a59922a3ffea47a6f048",
+    "scripts/amend_external_lvh_timing.py": "6aa82894a90cda1c4cbb6390b3611e59b8fd686d0b2f03b6fd9ec4dde856b557"
+  },
+  "targets": {
+    "ev9v": "original STFM source, shared five-family native endpoint",
+    "dynamic": "auxiliary A4C source check; NOT LVEF",
+    "lvh": "auxiliary PLAX source check; NOT wall thickness",
+    "camus": "auxiliary 4CH-coded source check; NOT quality/segmentation"
+  },
+  "timing_amendment": {
+    "predecessor_protocol_sha256": "9cfe576a90e88702e2b2750d50bbd1f102f39a9dcde1136c245c8b3f62b66c63",
+    "qualification_sha256": "3b8457ab4208d9c7e6fc162c1890101a71188fcb4fa809d26abfd7d8130a2ae3",
+    "lvh_records": 343,
+    "all_before_first_LVH_forward": true,
+    "max_pts_delta_error_s": 1.349614864309956e-15,
+    "unchanged": [
+      "weights",
+      "B3 numbers",
+      "RGB transform",
+      "window/marker rules",
+      "source split/membership",
+      "all previous predictions"
+    ]
+  }
+}

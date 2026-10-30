@@ -1,0 +1,2276 @@
+{
+  "passed": true,
+  "created_utc": "2026-10-30T04:40:31Z",
+  "checks": {
+    "frozen_protocol_config_code_weights": true,
+    "source_metadata_hashes": true,
+    "official_membership_and_complete_truth": true,
+    "exact_cache_counts_keys_identities": true,
+    "finite_logits_shapes_centres_sampling_timing": true,
+    "complete_independently_decoded_labels": true,
+    "independent_native_majority_confusion_metrics_cuts": true,
+    "STFM_raw9_shared5_both_fusions": true,
+    "unsupported_predictions_retained_as_errors": true,
+    "PSAX_probability_mass_grouped": true,
+    "CAMUS_whole_source_CPU_audit_reference": true,
+    "grouped_bootstrap_same_seed_membership": true,
+    "prospective_LVH_timing_repair": {
+      "qualified_recordings": 343,
+      "max_pts_delta_error_s": 1.349614864309956e-15,
+      "model_weights_B3_preprocess_windows_membership_unchanged": true
+    },
+    "dataset_protocol_bindings": {
+      "ev9v": "protocol_v1.json",
+      "dynamic": "protocol_v1.json",
+      "lvh": "protocol.json",
+      "camus": "protocol.json"
+    },
+    "A26_exact_native_recount": {
+      "s0": {
+        "accuracy": 0.9775,
+        "macro_f1": 0.9484549375583384,
+        "exact": true
+      },
+      "s2": {
+        "accuracy": 0.9825,
+        "macro_f1": 0.9585370541531347,
+        "exact": true
+      }
+    }
+  },
+  "counts": {
+    "ev9v": 800,
+    "dynamic": 1277,
+    "lvh": 343,
+    "camus": 50,
+    "ev9v_sessions": 125,
+    "STFM_original_raw9": 888,
+    "STFM_shared5": 800,
+    "native_cache_files": 2470,
+    "native_10Hz_samples_per_seed": 103122,
+    "model_seeds": [
+      0,
+      1,
+      2
+    ],
+    "bootstrap_draws": 2000
+  },
+  "hashes": {
+    "preparation.json": "9cfe576a90e88702e2b2750d50bbd1f102f39a9dcde1136c245c8b3f62b66c63",
+    "preparation_v2.json": "08a34797b505303d32fd9171df1edbb34157f3c5b749e09853254a3af00f298d",
+    "baseline_preparation.json": "fdc75c818a7a5247bde073b70fc9414b75ffddfd3361f2dbd9b81addcbfd1a1f",
+    "input_audit.json": "322133d4c220f5ea53ef82ddbd92e4325e6286e0a1bf0b2e9905e989e1dd4bc2",
+    "timing_amendment.json": "2b78be70ed67f0ab239ba50a9026571176aa11b998a789608d50af63dadb54ef",
+    "checks_v1.json": "4d3125fd87817752c27c81675e482cc1e71c6247778912c7135b076501818105",
+    "checks.json": "9ad85f53ef65fa1c62de796e03b1335521302d3451f1b7b867f47ffc080cd727",
+    "historical_A26": "e7702bc66b3b2bc018263a9d60bad5b382c1d197124d15e90c19aa1b95d34a8f",
+    "choices": "b2a731e5f4393187ee9954f710821ac04938652f0a7d00e0381ad0b8b21cf27e",
+    "protocol": "08a34797b505303d32fd9171df1edbb34157f3c5b749e09853254a3af00f298d",
+    "protocol_v1": "9cfe576a90e88702e2b2750d50bbd1f102f39a9dcde1136c245c8b3f62b66c63",
+    "protocol_bindings": "e937041c5ac8d5c0bac292783381f5cf251719602d57f14b3c1ca31ab478416a",
+    "baseline_protocol": "fdc75c818a7a5247bde073b70fc9414b75ffddfd3361f2dbd9b81addcbfd1a1f",
+    "config": "66c0b8ed020761080f231a0d1fd6f81b42d8e7f709e7b73df4d3fa5549500e37",
+    "manifest": "d719bbbc2648f16b97cd93fc679f6fdc423d5928fe71a9e84d02727f194af0bc",
+    "manifest_v1": "3cef0b62e336a08b7bc7813fa9517a26784338c45dc4a7899a07f83f1f119215",
+    "baseline_manifest": "bb90accb5450df084a86cdb127991dc0c3a9b5eba017fcf343d9508f32f5bb96",
+    "native_code": {
+      "scripts/external_original_tests.py": "c127ff446acfaf25186b1482cd1a1acd6bcab073c5a33a741198697bbfa71186",
+      "echo_routing/evaluate/external_native.py": "140b576d3cecb4b17a33a8c9c9111268fa098ba23efdeaf2280d81dda438013b",
+      "echo_routing/vit/target_mvit.py": "6b8199420fd813571820e441c0f16b1c75ae9cb889a656b527d747c182afecf8",
+      "echo_routing/temporal/joint_visual.py": "6aa655fda17b7f24c948183bc7bd20a075fdd01c7966a59922a3ffea47a6f048",
+      "scripts/amend_external_lvh_timing.py": "6aa82894a90cda1c4cbb6390b3611e59b8fd686d0b2f03b6fd9ec4dde856b557"
+    },
+    "baseline_code": "ffc0038f807ef78d78199f2beffdba1a0007d6ef24f7a372b3e1f3c5d84d52fe",
+    "baseline_mapping": "48e6674b556304c2c91b3ecc1bdadaa7ed42aaf98e656ed2474b59b9f2b14de1",
+    "baseline_weights": "c09b9f7a451a45d6b77e00b7e5b2f8fde5cece206d84e9fc0b2b859f30e08aa2",
+    "native_weights": {
+      "0": "9b144925f32fac7d725d13231a132abeb6635fa44b6fe0dbcec7f5b59d035bbc",
+      "1": "c8b09ecaf286c7b66fc0eec69fdd102f98930aaa657a7604e3204c3845a8e172",
+      "2": "f95fed7ba78cc0b5e2474c71a156356507b4588a4b324957fd5b53fe66ee8472"
+    },
+    "LVH_timing_qualification": "3b8457ab4208d9c7e6fc162c1890101a71188fcb4fa809d26abfd7d8130a2ae3",
+    "source_metadata": {
+      "file_count": 54,
+      "aggregate_sha256": "64a60d8b17f0aff617fd651dfe830c9094934b66ca628ca328cec917740fbce6"
+    },
+    "native_prediction_aggregate_sha256": "7464902152a5c8abb8868739ad4e7f6d7620760c19f3508fb1cb56667d57fbde",
+    "baseline_prediction_aggregate_sha256": "8cd359bbdd7150e2e7aa26a7a21479e0cf911a1867eb00d9bcdf1d28ff94dcb4",
+    "native_results": "fa5b7f7ad05d8716f783586c412a5b7696ecdc1a3ac513c7e062ea1d5b3c7ae9",
+    "stfm_native_results": "4e9ac80851b6a9a6fbff432a984ffbb9b20c5326bb75bb7250370f8d0ffe8c21",
+    "audit_script": "9d80863b95e22d4d9341902a0b757f298c6fa284fae85fe48f356e31f6586ed8",
+    "uncertainty": "5af98b90fd3ecd64e90636c56ef028ae065b09b6f2acdb5d359f713124fe82bb"
+  },
+  "recounted_native_metrics": {
+    "ev9v": {
+      "argmax_s0": {
+        "n_clips": 800,
+        "accuracy": 0.98,
+        "class_support": {
+          "PLAX": 275,
+          "PSAX": 219,
+          "A4C": 231,
+          "A5C": 40,
+          "SC4C": 35
+        },
+        "class_recall": {
+          "PLAX": 1.0,
+          "PSAX": 1.0,
+          "A4C": 0.9437229437229437,
+          "A5C": 0.95,
+          "SC4C": 0.9714285714285714
+        },
+        "five_class_macro_f1": 0.9537862999628717,
+        "confusion": [
+          [
+            275,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            219,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            218,
+            11,
+            2,
+            0
+          ],
+          [
+            0,
+            0,
+            2,
+            38,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1,
+            34,
+            0
+          ]
+        ],
+        "confusion_columns": [
+          "PLAX",
+          "PSAX",
+          "A4C",
+          "A5C",
+          "SC4C",
+          "unsupported"
+        ],
+        "internal_cuts": 88,
+        "internal_cuts_per_clip": 0.11,
+        "duration_s": 4624.666666666667,
+        "internal_cuts_per_minute": 1.141703906587862,
+        "n_samples": 46507
+      },
+      "argmax_s1": {
+        "n_clips": 800,
+        "accuracy": 0.98375,
+        "class_support": {
+          "PLAX": 275,
+          "PSAX": 219,
+          "A4C": 231,
+          "A5C": 40,
+          "SC4C": 35
+        },
+        "class_recall": {
+          "PLAX": 1.0,
+          "PSAX": 1.0,
+          "A4C": 0.974025974025974,
+          "A5C": 0.85,
+          "SC4C": 0.9714285714285714
+        },
+        "five_class_macro_f1": 0.9585063893140198,
+        "confusion": [
+          [
+            275,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            219,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            225,
+            4,
+            2,
+            0
+          ],
+          [
+            0,
+            0,
+            6,
+            34,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1,
+            34,
+            0
+          ]
+        ],
+        "confusion_columns": [
+          "PLAX",
+          "PSAX",
+          "A4C",
+          "A5C",
+          "SC4C",
+          "unsupported"
+        ],
+        "internal_cuts": 74,
+        "internal_cuts_per_clip": 0.0925,
+        "duration_s": 4624.666666666667,
+        "internal_cuts_per_minute": 0.9600691941761568,
+        "n_samples": 46507
+      },
+      "argmax_s2": {
+        "n_clips": 800,
+        "accuracy": 0.9825,
+        "class_support": {
+          "PLAX": 275,
+          "PSAX": 219,
+          "A4C": 231,
+          "A5C": 40,
+          "SC4C": 35
+        },
+        "class_recall": {
+          "PLAX": 1.0,
+          "PSAX": 1.0,
+          "A4C": 0.9523809523809523,
+          "A5C": 0.95,
+          "SC4C": 0.9714285714285714
+        },
+        "five_class_macro_f1": 0.9585370541531347,
+        "confusion": [
+          [
+            275,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            219,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            220,
+            9,
+            2,
+            0
+          ],
+          [
+            0,
+            0,
+            2,
+            38,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1,
+            34,
+            0
+          ]
+        ],
+        "confusion_columns": [
+          "PLAX",
+          "PSAX",
+          "A4C",
+          "A5C",
+          "SC4C",
+          "unsupported"
+        ],
+        "internal_cuts": 97,
+        "internal_cuts_per_clip": 0.12125,
+        "duration_s": 4624.666666666667,
+        "internal_cuts_per_minute": 1.25846907885253,
+        "n_samples": 46507
+      },
+      "frozen_B3_s0": {
+        "n_clips": 800,
+        "accuracy": 0.9775,
+        "class_support": {
+          "PLAX": 275,
+          "PSAX": 219,
+          "A4C": 231,
+          "A5C": 40,
+          "SC4C": 35
+        },
+        "class_recall": {
+          "PLAX": 1.0,
+          "PSAX": 1.0,
+          "A4C": 0.9393939393939394,
+          "A5C": 0.925,
+          "SC4C": 0.9714285714285714
+        },
+        "five_class_macro_f1": 0.9484549375583384,
+        "confusion": [
+          [
+            275,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            219,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            217,
+            12,
+            2,
+            0
+          ],
+          [
+            0,
+            0,
+            3,
+            37,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1,
+            34,
+            0
+          ]
+        ],
+        "confusion_columns": [
+          "PLAX",
+          "PSAX",
+          "A4C",
+          "A5C",
+          "SC4C",
+          "unsupported"
+        ],
+        "internal_cuts": 25,
+        "internal_cuts_per_clip": 0.03125,
+        "duration_s": 4624.666666666667,
+        "internal_cuts_per_minute": 0.3243477007351881,
+        "n_samples": 46507
+      },
+      "frozen_B3_s1": {
+        "n_clips": 800,
+        "accuracy": 0.98125,
+        "class_support": {
+          "PLAX": 275,
+          "PSAX": 219,
+          "A4C": 231,
+          "A5C": 40,
+          "SC4C": 35
+        },
+        "class_recall": {
+          "PLAX": 1.0,
+          "PSAX": 1.0,
+          "A4C": 0.961038961038961,
+          "A5C": 0.875,
+          "SC4C": 0.9714285714285714
+        },
+        "five_class_macro_f1": 0.9541104574519246,
+        "confusion": [
+          [
+            275,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            219,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            222,
+            7,
+            2,
+            0
+          ],
+          [
+            0,
+            0,
+            5,
+            35,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1,
+            34,
+            0
+          ]
+        ],
+        "confusion_columns": [
+          "PLAX",
+          "PSAX",
+          "A4C",
+          "A5C",
+          "SC4C",
+          "unsupported"
+        ],
+        "internal_cuts": 20,
+        "internal_cuts_per_clip": 0.025,
+        "duration_s": 4624.666666666667,
+        "internal_cuts_per_minute": 0.2594781605881505,
+        "n_samples": 46507
+      },
+      "frozen_B3_s2": {
+        "n_clips": 800,
+        "accuracy": 0.9825,
+        "class_support": {
+          "PLAX": 275,
+          "PSAX": 219,
+          "A4C": 231,
+          "A5C": 40,
+          "SC4C": 35
+        },
+        "class_recall": {
+          "PLAX": 1.0,
+          "PSAX": 1.0,
+          "A4C": 0.9523809523809523,
+          "A5C": 0.95,
+          "SC4C": 0.9714285714285714
+        },
+        "five_class_macro_f1": 0.9585370541531347,
+        "confusion": [
+          [
+            275,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            219,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            220,
+            9,
+            2,
+            0
+          ],
+          [
+            0,
+            0,
+            2,
+            38,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1,
+            34,
+            0
+          ]
+        ],
+        "confusion_columns": [
+          "PLAX",
+          "PSAX",
+          "A4C",
+          "A5C",
+          "SC4C",
+          "unsupported"
+        ],
+        "internal_cuts": 23,
+        "internal_cuts_per_clip": 0.02875,
+        "duration_s": 4624.666666666667,
+        "internal_cuts_per_minute": 0.2983998846763731,
+        "n_samples": 46507
+      }
+    },
+    "dynamic": {
+      "argmax_s0": {
+        "n_clips": 1277,
+        "accuracy": 0.9475332811276429,
+        "class_support": {
+          "PLAX": 0,
+          "PSAX": 0,
+          "A4C": 1277,
+          "A5C": 0,
+          "SC4C": 0
+        },
+        "class_recall": {
+          "PLAX": null,
+          "PSAX": null,
+          "A4C": 0.9475332811276429,
+          "A5C": null,
+          "SC4C": null
+        },
+        "five_class_macro_f1": null,
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            1210,
+            64,
+            2,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "confusion_columns": [
+          "PLAX",
+          "PSAX",
+          "A4C",
+          "A5C",
+          "SC4C",
+          "unsupported"
+        ],
+        "internal_cuts": 127,
+        "internal_cuts_per_clip": 0.09945184025058731,
+        "duration_s": 4403.130137983133,
+        "internal_cuts_per_minute": 1.7305870508497767,
+        "n_samples": 44537
+      },
+      "argmax_s1": {
+        "n_clips": 1277,
+        "accuracy": 0.9467501957713391,
+        "class_support": {
+          "PLAX": 0,
+          "PSAX": 0,
+          "A4C": 1277,
+          "A5C": 0,
+          "SC4C": 0
+        },
+        "class_recall": {
+          "PLAX": null,
+          "PSAX": null,
+          "A4C": 0.9467501957713391,
+          "A5C": null,
+          "SC4C": null
+        },
+        "five_class_macro_f1": null,
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            2,
+            1209,
+            63,
+            3,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "confusion_columns": [
+          "PLAX",
+          "PSAX",
+          "A4C",
+          "A5C",
+          "SC4C",
+          "unsupported"
+        ],
+        "internal_cuts": 147,
+        "internal_cuts_per_clip": 0.11511354737666406,
+        "duration_s": 4403.130137983133,
+        "internal_cuts_per_minute": 2.003120444684387,
+        "n_samples": 44537
+      },
+      "argmax_s2": {
+        "n_clips": 1277,
+        "accuracy": 0.9451840250587314,
+        "class_support": {
+          "PLAX": 0,
+          "PSAX": 0,
+          "A4C": 1277,
+          "A5C": 0,
+          "SC4C": 0
+        },
+        "class_recall": {
+          "PLAX": null,
+          "PSAX": null,
+          "A4C": 0.9451840250587314,
+          "A5C": null,
+          "SC4C": null
+        },
+        "five_class_macro_f1": null,
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            1207,
+            61,
+            8,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "confusion_columns": [
+          "PLAX",
+          "PSAX",
+          "A4C",
+          "A5C",
+          "SC4C",
+          "unsupported"
+        ],
+        "internal_cuts": 126,
+        "internal_cuts_per_clip": 0.09866875489428348,
+        "duration_s": 4403.130137983133,
+        "internal_cuts_per_minute": 1.716960381158046,
+        "n_samples": 44537
+      },
+      "frozen_B3_s0": {
+        "n_clips": 1277,
+        "accuracy": 0.9483163664839468,
+        "class_support": {
+          "PLAX": 0,
+          "PSAX": 0,
+          "A4C": 1277,
+          "A5C": 0,
+          "SC4C": 0
+        },
+        "class_recall": {
+          "PLAX": null,
+          "PSAX": null,
+          "A4C": 0.9483163664839468,
+          "A5C": null,
+          "SC4C": null
+        },
+        "five_class_macro_f1": null,
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            1211,
+            62,
+            3,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "confusion_columns": [
+          "PLAX",
+          "PSAX",
+          "A4C",
+          "A5C",
+          "SC4C",
+          "unsupported"
+        ],
+        "internal_cuts": 10,
+        "internal_cuts_per_clip": 0.007830853563038372,
+        "duration_s": 4403.130137983133,
+        "internal_cuts_per_minute": 0.13626669691730525,
+        "n_samples": 44537
+      },
+      "frozen_B3_s1": {
+        "n_clips": 1277,
+        "accuracy": 0.9475332811276429,
+        "class_support": {
+          "PLAX": 0,
+          "PSAX": 0,
+          "A4C": 1277,
+          "A5C": 0,
+          "SC4C": 0
+        },
+        "class_recall": {
+          "PLAX": null,
+          "PSAX": null,
+          "A4C": 0.9475332811276429,
+          "A5C": null,
+          "SC4C": null
+        },
+        "five_class_macro_f1": null,
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            2,
+            1210,
+            63,
+            2,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "confusion_columns": [
+          "PLAX",
+          "PSAX",
+          "A4C",
+          "A5C",
+          "SC4C",
+          "unsupported"
+        ],
+        "internal_cuts": 4,
+        "internal_cuts_per_clip": 0.0031323414252153485,
+        "duration_s": 4403.130137983133,
+        "internal_cuts_per_minute": 0.0545066787669221,
+        "n_samples": 44537
+      },
+      "frozen_B3_s2": {
+        "n_clips": 1277,
+        "accuracy": 0.9475332811276429,
+        "class_support": {
+          "PLAX": 0,
+          "PSAX": 0,
+          "A4C": 1277,
+          "A5C": 0,
+          "SC4C": 0
+        },
+        "class_recall": {
+          "PLAX": null,
+          "PSAX": null,
+          "A4C": 0.9475332811276429,
+          "A5C": null,
+          "SC4C": null
+        },
+        "five_class_macro_f1": null,
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            1210,
+            59,
+            8,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "confusion_columns": [
+          "PLAX",
+          "PSAX",
+          "A4C",
+          "A5C",
+          "SC4C",
+          "unsupported"
+        ],
+        "internal_cuts": 13,
+        "internal_cuts_per_clip": 0.010180109631949883,
+        "duration_s": 4403.130137983133,
+        "internal_cuts_per_minute": 0.17714670599249682,
+        "n_samples": 44537
+      }
+    },
+    "lvh": {
+      "argmax_s0": {
+        "n_clips": 343,
+        "accuracy": 0.9183673469387755,
+        "class_support": {
+          "PLAX": 343,
+          "PSAX": 0,
+          "A4C": 0,
+          "A5C": 0,
+          "SC4C": 0
+        },
+        "class_recall": {
+          "PLAX": 0.9183673469387755,
+          "PSAX": null,
+          "A4C": null,
+          "A5C": null,
+          "SC4C": null
+        },
+        "five_class_macro_f1": null,
+        "confusion": [
+          [
+            315,
+            4,
+            9,
+            14,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "confusion_columns": [
+          "PLAX",
+          "PSAX",
+          "A4C",
+          "A5C",
+          "SC4C",
+          "unsupported"
+        ],
+        "internal_cuts": 38,
+        "internal_cuts_per_clip": 0.11078717201166181,
+        "duration_s": 1174.7972042670065,
+        "internal_cuts_per_minute": 1.9407604918693733,
+        "n_samples": 11884
+      },
+      "argmax_s1": {
+        "n_clips": 343,
+        "accuracy": 0.9708454810495627,
+        "class_support": {
+          "PLAX": 343,
+          "PSAX": 0,
+          "A4C": 0,
+          "A5C": 0,
+          "SC4C": 0
+        },
+        "class_recall": {
+          "PLAX": 0.9708454810495627,
+          "PSAX": null,
+          "A4C": null,
+          "A5C": null,
+          "SC4C": null
+        },
+        "five_class_macro_f1": null,
+        "confusion": [
+          [
+            333,
+            2,
+            5,
+            2,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "confusion_columns": [
+          "PLAX",
+          "PSAX",
+          "A4C",
+          "A5C",
+          "SC4C",
+          "unsupported"
+        ],
+        "internal_cuts": 40,
+        "internal_cuts_per_clip": 0.11661807580174927,
+        "duration_s": 1174.7972042670065,
+        "internal_cuts_per_minute": 2.0429057809151296,
+        "n_samples": 11884
+      },
+      "argmax_s2": {
+        "n_clips": 343,
+        "accuracy": 0.9766763848396501,
+        "class_support": {
+          "PLAX": 343,
+          "PSAX": 0,
+          "A4C": 0,
+          "A5C": 0,
+          "SC4C": 0
+        },
+        "class_recall": {
+          "PLAX": 0.9766763848396501,
+          "PSAX": null,
+          "A4C": null,
+          "A5C": null,
+          "SC4C": null
+        },
+        "five_class_macro_f1": null,
+        "confusion": [
+          [
+            335,
+            2,
+            5,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "confusion_columns": [
+          "PLAX",
+          "PSAX",
+          "A4C",
+          "A5C",
+          "SC4C",
+          "unsupported"
+        ],
+        "internal_cuts": 33,
+        "internal_cuts_per_clip": 0.09620991253644315,
+        "duration_s": 1174.7972042670065,
+        "internal_cuts_per_minute": 1.6853972692549821,
+        "n_samples": 11884
+      },
+      "frozen_B3_s0": {
+        "n_clips": 343,
+        "accuracy": 0.924198250728863,
+        "class_support": {
+          "PLAX": 343,
+          "PSAX": 0,
+          "A4C": 0,
+          "A5C": 0,
+          "SC4C": 0
+        },
+        "class_recall": {
+          "PLAX": 0.924198250728863,
+          "PSAX": null,
+          "A4C": null,
+          "A5C": null,
+          "SC4C": null
+        },
+        "five_class_macro_f1": null,
+        "confusion": [
+          [
+            317,
+            3,
+            9,
+            13,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "confusion_columns": [
+          "PLAX",
+          "PSAX",
+          "A4C",
+          "A5C",
+          "SC4C",
+          "unsupported"
+        ],
+        "internal_cuts": 0,
+        "internal_cuts_per_clip": 0.0,
+        "duration_s": 1174.7972042670065,
+        "internal_cuts_per_minute": 0.0,
+        "n_samples": 11884
+      },
+      "frozen_B3_s1": {
+        "n_clips": 343,
+        "accuracy": 0.9766763848396501,
+        "class_support": {
+          "PLAX": 343,
+          "PSAX": 0,
+          "A4C": 0,
+          "A5C": 0,
+          "SC4C": 0
+        },
+        "class_recall": {
+          "PLAX": 0.9766763848396501,
+          "PSAX": null,
+          "A4C": null,
+          "A5C": null,
+          "SC4C": null
+        },
+        "five_class_macro_f1": null,
+        "confusion": [
+          [
+            335,
+            2,
+            4,
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "confusion_columns": [
+          "PLAX",
+          "PSAX",
+          "A4C",
+          "A5C",
+          "SC4C",
+          "unsupported"
+        ],
+        "internal_cuts": 0,
+        "internal_cuts_per_clip": 0.0,
+        "duration_s": 1174.7972042670065,
+        "internal_cuts_per_minute": 0.0,
+        "n_samples": 11884
+      },
+      "frozen_B3_s2": {
+        "n_clips": 343,
+        "accuracy": 0.9708454810495627,
+        "class_support": {
+          "PLAX": 343,
+          "PSAX": 0,
+          "A4C": 0,
+          "A5C": 0,
+          "SC4C": 0
+        },
+        "class_recall": {
+          "PLAX": 0.9708454810495627,
+          "PSAX": null,
+          "A4C": null,
+          "A5C": null,
+          "SC4C": null
+        },
+        "five_class_macro_f1": null,
+        "confusion": [
+          [
+            333,
+            1,
+            8,
+            1,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "confusion_columns": [
+          "PLAX",
+          "PSAX",
+          "A4C",
+          "A5C",
+          "SC4C",
+          "unsupported"
+        ],
+        "internal_cuts": 0,
+        "internal_cuts_per_clip": 0.0,
+        "duration_s": 1174.7972042670065,
+        "internal_cuts_per_minute": 0.0,
+        "n_samples": 11884
+      }
+    },
+    "camus": {
+      "argmax_s0": {
+        "n_clips": 50,
+        "accuracy": 0.8,
+        "class_support": {
+          "PLAX": 0,
+          "PSAX": 0,
+          "A4C": 50,
+          "A5C": 0,
+          "SC4C": 0
+        },
+        "class_recall": {
+          "PLAX": null,
+          "PSAX": null,
+          "A4C": 0.8,
+          "A5C": null,
+          "SC4C": null
+        },
+        "five_class_macro_f1": null,
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            5,
+            40,
+            5,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "confusion_columns": [
+          "PLAX",
+          "PSAX",
+          "A4C",
+          "A5C",
+          "SC4C",
+          "unsupported"
+        ],
+        "internal_cuts": 0,
+        "internal_cuts_per_clip": 0.0,
+        "duration_s": 17.586281364234193,
+        "internal_cuts_per_minute": 0.0,
+        "n_samples": 194
+      },
+      "argmax_s1": {
+        "n_clips": 50,
+        "accuracy": 0.64,
+        "class_support": {
+          "PLAX": 0,
+          "PSAX": 0,
+          "A4C": 50,
+          "A5C": 0,
+          "SC4C": 0
+        },
+        "class_recall": {
+          "PLAX": null,
+          "PSAX": null,
+          "A4C": 0.64,
+          "A5C": null,
+          "SC4C": null
+        },
+        "five_class_macro_f1": null,
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            32,
+            13,
+            4,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "confusion_columns": [
+          "PLAX",
+          "PSAX",
+          "A4C",
+          "A5C",
+          "SC4C",
+          "unsupported"
+        ],
+        "internal_cuts": 0,
+        "internal_cuts_per_clip": 0.0,
+        "duration_s": 17.586281364234193,
+        "internal_cuts_per_minute": 0.0,
+        "n_samples": 194
+      },
+      "argmax_s2": {
+        "n_clips": 50,
+        "accuracy": 0.76,
+        "class_support": {
+          "PLAX": 0,
+          "PSAX": 0,
+          "A4C": 50,
+          "A5C": 0,
+          "SC4C": 0
+        },
+        "class_recall": {
+          "PLAX": null,
+          "PSAX": null,
+          "A4C": 0.76,
+          "A5C": null,
+          "SC4C": null
+        },
+        "five_class_macro_f1": null,
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            11,
+            1,
+            38,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "confusion_columns": [
+          "PLAX",
+          "PSAX",
+          "A4C",
+          "A5C",
+          "SC4C",
+          "unsupported"
+        ],
+        "internal_cuts": 0,
+        "internal_cuts_per_clip": 0.0,
+        "duration_s": 17.586281364234193,
+        "internal_cuts_per_minute": 0.0,
+        "n_samples": 194
+      },
+      "frozen_B3_s0": {
+        "n_clips": 50,
+        "accuracy": 0.8,
+        "class_support": {
+          "PLAX": 0,
+          "PSAX": 0,
+          "A4C": 50,
+          "A5C": 0,
+          "SC4C": 0
+        },
+        "class_recall": {
+          "PLAX": null,
+          "PSAX": null,
+          "A4C": 0.8,
+          "A5C": null,
+          "SC4C": null
+        },
+        "five_class_macro_f1": null,
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            5,
+            40,
+            5,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "confusion_columns": [
+          "PLAX",
+          "PSAX",
+          "A4C",
+          "A5C",
+          "SC4C",
+          "unsupported"
+        ],
+        "internal_cuts": 0,
+        "internal_cuts_per_clip": 0.0,
+        "duration_s": 17.586281364234193,
+        "internal_cuts_per_minute": 0.0,
+        "n_samples": 194
+      },
+      "frozen_B3_s1": {
+        "n_clips": 50,
+        "accuracy": 0.64,
+        "class_support": {
+          "PLAX": 0,
+          "PSAX": 0,
+          "A4C": 50,
+          "A5C": 0,
+          "SC4C": 0
+        },
+        "class_recall": {
+          "PLAX": null,
+          "PSAX": null,
+          "A4C": 0.64,
+          "A5C": null,
+          "SC4C": null
+        },
+        "five_class_macro_f1": null,
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            32,
+            13,
+            4,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "confusion_columns": [
+          "PLAX",
+          "PSAX",
+          "A4C",
+          "A5C",
+          "SC4C",
+          "unsupported"
+        ],
+        "internal_cuts": 0,
+        "internal_cuts_per_clip": 0.0,
+        "duration_s": 17.586281364234193,
+        "internal_cuts_per_minute": 0.0,
+        "n_samples": 194
+      },
+      "frozen_B3_s2": {
+        "n_clips": 50,
+        "accuracy": 0.76,
+        "class_support": {
+          "PLAX": 0,
+          "PSAX": 0,
+          "A4C": 50,
+          "A5C": 0,
+          "SC4C": 0
+        },
+        "class_recall": {
+          "PLAX": null,
+          "PSAX": null,
+          "A4C": 0.76,
+          "A5C": null,
+          "SC4C": null
+        },
+        "five_class_macro_f1": null,
+        "confusion": [
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            11,
+            1,
+            38,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        ],
+        "confusion_columns": [
+          "PLAX",
+          "PSAX",
+          "A4C",
+          "A5C",
+          "SC4C",
+          "unsupported"
+        ],
+        "internal_cuts": 0,
+        "internal_cuts_per_clip": 0.0,
+        "duration_s": 17.586281364234193,
+        "internal_cuts_per_minute": 0.0,
+        "n_samples": 194
+      }
+    }
+  },
+  "recounted_STFM_metrics": {
+    "legacy_per_key_prior": {
+      "original_nine_code": {
+        "n_clips": 888,
+        "accuracy": 0.9448198198198198,
+        "macro_f1": 0.9093818329259263,
+        "confusion": [
+          [
+            275,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            57,
+            0,
+            0,
+            0,
+            0,
+            15,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            44,
+            0,
+            0,
+            0,
+            1,
+            5,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            30,
+            0,
+            0,
+            0,
+            11,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            225,
+            6,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            2,
+            38,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            3,
+            1,
+            0,
+            0,
+            0,
+            84,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            4,
+            0,
+            0,
+            0,
+            52,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            34
+          ]
+        ]
+      },
+      "shared_five_family": {
+        "n_clips": 800,
+        "accuracy": 0.97,
+        "class_support": {
+          "PLAX": 275,
+          "PSAX": 219,
+          "A4C": 231,
+          "A5C": 40,
+          "SC4C": 35
+        },
+        "class_recall": {
+          "PLAX": 1.0,
+          "PSAX": 0.9315068493150684,
+          "A4C": 0.974025974025974,
+          "A5C": 0.95,
+          "SC4C": 0.9714285714285714
+        },
+        "five_class_macro_f1": 0.9653393303239074,
+        "confusion": [
+          [
+            275,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            204,
+            0,
+            0,
+            0,
+            15
+          ],
+          [
+            0,
+            0,
+            225,
+            6,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            2,
+            38,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1,
+            34,
+            0
+          ]
+        ],
+        "confusion_columns": [
+          "PLAX",
+          "PSAX",
+          "A4C",
+          "A5C",
+          "SC4C",
+          "unsupported"
+        ],
+        "internal_cuts": 0,
+        "internal_cuts_per_clip": 0.0,
+        "duration_s": 4624.666666666667,
+        "internal_cuts_per_minute": 0.0,
+        "n_samples": 800
+      },
+      "cut_note": "Whole-file classification emits no internal cut by construction; not a stability finding."
+    },
+    "corrected_prior_once_same_old_weights": {
+      "original_nine_code": {
+        "n_clips": 888,
+        "accuracy": 0.9448198198198198,
+        "macro_f1": 0.9093818329259263,
+        "confusion": [
+          [
+            275,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            57,
+            0,
+            0,
+            0,
+            0,
+            15,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            44,
+            0,
+            0,
+            0,
+            1,
+            5,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            30,
+            0,
+            0,
+            0,
+            11,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            225,
+            6,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            2,
+            38,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            3,
+            1,
+            0,
+            0,
+            0,
+            84,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            4,
+            0,
+            0,
+            0,
+            52,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            34
+          ]
+        ]
+      },
+      "shared_five_family": {
+        "n_clips": 800,
+        "accuracy": 0.96875,
+        "class_support": {
+          "PLAX": 275,
+          "PSAX": 219,
+          "A4C": 231,
+          "A5C": 40,
+          "SC4C": 35
+        },
+        "class_recall": {
+          "PLAX": 1.0,
+          "PSAX": 0.9269406392694064,
+          "A4C": 0.974025974025974,
+          "A5C": 0.95,
+          "SC4C": 0.9714285714285714
+        },
+        "five_class_macro_f1": 0.9648485905168421,
+        "confusion": [
+          [
+            275,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            203,
+            0,
+            0,
+            0,
+            16
+          ],
+          [
+            0,
+            0,
+            225,
+            6,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            2,
+            38,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1,
+            34,
+            0
+          ]
+        ],
+        "confusion_columns": [
+          "PLAX",
+          "PSAX",
+          "A4C",
+          "A5C",
+          "SC4C",
+          "unsupported"
+        ],
+        "internal_cuts": 0,
+        "internal_cuts_per_clip": 0.0,
+        "duration_s": 4624.666666666667,
+        "internal_cuts_per_minute": 0.0,
+        "n_samples": 800
+      },
+      "cut_note": "Whole-file classification emits no internal cut by construction; not a stability finding."
+    }
+  },
+  "limits": [
+    "EV9V is the historically accessed STFM source test, not external or held-out confirmation.",
+    "Dynamic A4C and LVH PLAX are source-code recall checks, not EF or wall-thickness endpoints.",
+    "CAMUS official 4CH source codes are not expert adjudication of A4C versus A5C.",
+    "CAMUS half-cycle clips span approximately 0.18 to 0.51 seconds; short input support limits interpretation.",
+    "EV9V clusters are sessions, not confirmed patients; Dynamic/LVH patient identities are unknown.",
+    "CAMUS clusters are official patient identities; unknown pretraining/source overlap remains unknown.",
+    "Clip labels are weak supervision; no clinical natural-transition or local-anatomy result is established.",
+    "No source pixel reload or model forward is performed. Cached input-pixel digests are checked for form only.",
+    "Media size/mtime, source-metadata hashes, video container timing and CAMUS header length are rechecked; these are not raw-media byte hashes.",
+    "The prospective LVH timing correction retains v1 EV9V/Dynamic caches; LVH/CAMUS use the explicitly bound v2 protocol. Cache chronology uses filesystem timestamps, not recorded model-forward start times.",
+    "Protocol pins only its declared source modules; unpinned transitive/library/environment dependencies cannot be retroactively frozen.",
+    "Baseline caches have no per-case preprocessing/sampling/timing receipt; only logits shape, identity, manifest duration and declared input recipe can be audited.",
+    "Per-case GPU timing is not stored in prediction caches; inference resource accounting requires the separate terminal/resource receipts.",
+    "STFM whole-file classification emits no internal cuts by construction; zero cuts is not a stability result.",
+    "Bootstrap intervals describe this fixed evaluation and grouping; they are not a clinical or finite-sample guarantee."
+  ],
+  "elapsed_wall_seconds": 13.332795870956033,
+  "execution": "CPU only; no production decoder/metric imports; no model forward; aggregate-only artifacts"
+}
