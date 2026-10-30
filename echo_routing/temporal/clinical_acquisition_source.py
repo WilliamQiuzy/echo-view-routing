@@ -168,3 +168,17 @@ def fixed_exam_pool(recordings, provider_folds, per_fold=40):
             for fold in range(5)
             for exam in sorted(e for e, count in counts.items()
                                if count >= 2 and provider_folds.get(e) == fold)[:per_fold]]
+
+
+def validate_resume_prefix(attempts, pairs, pool):
+    if len(attempts) > len(pool):
+        raise ValueError("attempt prefix exceeds frozen pool")
+    for slot, attempt in enumerate(attempts):
+        selected = pool[slot]
+        if (attempt.get("fixed_slot") != slot or attempt.get("exam") != selected["exam"] or
+            attempt.get("provider_fold") != selected["provider_fold"]):
+            raise ValueError("attempt prefix changed original frozen slots")
+    successful = {r["fixed_slot"] for r in attempts if r.get("ok")}
+    if {r["fixed_slot"] for r in pairs} != successful or len(pairs) != len(successful):
+        raise ValueError("retained pair membership differs from completed attempts")
+    return len(attempts), sum(r["transferred_bytes"] for r in attempts)

@@ -15,7 +15,7 @@ import urllib.request
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from echo_routing.temporal.clinical_acquisition_source import (
-    VerifiedArchive, acquisition_purpose, fixed_exam_pool, validate_static)
+    VerifiedArchive, acquisition_purpose, fixed_exam_pool, validate_static, validate_resume_prefix)
 
 OUT = ROOT / "runs/a50_clinical_acquisition_v1"
 REV = "7a36922880061791519a8f01553c15cad5df564f"
@@ -162,13 +162,23 @@ def extract_pair(archive, candidates, slot):
     return result
 
 
-def acquire(commit, process_start_cpu):
+def acquire(commit, process_start_cpu, resume_contract=None):
     assert len(commit) == 40
-    assert not (OUT / "cohort_attempts.private.json").exists(), "never repeat a launched intake"
+    if resume_contract is None:
+        assert not (OUT / "cohort_attempts.private.json").exists(), "never repeat a launched intake"
     source = json.loads((OUT / "cohort_selection.private.json").read_text())
     frozen = json.loads((OUT / "cohort_freeze.json").read_text())
     assert frozen["selection_sha256"] == sha(OUT / "cohort_selection.private.json")
-    for p, digest in source["code_sha256"].items(): assert sha(ROOT / p) == digest
+    past_cpu = 0
+    bindings = source["code_sha256"]
+    if resume_contract is not None:
+        amendment = json.loads(Path(resume_contract).read_text())
+        assert amendment["original_selection_sha256"] == frozen["selection_sha256"]
+        assert amendment["completed_prefix_sha256"] == sha(OUT / "cohort_attempts.private.json")
+        assert amendment["completed_pairs_sha256"] == sha(OUT / "cohort_pairs.private.json")
+        bindings = amendment["code_sha256"]
+        past_cpu = amendment["previous_process_CPU_seconds_including_bootstrap"]
+    for p, digest in bindings.items(): assert sha(ROOT / p) == digest
     assert sha(ROOT / CARD) == source["card_sha256"] and sha(ROOT / LABELS) == source["label_contract_sha256"]
     assert sha(OUT / "contract_result.json") == source["initial_contract_result_sha256"]
     assert sha(OUT / "contract_proofs.private.json") == source["initial_private_proof_sha256"]
@@ -176,11 +186,18 @@ def acquire(commit, process_start_cpu):
     exams_by_record = {r["recordings/recording_id"]: r["recordings/exam_id"] for r in recordings}
     allowed = {(r["measurement_kind"], r["measure_id"]): r["purpose"] for r in json.loads((ROOT / LABELS).read_text())["exact_whitelist"]}
     sys.path[:0] = [str(ROOT / "runs/a49_lvot_evidence_qualification_v1/vendor"), str(ROOT / "runs/a48_anatomical_qualification_v1/upstream/src")]
-    attempts, pairs, transferred, peak = [], [], 0, 0
+    attempts, pairs, transferred, peak, next_slot = [], [], 0, 0, 0
+    if resume_contract is not None:
+        attempts = json.loads((OUT / "cohort_attempts.private.json").read_text())
+        pairs = json.loads((OUT / "cohort_pairs.private.json").read_text())
+        next_slot, transferred = validate_resume_prefix(attempts, pairs, source["pool"])
+        assert next_slot == amendment["next_original_fixed_slot"]
+        peak = amendment["previous_namespace_peak_bytes_observed"]
     cpu_start = process_start_cpu
     dump("cohort_attempts.private.json", attempts)
     for slot, selected in enumerate(source["pool"]):
-        if time.process_time() - cpu_start > source["wider_process_CPU_cap_seconds"] - 60:
+        if slot < next_slot: continue
+        if past_cpu + time.process_time() - cpu_start > source["wider_process_CPU_cap_seconds"] - 60:
             dump("cohort_budget_stop.json", {"next_fixed_slot": slot, "reason": "process CPU closing reserve"})
             break
         start, cpu = time.time(), time.process_time()
@@ -256,7 +273,7 @@ def acquire(commit, process_start_cpu):
             retained = sum(p.stat().st_size for p in (OUT / "cohort_samples").rglob("*") if p.is_file()) if (OUT / "cohort_samples").exists() else 0
             dump("cohort_progress.json", {"phase": "fixed_source_intake_running", "pid": os.getpid(), "finished_slots": len(attempts),
                 "total_fixed_slots": len(source["pool"]), "paired_exams": len(pairs), "transferred_bytes": transferred,
-                "process_CPU_seconds": time.process_time() - cpu_start, "retained_sample_bytes": retained,
+                "process_CPU_seconds": past_cpu + time.process_time() - cpu_start, "retained_sample_bytes": retained,
                 "namespace_peak_bytes_observed": peak, "model_forwards": 0, "GPU_hours": 0})
             assert retained <= source["retained_source_cap"]
     by_fold = collections.Counter(p["provider_fold"] for p in pairs)
@@ -280,7 +297,7 @@ def acquire(commit, process_start_cpu):
         "fixed_slots": len(source["pool"]), "attempted_slots": len(attempts), "successful_exam_pairs": len(pairs),
         "paired_exams_by_provider_fold": dict(by_fold), "distinct_native_images_by_purpose": unique,
         "crossfold_exact_image_hashes": len(crossfold), "transferred_additional_bytes": transferred,
-        "namespace_peak_bytes_observed": peak, "process_CPU_seconds": time.process_time() - cpu_start,
+        "namespace_peak_bytes_observed": peak, "process_CPU_seconds": past_cpu + time.process_time() - cpu_start,
         "private_pair_sha256": sha(OUT / "cohort_pairs.private.json"),
         "private_attempt_sha256": sha(OUT / "cohort_attempts.private.json"),
         "model_forwards": 0, "model_updates": 0, "GPU_hours": 0, "new_EV9V_readout": False,
@@ -293,10 +310,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--stage", choices=["freeze", "acquire"], required=True)
     parser.add_argument("--commit", default="")
+    parser.add_argument("--resume-contract", default=None)
     args = parser.parse_args()
     start, cpu, ok = time.time(), time.process_time(), False
     try:
-        result = freeze() if args.stage == "freeze" else acquire(args.commit, cpu)
+        result = freeze() if args.stage == "freeze" else acquire(args.commit, cpu, args.resume_contract)
         ok = True
         print(json.dumps(result, indent=2), flush=True)
     except Exception as error:

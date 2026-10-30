@@ -1,0 +1,21 @@
+{
+  "phase": "engineering_environment_correction_same_fixed_source_pool",
+  "original_freeze_commit": "5e28edd5c4bf3456f42f5b739c72b2033cda4024",
+  "original_selection_sha256": "6dc3a53d8577a3ea695dcfcb0eabf028ba75aaae2e774418f8391be0224a0a88",
+  "completed_prefix_sha256": "1821ec3c63b5fd53b313f67d3daa37ad9f2e17a020642c9353bbaa151526e9b7",
+  "completed_pairs_sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+  "next_original_fixed_slot": 3,
+  "previous_process_CPU_seconds_including_bootstrap": 15.52,
+  "previous_namespace_peak_bytes_observed": 1740432165,
+  "previous_transferred_bytes": 3248812032,
+  "metadata_only_no_pair_exclusions": 2,
+  "engineering_interrupted_slot_exclusions": 1,
+  "failed_slots_retried_or_replaced": false,
+  "scientific_labels_source_pool_admission_gates_changed": false,
+  "expected_interpreter": "/home/william/echo-view-routing/.venv/bin/python",
+  "reason": "Path.resolve() followed virtual-environment executable symlink to system Python; corrected launcher preserves explicit venv path and verifies dependencies before source work. Old worker stopped; no model work. Completed and interrupted fixed slots stay excluded.",
+  "code_sha256": {
+    "scripts/prepare_clinical_acquisition_cohort.py": "4c11c321026eeac5f3a5f0dd668f8a017e289281edc38709f03b515d9577f219",
+    "echo_routing/temporal/clinical_acquisition_source.py": "200b85232a3a346c03fc568ad876f4a144fdf42523f82f4ac529ad109b53c1e5"
+  }
+}

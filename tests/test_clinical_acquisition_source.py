@@ -148,3 +148,14 @@ def test_fixed_pool_uses_only_modality_counts_and_stable_exam_fold_order():
     # A repeated catalog identity must never manufacture the second acquisition.
     with pytest.raises(ValueError, match="duplicate"):
         fixed_exam_pool(rows + [row("no_pair", "n1")], {"a": 1, "b": 1, "c": 0, "no_pair": 0})
+
+
+def test_resume_keeps_original_failed_slots_without_retry_or_replacement():
+    from echo_routing.temporal.clinical_acquisition_source import validate_resume_prefix
+    pool = [{"exam": "first", "provider_fold": 0}, {"exam": "second", "provider_fold": 0}]
+    attempts = [{"exam": "first", "provider_fold": 0, "fixed_slot": 0, "ok": False, "transferred_bytes": 17}]
+    assert validate_resume_prefix(attempts, [], pool) == (1, 17)
+    with pytest.raises(ValueError, match="prefix"):
+        validate_resume_prefix([{**attempts[0], "fixed_slot": 1}], [], pool)
+    with pytest.raises(ValueError, match="pair"):
+        validate_resume_prefix(attempts, [{"fixed_slot": 0}], pool)
