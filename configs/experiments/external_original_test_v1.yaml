@@ -1,0 +1,27 @@
+experiment: external_original_test_v1
+version: 1
+authorization: user-2026-10-29-original-external-tests-and-demo-cleanup
+reference: A08_all_neighbour_video_plus_frozen_B3
+seeds: [0, 1, 2]
+classes: [PLAX, PSAX, A4C, A5C, SC4C]
+model_pattern: models_frozen/video_within_view_v1/all_s{seed}/final.pt
+choices: docs/results/2026-10-16_video_within_view/choices.json
+sampling: {hz: 10.0, window_samples: 16, stride_samples: 5, timing: decoded_source_fps}
+preprocess: {short_side: 256, center_crop: 224, gamma: 1.0, normalization: EchoPrime_pixel_0_255}
+prediction: {native_vote: per_sample_majority, decoders: [argmax, frozen_B3], precision: fp32}
+rules:
+  target_tuning: false
+  new_training: false
+  unsupported_prediction: error
+  static_to_pseudovideo: false
+  failed_case_drop: false
+  private_case_outputs: server_only
+initial_datasets:
+  ev9v: {split: official_test, endpoint: shared_five_family_native, expected: 800, role: original_STFM_source_not_external}
+  dynamic: {split: official_TEST, endpoint: A4C_recall_and_native_false_cuts, expected: 1277, role: auxiliary_external_source_check_not_EF}
+  lvh: {split: official_test, endpoint: PLAX_recall_and_native_false_cuts, role: auxiliary_external_source_check_not_wall_thickness}
+  camus: {split: official_testing, endpoint: A4C_recall_and_native_false_cuts, role: auxiliary_external_source_check_not_quality}
+budget: {gpu_hours: 12.0, active_cpu_hours: 12.0, new_storage_gb: 8.0, gpu_memory_fraction: 0.6}
+outputs:
+  private: runs/external_original_test_v1/private
+  results: docs/results/2026-10-30_external_original_tests
