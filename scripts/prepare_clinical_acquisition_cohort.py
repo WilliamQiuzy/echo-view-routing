@@ -86,6 +86,8 @@ def freeze():
     selection = {"repo": REPO, "revision": REV, "frozen_unix": time.time(), "pool": pool,
         "card_sha256": sha(ROOT / CARD), "label_contract_sha256": sha(ROOT / LABELS),
         "catalog_sha256": CATALOG_SHA, "splits_sha256": sha(ROOT / SPLITS),
+        "initial_contract_result_sha256": sha(OUT / "contract_result.json"),
+        "initial_private_proof_sha256": sha(OUT / "contract_proofs.private.json"),
         "code_sha256": {p: sha(ROOT / p) for p in CODE},
         "shared_caps": {"GPU_hours": 6, "CPU_hours": 3, "new_bytes": 3_000_000_000},
         "wider_transfer_cap": 200_000_000_000, "wider_process_CPU_cap_seconds": 1620,
@@ -160,7 +162,7 @@ def extract_pair(archive, candidates, slot):
     return result
 
 
-def acquire(commit):
+def acquire(commit, process_start_cpu):
     assert len(commit) == 40
     assert not (OUT / "cohort_attempts.private.json").exists(), "never repeat a launched intake"
     source = json.loads((OUT / "cohort_selection.private.json").read_text())
@@ -168,12 +170,14 @@ def acquire(commit):
     assert frozen["selection_sha256"] == sha(OUT / "cohort_selection.private.json")
     for p, digest in source["code_sha256"].items(): assert sha(ROOT / p) == digest
     assert sha(ROOT / CARD) == source["card_sha256"] and sha(ROOT / LABELS) == source["label_contract_sha256"]
+    assert sha(OUT / "contract_result.json") == source["initial_contract_result_sha256"]
+    assert sha(OUT / "contract_proofs.private.json") == source["initial_private_proof_sha256"]
     recordings, merged = catalog()
     exams_by_record = {r["recordings/recording_id"]: r["recordings/exam_id"] for r in recordings}
     allowed = {(r["measurement_kind"], r["measure_id"]): r["purpose"] for r in json.loads((ROOT / LABELS).read_text())["exact_whitelist"]}
     sys.path[:0] = [str(ROOT / "runs/a49_lvot_evidence_qualification_v1/vendor"), str(ROOT / "runs/a48_anatomical_qualification_v1/upstream/src")]
     attempts, pairs, transferred, peak = [], [], 0, 0
-    cpu_start = time.process_time()
+    cpu_start = process_start_cpu
     dump("cohort_attempts.private.json", attempts)
     for slot, selected in enumerate(source["pool"]):
         if time.process_time() - cpu_start > source["wider_process_CPU_cap_seconds"] - 60:
@@ -190,6 +194,9 @@ def acquire(commit):
                 assert len(initial) == 2
                 for row in initial:
                     old = OUT / "contract_samples" / row["purpose"]
+                    for member in row["members"]:
+                        rel = member["name"].split(".zarr/", 1)[1]
+                        assert sha(old / rel) == member["sha256"]
                     dest = OUT / "cohort_samples" / f"{slot:03d}" / row["purpose"]
                     assert not dest.exists()
                     shutil.copytree(old, dest)
@@ -267,7 +274,7 @@ def acquire(commit):
     for pair in pairs:
         for image in pair["images"]: global_folds[image["raw_sha256"]].add(pair["provider_fold"])
     crossfold = sorted(h for h, fs in global_folds.items() if len(fs) > 1)
-    passed = (len(pairs) >= 80 and sum(v for f, v in by_fold.items() if f != 0) >= 64 and by_fold[0] >= 16 and
+    passed = (len(attempts) == len(source["pool"]) and len(pairs) >= 80 and sum(v for f, v in by_fold.items() if f != 0) >= 64 and by_fold[0] >= 16 and
         all(v["all"] >= 80 and v["fit"] >= 64 and v["heldout"] >= 16 for v in unique.values()) and not crossfold)
     result = {"phase": "cohort_preparation_complete", "source_commit": commit, "all_source_quantity_gates": passed,
         "fixed_slots": len(source["pool"]), "attempted_slots": len(attempts), "successful_exam_pairs": len(pairs),
@@ -289,7 +296,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     start, cpu, ok = time.time(), time.process_time(), False
     try:
-        result = freeze() if args.stage == "freeze" else acquire(args.commit)
+        result = freeze() if args.stage == "freeze" else acquire(args.commit, cpu)
         ok = True
         print(json.dumps(result, indent=2), flush=True)
     except Exception as error:
