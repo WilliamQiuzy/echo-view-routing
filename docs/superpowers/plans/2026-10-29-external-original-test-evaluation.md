@@ -1,6 +1,6 @@
 # External Original-Test Evaluation Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Execute every obtainable, task-compatible original-test comparison for the frozen strongest cardiac system, publish concise evidence tables, and retire misleading presentation entrypoints.
 
@@ -28,34 +28,38 @@ Predecessors: A08 (working reference, all-neighbour MViTv2-S plus saved B3); A26
 
 **Files:** create `configs/experiments/external_original_test_v1.yaml`, `docs/results/2026-10-30_external_original_tests/availability.json`; private server manifests under `runs/external_original_test_v1/private/`.
 
-- [ ] Audit each external model against official source/test access and target compatibility. Starting roster: STFM, EchoViewCLIP, EchoPrime, ASFormer, MS-TCN, ASRF, FACT, EchoFine/TTE47, EchoJEPA/V-JEPA, PanEcho and AoVdetector; also record intake-only representation models and resources separately.
-- [ ] Pin source versions, all model SHA256s, native split membership and decoder numbers.
-- [ ] Commit protocol/config before new target inference; log access and preparation receipts.
+- [x] Audit each external model against official source/test access and target compatibility. Starting roster: STFM, EchoViewCLIP, EchoPrime, ASFormer, MS-TCN, ASRF, FACT, EchoFine/TTE47, EchoJEPA/V-JEPA, PanEcho and AoVdetector; also record intake-only representation models and resources separately.
+- [x] Pin source versions, all model SHA256s, native split membership and decoder numbers.
+- [x] Commit protocol/config before new target inference; log access and preparation receipts.
 
 ## Task 2: Reliable inference adapter
 
 **Files:** create `echo_routing/evaluate/external_native.py`, `scripts/external_original_tests.py`, `tests/test_external_native.py`.
 
-- [ ] Write failing tests for FPS-aware time sampling, exact target positions and short windows, unsupported-label error accounting, per-video weighting, and refusing incompatible source/cache identities.
-- [ ] Run focused tests and confirm missing implementation failure.
-- [ ] Implement native JPEG/video/NIfTI adapters with strict source timing, original crop/normalization and a label-free forward path.
-- [ ] Verify online A08 against stored development logits; verify frozen state, batch parity, timestamps and original decoder parity. Run all focused tests.
-- [ ] Freeze code/config identity, run all admitted sets for all three seeds through one resumable queue; no target-dependent variant.
+- [x] Write failing tests for FPS-aware time sampling, exact target positions and short windows, unsupported-label error accounting, per-video weighting, and refusing incompatible source/cache identities.
+- [x] Run focused tests and confirm missing implementation failure.
+- [x] Implement native JPEG/video/NIfTI adapters with strict source timing, original crop/normalization and a label-free forward path.
+- [x] Verify online A08 against stored development logits; verify frozen state, batch parity, timestamps and original decoder parity. Run all focused tests.
+- [x] Freeze code/config identity, run all admitted sets for all three seeds through one resumable queue; no target-dependent variant.
 
 ## Task 3: Baseline endpoints and independent verification
 
 **Files:** report JSON/CSV/README and checks under `docs/results/2026-10-30_external_original_tests/`; private predictions and memberships remain server-side.
 
-- [ ] Evaluate original-native STFM and available official cardiac classifiers on the exact same common labels; separately preserve original task endpoints and code versions.
-- [ ] Recount metrics from frozen per-case predictions with an independent implementation and fixed manifest cardinalities; verify exclusions and failures, uncertainty units and source overlap disclosures.
-- [ ] Include existing A26 native/pair/multi, class recalls and short-segment errors as historical context, with exact seed/population labels.
+- [x] Evaluate original-native STFM and available official cardiac classifiers on the exact same common labels; separately preserve original task endpoints and code versions.
+- [x] Recount metrics from frozen per-case predictions with an independent implementation and fixed manifest cardinalities; verify exclusions and failures, uncertainty units and source overlap disclosures.
+- [x] Include existing A26 native/pair/multi, class recalls and short-segment errors as historical context, with exact seed/population labels.
 
 ## Task 4: Presentation and cleanup
 
 **Files:** aggregate-only builder/result page, new standalone private Site source, demo legacy notices/entrypoints, cleanup manifest.
 
-- [ ] Build concise tables directly from verified aggregate JSON: original-test availability, completed shared-task scores, auxiliary source-shift scores, native/pair/multi context, timing and limitations.
-- [ ] Remove dependency on unavailable case/video bundles; include source links and downloadable aggregate CSV/JSON only.
-- [ ] Archive an enumerated set of clean tracked obsolete generated demo pages and builders by dependency, with traceable paths; preserve annotation tooling, original reports and ALL pre-existing untracked files and unrelated dirty/staged work.
-- [ ] Validate figures/denominators/links, desktop/mobile rendering, no runtime errors, and no per-case identifiers/media.
-- [ ] Publish private Site, verify deployment and current local entrypoint, update A50/index and final resources. Complete only after every obtainable compatible comparison has a verified outcome and all other models have an evidence-backed access/compatibility disposition.
+- [x] Build concise tables directly from verified aggregate JSON: original-test availability, completed shared-task scores, auxiliary source-shift scores, native/pair/multi context, timing and limitations.
+- [x] Remove dependency on unavailable case/video bundles; include source links and downloadable aggregate CSV/JSON only.
+- [x] Archive an enumerated set of clean tracked obsolete generated demo pages and builders by dependency, with traceable paths; preserve annotation tooling, original reports and ALL pre-existing untracked files and unrelated dirty/staged work.
+- [x] Validate figures/denominators/links, desktop/mobile rendering, no runtime errors, and no per-case identifiers/media.
+- [x] Publish private Site, verify deployment and current local entrypoint, update A50/index and final resources. Complete only after every obtainable compatible comparison has a verified outcome and all other models have an evidence-backed access/compatibility disposition.
+
+## Closure — 2026-10-30
+
+Completed A50: 2,470 source sequences × three fixed A08 seeds and STFM original888; independent full-label/metric/hash recount passed, 2,000 grouped bootstrap draws, 26 relevant tests, desktop/mobile browser checks. No new independent five-class/A4C-A5C cine test was obtained. Prospective all343-source-PTS LVH timing repair is recorded separately; all failures remain retained. The owner-private Site is deployed successfully, and both old public entrypoints now serve retirement notices (HTTP200, exact marker verified). See the A50 README, resources, ui_validation and publication JSON. Seven clean tracked generated demo files/builders are retired; pre-existing dirty/staged/untracked work is preserved. Source audit/development/agent overhead is not fully metered and is explicitly excluded from complete-resource-cost claims.

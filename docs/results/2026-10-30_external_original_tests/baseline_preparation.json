@@ -1,0 +1,15 @@
+{
+  "created_utc": "2026-10-30T04:08:53Z",
+  "weights": "models_frozen/stfm_numeric/s100/model.ckpt",
+  "weights_sha256": "c09b9f7a451a45d6b77e00b7e5b2f8fde5cece206d84e9fc0b2b859f30e08aa2",
+  "manifest_sha256": "bb90accb5450df084a86cdb127991dc0c3a9b5eba017fcf343d9508f32f5bb96",
+  "code_sha256": "ffc0038f807ef78d78199f2beffdba1a0007d6ef24f7a372b3e1f3c5d84d52fe",
+  "mapping_sha256": "48e6674b556304c2c91b3ecc1bdadaa7ed42aaf98e656ed2474b59b9f2b14de1",
+  "conditions": [
+    "legacy_per_key_prior",
+    "corrected_prior_once_same_old_weights"
+  ],
+  "input": "10 full-native evenly spaced key frames; 5 raw frames at interval5 per key; numeric ordering; authors ImageNet transform",
+  "shared_task": "sum PSAX probabilities; preserve unsupported PMPALA as sixth error category; no mass deletion",
+  "model_identity": "existing project STFM numeric s100, not latest-recipe retraining"
+}

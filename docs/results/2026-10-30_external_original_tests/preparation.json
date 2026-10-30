@@ -1,0 +1,55 @@
+{
+  "created_utc": "2026-10-30T03:59:51Z",
+  "config_sha256": "66c0b8ed020761080f231a0d1fd6f81b42d8e7f709e7b73df4d3fa5549500e37",
+  "manifest_sha256": "3cef0b62e336a08b7bc7813fa9517a26784338c45dc4a7899a07f83f1f119215",
+  "weights": {
+    "0": {
+      "path": "models_frozen/video_within_view_v1/all_s0/final.pt",
+      "sha256": "9b144925f32fac7d725d13231a132abeb6635fa44b6fe0dbcec7f5b59d035bbc",
+      "b3": {
+        "half_window": 7,
+        "threshold": 0.19660949291632382,
+        "nms_radius": 5,
+        "threshold_quantile": 0.999
+      }
+    },
+    "1": {
+      "path": "models_frozen/video_within_view_v1/all_s1/final.pt",
+      "sha256": "c8b09ecaf286c7b66fc0eec69fdd102f98930aaa657a7604e3204c3845a8e172",
+      "b3": {
+        "half_window": 7,
+        "threshold": 0.19178023769888614,
+        "nms_radius": 5,
+        "threshold_quantile": 0.999
+      }
+    },
+    "2": {
+      "path": "models_frozen/video_within_view_v1/all_s2/final.pt",
+      "sha256": "f95fed7ba78cc0b5e2474c71a156356507b4588a4b324957fd5b53fe66ee8472",
+      "b3": {
+        "half_window": 9,
+        "threshold": 0.25063810737320275,
+        "nms_radius": 5,
+        "threshold_quantile": 0.999
+      }
+    }
+  },
+  "counts": {
+    "ev9v": 800,
+    "dynamic": 1277,
+    "lvh": 343,
+    "camus": 50
+  },
+  "code_sha256": {
+    "scripts/external_original_tests.py": "c127ff446acfaf25186b1482cd1a1acd6bcab073c5a33a741198697bbfa71186",
+    "echo_routing/evaluate/external_native.py": "140b576d3cecb4b17a33a8c9c9111268fa098ba23efdeaf2280d81dda438013b",
+    "echo_routing/vit/target_mvit.py": "6b8199420fd813571820e441c0f16b1c75ae9cb889a656b527d747c182afecf8",
+    "echo_routing/temporal/joint_visual.py": "6aa655fda17b7f24c948183bc7bd20a075fdd01c7966a59922a3ffea47a6f048"
+  },
+  "targets": {
+    "ev9v": "original STFM source, shared five-family native endpoint",
+    "dynamic": "auxiliary A4C source check; NOT LVEF",
+    "lvh": "auxiliary PLAX source check; NOT wall thickness",
+    "camus": "auxiliary 4CH-coded source check; NOT quality/segmentation"
+  }
+}
