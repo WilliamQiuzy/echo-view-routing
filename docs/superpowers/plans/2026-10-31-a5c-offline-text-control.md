@@ -1,0 +1,28 @@
+# Offline text-localization supplement
+
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans. Codex remains the single execution owner; reuse the one read-only plan reviewer.
+
+**Goal:** Address the initial audit's remaining nuisance-coverage gap: chroma (~0.16–0.19% median) and static-bright (~0.01–0.02%) proxies cannot rule out grayscale machine text. This is a diagnostic extension, not anatomical supervision or another training loss/gate.
+
+**Architecture:** Qualify a small official Ubuntu Tesseract tool in an owned nonroot prefix, then freeze label-free text masks for the SAME276 windows/64 cases. Run a sequential frozen-model counterfactual with two fills and toroidal location controls. Reuse all original baseline scores; no new original-model readout, training or case replacement.
+
+**Tech Stack:** Official Tesseract5.3.4-1build5 (`--oem1 --psm11 -l eng tsv`), Pillow/NumPy and the unchanged frozen A08/A44 loaders. Official usage: https://tesseract-ocr.github.io/tessdoc/Command-Line-Usage.html . No cloud OCR or media export.
+
+## Admission and immutable conditions
+
+- Read-only apt-cache identifies tesseract-ocr5.3.4-1build5 SHA2dfac382d77215aee0c3de4a2a2205505d5f2195e72e79b54ad32154fc08da77 (327852bytes); libtesseract5 same version SHAa38438115dc203b5abc1e6a6b24eb5273ba82161a11faa2f619bf5f7622efb14 (1291308); liblept5 1.82.0-3build4 SHAc2bb81d58f032b09917c0d50994cce905287a1596304a4e99681a03601456ea8 (1099276); eng1:4.1.0-2 SHAb1996b3113c78663f4dd16cf18aa1f288b07e9624f8d4a0ddbd7d9b52a234ba7 (1818236).
+- Download only those pinned official packages with apt-get download, verify every full SHA, extract to this run's owned prefix using dpkg-deb; no sudo, global package/source/config changes or dependency installation. Read package copyright and pin actual binary/library/eng.traineddata SHA and version. Bound40MB download/100MB expanded. If existing system dependencies cannot run the extracted binary, record a tool-qualification stop rather than change package family/version.
+- Synthetic known-text positive control must detect `A5C` on a generated public/nonpatient image using fixed settings before any patient-frame OCR. The control checks tool functionality, not real-image OCR recall or anatomy.
+- Exactly all276 frozen original member windows; OCR only their original raw marker image and their actual224 marker input upscaled3x bilinear. Fixed confidence>=60, at least2alphanumeric characters, positive-size word boxes. All words/text/bounding boxes stay server-only. Raw rectangles padded2raw pixels, mapped through original short-side256/centre224 geometry with nearest mask resampling; upscaled-input rectangles map back with floor/ceil and1pixel padding. Union masks are applied at the same positions across all16slots; target marker unchanged. OCR false positives/false negatives remain explicit; a detected word is not anatomical or view ground truth.
+- Record native-detection versus input-surviving counts, mask area and empty masks. No image/outcome-based threshold tuning or hand-selected cases. If ALL input masks are empty, skip GPU supplement as mathematically unchanged; preserve source coverage outcome and do not infer there is no text. Otherwise compute all original rows/models with both per-frame channel-mean and17x17blur replacement and shifts(0,0)/(0,112)/(112,0)/(112,112). Empty row masks may reuse exact cached original outputs; record skipped unchanged forwards explicitly. Toroidal controls retain planar seam/contact confounds.
+- A08,C,N use original opposite-fold finals; per-run scores retain all original multiplicity weights. No baseline repetition, source2, relabeling, new test pixels, external runner, parameter update, threshold selection, deployment or full-F1 claim.
+- Commit tool/input-mask/parent-model/code/source-condition SHA as actual Mac git objects before dependent model forwards. Parent cards/code are immutable. Source-only OCR and inference cache are separate, with independent mask-coordinate/token-filter/empty-input synthetic tests, fixed-subset mask reconstruction and cache/count audit. Native/processed contact sheets with OCR boxes remain server-only and unadjudicated.
+- Every step shares this user-authorized added3hCPU-upper/1hdiagnosticGPU-job/600MB persistent allowance and inherited cumulative ledger. Includes packages/failures/bootstrap/root/reviewer/OCR/probe/audit/closing. Forecast from actual preceding process CPU/GPU charges and remaining unique nonempty rows; reserve.25CPU-upper-hour and60GPU seconds. Hard limits cannot exceed shared remaining allowance; skip entire fixed supplement if forecast cannot fit, never replace/drop cases. No budget reset.
+
+## Tasks
+
+- [ ] Qualify pinned official offline tool/license/version/member hashes and synthetic text control; keep all artifacts in own namespace.
+- [ ] Write failing token-filter and native-to-input mask geometry tests; implement pure mask construction and source-only fixed OCR stage.
+- [ ] Independently reconstruct source-mask geometry on a fixed first/middle/last subset; commit public frozen source-mask/code manifest before any OCR intervention forward.
+- [ ] Execute one sequential owned GPU process only after toroidal probe exits, with measured resources, real PID/device/log progress and baseline-cache hash checks.
+- [ ] Independently recount all weighted effects/counts and input-mask/replacement hashes without model inference. Integrate findings and limits into this diagnostic's final report; no semantic or efficacy overclaim.
