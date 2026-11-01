@@ -100,3 +100,38 @@ def test_source_signal_gate_checks_damage_and_disagreement():
     assert dv.source_signal_gate(a, w, .6, .5)["passed"]
     assert not dv.source_signal_gate({**a, "a4c_fpr": .13}, w, .6, .5)["passed"]
     assert not dv.source_signal_gate(a, {**w, "discordant_accuracy": .81}, .6, .5)["passed"]
+
+
+def test_marker_requests_preserve_short_interval_labels_and_context():
+    meta, ann = source_rows()
+    rec = {**dv.join_annotations(meta, ann)[0], "start": 100, "end": 110}
+    assert dv.interval_requests(rec) == []
+    q = dv.marker_requests(rec, n_frames=200)
+    assert len(q) == 1
+    assert q[0]["centre"] == 101 and q[0]["frames"][8] == 101
+    assert q[0]["true_label"] == "A5C"
+    assert min(q[0]["frames"]) < rec["start"]
+    assert max(q[0]["frames"]) > rec["end"]
+
+
+def test_marker_clipping_and_bounds_never_moves_marker_or_invents_labels():
+    meta, ann = source_rows()
+    rec = {**dv.join_annotations(meta, ann)[0], "start": 0, "end": 10}
+    q = dv.marker_requests(rec, n_frames=10)
+    assert q[0]["frames"][0] == 0 and q[0]["frames"][-1] == 9
+    assert q[0]["frames"][8] == q[0]["centre"] == 1
+    assert q[0]["clipped_slots"] > 0
+    assert dv.marker_requests({**rec, "true_label": "NO_VIEW"}, n_frames=10) == []
+    with pytest.raises(ValueError, match="marker"):
+        dv.marker_requests({**rec, "start": 10, "end": 20}, n_frames=10)
+
+
+def test_marker_request_cap_is_even_and_deterministic():
+    meta, ann = source_rows()
+    rec = {**dv.join_annotations(meta, ann)[0], "start": 0, "end": 2000}
+    q = dv.marker_requests(rec, n_frames=2000)
+    assert len(q) == 8
+    assert q == dv.marker_requests(rec, n_frames=2000)
+    assert q[0]["centre"] == 1
+    assert q[-1]["centre"] < 1999
+    assert len({tuple(r["frames"]) for r in q}) == 8

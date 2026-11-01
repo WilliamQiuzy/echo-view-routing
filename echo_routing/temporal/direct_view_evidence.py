@@ -75,6 +75,28 @@ def interval_requests(rec: dict, max_requests: int = 8) -> list[dict]:
             for c in centres]
 
 
+def marker_requests(rec: dict, n_frames: int | None = None, max_requests: int = 8) -> list[dict]:
+    """Local human marker labels with genuine, potentially mixed native context."""
+    if rec["true_label"] not in SOURCE_VIEWS or rec["directory_label"] not in SOURCE_VIEWS:
+        return []
+    a, b = common_interior(rec["start"], rec["end"])
+    centres = list(range(a, b, 15))
+    if len(centres) > max_requests:
+        centres = [centres[i * (len(centres) - 1) // (max_requests - 1)] for i in range(max_requests)]
+    out = []
+    for c in centres:
+        frames = [c + 3 * (i - 8) for i in range(16)]
+        if n_frames is not None:
+            if not 0 <= c < n_frames:
+                raise ValueError("labelled marker is outside released video")
+            clipped = [max(0, min(n_frames - 1, x)) for x in frames]
+        else:
+            clipped = frames.copy()
+        out.append({**rec, "centre": c, "marker": 8, "frames": clipped,
+                    "raw_frames": frames, "clipped_slots": sum(x != y for x, y in zip(frames, clipped))})
+    return out
+
+
 def _top_mass(counts: Counter, fraction: float) -> set:
     if not counts:
         return set()

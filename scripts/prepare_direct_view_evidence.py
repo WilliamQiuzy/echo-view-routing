@@ -122,6 +122,46 @@ def metadata():
     print(json.dumps(public))
 
 
+def metadata_marker():
+    q1_path = OUT / "source/private_metadata.json"
+    q1 = json.loads(q1_path.read_text())
+    dest = OUT / "source/private_metadata_marker.json"
+    if dest.exists():
+        raise RuntimeError("marker cohort already frozen; no second metadata rescue")
+    split = q1["split"]
+    patients = set(split["fit"]) | set(split["diagnostic"])
+    requests, seen = [], set()
+    for rec in q1["records"]:
+        if rec["patient"] not in patients:
+            continue
+        for r in dv.marker_requests(rec):
+            key = (r["video"], tuple(r["frames"]))
+            if key in seen:
+                continue
+            seen.add(key)
+            r["role"] = "fit" if r["patient"] in split["fit"] else "diagnostic"
+            r["id"] = hashlib.sha256(repr(key).encode()).hexdigest()
+            requests.append(r)
+    counts = counts_for(requests, split)
+    numeric = {k: counts.get(k, 0) >= v for k, v in dv.MINIMUMS.items()}
+    coverage = max(counts.get("fit_directory_requests_" + c, 0) for c in dv.SOURCE_VIEWS) <= 2400
+    private = {**q1, "requests": requests, "counts": counts, "unit": "manual_marker_with_native_context",
+               "q1_private_metadata_sha256": sha(q1_path)}
+    dump(dest, private)
+    public = {
+        "stage": "metadata_marker_only_no_pixels_or_models", "source_revision": REVISION,
+        "q1_private_metadata_sha256": sha(q1_path), "private_metadata_sha256": sha(dest),
+        "source_metadata_sha256": PINS, "patient_split_exactly_Q1": True,
+        "quarantine_exactly_Q1": True, "no_patient_reselection": True,
+        "unit": "manual_marker_with_potentially_mixed_16slot_context",
+        "partition_counts": counts, "numerical_checks": numeric,
+        "coverage_feasible": coverage, "metadata_minima_pass": all(numeric.values()) and coverage,
+        "full_source_qualification_pass": False, "media_downloads": 0, "model_forwards": 0,
+    }
+    dump(PUB / "marker_metadata_manifest.json", public)
+    print(json.dumps(public))
+
+
 def download_archive(view):
     expected, length = ARCHIVES[view]
     dest = OUT / "source" / (view + ".zip")
@@ -154,8 +194,10 @@ def download_archive(view):
 
 def acquire():
     frozen = json.loads((OUT / "metadata_freeze.json").read_text())
-    assert frozen["private_metadata_sha256"] == sha(OUT / "source/private_metadata.json")
-    private = json.loads((OUT / "source/private_metadata.json").read_text())
+    assert frozen["private_metadata_sha256"] == sha(OUT / "source/private_metadata_marker.json")
+    private = json.loads((OUT / "source/private_metadata_marker.json").read_text())
+    minimums = json.loads((PUB / "marker_metadata_manifest.json").read_text())
+    assert minimums["metadata_minima_pass"], "source minima failed; no acquisition"
     required = {(r["directory_label"], r["video"]) for r in private["requests"]}
     media = OUT / "source/videos"
     receipt = {"revision": REVISION, "archives": {}, "files": [], "quarantined_pixels_decoded": 0}
@@ -206,12 +248,12 @@ def acquire():
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("stage", choices=["metadata", "acquire"])
+    parser.add_argument("stage", choices=["metadata", "metadata-marker", "acquire"])
     args = parser.parse_args()
     wall = time.time(); usage = resource.getrusage(resource.RUSAGE_SELF)
     ok = False
     try:
-        {"metadata": metadata, "acquire": acquire}[args.stage]()
+        {"metadata": metadata, "metadata-marker": metadata_marker, "acquire": acquire}[args.stage]()
         ok = True
     finally:
         after = resource.getrusage(resource.RUSAGE_SELF)
