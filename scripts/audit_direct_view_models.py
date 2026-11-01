@@ -7,6 +7,7 @@ os.environ.setdefault("MKL_NUM_THREADS", "1")
 import argparse
 import hashlib
 import json
+import math
 from pathlib import Path
 import resource
 import sys
@@ -51,6 +52,43 @@ def metrics(labels, scores, discordant):
             "AUC": sum(float(scores[i] > scores[j]) + .5 * float(scores[i] == scores[j]) for i in positives for j in negatives) / (len(positives) * len(negatives))}
 
 
+def verify_live_mask(initial, live):
+    exact_frozen = {"m.classifier.weight", "m.classifier.bias"}
+    assert exact_frozen <= set(initial)
+    assert set(live) == set(initial) - exact_frozen
+    return True
+
+
+def verify_optimizer(opt, initial):
+    names = ["encoder_trunk", "marker_stem", "projection", "scalar_head"]
+    expected = [[n for n in initial if n.startswith("m.encoder.") and not n.startswith("m.encoder.head.")],
+                ["m.marker_stem.weight"], ["m.encoder.head.1.weight", "m.encoder.head.1.bias"], ["h.fc.weight", "h.fc.bias"]]
+    assert set(n for group in expected for n in group) == set(initial) - {"m.classifier.weight", "m.classifier.bias"}
+    groups = opt["param_groups"]
+    assert [g["name"] for g in groups] == names
+    all_ids = [i for g in groups for i in g["params"]]
+    assert len(all_ids) == len(set(all_ids)) == sum(len(g) for g in expected)
+    assert set(opt["state"]) == set(all_ids)
+    last_factor = .5 * (1. + math.cos(math.pi * (599 - 60) / (600 - 60)))
+    mapping = {}
+    for group, keys, base in zip(groups, expected, [1e-5, 1e-4, 1e-4, 1e-3]):
+        assert len(group["params"]) == len(keys)
+        assert group["base"] == base and tuple(group["betas"]) == (.9, .999)
+        assert group["eps"] == 1e-8 and group["weight_decay"] == 1e-4
+        assert abs(group["lr"] - base * last_factor) < 1e-18
+        for param_id, key in zip(group["params"], keys):
+            state = opt["state"][param_id]
+            assert int(state["step"]) == 600
+            for moment in ("exp_avg", "exp_avg_sq"):
+                assert state[moment].shape == initial[key].shape
+                assert state[moment].dtype == initial[key].dtype == torch.float32
+                assert torch.isfinite(state[moment]).all()
+            assert (state["exp_avg_sq"] >= 0).all()
+            mapping[param_id] = key
+    return {"verified": True, "unique_parameter_IDs": len(all_ids), "assigned_moment_states": len(mapping),
+            "complete_group_membership_shapes_hyperparameters_and_last_LR": True}
+
+
 def source_models():
     started = time.time()
     manifest = json.loads((PUB / "source_models_manifest.json").read_text())
@@ -85,10 +123,13 @@ def source_models():
                               ("updates.private.jsonl", "journal_sha256"), ("fit_init.npy", "fit_init_sha256"), ("fit_final.npy", "fit_final_sha256")]:
             assert sha(rd / filename) == entry[key]
         bundle = torch.load(rd / "final.pt", map_location="cpu", weights_only=True)
+        verify_live_mask(initial, bundle["live"])
         optimizer = torch.load(rd / "optimizer_final.pt", map_location="cpu", weights_only=False)
         assert optimizer["update"] == 600 and optimizer["identity"] == entry["identity"]
         assert "cpu_rng" in optimizer and "cuda_rng" in optimizer and len(optimizer["cuda_rng"]) == 1
         assert optimizer["cpu_rng"].dtype == torch.uint8
+        cpu_generator = torch.Generator(device="cpu"); cpu_generator.set_state(optimizer["cpu_rng"])
+        assert all(r.dtype == torch.uint8 and r.ndim == 1 and r.numel() > 0 for r in optimizer["cuda_rng"])
         all_final = {**{"m." + n: t for n, t in optimizer["model"].items()}, **{"h." + n: t for n, t in optimizer["head"].items()}}
         reconstructed = {**initial, **bundle["live"]}
         assert set(initial) == set(reconstructed) == set(all_final)
@@ -96,12 +137,13 @@ def source_models():
         frozen = {n: t for n, t in initial.items() if n not in bundle["live"]}
         assert tensor_hash(frozen) == bundle["frozen_state_sha256"] == entry["frozen_state_sha256"]
         assert all(torch.equal(all_final[n], t) for n, t in frozen.items())
-        assert all(n.startswith("m.classifier.") for n in frozen), "unexpected source-frozen body tensors"
+        assert set(frozen) == {"m.classifier.weight", "m.classifier.bias"}, "unexpected source-frozen body tensors"
         assert initial_digest == entry["initial_full_state_sha256"]
         groups = optimizer["opt"]["param_groups"]
         assert [g["name"] for g in groups] == ["encoder_trunk", "marker_stem", "projection", "scalar_head"]
         assert [g["base"] for g in groups] == [1e-5, 1e-4, 1e-4, 1e-3]
         assert all(g["weight_decay"] == 1e-4 for g in groups)
+        optimizer_verified = verify_optimizer(optimizer["opt"], initial)
         opt_states = optimizer["opt"]["state"]
         assert len(opt_states) == entry["optimizer_state_tensors"]
         assert set(int(s["step"]) for s in opt_states.values()) == {600}
@@ -123,7 +165,11 @@ def source_models():
         assert all(v > 0 for v in drift_groups.values())
         assert all(journal[0]["groups"][k] == 0 for k in ("encoder_trunk", "marker_stem", "projection"))
         assert all(any(r["groups"][k] > 0 for r in journal[1:]) for k in drift_groups)
-        results[arm] = {"updates": 600, "optimizer_counter": 600, "full_optimizer_RNG_verified": True,
+        results[arm] = {"updates": 600, "optimizer_counter": 600, "optimizer_verified": optimizer_verified,
+                        "saved_rng_structure_and_digest_verified": True,
+                        "saved_CPU_rng_sha256": hashlib.sha256(optimizer["cpu_rng"].numpy().tobytes()).hexdigest(),
+                        "saved_CUDA_rng_sha256": [hashlib.sha256(r.numpy().tobytes()).hexdigest() for r in optimizer["cuda_rng"]],
+                        "RNG_scope": "Retained tensors/hash structure and CPU state acceptance; GPU restoration behavior independently checked by fit-only3+3production check, not rerun in this CPU audit.",
                         "complete_state_verified": True, "frozen_old_5class_head_verified": True,
                         "true_training_forwards": 4800, "true_training_backwards": 4800,
                         "parameter_drift_L2_by_group": {k: v ** .5 for k, v in drift_groups.items()}}
@@ -144,6 +190,10 @@ def source_final():
     raw = np.load(OUT / "source_scores.private.npz")
     report = json.loads((PUB / "source_readout.json").read_text())
     data = json.loads((OUT / "bound.private.json").read_text())
+    freeze = json.loads((OUT / "source_models_freeze.json").read_text())
+    assert report["source_model_freeze"] == freeze
+    assert freeze["manifest_sha256"] == sha(PUB / "source_models_manifest.json")
+    assert report["raw_score_cache_sha256"] == sha(OUT / "source_scores.private.npz")
     rows = [r for r in data["requests"] if r["role"] == "diagnostic"]
     y = np.asarray([r["true_label"] == "A5C" for r in rows])
     discord = np.asarray([r["true_label"] != r["directory_label"] for r in rows])
@@ -186,7 +236,9 @@ def source_final():
     rec = {"passed": True, "cache_only_no_new_model_forwards": True, "source_diagnostic_requests": 133,
            "source_metrics": independent, "source_advancement_gate": {"passed": all(checks.values()), "checks": checks},
            "raw_cache_sha256": sha(OUT / "source_scores.private.npz"), "model_manifest_sha256": sha(PUB / "source_models_manifest.json"),
-           "source_model_manifest_actual_git_freeze": report["source_model_freeze"],
+           "source_model_manifest_freeze_receipt": freeze,
+           "freeze_receipt_current_manifest_identity_verified": True,
+           "actual_mac_git_blob_verification_scope": "Performed by owner before readout; server audit independently checks the matching sealed receipt and manifest/cache identities, server has no project .git.",
            "scope": "Verified-subset source heldout view signal only; no target A5C recovery, complete-F1 or anatomical claim.",
            "wall_seconds": time.time() - started,
            "process_CPU_seconds": resource.getrusage(resource.RUSAGE_SELF).ru_utime + resource.getrusage(resource.RUSAGE_SELF).ru_stime}
