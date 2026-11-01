@@ -1,0 +1,56 @@
+{
+  "scope": "Prospective whole-six-model qualification, not charged future compute or a learning result.",
+  "eligible": false,
+  "formal_models": 0,
+  "formal_training_updates": 0,
+  "opposite_fold_readout_forwards": 0,
+  "fit_only_real_updates": 18,
+  "GPU_job_wall_spent_new_seconds": 1221.8500347137451,
+  "GPU_new_limit_seconds": 3600,
+  "GPU_remaining_seconds": 2378.149965286255,
+  "counts": {
+    "training_occurrences": 90918,
+    "physical_training_forwards": 181836,
+    "physical_training_backwards": 90918,
+    "full_fit_Init_and600_rows": 62802,
+    "once_opposite_fold_rows": 31401
+  },
+  "measured_seconds_per_occurrence_upper": 0.019880385625930058,
+  "measured_inference_seconds_per_row": 0.008173525333404541,
+  "forecast_components_seconds": {
+    "training": 1807.484900338309,
+    "full_fit_and_once_readout": 769.970606982708,
+    "decode": 52.11938667297363,
+    "bootstrap_proxy": 52.00894904136658,
+    "24_compact_resume_writes": 4.102060317993164,
+    "safety_multiplier": 1.2,
+    "GPU_verification_reserve": 360
+  },
+  "projected_complete_GPU_seconds": 3582.82308402402,
+  "projected_complete_GPU_minutes": 59.713718067067,
+  "bootstrap_proxy_scope": "Three measured whole-check overheads (imports/source/decode), conservatively reused for target train/readout/audit stage setup; not telemetry for a future process.",
+  "CPU_spent_snapshot": {
+    "root_active_upper_hours": 1.6101124269432492,
+    "reviewer_active_upper_hours": 0.06,
+    "all_charged_child_CPU_seconds": 1408.6393620069996,
+    "new_total_upper_hours": 2.0614011386118603
+  },
+  "CPU_new_limit_hours": 3,
+  "projected_additional_CPU_upper_hours": 1.2949776968697282,
+  "projection_CPU_closing_reserve_hours": 0.25,
+  "projection_owner_reserve_hours": 0.15,
+  "storage_projection": {
+    "six_selected_tensor_bundles_bytes": 438902808,
+    "one_active_resume_model_and_Adam_bytes": 219451404,
+    "diagnostic_and_tools_conservative_bytes": 60000000,
+    "projected_new_retained_bytes": 498902808,
+    "projected_cumulative_peak_bytes": 2937071151,
+    "storage_eligible": true
+  },
+  "reasons": [
+    "Complete measured matched six-model schedule plus full-fit/readout and verification exceeds remaining NEW GPU-job-wall allowance.",
+    "Complete process CPU plus explicit independent closing and owner reserve also exceeds remaining NEW CPU-upper allowance."
+  ],
+  "stopping_rule": "Stop entire PW-T1 before formal training; retain G/S/L,600steps,all memberships,FP32 and controls. No partial arm, shortened run, cached-head fallback or new variant.",
+  "scientific_quantity_gate_changed": false
+}
