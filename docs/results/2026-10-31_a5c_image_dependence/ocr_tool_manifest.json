@@ -1,0 +1,49 @@
+{
+  "packages": {
+    "tesseract-ocr": {
+      "version": "5.3.4-1build5",
+      "deb_sha256": "2dfac382d77215aee0c3de4a2a2205505d5f2195e72e79b54ad32154fc08da77",
+      "download_bytes": 327852,
+      "copyright_sha256": "2442a6ad56b34fc1e0ec4b13509e22d4e428c856e488b2a709456ce4e9f0ab4e",
+      "source": "official configured Ubuntu archive; apt metadata and full artifact SHA pinned"
+    },
+    "libtesseract5": {
+      "version": "5.3.4-1build5",
+      "deb_sha256": "a38438115dc203b5abc1e6a6b24eb5273ba82161a11faa2f619bf5f7622efb14",
+      "download_bytes": 1291308,
+      "copyright_sha256": "2442a6ad56b34fc1e0ec4b13509e22d4e428c856e488b2a709456ce4e9f0ab4e",
+      "source": "official configured Ubuntu archive; apt metadata and full artifact SHA pinned"
+    },
+    "liblept5": {
+      "version": "1.82.0-3build4",
+      "deb_sha256": "c2bb81d58f032b09917c0d50994cce905287a1596304a4e99681a03601456ea8",
+      "download_bytes": 1099276,
+      "copyright_sha256": "cff4f0cb5db14528a8b84f4a3389012d5c6e0f5a75a882509367b2147c05a83e",
+      "source": "official configured Ubuntu archive; apt metadata and full artifact SHA pinned"
+    },
+    "tesseract-ocr-eng": {
+      "version": "1:4.1.0-2",
+      "deb_sha256": "b1996b3113c78663f4dd16cf18aa1f288b07e9624f8d4a0ddbd7d9b52a234ba7",
+      "download_bytes": 1818236,
+      "copyright_sha256": "33fb8161898e34fcf5c6b8585d6be97642d7e8f34a922e783c6c5c970d0b09ad",
+      "source": "official configured Ubuntu archive; apt metadata and full artifact SHA pinned"
+    }
+  },
+  "members": {
+    "ocr_tool/usr/bin/tesseract": "9f831cab7525c3dab04af41bda35182af7ea1df9dceeaaa2f3bf207ac45c06a5",
+    "ocr_tool/usr/share/tesseract-ocr/5/tessdata/eng.traineddata": "7d4322bd2a7749724879683fc3912cb542f19906c83bcc1a52132556427170b2",
+    "ocr_tool/usr/lib/x86_64-linux-gnu/libtesseract.so.5.0.3": "0d3b71cd757860c6639918c1b2d9407c8652ee22babc8d5c5f18cc35dde6334b",
+    "ocr_tool/usr/lib/x86_64-linux-gnu/liblept.so.5.0.4": "b31a50179665871ddb6bdbcfeefc8673febaa29a006e78136024d4083b6ee5e5"
+  },
+  "version": "tesseract 5.3.4",
+  "binary_relative_to_run": "ocr_tool/usr/bin/tesseract",
+  "language_relative_to_run": "ocr_tool/usr/share/tesseract-ocr/5/tessdata/eng.traineddata",
+  "synthetic_fixed_control_pass": true,
+  "private_or_patient_images_read": 0,
+  "GPU_forwards": 0,
+  "source_docs": "https://tesseract-ocr.github.io/tessdoc/Command-Line-Usage.html",
+  "copyright_scope": "Exact packaged copyright notices retained in owned prefix; includes upstream and distribution terms.",
+  "wall_seconds": 4.562978029251099,
+  "process_CPU_seconds": 3.008027927,
+  "namespace_added_bytes": 21531403
+}

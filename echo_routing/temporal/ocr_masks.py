@@ -12,7 +12,7 @@ def boxes_from_tsv(text):
         try:
             confidence = float(row["conf"])
             token = row.get("text", "").strip()
-            if confidence < 60 or sum(c.isalnum() for c in token) < 2:
+            if not math.isfinite(confidence) or confidence < 60 or sum(c.isalnum() for c in token) < 2:
                 continue
             box = {k: int(row[k]) for k in ("left", "top", "width", "height")}
             if box["width"] <= 0 or box["height"] <= 0:

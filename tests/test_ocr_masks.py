@@ -16,6 +16,7 @@ def test_tsv_filter_is_fixed_and_does_not_promote_single_symbols():
     s = 'level\tleft\ttop\twidth\theight\tconf\ttext\n5\t10\t20\t30\t12\t91\tA5C\n5\t1\t2\t10\t10\t99\t+\n5\t1\t2\t10\t10\t99\tA\n5\t1\t2\t10\t10\t59\t72BPM\n'
     b = m.boxes_from_tsv(s)
     assert len(b) == 1 and b[0]['text'] == 'A5C'
+    assert not m.boxes_from_tsv('left\ttop\twidth\theight\tconf\ttext\n1\t2\t3\t4\tnan\tA5C\n')
 
 
 def test_native_boxes_map_through_the_actual_original_crop():
