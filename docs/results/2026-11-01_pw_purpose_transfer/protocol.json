@@ -1,0 +1,70 @@
+{
+  "question": "Does correct-purpose upstream image representation L improve actual A5C/A4C repair beyond both same-image shuffled-purpose S and original COCO G?",
+  "comparison": "Execution continuation of previously untrained PW-T1, not another loss or threshold variant.",
+  "source_task": "19fit paired exams,6source-heldout paired exams; acquisition-purpose labels, not expert anatomy/A5C truth. A50-PW formal quantity gate remains failed.",
+  "arms": [
+    "G",
+    "S",
+    "L"
+  ],
+  "target_data": "A31 source0 historical training-source session folds; no new independent test or verified-patient claim.",
+  "eligible_runs": [
+    749,
+    771
+  ],
+  "fit_positive_runs": [
+    34,
+    69
+  ],
+  "fit_protected_negative_runs": [
+    714,
+    699
+  ],
+  "excluded_other_from_fit_but_retained_in_readout": [
+    1,
+    3
+  ],
+  "opposite_fold_unique_marker_rows": [
+    5030,
+    5437
+  ],
+  "representation": "PW-P1 ResNet50FPN global means of4maps0..3,1024features; fresh1025parameter scalar head,weight0/bias-2. Train layer4/allFPN/head,28parameter tensors; earlybody/FrozenBN frozen.",
+  "input": "Originalrequest marker gamma RGB short256/centre224, /255 and ImageNet normalization; all original member/multiplicity weights.",
+  "target_plan": "Original A44-C600updates,onepositive+3protectednegatives,weightedrunmean,class-balanced BCE; two genuine full forwards/onebackward per occurrence including zero coefficients.",
+  "optimizer": {
+    "AdamW_betas": [
+      0.9,
+      0.999
+    ],
+    "eps": 1e-08,
+    "weight_decay": 0.0001,
+    "backbone_lr": 1e-05,
+    "head_lr": 0.001,
+    "warmup": 60,
+    "updates": 600,
+    "clip_norm": 1,
+    "precision": "FP32",
+    "TF32": false,
+    "one_CPU_thread": true
+  },
+  "fixed_order": [
+    "G_f0",
+    "S_f0",
+    "L_f0",
+    "G_f1",
+    "S_f1",
+    "L_f1"
+  ],
+  "decision": "Exactly original PW-T1 absolute package and L-versus-both-controls increment gates; all six actual manifests Git beforefreeze and once-only heldout raw cells, then cache-only full evaluator and independentaudit.",
+  "source2": false,
+  "deployment_or_new_variant_after_readout": false,
+  "source_files_sha256": {
+    "L": "687ca2adae20eccc08b304c987985d209295f9b73b3e4e24de8eb65f93395762",
+    "S": "dd08954ed78c99936486abbbea3a320f09d447e613eedd3aa567d69e912192e2",
+    "G": "4ae0006ff349897f5b73d9c20da9ff33919f2d23db2cc1b7a5e00e9c08b1d42a"
+  },
+  "plan_sha256": {
+    "0": "3b3be337e7d22a1f1a96196cfc4460b4425ae367f407f6a16a01e5b2cc5c3efc",
+    "1": "2a1dd83d9e8b5f2025ccb6e4bd90587bae15ee9b42bb27fe7f6c71ab6ed463a8"
+  }
+}
