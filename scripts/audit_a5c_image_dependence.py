@@ -124,6 +124,11 @@ def audit_geometry(c, baseline, cases):
     from PIL import Image, ImageFilter
     import scripts.train_risk_constrained_a5c as a
     complete = json.loads((OUT / "geometry_complete.json").read_text())
+    manifest = json.loads((OUT / "geometry_manifest.json").read_text())
+    freeze = json.loads((OUT / "geometry_freeze.json").read_text())
+    assert digest(OUT / "geometry_manifest.json") == freeze["manifest_sha256"]
+    assert digest(OUT / "input_freeze.json") == manifest["parent_input_manifest_sha256"]
+    assert digest(ROOT / "scripts/probe_a5c_mask_geometry.py") == manifest["probe_code_sha256"]
     assert digest(OUT / "geometry_scores.npz") == complete["scores_sha256"]
     assert digest(OUT / "geometry_input_hashes.json") == complete["input_hashes_sha256"]
     assert digest(OUT / "geometry_mask_metadata.json") == complete["mask_metadata_sha256"]
@@ -199,7 +204,7 @@ def main():
     assert complete["scores_sha256"] == digest(OUT / "scores.npz")
     assert manifest["selection_sha256"] == digest(OUT / "selection.json")
     assert complete["forward_windows"] == complete["expected_windows"]
-    for p, h in manifest["pinned_files"].items():
+    for p, h in {**manifest["pinned_files"], **manifest["executed_project_code"]}.items():
         assert digest(ROOT / p) == h
     cfg = "configs/experiments/video_risk_constrained_a5c_v1.yaml"
     c = a.Ctx(a.load_cfg(SimpleNamespace(config=cfg, set=[])), cfg)
