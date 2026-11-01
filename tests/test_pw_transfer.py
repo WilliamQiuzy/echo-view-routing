@@ -49,3 +49,22 @@ def test_bundle_contains_all_mutable_tensors_and_complete_state_identity():
     with pytest.raises(ValueError):m.restore_bundle(Toy(),bundle,'wrong-sha')
     corrupt=Toy();corrupt.load_state_dict(restored.state_dict());corrupt.frozen_reference.add_(1)
     with pytest.raises(ValueError):m.restore_bundle(corrupt,bundle,'base-sha')
+def test_production_step_runs_original_schedule_on_cpu_fixture(monkeypatch):
+    import numpy as np
+    import torch
+    from types import SimpleNamespace
+    from scripts.train_pw_purpose_transfer import step
+    class Toy(torch.nn.Module):
+        def __init__(self):
+            super().__init__();self.head=torch.nn.Linear(3,1)
+            with torch.no_grad():self.head.weight.zero_();self.head.bias.fill_(-2)
+        def forward(self,x):return self.head(x.mean((2,3))).flatten()
+    m=Toy();opt=torch.optim.AdamW([{'params':m.parameters(),'lr':1e-3,'base_lr':1e-3}])
+    F=SimpleNamespace(pl=np.arange(4)[None],occ=lambda u:(np.arange(4),np.ones(4,np.float32),np.arange(4)))
+    frames=np.arange(4*8*8*3,dtype=np.uint8).reshape(4,8,8,3)
+    monkeypatch.setattr(torch.cuda,'synchronize',lambda:None)
+    r=step(m,opt,F,frames,0,torch.device('cpu'))
+    assert r['step']==1 and r['physical_forwards']==8 and r['physical_backwards']==4
+    assert opt.param_groups[0]['lr']==1e-3/60
+    assert int(opt.state[m.head.weight]['step'])==1 and r['gradient_nonzero']['head.weight']
+

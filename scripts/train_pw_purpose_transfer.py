@@ -92,7 +92,7 @@ def opt_for(m):
 
 
 def step(m,opt,F,frames,u,device):
-    for group in opt.param_groups:group['lr']=group['base_lr']*lr_factor(u,{'updates':600,'warmup':60})
+    for group in opt.param_groups:group['lr']=group['base_lr']*lr_factor(u,60,600)
     opt.zero_grad(set_to_none=True);rows,v,seg=F.occ(u)
     wall,cpu=time.time(),time.process_time()
     r=pwt.two_pass(m,frames,rows,torch.from_numpy(v).float().to(device),torch.from_numpy(seg).to(device),device)
