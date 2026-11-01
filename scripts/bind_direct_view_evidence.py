@@ -61,10 +61,12 @@ def main():
             if last is None:
                 raise ValueError("empty released video")
             selected[n - 1] = np.asarray(Image.fromarray(last.to_ndarray(format="rgb24")).resize((224, 224), Image.Resampling.BILINEAR)).copy()
-        if header_n and header_n != n:
-            raise ValueError("released header/decoded count differs")
+        # AVI advertised count is not a decoded ordinal inventory. Preserve the
+        # discrepancy; the protocol's N is the actual decoded count below.
         if all_pts and (len(all_pts) != n or any(b <= a for a, b in zip(all_pts, all_pts[1:]))):
             raise ValueError("released ordinal/PTS chronology is not monotone")
+        if all_pts and (abs(all_pts[0]) > 1e-6 or max(abs((b - a) - 1. / 30.) for a, b in zip(all_pts, all_pts[1:])) > 1e-6):
+            raise ValueError("released ordinal axis has an unexplained PTS offset or gap")
         intervals = [(r["start"], r["end"]) for r in records if r["directory_label"] == folder and r["video"] == video]
         dv.validate_video_axis(fps, n, intervals)
         bound_requests = []
@@ -95,7 +97,8 @@ def main():
         if cache.exists():
             raise RuntimeError("partial binding cache retained; explicit recovery required")
         np.savez_compressed(cache, ordinals=np.asarray(need, np.int64), frames=frames)
-        entry = {**media, "decoded_frames": n, "fps": fps, "width": width, "height": height,
+        entry = {**media, "decoded_frames": n, "header_frames": header_n, "header_minus_decoded": header_n - n,
+                 "fps": fps, "width": width, "height": height,
                  "cache": str(cache.relative_to(ROOT)), "cache_sha256": sha(cache),
                  "cached_frames": len(need), "selected_pixel_sha256": hashlib.sha256(frames.tobytes()).hexdigest()}
         receipt["videos"].append(entry)
@@ -131,6 +134,7 @@ def main():
            "unique_selected_frames": sum(v["cached_frames"] for v in receipt["videos"]),
            "resolutions": sorted({(v["width"], v["height"]) for v in receipt["videos"]}),
            "fps_values": sorted({v["fps"] for v in receipt["videos"]}),
+           "AVI_header_count_disagreements": sum(v["header_frames"] != v["decoded_frames"] for v in receipt["videos"]),
            "partition_counts": counts, "context_same_view_requests": sum(r["all_context_same_label"] for r in receipt["requests"]),
            "mixed_or_unknown_context_requests": sum(not r["all_context_same_label"] for r in receipt["requests"]),
            "clipped_context_slots": sum(r["clipped_slots"] for r in receipt["requests"]),
@@ -145,4 +149,13 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    started = time.time()
+    ok = False
+    try:
+        main()
+        ok = True
+    finally:
+        usage = resource.getrusage(resource.RUSAGE_SELF)
+        dump(OUT / "binding_process.json", {"ok": ok, "pid": os.getpid(), "start_epoch": started,
+             "end_epoch": time.time(), "wall_seconds": time.time() - started,
+             "CPU_seconds": usage.ru_utime + usage.ru_stime, "GPU_job_wall_seconds": 0})

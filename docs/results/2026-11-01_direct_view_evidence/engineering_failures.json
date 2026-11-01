@@ -1,0 +1,15 @@
+{
+  "failures": [
+    {
+      "stage": "first CPU pixel-binding attempt",
+      "optimizer_updates": 0,
+      "model_forwards": 0,
+      "written_pixel_caches": 0,
+      "reason": "An implementation asserted AVI advertised frames equal decoded frames. First AVI header184, decoded182, annotation end183.",
+      "repair": "Use actual decoded ordinal inventory as original contract requires; retain header discrepancy and check zero-start uninterrupted30fps PTS. No offset/resampling, member replacement, label edit or threshold change.",
+      "first_failure_CPU_seconds_upper": 180,
+      "followup_CPU_seconds_upper": 5,
+      "scope": "Conservative past-only process upper because first fatal attempt lacked its final usage receipt; corrected finally records subsequent attempts."
+    }
+  ]
+}

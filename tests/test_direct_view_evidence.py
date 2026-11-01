@@ -139,6 +139,7 @@ def test_marker_request_cap_is_even_and_deterministic():
 
 def test_video_axis_uses_decoded_inventory_and_rejects_guessed_resampling():
     assert dv.validate_video_axis(30., 200, [(0, 200)])
+    assert dv.validate_video_axis(30., 182, [(0, 183)])
     with pytest.raises(ValueError, match="fps"):
         dv.validate_video_axis(26., 200, [(0, 200)])
     with pytest.raises(ValueError, match="inventory"):
