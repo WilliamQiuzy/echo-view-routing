@@ -1,0 +1,67 @@
+{
+  "parent_input_manifest_sha256": "4b50f5feaadaa420cc5a2ab9a9730eaf495685bbeddf127ecee02c28cc5e9f06",
+  "tool_manifest_sha256": "19ddea3e0c061a3fbcadc1512842af214dc2639f519fd242505d12c29fea2f40",
+  "baseline_scores_sha256": "f8172f4d2bc48a8e41109b3e9541e98561668ba26d424814b6296605abdb41ed",
+  "source_freeze": {
+    "commit": "11d26f28d24994b12f7c088bd64aad12a6a1feb3",
+    "actual_git_objects_verified": true,
+    "driver_code_sha256": "5de665ddaa35c1d5c4acd5cdc31c23ca2bcdb63a23caaac30a02df6e7cdf7142",
+    "mask_code_sha256": "a75067573816e1af7a99d2f27aaa1892cf33c3e47d01e2393ad9dc6c6b190991",
+    "tool_manifest_sha256": "19ddea3e0c061a3fbcadc1512842af214dc2639f519fd242505d12c29fea2f40",
+    "parent_input_manifest_sha256": "4b50f5feaadaa420cc5a2ab9a9730eaf495685bbeddf127ecee02c28cc5e9f06",
+    "baseline_scores_sha256": "f8172f4d2bc48a8e41109b3e9541e98561668ba26d424814b6296605abdb41ed",
+    "freeze_epoch": 1793493850.4214652,
+    "resource_preflight": {
+      "past_owner_active_upper_hours": 0.873118268052737,
+      "past_model_process_CPU_seconds": 1112.4257109999999,
+      "OCR_source_CPU_limit_seconds": 600,
+      "OCR_source_wall_limit_seconds": 900,
+      "forecast_CPU_seconds": 349.79999999999995,
+      "closing_CPU_upper_reserve_hours": 0.25,
+      "same_added_3h_allowance": true
+    },
+    "read_only_review": "APPROVED; OCR-proposed regions only, not anatomical truth"
+  },
+  "masks_sha256": "ddb507f1bd62055e2c40355ca378cf43f2e6fbcd0b0eb0de0f6fdc60b556b5db",
+  "boxes_sha256": "e89fcabbc88a9c194f204df7ac25d6103bcb01e721df0160f27bbce84af81160",
+  "coverage": {
+    "0": {
+      "rows": 149,
+      "raw_accepted_words": 6,
+      "processed_accepted_words": 12,
+      "raw_detected_rows": 6,
+      "raw_masks_surviving_original_crop": 6,
+      "processed_detected_rows": 12,
+      "nonempty_input_masks": 18,
+      "exact_view_code_word_candidates": 0,
+      "input_area_fraction_mean": 0.010851601022120256,
+      "input_area_fraction_median": 0.0,
+      "input_area_fraction_max": 0.35586734693877553
+    },
+    "1": {
+      "rows": 127,
+      "raw_accepted_words": 9,
+      "processed_accepted_words": 10,
+      "raw_detected_rows": 8,
+      "raw_masks_surviving_original_crop": 7,
+      "processed_detected_rows": 10,
+      "nonempty_input_masks": 17,
+      "exact_view_code_word_candidates": 0,
+      "input_area_fraction_mean": 0.025360494837698862,
+      "input_area_fraction_median": 0.0,
+      "input_area_fraction_max": 0.7455357142857143
+    }
+  },
+  "OCR_calls": 550,
+  "logical_marker_views": 552,
+  "confidence_min": 60,
+  "alphanumeric_min": 2,
+  "processed_upscale": 3,
+  "raw_padding": 2,
+  "processed_padding": 1,
+  "model_forwards": 0,
+  "training_updates": 0,
+  "wall_seconds": 94.42300319671631,
+  "process_CPU_seconds": 94.420811198,
+  "limits": "OCR-proposed regions may include nontext. Marker-frame positions are reused in other time slots. No anatomical or view ground truth."
+}
