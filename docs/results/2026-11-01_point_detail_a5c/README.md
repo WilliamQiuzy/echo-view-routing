@@ -1,0 +1,13 @@
+# A52 direct point-frame detail representation
+
+Pending execution outcome. A08+B3 remains the working reference; no superior model has been established by A52 preparation or fit checks.
+
+This round trains every convolution/FPN parameter on the same qualified EchoUNAL marked-frame labels as A51, while removing unlabelled16-frame context from the supervised input. H sees the full-field448image; R sees the same canvas reduced224and enlarged448. Both use identical ResNet50FPN/1025-parameter scalar head, true-class-balanced569image600×8plan, initial COCO state and BCE/optimizer/compute. No crop detector, loss change or threshold optimization.
+
+A36 tested frozen A08video features with residual heads, A48 tested adapted valve-box source state/layer4, and PW-T1-C used weak19-pair purpose supervision. This is a distinct direct point-supervision/all-body representation hypothesis, not a rerun or a claim that an LVOT anatomical feature has been learned. H−R isolates the detail recipe; a common gain versus A08 would be a package gain. Conditional target H−R changes detail in source learning, target learning and inference, not source pretraining alone.
+
+Exact fixed source702points,569fit/133diagnostic,36/10patients, raw/H/R each702unique; zero cross-patient/partition duplicates/conflicting labels. All68selectedAVI SHA/full nativePTS and all702raw→H/R/slot8point bindings independently recomputed. Original707qualification failed5FITmarkers and is not reopened. Source133diagnostic images were already used by A51, so this is exploratory repeated-source evaluation. No anatomy truth, original-publisher-test replication or new clinical holdout claim.
+
+Current fit-only checks passed independent BCE/bias gradients, nonzero-head full/microCNNgradient error2.98e−8, every71trainable tensor finite/nonzero gradients, zero-head startup, all7groups later nonzero, frozen BNbuffers, repeat/forced-identicalinput/disk3+3resume exact. Complete source code/input/checks actual Git81946aa precedes prelaunchfreeze. Original A08 remains unchanged. The prepare-path hashing failure retained allfixedinputs/no model, charged83.91CPU seconds; manifest seal repaired metadata bookkeeping with independent unchanged-input verification.
+
+Source absolute A4C protection/BA/AUC/geometry criteria and separate H−Rdetail criterion fixed before A52 outcomes. Only an absolute pass permits bothtargetarms on unchanged A44-C600plans, if complete remaining shared resources fit. Otherwise no target103/1413orfullF1readout and no rescue variant. See card `docs/superpowers/plans/2026-11-01-point-detail-supervision.md`, input/checks/independent_binding/prelaunch_projection/review/freeze JSON.
