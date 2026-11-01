@@ -87,12 +87,13 @@ def main():
                 assert hashlib.sha256(x.tobytes()).hexdigest() == original_meta[int(row)]["pixel_sha256"]
                 masks = op.proxy_masks(x); marker = int(F.W["marker"][row])
                 row_hashes = {}
+                replacements = {fill: op.replacement(x, fill) for fill in ("mean", "blur")}
                 for ni, (name, mask) in enumerate(masks.items()):
                     positions = translated_masks(mask)
                     if mi == 0:
                         mask_meta[str(h)].setdefault(str(int(row)), {})[name] = [mask_properties(q, mask) for q in positions]
                     for fi, fill in enumerate(("mean", "blur")):
-                        rep = op.replacement(x, fill)
+                        rep = replacements[fill]
                         vv = [op.mask_window(x, q, prepared=rep) for q in positions]
                         scores[j, ni, fi] = d.predict(m, head, vv, marker, order, device)
                         if mi == 0 and int(row) in audit_rows:
