@@ -67,9 +67,10 @@ def models():
         ck=torch.load(p,map_location='cpu',weights_only=True);assert ck['steps']==600
         state=ck['model'];state['head.weight']=torch.zeros_like(state['head.weight']);state['head.bias']=torch.full_like(state['head.bias'],-2)
         assert all(torch.equal(state[n],v) for n,v in fullG.items() if n not in live);sources[arm]=state
-    c=run.d.ctx();report={};total_occ=0;fresh=0;max_error=0.
+    c=run.d.ctx();report={};total_occ=0;fresh=0;max_error=0.;source_recordings=[];source_sessions=[]
     for f in (0,1):
         F=t.Fold(c,0,f);pl=exact_plan(F.pk,f);assert np.array_equal(pl,F.pl)
+        recordings={str(v) for q in F.seqs for v,_,_ in q['refs']};source_recordings.append(recordings);source_sessions.append({t.session_of(v) for v in recordings})
         assert hashlib.sha256(pl.tobytes()).hexdigest()==im['folds'][str(f)]['plan_sha256'];checked=membership(F)
         fitrows=F.need[[0,len(F.need)//2,-1]];frames={}
         for row in fitrows:
@@ -117,9 +118,10 @@ def models():
             report[key]={'updates':600,'all28selected_tensors_changed':True,'all_frozen_tensors_exact_G':True,'complete_model_reconstruction_and_source_SHA_pass':True,'optimizer_steps_all600':True,
                 'occurrences':occurrence_total,'true_forwards':2*occurrence_total,'true_backwards':occurrence_total,'all_gradients_seen':True,'all_eligible_memberships_independently_checked':checked,'final_fit_recomputed':True}
     assert total_occ==90918 and not list((OUT/'train').rglob('resume.pt'))
+    assert source_recordings[0].isdisjoint(source_recordings[1]) and source_sessions[0].isdisjoint(source_sessions[1])
     assert ref.sha(ROOT/'models_frozen/video_within_view_v1/all_s0/final.pt')==im['base_A08_sha256']
     result={'independent_model_audit_pass':True,'models':report,'total_updates':3600,'total_occurrences':total_occ,'total_training_forwards':2*total_occ,'total_training_backwards':total_occ,
-        'fit_only_reconstruction_forwards':fresh,'fit_reconstruction_max_abs_error':max_error,'new_heldout_forwards':0,'A08_unchanged':True,'wall_seconds':time.time()-start,'process_CPU_seconds':time.process_time()-cpu}
+        'fit_only_reconstruction_forwards':fresh,'fit_reconstruction_max_abs_error':max_error,'new_heldout_forwards':0,'source_recording_and_session_folds_disjoint':True,'verified_patient_split_claim':False,'A08_unchanged':True,'wall_seconds':time.time()-start,'process_CPU_seconds':time.process_time()-cpu}
     run.d.dump(OUT/'independent_models.json',result);run.d.dump(PUB/'independent_models.json',result);print(json.dumps({k:v for k,v in result.items() if k!='models'}),flush=True)
 
 
