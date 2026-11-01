@@ -68,6 +68,7 @@ def verify_optimizer(opt, initial):
     assert [g["name"] for g in groups] == names
     all_ids = [i for g in groups for i in g["params"]]
     assert len(all_ids) == len(set(all_ids)) == sum(len(g) for g in expected)
+    assert all_ids == list(range(len(all_ids))), "noncanonical optimizer ID assignment"
     assert set(opt["state"]) == set(all_ids)
     last_factor = .5 * (1. + math.cos(math.pi * (599 - 60) / (600 - 60)))
     mapping = {}
