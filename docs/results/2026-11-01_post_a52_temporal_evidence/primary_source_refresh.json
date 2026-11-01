@@ -1,0 +1,25 @@
+{
+  "qualified_for_new_anatomy_supervision": false,
+  "research_scope": "primary-source metadata refresh only, no media/weights downloaded or contacts",
+  "sources": [
+    {
+      "name": "EchoSlicer",
+      "url": "https://github.com/echonet/3d-echo/blob/main/README.md",
+      "README_blob_sha": "8fa1dae81308bc31b5ee8b84c7ec7d74cf88a70c",
+      "current_finding": "Same29volumes/4people, classifier-guided plane selection; not new manually bound A5C/LVOT truth; root LICENSE fetch404",
+      "predecessor": "D01 and2026-10-04geometry_pretraining negative retained"
+    },
+    {
+      "name": "EchoNet Measurements Segmentation",
+      "url": "https://github.com/echonet/measurements/blob/main/Segmentation/README.md",
+      "current_finding": "Bmode areas LA/RA; named LVOT/VTI segmentation operates Doppler spectra, not Bmode LVOTmask"
+    },
+    {
+      "name": "EchoNet Measurement",
+      "url": "https://github.com/echonet/measurements/blob/main/Measurement/README.md",
+      "README_blob_sha": "3b52e87e40570c5b95344d62a9876572f3350c28",
+      "current_finding": "Bmode linear endpoints and Doppler measurement weights described; a separately verified Bmode LVOT label/weight contract not established here. LICENSE/README_LICENSE variants LICENSE,LICENSE.md,LICENSE.txt fetched404. No weight intake without explicit applicable reuse conditions."
+    }
+  ],
+  "restrictions": "Unity/Pediatric/fetal/protected source test data not downloaded/read for training; MRI LVOT not substituted for echocardiography anatomy."
+}

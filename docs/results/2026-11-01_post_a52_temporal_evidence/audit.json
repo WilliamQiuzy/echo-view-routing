@@ -1,0 +1,517 @@
+{
+  "run_id": "POST-A52-D",
+  "cache_only_no_model_image_or_GPU_operations": true,
+  "original_requests": 702,
+  "by_role": {
+    "fit": {
+      "requests_total": 569,
+      "tokens_total": 4552,
+      "token_label_counts": {
+        "A4C": 2453,
+        "UNKNOWN": 380,
+        "A5C": 1719
+      },
+      "known_nonmarker_label_slots": 156,
+      "requests_with_both_known_views": 63,
+      "patients_with_both_known_views": 12,
+      "adjacent_known_token_label_change_pairs": 38,
+      "unique_label_change_endpoint_pairs": 34,
+      "unique_physical_token_references": 3346,
+      "informative": {
+        "requests": 38,
+        "patients": 12,
+        "videos": 14,
+        "marker_classes": 2
+      }
+    },
+    "diagnostic": {
+      "requests_total": 133,
+      "tokens_total": 1064,
+      "token_label_counts": {
+        "A4C": 675,
+        "UNKNOWN": 121,
+        "A5C": 268
+      },
+      "known_nonmarker_label_slots": 61,
+      "requests_with_both_known_views": 25,
+      "patients_with_both_known_views": 4,
+      "adjacent_known_token_label_change_pairs": 20,
+      "unique_label_change_endpoint_pairs": 15,
+      "unique_physical_token_references": 782,
+      "informative": {
+        "requests": 15,
+        "patients": 4,
+        "videos": 4,
+        "marker_classes": 2
+      }
+    }
+  },
+  "dense_supervision_qualification": {
+    "passed": false,
+    "checks": {
+      "fit": {
+        "requests": false,
+        "patients": true,
+        "videos": true,
+        "marker_classes": true
+      },
+      "diagnostic": {
+        "requests": false,
+        "patients": true,
+        "videos": true,
+        "marker_classes": true
+      }
+    },
+    "minimums": {
+      "fit": {
+        "requests": 80,
+        "patients": 8,
+        "videos": 8,
+        "marker_classes": 2
+      },
+      "diagnostic": {
+        "requests": 20,
+        "patients": 2,
+        "videos": 2,
+        "marker_classes": 2
+      }
+    }
+  },
+  "score_discrimination": {
+    "diagnostic": {
+      "G": {
+        "A4C_false_positive": 4,
+        "A5C_correct": 16,
+        "A4C_total": 94,
+        "A5C_total": 39,
+        "video": {
+          "global_AUC": 0.8074195308237861,
+          "total_pairs": 3666,
+          "within_AUC": 0.717948717948718,
+          "within_pairs": 117,
+          "between_AUC": 0.8103691180614258,
+          "between_pairs": 3549,
+          "reconstructed_AUC": 0.8074195308237861,
+          "equal_group_within_AUC": 0.7018037518037519,
+          "within_eligible_groups": 5,
+          "single_class_groups": 8,
+          "groups_total": 13
+        },
+        "patient": {
+          "global_AUC": 0.8074195308237861,
+          "total_pairs": 3666,
+          "within_AUC": 0.8813056379821959,
+          "within_pairs": 337,
+          "between_AUC": 0.799939921898468,
+          "between_pairs": 3329,
+          "reconstructed_AUC": 0.8074195308237861,
+          "equal_group_within_AUC": 0.8262265512265513,
+          "within_eligible_groups": 6,
+          "single_class_groups": 4,
+          "groups_total": 10
+        }
+      },
+      "L": {
+        "A4C_false_positive": 23,
+        "A5C_correct": 31,
+        "A4C_total": 94,
+        "A5C_total": 39,
+        "video": {
+          "global_AUC": 0.831151118385161,
+          "total_pairs": 3666,
+          "within_AUC": 0.8803418803418803,
+          "within_pairs": 117,
+          "between_AUC": 0.8295294449140603,
+          "between_pairs": 3549,
+          "reconstructed_AUC": 0.831151118385161,
+          "equal_group_within_AUC": 0.8795093795093795,
+          "within_eligible_groups": 5,
+          "single_class_groups": 8,
+          "groups_total": 13
+        },
+        "patient": {
+          "global_AUC": 0.831151118385161,
+          "total_pairs": 3666,
+          "within_AUC": 0.9554896142433235,
+          "within_pairs": 337,
+          "between_AUC": 0.8185641333733854,
+          "between_pairs": 3329,
+          "reconstructed_AUC": 0.831151118385161,
+          "equal_group_within_AUC": 0.9506192881192881,
+          "within_eligible_groups": 6,
+          "single_class_groups": 4,
+          "groups_total": 10
+        }
+      },
+      "W": {
+        "A4C_false_positive": 21,
+        "A5C_correct": 29,
+        "A4C_total": 94,
+        "A5C_total": 39,
+        "video": {
+          "global_AUC": 0.8191489361702128,
+          "total_pairs": 3666,
+          "within_AUC": 0.7094017094017094,
+          "within_pairs": 117,
+          "between_AUC": 0.8227669766131305,
+          "between_pairs": 3549,
+          "reconstructed_AUC": 0.8191489361702128,
+          "equal_group_within_AUC": 0.6986652236652237,
+          "within_eligible_groups": 5,
+          "single_class_groups": 8,
+          "groups_total": 13
+        },
+        "patient": {
+          "global_AUC": 0.8191489361702128,
+          "total_pairs": 3666,
+          "within_AUC": 0.8961424332344213,
+          "within_pairs": 337,
+          "between_AUC": 0.8113547611895464,
+          "between_pairs": 3329,
+          "reconstructed_AUC": 0.8191489361702128,
+          "equal_group_within_AUC": 0.8581108706108705,
+          "within_eligible_groups": 6,
+          "single_class_groups": 4,
+          "groups_total": 10
+        }
+      },
+      "H": {
+        "A4C_false_positive": 24,
+        "A5C_correct": 27,
+        "A4C_total": 94,
+        "A5C_total": 39,
+        "video": {
+          "global_AUC": 0.745771958537916,
+          "total_pairs": 3666,
+          "within_AUC": 0.6324786324786325,
+          "within_pairs": 117,
+          "between_AUC": 0.7495069033530573,
+          "between_pairs": 3549,
+          "reconstructed_AUC": 0.745771958537916,
+          "equal_group_within_AUC": 0.7069444444444445,
+          "within_eligible_groups": 5,
+          "single_class_groups": 8,
+          "groups_total": 13
+        },
+        "patient": {
+          "global_AUC": 0.745771958537916,
+          "total_pairs": 3666,
+          "within_AUC": 0.8456973293768546,
+          "within_pairs": 337,
+          "between_AUC": 0.7356563532592371,
+          "between_pairs": 3329,
+          "reconstructed_AUC": 0.745771958537916,
+          "equal_group_within_AUC": 0.8137656325156325,
+          "within_eligible_groups": 6,
+          "single_class_groups": 4,
+          "groups_total": 10
+        }
+      },
+      "R": {
+        "A4C_false_positive": 21,
+        "A5C_correct": 23,
+        "A4C_total": 94,
+        "A5C_total": 39,
+        "video": {
+          "global_AUC": 0.7572285870158211,
+          "total_pairs": 3666,
+          "within_AUC": 0.7606837606837606,
+          "within_pairs": 117,
+          "between_AUC": 0.7571146801916032,
+          "between_pairs": 3549,
+          "reconstructed_AUC": 0.7572285870158211,
+          "equal_group_within_AUC": 0.7936868686868687,
+          "within_eligible_groups": 5,
+          "single_class_groups": 8,
+          "groups_total": 13
+        },
+        "patient": {
+          "global_AUC": 0.7572285870158211,
+          "total_pairs": 3666,
+          "within_AUC": 0.8902077151335311,
+          "within_pairs": 337,
+          "between_AUC": 0.7437668969660559,
+          "between_pairs": 3329,
+          "reconstructed_AUC": 0.7572285870158211,
+          "equal_group_within_AUC": 0.8722823472823471,
+          "within_eligible_groups": 6,
+          "single_class_groups": 4,
+          "groups_total": 10
+        }
+      },
+      "video_geometry": {
+        "A4C_false_positive": 19,
+        "A5C_correct": 23,
+        "A4C_total": 94,
+        "A5C_total": 39,
+        "video": {
+          "global_AUC": 0.7498636115657392,
+          "total_pairs": 3666,
+          "within_AUC": 0.6324786324786325,
+          "within_pairs": 117,
+          "between_AUC": 0.7537334460411383,
+          "between_pairs": 3549,
+          "reconstructed_AUC": 0.7498636115657392,
+          "equal_group_within_AUC": 0.5862554112554113,
+          "within_eligible_groups": 5,
+          "single_class_groups": 8,
+          "groups_total": 13
+        },
+        "patient": {
+          "global_AUC": 0.7498636115657392,
+          "total_pairs": 3666,
+          "within_AUC": 0.8397626112759644,
+          "within_pairs": 337,
+          "between_AUC": 0.7407629918894563,
+          "between_pairs": 3329,
+          "reconstructed_AUC": 0.7498636115657392,
+          "equal_group_within_AUC": 0.7231120731120732,
+          "within_eligible_groups": 6,
+          "single_class_groups": 4,
+          "groups_total": 10
+        }
+      },
+      "video_constant": {
+        "A4C_false_positive": 0,
+        "A5C_correct": 0,
+        "A4C_total": 94,
+        "A5C_total": 39,
+        "video": {
+          "global_AUC": 0.5,
+          "total_pairs": 3666,
+          "within_AUC": 0.5,
+          "within_pairs": 117,
+          "between_AUC": 0.5,
+          "between_pairs": 3549,
+          "reconstructed_AUC": 0.5,
+          "equal_group_within_AUC": 0.5,
+          "within_eligible_groups": 5,
+          "single_class_groups": 8,
+          "groups_total": 13
+        },
+        "patient": {
+          "global_AUC": 0.5,
+          "total_pairs": 3666,
+          "within_AUC": 0.5,
+          "within_pairs": 337,
+          "between_AUC": 0.5,
+          "between_pairs": 3329,
+          "reconstructed_AUC": 0.5,
+          "equal_group_within_AUC": 0.5,
+          "within_eligible_groups": 6,
+          "single_class_groups": 4,
+          "groups_total": 10
+        }
+      },
+      "point_geometry": {
+        "A4C_false_positive": 19,
+        "A5C_correct": 20,
+        "A4C_total": 94,
+        "A5C_total": 39,
+        "video": {
+          "global_AUC": 0.7122204037097654,
+          "total_pairs": 3666,
+          "within_AUC": 0.6752136752136753,
+          "within_pairs": 117,
+          "between_AUC": 0.7134404057480981,
+          "between_pairs": 3549,
+          "reconstructed_AUC": 0.7122204037097654,
+          "equal_group_within_AUC": 0.6392676767676767,
+          "within_eligible_groups": 5,
+          "single_class_groups": 8,
+          "groups_total": 13
+        },
+        "patient": {
+          "global_AUC": 0.7122204037097654,
+          "total_pairs": 3666,
+          "within_AUC": 0.7774480712166172,
+          "within_pairs": 337,
+          "between_AUC": 0.7056173024932412,
+          "between_pairs": 3329,
+          "reconstructed_AUC": 0.7122204037097654,
+          "equal_group_within_AUC": 0.7412487974987975,
+          "within_eligible_groups": 6,
+          "single_class_groups": 4,
+          "groups_total": 10
+        }
+      },
+      "point_constant": {
+        "A4C_false_positive": 0,
+        "A5C_correct": 0,
+        "A4C_total": 94,
+        "A5C_total": 39,
+        "video": {
+          "global_AUC": 0.5,
+          "total_pairs": 3666,
+          "within_AUC": 0.5,
+          "within_pairs": 117,
+          "between_AUC": 0.5,
+          "between_pairs": 3549,
+          "reconstructed_AUC": 0.5,
+          "equal_group_within_AUC": 0.5,
+          "within_eligible_groups": 5,
+          "single_class_groups": 8,
+          "groups_total": 13
+        },
+        "patient": {
+          "global_AUC": 0.5,
+          "total_pairs": 3666,
+          "within_AUC": 0.5,
+          "within_pairs": 337,
+          "between_AUC": 0.5,
+          "between_pairs": 3329,
+          "reconstructed_AUC": 0.5,
+          "equal_group_within_AUC": 0.5,
+          "within_eligible_groups": 6,
+          "single_class_groups": 4,
+          "groups_total": 10
+        }
+      }
+    },
+    "fit": {
+      "L": {
+        "A4C_false_positive": 1,
+        "A5C_correct": 235,
+        "A4C_total": 330,
+        "A5C_total": 239,
+        "video": {
+          "global_AUC": 0.999733739064283,
+          "total_pairs": 78870,
+          "within_AUC": 0.9941972920696325,
+          "within_pairs": 517,
+          "between_AUC": 0.9997702704427399,
+          "between_pairs": 78353,
+          "reconstructed_AUC": 0.999733739064283,
+          "equal_group_within_AUC": 0.9896284271284271,
+          "within_eligible_groups": 14,
+          "single_class_groups": 41,
+          "groups_total": 55
+        },
+        "patient": {
+          "global_AUC": 0.999733739064283,
+          "total_pairs": 78870,
+          "within_AUC": 0.9980069755854509,
+          "within_pairs": 2007,
+          "between_AUC": 0.9997788272640933,
+          "between_pairs": 76863,
+          "reconstructed_AUC": 0.999733739064283,
+          "equal_group_within_AUC": 0.9979478609625669,
+          "within_eligible_groups": 20,
+          "single_class_groups": 16,
+          "groups_total": 36
+        }
+      },
+      "W": {
+        "A4C_false_positive": 45,
+        "A5C_correct": 220,
+        "A4C_total": 330,
+        "A5C_total": 239,
+        "video": {
+          "global_AUC": 0.9246227970077342,
+          "total_pairs": 78870,
+          "within_AUC": 0.7949709864603481,
+          "within_pairs": 517,
+          "between_AUC": 0.9254782841754623,
+          "between_pairs": 78353,
+          "reconstructed_AUC": 0.9246227970077342,
+          "equal_group_within_AUC": 0.7988347713794142,
+          "within_eligible_groups": 14,
+          "single_class_groups": 41,
+          "groups_total": 55
+        },
+        "patient": {
+          "global_AUC": 0.9246227970077342,
+          "total_pairs": 78870,
+          "within_AUC": 0.9362232187344295,
+          "within_pairs": 2007,
+          "between_AUC": 0.9243198938370868,
+          "between_pairs": 76863,
+          "reconstructed_AUC": 0.9246227970077342,
+          "equal_group_within_AUC": 0.9106460425807853,
+          "within_eligible_groups": 20,
+          "single_class_groups": 16,
+          "groups_total": 36
+        }
+      },
+      "H": {
+        "A4C_false_positive": 3,
+        "A5C_correct": 238,
+        "A4C_total": 330,
+        "A5C_total": 239,
+        "video": {
+          "global_AUC": 0.99987320907823,
+          "total_pairs": 78870,
+          "within_AUC": 1.0,
+          "within_pairs": 517,
+          "between_AUC": 0.9998723724681888,
+          "between_pairs": 78353,
+          "reconstructed_AUC": 0.99987320907823,
+          "equal_group_within_AUC": 1.0,
+          "within_eligible_groups": 14,
+          "single_class_groups": 41,
+          "groups_total": 55
+        },
+        "patient": {
+          "global_AUC": 0.99987320907823,
+          "total_pairs": 78870,
+          "within_AUC": 1.0,
+          "within_pairs": 2007,
+          "between_AUC": 0.9998698983906431,
+          "between_pairs": 76863,
+          "reconstructed_AUC": 0.99987320907823,
+          "equal_group_within_AUC": 1.0,
+          "within_eligible_groups": 20,
+          "single_class_groups": 16,
+          "groups_total": 36
+        }
+      },
+      "R": {
+        "A4C_false_positive": 2,
+        "A5C_correct": 237,
+        "A4C_total": 330,
+        "A5C_total": 239,
+        "video": {
+          "global_AUC": 0.999885888170407,
+          "total_pairs": 78870,
+          "within_AUC": 0.9980657640232108,
+          "within_pairs": 517,
+          "between_AUC": 0.9998978979745511,
+          "between_pairs": 78353,
+          "reconstructed_AUC": 0.999885888170407,
+          "equal_group_within_AUC": 0.9994505494505495,
+          "within_eligible_groups": 14,
+          "single_class_groups": 41,
+          "groups_total": 55
+        },
+        "patient": {
+          "global_AUC": 0.999885888170407,
+          "total_pairs": 78870,
+          "within_AUC": 0.9995017438963627,
+          "within_pairs": 2007,
+          "between_AUC": 0.9998959187125145,
+          "between_pairs": 76863,
+          "reconstructed_AUC": 0.999885888170407,
+          "equal_group_within_AUC": 0.9997863247863247,
+          "within_eligible_groups": 20,
+          "single_class_groups": 16,
+          "groups_total": 36
+        }
+      }
+    }
+  },
+  "manual_labels_used_for_every_model_including_W": true,
+  "G_fit_unavailable_not_inferred": true,
+  "private_token_table_sha256": "4bc906b3d8c79bf58a7a3f0fa27c912cac7a4a01c43f0ee3c1ef9bfed0ed5977",
+  "existing_inputs_sha256": {
+    "bound": "d852c493428342fdd53f935195e44d898c477554fe5830b250bc367cd9243f8c",
+    "selection": "f30ade59317ee7d5a34ba64654ace1e558d625f96cf57430ed4eb0b9b3be2ab1",
+    "source_metadata": "87b59a0e3015c832db4cdd7ba9cb9ec64f3d9885eac4669033b43c1a65420d6e",
+    "chronology": "6c5ea406ca69be65da3b981410fce2abb77102f1c53d02e490c4b8e22fb5218c",
+    "A51_scores": "b09b6a9a3b3d8c7799bae5e22984051541a95474b4db199cfe948951734fd7da",
+    "A52_scores": "376225fb0735c50b345a4ad7726f83989a34d6925f1cc394d89df7bc69ce0a33"
+  },
+  "new_training_or_target_readout": 0,
+  "descriptive_exploratory_reused_source_diagnostic": true,
+  "no_group_conditioned_threshold_or_normalization": true,
+  "scope": "Eight nominal even temporal positions; endpoint labels only, UNKNOWN is not a view or transition-boundary truth; overlapping requests not independent samples."
+}
