@@ -41,9 +41,9 @@ def tensor_hash(state):
 def metrics(labels, scores, discordant):
     positives = [i for i, y in enumerate(labels) if y]
     negatives = [i for i, y in enumerate(labels) if not y]
-    tp = sum(scores[i] > 0 for i in positives); fn = len(positives) - tp
-    fp = sum(scores[i] > 0 for i in negatives); tn = len(negatives) - fp
-    correct_discord = sum((scores[i] > 0) == bool(labels[i]) for i in range(len(labels)) if discordant[i])
+    tp = int(sum(scores[i] > 0 for i in positives)); fn = len(positives) - tp
+    fp = int(sum(scores[i] > 0 for i in negatives)); tn = len(negatives) - fp
+    correct_discord = int(sum((scores[i] > 0) == bool(labels[i]) for i in range(len(labels)) if discordant[i]))
     return {"tp": tp, "tn": tn, "fp": fp, "fn": fn,
             "accuracy": (tp + tn) / len(labels), "balanced_accuracy": .5 * (tp / len(positives) + tn / len(negatives)),
             "a4c_recall": tn / len(negatives), "a5c_recall": tp / len(positives), "a4c_fpr": fp / len(negatives),
