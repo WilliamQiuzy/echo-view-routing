@@ -191,6 +191,136 @@ def audit_geometry(c, baseline, cases):
     return receipt
 
 
+def reference_ocr_source(q):
+    import csv
+    import io
+    import math
+    from PIL import Image
+    accepted = []
+    for field in ('raw_tsv', 'processed_tsv'):
+        values = []
+        for r in csv.DictReader(io.StringIO(q[field]), delimiter='\t'):
+            confidence, token = float(r['conf']), r.get('text','').strip()
+            if not math.isfinite(confidence) or confidence < 60 or sum(c.isalnum() for c in token) < 2: continue
+            b={k:int(r[k]) for k in ('left','top','width','height')}
+            if b['width']>0 and b['height']>0:values.append({**b,'text':token,'confidence':confidence})
+        accepted.append(values)
+    assert accepted == [q['raw_boxes'],q['processed_boxes']]
+    h,w=q['raw_shape'];raw=np.zeros((h,w),np.uint8)
+    for b in accepted[0]:
+        x0,y0=max(0,b['left']-2),max(0,b['top']-2)
+        x1,y1=min(w,b['left']+b['width']+2),min(h,b['top']+b['height']+2)
+        if x1>x0 and y1>y0:raw[y0:y1,x0:x1]=255
+    rw,rh=max(224,round(w*256/min(w,h))),max(224,round(h*256/min(w,h)))
+    x,y=(rw-224)//2,(rh-224)//2
+    native=np.asarray(Image.fromarray(raw).resize((rw,rh),Image.Resampling.NEAREST).crop((x,y,x+224,y+224)))>0
+    processed=np.zeros((224,224),bool)
+    for b in accepted[1]:
+        x0,y0=max(0,math.floor(b['left']/3)-1),max(0,math.floor(b['top']/3)-1)
+        x1,y1=min(224,math.ceil((b['left']+b['width'])/3)+1),min(224,math.ceil((b['top']+b['height'])/3)+1)
+        if x1>x0 and y1>y0:processed[y0:y1,x0:x1]=True
+    return native,processed
+
+
+def audit_ocr(c, baseline, cases):
+    import csv
+    import io
+    import math
+    from PIL import Image, ImageFilter
+    import scripts.train_risk_constrained_a5c as a
+    source = json.loads((OUT / "ocr_input_manifest.json").read_text())
+    freeze = json.loads((OUT / "ocr_model_freeze.json").read_text())
+    complete = json.loads((OUT / "ocr_complete.json").read_text())
+    assert digest(OUT / "ocr_input_manifest.json") == freeze["manifest_sha256"]
+    assert digest(OUT / "ocr_masks.npz") == source["masks_sha256"]
+    assert digest(OUT / "ocr_boxes_private.json") == source["boxes_sha256"]
+    assert digest(OUT / "scores.npz") == source["baseline_scores_sha256"]
+    assert digest(OUT / "ocr_scores.npz") == complete["scores_sha256"]
+    assert digest(ROOT / "scripts/probe_a5c_ocr_regions.py") == source["source_freeze"]["driver_code_sha256"]
+    assert digest(ROOT / "echo_routing/temporal/ocr_masks.py") == source["source_freeze"]["mask_code_sha256"]
+    tool = json.loads((OUT / "ocr_tool_manifest.json").read_text())
+    assert digest(OUT / "ocr_tool_manifest.json") == source["tool_manifest_sha256"]
+    for p, h in tool["members"].items(): assert digest(OUT / p) == h
+    masks, scores = np.load(OUT / "ocr_masks.npz"), np.load(OUT / "ocr_scores.npz")
+    boxes = json.loads((OUT / "ocr_boxes_private.json").read_text())
+    hashes = json.loads((OUT / "ocr_intervention_hashes.json").read_text())
+    assert digest(OUT / "ocr_intervention_hashes.json") == complete["intervention_hashes_sha256"]
+    report, mask_checks, pixel_checks, nonempty_total = {}, 0, 0, 0
+
+    def parse(tsv):
+        result = []
+        for q in csv.DictReader(io.StringIO(tsv), delimiter='\t'):
+            confidence = float(q['conf']); text = q.get('text','').strip()
+            if not math.isfinite(confidence) or confidence < 60 or sum(ch.isalnum() for ch in text) < 2: continue
+            b = {k:int(q[k]) for k in ('left','top','width','height')}
+            if b['width'] > 0 and b['height'] > 0: result.append({**b,'text':text,'confidence':confidence})
+        return result
+
+    for h in (0,1):
+        rows = masks[f'rows_f{h}']; assert np.array_equal(rows, baseline[f'rows_f{h}'])
+        assert np.array_equal(rows, scores[f'rows_f{h}'])
+        union = masks[f'masks_f{h}']; nonempty = union.any((1,2)); nonempty_total += int(nonempty.sum())
+        raw_words, scaled_words, raw_nonempty, scaled_nonempty, surviving_raw = 0,0,0,0,0
+        for j,row in enumerate(rows):
+            q = boxes[str(h)][str(int(row))]
+            rb,pb = parse(q['raw_tsv']),parse(q['processed_tsv'])
+            assert rb == q['raw_boxes'] and pb == q['processed_boxes']
+            hh,ww=q['raw_shape'];native=np.zeros((hh,ww),np.uint8)
+            for b in rb:
+                x0,y0=max(0,b['left']-2),max(0,b['top']-2)
+                x1,y1=min(ww,b['left']+b['width']+2),min(hh,b['top']+b['height']+2)
+                if x1>x0 and y1>y0:native[y0:y1,x0:x1]=255
+            rw,rh=max(224,round(ww*256/min(ww,hh))),max(224,round(hh*256/min(ww,hh)))
+            left,top=(rw-224)//2,(rh-224)//2
+            rm=np.asarray(Image.fromarray(native).resize((rw,rh),Image.Resampling.NEAREST).crop((left,top,left+224,top+224)))>0
+            pm=np.zeros((224,224),bool)
+            for b in pb:
+                x0,y0=max(0,math.floor(b['left']/3)-1),max(0,math.floor(b['top']/3)-1)
+                x1,y1=min(224,math.ceil((b['left']+b['width'])/3)+1),min(224,math.ceil((b['top']+b['height'])/3)+1)
+                if x1>x0 and y1>y0:pm[y0:y1,x0:x1]=True
+            assert np.array_equal(rm,masks[f'raw_mapped_masks_f{h}'][j])
+            assert np.array_equal(pm,masks[f'processed_masks_f{h}'][j])
+            assert np.array_equal(rm|pm,union[j]);mask_checks+=1
+            raw_words+=len(rb);scaled_words+=len(pb);raw_nonempty+=bool(rb);scaled_nonempty+=bool(pb);surviving_raw+=bool(rm.any())
+        coverage=source['coverage'][str(h)]
+        assert (raw_words,scaled_words,raw_nonempty,scaled_nonempty,surviving_raw,int(nonempty.sum())) == tuple(coverage[k] for k in ('raw_accepted_words','processed_accepted_words','raw_detected_rows','processed_detected_rows','raw_masks_surviving_original_crop','nonempty_input_masks'))
+        cc=[q for q in cases if q['fold']==h]
+        for model in MODELS:
+            S=scores[f'ocr_{model}_f{h}'];G=baseline[f'global_{model}_f{h}']
+            assert S.shape==(len(rows),2,4,2) and np.isfinite(S).all()
+            if (~nonempty).any(): assert np.array_equal(S[~nonempty],np.broadcast_to(G[~nonempty,0][:,None,None,:],S[~nonempty].shape))
+            weighted=np.stack([reference_run_scores(rows,S,q['rows'],q['weights']) for q in cc])
+            original=np.stack([reference_run_scores(rows,G,q['rows'],q['weights'])[0] for q in cc])
+            areas=np.stack([reference_run_scores(rows,union.mean((1,2))[:,None],q['rows'],q['weights']) for q in cc])[:,0]
+            for group in GROUPS:
+                at=[j for j,q in enumerate(cc) if q['group']==group]
+                for fi,fill in enumerate(('mean','blur')):
+                    v=weighted[at,fi,:,0]
+                    rec={f'location_{k}':effect_counts(original[at,0],v[:,k]) for k in range(4)}
+                    rec['actual_drop_excess_over_translated_mean']=stats(v[:,1:].mean(1)-v[:,0])
+                    rec['weighted_mask_area_fraction']=stats(areas[at])
+                    rec['cases_with_any_OCR_proposal']=int((areas[at]>0).sum())
+                    report[f'{model}_fold{h}_{group}_{fill}']=rec
+        F=a.Fold(c,0,h);positions={int(r):j for j,r in enumerate(rows)}
+        for rowkey,hh in hashes[str(h)].items():
+            row=int(rowkey);mask=union[positions[row]];x,_,_=reference_pixels(F,row)
+            for fill in ('mean','blur'):
+                rep=np.broadcast_to(np.rint(x.mean((1,2),keepdims=True)).astype(np.uint8),x.shape) if fill=='mean' else np.stack([np.asarray(Image.fromarray(v).filter(ImageFilter.BoxBlur(8))) for v in x])
+                for k,shift in enumerate(((0,0),(0,112),(112,0),(112,112))):
+                    moved=np.roll(mask,shift,axis=(0,1));v=np.where(moved[None,...,None],rep,x)
+                    assert hashlib.sha256(v.tobytes()).hexdigest()==hh[f'{fill}_{k}'];pixel_checks+=1
+    assert complete['forward_windows']==nonempty_total*24==complete['expected_new_forwards']
+    assert complete['forward_windows']+complete['unchanged_reused_slots']==complete['expected_logical_slots']
+    receipt={'independent_OCR_audit_pass':True,'source_masks_and_TSV_filters_checked':mask_checks,'intervention_pixel_hashes_checked':pixel_checks,
+             'all_empty_rows_exact_cached_identity':True,'physical_new_forward_windows':complete['forward_windows'],
+             'unchanged_reused_slots':complete['unchanged_reused_slots'],'new_audit_model_forwards':0,
+             'scores_sha256':complete['scores_sha256'],'coverage':source['coverage'],
+             'scope':'OCR-proposed regions, not adjudicated text or anatomical truth; marker positions reused across all time slots.'}
+    (PUB/'ocr_summary.json').write_text(json.dumps(report,indent=2,allow_nan=False)+'\n')
+    (PUB/'ocr_audit.json').write_text(json.dumps(receipt,indent=2)+'\n')
+    return receipt
+
+
 def main():
     from PIL import Image, ImageFilter
     from types import SimpleNamespace
@@ -210,7 +340,7 @@ def main():
     c = a.Ctx(a.load_cfg(SimpleNamespace(config=cfg, set=[])), cfg)
     old, z = np.load(c.out / "readout_cache_s0.npz"), np.load(OUT / "scores.npz")
     summary = {"scope": "fixed outcome-conditioned descriptive training-source audit; no new efficacy", "groups": manifest["groups"],
-               "global_interventions": {}, "spatial_temporal": {}, "input_proxies": {}, "model_training_updates": 0}
+               "global_interventions": {}, "spatial_temporal": {}, "aggregate_spatial_maps": {}, "input_proxies": {}, "model_training_updates": 0}
     summary["interpretation_limits"] = [
         "Equal-area scattered controls do not preserve mask contiguity; their difference alone does not isolate spatial location.",
         "The 49 equal-square interventions provide shape-matched spatial comparisons with two replacements.",
@@ -301,6 +431,15 @@ def main():
                                      "temporal_max_abs_drop": float(abs(td).max()),
                                      "strongest_temporal_block_contains_marker": int(abs(td).argmax()) == anchor_meta[q["anchor"]]["marker"] // 4})
                 summary["spatial_temporal"][key] = {name: stats([f[name] for f in features]) for name in features[0]}
+                summary["aggregate_spatial_maps"][key] = {}
+                for fi, fill in enumerate(("mean", "blur")):
+                    normal = []
+                    for j in at:
+                        rp, ap = rpos[cc[j]["anchor"]], apos[cc[j]["anchor"]]
+                        sensitivity = abs(g[rp, 0, 0] - maps[ap, fi, :, 0]).astype(np.float64)
+                        if sensitivity.sum() > 1e-8: normal.append(sensitivity / sensitivity.sum())
+                    summary["aggregate_spatial_maps"][key][fill] = {"valid_anchors":len(normal),
+                        "mean_normalized_absolute_change":np.mean(normal,axis=0).tolist() if normal else None}
         for group in GROUPS:
             qq = [q for q in cc if q["group"] == group]
             fields = [k for k, v in next(iter(pixel_meta.values())).items() if isinstance(v, (float, int)) and k != "row"]
@@ -360,11 +499,13 @@ def main():
             html.append(f"<article><h2>Fold {h}; anchor {j}; {', '.join(related)}</h2><img src='fold{h}_case{j:02d}.jpg'><img src='fold{h}_anchor{j:02d}_maps.png'></article>")
     (OUT / "private_review/index.html").write_text("\n".join(html))
     geometry_receipt = audit_geometry(c, z, cases) if (OUT / "geometry_complete.json").exists() else None
+    ocr_receipt = audit_ocr(c, z, cases) if (OUT / "ocr_complete.json").exists() else None
     receipt = {"independent_cache_audit_pass": True, "runs_checked": checks, "parity_max_abs": parity,
                "pixel_reconstructions_checked": pixel_checks, "new_model_forwards": 0,
                "scores_sha256": digest(OUT / "scores.npz"), "all_pinned_files_unchanged": True,
                "scope": "all membership/cohort/score summaries; fixed original/global/spatial pixel subset; no anatomical or clinical-quality adjudication",
                "geometry_supplement": geometry_receipt,
+               "OCR_supplement": ocr_receipt,
                "wall_seconds": time.time() - start, "process_CPU_seconds": time.process_time() - cpu}
     PUB.mkdir(parents=True, exist_ok=True)
     for p, obj in [(PUB / "summary.json", summary), (PUB / "independent_audit.json", receipt), (OUT / "independent_audit.json", receipt)]:

@@ -44,3 +44,16 @@ def test_original_score_alignment_is_not_inferred_from_counts():
     with pytest.raises(ValueError):
         m.assert_original_parity(np.array([1., -1.]), np.array([-1., 1.]))
     assert m.assert_original_parity(np.array([1., -1.]), np.array([1., -1.])) == 0
+
+
+def test_independent_ocr_reference_rejects_changed_token_selection():
+    m = audit()
+    tsv = 'left\ttop\twidth\theight\tconf\ttext\n300\t220\t40\t40\t91\tA5C\n'
+    q = {'raw_shape': [480, 640], 'raw_tsv': tsv,
+         'processed_tsv': 'left\ttop\twidth\theight\tconf\ttext\n',
+         'raw_boxes': [{'left':300,'top':220,'width':40,'height':40,'text':'A5C','confidence':91.}],
+         'processed_boxes': []}
+    rm, pm = m.reference_ocr_source(q)
+    assert rm[112,112] and not pm.any()
+    q['raw_boxes'] = []
+    with pytest.raises(AssertionError): m.reference_ocr_source(q)
