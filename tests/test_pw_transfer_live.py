@@ -40,3 +40,14 @@ def test_independent_membership_mean_and_one_way_zero_threshold():
     means,p=m.reference_labels(pk,np.array([0,1,2]),np.array([-3.,.1,2.]),10)
     assert means[:2].tolist()==pytest.approx([.75,.1]) and p.tolist()==[3,3,1]
     with pytest.raises(ValueError):m.reference_labels(pk,np.array([0,1]),np.array([-3.,0.]),10)
+
+
+def test_independent_auditor_rebuilds_global_offsets_and_earlier_centre_ties():
+    from types import SimpleNamespace
+    from scripts.audit_pw_purpose_transfer_live import membership
+    F=SimpleNamespace(el=np.array([True,True]),off=10,seqs=[{'labels':np.array([2,2,2,3,3])}],
+        W={'seq':np.array([0,0]),'centre':np.array([0,4])},
+        pk={'seq':np.array([0,0]),'a':np.array([0,3]),'b':np.array([3,5]),'offsets':np.array([0,1,2]),'rows':np.array([10,11]),'weights':np.array([1.,1.])})
+    assert membership(F)==2
+    F.pk['weights'][0]=.5
+    with pytest.raises(AssertionError):membership(F)
