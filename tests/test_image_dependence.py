@@ -94,3 +94,15 @@ def test_full_frame_footprint_removes_only_new_context_at_identical_scale():
     assert np.all(retained[~keep] == 0)
     assert np.any(full[~keep] > 0)
     assert 0 < rec["raw_crop_retained_fraction"] < 1
+
+
+def test_global_variants_keep_contract_order_and_marker_frame_identity():
+    m = api()
+    x = np.random.default_rng(7).integers(0, 256, (16, 224, 224, 3), dtype=np.uint8)
+    variants = dict(m.global_variants(x, 6, x, x, 17))
+    assert tuple(variants) == m.GLOBAL_NAMES
+    assert np.array_equal(variants["original"], x)
+    assert all(np.array_equal(f, x[6]) for f in variants["target_repeat"])
+    for k in ("periphery", "chroma", "static_bright"):
+        control = m.area_control(m.proxy_masks(x)[k], [17, ("periphery", "chroma", "static_bright").index(k)])
+        assert control.sum() == m.proxy_masks(x)[k].sum()
