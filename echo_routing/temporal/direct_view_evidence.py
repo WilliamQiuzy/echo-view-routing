@@ -116,6 +116,18 @@ def check_duplicate_isolation(requests: list[dict]) -> bool:
     return True
 
 
+def robust_marker_label(records: list[dict], ordinal: int, native_pts_index: int, expected: str) -> bool:
+    """Require the frozen label under all tested export/index conventions."""
+    for position in (ordinal, native_pts_index):
+        for origin in (0, 1):
+            for inclusive in (False, True):
+                supported = {r["true_label"] for r in records
+                             if r["start"] - origin <= position < r["end"] - origin + int(inclusive)}
+                if supported != {expected}:
+                    return False
+    return True
+
+
 def _top_mass(counts: Counter, fraction: float) -> set:
     if not counts:
         return set()

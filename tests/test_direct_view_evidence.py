@@ -152,3 +152,13 @@ def test_duplicate_requests_across_patients_or_folds_are_rejected():
     assert dv.check_duplicate_isolation(rows)
     with pytest.raises(ValueError, match="duplicate"):
         dv.check_duplicate_isolation([rows[0], {**rows[1], "pixel_sha256": "same"}])
+
+
+def test_marker_label_requires_consensus_for_ordinal_and_native_pts_axes():
+    rows = [{"start": 0, "end": 100, "true_label": "A4C"},
+            {"start": 100, "end": 150, "true_label": "A5C"}]
+    assert dv.robust_marker_label(rows, 20, 22, "A4C")
+    assert dv.robust_marker_label(rows, 120, 122, "A5C")
+    assert not dv.robust_marker_label(rows, 98, 101, "A4C")
+    assert not dv.robust_marker_label(rows, 99, 99, "A4C")
+    assert not dv.robust_marker_label(rows, 160, 160, "A5C")
