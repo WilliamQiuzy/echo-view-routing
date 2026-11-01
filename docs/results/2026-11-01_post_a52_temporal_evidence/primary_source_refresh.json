@@ -1,0 +1,46 @@
+{
+  "qualified_for_new_anatomy_supervision": false,
+  "research_scope": "primary-source metadata refresh only, no media/weights downloaded or contacts",
+  "sources": [
+    {
+      "name": "EchoSlicer",
+      "url": "https://github.com/echonet/3d-echo/blob/main/README.md",
+      "README_blob_sha": "8fa1dae81308bc31b5ee8b84c7ec7d74cf88a70c",
+      "current_finding": "Same29volumes/4people, classifier-guided plane selection; not new manually bound A5C/LVOT truth; root LICENSE fetch404",
+      "predecessor": "D01 and2026-10-04geometry_pretraining negative retained"
+    },
+    {
+      "name": "EchoNet Measurements Segmentation",
+      "url": "https://github.com/echonet/measurements/blob/main/Segmentation/README.md",
+      "current_finding": "Bmode areas LA/RA; named LVOT/VTI segmentation operates Doppler spectra, not Bmode LVOTmask"
+    },
+    {
+      "name": "EchoNet Measurement",
+      "url": "https://github.com/echonet/measurements/blob/main/Measurement/README.md",
+      "README_blob_sha": "3b52e87e40570c5b95344d62a9876572f3350c28",
+      "current_finding": "Bmode linear endpoints and Doppler measurement weights described; a separately verified Bmode LVOT label/weight contract not established here. LICENSE/README_LICENSE variants LICENSE,LICENSE.md,LICENSE.txt fetched404. No weight intake without explicit applicable reuse conditions."
+    },
+    {
+      "name": "FAST Data Hub",
+      "url": "https://fast-datahub.sintef.no/models/",
+      "current_finding": "Public model list has CC-BY4 CAMUS LV/myocardium/LA segmentation; no Bmode LVOT model qualified from this bounded metadata query."
+    },
+    {
+      "name": "2022 PLAX multi-structure segmentation paper",
+      "url": "https://www.eriksmistad.no/wp-content/uploads/IUS_2022___PLAX_Segmentation-final.pdf",
+      "current_finding": "Paper describes six structures including LVOT in53subjects; no directly qualified public matching annotation/weight release obtained in this query. Tool availability is not data availability."
+    },
+    {
+      "name": "2023 automated LVOT diameter study",
+      "url": "https://link.springer.com/article/10.1186/s12947-023-00317-5",
+      "current_finding": "Primary paper states data cannot be publicly shared; no download or contact."
+    },
+    {
+      "name": "EchoXFlow issue4 incremental query",
+      "url": "https://github.com/Ahus-AIM/EchoXFlow/issues/4",
+      "current_finding": "Official issue comments returned empty in this turn; no verified mapping correction or A49 gate revision; no duplicate contact."
+    }
+  ],
+  "restrictions": "Unity/Pediatric/fetal/protected source test data not downloaded/read for training; MRI LVOT not substituted for echocardiography anatomy.",
+  "absence_scope": "No newly qualified supervision from these named metadata reads; this is not a claim of global unavailability."
+}
