@@ -30,7 +30,7 @@ def files():
 def prepare():
  old=None
  if (PUB/'input_manifest.json').exists():
-  assert not (PUB/'feature_manifest.json').exists() and not list((OUT/'heads').glob('*/claim.json')),'cannot revise prepared provenance after formal work'
+  assert not (PUB/'feature_manifest.json').exists() and not list(OUT.glob('features_*.json')) and not list(OUT.glob('features_*.npy')) and not list((OUT/'heads').glob('*/claim.json')),'cannot revise prepared provenance after formal work'
   old=json.loads((PUB/'input_manifest.json').read_text());history=PUB/'prelaunch_history';history.mkdir(exist_ok=True);(history/(sha(PUB/'input_manifest.json')+'.input.json')).write_bytes((PUB/'input_manifest.json').read_bytes())
   if (PUB/'checks.json').exists():(history/(sha(PUB/'checks.json')+'.checks.json')).write_bytes((PUB/'checks.json').read_bytes())
  c=ctx();folds={};sm=source_manifest()
@@ -39,8 +39,9 @@ def prepare():
   folds[str(f)]={'rows':len(F.need),'rows_sha256':digest(F.need),'plan_sha256':F.psha,'outputs_sha256':t.PINS['outputs'][0][str(f)],'pool_sha256':sha(c.a31.out/f'pool_{f}.npy'),'runs_sha256':sha(c.a31.out/'data'/f'runs_s0_f{f}.npz'),'request_grid_sha256':digest(np.column_stack([F.W['seq'],F.W['marker'],F.W['s']])),'positive_runs':len(F.L['positives']),'protected_negative_runs':len(F.L['negatives']),'other_runs':len(F.L['other']),'training_occurrences':sum(len(F.occ(u)[0]) for u in range(600))}
  rec={'run_id':'A53','arms':ARMS,'source_bundles':{a:sm['models'][a]['bundle_sha256'] for a in ['L','W']},'source_manifest_sha256':sha(ROOT/'docs/results/2026-11-01_direct_view_evidence/pilot/source_models_manifest.json'),'Base_A08_sha256':sha(src.BASE),'folds':folds,'code':files(),'source_heads_discarded':True,'source_backbones_frozen':True,'new_source_classifier_gate_pass':False,'head_dimension':1024,'head_parameters':1025,'head_precision':'float64','head_steps_each':600,'G_supplement_structurally_zero':True,'prior_gates_not_revised':True,'target_efficacy_scores_at_preparation':0}
  
+ rec=json.loads(json.dumps(rec))
  if old:
-  for key in ['source_bundles','source_manifest_sha256','Base_A08_sha256','folds','arms','head_dimension','head_parameters','head_precision','head_steps_each']:assert old[key]==rec[key],'scientific input change during provenance repair'
+  for key in ['source_bundles','source_manifest_sha256','Base_A08_sha256','folds','arms','head_dimension','head_parameters','head_precision','head_steps_each']:assert old[key]==rec[key],'scientific input change during provenance repair: '+key
  write(PUB/'input_manifest.json',rec);print(json.dumps({k:v for k,v in rec.items() if k!='code'}))
 
 def verify():
