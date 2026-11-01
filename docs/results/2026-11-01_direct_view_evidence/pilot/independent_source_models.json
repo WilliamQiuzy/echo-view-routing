@@ -1,0 +1,65 @@
+{
+  "passed": true,
+  "models": {
+    "L": {
+      "updates": 600,
+      "optimizer_counter": 600,
+      "optimizer_verified": {
+        "verified": true,
+        "unique_parameter_IDs": 400,
+        "assigned_moment_states": 400,
+        "complete_group_membership_shapes_hyperparameters_and_last_LR": true
+      },
+      "saved_rng_structure_and_digest_verified": true,
+      "saved_CPU_rng_sha256": "79d03a5228a6652cecfe225a6421c9d855d132430cb79fe453ed50804a7ba015",
+      "saved_CUDA_rng_sha256": [
+        "5c46ea70657e624b18b62876f80a1c8a3ef04f719d048f89101b0adcafe27df3"
+      ],
+      "RNG_scope": "Retained tensors/hash structure and CPU state acceptance; GPU restoration behavior independently checked by fit-only3+3production check, not rerun in this CPU audit.",
+      "complete_state_verified": true,
+      "frozen_old_5class_head_verified": true,
+      "true_training_forwards": 4800,
+      "true_training_backwards": 4800,
+      "parameter_drift_L2_by_group": {
+        "encoder_trunk": 1.9532098380105425,
+        "marker_stem": 0.19532593979850216,
+        "projection": 1.7881457928716074,
+        "scalar_head": 0.49009476314656014
+      }
+    },
+    "W": {
+      "updates": 600,
+      "optimizer_counter": 600,
+      "optimizer_verified": {
+        "verified": true,
+        "unique_parameter_IDs": 400,
+        "assigned_moment_states": 400,
+        "complete_group_membership_shapes_hyperparameters_and_last_LR": true
+      },
+      "saved_rng_structure_and_digest_verified": true,
+      "saved_CPU_rng_sha256": "79d03a5228a6652cecfe225a6421c9d855d132430cb79fe453ed50804a7ba015",
+      "saved_CUDA_rng_sha256": [
+        "5c46ea70657e624b18b62876f80a1c8a3ef04f719d048f89101b0adcafe27df3"
+      ],
+      "RNG_scope": "Retained tensors/hash structure and CPU state acceptance; GPU restoration behavior independently checked by fit-only3+3production check, not rerun in this CPU audit.",
+      "complete_state_verified": true,
+      "frozen_old_5class_head_verified": true,
+      "true_training_forwards": 4800,
+      "true_training_backwards": 4800,
+      "parameter_drift_L2_by_group": {
+        "encoder_trunk": 2.0484999197604115,
+        "marker_stem": 0.16332000525967622,
+        "projection": 1.9102503686886598,
+        "scalar_head": 0.5306949220684315
+      }
+    }
+  },
+  "source_formal_updates": 1200,
+  "same_initial_full_state": true,
+  "complete_plan_coverage": 569,
+  "source_diagnostic_forwards_in_audit": 0,
+  "source_models_manifest_sha256": "959e25b9932c7a1446719de622a0e3303024481e3360a26d8bf9e5df3acf8bdf",
+  "Base_A08_unchanged": true,
+  "wall_seconds": 4.188419342041016,
+  "process_CPU_seconds": 5.420405
+}
