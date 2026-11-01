@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """A51-P adaptation of supervise_pw_purpose_transfer_live; one owned process."""
 import argparse
+import fcntl
 import json
 import os
 from pathlib import Path
@@ -11,6 +12,7 @@ import time
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "runs/a51_verified_direct_view_pilot_v1"
 COMMANDS = {
+    "source_check": ("scripts/train_direct_view_evidence.py", "check", 600, True),
     "source_train": ("scripts/train_direct_view_evidence.py", "train", 2400, True),
     "source_readout": ("scripts/train_direct_view_evidence.py", "readout", 600, True),
     "source_audit": ("scripts/audit_direct_view_models.py", "source", 900, False),
@@ -23,6 +25,10 @@ COMMANDS = {
 def main():
     parser = argparse.ArgumentParser(); parser.add_argument("stage", choices=COMMANDS); args = parser.parse_args()
     OUT.mkdir(parents=True, exist_ok=True)
+    owner_lock = (OUT / "exclusive_supervisor.lock").open("a+")
+    try: fcntl.flock(owner_lock.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except BlockingIOError as e:
+        owner_lock.close(); raise RuntimeError("another supervisor owns the queue") from e
     active = OUT / "active_process.json"
     if active.exists():
         old = json.loads(active.read_text())

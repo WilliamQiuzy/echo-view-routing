@@ -121,8 +121,18 @@ def prepare():
     assert audit["bound_sha256"] == sha(data.path)
     p = OUT / "source_plan.npy"
     if p.exists():
-        raise RuntimeError("source plan already prepared")
-    np.save(p, data.plan)
+        assert np.array_equal(np.load(p), data.plan), "frozen exposure plan changed"
+        if list((OUT / "source_train").glob("*/claim.json")):
+            raise RuntimeError("formal source model exists; cannot revise prelaunch provenance")
+    else:
+        np.save(p, data.plan)
+    previous = PUB / "input_manifest.json"
+    if previous.exists():
+        history = PUB / "prelaunch_history"; history.mkdir(exist_ok=True)
+        (history / (sha(previous) + ".input.json")).write_bytes(previous.read_bytes())
+        old_checks = PUB / "checks.json"
+        if old_checks.exists():
+            (history / (sha(old_checks) + ".checks.json")).write_bytes(old_checks.read_bytes())
     rec = {"run_id": "A51-P", "source_arms": list(ARMS), "source_updates_each": 600, "windows_per_update": 8,
            "fit_requests": len(data.fit), "diagnostic_requests": len(data.diagnostic), "bound_sha256": sha(data.path),
            "source_plan_sha256": data.plan_sha, "source_plan_file_sha256": sha(p), "Base_A08_sha256": sha(BASE),
@@ -240,56 +250,74 @@ def restore(bundle, device="cuda"):
 
 def train():
     manifest = verify_input(); checks = json.loads((PUB / "checks.json").read_text()); assert checks["passed"]
+    assert checks["input_manifest_sha256"] == sha(PUB / "input_manifest.json"), "stale check receipt"
     pre = json.loads((OUT / "prelaunch_freeze.json").read_text())
     assert pre["input_manifest_sha256"] == sha(PUB / "input_manifest.json") and pre["actual_git_objects_verified"]
     data = Inputs(); entries = {}
     for arm in ARMS:
         rd = OUT / "source_train" / arm; rd.mkdir(parents=True, exist_ok=True)
+        dt.sync_directory(rd.parent); dt.sync_directory(OUT)
         ident = {"arm": arm, "input_manifest_sha256": sha(PUB / "input_manifest.json"), "plan_sha256": data.plan_sha}
         if (rd / "manifest.json").exists():
             entry = json.loads((rd / "manifest.json").read_text())
             assert entry["identity"] == ident and entry["updates"] == 600 and sha(rd / "final.pt") == entry["bundle_sha256"]
+            assert sha(rd / "optimizer_final.pt") == entry["optimizer_final_sha256"]
             entries[arm] = entry; continue
         claim, rp, journal = rd / "claim.json", rd / "resume.pt", rd / "updates.private.jsonl"
         m, h = build(); opt = t44.make_opt(m, h); initial = {n: v.clone() for n, v in flat(m, h).items()}
         if claim.exists():
             assert json.loads(claim.read_text()) == ident
+            if not rp.exists() and (rd / "optimizer_final.pt").exists(): rp = rd / "optimizer_final.pt"
             if not rp.exists(): raise RuntimeError("claimed source model has no safe resumable optimizer state")
             st = torch.load(rp, weights_only=False, map_location="cpu"); assert st["identity"] == ident
             t44.load_state(m, h, opt, st); start_u = int(st["update"])
             logs = [json.loads(line) for line in journal.read_text().splitlines()]
-            if len(logs) != start_u: raise RuntimeError("unsaved source updates cannot be repeated")
+            dt.validate_recovery(rd, start_u, len(logs))
         else:
             with claim.open("x") as f: json.dump(ident, f); f.flush(); os.fsync(f.fileno())
+            dt.sync_directory(rd)
             start_u = 0; logs = []
             np.save(rd / "fit_init.npy", fit_scores(m, h, data))
         start_wall = time.time()
         with journal.open("a") as jf:
-            for u in range(start_u, 600):
-                rec = step(m, h, opt, data, u, arm)
-                rec["device"] = torch.cuda.get_device_name(0)
+            def persist(rec):
                 jf.write(json.dumps(rec) + "\n"); jf.flush(); os.fsync(jf.fileno()); logs.append(rec)
+            for u in range(start_u, 600):
+                def compute():
+                    rec = step(m, h, opt, data, u, arm)
+                    rec["device"] = torch.cuda.get_device_name(0)
+                    return rec
+                rec = dt.claimed_update(rd, u, compute, persist)
                 if (u + 1) % 25 == 0:
                     dt.write_json(OUT / "progress.json", {"run_id": "A51-P", "stage": "source_training", "model": arm,
                         "update": u + 1, "total": 600, "pid": os.getpid(), "device": rec["device"], "updated_epoch": time.time()})
                     print(json.dumps({"arm": arm, "update": u + 1, "loss": rec["loss"], "pid": os.getpid()}), flush=True)
                 if (u + 1) % 150 == 0:
                     temp = rp.with_suffix(".tmp")
-                    torch.save({**t44.state_of(m, h, opt, 1.), "identity": ident, "update": u + 1}, temp); temp.replace(rp)
+                    with temp.open("wb") as f:
+                        torch.save({**t44.state_of(m, h, opt, 1.), "identity": ident, "update": u + 1}, f)
+                        f.flush(); os.fsync(f.fileno())
+                    temp.replace(rp); dt.sync_directory(rd)
         assert len(logs) == 600 and [r["u"] for r in logs] == list(range(600))
         steps = [int(v["step"]) for v in opt.state.values()]
         assert steps and set(steps) == {600}
         fs = fit_scores(m, h, data); np.save(rd / "fit_final.npy", fs)
         final = flat(m, h)
         assert all(torch.equal(final[n], value) for n, value in initial.items() if n.startswith("m.classifier."))
-        bundle = make_bundle(m, h, ident); torch.save(bundle, rd / "final.pt")
+        bundle = make_bundle(m, h, ident)
+        with (rd / "final.pt").open("wb") as f:
+            torch.save(bundle, f); f.flush(); os.fsync(f.fileno())
+        dt.sync_directory(rd)
         # CPU complete-state reconstruction, no heldout forward.
         cm, ch = restore(torch.load(rd / "final.pt", weights_only=True, map_location="cpu"), "cpu")
         assert state_sha(flat(cm, ch)) == bundle["full_state_sha256"]
         drift = {n: float((final[n].double() - initial[n].double()).norm()) for n in final}
         groups = {k: max(r["groups"][k] for r in logs[1:]) for k in logs[0]["groups"]}
         assert all(groups[k] > 0 for k in groups)
+        optimizer_final = rd / "optimizer_final.pt"
+        if rp != optimizer_final: rp.replace(optimizer_final); dt.sync_directory(rd)
         entry = {"identity": ident, "updates": 600, "optimizer_step_values": sorted(set(steps)), "optimizer_state_tensors": len(steps),
+                 "optimizer_final_sha256": sha(optimizer_final), "optimizer_RNG_state_retained_for_independent_audit": True,
                  "physical_training_forwards": sum(r["physical_forwards"] for r in logs), "physical_training_backwards": sum(r["physical_backwards"] for r in logs),
                  "bundle_sha256": sha(rd / "final.pt"), "complete_full_state_sha256": bundle["full_state_sha256"],
                  "frozen_state_sha256": bundle["frozen_state_sha256"], "initial_full_state_sha256": state_sha(initial),
@@ -297,7 +325,7 @@ def train():
                  "group_gradient_max_after_first_step": groups, "drift_by_tensor": drift, "old_5class_head_frozen": True,
                  "model_wall_seconds": time.time() - start_wall, "source_A08_unchanged": sha(BASE) == manifest["Base_A08_sha256"]}
         dump(rd / "manifest.json", entry); entries[arm] = entry
-        rp.unlink(); del m, h, opt, cm, ch; torch.cuda.empty_cache()
+        del m, h, opt, cm, ch; torch.cuda.empty_cache()
     record = {"run_id": "A51-P", "input_manifest_sha256": sha(PUB / "input_manifest.json"), "models": entries,
               "formal_source_updates": 1200, "source_training_forwards": 9600, "source_training_backwards": 9600,
               "diagnostic_model_forwards": 0, "Base_A08_sha256": sha(BASE)}
@@ -305,7 +333,10 @@ def train():
 
 
 def readout():
-    verify_input(); manifest = json.loads((PUB / "source_models_manifest.json").read_text())
+    current = verify_input(); manifest = json.loads((PUB / "source_models_manifest.json").read_text())
+    assert manifest["input_manifest_sha256"] == sha(PUB / "input_manifest.json"), "stale source-model manifest"
+    assert manifest["Base_A08_sha256"] == current["Base_A08_sha256"]
+    assert all(manifest["models"][a]["identity"]["input_manifest_sha256"] == sha(PUB / "input_manifest.json") for a in ARMS)
     freeze = json.loads((OUT / "source_models_freeze.json").read_text())
     assert freeze["manifest_sha256"] == sha(PUB / "source_models_manifest.json") and freeze["actual_git_objects_verified"]
     data = Inputs(); values = {}
@@ -321,7 +352,7 @@ def readout():
             while (i := dt.claim_row(cell)) is not None:
                 s = float(forward(m, h, data, data.diagnostic[i], base=arm == "G"))
                 dt.finish_row(cell, i, s)
-        dt.seal_cell(cell); values[arm] = np.asarray(cell["scores"]).copy()
+        dt.seal_cell(cell); values[arm] = np.asarray(cell["scores"]).copy(); dt.close_cell(cell)
         del m, h; torch.cuda.empty_cache()
     ctrl = data.bound["geometry_control"]
     x = np.asarray([r["geometry"] for r in data.diagnostic], float)
@@ -349,11 +380,17 @@ def main():
     torch.backends.cuda.matmul.allow_tf32 = False; torch.backends.cudnn.allow_tf32 = False
     torch.backends.cudnn.deterministic = True; torch.backends.cudnn.benchmark = False
     started = time.time(); ok = False
+    stage_lock = dt.acquire_lock(OUT / "exclusive_worker.lock")
     try:
         {"prepare": prepare, "check": check, "train": train, "readout": readout}[args.stage](); ok = True
     finally:
+        stage_lock.close()
         u = resource.getrusage(resource.RUSAGE_SELF)
-        dump(OUT / (args.stage + "_model_process.json"), {"stage": args.stage, "ok": ok, "pid": os.getpid(), "start_epoch": started,
+        receipt = OUT / (args.stage + "_model_process.json")
+        if receipt.exists():
+            history = OUT / "stage_history"; history.mkdir(exist_ok=True)
+            (history / (sha(receipt) + ".json")).write_bytes(receipt.read_bytes())
+        dump(receipt, {"stage": args.stage, "ok": ok, "pid": os.getpid(), "start_epoch": started,
              "end_epoch": time.time(), "wall_seconds": time.time() - started, "CPU_seconds": u.ru_utime + u.ru_stime,
              "GPU_job_wall_seconds": time.time() - started if args.stage != "prepare" else 0})
 

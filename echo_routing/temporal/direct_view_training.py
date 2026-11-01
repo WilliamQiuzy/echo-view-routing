@@ -1,10 +1,26 @@
 """A51-P deterministic exposure and durable, once-only row inference."""
 from __future__ import annotations
 import hashlib
+import fcntl
 import json
 import os
 from pathlib import Path
 import numpy as np
+
+
+def sync_directory(path):
+    fd = os.open(str(path), os.O_RDONLY)
+    try: os.fsync(fd)
+    finally: os.close(fd)
+
+
+def acquire_lock(path):
+    path = Path(path); path.parent.mkdir(parents=True, exist_ok=True)
+    handle = path.open("a+")
+    try: fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except BlockingIOError as e:
+        handle.close(); raise RuntimeError("operation already owned by another handle/process") from e
+    return handle
 
 
 def source_plan(directory: np.ndarray, updates=600) -> np.ndarray:
@@ -30,6 +46,30 @@ def write_json(path, value):
     with tmp.open("w") as f:
         json.dump(value, f, indent=2, allow_nan=False); f.write("\n"); f.flush(); os.fsync(f.fileno())
     tmp.replace(path)
+    sync_directory(path.parent)
+
+
+def validate_recovery(root, checkpoint_step, journal_length):
+    guard = Path(root) / "update_guard.json"
+    rec = json.loads(guard.read_text()) if guard.exists() else {"pending": None, "last_committed": -1}
+    if rec["pending"] is not None:
+        raise RuntimeError("possibly executed update has no safely committed outcome")
+    if checkpoint_step != journal_length or rec["last_committed"] != journal_length - 1:
+        raise RuntimeError("unsaved optimizer updates cannot be repeated")
+
+
+def claimed_update(root, index, compute, persist):
+    guard = Path(root) / "update_guard.json"
+    rec = json.loads(guard.read_text()) if guard.exists() else {"pending": None, "last_committed": -1}
+    if rec["pending"] is not None:
+        raise RuntimeError("possibly executed update cannot be repeated")
+    if rec["last_committed"] != index - 1:
+        raise RuntimeError("source update cursor differs from committed journal")
+    write_json(guard, {"pending": int(index), "last_committed": rec["last_committed"]})
+    value = compute()
+    persist(value)
+    write_json(guard, {"pending": None, "last_committed": int(index)})
+    return value
 
 
 def _sha(path):
@@ -38,33 +78,43 @@ def _sha(path):
 
 def open_cell(root, key, identity, n):
     root = Path(root); root.mkdir(parents=True, exist_ok=True)
+    owner = acquire_lock(root / (key + ".lock"))
     progress, data = root / (key + ".progress.json"), root / (key + ".npy")
     if progress.exists():
         rec = json.loads(progress.read_text())
         if rec["identity"] != identity or rec["n"] != n:
-            raise ValueError("score-cell identity mismatch")
+            owner.close(); raise ValueError("score-cell identity mismatch")
         if rec["pending"] is not None:
-            raise RuntimeError("inflight possibly executed row cannot be repeated")
+            owner.close(); raise RuntimeError("inflight possibly executed row cannot be repeated")
         if not data.exists():
-            raise RuntimeError("claimed cell has no durable data array")
+            owner.close(); raise RuntimeError("claimed cell has no durable data array")
         scores = np.load(data, mmap_mode="r+")
         if scores.shape != (n,) or not np.isfinite(scores[:rec["done"]]).all():
-            raise RuntimeError("saved cell prefix is incomplete")
+            owner.close(); raise RuntimeError("saved cell prefix is incomplete")
     else:
         if data.exists():
-            raise RuntimeError("unclaimed score data already exists")
+            owner.close(); raise RuntimeError("unclaimed score data already exists")
         rec = {"identity": identity, "n": n, "done": 0, "pending": None}
         with progress.open("x") as f:
             json.dump(rec, f); f.flush(); os.fsync(f.fileno())
+        sync_directory(root)
         scores = np.lib.format.open_memmap(data, mode="w+", dtype=np.float64, shape=(n,))
         scores[:] = np.nan; scores.flush()
         with data.open("r+b") as f:
             os.fsync(f.fileno())
+        sync_directory(root)
     return {"progress": progress, "data": data, "scores": scores, "record": rec,
-            "receipt": root / (key + ".complete.json")}
+            "receipt": root / (key + ".complete.json"), "lock": owner}
+
+
+def close_cell(cell):
+    cell["scores"].flush()
+    cell["lock"].close()
 
 
 def claim_row(cell):
+    if cell["lock"].closed:
+        raise RuntimeError("score cell is no longer owned")
     rec = cell["record"]
     if rec["pending"] is not None:
         raise RuntimeError("inflight row already claimed")
@@ -76,6 +126,8 @@ def claim_row(cell):
 
 
 def finish_row(cell, index, score):
+    if cell["lock"].closed:
+        raise RuntimeError("score cell is no longer owned")
     rec = cell["record"]
     if index != rec["done"] or rec["pending"] != index or not np.isfinite(score):
         raise ValueError("score row does not match exclusive pending claim")
