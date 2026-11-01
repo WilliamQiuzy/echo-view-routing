@@ -67,7 +67,7 @@ def module_files():
         if not p:
             continue
         p = Path(p).resolve()
-        if p.is_relative_to(ROOT) and ".venv" not in p.parts and p.suffix == ".py":
+        if p.is_relative_to(ROOT) and ".venv" not in p.parts and p.suffix == ".py" and p.is_file():
             files[str(p.relative_to(ROOT))] = sha(p)
     for p in [ROOT / "scripts/diagnose_a5c_image_dependence.py", ROOT / "docs/superpowers/plans/2026-10-31-a5c-image-dependence.md"]:
         files[str(p.relative_to(ROOT))] = sha(p)
@@ -75,8 +75,8 @@ def module_files():
 
 
 def prepare():
-    if (OUT / "selection.json").exists():
-        raise RuntimeError("selection already exists; no cohort replacement")
+    if (OUT / "input_freeze.json").exists():
+        raise RuntimeError("metadata preparation already complete; no cohort replacement")
     c = ctx(); old = np.load(c.out / "readout_cache_s0.npz")
     cases, public, pins = [], {}, {}
     pins[str((c.out / "readout_cache_s0.npz").relative_to(ROOT))] = sha(c.out / "readout_cache_s0.npz")
@@ -111,7 +111,10 @@ def prepare():
                 model_paths.append(p)
     for p in model_paths:
         pins[str(p.relative_to(ROOT))] = sha(p)
-    dump(OUT / "selection.json", {"cases": cases})
+    if (OUT / "selection.json").exists():
+        assert json.loads((OUT / "selection.json").read_text()) == {"cases": cases}, "cannot replace interrupted preparation's selection"
+    else:
+        dump(OUT / "selection.json", {"cases": cases})
     manifest = {"run_id": "a5c_image_dependence_v1", "mode": "outcome_conditioned_training_source_diagnostic",
                 "selection_sha256": sha(OUT / "selection.json"), "groups": public, "case_count": len(cases),
                 "all_original_denominators": {"A5C_missed_by_Base": 103, "correct_A4C": 1413},
@@ -245,18 +248,25 @@ def run():
                 if mi == 0:
                     metadata[str(h)]["rows"].append({"row": int(row), "pixel_sha256": hashlib.sha256(x.tobytes()).hexdigest(),
                                                     "crop_retention_mean": float(np.mean([z["raw_crop_retained_fraction"] for z in rec])),
-                                                    "native_shapes": sorted({tuple(z["raw_shape"]) for z in rec}), **imd.image_proxies(x)})
+                                                    "native_shapes": sorted({tuple(z["raw_shape"]) for z in rec}),
+                                                    "global_input_hashes": {name: hashlib.sha256(v.tobytes()).hexdigest() for name, v in variants},
+                                                    **imd.image_proxies(x)})
                 if (j + 1) % 10 == 0 or j + 1 == len(rows):
                     progress(h, model, "global", j + 1, len(rows), done, total, job_start)
             parity[f"{model}_f{h}"] = max_error
             for j, row in enumerate(anchors):
                 (x, full, retained), rec, frames = px.window(int(row))
                 marker = int(F.W["marker"][row])
+                anchor_hashes = {}
                 for fi, fill in enumerate(("mean", "blur")):
                     repl = imd.replacement(x, fill)
                     grid = imd.grid_masks()
                     for lo in range(0, 49, 4):
                         vv = [imd.mask_window(x, mask, prepared=repl) for mask in grid[lo:lo + 4]]
+                        if mi == 0:
+                            for k, v in enumerate(vv, lo):
+                                if k in (0, 24, 48):
+                                    anchor_hashes[f"{fill}_{k}"] = hashlib.sha256(v.tobytes()).hexdigest()
                         map_s[j, fi, lo:lo + len(vv)] = predict(m, head, vv, marker, order, device)
                 rep = imd.replacement(x, "mean")
                 vv = []
@@ -265,7 +275,7 @@ def run():
                 time_s[j] = predict(m, head, vv, marker, order, device)
                 if mi == 0:
                     private_contact(OUT / "private_review" / f"fold{h}_case{j:02d}.jpg", x, marker, frames, (full, retained))
-                    metadata[str(h)]["anchors"].append({"row": int(row), "marker": marker})
+                    metadata[str(h)]["anchors"].append({"row": int(row), "marker": marker, "selected_spatial_input_hashes": anchor_hashes})
                 done += 102
                 if (j + 1) % 4 == 0 or j + 1 == len(anchors):
                     progress(h, model, "maps", j + 1, len(anchors), done, total, job_start)
