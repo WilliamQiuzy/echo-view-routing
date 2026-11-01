@@ -97,6 +97,25 @@ def marker_requests(rec: dict, n_frames: int | None = None, max_requests: int = 
     return out
 
 
+def validate_video_axis(fps: float, decoded_frames: int, intervals: list[tuple[int, int]]) -> bool:
+    if abs(float(fps) - 30.) > .001:
+        raise ValueError("released fps does not support the fixed annotation contract")
+    if decoded_frames < 2 or any(a < 0 or b > decoded_frames + 1 for a, b in intervals):
+        raise ValueError("annotation exceeds the actual decoded ordinal inventory")
+    return True
+
+
+def check_duplicate_isolation(requests: list[dict]) -> bool:
+    owners = {}
+    for r in requests:
+        key = r["pixel_sha256"]
+        owner = r["patient"], r["role"]
+        if key in owners and owners[key] != owner:
+            raise ValueError("duplicate pixel request crosses patient or fold")
+        owners[key] = owner
+    return True
+
+
 def _top_mass(counts: Counter, fraction: float) -> set:
     if not counts:
         return set()

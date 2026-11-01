@@ -135,3 +135,19 @@ def test_marker_request_cap_is_even_and_deterministic():
     assert q[0]["centre"] == 1
     assert q[-1]["centre"] < 1999
     assert len({tuple(r["frames"]) for r in q}) == 8
+
+
+def test_video_axis_uses_decoded_inventory_and_rejects_guessed_resampling():
+    assert dv.validate_video_axis(30., 200, [(0, 200)])
+    with pytest.raises(ValueError, match="fps"):
+        dv.validate_video_axis(26., 200, [(0, 200)])
+    with pytest.raises(ValueError, match="inventory"):
+        dv.validate_video_axis(30., 100, [(0, 200)])
+
+
+def test_duplicate_requests_across_patients_or_folds_are_rejected():
+    rows = [{"pixel_sha256": "same", "patient": "p1", "role": "fit"},
+            {"pixel_sha256": "other", "patient": "p2", "role": "diagnostic"}]
+    assert dv.check_duplicate_isolation(rows)
+    with pytest.raises(ValueError, match="duplicate"):
+        dv.check_duplicate_isolation([rows[0], {**rows[1], "pixel_sha256": "same"}])
