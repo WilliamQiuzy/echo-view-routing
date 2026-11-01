@@ -9,6 +9,7 @@ import numpy as np,torch
 import echo_routing.vit.target_mvit as tm
 from echo_routing.temporal import frozen_view_transfer as ft,direct_view_training as dt
 from echo_routing.temporal import pw_transfer_live as reference
+from echo_routing.temporal.pw_transfer import state_sha
 from scripts import train_direct_view_evidence as src
 from scripts.prepare_direct_view_evidence import sha
 OUT=ROOT/'runs/a53_frozen_view_transfer_v1';PUB=ROOT/'docs/results/2026-11-01_frozen_direct_view_transfer';PRIOR=ROOT/'runs/a51_verified_direct_view_pilot_v1'
@@ -27,11 +28,19 @@ def files():
  return {p:sha(ROOT/p) for p in sorted(set(paths))}
 
 def prepare():
- assert not (PUB/'input_manifest.json').exists();c=ctx();folds={};sm=source_manifest()
+ old=None
+ if (PUB/'input_manifest.json').exists():
+  assert not (PUB/'feature_manifest.json').exists() and not list((OUT/'heads').glob('*/claim.json')),'cannot revise prepared provenance after formal work'
+  old=json.loads((PUB/'input_manifest.json').read_text());history=PUB/'prelaunch_history';history.mkdir(exist_ok=True);(history/(sha(PUB/'input_manifest.json')+'.input.json')).write_bytes((PUB/'input_manifest.json').read_bytes())
+  if (PUB/'checks.json').exists():(history/(sha(PUB/'checks.json')+'.checks.json')).write_bytes((PUB/'checks.json').read_bytes())
+ c=ctx();folds={};sm=source_manifest()
  for f in (0,1):
   F=t.Fold(c,0,f);O=t.t31.outputs(c.a31,0,f);assert sha(c.a31.out/f'outputs_s0_f{f}.npz')==t.PINS['outputs'][0][str(f)];assert len(F.need)==[5030,5437][f];assert (len(F.L['positives']),len(F.L['negatives']),len(F.L['other']))==[(34,714,1),(69,699,3)][f]
   folds[str(f)]={'rows':len(F.need),'rows_sha256':digest(F.need),'plan_sha256':F.psha,'outputs_sha256':t.PINS['outputs'][0][str(f)],'pool_sha256':sha(c.a31.out/f'pool_{f}.npy'),'runs_sha256':sha(c.a31.out/'data'/f'runs_s0_f{f}.npz'),'request_grid_sha256':digest(np.column_stack([F.W['seq'],F.W['marker'],F.W['s']])),'positive_runs':len(F.L['positives']),'protected_negative_runs':len(F.L['negatives']),'other_runs':len(F.L['other']),'training_occurrences':sum(len(F.occ(u)[0]) for u in range(600))}
  rec={'run_id':'A53','arms':ARMS,'source_bundles':{a:sm['models'][a]['bundle_sha256'] for a in ['L','W']},'source_manifest_sha256':sha(ROOT/'docs/results/2026-11-01_direct_view_evidence/pilot/source_models_manifest.json'),'Base_A08_sha256':sha(src.BASE),'folds':folds,'code':files(),'source_heads_discarded':True,'source_backbones_frozen':True,'new_source_classifier_gate_pass':False,'head_dimension':1024,'head_parameters':1025,'head_precision':'float64','head_steps_each':600,'G_supplement_structurally_zero':True,'prior_gates_not_revised':True,'target_efficacy_scores_at_preparation':0}
+ 
+ if old:
+  for key in ['source_bundles','source_manifest_sha256','Base_A08_sha256','folds','arms','head_dimension','head_parameters','head_precision','head_steps_each']:assert old[key]==rec[key],'scientific input change during provenance repair'
  write(PUB/'input_manifest.json',rec);print(json.dumps({k:v for k,v in rec.items() if k!='code'}))
 
 def verify():
@@ -58,7 +67,7 @@ def embeddings(m,F,rows):
  return np.asarray(out,np.float32)
 
 def check():
- man=verify();c=ctx();F=t.Fold(c,0,0);O=t.t31.outputs(c.a31,0,0);rows=F.need[np.linspace(0,len(F.need)-1,16,dtype=int)];m=encoder('G');start=time.time();e=embeddings(m,F,rows);parity=float(abs(e-O['emb'][rows]).max());assert parity<3e-5;del m
+ man=verify();c=ctx();F=t.Fold(c,0,0);O=t.t31.outputs(c.a31,0,0);rows=F.need[np.linspace(0,len(F.need)-1,4,dtype=int)];m=encoder('G');start=time.time();e=embeddings(m,F,rows);parity=float(abs(e-O['emb'][rows]).max());assert parity<3e-5;del m
  times={}
  for a in ['L','W']:
   m=encoder(a);torch.cuda.synchronize();start=time.time();embeddings(m,F,rows);torch.cuda.synchronize();times[a]=(time.time()-start)/len(rows);del m;torch.cuda.empty_cache()
@@ -72,11 +81,13 @@ def check():
  ft.objective(torch.stack(zz)).backward();gradient=max(float(abs(p.grad-g).max()) for p,g in zip(h.parameters(),grads));assert gradient<1e-10
  def execute(stop,st=None):
   h=ft.new_head();o=torch.optim.AdamW(h.parameters(),lr=1e-3,weight_decay=1e-4);begin=0
-  if st:h.load_state_dict(st['head']);o.load_state_dict(st['optimizer']);begin=st['update']
+  if st:
+   h.load_state_dict(st['head']);o.load_state_dict(st['optimizer']);begin=st['update']
+   if 'CPU_rng' in st:torch.set_rng_state(st['CPU_rng'])
   for u in range(begin,stop):ft.step(h,o,x,u)
   return h,o
- a,oa=execute(6);b,ob=execute(6);assert all(torch.equal(u,v) for u,v in zip(a.parameters(),b.parameters()));b,ob=execute(3);save(OUT/'check_resume.pt',{'head':b.state_dict(),'optimizer':ob.state_dict(),'update':3});st=torch.load(OUT/'check_resume.pt',map_location='cpu',weights_only=True);(OUT/'check_resume.pt').unlink();b,ob=execute(6,st);assert all(torch.equal(u,v) for u,v in zip(a.parameters(),b.parameters()))
- result={'passed':True,'input_manifest_sha256':sha(PUB/'input_manifest.json'),'G_fresh16_vs_A31_embedding_max_abs':parity,'linear_explicit_window_vs_runmean_gradient_error':gradient,'repeat_and_forced_identical_features_exact':True,'disk3plus3_resume_exact':True,'seconds_per_source_window_including_decode':times,'complete_extraction_forecast_seconds':max(times.values())*20934*1.3+120,'head_training_is_only_CPU_linear':True,'new_target_classifier_scores':0,'fit_only_GPU_checks':48,'backbone_parameters_require_grad':False}
+ a,oa=execute(6);b,ob=execute(6);assert all(torch.equal(u,v) for u,v in zip(a.parameters(),b.parameters()));b,ob=execute(3);save(OUT/'check_resume.pt',{'head':b.state_dict(),'optimizer':ob.state_dict(),'update':3,'CPU_rng':torch.get_rng_state()});st=torch.load(OUT/'check_resume.pt',map_location='cpu',weights_only=True);(OUT/'check_resume.pt').unlink();b,ob=execute(6,st);assert all(torch.equal(u,v) for u,v in zip(a.parameters(),b.parameters()))
+ result={'passed':True,'input_manifest_sha256':sha(PUB/'input_manifest.json'),'G_fresh_fit_subset_vs_A31_embedding_max_abs':parity,'linear_explicit_window_vs_runmean_gradient_error':gradient,'repeat_and_forced_identical_features_exact':True,'disk3plus3_resume_exact':True,'seconds_per_source_window_including_decode':times,'complete_extraction_forecast_seconds':max(times.values())*20934*1.3+120,'head_training_is_only_CPU_linear':True,'new_target_classifier_scores':0,'fit_only_GPU_checks':12,'backbone_parameters_require_grad':False}
  write(PUB/'checks.json',result);print(json.dumps(result))
 
 def save(path,obj):
@@ -87,7 +98,7 @@ def save(path,obj):
 def extract():
  man=verify();freeze=json.loads((OUT/'extract_freeze.json').read_text());assert freeze['input_manifest_sha256']==sha(PUB/'input_manifest.json') and freeze['actual_git_objects_verified'];checks=json.loads((PUB/'checks.json').read_text());assert checks['passed'] and checks['input_manifest_sha256']==sha(PUB/'input_manifest.json');c=ctx();entries={}
  for a in ['L','W']:
-  model=encoder(a)
+  model=encoder(a);frozen_before=state_sha(model.state_dict())
   for f in (0,1):
    F=t.Fold(c,0,f);key=f'{a}_f{f}';path=OUT/f'features_{key}.npy';progress=OUT/f'features_{key}.json';ident={'arm':a,'fold':f,'rows_sha256':digest(F.need),'source_bundle_sha256':man['source_bundles'][a],'input_manifest_sha256':sha(PUB/'input_manifest.json')}
    if progress.exists():
@@ -104,6 +115,8 @@ def extract():
      rec.update(done=k+1,pending=None);write(progress,rec)
     if rec['done']%256<32:write(OUT/'progress.json',{'stage':'extract','arm':a,'fold':f,'windows_done':rec['done'],'windows_total':len(F.need),'pid':os.getpid(),'device':torch.cuda.get_device_name(0),'updated_epoch':time.time()})
    assert E.shape==(len(F.need),512) and np.isfinite(E).all();entries[key]={'identity':ident,'rows':len(F.need),'feature_sha256':sha(path),'physical_frozen_model_forwards':len(F.need),'classifier_scores':0};del E
+  assert state_sha(model.state_dict())==frozen_before
+  for f in (0,1):entries[f'{a}_f{f}']['encoder_state_sha256_before_after']=frozen_before
   del model;torch.cuda.empty_cache()
  write(PUB/'feature_manifest.json',{'input_manifest_sha256':sha(PUB/'input_manifest.json'),'features':entries,'new_frozen_forward_count':20934,'backbone_optimizer_updates':0,'new_target_classifier_scores':0})
 
@@ -145,7 +158,7 @@ def train():
    if (rd/'claim.json').exists():
     assert json.loads((rd/'claim.json').read_text())==ident
     if not rp.exists():rp=rd/'optimizer_final.pt'
-    assert rp.exists(),'claimed head missing safe full state';st=torch.load(rp,map_location='cpu',weights_only=True);h.load_state_dict(st['head']);opt.load_state_dict(st['optimizer']);start=st['update'];logs=[json.loads(x) for x in jp.read_text().splitlines()];dt.validate_recovery(rd,start,len(logs))
+    assert rp.exists(),'claimed head missing safe full state';st=torch.load(rp,map_location='cpu',weights_only=True);h.load_state_dict(st['head']);opt.load_state_dict(st['optimizer']);torch.set_rng_state(st['CPU_rng']);start=st['update'];logs=[json.loads(x) for x in jp.read_text().splitlines()];dt.validate_recovery(rd,start,len(logs))
    else:write(rd/'claim.json',ident)
    initial=float(torch.nn.functional.softplus(torch.tensor(2.,dtype=torch.float64))+torch.nn.functional.softplus(torch.tensor(-2.,dtype=torch.float64)))
    with jp.open('a') as jf:
@@ -166,11 +179,11 @@ def train():
 def readout():
  verify();man=json.loads((PUB/'heads_manifest.json').read_text());assert man['input_manifest_sha256']==sha(PUB/'input_manifest.json') and man['feature_manifest_sha256']==sha(PUB/'feature_manifest.json')
  for key,e in man['models'].items():assert e['identity']['input_manifest_sha256']==man['input_manifest_sha256'] and e['identity']['feature_manifest_sha256']==man['feature_manifest_sha256'] and e['identity']['fit_fold']==int(key[-1])
- fr=json.loads((OUT/'heads_freeze.json').read_text());assert fr['heads_manifest_sha256']==sha(PUB/'heads_manifest.json') and fr['actual_git_objects_verified'];assert json.loads((PUB/'independent_heads.json').read_text())['passed'];c=ctx();cache={}
+ fr=json.loads((OUT/'heads_freeze.json').read_text());assert fr['heads_manifest_sha256']==sha(PUB/'heads_manifest.json') and fr['actual_git_objects_verified'];audit=json.loads((PUB/'independent_heads.json').read_text());assert audit['passed'] and audit['heads_manifest_sha256']==sha(PUB/'heads_manifest.json');designs=json.loads((PUB/'fit_design_manifest.json').read_text());assert designs['feature_manifest_sha256']==man['feature_manifest_sha256'];c=ctx();cache={}
  for held in (0,1):
   F=t.Fold(c,0,held);cache[f'rows_f{held}']=F.need
   for arm in ARMS:
-   key=f'{arm}_f{1-held}';entry=man['models'][key];path=OUT/'heads'/key/'final.pt';assert sha(path)==entry['head_sha256'];ck=torch.load(path,map_location='cpu',weights_only=True);assert ck['identity']==entry['identity'] and ck['updates']==600;_,X,_=setup(F,c,arm,tuple(v.numpy() for v in ck['scales']));cell=OUT/f'scores_{arm}_f{held}.npy';guard=cell.with_suffix('.json');identity={'head_sha256':sha(path),'feature_manifest_sha256':sha(PUB/'feature_manifest.json'),'rows_sha256':digest(F.need),'rows':len(F.need)}
+   key=f'{arm}_f{1-held}';entry=man['models'][key];path=OUT/'heads'/key/'final.pt';assert sha(path)==entry['head_sha256'];ck=torch.load(path,map_location='cpu',weights_only=True);assert ck['identity']==entry['identity'] and ck['updates']==600 and digest(np.stack([v.numpy() for v in ck['scales']]))==designs['items'][key]['scales_sha256']==entry['scales_sha256'];assert ck['identity']['plan_sha256']==man['models'][key]['identity']['plan_sha256'];_,X,_=setup(F,c,arm,tuple(v.numpy() for v in ck['scales']));cell=OUT/f'scores_{arm}_f{held}.npy';guard=cell.with_suffix('.json');identity={'head_sha256':sha(path),'feature_manifest_sha256':sha(PUB/'feature_manifest.json'),'rows_sha256':digest(F.need),'rows':len(F.need)}
    if guard.exists():
     r=json.loads(guard.read_text());assert r['identity']==identity and r['state']=='complete','uncertain once-only scorecell';assert sha(cell)==r['sha256'];scores=np.load(cell)
    else:

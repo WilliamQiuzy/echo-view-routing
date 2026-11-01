@@ -39,7 +39,15 @@ def features():
   for arm in ARMS:
    F,X,win,sc,err=inputs(f,arm);key=f'{arm}_f{f}';assert np.max(abs(np.stack(sc)-z[key]))<1e-12;assert digest(np.stack(sc))==dm['items'][key]['scales_sha256'];errs[key]=err
   assert len({dm['items'][f'{a}_f{f}']['G_scales_sha256'] for a in ARMS})==1
- dump(PUB/'independent_features.json',{'passed':True,'all4frozen_feature_cells':records,'independent_full_membership_error':errs,'fit_scaler_independently_recomputed':True,'feature_manifest_sha256':sha(PUB/'feature_manifest.json'),'fit_design_manifest_sha256':sha(PUB/'fit_design_manifest.json'),'target_classifier_scores':0,'GPU_forwards_in_audit':0})
+ # Independent fresh FIT backbone evaluation of two fixed windows per source; no head predictions.
+ fresh={}
+ for arm in ['L','W']:
+  m,h=src.restore(torch.load(ROOT/'runs/a51_verified_direct_view_pilot_v1/source_train'/arm/'final.pt',map_location='cpu',weights_only=True),'cpu');m.eval();F=t.Fold(src.ctx(),0,0);rows=F.need[[0,len(F.need)-1]];fr,idx,mk=F.frames(rows);values=[]
+  import echo_routing.vit.target_mvit as tm
+  with torch.no_grad():
+   for j in range(2):values.append(m.embed(tm.to_rgb(fr[idx[j:j+1]]),tm.marker_planes(mk[j:j+1])).numpy()[0])
+  cached=np.load(OUT/f'features_{arm}_f0.npy')[[0,len(F.need)-1]];fresh[arm]=float(abs(np.asarray(values)-cached).max());assert fresh[arm]<3e-5
+ dump(PUB/'independent_features.json',{'passed':True,'all4frozen_feature_cells':records,'independent_full_membership_error':errs,'fit_scaler_independently_recomputed':True,'feature_manifest_sha256':sha(PUB/'feature_manifest.json'),'fit_design_manifest_sha256':sha(PUB/'fit_design_manifest.json'),'target_classifier_scores':0,'GPU_forwards_in_audit':0,'fresh_CPU_fit_backbone_forwards':4,'fresh_CPU_fit_embedding_max_abs':fresh})
 
 def replay(X,plan):
  w=np.zeros(1024);bias=-2.;mw=np.zeros(1024);vw=np.zeros(1024);mb=vb=0.;losses=[]
@@ -62,9 +70,9 @@ def heads():
  dump(PUB/'independent_heads.json',{'passed':True,'heads_manifest_sha256':sha(PUB/'heads_manifest.json'),'models':results,'all_3600_updates_reconstructed':True,'new_classifier_scores_in_audit':0})
 
 def final():
- M=read(PUB/'heads_manifest.json');R=read(PUB/'readout.json');raw=read(PUB/'raw_complete.json');assert raw['cache_sha256']==sha(OUT/'readout.private.npz')==R['raw_cache_sha256'];cache=np.load(OUT/'readout.private.npz');c=src.ctx();a8=t.rsh.a08_ctx();data=t.t31.vpr.training_data(c.a31.a15.a10.a07p);counts={};gates={};sets={a:[] for a in ARMS}
+ M=read(PUB/'heads_manifest.json');R=read(PUB/'readout.json');raw=read(PUB/'raw_complete.json');assert raw['cache_sha256']==sha(OUT/'readout.private.npz')==R['raw_cache_sha256'];cache=np.load(OUT/'readout.private.npz');c=src.ctx();a8=t.rsh.a08_ctx();data=t.t31.vpr.training_data(c.a31.a15.a10.a07p);counts={};gates={};sets={a:[] for a in ARMS};source_sets={a:set() for a in ARMS}
  for held in (0,1):
-  F=t.Fold(c,0,held);D=t.d32.fold_data(c.d,0,held);D['M']=t.d32.set_masks(D);P={'seqs':D['seqs'],'n_of':dict(data.n),'label_of':dict(data.label)};ev=t.bc.evalset(P,list(range(len(D['seqs']))),f'heldout_f{held}');assert np.array_equal(F.need,cache[f'rows_f{held}']);near=t.t27.nearest_rows(F.W,F.seqs);lookup=np.full(len(F.W['seq']),-1,np.int64);lookup[F.need]=np.arange(len(F.need))
+  F=t.Fold(c,0,held);D=t.d32.fold_data(c.d,0,held);D['M']=t.d32.set_masks(D);P={'seqs':D['seqs'],'n_of':dict(data.n),'label_of':dict(data.label)};ev=t.bc.evalset(P,list(range(len(D['seqs']))),f'heldout_f{held}');base=t.tables_pred(F.pk['base'],D,a8.cfg,P,ev);assert base['sequence_row']==R['cells'][str(held)]['Base']['sequence_row'] and base['counts']==R['cells'][str(held)]['Base']['counts'];assert np.array_equal(F.need,cache[f'rows_f{held}']);near=t.t27.nearest_rows(F.W,F.seqs);lookup=np.full(len(F.W['seq']),-1,np.int64);lookup[F.need]=np.arange(len(F.need))
   for arm in ARMS:
    key=f'{arm}_f{1-held}';path=OUT/'heads'/key/'final.pt';ck=torch.load(path,map_location='cpu',weights_only=True);_,_,window,_,_=inputs(held,arm,tuple(v.numpy() for v in ck['scales']));scores=window@ck['head']['weight'].numpy()[0]+float(ck['head']['bias'][0]);assert np.max(abs(scores-cache[f'scores_{arm}_f{held}']))<1e-10
    cell=read(OUT/f'scores_{arm}_f{held}.json');assert cell['state']=='complete' and cell['identity']['head_sha256']==sha(path) and cell['sha256']==sha(OUT/f'scores_{arm}_f{held}.npy');assert np.array_equal(np.load(OUT/f'scores_{arm}_f{held}.npy'),scores)
@@ -72,16 +80,17 @@ def final():
    for k in np.flatnonzero(F.el):
     refs=near[int(F.pk['seq'][k])][int(F.pk['a'][k]):int(F.pk['b'][k])]
     if scores[lookup[refs]].mean()>0:pred[k]=3
-   table=t.tables_pred(pred,D,a8.cfg,P,ev);expected=R['cells'][str(held)][arm];assert table['sequence_row']==expected['sequence_row'] and table['counts']==expected['counts'];fix=(F.pk['base']==2)&(F.pk['labels']==3)&(pred==3);harm=(F.pk['base']==2)&(F.pk['labels']==2)&(pred==3);assert int(fix.sum())==expected['S1_fixed_count'] and int(harm.sum())==expected['A4C_harmed_count'];assert np.array_equal(pred[~F.el],F.pk['base'][~F.el]);sets[arm].append((fix,harm));counts[f'{arm}_f{held}']={'fix':int(fix.sum()),'harm':int(harm.sum()),'full_F1':table['sequence_row']['segment_f1_50_multi'],'short_misses':table['counts']['fn_short']}
+   table=t.tables_pred(pred,D,a8.cfg,P,ev);expected=R['cells'][str(held)][arm];assert table['sequence_row']==expected['sequence_row'] and table['counts']==expected['counts'];fix=(F.pk['base']==2)&(F.pk['labels']==3)&(pred==3);harm=(F.pk['base']==2)&(F.pk['labels']==2)&(pred==3);vsource={ref[0] for k in np.flatnonzero(fix) for ref in F.seqs[int(F.pk['seq'][k])]['refs'][int(F.pk['a'][k]):int(F.pk['b'][k])] if data.label[ref[0]]==3};source_sets[arm]|=vsource;assert len(vsource)==expected['S1_source_count'] and int(fix.sum()-harm.sum())==expected['net_fixed_count'];assert int(fix.sum())==expected['S1_fixed_count'] and int(harm.sum())==expected['A4C_harmed_count'];assert np.array_equal(pred[~F.el],F.pk['base'][~F.el]);sets[arm].append((fix,harm));counts[f'{arm}_f{held}']={'fix':int(fix.sum()),'harm':int(harm.sum()),'full_F1':table['sequence_row']['segment_f1_50_multi'],'short_misses':table['counts']['fn_short']}
  # Recompute every strict gate from validated evaluator rows, no production gate helper.
  for arm in ARMS:
+  actual_fixed=sum(int(x.sum()) for x,y in sets[arm]);actual_harm=sum(int(y.sum()) for x,y in sets[arm]);actual_mean=sum(counts[f'{arm}_f{h}']['full_F1'] for h in (0,1))/2;assert R['oof'][arm]=={'A5C_fixed':actual_fixed,'A4C_harmed':actual_harm,'S1_source_count':len(source_sets[arm]),'F1_mean':actual_mean}
   v=[R['cells'][str(h)][arm] for h in (0,1)];b=[R['cells'][str(h)]['Base'] for h in (0,1)];delta=lambda k:[v[j]['sequence_row'][k]-b[j]['sequence_row'][k] for j in (0,1)];o=R['oof'][arm];g={'fix':o['A5C_fixed']>=11 and all(x['S1_fixed_count']>=1 and x['S1_source_count']>=1 for x in v) and o['S1_source_count']>=3,'harm':o['A4C_harmed']<=14,'net':all(x['net_fixed_count']>0 for x in v) and o['A5C_fixed']-o['A4C_harmed']>=5,'F1':min(delta('segment_f1_50_multi'))>0 and sum(delta('segment_f1_50_multi'))/2>=.003,'native':min(delta('native_macro_f1'))>=-.002,'boundary':min(delta('boundary_recall_multi'))>=-.005,'short':sum(x['counts']['fn_short'] for x in v)<=79,'structure':all(x['non_A4C_labels_unchanged'] for x in v)};assert {**g,'all':all(g.values())}==R['gates']['absolute'][arm];gates[arm]=all(g.values())
  for A,B in [('L','W'),('L','G'),('W','G')]:
   expected=R['paired'][A+'_vs_'+B]
   for j,kind in enumerate(['fix','harm']):assert expected[kind]=={'shared':sum(int((sets[A][h][j]&sets[B][h][j]).sum()) for h in (0,1)),'A_only':sum(int((sets[A][h][j]&~sets[B][h][j]).sum()) for h in (0,1)),'B_only':sum(int((~sets[A][h][j]&sets[B][h][j]).sum()) for h in (0,1))}
  for control in ['G','W']:
   value=R['oof']['L']['A5C_fixed']>=R['oof'][control]['A5C_fixed']+5 and R['oof']['L']['A4C_harmed']<=R['oof'][control]['A4C_harmed'] and all(R['cells'][str(h)]['L']['sequence_row']['segment_f1_50_multi']>R['cells'][str(h)][control]['sequence_row']['segment_f1_50_multi'] for h in (0,1));assert value==R['gates']['source_contribution']['L_vs_'+control]
- dump(PUB/'independent_final.json',{'passed':True,'complete_raw_score_and_membership_and_label_reconstruction':True,'unchanged_reference_evaluator_reproduced_from_independent_labels':True,'counts':counts,'strict_absolute_pass':gates,'paired_fix_harm_and_contribution_recomputed':True,'new_model_forwards':0,'raw_cache_sha256':sha(OUT/'readout.private.npz')})
+ dump(PUB/'independent_final.json',{'passed':True,'complete_raw_score_and_membership_and_label_reconstruction':True,'unchanged_reference_evaluator_reproduced_from_independent_labels':True,'counts':counts,'strict_absolute_pass':gates,'paired_fix_harm_and_contribution_recomputed':True,'fresh_neural_backbone_forwards':0,'independent_algebraic_window_score_reconstructions':31401,'new_production_score_readouts':0,'raw_cache_sha256':sha(OUT/'readout.private.npz')})
 
 def main():
  a=argparse.ArgumentParser();a.add_argument('stage',choices=['features','heads','final']);args=a.parse_args();torch.set_num_threads(1);start=time.time();ok=False
