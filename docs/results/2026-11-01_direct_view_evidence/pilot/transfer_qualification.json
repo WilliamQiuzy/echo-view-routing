@@ -1,0 +1,39 @@
+{
+  "original_A51P_label_increment_pass": false,
+  "absolute_source_pass": false,
+  "absolute_source_checks": {
+    "L": {
+      "balanced_accuracy": false,
+      "A4C_recall": true,
+      "A5C_recall": true,
+      "A4C_false_positive_protection": false,
+      "AUC_floor": false,
+      "AUC_increment_over_original_classifier": false,
+      "image_over_geometry": false,
+      "image_over_constant": true
+    },
+    "W": {
+      "balanced_accuracy": false,
+      "A4C_recall": true,
+      "A5C_recall": true,
+      "A4C_false_positive_protection": false,
+      "AUC_floor": false,
+      "AUC_increment_over_original_classifier": false,
+      "image_over_geometry": false,
+      "image_over_constant": true
+    }
+  },
+  "target_transfer_eligible": false,
+  "target_arms_if_eligible": [
+    "L",
+    "W"
+  ],
+  "target_folds": [
+    0,
+    1
+  ],
+  "source_claim_scope": "Whole classifiers with different trained heads; not an independently identified backbone/source-image effect.",
+  "independent_source_audit_sha256": "640ed89351fd8170c8f0a10708295c786a734de5a8136c17950a3506b7fd1e13",
+  "new_model_forwards": 0,
+  "rules_precede_source_readout": "A51-P original source rule and A51-T separate absolute source-classifier rule both fixed before the first source heldout model forward."
+}

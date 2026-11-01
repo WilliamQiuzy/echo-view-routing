@@ -1,0 +1,100 @@
+{
+  "run_id": "A51-P",
+  "source_diagnostic_requests": 133,
+  "source_diagnostic_patients": 10,
+  "manual_A4C_requests": 94,
+  "manual_A5C_requests": 39,
+  "directory_discordant_requests": 17,
+  "metrics": {
+    "G": {
+      "tp": 16,
+      "tn": 90,
+      "fp": 4,
+      "fn": 23,
+      "balanced_accuracy": 0.6838516093835243,
+      "accuracy": 0.7969924812030075,
+      "a4c_recall": 0.9574468085106383,
+      "a5c_recall": 0.41025641025641024,
+      "a4c_fpr": 0.0425531914893617,
+      "discordant_accuracy": 0.8235294117647058
+    },
+    "L": {
+      "tp": 31,
+      "tn": 71,
+      "fp": 23,
+      "fn": 8,
+      "balanced_accuracy": 0.7750954719039825,
+      "accuracy": 0.7669172932330827,
+      "a4c_recall": 0.7553191489361702,
+      "a5c_recall": 0.7948717948717948,
+      "a4c_fpr": 0.24468085106382978,
+      "discordant_accuracy": 0.4117647058823529
+    },
+    "W": {
+      "tp": 29,
+      "tn": 73,
+      "fp": 21,
+      "fn": 10,
+      "balanced_accuracy": 0.7600927441352974,
+      "accuracy": 0.7669172932330827,
+      "a4c_recall": 0.776595744680851,
+      "a5c_recall": 0.7435897435897436,
+      "a4c_fpr": 0.22340425531914893,
+      "discordant_accuracy": 0.4117647058823529
+    },
+    "geometry": {
+      "tp": 23,
+      "tn": 75,
+      "fp": 19,
+      "fn": 16,
+      "balanced_accuracy": 0.6938079650845608,
+      "accuracy": 0.7368421052631579,
+      "a4c_recall": 0.7978723404255319,
+      "a5c_recall": 0.5897435897435898,
+      "a4c_fpr": 0.20212765957446807,
+      "discordant_accuracy": 0.4117647058823529
+    },
+    "constant": {
+      "tp": 0,
+      "tn": 94,
+      "fp": 0,
+      "fn": 39,
+      "balanced_accuracy": 0.5,
+      "accuracy": 0.706766917293233,
+      "a4c_recall": 1.0,
+      "a5c_recall": 0.0,
+      "a4c_fpr": 0.0,
+      "discordant_accuracy": 0.7058823529411765
+    }
+  },
+  "source_advancement_gate": {
+    "passed": false,
+    "checks": {
+      "L_balanced_accuracy": false,
+      "L_recall_A4C": true,
+      "L_recall_A5C": true,
+      "L_increment": false,
+      "A4C_protection": false,
+      "image_over_geometry": false,
+      "image_over_constant": true,
+      "discordant_increment": false
+    }
+  },
+  "raw_score_cache_sha256": "b09b6a9a3b3d8c7799bae5e22984051541a95474b4db199cfe948951734fd7da",
+  "source_model_freeze": {
+    "run_id": "A51-P",
+    "commit": "d971248a198de758df3e4abe56ef30cdf5a426c0",
+    "manifest_sha256": "959e25b9932c7a1446719de622a0e3303024481e3360a26d8bf9e5df3acf8bdf",
+    "input_manifest_sha256": "9fceb4904a844e76868a2e5e129ada5e400244945e36713d52da005d9a02796e",
+    "actual_git_objects_verified": true,
+    "verified_git_objects": 162,
+    "freeze_epoch": 1793558659.890271,
+    "formal_updates": 1200,
+    "heldout_model_forwards_before_freeze": 0,
+    "additional_absolute_source_question_sha256": "78b7e7c673a6c8b63854ced5523d9a7f2b2f4317234634fb320a30f58bab95eb"
+  },
+  "source_model_forwards": 399,
+  "target_models_or_A5C_recovery_results": 0,
+  "original_full_source_passed": false,
+  "scope": "Verified-subset heldout source view classification, not EV9V A5C recovery or anatomy/clinical evidence."
+}
