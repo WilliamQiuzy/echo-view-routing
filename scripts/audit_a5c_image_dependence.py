@@ -120,6 +120,72 @@ def reference_variants(x, full, retained, marker, seed):
     return out
 
 
+def audit_geometry(c, baseline, cases):
+    from PIL import Image, ImageFilter
+    import scripts.train_risk_constrained_a5c as a
+    complete = json.loads((OUT / "geometry_complete.json").read_text())
+    assert digest(OUT / "geometry_scores.npz") == complete["scores_sha256"]
+    assert digest(OUT / "geometry_input_hashes.json") == complete["input_hashes_sha256"]
+    assert digest(OUT / "geometry_mask_metadata.json") == complete["mask_metadata_sha256"]
+    assert complete["forward_windows"] == complete["expected_windows"]
+    z = np.load(OUT / "geometry_scores.npz")
+    hashes = json.loads((OUT / "geometry_input_hashes.json").read_text())
+    geometry = json.loads((OUT / "geometry_mask_metadata.json").read_text())
+    summary, checks, repeat_max = {}, 0, 0.
+    for h in (0, 1):
+        rows = z[f"rows_f{h}"]; assert np.array_equal(rows, baseline[f"rows_f{h}"])
+        cc = [q for q in cases if q["fold"] == h]
+        for row in geometry[str(h)].values():
+            for props in row.values():
+                assert len({p["area_pixels"] for p in props}) == 1
+                assert len({p["periodic_boundary_edges"] for p in props}) == 1
+        for model in MODELS:
+            S = z[f"geometry_{model}_f{h}"]; G = baseline[f"global_{model}_f{h}"]
+            assert S.shape == (len(rows), 3, 2, 4, 2) and np.isfinite(S).all()
+            for ni, oldindex in enumerate((1, 3, 5)):
+                repeat_max = max(repeat_max, assert_original_parity(S[:, ni, 0, 0, 0], G[:, oldindex, 0]))
+            weighted = np.stack([reference_run_scores(rows, S, q["rows"], q["weights"]) for q in cc])
+            original = np.stack([reference_run_scores(rows, G, q["rows"], q["weights"])[0] for q in cc])
+            for group in GROUPS:
+                at = [j for j, q in enumerate(cc) if q["group"] == group]
+                key = f"{model}_fold{h}_{group}"; summary[key] = {}
+                for ni, name in enumerate(("periphery", "chroma", "static_bright")):
+                    for fi, fill in enumerate(("mean", "blur")):
+                        data = weighted[at, ni, fi, :, 0]
+                        mask_rec = {f"location_{ki}": effect_counts(original[at, 0], data[:, ki]) for ki in range(4)}
+                        mask_rec["actual_drop_excess_over_translated_mean"] = stats(data[:, 1:].mean(1) - data[:, 0])
+                        mask_rec["actual_drop_larger_than_all_translations"] = int((data[:, 0] < data[:, 1:].min(1)).sum())
+                        mask_rec["mean_shifted_score"] = stats(data[:, 1:].mean(1))
+                        summary[key][name + "_" + fill] = mask_rec
+        F = a.Fold(c, 0, h)
+        for rowkey, expected in hashes[str(h)].items():
+            row = int(rowkey); x, _, _ = reference_pixels(F, row)
+            gray = x.astype(np.float32).mean(-1)
+            band = np.ones((224, 224), bool); band[16:208, 16:208] = False
+            masks = {"periphery": band,
+                     "chroma": ((x.max(-1) - x.min(-1) >= 25) & (x.max(-1) >= 60)).any(0),
+                     "static_bright": (gray.mean(0) >= 180) & (gray.std(0) <= 3)}
+            for name, mask in masks.items():
+                for fi, fill in enumerate(("mean", "blur")):
+                    rep = np.broadcast_to(np.rint(x.mean((1, 2), keepdims=True)).astype(np.uint8), x.shape) if fill == "mean" else np.stack([np.asarray(Image.fromarray(v).filter(ImageFilter.BoxBlur(8))) for v in x])
+                    for ki, shift in enumerate(((0, 0), (0, 112), (112, 0), (112, 112))):
+                        moved = np.roll(mask, shift, axis=(0, 1))
+                        v = np.where(moved[None, ..., None], rep, x)
+                        assert hashlib.sha256(v.tobytes()).hexdigest() == expected[f"{name}_{fill}_{ki}"]
+                        prop = geometry[str(h)][rowkey][name][ki]
+                        contact = int(moved[0].sum() + moved[-1].sum() + moved[:, 0].sum() + moved[:, -1].sum())
+                        planar = int((moved[1:] != moved[:-1]).sum() + (moved[:, 1:] != moved[:, :-1]).sum()) + contact
+                        assert prop["area_pixels"] == int(mask.sum()) and prop["planar_boundary_edges"] == planar
+                        checks += 1
+    receipt = {"independent_geometry_audit_pass": True, "pixel_hashes_and_geometry_checked": checks,
+               "all_row_actual_mask_replay_max_abs": repeat_max, "new_baseline_forwards": 0,
+               "new_model_forwards": 0, "scores_sha256": complete["scores_sha256"],
+               "limits": "Toroidal controls preserve periodic geometry and area, but retain planar seam/contact/contiguity confounds. No anatomical truth."}
+    (PUB / "geometry_summary.json").write_text(json.dumps(summary, indent=2, allow_nan=False) + "\n")
+    (PUB / "geometry_audit.json").write_text(json.dumps(receipt, indent=2) + "\n")
+    return receipt
+
+
 def main():
     from PIL import Image, ImageFilter
     from types import SimpleNamespace
@@ -140,6 +206,13 @@ def main():
     old, z = np.load(c.out / "readout_cache_s0.npz"), np.load(OUT / "scores.npz")
     summary = {"scope": "fixed outcome-conditioned descriptive training-source audit; no new efficacy", "groups": manifest["groups"],
                "global_interventions": {}, "spatial_temporal": {}, "input_proxies": {}, "model_training_updates": 0}
+    summary["interpretation_limits"] = [
+        "Equal-area scattered controls do not preserve mask contiguity; their difference alone does not isolate spatial location.",
+        "The 49 equal-square interventions provide shape-matched spatial comparisons with two replacements.",
+        "Chroma/static-bright masks are not verified text/calipers; grid patches are not anatomical annotations.",
+        "Readout-weight permutation is a limited head check, not complete network randomization.",
+        "More full-frame context can contain both anatomy and non-anatomical acquisition cues.",
+        "All original heldout folds here are historically inspected training-source folds, not a new independent test."]
     checks, parity, pixel_checks = 0, {}, 0
     spatial_border = np.array([i // 7 in (0, 6) or i % 7 in (0, 6) for i in range(49)])
     for h in (0, 1):
@@ -227,6 +300,11 @@ def main():
             qq = [q for q in cc if q["group"] == group]
             fields = [k for k, v in next(iter(pixel_meta.values())).items() if isinstance(v, (float, int)) and k != "row"]
             summary["input_proxies"][f"fold{h}_{group}"] = {field: stats([sum(w * pixel_meta[r][field] for r, w in zip(q["rows"], q["weights"])) for q in qq]) for field in fields}
+            summary["input_proxies"][f"fold{h}_{group}"]["composition"] = {
+                "native_runs": sum(F.seqs[int(F.pk["seq"][q["run"]])]["kind"] == "native" for q in qq),
+                "reference_pure_runs": sum(float(F.pk["purity"][q["run"]]) >= 1 for q in qq),
+                "duration_samples": stats([int(F.pk["b"][q["run"]] - F.pk["a"][q["run"]]) for q in qq]),
+                "distinct_majority_sessions": len({q["session"] for q in qq})}
         # Fixed subset independent pixel reconstruction; no repeated model inference.
         audit_global = {int(rows[0]), int(rows[len(rows) // 2]), int(rows[-1])}
         for row in sorted(audit_global | set(map(int, anchors))):
@@ -247,13 +325,41 @@ def main():
                         v[:, yy * 32:(yy + 1) * 32, xx * 32:(xx + 1) * 32] = replacement[:, yy * 32:(yy + 1) * 32, xx * 32:(xx + 1) * 32]
                         assert hashlib.sha256(v.tobytes()).hexdigest() == anchor_meta[row]["selected_spatial_input_hashes"][f"{fill}_{cell}"]
                         pixel_checks += 1
+        # Local-only, explicitly unadjudicated contact sheets and sensitivity maps.
+        for j, row in enumerate(anchors):
+            canvas = Image.new("RGB", (3 * 224, 2 * 248), "black")
+            from PIL import ImageDraw
+            draw = ImageDraw.Draw(canvas)
+            for mi, model in enumerate(MODELS):
+                rp = rpos[int(row)]
+                drop = z[f"global_{model}_f{h}"][rp, 0, 0] - z[f"maps_{model}_f{h}"][j, :, :, 0]
+                scale = max(float(abs(drop).max()), 1e-8)
+                for fi, fill in enumerate(("mean", "blur")):
+                    d = (drop[fi].reshape(7, 7) / scale).clip(-1, 1)
+                    pic = np.zeros((7, 7, 3), np.uint8)
+                    pic[..., 0] = np.rint(np.maximum(d, 0) * 255).astype(np.uint8)
+                    pic[..., 2] = np.rint(np.maximum(-d, 0) * 255).astype(np.uint8)
+                    canvas.paste(Image.fromarray(pic).resize((224, 224), Image.Resampling.NEAREST), (224 * mi, 248 * fi + 24))
+                    draw.text((224 * mi + 4, 248 * fi + 4), model + " " + fill + "; red=score drop", fill="white")
+            canvas.save(OUT / "private_review" / f"fold{h}_anchor{j:02d}_maps.png")
     summary["cohort_sources"] = {"runs": len(cases), "distinct_majority_recordings": len({q["source"] for q in cases}),
                                  "distinct_majority_sessions": len({q["session"] for q in cases}),
                                  "source_overlap_between_groups_possible": True, "sessions_are_not_verified_patients": True}
+    html = ["<!doctype html><meta charset='utf-8'><title>Private unadjudicated image-dependence review</title>",
+            "<style>body{background:#181818;color:#eee;font:16px system-ui}article{border:1px solid #555;padding:16px;margin:16px}img{max-width:48%;vertical-align:top}</style>",
+            "<h1>Private exploratory input-dependence review</h1><p>Source identifiers, frames and per-case outputs must remain on this server. No expert image-quality, LVOT or A5C visibility adjudication has occurred. Maps are score sensitivity, not anatomical truth.</p>"]
+    for h in (0, 1):
+        aa = z[f"anchors_f{h}"].tolist()
+        for j, row in enumerate(aa):
+            related = [q["group"] for q in cases if q["fold"] == h and q["anchor"] == row]
+            html.append(f"<article><h2>Fold {h}; anchor {j}; {', '.join(related)}</h2><img src='fold{h}_case{j:02d}.jpg'><img src='fold{h}_anchor{j:02d}_maps.png'></article>")
+    (OUT / "private_review/index.html").write_text("\n".join(html))
+    geometry_receipt = audit_geometry(c, z, cases) if (OUT / "geometry_complete.json").exists() else None
     receipt = {"independent_cache_audit_pass": True, "runs_checked": checks, "parity_max_abs": parity,
                "pixel_reconstructions_checked": pixel_checks, "new_model_forwards": 0,
                "scores_sha256": digest(OUT / "scores.npz"), "all_pinned_files_unchanged": True,
                "scope": "all membership/cohort/score summaries; fixed original/global/spatial pixel subset; no anatomical or clinical-quality adjudication",
+               "geometry_supplement": geometry_receipt,
                "wall_seconds": time.time() - start, "process_CPU_seconds": time.process_time() - cpu}
     PUB.mkdir(parents=True, exist_ok=True)
     for p, obj in [(PUB / "summary.json", summary), (PUB / "independent_audit.json", receipt), (OUT / "independent_audit.json", receipt)]:
