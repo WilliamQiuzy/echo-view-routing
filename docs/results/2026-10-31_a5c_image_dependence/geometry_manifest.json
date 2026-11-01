@@ -1,0 +1,58 @@
+{
+  "run_id": "a5c_image_dependence_v1_geometry",
+  "parent_input_manifest_sha256": "4b50f5feaadaa420cc5a2ab9a9730eaf495685bbeddf127ecee02c28cc5e9f06",
+  "probe_code_sha256": "f8a4a245b28b144c622d2a0a30fd31b8fa679bedb146d6b2565d090e06fbb5d4",
+  "selected_cases": 64,
+  "selected_unique_rows": 276,
+  "expected_forward_windows": 19872,
+  "models": [
+    "A08",
+    "C",
+    "N"
+  ],
+  "mask_proxies": [
+    "periphery",
+    "chroma",
+    "static_bright"
+  ],
+  "fills": [
+    "mean",
+    "blur"
+  ],
+  "toroidal_offsets": [
+    [
+      0,
+      0
+    ],
+    [
+      0,
+      112
+    ],
+    [
+      112,
+      0
+    ],
+    [
+      112,
+      112
+    ]
+  ],
+  "training_updates": 0,
+  "limits": "Toroidal controls preserve area/periodic geometry but retain planar seam and contiguity confounds. No semantic mask/efficacy claim.",
+  "resource_preflight": {
+    "inherited_CPU_upper_hours": 2.9321053071189715,
+    "owner_active_upper_hours_through_snapshot": 0.5941573921839396,
+    "past_reviewer_upper_hours": 0.04,
+    "past_parent_process_CPU_seconds": 664.48434208,
+    "parent_full_process_wall_seconds": 661.2613401412964,
+    "forecast_wall_upper_seconds": 746.9816683023756,
+    "forecast_CPU_upper_seconds": 743.5782692145547,
+    "probe_wall_limit_seconds": 2878,
+    "probe_CPU_limit_seconds": 2400,
+    "CPU_upper_audit_closure_reserve_hours": 0.25,
+    "GPU_closure_reserve_seconds": 60,
+    "namespace_current_bytes": 3227206,
+    "extra_storage_forecast_bytes": 50000000,
+    "same_additional_allowance": true
+  }
+}
