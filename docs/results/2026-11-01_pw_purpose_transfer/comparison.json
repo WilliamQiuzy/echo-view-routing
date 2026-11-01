@@ -1,0 +1,166 @@
+{
+  "Base_F1_mean": 0.9568852768790387,
+  "Base_short_misses": 76,
+  "arms": {
+    "G": {
+      "A5C_fixed": 4,
+      "A4C_harmed": 26,
+      "S1_source_count": 3,
+      "F1_mean": 0.9549753940108656,
+      "net": -22,
+      "F1_delta_Base": -0.0019098828681730629,
+      "F1_by_fold": [
+        0.9627053140096619,
+        0.9472454740120693
+      ],
+      "F1_delta_Base_by_fold": [
+        -0.0012012677313147924,
+        -0.0026184980050314444
+      ],
+      "native_delta_by_fold": [
+        -0.0037015901041503874,
+        -0.008323751215444153
+      ],
+      "boundary_recall_delta_by_fold": [
+        -0.0005055611729019027,
+        -0.0020554984583761593
+      ],
+      "short_misses": 86
+    },
+    "S": {
+      "A5C_fixed": 3,
+      "A4C_harmed": 25,
+      "S1_source_count": 3,
+      "F1_mean": 0.9545874911483327,
+      "net": -22,
+      "F1_delta_Base": -0.002297785730705937,
+      "F1_by_fold": [
+        0.9623188405797102,
+        0.9468561417169554
+      ],
+      "F1_delta_Base_by_fold": [
+        -0.001587741161266476,
+        -0.0030078303001452866
+      ],
+      "native_delta_by_fold": [
+        -0.0018589900293574102,
+        -0.008323751215444153
+      ],
+      "boundary_recall_delta_by_fold": [
+        -0.0005055611729019027,
+        -0.0020554984583761593
+      ],
+      "short_misses": 87
+    },
+    "L": {
+      "A5C_fixed": 2,
+      "A4C_harmed": 18,
+      "S1_source_count": 2,
+      "F1_mean": 0.9551888821644886,
+      "net": -16,
+      "F1_delta_Base": -0.0016963947145500757,
+      "F1_by_fold": [
+        0.9623333977206877,
+        0.9480443666082895
+      ],
+      "F1_delta_Base_by_fold": [
+        -0.0015731840202889424,
+        -0.001819605408811209
+      ],
+      "native_delta_by_fold": [
+        0.0,
+        -0.0066816731142176344
+      ],
+      "boundary_recall_delta_by_fold": [
+        0.0,
+        -0.0020554984583761593
+      ],
+      "short_misses": 85
+    }
+  },
+  "paired": {
+    "L_vs_G": {
+      "fixes": {
+        "shared": 2,
+        "L_only": 0,
+        "G_only": 2
+      },
+      "harms": {
+        "shared": 13,
+        "L_only": 5,
+        "G_only": 13
+      }
+    },
+    "L_vs_S": {
+      "fixes": {
+        "shared": 2,
+        "L_only": 0,
+        "S_only": 1
+      },
+      "harms": {
+        "shared": 15,
+        "L_only": 3,
+        "S_only": 10
+      }
+    },
+    "S_vs_G": {
+      "fixes": {
+        "shared": 3,
+        "S_only": 0,
+        "G_only": 1
+      },
+      "harms": {
+        "shared": 22,
+        "S_only": 3,
+        "G_only": 4
+      }
+    }
+  },
+  "gates": {
+    "absolute": {
+      "G": {
+        "S1": false,
+        "A4C": false,
+        "net": false,
+        "F1": false,
+        "native": false,
+        "boundary": true,
+        "short": false,
+        "structure": true,
+        "all": false
+      },
+      "S": {
+        "S1": false,
+        "A4C": false,
+        "net": false,
+        "F1": false,
+        "native": false,
+        "boundary": true,
+        "short": false,
+        "structure": true,
+        "all": false
+      },
+      "L": {
+        "S1": false,
+        "A4C": false,
+        "net": false,
+        "F1": false,
+        "native": false,
+        "boundary": true,
+        "short": false,
+        "structure": true,
+        "all": false
+      }
+    },
+    "L_contribution_vs_controls": {
+      "G": false,
+      "S": false
+    },
+    "clinical_purpose_increment": false
+  },
+  "denominators": {
+    "A5C": 103,
+    "correct_A4C": 1413
+  },
+  "scope": "historically inspected training-source session folds,not new independent clinical test"
+}

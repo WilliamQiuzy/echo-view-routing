@@ -1,0 +1,60 @@
+{
+  "scope": "PW-T1-C only, actual continuation work with inherited prior ledger; no past reset.",
+  "as_of_epoch": 1793515099.475502,
+  "inherited_CPU_upper_hours": 5.185768961871414,
+  "inherited_GPU_job_wall_hours": 0.3495242603619893,
+  "inherited_actual_peak_upper_bytes": 2474876630,
+  "new_caps": {
+    "CPU_upper_hours": 3,
+    "GPU_job_wall_hours": 2,
+    "retained_bytes": 600000000
+  },
+  "cumulative_caps": {
+    "CPU_upper_hours": 8.185768961871414,
+    "GPU_job_wall_hours": 6,
+    "new_peak_bytes": 3000000000
+  },
+  "root_active_upper_hours": 0.8383076677719752,
+  "root_scope": "Elapsed since coordination start plus300sec conservative past initial setup, minus explicitly timestamped empty waits. Active root/review/monitoring/source/code/closing included; proxy upper, not host CPU telemetry.",
+  "explicit_empty_wait_seconds": 1523.5670011043549,
+  "empty_wait_CPU_charge_hours": 0,
+  "reviewer_active_seconds_measured": 158,
+  "reviewer_upper_hours": 0.05,
+  "past_auxiliary_CPU_upper_hours": 0.05,
+  "past_auxiliary_scope": "180sec conservative already-performed local baseline/regression/import/JSON/SSH/git/plot-free report/parent-supervisor work not separately timed. No future charge.",
+  "measured_process_CPU_seconds": {
+    "structural": 12.471283,
+    "check": 36.303325,
+    "train": 2429.1965830000004,
+    "audit_models": 14.731919,
+    "readout": 286.180033,
+    "evaluate": 13.215791999999999,
+    "audit_final": 12.688651,
+    "prepare_full_process": 28.92,
+    "final_local_tests": 3.585732
+  },
+  "new_total_CPU_upper_hours": 1.7264447005497532,
+  "charged_shared_CPU_upper_hours": 6.912213662421167,
+  "new_GPU_job_wall_hours": 0.7777123101552328,
+  "charged_shared_GPU_job_wall_hours": 1.127236570517222,
+  "GPU_scope": "Full actual check/train/fixed-fit model audit/once-heldout process wall, including bootstrap. Evaluator/final cache audit CPU only.",
+  "storage": {
+    "actual_namespace_bytes_at_snapshot": 445979916,
+    "final_bundle_bytes": 438952258,
+    "private_journal_bytes": 6343627,
+    "deleted_single_compact_resume_upper_bytes": 224451404,
+    "old_retained_image_diagnostic_bytes": 26685897,
+    "historical_source_peak_before_image_diagnostic_bytes": 2218716939,
+    "public_code_git_and_report_allowance_bytes": 10000000,
+    "new_retained_bytes_upper": 455979916,
+    "charged_shared_new_peak_upper_bytes": 2925834156,
+    "scope": "Conservative simultaneous peak bound from actual final files plus one deleted model+Adam resume; no stacking of old deleted transient resumes. Not a continuous disk sampler. Existing raw datasets/source checkpoints are not new writes."
+  },
+  "formal_models": 6,
+  "formal_optimizer_updates": 3600,
+  "fit_only_check_optimizer_updates": 18,
+  "once_opposite_fold_scores": 31401,
+  "new_forward_after_readout_final_audit": 0,
+  "future_forecasts_charged_as_spent": false,
+  "closing_tail": "Public snapshot through as_of; actual final integration/cleanup tail in runtime final_resource_receipt.json."
+}
