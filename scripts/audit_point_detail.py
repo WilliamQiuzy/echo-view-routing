@@ -22,6 +22,7 @@ def state_sha(state):
 
 def binding():
  b=json.loads((OUT/'bound.private.json').read_text());s=json.loads((PRIOR/'selection.private.json').read_text());old={r['id']:r for r in s['requests']};rows=b['rows'];assert len(rows)==702
+ sealed=json.loads((ROOT/'docs/results/2026-11-01_direct_view_evidence/pilot/input_manifest.json').read_text());assert sha(PRIOR/'bound.private.json')==sealed['bound_sha256'];oldbound=json.loads((PRIOR/'bound.private.json').read_text());assert sha(PRIOR/'selection.private.json')==oldbound['selection_sha256']==b['selection_sha256'];assert sha(PRIOR/'bound.private.json')==b['prior_binding_sha256'];assert [r['id'] for r in rows]==[r['id'] for r in s['requests']] and len({r['id'] for r in rows})==702
  roles=defaultdict(set);hashes={a:defaultdict(list) for a in ('raw','H','R')};by=defaultdict(list);counts={};z=np.load(OUT/'points.private.npz')['H']
  for j,r in enumerate(rows):
   q=old[r['id']]
@@ -68,9 +69,9 @@ def independent_model():
  return Model().eval()
 
 def models():
- man=json.loads((PUB/'models_manifest.json').read_text());entries={}
+ man=json.loads((PUB/'models_manifest.json').read_text());inputs=json.loads((PUB/'input_manifest.json').read_text());assert man['input_manifest_sha256']==sha(PUB/'input_manifest.json');assert sha(ROOT/'runs/a48_valve_source_intake_v1/backbone_G.pt')==inputs['base_sha256'];entries={}
  for arm in ['H','R']:
-  rd=OUT/'source_train'/arm;e=man['models'][arm];assert sha(rd/'final.pt')==e['model_sha256'] and sha(rd/'optimizer_final.pt')==e['optimizer_final_sha256'] and sha(rd/'updates.private.jsonl')==e['journal_sha256']
+  rd=OUT/'source_train'/arm;e=man['models'][arm];assert e['identity']=={'run_id':'A52','arm':arm,'input_manifest_sha256':sha(PUB/'input_manifest.json'),'plan_sha256':inputs['plan_sha256']};assert sha(rd/'final.pt')==e['model_sha256'] and sha(rd/'optimizer_final.pt')==e['optimizer_final_sha256'] and sha(rd/'updates.private.jsonl')==e['journal_sha256']
   ck=torch.load(rd/'final.pt',map_location='cpu',weights_only=True);st=torch.load(rd/'optimizer_final.pt',map_location='cpu',weights_only=True);assert ck['updates']==st['update']==600 and ck['identity']==st['identity']==e['identity']
   m=independent_model();initial={n:v.clone() for n,v in m.state_dict().items()};assert state_sha(initial)==e['initial_state_sha256'];m.load_state_dict(ck['model'],strict=True);final=m.state_dict();assert state_sha(final)==e['full_state_sha256']==state_sha(st['model'])
   live={n for n,p in m.named_parameters()};assert set(e['live_drift'])==live and all(torch.count_nonzero(final[n]-initial[n]) for n in live)
@@ -79,8 +80,9 @@ def models():
   assert len(ids)==len(set(ids))==len(live)==len(opt['state']);assert set(ids)==set(opt['state'])
   assert len(groups)==2 and len(groups[0]['params'])==len(ordered)-2 and len(groups[1]['params'])==2
   for pid,(name,p) in zip(ids,ordered):
-   q=opt['state'][pid];assert int(q['step'])==600 and q['exp_avg'].shape==p.shape==q['exp_avg_sq'].shape;assert torch.isfinite(q['exp_avg']).all() and torch.isfinite(q['exp_avg_sq']).all()
-  for j,g in enumerate(groups):assert g['base_lr']==[1e-5,1e-3][j] and g['weight_decay']==1e-4 and g['betas']==(.9,.999) and g['eps']==1e-8
+   q=opt['state'][pid];assert int(q['step'])==600 and q['exp_avg'].shape==p.shape==q['exp_avg_sq'].shape;assert q['exp_avg'].dtype==p.dtype==q['exp_avg_sq'].dtype and torch.isfinite(q['exp_avg']).all() and torch.isfinite(q['exp_avg_sq']).all() and (q['exp_avg_sq']>=0).all()
+  from echo_routing.temporal.dev_train import lr_factor
+  for j,g in enumerate(groups):assert abs(g['lr']-[1e-5,1e-3][j]*lr_factor(599,60,600))<1e-15 and g['base_lr']==[1e-5,1e-3][j] and g['weight_decay']==1e-4 and g['betas']==(.9,.999) and g['eps']==1e-8
   logs=[json.loads(x) for x in (rd/'updates.private.jsonl').read_text().splitlines()];assert [r['u'] for r in logs]==list(range(600));assert all(r['physical_forwards']==r['physical_backwards']==8 for r in logs)
   plan=np.load(OUT/'plan.npy');assert all(r['plan_row_sha256']==hashlib.sha256(plan[u].tobytes()).hexdigest() for u,r in enumerate(logs));assert all(any(r['groups'][g]>0 for r in logs[1:]) for g in logs[0]['groups'])
   guard=json.loads((rd/'update_guard.json').read_text());assert guard=={'pending':None,'last_committed':599}
@@ -95,7 +97,7 @@ def metrics(y,s,disc):
  return {'tp':tp,'tn':tn,'fp':fp,'fn':fn,'balanced_accuracy':.5*(tp/(tp+fn)+tn/(tn+fp)),'A4C_recall':tn/(tn+fp),'A5C_recall':tp/(tp+fn),'AUROC':auc,'discordant_accuracy':float((p[disc]==y[disc]).mean())}
 
 def final():
- r=json.loads((PUB/'readout.json').read_text());b=json.loads((OUT/'bound.private.json').read_text());rows=[x for x in b['rows'] if x['role']=='diagnostic'];y=np.array([x['true_label']=='A5C' for x in rows]);disc=np.array([x['true_label']!=x['directory_label'] for x in rows]);z=np.load(OUT/'scores.private.npz');assert sha(OUT/'scores.private.npz')==r['score_cache_sha256'];ctrl=b['geometry'];x=np.asarray([a['geometry'] for a in rows]);assert np.max(abs(z['geometry']-(((x-ctrl['mean'])/ctrl['scale'])@np.asarray(ctrl['coef'])+ctrl['intercept'])))<1e-12
+ r=json.loads((PUB/'readout.json').read_text());current=json.loads((PUB/'input_manifest.json').read_text());assert sha(OUT/'bound.private.json')==current['bound_sha256'];assert sha(ROOT/'runs/a48_valve_source_intake_v1/backbone_G.pt')==current['base_sha256'];b=json.loads((OUT/'bound.private.json').read_text());rows=[x for x in b['rows'] if x['role']=='diagnostic'];y=np.array([x['true_label']=='A5C' for x in rows]);disc=np.array([x['true_label']!=x['directory_label'] for x in rows]);z=np.load(OUT/'scores.private.npz');assert sha(OUT/'scores.private.npz')==r['score_cache_sha256'];ctrl=b['geometry'];x=np.asarray([a['geometry'] for a in rows]);assert np.max(abs(z['geometry']-(((x-ctrl['mean'])/ctrl['scale'])@np.asarray(ctrl['coef'])+ctrl['intercept'])))<1e-12
  assert np.array_equal(z['constant'],np.full(133,np.log(ctrl['prior']/(1-ctrl['prior']))));m={a:metrics(y,z[a],disc) for a in z.files}
  for a in m:
   for k,v in m[a].items():assert abs(v-r['metrics'][a][k])<1e-12,(a,k)
@@ -106,8 +108,8 @@ def final():
  h,low=m['H'],m['R'];detail={'BA_increment':h['balanced_accuracy']>=low['balanced_accuracy']+.05,'no_extra_A4C_harm':h['A4C_recall']>=low['A4C_recall'],'AUC_increment':h['AUROC']>=low['AUROC']+.03};assert detail==r['source_gates']['detail_checks'] and all(detail.values())==r['source_gates']['detail_increment_pass']
  man=json.loads((PUB/'models_manifest.json').read_text());fr=json.loads((OUT/'models_freeze.json').read_text());assert fr==r['models_freeze'] and fr['manifest_sha256']==sha(PUB/'models_manifest.json')
  for a in ['H','R']:
-  cell=json.loads((OUT/'cells'/f'{a}.progress.json').read_text());assert cell['done']==133 and cell['pending'] is None and cell['identity']['model_sha256']==man['models'][a]['model_sha256'];assert np.array_equal(np.load(OUT/'cells'/f'{a}.npy'),z[a]);assert (OUT/'cells'/f'{a}.progress.json').stat().st_mtime>=fr['freeze_epoch']
- paired={};G=np.load(PRIOR/'source_scores.private.npz')['G'];scores={'G':G,**{a:z[a] for a in ['H','R']}}
+  cell=json.loads((OUT/'cells'/f'{a}.progress.json').read_text());complete=json.loads((OUT/'cells'/f'{a}.complete.json').read_text());assert complete=={'identity':cell['identity'],'rows':133,'sha256':sha(OUT/'cells'/f'{a}.npy')};assert cell['identity']['bound_sha256']==current['bound_sha256'];assert man['input_manifest_sha256']==sha(PUB/'input_manifest.json') and man['models'][a]['identity']['input_manifest_sha256']==sha(PUB/'input_manifest.json');assert cell['done']==133 and cell['pending'] is None and cell['identity']['model_sha256']==man['models'][a]['model_sha256'];assert np.array_equal(np.load(OUT/'cells'/f'{a}.npy'),z[a]);assert (OUT/'cells'/f'{a}.progress.json').stat().st_mtime>=fr['freeze_epoch']
+ old_report=json.loads((ROOT/'docs/results/2026-11-01_direct_view_evidence/pilot/source_readout.json').read_text());assert sha(PRIOR/'source_scores.private.npz')==old_report['raw_score_cache_sha256'];oldbound=json.loads((PRIOR/'bound.private.json').read_text());assert [x['id'] for x in rows]==[x['id'] for x in oldbound['requests'] if x['role']=='diagnostic'];paired={};G=np.load(PRIOR/'source_scores.private.npz')['G'];scores={'G':G,**{a:z[a] for a in ['H','R']}}
  for a,c in [('H','G'),('R','G'),('H','R')]:
   p=scores[a]>0;q=scores[c]>0;paired[a+'_vs_'+c]={'A5C_both':int((p&q&y).sum()),'A5C_A_only':int((p&~q&y).sum()),'A5C_B_only':int((~p&q&y).sum()),'A4C_both_harm':int((p&q&~y).sum()),'A4C_A_only_harm':int((p&~q&~y).sum()),'A4C_B_only_harm':int((~p&q&~y).sum())}
  fit=[x for x in b['rows'] if x['role']=='fit'];fy=np.array([x['true_label']=='A5C' for x in fit]);learning={}

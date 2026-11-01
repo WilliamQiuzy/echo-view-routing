@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "runs/a52_point_detail_v1"
 COMMANDS = {
     "prepare": ("scripts/train_point_detail.py", "prepare", 300, False),
+    "seal": ("scripts/train_point_detail.py", "seal", 300, False),
     "binding": ("scripts/audit_point_detail.py", "binding", 300, False),
     "check": ("scripts/train_point_detail.py", "check", 600, True),
     "train": ("scripts/train_point_detail.py", "train", 2400, True),

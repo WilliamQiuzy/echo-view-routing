@@ -36,7 +36,7 @@ def project_files():
         p=getattr(module,'__file__',None)
         if p:
             p=Path(p).resolve()
-            if p.is_relative_to(ROOT) and '.venv' not in p.parts and p.suffix=='.py':paths.append(p.relative_to(ROOT))
+            if p.is_relative_to(ROOT) and '.venv' not in p.parts and p.suffix=='.py' and p.exists():paths.append(p.relative_to(ROOT))
     return {str(p):sha(ROOT/p) for p in sorted(set(paths))}
 
 
@@ -78,14 +78,25 @@ def prepare():
     control={'mean':mean.tolist(),'scale':scale.tolist(),'coef':g.coef_[0].tolist(),'intercept':float(g.intercept_[0]),'prior':float(y.mean())}
     private={'selection_sha256':sha(PRIOR/'selection.private.json'),'prior_binding_sha256':sha(PRIOR/'bound.private.json'),'rows':rows,'geometry':control,'videos':bound['videos']}
     write(OUT/'bound.private.json',private)
+    publish_manifest(private,plan,seen)
+
+
+def publish_manifest(private,plan,seen):
     rec={'run_id':'A52','scope':'exploratory reused source diagnostic; direct point-view labels, no anatomy truth','fit':569,'diagnostic':133,
       'source_patients':[36,10],'source_true_counts':{'fit':[330,239],'diagnostic':[94,39]},'excluded_fit_markers':5,
-      'bound_sha256':sha(OUT/'bound.private.json'),'points_sha256':sha(OUT/'points.private.npz'),'plan_sha256':sha(OUT/'plan.npy'),
+      'prior_bound_sha256':sha(PRIOR/'bound.private.json'),'prior_selection_sha256':sha(PRIOR/'selection.private.json'),'bound_sha256':sha(OUT/'bound.private.json'),'points_sha256':sha(OUT/'points.private.npz'),'plan_sha256':sha(OUT/'plan.npy'),
       'plan_covers569':set(plan.ravel())==set(range(569)),'unique_point_hashes':{a:len(v) for a,v in seen.items()},'within_partition_same_label_multiplicity_retained':True,'cross_patient_point_overlap':0,
       'base_sha256':sha(BASE),'Base_A08_sha256':sha(ROOT/'models_frozen/video_within_view_v1/all_s0/final.pt'),
       'code':project_files(),'versions':{'torch':torch.__version__,'numpy':np.__version__,'Pillow':Image.__version__},'diagnostic_model_forwards':0,'formal_models':0,
       'source_arms':ARMS,'updates':600,'occurrences_per_update':8,'all_body_FPN_live':True,'source_target_budget_shared_with_A51':True}
     write(PUB/'input_manifest.json',rec);print(json.dumps({k:v for k,v in rec.items() if k!='code'}))
+
+
+def seal():
+    if (PUB/'input_manifest.json').exists():raise RuntimeError('input manifest already fixed')
+    b=json.loads((OUT/'bound.private.json').read_text());a=json.loads((PUB/'independent_binding.json').read_text());assert a['passed'] and a['bound_sha256']==sha(OUT/'bound.private.json')
+    seen={kind:{r[key] for r in b['rows']} for kind,key in [('raw','raw_point_sha256'),('H','H_sha256'),('R','R_sha256')]}
+    publish_manifest(b,np.load(OUT/'plan.npy'),seen)
 
 
 def verify():
@@ -143,7 +154,7 @@ def save_torch(path,obj):
 
 def check():
     manifest=verify();data=Inputs();m=build();opt=opt_for(m);initial=state(m);live={n for n,p in m.named_parameters() if p.requires_grad}
-    assert len(live)==len(list(m.parameters())) and len({id(p) for g in opt.param_groups for p in g['params']})==len(live)
+    assert len(live)==len(list(m.parameters())) and {id(p) for g in opt.param_groups for p in g['params']}=={id(p) for p in m.parameters()}
     ids=[data.fit[int(i)] for i in data.plan[0][:4]];y=np.array([data.rows[i]['true_label']=='A5C' for i in ids],float)
     scores=torch.cat([m(data.tensor(i,'H')) for i in ids]);assert scores.detach().cpu().tolist()==[-2.]*4
     loss=torch.nn.functional.binary_cross_entropy_with_logits(scores,torch.tensor(y,dtype=torch.float32,device='cuda'));loss.backward()
@@ -151,6 +162,10 @@ def check():
     grads={n:p.grad.detach().clone() for n,p in m.named_parameters()};opt.zero_grad(set_to_none=True)
     for i in ids:(torch.nn.functional.binary_cross_entropy_with_logits(m(data.tensor(i,'H')),torch.tensor([float(data.rows[i]['true_label']=='A5C')],device='cuda'))/4).backward()
     graderr=max(float((p.grad-grads[n]).abs().max()) for n,p in m.named_parameters());assert max(formula,biaserr,graderr)<1e-5
+    with torch.no_grad():m.head.weight.fill_(.001)
+    opt.zero_grad(set_to_none=True);ss=torch.cat([m(data.tensor(i,'H')) for i in ids]);torch.nn.functional.binary_cross_entropy_with_logits(ss,torch.tensor(y,dtype=torch.float32,device='cuda')).backward();realgrads={n:p.grad.detach().clone() for n,p in m.named_parameters()};assert all(torch.isfinite(v).all() and torch.count_nonzero(v)>0 for v in realgrads.values());opt.zero_grad(set_to_none=True)
+    for i in ids:(torch.nn.functional.binary_cross_entropy_with_logits(m(data.tensor(i,'H')),torch.tensor([float(data.rows[i]['true_label']=='A5C')],device='cuda'))/4).backward()
+    realgraderr=max(float((p.grad-realgrads[n]).abs().max()) for n,p in m.named_parameters());assert realgraderr<1e-5;del realgrads
     def execute(arm,force=None,st=None,stop=6):
         a=build();o=opt_for(a);start=0
         if st is not None:a.load_state_dict(st['model']);o.load_state_dict(st['optimizer']);start=st['update'];torch.set_rng_state(st['CPU_rng']);torch.cuda.set_rng_state(st['CUDA_rng'])
@@ -160,12 +175,12 @@ def check():
     assert all(torch.equal(v,initial[n]) for n,v in expected.items() if n not in live);del a,o
     for arm,force in [('H',None),('R','H')]:
         a,o,_=execute(arm,force);assert state_sha(state(a))==state_sha(expected);del a,o
-    a,o,_=execute('H',stop=3);st=copy.deepcopy(checkpoint(a,o,3,{}));del a,o;a,o,_=execute('H',st=st);assert state_sha(state(a))==state_sha(expected);del a,o,st
+    a,o,_=execute('H',stop=3);st=copy.deepcopy(checkpoint(a,o,3,{}));save_torch(OUT/'check_resume.pt',st);del a,o,st;st=torch.load(OUT/'check_resume.pt',map_location='cpu',weights_only=True);(OUT/'check_resume.pt').unlink();a,o,_=execute('H',st=st);assert state_sha(state(a))==state_sha(expected);del a,o,st
     a,o,_=execute('R');torch.cuda.synchronize();start=time.time()
     for u in range(6,12):step(a,o,data,u,'R')
     torch.cuda.synchronize();sec=(time.time()-start)/6
-    result={'passed':True,'input_manifest_sha256':sha(PUB/'input_manifest.json'),'independent_BCE_error':formula,'independent_bias_gradient_error':biaserr,'full_vs_micro_gradient_max_abs':graderr,
-      'all_trainable_parameters':len(live),'repeat_exact':True,'forced_H_R_exact':True,'resume3plus3_exact':True,'frozen_BN_unchanged':True,'first_backbone_grad_zero_expected':True,'later_all_seven_groups_nonzero':True,
+    result={'passed':True,'input_manifest_sha256':sha(PUB/'input_manifest.json'),'independent_BCE_error':formula,'independent_bias_gradient_error':biaserr,'full_vs_micro_gradient_max_abs':graderr,'nonzero_head_full_vs_micro_allCNN_gradient_max_abs':realgraderr,
+      'all_trainable_parameters':len(live),'repeat_exact':True,'forced_H_R_exact':True,'resume3plus3_exact':True,'frozen_BN_unchanged':True,'first_backbone_grad_zero_expected':True,'later_all_seven_groups_nonzero':True,'nonzero_head_every_parameter_finite_nonzero_gradient':True,
       'seconds_per_update':sec,'source_forecast_seconds':sec*1200*1.3+180,'conditional_target_forecast_seconds':sec/8*60612*2*1.4+360,'peak_GPU_bytes':torch.cuda.max_memory_allocated(),'diagnostic_model_forwards':0}
     write(PUB/'checks.json',result);print(json.dumps(result))
 
@@ -183,7 +198,7 @@ def train():
         rd=OUT/'source_train'/arm;rd.mkdir(parents=True,exist_ok=True);dt.sync_directory(rd.parent)
         ident={'run_id':'A52','arm':arm,'input_manifest_sha256':sha(PUB/'input_manifest.json'),'plan_sha256':man['plan_sha256']}
         if (rd/'manifest.json').exists():
-            e=json.loads((rd/'manifest.json').read_text());assert e['identity']==ident and e['updates']==600 and sha(rd/'final.pt')==e['model_sha256'];entries[arm]=e;continue
+            e=json.loads((rd/'manifest.json').read_text());assert e['identity']==ident and e['updates']==600 and sha(rd/'final.pt')==e['model_sha256'] and sha(rd/'optimizer_final.pt')==e['optimizer_final_sha256'];entries[arm]=e;continue
         m=build();opt=opt_for(m);initial=state(m);rp=rd/'resume.pt';claim=rd/'claim.json';jp=rd/'updates.private.jsonl';begin=0;logs=[]
         if claim.exists():
             assert json.loads(claim.read_text())==ident
@@ -204,7 +219,9 @@ def train():
         final=state(m);live={n for n,p in m.named_parameters() if p.requires_grad};assert all(torch.equal(initial[n],v) for n,v in final.items() if n not in live)
         assert all(any(r['groups'][k]>0 for r in logs[1:]) for k in groups(m));np.save(rd/'fit_final.npy',score_fit(m,data,arm))
         save_torch(rd/'final.pt',{'model':final,'identity':ident,'base_sha256':man['base_sha256'],'full_state_sha256':state_sha(final),'updates':600})
-        (rd/'resume.pt').replace(rd/'optimizer_final.pt');dt.sync_directory(rd)
+        retained=rd/'optimizer_final.pt'
+        if rp!=retained:rp.replace(retained)
+        dt.sync_directory(rd)
         e={'identity':ident,'updates':600,'model_sha256':sha(rd/'final.pt'),'optimizer_final_sha256':sha(rd/'optimizer_final.pt'),'full_state_sha256':state_sha(final),
           'initial_state_sha256':state_sha(initial),'live_tensors':len(live),'live_drift':{n:float((v.double()-initial[n].double()).norm()) for n,v in final.items() if n in live},
           'frozen_BN_unchanged':True,'optimizer_step_values':[600],'optimizer_parameters':len(opt.state),'journal_sha256':sha(jp),'fit_init_sha256':sha(rd/'fit_init.npy'),'fit_final_sha256':sha(rd/'fit_final.npy'),
@@ -214,7 +231,9 @@ def train():
 
 
 def readout():
-    man=verify();models=json.loads((PUB/'models_manifest.json').read_text());fr=json.loads((OUT/'models_freeze.json').read_text());assert fr['manifest_sha256']==sha(PUB/'models_manifest.json') and fr['actual_git_objects_verified']
+    man=verify();models=json.loads((PUB/'models_manifest.json').read_text());assert models['input_manifest_sha256']==sha(PUB/'input_manifest.json')
+    for arm in ARMS:assert models['models'][arm]['identity']=={'run_id':'A52','arm':arm,'input_manifest_sha256':sha(PUB/'input_manifest.json'),'plan_sha256':man['plan_sha256']}
+    fr=json.loads((OUT/'models_freeze.json').read_text());assert fr['manifest_sha256']==sha(PUB/'models_manifest.json') and fr['actual_git_objects_verified']
     audit=json.loads((PUB/'independent_models.json').read_text());assert audit['passed'] and audit['models_manifest_sha256']==sha(PUB/'models_manifest.json')
     data=Inputs();scores={}
     for arm in ARMS:
@@ -233,9 +252,9 @@ def readout():
 
 
 def main():
-    ap=argparse.ArgumentParser();ap.add_argument('stage',choices=['prepare','check','train','readout']);args=ap.parse_args();torch.set_num_threads(1);torch.use_deterministic_algorithms(True);torch.backends.cuda.matmul.allow_tf32=False;torch.backends.cudnn.allow_tf32=False;torch.backends.cudnn.deterministic=True;torch.backends.cudnn.benchmark=False
+    ap=argparse.ArgumentParser();ap.add_argument('stage',choices=['prepare','seal','check','train','readout']);args=ap.parse_args();torch.set_num_threads(1);torch.use_deterministic_algorithms(True);torch.backends.cuda.matmul.allow_tf32=False;torch.backends.cudnn.allow_tf32=False;torch.backends.cudnn.deterministic=True;torch.backends.cudnn.benchmark=False
     OUT.mkdir(parents=True,exist_ok=True);lock=dt.acquire_lock(OUT/'exclusive_worker.lock');start=time.time();ok=False
     try:globals()[args.stage]();ok=True
     finally:
-        lock.close();r=resource.getrusage(resource.RUSAGE_SELF);write(OUT/f'{args.stage}_worker_process.json',{'pid':os.getpid(),'stage':args.stage,'ok':ok,'start_epoch':start,'end_epoch':time.time(),'CPU_seconds':r.ru_utime+r.ru_stime,'GPU_job_wall_seconds':time.time()-start if args.stage!='prepare' else 0})
+        lock.close();r=resource.getrusage(resource.RUSAGE_SELF);write(OUT/f'{args.stage}_worker_process.json',{'pid':os.getpid(),'stage':args.stage,'ok':ok,'start_epoch':start,'end_epoch':time.time(),'CPU_seconds':r.ru_utime+r.ru_stime,'GPU_job_wall_seconds':time.time()-start if args.stage not in ('prepare','seal') else 0})
 if __name__=='__main__':main()
