@@ -26,7 +26,7 @@ def audit():
   folder=RUN/f'seed{seed}'/arm;assert not (folder/'pending.json').exists();rows=[json.loads(s) for s in (folder/'physical_updates.jsonl').read_text().splitlines()];logical=[r['u'] for r in rows];assert logical==list(range(count)),(arm,'uninterrupted trace expected; any replay must be independently accounted')
   assert all(np.isfinite(r['loss']) and np.isfinite(r['gradient_norm']) and r['groups']['head']>0 and (not arm.startswith('J') or r['groups']['active_video']>0) for r in rows)
   z=torch.load(folder/'latest.pt',map_location='cpu',weights_only=True,mmap=True);assert z['update']==count and z['seed']==seed and z['arm']==arm and z['schedule_total']==6000
-  st=z['model'];head_names=[n for n in st if n.startswith('head.')];active_names=['encoder.'+n for n in source if n not in inactive] if arm.startswith('J') else [];names=head_names+active_names;groups=z['optimizer']['param_groups'];assert len(groups)==(2 if arm.startswith('J') else 1);binding=[]
+  st=z['model'];head_names=[n for n in st if n.startswith('head.')];active_names=[n for n in st if n.startswith('encoder.') and n[len('encoder.'):] not in inactive] if arm.startswith('J') else [];names=head_names+active_names;groups=z['optimizer']['param_groups'];assert len(groups)==(2 if arm.startswith('J') else 1);binding=[]
   for group,nn,lr,name in zip(groups,[head_names,active_names],[.001,cfg['arms'][arm].get('encoder_lr',0)],['head','active_video']):
    assert group['name']==name and len(group['params'])==len(nn) and group['base_lr']==lr and abs(group['lr']-lr*lr_factor(count-1,200,6000))<1e-15 and group['betas']==(.9,.999) and group['eps']==1e-8 and group['weight_decay']==.05
    binding.extend(zip(group['params'],nn))

@@ -13,11 +13,11 @@ from echo_routing.temporal.baselines.registry import decode_with_prob
 from echo_routing.temporal.dense_analysis import validate_inner_cache
 
 def main():
- models=read(PUB/'models_manifest.json');assert models['passed'] and models['new_external_development_forwards']==0;seqs=inputs('inner_cal');choices={};out=RUN/'decoder_calibration';out.mkdir(exist_ok=True)
+ expected_input=read(PUB/'input_metadata.json')['roles']['inner_cal']['sequence_sha256'];models=read(PUB/'models_manifest.json');assert models['passed'] and models['new_external_development_forwards']==0;seqs=inputs('inner_cal');choices={};out=RUN/'decoder_calibration';out.mkdir(exist_ok=True)
  for row in models['outer_rows']:
   key=row['sha256']
   if key in choices:continue
-  folder=RUN/f"seed{row['seed']}"/row['arm']/f"inner_step{row['step']}";p=folder/'probabilities.private.npy';assert sha(p)==row['inner_probabilities_sha256'] and sha(folder/'metrics.json')==row['inner_record_sha256'] and sha(folder/'predictions.private.npy')==row['inner_predictions_sha256'];record=read(folder/'metrics.json');assert record['arm']==row['arm'] and record['seed']==row['seed'] and record['step']==row['step'];probs=np.load(p,allow_pickle=True).item();validate_inner_cache(probs,seqs,row['inner_sequence_sha256'],record);pred=np.load(folder/'predictions.private.npy',allow_pickle=True).item();assert set(pred)==set(probs) and all(np.array_equal(pred[k],v.argmax(1)) for k,v in probs.items());records=[];order=0
+  folder=RUN/f"seed{row['seed']}"/row['arm']/f"inner_step{row['step']}";p=folder/'probabilities.private.npy';assert sha(p)==row['inner_probabilities_sha256'] and sha(folder/'metrics.json')==row['inner_record_sha256'] and sha(folder/'predictions.private.npy')==row['inner_predictions_sha256'];record=read(folder/'metrics.json');assert record['arm']==row['arm'] and record['seed']==row['seed'] and record['step']==row['step'];probs=np.load(p,allow_pickle=True).item();assert row['inner_sequence_sha256']==expected_input;validate_inner_cache(probs,seqs,expected_input,record);pred=np.load(folder/'predictions.private.npy',allow_pickle=True).item();assert set(pred)==set(probs) and all(np.array_equal(pred[k],v.argmax(1)) for k,v in probs.items());records=[];order=0
   for half_window in [5,7,9,11,15]:
    scores=np.concatenate([boundary_scores(probs[q['id']],half_window)[1:] for q in seqs if q['kind']=='native'])
    for quantile in [.80,.85,.90,.95,.97,.99,.995,.999]:
