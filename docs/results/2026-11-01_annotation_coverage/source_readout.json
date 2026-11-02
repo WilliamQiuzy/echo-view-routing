@@ -1,0 +1,186 @@
+{
+  "metrics": {
+    "SF": {
+      "tp": 31,
+      "tn": 66,
+      "fp": 28,
+      "fn": 8,
+      "balanced_accuracy": 0.7484997272231315,
+      "accuracy": 0.7293233082706767,
+      "a4c_recall": 0.7021276595744681,
+      "a5c_recall": 0.7948717948717948,
+      "a4c_fpr": 0.2978723404255319,
+      "discordant_accuracy": 0.4117647058823529,
+      "AUC": 0.8036006546644845
+    },
+    "SC": {
+      "tp": 29,
+      "tn": 79,
+      "fp": 15,
+      "fn": 10,
+      "balanced_accuracy": 0.7920076377523186,
+      "accuracy": 0.8120300751879699,
+      "a4c_recall": 0.8404255319148937,
+      "a5c_recall": 0.7435897435897436,
+      "a4c_fpr": 0.1595744680851064,
+      "discordant_accuracy": 0.5294117647058824,
+      "AUC": 0.8717948717948718
+    },
+    "DF": {
+      "tp": 29,
+      "tn": 75,
+      "fp": 19,
+      "fn": 10,
+      "balanced_accuracy": 0.7707310420076378,
+      "accuracy": 0.7819548872180451,
+      "a4c_recall": 0.7978723404255319,
+      "a5c_recall": 0.7435897435897436,
+      "a4c_fpr": 0.20212765957446807,
+      "discordant_accuracy": 0.5882352941176471,
+      "AUC": 0.8112384069830878
+    },
+    "DC": {
+      "tp": 30,
+      "tn": 80,
+      "fp": 14,
+      "fn": 9,
+      "balanced_accuracy": 0.8101472995090017,
+      "accuracy": 0.8270676691729323,
+      "a4c_recall": 0.851063829787234,
+      "a5c_recall": 0.7692307692307693,
+      "a4c_fpr": 0.14893617021276595,
+      "discordant_accuracy": 0.5294117647058824,
+      "AUC": 0.8775231860338243
+    },
+    "G-C": {
+      "tp": 16,
+      "tn": 92,
+      "fp": 2,
+      "fn": 23,
+      "balanced_accuracy": 0.6944899072558647,
+      "accuracy": 0.8120300751879699,
+      "a4c_recall": 0.9787234042553191,
+      "a5c_recall": 0.41025641025641024,
+      "a4c_fpr": 0.02127659574468085,
+      "discordant_accuracy": 0.8235294117647058,
+      "AUC": 0.8145117294053464
+    },
+    "G-F": {
+      "tp": 16,
+      "tn": 90,
+      "fp": 4,
+      "fn": 23,
+      "balanced_accuracy": 0.6838516093835243,
+      "accuracy": 0.7969924812030075,
+      "a4c_recall": 0.9574468085106383,
+      "a5c_recall": 0.41025641025641024,
+      "a4c_fpr": 0.0425531914893617,
+      "discordant_accuracy": 0.8235294117647058,
+      "AUC": 0.8074195308237861
+    },
+    "geometry-F": {
+      "tp": 23,
+      "tn": 74,
+      "fp": 20,
+      "fn": 16,
+      "balanced_accuracy": 0.6884888161483906,
+      "accuracy": 0.7293233082706767,
+      "a4c_recall": 0.7872340425531915,
+      "a5c_recall": 0.5897435897435898,
+      "a4c_fpr": 0.2127659574468085,
+      "discordant_accuracy": 0.5882352941176471,
+      "AUC": 0.7122204037097654
+    },
+    "geometry-C": {
+      "tp": 22,
+      "tn": 72,
+      "fp": 22,
+      "fn": 17,
+      "balanced_accuracy": 0.6650300054555374,
+      "accuracy": 0.706766917293233,
+      "a4c_recall": 0.7659574468085106,
+      "a5c_recall": 0.5641025641025641,
+      "a4c_fpr": 0.23404255319148937,
+      "discordant_accuracy": 0.5882352941176471,
+      "AUC": 0.7078559738134206
+    },
+    "constant": {
+      "tp": 0,
+      "tn": 94,
+      "fp": 0,
+      "fn": 39,
+      "balanced_accuracy": 0.5,
+      "accuracy": 0.706766917293233,
+      "a4c_recall": 1.0,
+      "a5c_recall": 0.0,
+      "a4c_fpr": 0.0,
+      "discordant_accuracy": 0.7058823529411765,
+      "AUC": 0.5
+    }
+  },
+  "absolute": {
+    "SF": false,
+    "SC": false,
+    "DF": false,
+    "DC": false
+  },
+  "DC_minus_SC_source_increment": false,
+  "coverage_mechanism_supported": false,
+  "target_pair_geometry": null,
+  "source_qualified_for_target_card": false,
+  "paired": {
+    "DC-SC": {
+      "A5C_correct": {
+        "shared": 29,
+        "A_only": 1,
+        "B_only": 0
+      },
+      "A4C_errors": {
+        "shared": 14,
+        "A_only": 0,
+        "B_only": 1
+      }
+    },
+    "DF-SF": {
+      "A5C_correct": {
+        "shared": 29,
+        "A_only": 0,
+        "B_only": 2
+      },
+      "A4C_errors": {
+        "shared": 19,
+        "A_only": 0,
+        "B_only": 9
+      }
+    },
+    "DC-DF": {
+      "A5C_correct": {
+        "shared": 29,
+        "A_only": 1,
+        "B_only": 0
+      },
+      "A4C_errors": {
+        "shared": 11,
+        "A_only": 3,
+        "B_only": 8
+      }
+    },
+    "SC-SF": {
+      "A5C_correct": {
+        "shared": 29,
+        "A_only": 0,
+        "B_only": 2
+      },
+      "A4C_errors": {
+        "shared": 15,
+        "A_only": 0,
+        "B_only": 13
+      }
+    }
+  },
+  "raw_score_cache_sha256": "73af12936f4801a6c5fdd61a63b18d46064873d7575aac91e649aac95c2c96ed",
+  "new_source_diagnostic_forwards": 665,
+  "original_G_F_scores_reused": 133,
+  "new_target_readout": 0,
+  "scope": "Reused sourcepatientdiagnostic, not LVOT/anatomy/EV9Vclinicalvalidation."
+}
