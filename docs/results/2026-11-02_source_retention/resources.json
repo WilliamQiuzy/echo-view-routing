@@ -1,14 +1,14 @@
 {
-  "asof_epoch": 1793640656.144341,
-  "program_wall_elapsed_upper_hours": 2.1555348404248558,
+  "asof_epoch": 1793640670.76142,
+  "program_wall_elapsed_upper_hours": 2.1595951401525073,
   "program_start_origin": "conservative estimated worktree birth minus1200seconds; not measured CPU",
-  "new_phase_CPU_upper_hours": 3.400419067962693,
+  "new_phase_CPU_upper_hours": 3.4044793676903446,
   "new_phase_GPU_job_wall_hours": 1.373217380642891,
   "new_phase_peak_upper_bytes": 1538437822,
   "actual_namespace_bytes": 1112283433,
   "observed_namespace_peak_bytes": 1112283433,
   "largest_completed_checkpoint_bytes": 416154389,
-  "owner_active_wall_upper_hours": 0.9649587135182487,
+  "owner_active_wall_upper_hours": 0.9690190132459005,
   "root_reviewer_CPU_upper_hours": 0.8,
   "worker_CPU_hours": 1.3771270211111113,
   "completed_unwrapped_metadata_CLI_CPU_upper_seconds": 30,
@@ -58,7 +58,7 @@
   "historical_receipt": "runs/a55_long_iteration_v1/final_resource_receipt.json",
   "historical_lifetime_CPU_upper_hours": 19.784950963602743,
   "historical_lifetime_GPU_job_wall_hours": 5.653700407743454,
-  "charged_lifetime_CPU_upper_hours": 23.185370031565437,
+  "charged_lifetime_CPU_upper_hours": 23.18943033129309,
   "charged_lifetime_GPU_job_wall_hours": 7.026917788386345,
   "caps": {
     "GPU_job_wall_hours": 3,
@@ -69,8 +69,9 @@
   "old_phase_unchanged": true,
   "future_charges": 0,
   "idle_wait_CPU_charges": 0,
-  "outcome": "Completed independently audited source negative; all science and required tests complete; no target or automatic next round",
+  "outcome": "Completed independently audited source negative; all owned processes closed, no target/next round",
   "report": "docs/results/2026-11-02_source_retention/README.md",
-  "receipt_scope": "Worker closure plus completed root/reviewer total0.80h through asof_epoch. Subsequent root integration/automation removal is separately measured, never charged in advance.",
-  "root_coordination_tail": "runs/a56_source_retention_v1/root_coordination_tail.json"
+  "main_result_commit": "9ed7a2b676cf8adb7f773009cee7f0fdae6c62db",
+  "root_coordination_tail": "runs/a56_source_retention_v1/root_coordination_tail.json",
+  "receipt_scope": "Execution-worker closure and completed root/reviewer total0.80h through asof_epoch; subsequent integration/automation tail separately measured, no future charge."
 }
