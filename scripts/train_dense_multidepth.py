@@ -36,7 +36,12 @@ def payload(model,optimizer,cursor,arm,seed,plan_digest):
     return {'model':base.state(model),'optimizer':optimizer.state_dict(),'cpu_rng':torch.get_rng_state(),'cuda_rng':torch.cuda.get_rng_state_all(),'update':cursor,'arm':arm,'seed':seed,'schedule_total':6000,'feature_contract':model.feature_contract,'source_sha256':read(base.PUB/'source.json')['target_encoder_sha256'],'plan_canonical_sha256':plan_digest}
 
 def milestone(model,folder,cursor,arm,seed):
-    path=folder/f'step{cursor}.pt';value={'model':base.state(model)} if model.joint else {'head':{k:v.detach().cpu() for k,v in model.head.state_dict().items()}}
+    path=folder/f'step{cursor}.pt'
+    if path.exists():
+        identity=read(folder/f'step{cursor}.identity.json');saved=torch.load(path,map_location='cpu',weights_only=True);expected=base.state(model) if model.joint else {k:v.detach().cpu() for k,v in model.head.state_dict().items()};stored=saved['model'] if model.joint else saved['head']
+        if identity['sha256']!=sha(path) or saved['feature_contract']!=model.feature_contract or set(stored)!=set(expected) or any(not torch.equal(stored[k],v) for k,v in expected.items()):raise ValueError('existing immutable milestone differs from restored model')
+        return identity
+    value={'model':base.state(model)} if model.joint else {'head':{k:v.detach().cpu() for k,v in model.head.state_dict().items()}}
     value.update({'feature_contract':model.feature_contract,'arm':arm,'seed':seed,'step':cursor});atomic_torch_save(value,path);identity={'sha256':sha(path),'arm':arm,'seed':seed,'step':cursor,'feature_contract':model.feature_contract,'source_sha256':read(base.PUB/'source.json')['target_encoder_sha256'],'stage_freeze_git':read(RUN/'stage_freeze.json')['git_commit']};write(folder/f'step{cursor}.identity.json',identity);return identity
 
 def inner(model,sequences,pixels,folder,cursor,arm,seed,identity):
@@ -61,6 +66,7 @@ def train_one(cfg,arm,seed,fit,cal,tp,cp,plan):
         # Finish a committed checkpoint-boundary readout before advancing after a clean restart.
         if cursor and cursor%500==0 and not (folder/f'inner_step{cursor}/metrics.json').exists():
             identity=milestone(model,folder,cursor,arm,seed);rng,crng=torch.get_rng_state(),torch.cuda.get_rng_state_all();inner(model,cal,cp,folder,cursor,arm,seed,identity);torch.set_rng_state(rng);torch.cuda.set_rng_state_all(crng);model.train()
+    if rows and not latest.exists():write(folder/f'resume_attempt{attempt}.json',resume_accounting(rows,0))
     if cursor>=6000:del model,optimizer;torch.cuda.empty_cache();return
     for u in range(cursor,6000):
         batch=tp.batch([fit[int(i)] for i in plan['sequence'][u]],plan['start'][u],'cuda');write(pending,{'attempt':attempt,'u':u,'epoch':time.time(),'plan_canonical_sha256':plan_sha});start=time.time();row=base.step(model,optimizer,batch,u);row.update({'attempt':attempt,'arm':arm,'seed':seed,'epoch':time.time(),'model_step_wall_seconds':time.time()-start,'feature_kind':'official_four_depth_concat'})
