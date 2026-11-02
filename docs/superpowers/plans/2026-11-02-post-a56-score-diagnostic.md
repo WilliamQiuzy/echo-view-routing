@@ -10,7 +10,7 @@ Fixed analysis:
 
 1. Reproduce all historical TP/FP/BA/AUC at each original operating point before new arithmetic; stop on mismatch.
 2. Enumerate the complete empirical ROC for SF/SC/DF/DC, Z/R and the relevant frozen G reference, using each producer's own raw scalar score (A55 scalar head, A56 q3-q2). Preserve `score > threshold`, ties, +/-infinity endpoints. Never compare the absolute score scales of different heads.
-3. Report maximum TP/39 under FP budgets **0, 2, 5, 10, 20** out of94. Preserve ties as inseparable groups; report attained FP and number of admissible thresholds. All maximizing thresholds remain private.
+3. Report maximum TP/39 under FP budgets **0, 2, 5, 10, 20** out of94. Require finite scores, preserve ties as inseparable groups, and report attained FP and the count of distinct attainable prediction sets/score intervals satisfying the budget. Real-valued cutoffs within one interval are not different states; do not interpolate fractional TP through a tied group. All maximizing thresholds remain private.
 4. Report current TP/FP versus the empirical envelope, A5C/A4C patient/video denominators, and patient concentration of errors at the original point. Do not fit a calibrator or optimize a patient split in this diagnostic.
 
 The envelope uses diagnostic labels and is an **optimistic, reference-assisted upper bound on this already inspected sample**. It is not deployable performance, a qualified candidate, an out-of-fold calibration result or grounds to rewrite a negative round. If an envelope looks promising, a separate target-task model must choose its rule entirely from its own inner training/calibration partition and then be evaluated as declared in A57.

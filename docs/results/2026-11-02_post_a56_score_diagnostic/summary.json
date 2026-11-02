@@ -1,0 +1,628 @@
+{
+  "diagnostic_id": "POST-A56-ROC",
+  "retrospective": true,
+  "not_old_round_rescue": true,
+  "deployment_calibrator_fitted": false,
+  "historical_gates_and_outcomes_unchanged": true,
+  "reference_assisted_optimistic_envelope": true,
+  "arms": {
+    "G-F": {
+      "original_point": {
+        "tp": 16,
+        "fp": 4,
+        "tn": 90,
+        "fn": 23,
+        "balanced_accuracy": 0.6838516093835243,
+        "AUC": 0.8074195308237861
+      },
+      "empirical_envelope": [
+        {
+          "FP_budget": 0,
+          "max_tp": 9,
+          "attained_fp": 0,
+          "admissible_thresholds": 11,
+          "maximizing_threshold_count": 1
+        },
+        {
+          "FP_budget": 2,
+          "max_tp": 15,
+          "attained_fp": 2,
+          "admissible_thresholds": 19,
+          "maximizing_threshold_count": 1
+        },
+        {
+          "FP_budget": 5,
+          "max_tp": 23,
+          "attained_fp": 5,
+          "admissible_thresholds": 30,
+          "maximizing_threshold_count": 1
+        },
+        {
+          "FP_budget": 10,
+          "max_tp": 24,
+          "attained_fp": 7,
+          "admissible_thresholds": 36,
+          "maximizing_threshold_count": 4
+        },
+        {
+          "FP_budget": 20,
+          "max_tp": 28,
+          "attained_fp": 17,
+          "admissible_thresholds": 50,
+          "maximizing_threshold_count": 4
+        }
+      ],
+      "original_error_concentration": {
+        "false_positive": {
+          "requests": 4,
+          "patients": 2,
+          "videos": 2,
+          "patient_error_counts_descending_without_ids": [
+            3,
+            1
+          ]
+        },
+        "false_negative": {
+          "requests": 23,
+          "patients": 5,
+          "videos": 6,
+          "patient_error_counts_descending_without_ids": [
+            7,
+            6,
+            5,
+            4,
+            1
+          ]
+        }
+      },
+      "unique_scores": 133,
+      "ROC_point_count_with_infinity_endpoints": 135
+    },
+    "G-C": {
+      "original_point": {
+        "tp": 16,
+        "fp": 2,
+        "tn": 92,
+        "fn": 23,
+        "balanced_accuracy": 0.6944899072558647,
+        "AUC": 0.8145117294053464
+      },
+      "empirical_envelope": [
+        {
+          "FP_budget": 0,
+          "max_tp": 9,
+          "attained_fp": 0,
+          "admissible_thresholds": 11,
+          "maximizing_threshold_count": 1
+        },
+        {
+          "FP_budget": 2,
+          "max_tp": 16,
+          "attained_fp": 2,
+          "admissible_thresholds": 20,
+          "maximizing_threshold_count": 1
+        },
+        {
+          "FP_budget": 5,
+          "max_tp": 21,
+          "attained_fp": 5,
+          "admissible_thresholds": 28,
+          "maximizing_threshold_count": 1
+        },
+        {
+          "FP_budget": 10,
+          "max_tp": 25,
+          "attained_fp": 10,
+          "admissible_thresholds": 37,
+          "maximizing_threshold_count": 1
+        },
+        {
+          "FP_budget": 20,
+          "max_tp": 27,
+          "attained_fp": 11,
+          "admissible_thresholds": 49,
+          "maximizing_threshold_count": 10
+        }
+      ],
+      "original_error_concentration": {
+        "false_positive": {
+          "requests": 2,
+          "patients": 2,
+          "videos": 2,
+          "patient_error_counts_descending_without_ids": [
+            1,
+            1
+          ]
+        },
+        "false_negative": {
+          "requests": 23,
+          "patients": 5,
+          "videos": 6,
+          "patient_error_counts_descending_without_ids": [
+            7,
+            6,
+            5,
+            4,
+            1
+          ]
+        }
+      },
+      "unique_scores": 133,
+      "ROC_point_count_with_infinity_endpoints": 135
+    },
+    "SF": {
+      "original_point": {
+        "tp": 31,
+        "fp": 28,
+        "tn": 66,
+        "fn": 8,
+        "balanced_accuracy": 0.7484997272231315,
+        "AUC": 0.8036006546644845
+      },
+      "empirical_envelope": [
+        {
+          "FP_budget": 0,
+          "max_tp": 2,
+          "attained_fp": 0,
+          "admissible_thresholds": 4,
+          "maximizing_threshold_count": 1
+        },
+        {
+          "FP_budget": 2,
+          "max_tp": 2,
+          "attained_fp": 0,
+          "admissible_thresholds": 6,
+          "maximizing_threshold_count": 3
+        },
+        {
+          "FP_budget": 5,
+          "max_tp": 10,
+          "attained_fp": 4,
+          "admissible_thresholds": 17,
+          "maximizing_threshold_count": 2
+        },
+        {
+          "FP_budget": 10,
+          "max_tp": 23,
+          "attained_fp": 10,
+          "admissible_thresholds": 35,
+          "maximizing_threshold_count": 1
+        },
+        {
+          "FP_budget": 20,
+          "max_tp": 30,
+          "attained_fp": 14,
+          "admissible_thresholds": 52,
+          "maximizing_threshold_count": 7
+        }
+      ],
+      "original_error_concentration": {
+        "false_positive": {
+          "requests": 28,
+          "patients": 5,
+          "videos": 6,
+          "patient_error_counts_descending_without_ids": [
+            12,
+            11,
+            3,
+            1,
+            1
+          ]
+        },
+        "false_negative": {
+          "requests": 8,
+          "patients": 3,
+          "videos": 3,
+          "patient_error_counts_descending_without_ids": [
+            4,
+            2,
+            2
+          ]
+        }
+      },
+      "unique_scores": 133,
+      "ROC_point_count_with_infinity_endpoints": 135
+    },
+    "SC": {
+      "original_point": {
+        "tp": 29,
+        "fp": 15,
+        "tn": 79,
+        "fn": 10,
+        "balanced_accuracy": 0.7920076377523186,
+        "AUC": 0.8717948717948718
+      },
+      "empirical_envelope": [
+        {
+          "FP_budget": 0,
+          "max_tp": 5,
+          "attained_fp": 0,
+          "admissible_thresholds": 7,
+          "maximizing_threshold_count": 1
+        },
+        {
+          "FP_budget": 2,
+          "max_tp": 16,
+          "attained_fp": 1,
+          "admissible_thresholds": 20,
+          "maximizing_threshold_count": 2
+        },
+        {
+          "FP_budget": 5,
+          "max_tp": 24,
+          "attained_fp": 5,
+          "admissible_thresholds": 31,
+          "maximizing_threshold_count": 1
+        },
+        {
+          "FP_budget": 10,
+          "max_tp": 28,
+          "attained_fp": 7,
+          "admissible_thresholds": 40,
+          "maximizing_threshold_count": 4
+        },
+        {
+          "FP_budget": 20,
+          "max_tp": 31,
+          "attained_fp": 20,
+          "admissible_thresholds": 53,
+          "maximizing_threshold_count": 1
+        }
+      ],
+      "original_error_concentration": {
+        "false_positive": {
+          "requests": 15,
+          "patients": 4,
+          "videos": 5,
+          "patient_error_counts_descending_without_ids": [
+            8,
+            5,
+            1,
+            1
+          ]
+        },
+        "false_negative": {
+          "requests": 10,
+          "patients": 3,
+          "videos": 3,
+          "patient_error_counts_descending_without_ids": [
+            5,
+            3,
+            2
+          ]
+        }
+      },
+      "unique_scores": 133,
+      "ROC_point_count_with_infinity_endpoints": 135
+    },
+    "DF": {
+      "original_point": {
+        "tp": 29,
+        "fp": 19,
+        "tn": 75,
+        "fn": 10,
+        "balanced_accuracy": 0.7707310420076378,
+        "AUC": 0.8112384069830878
+      },
+      "empirical_envelope": [
+        {
+          "FP_budget": 0,
+          "max_tp": 1,
+          "attained_fp": 0,
+          "admissible_thresholds": 3,
+          "maximizing_threshold_count": 1
+        },
+        {
+          "FP_budget": 2,
+          "max_tp": 2,
+          "attained_fp": 2,
+          "admissible_thresholds": 6,
+          "maximizing_threshold_count": 1
+        },
+        {
+          "FP_budget": 5,
+          "max_tp": 15,
+          "attained_fp": 5,
+          "admissible_thresholds": 22,
+          "maximizing_threshold_count": 1
+        },
+        {
+          "FP_budget": 10,
+          "max_tp": 27,
+          "attained_fp": 10,
+          "admissible_thresholds": 39,
+          "maximizing_threshold_count": 1
+        },
+        {
+          "FP_budget": 20,
+          "max_tp": 29,
+          "attained_fp": 15,
+          "admissible_thresholds": 51,
+          "maximizing_threshold_count": 6
+        }
+      ],
+      "original_error_concentration": {
+        "false_positive": {
+          "requests": 19,
+          "patients": 4,
+          "videos": 5,
+          "patient_error_counts_descending_without_ids": [
+            11,
+            6,
+            1,
+            1
+          ]
+        },
+        "false_negative": {
+          "requests": 10,
+          "patients": 4,
+          "videos": 4,
+          "patient_error_counts_descending_without_ids": [
+            5,
+            2,
+            2,
+            1
+          ]
+        }
+      },
+      "unique_scores": 133,
+      "ROC_point_count_with_infinity_endpoints": 135
+    },
+    "DC": {
+      "original_point": {
+        "tp": 30,
+        "fp": 14,
+        "tn": 80,
+        "fn": 9,
+        "balanced_accuracy": 0.8101472995090017,
+        "AUC": 0.8775231860338243
+      },
+      "empirical_envelope": [
+        {
+          "FP_budget": 0,
+          "max_tp": 5,
+          "attained_fp": 0,
+          "admissible_thresholds": 7,
+          "maximizing_threshold_count": 1
+        },
+        {
+          "FP_budget": 2,
+          "max_tp": 18,
+          "attained_fp": 2,
+          "admissible_thresholds": 22,
+          "maximizing_threshold_count": 1
+        },
+        {
+          "FP_budget": 5,
+          "max_tp": 23,
+          "attained_fp": 5,
+          "admissible_thresholds": 30,
+          "maximizing_threshold_count": 1
+        },
+        {
+          "FP_budget": 10,
+          "max_tp": 29,
+          "attained_fp": 10,
+          "admissible_thresholds": 41,
+          "maximizing_threshold_count": 1
+        },
+        {
+          "FP_budget": 20,
+          "max_tp": 31,
+          "attained_fp": 18,
+          "admissible_thresholds": 53,
+          "maximizing_threshold_count": 3
+        }
+      ],
+      "original_error_concentration": {
+        "false_positive": {
+          "requests": 14,
+          "patients": 4,
+          "videos": 5,
+          "patient_error_counts_descending_without_ids": [
+            8,
+            4,
+            1,
+            1
+          ]
+        },
+        "false_negative": {
+          "requests": 9,
+          "patients": 3,
+          "videos": 3,
+          "patient_error_counts_descending_without_ids": [
+            5,
+            2,
+            2
+          ]
+        }
+      },
+      "unique_scores": 133,
+      "ROC_point_count_with_infinity_endpoints": 135
+    },
+    "Z": {
+      "original_point": {
+        "tp": 30,
+        "fp": 19,
+        "tn": 75,
+        "fn": 9,
+        "balanced_accuracy": 0.7835515548281506,
+        "AUC": 0.8927986906710311
+      },
+      "empirical_envelope": [
+        {
+          "FP_budget": 0,
+          "max_tp": 12,
+          "attained_fp": 0,
+          "admissible_thresholds": 14,
+          "maximizing_threshold_count": 1
+        },
+        {
+          "FP_budget": 2,
+          "max_tp": 22,
+          "attained_fp": 2,
+          "admissible_thresholds": 26,
+          "maximizing_threshold_count": 1
+        },
+        {
+          "FP_budget": 5,
+          "max_tp": 23,
+          "attained_fp": 5,
+          "admissible_thresholds": 30,
+          "maximizing_threshold_count": 1
+        },
+        {
+          "FP_budget": 10,
+          "max_tp": 26,
+          "attained_fp": 8,
+          "admissible_thresholds": 38,
+          "maximizing_threshold_count": 3
+        },
+        {
+          "FP_budget": 20,
+          "max_tp": 31,
+          "attained_fp": 20,
+          "admissible_thresholds": 53,
+          "maximizing_threshold_count": 1
+        }
+      ],
+      "original_error_concentration": {
+        "false_positive": {
+          "requests": 19,
+          "patients": 4,
+          "videos": 5,
+          "patient_error_counts_descending_without_ids": [
+            9,
+            8,
+            1,
+            1
+          ]
+        },
+        "false_negative": {
+          "requests": 9,
+          "patients": 3,
+          "videos": 3,
+          "patient_error_counts_descending_without_ids": [
+            5,
+            2,
+            2
+          ]
+        }
+      },
+      "unique_scores": 133,
+      "ROC_point_count_with_infinity_endpoints": 135
+    },
+    "R": {
+      "original_point": {
+        "tp": 30,
+        "fp": 20,
+        "tn": 74,
+        "fn": 9,
+        "balanced_accuracy": 0.7782324058919804,
+        "AUC": 0.8799781778505182
+      },
+      "empirical_envelope": [
+        {
+          "FP_budget": 0,
+          "max_tp": 11,
+          "attained_fp": 0,
+          "admissible_thresholds": 13,
+          "maximizing_threshold_count": 1
+        },
+        {
+          "FP_budget": 2,
+          "max_tp": 21,
+          "attained_fp": 1,
+          "admissible_thresholds": 25,
+          "maximizing_threshold_count": 2
+        },
+        {
+          "FP_budget": 5,
+          "max_tp": 22,
+          "attained_fp": 4,
+          "admissible_thresholds": 29,
+          "maximizing_threshold_count": 2
+        },
+        {
+          "FP_budget": 10,
+          "max_tp": 26,
+          "attained_fp": 10,
+          "admissible_thresholds": 38,
+          "maximizing_threshold_count": 1
+        },
+        {
+          "FP_budget": 20,
+          "max_tp": 30,
+          "attained_fp": 16,
+          "admissible_thresholds": 52,
+          "maximizing_threshold_count": 5
+        }
+      ],
+      "original_error_concentration": {
+        "false_positive": {
+          "requests": 20,
+          "patients": 4,
+          "videos": 5,
+          "patient_error_counts_descending_without_ids": [
+            9,
+            9,
+            1,
+            1
+          ]
+        },
+        "false_negative": {
+          "requests": 9,
+          "patients": 3,
+          "videos": 3,
+          "patient_error_counts_descending_without_ids": [
+            5,
+            2,
+            2
+          ]
+        }
+      },
+      "unique_scores": 133,
+      "ROC_point_count_with_infinity_endpoints": 135
+    }
+  },
+  "FP_budgets": [
+    0,
+    2,
+    5,
+    10,
+    20
+  ],
+  "A5C_total": 39,
+  "A4C_total": 94,
+  "patients": 10,
+  "videos": 13,
+  "class_group_denominators": {
+    "A5C": {
+      "requests": 39,
+      "patients": 6,
+      "videos": 7
+    },
+    "A4C": {
+      "requests": 94,
+      "patients": 10,
+      "videos": 11
+    }
+  },
+  "original_membership_order_and_historical_points_reproduced": true,
+  "independent_sklearn_AUC_and_ROC_budget_recount_passed": true,
+  "score_cache_sha256": {
+    "A55": "73af12936f4801a6c5fdd61a63b18d46064873d7575aac91e649aac95c2c96ed",
+    "A56": "02d6235ff0de40ba173d24d8d2b68881f6a93edc4046b8248a16fa6c5e1a7513"
+  },
+  "source_readout_sha256": {
+    "A55": "cd80c9aa0ea178fe34e7bf35e61b3d0350bfb96208f8a5e04860d3dd5cca54e8",
+    "A56": "449e1431464d835a9ccd096c33e8860b29359246ca0debe8fe9d49b55abbbf46"
+  },
+  "private_ROC_sha256": "4dfa7499d563729772ccb8b41143d22ee560d5422aa53cb68cb9242203598a9c",
+  "tie_rule": "strict score>threshold; whole tied groups; +inf,all distinct scores,-inf; minimum FP among TP-maximizers",
+  "public_export": "aggregates only; no scores, identifiers or threshold values",
+  "new_model_forwards": 0,
+  "optimizer_updates": 0,
+  "GPU_hours": 0,
+  "epoch": 1793648772.7159154
+}
