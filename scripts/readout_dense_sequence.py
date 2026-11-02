@@ -17,7 +17,7 @@ def main():
  for p,h in freeze['objects'].items():assert sha(ROOT/p)==h,p
  src=read(PUB/'source.json')
  for p,h in src['loaded_model_subset_SHA'].items():assert sha(source.UPSTREAM/p)==h
- cfg=read(CFG);models=read(PUB/'models_manifest.json');pins=read(PUB/'outer_inputs.json');assert pins['model_manifest_sha256']==sha(PUB/'models_manifest.json') and sha(RUN/'outer_metadata.private.npy')==pins['outer_metadata_sha256'];metadata=np.load(RUN/'outer_metadata.private.npy',allow_pickle=True).item();completed={};results=[]
+ cfg=read(CFG);assert sha(ROOT/cfg['source_state'])==src['target_encoder_sha256'];models=read(PUB/'models_manifest.json');pins=read(PUB/'outer_inputs.json');assert models['source_sha256']==src['target_encoder_sha256'];assert pins['model_manifest_sha256']==sha(PUB/'models_manifest.json') and sha(RUN/'outer_metadata.private.npy')==pins['outer_metadata_sha256'];metadata=np.load(RUN/'outer_metadata.private.npy',allow_pickle=True).item();completed={};results=[]
  for row in models['outer_rows']:
   assert sha(ROOT/row['path'])==row['sha256'];local=copy.deepcopy(cfg);local['seed']=row['seed'];model=None
   for half in ['selection','calibration']:

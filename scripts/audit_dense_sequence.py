@@ -21,6 +21,7 @@ def audit():
  from scripts.audit_dense_input_exposure import digest
  assert digest(dict(np.load(RUN/'plan.private.npz')))==exposure['plans']['2026110257']['canonical_little_endian_int64_plan_sha256']
  assert digest(dict(np.load(RUN/'second_seed_plan.private.npz')))==exposure['plans']['2026110258']['canonical_little_endian_int64_plan_sha256']
+ assert sha(ROOT/cfg['source_state'])==read(PUB/'source.json')['target_encoder_sha256']
  source=torch.load(ROOT/cfg['source_state'],map_location='cpu',weights_only=True,mmap=True);inactive=set(read(PUB/'source.json')['inactive_video_names']);models=[];entries=[];total=0
  for seed,arm,count in expected:
   folder=RUN/f'seed{seed}'/arm;assert not (folder/'pending.json').exists();rows=[json.loads(s) for s in (folder/'physical_updates.jsonl').read_text().splitlines()];logical=[r['u'] for r in rows];assert logical==list(range(count)),(arm,'uninterrupted trace expected; any replay must be independently accounted')
