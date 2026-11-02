@@ -1,0 +1,38 @@
+{
+  "prospective_preparation_only": true,
+  "new_variant_forwards": 0,
+  "admission_requires_actual_MD_FIT_graph_measurement_after_mandatory_secondseed": true,
+  "basis_sha256": "b68036cd4cd5a45231de6b52a6b301bdaf821d9326e47c144f9a2e492c04a98d",
+  "already_GPU_job_h": 2.0840123799774384,
+  "remaining_original_core_hours_unmultiplied": {
+    "training": 2.5566910784921526,
+    "inner": 2.9945862144231796,
+    "outer17rows": 1.3514991401171856,
+    "atomic_latest": 0.14059618843926325,
+    "coldstart_allowance": 0.0833333
+  },
+  "additional_MD_two_seed_hours_unmultiplied": {
+    "training24000": 3.0680292941905836,
+    "inner48": 3.513647824923198,
+    "outer12rows": 1.0493993323262854,
+    "atomic_latest": 0.1610465431213379,
+    "FIT_newgraph_check_reserve": 0.15,
+    "coldstart_allowance": 0.0833333
+  },
+  "runtime_contingency_multiplier": 1.15,
+  "MD_feature_return_runtime_factor_pre_measurement": 1.1,
+  "shared_closure_GPUh_reserve": 2,
+  "combined_complete_phase_GPUjob_h_forecast": 21.5089989284156,
+  "GPU_cap": 24,
+  "provisional_two_seed_forecast_fits": true,
+  "actual_CPUcore_h_forecast": 40,
+  "CPU_cap": 72,
+  "additional_peak_bytes_forecast": 32000000000,
+  "storage_cap": 40000000000,
+  "peak_includes": "all original+MD model/optimizer/milestone files, one atomic full optimizer coexistence, shared official source, all probabilities/tables/cache/preflights; no raw frame cache duplicated",
+  "phase_wall_h_forecast": 36,
+  "wall_cap": 48,
+  "budget_tier_rule": "before firstMDformalupdate: admit both seedpairs if complete actualMDmeasured forecast fits allsharedcaps+2GPUhreserve; else fixedseed2026110257matchedpair or defer, never performance-ledtier",
+  "original_matrix_and_full_readout_confirmation_priority": true,
+  "protected_media_forwards": 0
+}

@@ -1,0 +1,89 @@
+{
+  "experiment": "a57_multidepth_control_v1",
+  "parent_producer_git": "55745e1",
+  "base_config": "configs/experiments/dense_target_sequence_v1.yaml",
+  "card": "docs/superpowers/plans/2026-11-02-a57-four-depth-control.md",
+  "adaptation_timing": "afterpilotinnerfeedback_beforeanyouterfeedback",
+  "execution_after_mandatory_core_secondseed": true,
+  "source_state": "checkpoints/a57_jepa21/target_encoder.pt",
+  "source_manifest": "docs/results/2026-11-02_dense_target_sequence/source.json",
+  "source_model_commit": "204698b45b3712590f06245fbfba32d3be539812",
+  "source_strict_keys": 158,
+  "hierarchical_layers_zero_based": [
+    2,
+    5,
+    8,
+    11
+  ],
+  "normalized_layer_names": [
+    "norms_block.0",
+    "norms_block.1",
+    "norms_block.2",
+    "norms_block.3"
+  ],
+  "official_forward_flag": "return_hierarchical=True;out_layers=None;n_output_distillation=4;forwardtraining=False",
+  "feature_dim": 3072,
+  "concat_axis": 2,
+  "spatial_pool": "mean196patches pertime;concat4normalized768features inofficialorder",
+  "inactive_image_names": [
+    "img_mod_embed",
+    "patch_embed_img.proj.weight",
+    "patch_embed_img.proj.bias"
+  ],
+  "active_video_tensors_J": 155,
+  "active_video_parameters_J": 86241792,
+  "F_encoder_frozen": true,
+  "head_parameters": 1184906,
+  "new_projection_extra_parameters_vs_final_layer": 294912,
+  "TCN": "same2stages6layers128channels,kernel3,dilations1,2,4,8,16,32,dropout.1",
+  "supervised_original_positions": 64,
+  "chunks_per_update": 2,
+  "source_blocks_per_chunk": 4,
+  "blockframes": 16,
+  "tubelets_per_chunk": 32,
+  "inference_stride": 32,
+  "same_original_native_mixed_plans_and_role_arrays": true,
+  "training_seeds": [
+    2026110257,
+    2026110258
+  ],
+  "arms": [
+    "F-MD",
+    "J-MD"
+  ],
+  "steps_per_model": 6000,
+  "inner_every": 500,
+  "fixed_outer_steps": [
+    2000,
+    6000
+  ],
+  "inner_checkpoint_packages": true,
+  "head_lr": 0.001,
+  "J_encoder_lr": 3e-05,
+  "optimizer": {
+    "name": "AdamW",
+    "betas": [
+      0.9,
+      0.999
+    ],
+    "eps": 1e-08,
+    "weight_decay": 0.05,
+    "clip": 1,
+    "warmup": 200,
+    "full_schedule": 6000
+  },
+  "loss": "unchanged2stageequalmeanCE overvalidoriginalpositions;nonewloss/teacher/cutgates",
+  "precision": "BF16backbone/FP32head-loss",
+  "normalization_and_crop": "sameadmittedofficialvideoImageNetnormalization/RGBuint8/224crop",
+  "budget_shared_with_original": {
+    "GPUjob_h": 24,
+    "CPUcore_h": 72,
+    "peak_bytes": 40000000000,
+    "wall_h": 48,
+    "closure_GPUreserve_h": 2
+  },
+  "namespace": "runs/a57_dense_sequence_v1/multidepth_v1",
+  "public_namespace": "docs/results/2026-11-02_dense_target_sequence/multidepth",
+  "one_queue_global_ledger": "runs/a57_dense_sequence_v1/processes.jsonl",
+  "tier_admission": "two_seed_target;onepairordeferralonlybyactualcompletebudgetbeforeMDformalresults"
+}
