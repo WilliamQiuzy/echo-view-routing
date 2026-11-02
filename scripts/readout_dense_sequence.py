@@ -23,15 +23,16 @@ def main():
   for half in ['selection','calibration']:
    key=row['sha256']+'|'+half
    if key in completed:results.append({**row,'half':half,'reused_same_checkpoint':True,'raw_metrics':completed[key]});continue
-   seqs=metadata[half]['sequences'];pixels=ReadoutPixels(seqs);identity=row['sha256']+'|'+pins['outer_metadata_sha256']+'|'+half;folder=RUN/'outer_readout'/row['sha256']/half;cursor=SequenceReadout(folder,identity,len(seqs))
+   half_start=time.time();seqs=metadata[half]['sequences'];pixels=ReadoutPixels(seqs);identity=row['sha256']+'|'+pins['outer_metadata_sha256']+'|'+half;folder=RUN/'outer_readout'/row['sha256']/half;cursor=SequenceReadout(folder,identity,len(seqs));initial_cursor=cursor.cursor
    if cursor.cursor<len(seqs):
     if model is None:model=build(row['arm'],local);load_model_weights(model,ROOT/row['path']);model.eval()
     for i in range(cursor.cursor,len(seqs)):
      q=seqs[i];cursor.run_one(i,lambda q=q:data.predict_sequence(model,q,pixels))
      if (i+1)%100==0:budget_guard();write(RUN/'runtimecoordination.json',{'phase':'outer_readout','row':row['row'],'half':half,'model_pid':os.getpid(),'sequences_done':i+1,'sequences':len(seqs),'epoch':time.time(),'next_action':'finish frozen rows; no training or new choices from outer results'})
+   cost={'new_sequences':len(seqs)-initial_cursor,'previously_committed_sequences':initial_cursor,'decode_model_stitch_cache_wall_seconds_this_process':time.time()-half_start,'includes_model_coldstart_on_first_half':half=='selection','full_fresh_readout':initial_cursor==0,'GPU_peak_reserved_bytes':torch.cuda.max_memory_reserved()};write(folder/'inference_cost.json',cost)
    predictions={q['id']:cursor.load(i).argmax(1) for i,q in enumerate(seqs)};metrics,tables=evaluate_predictions(predictions,metadata[half]['eval_set'],10,.5);subset=[q for q in seqs if q['kind'] in ['native','multi']];extras,_=data.metrics(subset,{q['id']:predictions[q['id']] for q in subset});metrics.update({k:v for k,v in extras.items() if k.startswith('short_') or k.startswith('native_A4C') or k.startswith('native_A5C')});write(folder/'raw_metrics.json',metrics)
    for name,table in tables.items():table.to_csv(folder/(name+'.private.csv'),index=False)
-   completed[key]=metrics;results.append({**row,'half':half,'reused_same_checkpoint':False,'raw_metrics':metrics})
+   completed[key]=metrics;results.append({**row,'half':half,'reused_same_checkpoint':False,'raw_metrics':metrics,'inference_cost':cost})
   if model is not None:del model;torch.cuda.empty_cache()
  write(PUB/'raw_outer_results.json',{'status':'complete fixed frozen exploratory rows','rows':results,'model_manifest_sha256':sha(PUB/'models_manifest.json'),'readout_freeze_git':freeze['git_commit'],'wall_seconds':time.time()-start,'new_training_updates_during_outer':0});print(json.dumps({'outer_rows_completed':len(results),'unique_checkpoint_halves':len(completed)}),flush=True)
 if __name__=='__main__':
