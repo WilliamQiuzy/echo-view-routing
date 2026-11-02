@@ -45,8 +45,10 @@ def dense_ce(stages,labels,sample_mask):
     if not stages or labels.shape!=sample_mask.shape or labels.ndim!=2 or labels.shape[1]!=64 or not sample_mask.any():raise ValueError('valid original labels/masks and stages required')
     valid=sample_mask.bool()
     if ((labels[valid]<0)|(labels[valid]>=CLASSES)).any():raise ValueError('only public five-family labels0..4 allowed')
-    targets=labels.long().masked_fill(~valid,-100)
-    return torch.stack([F.cross_entropy(expand_logits(z).float(),targets,ignore_index=-100,reduction='sum')/valid.sum() for z in stages]).mean()
+    # Explicit valid-position 2D classification preserves the exact objective and
+    # uses CUDA's deterministic NLL path (3D nll_loss2d has no such path).
+    targets=labels.long()[valid]
+    return torch.stack([F.cross_entropy(expand_logits(z).float().transpose(1,2)[valid],targets,reduction='mean') for z in stages]).mean()
 
 
 def stitch_probabilities(chunks,n,starts=None):
