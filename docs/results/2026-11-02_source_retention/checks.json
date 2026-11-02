@@ -1,0 +1,50 @@
+{
+  "passed": true,
+  "input_manifest_sha256": "61dfa144c952e782d5697e775dac81fe2c25c92061890b671e1b01c19db91584",
+  "initial_full_state_sha256": "283f47ef331df5ff27126eafe3559a6151ec3326ab7528fc13f7f8c8bfaf85f6",
+  "A08_FIT250_parity_max_abs": 3.337860107421875e-06,
+  "independent_CE_formula_error": 1.1106857822351657e-08,
+  "production_grouped_gradient_relative_error": 1.2199218210661126e-08,
+  "coefficient0_eight_replay_backwards_exactzero_and_source_gradients_unchanged": true,
+  "repeat_forcedRzero_disk3plus3_fullstate_optimizer_bitwise": true,
+  "all_selected_tensor_count": 400,
+  "all_selected_parameter_count": 34640549,
+  "zero_gradient_tensor_names": [
+    "encoder.blocks.15.attn.rel_pos_h",
+    "encoder.blocks.15.attn.rel_pos_w",
+    "encoder.blocks.15.attn.rel_pos_t",
+    "encoder.blocks.15.attn.pool_q.pool.weight"
+  ],
+  "all_three_group_live_and_drift": true,
+  "timed_steps": 20,
+  "timed_seconds_per_step_including_checkpoint": 1.9911477088928222,
+  "formal_training_forecast_GPU_hours": 1.7256613477071125,
+  "closing_GPU_reserve_hours": 0.35,
+  "FIT_forwards": 986,
+  "FIT_backwards": 728,
+  "new_diagnostic_forwards": 0,
+  "GPU_peak_reserved_bytes": 7056916480,
+  "FIT_check_mutable_models": 7,
+  "source_FIT_independent_pixel_logit_checks": [
+    {
+      "FIT_index": 0,
+      "exact_C_window_sha256": "6eea49dd51c7a1fb3210473d8d11ae0374b59f644f49c62b5c6d88b4c2d2b59a",
+      "fresh_logit_max_abs": 0.0
+    },
+    {
+      "FIT_index": 189,
+      "exact_C_window_sha256": "30bb655ea369a8fe16dffcc25b74f2f476d9539492ce4fc23414ff871fbc211a",
+      "fresh_logit_max_abs": 0.0
+    },
+    {
+      "FIT_index": 378,
+      "exact_C_window_sha256": "1a661a9e8d713702a3569176239a790c0cc7feb6b108a9811f3af6d51cd9c3d6",
+      "fresh_logit_max_abs": 0.0
+    },
+    {
+      "FIT_index": 568,
+      "exact_C_window_sha256": "18ecef8fa74f05631a5c05a5c946a7a8b954cfdee82477f93b23c10d32b044ef",
+      "fresh_logit_max_abs": 0.0
+    }
+  ]
+}
