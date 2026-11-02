@@ -36,3 +36,12 @@ class SequenceReadout:
  def load(self,index):
   if not 0<=index<self.cursor:raise ValueError('uncommitted sequence')
   with np.load(self.file(index)) as z:return z['prob'].copy()
+
+# Keep the frozen training producer intact. The independent reader materializes
+# only the validated two-column manifest view before filtering the allowlist.
+from echo_routing.temporal import dense_runtime as runtime
+class ReadoutPixels(runtime.Pixels):
+ def __init__(self,sequences):
+  import pandas as pd
+  needed={r[0] for q in sequences for r in q['refs']};table=pd.read_csv(runtime.load_paths().manifest_path,usecols=['video_id','frames_dir'],dtype=str);table=table[table.video_id.isin(needed)];self.dirs=dict(zip(table.video_id,table.frames_dir));self.paths={}
+  if set(self.dirs)!=needed:raise ValueError('missing frame directory for allowlisted source')

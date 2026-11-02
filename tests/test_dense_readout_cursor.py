@@ -18,3 +18,12 @@ def test_cursor_binds_identity_tamper_and_pending_is_ambiguous_stop(tmp_path):
  with pytest.raises(RuntimeError):a.SequenceReadout(tmp_path,'identity',2)
  (tmp_path/'pending.json').unlink();(tmp_path/'sequence000000.private.npz').write_bytes(b'tampered')
  with pytest.raises(ValueError):a.SequenceReadout(tmp_path,'identity',2)
+
+def test_future_pixel_loader_materializes_only_validated_manifest_columns(tmp_path,monkeypatch):
+ import pandas as pd
+ from types import SimpleNamespace
+ from echo_routing.temporal import dense_runtime
+ a=api();manifest=tmp_path/'manifest.csv';manifest.write_text('video_id,frames_dir,label,private_other\nv1,/images1,hidden,hidden\nv2,/images2,hidden,hidden\n');original=pd.read_csv;calls=[]
+ def read(path,**kwargs):calls.append(kwargs);return original(path,**kwargs)
+ monkeypatch.setattr(pd,'read_csv',read);monkeypatch.setattr(dense_runtime,'load_paths',lambda:SimpleNamespace(manifest_path=manifest));loader=a.ReadoutPixels([{'refs':[('v1',0,1.)]}])
+ assert calls==[{'usecols':['video_id','frames_dir'],'dtype':str}] and loader.dirs=={'v1':'/images1'}

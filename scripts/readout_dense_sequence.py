@@ -8,7 +8,7 @@ ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT))
 import numpy as np,torch
 from scripts.train_dense_sequence import RUN,PUB,CFG,read,write,sha,build,load_model_weights,budget_guard
 from echo_routing.temporal import dense_runtime as data,jepa21_source as source
-from echo_routing.temporal.dense_readout import SequenceReadout
+from echo_routing.temporal.dense_readout import SequenceReadout,ReadoutPixels
 from echo_routing.evaluate.dev_metrics import evaluate_predictions
 
 def main():
@@ -23,7 +23,7 @@ def main():
   for half in ['selection','calibration']:
    key=row['sha256']+'|'+half
    if key in completed:results.append({**row,'half':half,'reused_same_checkpoint':True,'raw_metrics':completed[key]});continue
-   seqs=metadata[half]['sequences'];pixels=data.Pixels(seqs);identity=row['sha256']+'|'+pins['outer_metadata_sha256']+'|'+half;folder=RUN/'outer_readout'/row['sha256']/half;cursor=SequenceReadout(folder,identity,len(seqs))
+   seqs=metadata[half]['sequences'];pixels=ReadoutPixels(seqs);identity=row['sha256']+'|'+pins['outer_metadata_sha256']+'|'+half;folder=RUN/'outer_readout'/row['sha256']/half;cursor=SequenceReadout(folder,identity,len(seqs))
    if cursor.cursor<len(seqs):
     if model is None:model=build(row['arm'],local);load_model_weights(model,ROOT/row['path']);model.eval()
     for i in range(cursor.cursor,len(seqs)):
