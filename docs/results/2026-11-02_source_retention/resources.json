@@ -1,0 +1,76 @@
+{
+  "asof_epoch": 1793640656.144341,
+  "program_wall_elapsed_upper_hours": 2.1555348404248558,
+  "program_start_origin": "conservative estimated worktree birth minus1200seconds; not measured CPU",
+  "new_phase_CPU_upper_hours": 3.400419067962693,
+  "new_phase_GPU_job_wall_hours": 1.373217380642891,
+  "new_phase_peak_upper_bytes": 1538437822,
+  "actual_namespace_bytes": 1112283433,
+  "observed_namespace_peak_bytes": 1112283433,
+  "largest_completed_checkpoint_bytes": 416154389,
+  "owner_active_wall_upper_hours": 0.9649587135182487,
+  "root_reviewer_CPU_upper_hours": 0.8,
+  "worker_CPU_hours": 1.3771270211111113,
+  "completed_unwrapped_metadata_CLI_CPU_upper_seconds": 30,
+  "completed_unmetered_coordination_CPU_upper_seconds": 900,
+  "PID_deduplicated_CPU_GPU_seconds": {
+    "536769": [
+      4690.160187,
+      4756.139032363892
+    ],
+    "558558": [
+      26.937375,
+      33.3920955657959
+    ],
+    "557294": [
+      18.54716,
+      0.0
+    ],
+    "534076": [
+      17.673602000000002,
+      0.0
+    ],
+    "534549": [
+      144.285834,
+      154.05144238471985
+    ],
+    "557587": [
+      1.610403,
+      0.0
+    ],
+    "533568": [
+      16.939783000000002,
+      0.0
+    ],
+    "559095": [
+      1.547814,
+      0.0
+    ],
+    "559308": [
+      12.443515,
+      0.0
+    ],
+    "557934": [
+      27.511603,
+      0.0
+    ]
+  },
+  "historical_receipt": "runs/a55_long_iteration_v1/final_resource_receipt.json",
+  "historical_lifetime_CPU_upper_hours": 19.784950963602743,
+  "historical_lifetime_GPU_job_wall_hours": 5.653700407743454,
+  "charged_lifetime_CPU_upper_hours": 23.185370031565437,
+  "charged_lifetime_GPU_job_wall_hours": 7.026917788386345,
+  "caps": {
+    "GPU_job_wall_hours": 3,
+    "CPU_upper_hours": 6,
+    "new_peak_bytes": 5000000000
+  },
+  "scope": "Own worker PID receipts, active execution-owner wall upper and separately declared root/reviewer active upper; overlapping upper charges are explicit, not total host CPU. Owner idle waits excluded by closed segments. Observed monotone namespace peak plus one largest existing checkpoint bounds completed atomic coexistence, plus10MBcode allowance. No future cost charged.",
+  "old_phase_unchanged": true,
+  "future_charges": 0,
+  "idle_wait_CPU_charges": 0,
+  "outcome": "Completed independently audited source negative; all science and required tests complete; no target or automatic next round",
+  "report": "docs/results/2026-11-02_source_retention/README.md",
+  "receipt_scope": "Worker closure plus completed root/reviewer total0.80h through asof_epoch. Subsequent root integration/automation removal is separately measured, never charged in advance.",
+  "root_coordination_tail": "runs/a56_source_retention_v1/root_coordination_tail.json"
+}

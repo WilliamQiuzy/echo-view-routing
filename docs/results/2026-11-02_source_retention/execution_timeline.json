@@ -1,0 +1,198 @@
+{
+  "program_start_upper_epoch": 1793632896.2189155,
+  "program_start_origin": "Conservative estimated worktree birth minus1200s, not measured dispatch",
+  "input_freeze": {
+    "actual_git_objects_verified": true,
+    "git_commit": "17c2517bf592c919c0d684fc0de6bc1d60fd8cce",
+    "input_manifest_sha256": "61dfa144c952e782d5697e775dac81fe2c25c92061890b671e1b01c19db91584",
+    "verified_objects": 165,
+    "epoch": 1793634651.966547,
+    "neural_forwards_before_freeze": 0
+  },
+  "final_model_identity_freeze": {
+    "actual_git_objects_verified": true,
+    "git_commit": "6ad512ef9a48206d27aee39996db558a1715f48b",
+    "models_manifest_sha256": "e424d1ced99a489c6067f89a41b0fc856fd78ac0c05d8962d40846c03986bced",
+    "code": {
+      "scripts/audit_source_retention_fresh_fit.py": "c7a7bff1b5991b5bdbf49ab15039147d966499590254d74680165d9a9500d41f"
+    },
+    "planned_CPU_FIT_forwards": 4,
+    "source_diagnostic_forwards": 0,
+    "epoch": 1793639811.9372349
+  },
+  "models_freeze": {
+    "actual_git_objects_verified": true,
+    "git_commit": "e97e5ed179bfb3b47e7cd452e5deeb5bed041714",
+    "models_manifest_sha256": "e424d1ced99a489c6067f89a41b0fc856fd78ac0c05d8962d40846c03986bced",
+    "audit_sha256": {
+      "docs/results/2026-11-02_source_retention/independent_models.json": "3a3b54ef71c4257505c5b3adcc71adb4bc71b768dd03b2e9aa65d107916f652d",
+      "docs/results/2026-11-02_source_retention/matched_inputs.json": "4448102e87fb3f048f99f5bf9501fbd92afd3a11988764d99a1d6936eb7eec3b",
+      "docs/results/2026-11-02_source_retention/independent_fresh_fit.json": "d29b3b328c88033b84713a385c981cb7c6154ddf553a685c3e8d6e72daf3621d"
+    },
+    "source_diagnostic_forwards_before_freeze": 0,
+    "epoch": 1793639887.9880729
+  },
+  "readout_freeze": {
+    "actual_git_objects_verified": true,
+    "git_commit": "e97e5ed179bfb3b47e7cd452e5deeb5bed041714",
+    "code": {
+      "scripts/readout_source_retention.py": "c44f7217b5537a3f821abfcd6a7e6a11c4f69af69afaecaccc7871fec85fdbe3",
+      "echo_routing/temporal/source_retention_readout.py": "2080db21a392374fedcfc6d64ce2fcb733950eada213bfde9d395861b4de5c78",
+      "scripts/audit_source_retention_inputs.py": "bddc5e195a8f6fe5aa7471912795f58b93d4760fd69c24994b2385e1a780fb54",
+      "echo_routing/temporal/source_retention_audit.py": "78c75abae0cc5638a36f4a4df6cd60c3e65def7d2a683a02e1ee865eedf9f075",
+      "scripts/audit_source_retention_fresh_fit.py": "c7a7bff1b5991b5bdbf49ab15039147d966499590254d74680165d9a9500d41f",
+      "scripts/summarize_source_retention.py": "1ff5f0780e794109fc169c842589e037b732f6a72b02f852eaa540ee8a40335a",
+      "scripts/audit_source_retention_final.py": "884f463141e2c8ccd4b25e48ffa0a0cafa922d9c822097b5b329f5af8a722bc8",
+      "docs/results/2026-11-02_source_retention/readout_engineering_addendum.md": "7e7edff90a9e843f8ece8d73a5c96815c71a62eeaef81135e8b489182a11a898"
+    },
+    "before_diagnostic_forwards": 0,
+    "epoch": 1793639887.988532
+  },
+  "processes": [
+    {
+      "stage": "audit_models",
+      "attempt": 1,
+      "model_pid": 557294,
+      "supervisor_pid": 557293,
+      "start_epoch": 1793639726.2273655,
+      "end_epoch": 1793639744.8208861,
+      "exit_code": 0,
+      "timed_out": false,
+      "full_process_wall_seconds": 18.593520879745483,
+      "process_CPU_seconds": 18.54716,
+      "GPU_job": false,
+      "max_RSS_KB": 3460616
+    },
+    {
+      "stage": "check",
+      "attempt": 1,
+      "model_pid": 534549,
+      "supervisor_pid": 534548,
+      "start_epoch": 1793634655.4278286,
+      "end_epoch": 1793634809.4792707,
+      "exit_code": 0,
+      "timed_out": false,
+      "full_process_wall_seconds": 154.05144238471985,
+      "process_CPU_seconds": 144.285834,
+      "GPU_job": true,
+      "max_RSS_KB": 13211288
+    },
+    {
+      "stage": "final_audit",
+      "attempt": 1,
+      "model_pid": 559308,
+      "supervisor_pid": 559307,
+      "start_epoch": 1793640012.9760919,
+      "end_epoch": 1793640023.6126513,
+      "exit_code": 0,
+      "timed_out": false,
+      "full_process_wall_seconds": 10.63655972480774,
+      "process_CPU_seconds": 12.443515,
+      "GPU_job": false,
+      "max_RSS_KB": 320972
+    },
+    {
+      "stage": "fresh_fit",
+      "attempt": 1,
+      "model_pid": 557934,
+      "supervisor_pid": 557933,
+      "start_epoch": 1793639815.1684456,
+      "end_epoch": 1793639842.7292957,
+      "exit_code": 0,
+      "timed_out": false,
+      "full_process_wall_seconds": 27.560850381851196,
+      "process_CPU_seconds": 27.511603,
+      "GPU_job": false,
+      "max_RSS_KB": 3475856
+    },
+    {
+      "stage": "matched_inputs",
+      "attempt": 1,
+      "model_pid": 557587,
+      "supervisor_pid": 557586,
+      "start_epoch": 1793639765.1450174,
+      "end_epoch": 1793639765.8619158,
+      "exit_code": 0,
+      "timed_out": false,
+      "full_process_wall_seconds": 0.7168986797332764,
+      "process_CPU_seconds": 1.610403,
+      "GPU_job": false,
+      "max_RSS_KB": 40388
+    },
+    {
+      "stage": "prepare",
+      "attempt": 1,
+      "model_pid": 533568,
+      "supervisor_pid": 533567,
+      "start_epoch": 1793634489.0986753,
+      "end_epoch": 1793634509.7966456,
+      "exit_code": 0,
+      "timed_out": false,
+      "full_process_wall_seconds": 20.697970628738403,
+      "process_CPU_seconds": 16.939783000000002,
+      "GPU_job": false,
+      "max_RSS_KB": 2776092
+    },
+    {
+      "stage": "prepare",
+      "attempt": 2,
+      "model_pid": 534076,
+      "supervisor_pid": 534074,
+      "start_epoch": 1793634592.600453,
+      "end_epoch": 1793634613.4983242,
+      "exit_code": 0,
+      "timed_out": false,
+      "full_process_wall_seconds": 20.897871494293213,
+      "process_CPU_seconds": 17.673602000000002,
+      "GPU_job": false,
+      "max_RSS_KB": 2775916
+    },
+    {
+      "stage": "readout",
+      "attempt": 1,
+      "model_pid": 558558,
+      "supervisor_pid": 558530,
+      "start_epoch": 1793639896.4873703,
+      "end_epoch": 1793639929.879465,
+      "exit_code": 0,
+      "timed_out": false,
+      "full_process_wall_seconds": 33.3920955657959,
+      "process_CPU_seconds": 26.937375,
+      "GPU_job": true,
+      "max_RSS_KB": 3720772
+    },
+    {
+      "stage": "summary",
+      "attempt": 1,
+      "model_pid": 559095,
+      "supervisor_pid": 559094,
+      "start_epoch": 1793639979.862702,
+      "end_epoch": 1793639980.5309656,
+      "exit_code": 0,
+      "timed_out": false,
+      "full_process_wall_seconds": 0.6682639122009277,
+      "process_CPU_seconds": 1.547814,
+      "GPU_job": false,
+      "max_RSS_KB": 56708
+    },
+    {
+      "stage": "train",
+      "attempt": 1,
+      "model_pid": 536769,
+      "supervisor_pid": 536768,
+      "start_epoch": 1793634954.471281,
+      "end_epoch": 1793639710.6103132,
+      "exit_code": 0,
+      "timed_out": false,
+      "full_process_wall_seconds": 4756.139032363892,
+      "process_CPU_seconds": 4690.160187,
+      "GPU_job": true,
+      "max_RSS_KB": 4498476
+    }
+  ],
+  "all_owned_processes_closed": true,
+  "failed_model_or_stage_jobs": 0,
+  "source_diagnostic_forward_count": 266,
+  "target_readout": 0,
+  "snapshot_epoch": 1793640200.6458907
+}

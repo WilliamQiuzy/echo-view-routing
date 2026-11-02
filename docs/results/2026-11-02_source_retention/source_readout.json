@@ -1,0 +1,422 @@
+{
+  "run_id": "A56",
+  "scope": "Repeated10source-patient exploratory source diagnostic; no target OOF, clinical validation or publication-goal claim. FIT retention is training behavior only.",
+  "raw_logits_margin": "original_classifier_pre_softmax_q3_minus_q2; positive strictly>0",
+  "metrics": {
+    "Z": {
+      "tp": 30,
+      "fp": 19,
+      "tn": 75,
+      "fn": 9,
+      "A5C_total": 39,
+      "A4C_total": 94,
+      "TPR": 0.7692307692307693,
+      "FPR": 0.20212765957446807,
+      "balanced_accuracy": 0.7835515548281506,
+      "AUC": 0.8927986906710311
+    },
+    "R": {
+      "tp": 30,
+      "fp": 20,
+      "tn": 74,
+      "fn": 9,
+      "A5C_total": 39,
+      "A4C_total": 94,
+      "TPR": 0.7692307692307693,
+      "FPR": 0.2127659574468085,
+      "balanced_accuracy": 0.7782324058919804,
+      "AUC": 0.8799781778505182
+    },
+    "G-C": {
+      "tp": 16,
+      "fp": 2,
+      "tn": 92,
+      "fn": 23,
+      "A5C_total": 39,
+      "A4C_total": 94,
+      "TPR": 0.41025641025641024,
+      "FPR": 0.02127659574468085,
+      "balanced_accuracy": 0.6944899072558647,
+      "AUC": 0.8145117294053464
+    }
+  },
+  "actual_fiveclass_source": {
+    "Z": {
+      "rows_true_labels": [
+        "A4C",
+        "A5C"
+      ],
+      "columns_original_labels": [
+        "PLAX",
+        "PSAX",
+        "A4C",
+        "A5C",
+        "SC4C"
+      ],
+      "counts": [
+        [
+          0,
+          0,
+          75,
+          19,
+          0
+        ],
+        [
+          0,
+          0,
+          9,
+          30,
+          0
+        ]
+      ],
+      "five_class_correct": 105,
+      "other_class_predictions": 0,
+      "pairwise_positive_but_argmax_other_class": 0,
+      "actual_A4C_to_A5C": 19,
+      "actual_A5C_to_A4C": 9
+    },
+    "R": {
+      "rows_true_labels": [
+        "A4C",
+        "A5C"
+      ],
+      "columns_original_labels": [
+        "PLAX",
+        "PSAX",
+        "A4C",
+        "A5C",
+        "SC4C"
+      ],
+      "counts": [
+        [
+          0,
+          0,
+          74,
+          20,
+          0
+        ],
+        [
+          0,
+          0,
+          9,
+          30,
+          0
+        ]
+      ],
+      "five_class_correct": 104,
+      "other_class_predictions": 0,
+      "pairwise_positive_but_argmax_other_class": 0,
+      "actual_A4C_to_A5C": 20,
+      "actual_A5C_to_A4C": 9
+    }
+  },
+  "paired": {
+    "R_minus_Z": {
+      "A5C": {
+        "total": 39,
+        "both_positive": 30,
+        "left_only_positive": 0,
+        "right_only_positive": 0,
+        "both_negative": 9,
+        "disagreement_patient_count": 0,
+        "disagreement_video_count": 0
+      },
+      "A4C": {
+        "total": 94,
+        "both_positive": 19,
+        "left_only_positive": 1,
+        "right_only_positive": 0,
+        "both_negative": 74,
+        "disagreement_patient_count": 1,
+        "disagreement_video_count": 1
+      }
+    },
+    "R_minus_G-C": {
+      "A5C": {
+        "total": 39,
+        "both_positive": 16,
+        "left_only_positive": 14,
+        "right_only_positive": 0,
+        "both_negative": 9,
+        "disagreement_patient_count": 5,
+        "disagreement_video_count": 5
+      },
+      "A4C": {
+        "total": 94,
+        "both_positive": 2,
+        "left_only_positive": 18,
+        "right_only_positive": 0,
+        "both_negative": 74,
+        "disagreement_patient_count": 2,
+        "disagreement_video_count": 3
+      }
+    },
+    "Z_minus_G-C": {
+      "A5C": {
+        "total": 39,
+        "both_positive": 16,
+        "left_only_positive": 14,
+        "right_only_positive": 0,
+        "both_negative": 9,
+        "disagreement_patient_count": 5,
+        "disagreement_video_count": 5
+      },
+      "A4C": {
+        "total": 94,
+        "both_positive": 2,
+        "left_only_positive": 17,
+        "right_only_positive": 0,
+        "both_negative": 75,
+        "disagreement_patient_count": 2,
+        "disagreement_video_count": 3
+      }
+    }
+  },
+  "R_absolute_components": {
+    "tp_at_least28": true,
+    "fp_at_most5": false,
+    "BA_at_least_point80": false,
+    "AUC_at_least_point85": true,
+    "AUC_at_least_GC_plus_point03": true
+  },
+  "R_absolute_passed": false,
+  "R_minus_Z_components": {
+    "at_least4_fewer_FP": false,
+    "at_most2_fewer_TP": true,
+    "AUC_increment_at_least_point03": false
+  },
+  "R_minus_Z_passed": false,
+  "combined_passed": false,
+  "patient_cluster_bootstrap": {
+    "draws": 2000,
+    "valid_draws": 1999,
+    "patients": 10,
+    "videos": 13,
+    "correlated_source_requests": 133,
+    "seed": 2026110256,
+    "R_minus_Z": {
+      "TPR": {
+        "point": 0.0,
+        "percentile95": [
+          0.0,
+          0.0
+        ]
+      },
+      "FPR": {
+        "point": 0.010638297872340441,
+        "percentile95": [
+          0.0,
+          0.034090909090909116
+        ]
+      },
+      "balanced_accuracy": {
+        "point": -0.005319148936170248,
+        "percentile95": [
+          -0.017045454545454475,
+          0.0
+        ]
+      },
+      "AUC": {
+        "point": -0.012820512820512886,
+        "percentile95": [
+          -0.04448529411764712,
+          0.0006135072878192965
+        ]
+      }
+    },
+    "per_arm": {
+      "Z": {
+        "TPR": {
+          "point": 0.7692307692307693,
+          "percentile95": [
+            0.5652173913043478,
+            1.0
+          ]
+        },
+        "FPR": {
+          "point": 0.20212765957446807,
+          "percentile95": [
+            0.018619078311311637,
+            0.39585298742138364
+          ]
+        },
+        "balanced_accuracy": {
+          "point": 0.7835515548281506,
+          "percentile95": [
+            0.6524261603375527,
+            0.9078600543478261
+          ]
+        },
+        "AUC": {
+          "point": 0.8927986906710311,
+          "percentile95": [
+            0.7607833755511774,
+            0.9745809767483616
+          ]
+        }
+      },
+      "R": {
+        "TPR": {
+          "point": 0.7692307692307693,
+          "percentile95": [
+            0.5652173913043478,
+            1.0
+          ]
+        },
+        "FPR": {
+          "point": 0.2127659574468085,
+          "percentile95": [
+            0.018619078311311637,
+            0.4179240162822252
+          ]
+        },
+        "balanced_accuracy": {
+          "point": 0.7782324058919804,
+          "percentile95": [
+            0.6376833369509561,
+            0.9078600543478261
+          ]
+        },
+        "AUC": {
+          "point": 0.8799781778505182,
+          "percentile95": [
+            0.7316497522085756,
+            0.9729730718607575
+          ]
+        }
+      },
+      "G-C": {
+        "TPR": {
+          "point": 0.41025641025641024,
+          "percentile95": [
+            0.25806451612903225,
+            0.625
+          ]
+        },
+        "FPR": {
+          "point": 0.02127659574468085,
+          "percentile95": [
+            0.0,
+            0.05715927750410507
+          ]
+        },
+        "balanced_accuracy": {
+          "point": 0.6944899072558647,
+          "percentile95": [
+            0.625,
+            0.7925583607568902
+          ]
+        },
+        "AUC": {
+          "point": 0.8145117294053464,
+          "percentile95": [
+            0.6342088800279195,
+            0.9293676718626788
+          ]
+        }
+      }
+    },
+    "interpretation": "descriptive intervals on repeatedly reused source patients, not fresh or clinical validation"
+  },
+  "FIT_retention": {
+    "Z": {
+      "role": "FIT_training_retention_only",
+      "rows": 250,
+      "class_totals": [
+        50,
+        50,
+        50,
+        50,
+        50
+      ],
+      "correct": 240,
+      "Base_correct": 243,
+      "kept_Base_correct": 238,
+      "new_errors_among_Base_correct": 5,
+      "new_correct_among_Base_wrong": 2,
+      "correct_by_class": [
+        50,
+        50,
+        42,
+        48,
+        50
+      ],
+      "Base_correct_by_class": [
+        50,
+        50,
+        47,
+        46,
+        50
+      ]
+    },
+    "R": {
+      "role": "FIT_training_retention_only",
+      "rows": 250,
+      "class_totals": [
+        50,
+        50,
+        50,
+        50,
+        50
+      ],
+      "correct": 244,
+      "Base_correct": 243,
+      "kept_Base_correct": 242,
+      "new_errors_among_Base_correct": 1,
+      "new_correct_among_Base_wrong": 2,
+      "correct_by_class": [
+        50,
+        50,
+        47,
+        47,
+        50
+      ],
+      "Base_correct_by_class": [
+        50,
+        50,
+        47,
+        46,
+        50
+      ]
+    }
+  },
+  "FIT_source_panel": {
+    "Z": {
+      "role": "FIT_training_behavior_only",
+      "rows": 32,
+      "five_class_correct": 32,
+      "A5C_total": 14,
+      "A4C_total": 18,
+      "A5C_pairwise_correct": 14,
+      "A4C_pairwise_false_positive": 0
+    },
+    "R": {
+      "role": "FIT_training_behavior_only",
+      "rows": 32,
+      "five_class_correct": 32,
+      "A5C_total": 14,
+      "A4C_total": 18,
+      "A5C_pairwise_correct": 14,
+      "A4C_pairwise_false_positive": 0
+    }
+  },
+  "source_patient_class_coverage": {
+    "A4C": {
+      "patients": 10,
+      "videos": 11,
+      "requests": 94
+    },
+    "A5C": {
+      "patients": 6,
+      "videos": 7,
+      "requests": 39
+    }
+  },
+  "source_score_cache_sha256": "02d6235ff0de40ba173d24d8d2b68881f6a93edc4046b8248a16fa6c5e1a7513",
+  "new_source_diagnostic_forwards": 266,
+  "target_readout": 0,
+  "optimizer_updates": 2400,
+  "training_forwards": 38400,
+  "training_backwards": 38400,
+  "timestamp_epoch": 1793639980.47053
+}
