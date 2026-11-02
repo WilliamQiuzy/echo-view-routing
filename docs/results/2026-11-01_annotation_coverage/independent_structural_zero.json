@@ -1,0 +1,61 @@
+{
+  "passed": true,
+  "models": {
+    "SF": {
+      "selected_optimizer_tensors": 400,
+      "optimizer_steps_each": 3600,
+      "changed_selected_tensors": 396,
+      "zero_moment_unchanged_selected_tensors": [
+        "m.encoder.blocks.15.attn.pool_q.pool.weight",
+        "m.encoder.blocks.15.attn.rel_pos_h",
+        "m.encoder.blocks.15.attn.rel_pos_t",
+        "m.encoder.blocks.15.attn.rel_pos_w"
+      ],
+      "old_five_class_head_excluded": true
+    },
+    "SC": {
+      "selected_optimizer_tensors": 400,
+      "optimizer_steps_each": 3600,
+      "changed_selected_tensors": 396,
+      "zero_moment_unchanged_selected_tensors": [
+        "m.encoder.blocks.15.attn.pool_q.pool.weight",
+        "m.encoder.blocks.15.attn.rel_pos_h",
+        "m.encoder.blocks.15.attn.rel_pos_t",
+        "m.encoder.blocks.15.attn.rel_pos_w"
+      ],
+      "old_five_class_head_excluded": true
+    },
+    "DF": {
+      "selected_optimizer_tensors": 400,
+      "optimizer_steps_each": 3600,
+      "changed_selected_tensors": 396,
+      "zero_moment_unchanged_selected_tensors": [
+        "m.encoder.blocks.15.attn.pool_q.pool.weight",
+        "m.encoder.blocks.15.attn.rel_pos_h",
+        "m.encoder.blocks.15.attn.rel_pos_t",
+        "m.encoder.blocks.15.attn.rel_pos_w"
+      ],
+      "old_five_class_head_excluded": true
+    },
+    "DC": {
+      "selected_optimizer_tensors": 400,
+      "optimizer_steps_each": 3600,
+      "changed_selected_tensors": 396,
+      "zero_moment_unchanged_selected_tensors": [
+        "m.encoder.blocks.15.attn.pool_q.pool.weight",
+        "m.encoder.blocks.15.attn.rel_pos_h",
+        "m.encoder.blocks.15.attn.rel_pos_t",
+        "m.encoder.blocks.15.attn.rel_pos_w"
+      ],
+      "old_five_class_head_excluded": true
+    }
+  },
+  "torch_version": "2.14.0+cu130",
+  "torchvision_version": "0.29.0+cu130",
+  "installed_mvit_module_sha256": "76ca465f2be0bb7ff914ca434264ceb6736402856d164e5810491d5ba77d4210",
+  "graph_explanation": "Final output reads CLS only; last relative positions modify nonCLS-query/nonCLS-key entries, and final query pooling convolution transforms nonCLS queries while CLS bypasses pooling. These four tensors have no path to final CLS loss. Layer norms and all other selected tensors remain live.",
+  "environment_scope": "Installed runtime snapshot at closure; source initial-state/production numerical checks were separately frozen before training.",
+  "new_neural_forwards": 0,
+  "new_neural_backwards": 0,
+  "new_target_readouts": 0
+}
