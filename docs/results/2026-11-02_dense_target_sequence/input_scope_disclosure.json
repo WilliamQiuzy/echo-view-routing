@@ -1,0 +1,17 @@
+{
+  "scope": "A57 direct target study, frozen55745e1 producer",
+  "global_manifest_nonpath_fields_transiently_parsed": true,
+  "manifest_fields_retained": [
+    "video_id",
+    "frames_dir"
+  ],
+  "manifest_retention_filter": "only pinned FIT/inner-cal allowed image source IDs",
+  "protected_media_forwards": 0,
+  "protected_labels_used_for_training_or_selection": false,
+  "training_and_inner_targets": "only q.labels in SHA-pinned split-pure sequence arrays",
+  "model_input": "RGBuint8 and original-position paddingmask only",
+  "verification": "source code plus input SHA/whole footprint checks; root independent read-only review",
+  "limitation": "CSV DictReader transiently materialized unused global fields; no claim of pristine column isolation or never opening test metadata",
+  "future_reader_fix": "two-column pd.read_csv usecols=[video_id,frames_dir], same frame list/crop/gamma, separately frozen future reader",
+  "producer_left_unchanged_during_training": true
+}

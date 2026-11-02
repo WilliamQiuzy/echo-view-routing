@@ -13,3 +13,5 @@
 [完整forecast](forecast.json)包括32000正式更新、64次完整内层评估、固定外层与checkpoint package共最多17行的推理预算、检查点写入、1.2倍运行余量以及至少2GPU小时收尾储备，合计21.704GPU-job-wall小时；另估计30实际CPU-core小时和24GB新增峰值。它是前瞻预测，不能计为已花费资源。新阶段上限24GPU小时/72实际CPU-core小时/40GB/48墙钟小时，旧轮次费用原样保留。
 
 证据：[源身份](source.json)、[分区/计划](input_metadata.json)、[新图GPU检查](checks.json)、[原图全管线检查](pipeline_checks.json)、[预检验证](preflight_verification.json)、[真实启动回执](launch.json)。正式冻结代码55745e1；运行进度与私有逐步日志在服务器`runs/a57_dense_sequence_v1/`，原图、身份、权重和逐例输出不公开。
+
+输入作用域另见[明确披露](input_scope_disclosure.json)：冻结producer的全局CSV解析器曾暂时物化未使用字段，只保留allowlist内路径；受保护媒体前向为0，受保护标签未用于训练或选择。未来独立reader使用两列视图。这里的“封存”指没有使用受保护目标进行模型前向、训练或选择，不声称清单解析具有完全列隔离。
