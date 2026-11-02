@@ -32,6 +32,11 @@ def test_chunk_footprints_tail_padding_and_probability_stitch():
     with pytest.raises(ValueError):a.stitch_probabilities(probs,65,starts=[0,31,64])
 
 
+def test_training_chunk_can_center_a_true_change_off_the_inference_grid():
+    idx,valid=api().chunk_positions(100,3)
+    assert idx[0]==3 and idx[-1]==66 and valid.all()
+
+
 def test_tcn_mask_blocks_arbitrary_padded_FEATURE_values_not_raw_pixels():
     a=api();head=a.TwoStageTCN(3,channels=4).eval();x=torch.randn(2,3,32);mask=torch.arange(32)[None].repeat(2,1)<torch.tensor([7,19])[:,None];changed=x.clone();changed.masked_fill_(~mask[:,None],1e6)
     left,right=head(x,mask),head(changed,mask)

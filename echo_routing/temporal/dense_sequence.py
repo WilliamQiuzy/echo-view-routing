@@ -19,7 +19,7 @@ def chunk_starts(n):
 
 
 def chunk_positions(n,start):
-    if start not in chunk_starts(n):raise ValueError('start outside fixed stride32 inference grid')
+    if n<1 or int(start)!=start or not 0<=start<n:raise ValueError('training/inference chunk start outside original sequence')
     positions=np.arange(start,start+LENGTH,dtype=np.int64)
     return np.minimum(positions,n-1),positions<n
 
@@ -86,11 +86,13 @@ class TwoStageTCN(nn.Module):
 
 class DenseSequence(nn.Module):
     """Encoder receives genuine RGB clips. Only J trains it; all heads emit full timelines."""
-    def __init__(self,encoder,arm,dim=768,channels=128,bf16=True,seed=2026110257):
+    def __init__(self,encoder,arm,dim=768,channels=128,bf16=True,seed=2026110257,inactive_names=()):
         super().__init__()
         if arm not in ('L','F','J','J-low','J-high'):raise ValueError('fixed local/frozen/joint arms required')
         self.encoder=encoder;self.arm=arm;self.joint=arm.startswith('J');self.bf16=bool(bf16)
-        for p in encoder.parameters():p.requires_grad_(self.joint)
+        inactive=set(inactive_names)
+        if inactive-set(dict(encoder.named_parameters())):raise ValueError('unknown declared inactive source parameter')
+        for name,p in encoder.named_parameters():p.requires_grad_(self.joint and name not in inactive)
         with torch.random.fork_rng(devices=[]):
             torch.manual_seed(seed);self.head=nn.Conv1d(dim,CLASSES,1) if arm=='L' else TwoStageTCN(dim,channels)
         self.head.to(next(encoder.parameters()).device)

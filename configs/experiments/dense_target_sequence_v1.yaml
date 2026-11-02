@@ -1,0 +1,94 @@
+{
+  "experiment": "a57_dense_target_sequence_v1",
+  "seed": 2026110257,
+  "source_manifest": "docs/results/2026-11-02_dense_target_sequence/source.json",
+  "source_state": "checkpoints/a57_jepa21/target_encoder.pt",
+  "metadata_manifest": "docs/results/2026-11-02_dense_target_sequence/input_metadata.json",
+  "strategy": "docs/superpowers/plans/2026-11-02-target-task-research-redesign.md",
+  "input": {
+    "chunks": 2,
+    "positions": 64,
+    "encoder_blocks_per_chunk": 4,
+    "block_frames": 16,
+    "height": 224,
+    "width": 224,
+    "normalization": "RGB uint8/255,ImageNetmean/std",
+    "tubelet_positions": "2j,2j+1;repeatlogits2;valid-original-positionCE",
+    "inference_stride": 32,
+    "stitch": "min(t+1,64-t)positiveprobabilityweight"
+  },
+  "model": {
+    "feature_dim": 768,
+    "spatial_pool": "mean of196final-normalizedpatchtokens",
+    "TCN_channels": 128,
+    "TCN_stages": 2,
+    "TCN_dilations": [
+      1,
+      2,
+      4,
+      8,
+      16,
+      32
+    ],
+    "TCN_kernel": 3,
+    "TCN_dropout": 0.1,
+    "backbone_dropout_droppath": 0,
+    "inactive_source_parameters": "nine names in source manifest; never optimizer-bound"
+  },
+  "arms": {
+    "L": {
+      "head": "linear",
+      "encoder": "frozen"
+    },
+    "F": {
+      "head": "TCN",
+      "encoder": "frozen"
+    },
+    "J-low": {
+      "head": "TCN",
+      "encoder": "fullactivevideo",
+      "encoder_lr": 1e-05
+    },
+    "J-high": {
+      "head": "TCN",
+      "encoder": "fullactivevideo",
+      "encoder_lr": 3e-05
+    }
+  },
+  "optimizer": {
+    "name": "AdamW",
+    "head_lr": 0.001,
+    "betas": [
+      0.9,
+      0.999
+    ],
+    "eps": 1e-08,
+    "weight_decay": 0.05,
+    "clip": 1.0,
+    "warmup": 200,
+    "total_schedule_updates": 6000,
+    "pilot_updates": 2000,
+    "checkpoint_every": 500,
+    "precision": "backboneBF16/headlossFP32",
+    "activation_checkpointing": true
+  },
+  "checks": {
+    "fixed_FIT_plan_row": 0,
+    "repeat_updates": 4,
+    "resume_at": 2,
+    "learnability_updates": 40,
+    "timed_updates": 20,
+    "initial_FJ_max_abs": 0.0001,
+    "repeat_loss_max_abs": 0.0001,
+    "repeat_parameter_max_abs": 1e-05,
+    "CE_formula_max_abs": 1e-05,
+    "model_forwards_before_source_and_input_freeze": 0
+  },
+  "budget": {
+    "GPU_job_wall_hours": 24,
+    "worker_CPU_core_hours": 72,
+    "new_peak_bytes": 40000000000,
+    "wall_hours": 48,
+    "evaluation_reserve_GPU_hours": 2
+  }
+}

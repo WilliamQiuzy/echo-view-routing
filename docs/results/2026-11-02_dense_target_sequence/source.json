@@ -1,0 +1,93 @@
+{
+  "passed": true,
+  "publisher": "https://github.com/bowang-lab/EchoJEPA",
+  "source_checkpoint": {
+    "publisher": "https://github.com/bowang-lab/EchoJEPA",
+    "upstream_commit": "77208e1a8521c0e82f79579eebe4b22f46c5ccbd",
+    "official_folder": "https://drive.google.com/drive/folders/1RFEXMe8TTcABMBz4H_qtiLB43K9jD_lf",
+    "official_relative_name": "vjepa 2.1/vjepa2_1_vitb_mimic_pt169_c60.pt",
+    "file_id": "102kUdwIAv9Sw0QlSyThHQwyrPtVMe9lh",
+    "path": "checkpoints/a57_jepa21/vjepa2_1_vitb_mimic_pt169_c60.pt",
+    "bytes": 1651185340,
+    "sha256": "40384a17d3d32375142e3bd3a43d2f5bfa2b174b44c6960958bffd731e9624c1",
+    "pid": 6118,
+    "start_epoch": 1793649220.6675227,
+    "end_epoch": 1793649247.7472994,
+    "CPU_core_seconds": 11.893407,
+    "network_wall_seconds": 27.07977795600891,
+    "HTTP_status_final_URL": "not exposed by gdown; officialfolder/fileID/fullSHA retained",
+    "new_model_forwards": 0
+  },
+  "official_model_repo": "https://github.com/facebookresearch/vjepa2",
+  "official_model_commit": "204698b45b3712590f06245fbfba32d3be539812",
+  "loaded_model_subset_SHA": {
+    "src/masks/utils.py": "833f111a0fa5ffdbd3a6412e2dace2517c3c178f49c14f8bb631d9f6a070dfd0",
+    "src/utils/tensors.py": "782b58bd2af456e184750e5318ab773105108383f61b280fe4c7a90f46add2c8",
+    "app/vjepa_2_1/models/utils/modules.py": "64be6a87bd9f18d385f4e44186db3347d1665e18a1f0511d51d3b305531562e2",
+    "app/vjepa_2_1/models/utils/patch_embed.py": "29e11ab97ab3ccdef107d6a7d0d7b374b58e712076cc3561f07b7e603c9b5165",
+    "app/vjepa_2_1/models/vision_transformer.py": "d2932eabeba684d8f558302a13cfd4be70a0170ee5112f5a794652d0a29089b9"
+  },
+  "license": "MIT",
+  "license_sha256": "cf9b17822d1fcd4ff32ccbe14183386fb3adf6f2ff92dc184130823f7fc28173",
+  "strict_target_tensors": 158,
+  "missing_extra_dropped_filled": 0,
+  "source_dtype": "FP32",
+  "target_encoder_sha256": "deb0cd98ea40ef59d21eb883e1deb517a9bcca614047e710d9fad136c750348c",
+  "target_encoder_bytes": 347381311,
+  "total_parameters": 86833152,
+  "active_video_parameters": 86237184,
+  "active_video_tensors": 149,
+  "inactive_video_names": [
+    "img_mod_embed",
+    "patch_embed_img.proj.weight",
+    "patch_embed_img.proj.bias",
+    "norms_block.0.weight",
+    "norms_block.0.bias",
+    "norms_block.1.weight",
+    "norms_block.1.bias",
+    "norms_block.2.weight",
+    "norms_block.2.bias"
+  ],
+  "inactive_video_reason": "image-only modality/patch branch and deepnorm0..2 unused by official video forward returning last normalized layer; retained exactly and explicitly frozen forJ",
+  "encoder_kwargs": {
+    "img_size": [
+      224,
+      224
+    ],
+    "num_frames": 16,
+    "patch_size": 16,
+    "tubelet_size": 2,
+    "use_rope": true,
+    "uniform_power": false,
+    "use_silu": false,
+    "wide_silu": true,
+    "use_sdpa": true,
+    "use_activation_checkpointing": true,
+    "drop_rate": 0.0,
+    "attn_drop_rate": 0.0,
+    "drop_path_rate": 0.0,
+    "img_temporal_dim_size": 1,
+    "interpolate_rope": true,
+    "modality_embedding": true,
+    "n_output_distillation": 4
+  },
+  "feature_contract": "official default forward(training=False): final block11 normalized by norms_block3; [B,8x14x14,768] at16x224 expected, actual shape checked before training",
+  "normalization": {
+    "scale": 0.00392156862745098,
+    "mean": [
+      0.485,
+      0.456,
+      0.406
+    ],
+    "std": [
+      0.229,
+      0.224,
+      0.225
+    ],
+    "source": "official VJEPA2preprocessor ImageNet normalization;224/16-frame research input with officialRoPE scaling, not an upstream task reproduction"
+  },
+  "pretraining_overlap_EV9V": "unknown",
+  "model_forwards": 0,
+  "CPU_core_seconds": 6.556127,
+  "wall_seconds": 6.783349275588989
+}
