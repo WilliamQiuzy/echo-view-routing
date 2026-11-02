@@ -1,0 +1,59 @@
+# A56 Five-class Source Retention Implementation Plan
+
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking. One execution owner; the root coordinates one read-only reviewer. No additional executor or helper is dispatched by this worker.
+
+**Goal:** Test whether retaining original five-class training supervision prevents the loss of A4C specificity during precise external-view adaptation.
+
+**Architecture:** Two matched full-body copies of original A08, including its actual five-class classifier, learn identical precise source windows. R also learns from original five-class EV9V FIT replay; Z executes identical replay forwards/backwards with coefficient zero. This is a source-only diagnostic: replay-exposed weights are permanently ineligible for A31 opposite-fold evaluation.
+
+**Tech Stack:** Existing PyTorch FP32 deterministic MViT, A55 exact A08 crop caches, A31 frozen native FIT pools/frame loader, durable optimizer journals and once-only score cells.
+
+---
+
+## Prospective compact card
+
+Task/owner/mode: A56; sole implementation/execution owner in isolated `a56-fiveclass-retention`; exploratory source diagnostic, no candidate/deployment.
+
+Question/changed condition: Does concurrent original five-class labelled visual replay preserve source A4C specificity while learning external A5C? A51/A55 used an independently reset binary head with source-only updates; A53 used frozen source descriptors and reset target heads. Here the original five-class output and original labelled visual task are retained during real full-body source adaptation. R−Z isolates the replay gradient. No claim that this is the first replay method: A20 compared hard/uniform EV9V replay without this external precise-view adaptation; A28–31's head/final-block experiments remain closed. A40–42 full-encoder CE/auxiliary negatives remain closed. A55's four 3600-update source negatives, unchanged <=5/94 safety limit and no-target stop remain immutable.
+
+Matched comparison: both copy exact A08 all_s0 checkpoint SHA `9b144925f32fac7d725d13231a132abeb6635fa44b6fe0dbcec7f5b59d035bbc`; every encoder/trunk/projection, marker stem and five-class classifier parameter selected from update0. No new scalar head, loss sweep, dense extension, preprocessing change, early stopping or threshold calibration. Z replay coefficient0; R coefficient1. Same actual16 forwards/backwards per update, inputs/labels/order/init/optimizer/schedule; final1200 only. `loss = mean8(source CE5) + coefficient * mean8(replay CE5)`. Source A4C/A5C map to original indices2/3; replay labels0..4 remain unchanged. Single zero_grad precedes all16microbatches; every CE is scaled1/8, replay coefficient attaches before backward, one global clip and one AdamW step follow all16. No zero_grad/step between domains. Both loss terms backpropagate separately with microbatch1; coefficient0 is applied before backward, preserving actual compute and zero replay contribution.
+
+Data/allowlist: original569 precisely bound source FIT centres,36patients/55videos; original133 reused diagnostic centres,10patients/13videos,39A5C/94A4C. Source windows use original16 native-ordinal stride3 slots/marker8 and exact A55 C geometry; no D centres. Original source quarantine21patients and five excluded markers remain excluded. Source metadata/cache hashes and original binding/role contract pinned. Replay derives ONLY native sequences from the two fixed A31 training-source pools: SHA `96d1fb683e1a261d5be9a3cc7ec393637577bbf83b56140cec41f544c4f3b486` and `08255192dae3a90644ea062880bf6b2b298181ed12e9890d56ca04630f5adef4`. Native allowlist1487recordings, counts400/400/400/142/145 by original five-family label. Verify every native and referenced recording is in the independently reconstructed A31 `fit_clips`, and all labels match that protocol training index; reject any source diagnostic patient/video/request in source training, cross-role source exact-pixel conflicts, or EV9V recording outside this allowlist. Native only; no constructed sequences or protected training sources added. No dev/check/test/Pediatric/fetal/Unity/A26 data, held-out target scores, error/harm subsets or source confidence selection. Patient identities/media/per-case outputs stay server-only.
+
+Exposure: source plan fixed `numpy.default_rng(2026110256)`; separate class0/1 permutations cycled to4800each then concatenated fourA4C/fourA5C per update, exhaustive569parents. Replay plan also seed2026110256 with its own `SeedSequence([2026110256,56])`; replay slot absolute k has class k%5, native recording cycles through independently shuffled per-class lists; each recording's native request centre cycles deterministically through stride5 original A31 windows with independent seeded offset. Thus9600replaywindows,1920/class, all1487native recordings exposed. Same plan in both arms. Source and replay physical windows preserve their original inference contracts; equal16slots does not imply equal native FPS. Recompute native window refs/marker via existing A31 `pool_W`; frame numeric ordering, original gamma and shortside256/centre224 loader unchanged. No pixel cache or source reuse described as new patients.
+
+FIT monitoring: fixed replay panel50native requests/class (250total), uniformly spaced in the metadata-only replay candidate ordering; fixed original32sourceFITpanel. Initial exact A08 logits on250replayFITwindows compared with pre-existing A31 raw logits: outputs_s0_f0.npz SHA5884435770e8b65959b22ff77f74b0c2053cadf7fd2a5a28c842104df2f1a512 and outputs_s0_f1.npz SHA0a99be35b0cd78d650f5014c8ddc783173e6fb849ee556d6fa2a52c73f33d360, plus original cache receiptSHA and exact original seq/centre order. Selection pins each native ID/centre/all16refs/gamma/marker/label privately and its aggregate digest publicly; no logit-based panel selection. SourceFIT separately redecodes four fixed raw-media windows and checks exact Cpixels/freshFITlogit parity; no presumed sourceFITfive-logit cache exists. Final panels purely descriptive training retention, never evidence of held-out performance and never used to pick checkpoint/arm/schedule. Source all569 finalFITscores may be reported separately. No source133 diagnostic forward until both finalmodels frozen.
+
+Optimization:1200updates/arm; AdamW beta(.9,.999),eps1e-8,wd1e-4; trunk `encoder` incl512projection lr1e-5, marker/classifier lr1e-4; linear warm120 then cosine1200 using existing lr_factor; gradient globalclip1; eval mode both (dropout/stochastic-depth off), FP32/TF32off, deterministic algorithms strict, CUBLAS4096:8; model CPU/CUDA seed2026110256 reset perarm. Same selected tensors; known structural-zero finalblock rel_pos/pool_q path disclosed and audited rather than falsely claimed changed. Source/replay losses unweighted beyond separate means8 and coefficient0/1.
+
+Decision/readout: after complete model+optimizer+journal/code/input/plan identities actualGit objects and freeze, one133-row source readout perZ/R. Existing frozen G-C margin scores reused without new diagnostic inference. Here q is the original classifier raw pre-softmax five-logit vector, never probabilities/log-probabilities; compare only raw G-C margin. Primary score `qA5C-qA4C`, positive iff>0; comparable pairwise detection only. R absolute package: TP>=28/39, FP<=5/94, BA>=.80, AUC>=.85 and >=G-C+.03. R−Z contribution: at least4fewerFP, at most2fewerTP, AUC>=+.03. Joint conclusion requires both; no source qualification implies target safety. Also report actual five-class argmax confusion, all other-class predictions, paired disagreements bytrueclass and patient/video counts. Never call pairwise binary correctness five-class correctness. Include patient-cluster bootstrap descriptive intervals (2000replicates seed2026110256; repeated source patients, no fresh clinical validation), no significance/promotion claim. No seed expansion, target stage, target103/1413/fullF1, source2, rescue, automaticA57 or external modification.
+
+Resources: new phase<=3GPUjobwallh,<=6CPUupperh,<=5GBadditional peak,<=4h wall from worker dispatch. Preserve A55 inherited finalreceipt (GPU3.774465h/CPUupper6.702489h in that phase and older charges), no reset. Charge checks/prep/reviewer/bootstrap/failure/actual workerCPU and activeownerwall separately; idle between turns/future work0. Forecast2x1200x16 actualforwards/backwards + FIT checks + finalpanels +266sourceforwards + audits +.35GPUh reserve before launch; if complete forecast/caps fail, stopwithout shrinking arms/steps/exposure. No new services/downloads/paidcompute. Actual remote is Nebius `echo-l40s:/home/william/echo-view-routing`; unrelated RunPod untouched. Preserve all older artifacts. One own namespace; no pixel cache, <=twofinalmodels/optimizers and oneactive resume; atomic-write coexistence included.
+
+## Task 1: Prospective plan and non-neural contracts
+
+Files: create `echo_routing/temporal/source_retention.py`, `tests/test_source_retention.py`, `scripts/train_source_retention.py`; reuse unchanged A31/A55 interfaces. Create `docs/results/2026-11-02_source_retention/` and `runs/a56_source_retention_v1/` on server only for private artifacts.
+
+- [ ] Send this exact plan to root/read-only reviewer before any new neural forward.
+- [ ] Write failing tests for replay allowlist/label leakage, full exposure/classquota, source/replay normalization and coefficient0 backward contribution, durable ambiguous-resume rejection.
+- [ ] Run tests and preserve expected RED transcript; implement minimal contracts, then run GREEN and existing source durability/coverage tests.
+- [ ] Prepare metadata-only manifest, input/plan hashes, source role/pixel/binding and native allowlist audit; commit actual code/card/manifest before FIT-only model checks.
+
+## Task 2: FIT-only critical checks and forecast
+
+- [ ] Verify sourceFITgeometry/pixels against A55Ccache and independent freshFITloader/logit parity; verify replay exact native row/ref/gamma/marker binding and initialized raw5class A08 logits versus pinned A31cache<=1e-4; frozen Base fileSHA unchanged.
+- [ ] Test independent CE5 formula,8+8 separate normalization, accumulated versus grouped gradients<=1e-4relative; coefficient0 produces identical selected gradients to source-only while every replay backward executes; forcedRcoef0 equalsZ.
+- [ ] Test real full-tensor optimizer binding/nonzero gradients/drift (record structural zeros), deterministic6repeat anddisk3+3resume bitwise state/optimizer parity.
+- [ ] Time20FITsteps including checkpoints; count everyforward/backward, freeze checks and conservative complete forecast before formal launch. Read-only review any concrete defect before affected computation.
+
+## Task 3: Real matched updates, final freeze and once readout
+
+- [ ] Execute sole durable queue Z thenR,1200updates each, claim journals and full optimizer/RNG checkpoint every20. Stop ambiguous possiblyexecuted updates; no blindretry. Progress every25, sourceFITpanel every300 fixed only.
+- [ ] Audit2400optimizer counters/journals, full initial/final states, changed/selected/frozen tensors, plan membership/exposure/physicalcompute and Baseunchanged. Commit both finalmodel identities actualGit, thenfreeze.
+- [ ] Execute once133source scores/model with durable perrow claims. Reconstruct pairedcounts/AUC/gates and bootstrap from frozen scores independently; read-only reviewer verifies aggregates.
+
+## Task 4: Close scientific and resource evidence
+
+- [ ] Write scoped positive/negative source report and index entry from aggregateJSON; no target/deployment claims.
+- [ ] Verify actual processes closed, Base/artifact hashes and allresourcecounts/caps including review/closing; preserve historicalreceipts and allfailures.
+- [ ] Run appropriate tests, commit only A56 files; retain isolated branch for rootintegration, no push/webpage or mainworktree edits.
