@@ -28,3 +28,10 @@ def test_checkpoint_lexicographic_selection_is_inner_only_and_deterministic():
     assert a.choose_inner(rows)['arm']=='J-low'
     rows[0]['segment_f1_50_multi']=.71
     assert a.choose_inner(rows)['arm']=='J-high'
+
+def test_inner_adapter_numerically_reproduces_unchanged_evaluator_with_nontrivial_predictions():
+ from echo_routing.evaluate.dev_metrics import evaluate_predictions
+ a=api();q=[seq('n0',labels=[0]*65),seq('n2',labels=[2]*65),seq('m',refs=[('v1',i,1.) for i in range(30)],labels=[2]*14+[3]*16,kind='mixed')];q[-1]['joins']=np.array([5,14,25]);p={'n0':np.array([0]*20+[1]*45),'n2':np.full(65,3),'m':np.array([2]*12+[3]*7+[2]*11)}
+ actual,_=a.metrics(q,p);stream=a.metric_stream(q[-1]);ev=SimpleNamespace(natives=[SimpleNamespace(seq_id=x['id'],labels=x['labels']) for x in q if x['kind']=='native'],multi=[stream],pairs=[stream]);legacy,_=evaluate_predictions(p,ev,10,.5)
+ for key in ['native_macro_f1','native_confusion','native_accuracy','native_frame_accuracy','native_internal_cuts_per_clip','native_internal_cuts_per_min','segment_f1_50_multi','boundary_recall_multi','boundary_precision_multi','boundary_f1_multi','same_class_cut_rate_multi','multi_frame_accuracy']:
+  assert actual[key]==legacy[key],key
