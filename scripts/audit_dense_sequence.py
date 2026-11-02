@@ -13,6 +13,10 @@ from scripts.train_dense_sequence import RUN,PUB,CFG,read,write,sha,make_plan
 def audit():
  assert read(RUN/'runtimecoordination.json')['phase']=='formal_matrix_complete_pending_frozen_outer_readout'
  cfg=read(CFG);selected=read(PUB/'inner_lr_selection.json')['selected_joint_arm'];seed1=cfg['seed'];seed2=2026110258;expected=[(seed1,'L',6000),(seed1,'F',6000),(seed1,selected,6000),(seed1,'J-high' if selected=='J-low' else 'J-low',2000),(seed2,'F',6000),(seed2,selected,6000)]
+ exposure=read(PUB/'independent_input_exposure.json');assert exposure['passed'];
+ from scripts.audit_dense_input_exposure import digest
+ assert digest(dict(np.load(RUN/'plan.private.npz')))==exposure['plans']['2026110257']['canonical_little_endian_int64_plan_sha256']
+ assert digest(dict(np.load(RUN/'second_seed_plan.private.npz')))==exposure['plans']['2026110258']['canonical_little_endian_int64_plan_sha256']
  source=torch.load(ROOT/cfg['source_state'],map_location='cpu',weights_only=True,mmap=True);inactive=set(read(PUB/'source.json')['inactive_video_names']);models=[];entries=[];total=0
  for seed,arm,count in expected:
   folder=RUN/f'seed{seed}'/arm;assert not (folder/'pending.json').exists();rows=[json.loads(s) for s in (folder/'physical_updates.jsonl').read_text().splitlines()];logical=[r['u'] for r in rows];assert logical==list(range(count)),(arm,'uninterrupted trace expected; any replay must be independently accounted')
