@@ -1,0 +1,173 @@
+{
+  "selected_joint_arm": "J-high",
+  "rule": "inner2000 segmentF1;nativeMacroF1;fewer A4C/A5Cerrors;smallerlr",
+  "rows": [
+    {
+      "native_macro_f1": 0.9114261105107774,
+      "native_per_class_recall": [
+        1.0,
+        0.9937106918238994,
+        0.8022598870056498,
+        0.9743589743589743,
+        1.0
+      ],
+      "native_confusion": [
+        [
+          214,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          158,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          142,
+          33,
+          1
+        ],
+        [
+          0,
+          0,
+          1,
+          38,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          39
+        ]
+      ],
+      "native_accuracy": 0.9410828025477707,
+      "native_frame_accuracy": 0.9312073143864287,
+      "native_internal_cuts_per_clip": 0.2659235668789809,
+      "native_internal_cuts_per_min": 2.7594183740912093,
+      "native_A4C_to_A5C": 33,
+      "native_A5C_to_A4C": 1,
+      "native_A4C_A5C_errors": 34,
+      "segment_f1_50_multi": 0.857994781960492,
+      "boundary_recall_multi": 0.9480249480249481,
+      "boundary_precision_multi": 0.8135593220338984,
+      "boundary_f1_multi": 0.8756601056168987,
+      "same_class_cut_rate_multi": 0.0789980732177264,
+      "multi_frame_accuracy": 0.9146436757657845,
+      "counts": {
+        "native_clips": 628,
+        "multi_streams": 300,
+        "native_positions": 36312,
+        "multi_positions": 38392,
+        "multi_true_changes": 962,
+        "multi_same_joins": 519,
+        "multi_predicted_segments": 1421,
+        "multi_true_segments": 1262,
+        "multi_matched_segments": 1151
+      },
+      "short_true_segments_10samples": 68,
+      "short_true_unmatched_10samples": 6,
+      "short_predicted_segments_10samples": 217,
+      "short_spurious_segments_10samples": 134,
+      "arm": "J-low",
+      "seed": 2026110257,
+      "step": 2000,
+      "backbone_lr": 1e-05,
+      "input_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "wall_seconds": 200.22886490821838,
+      "selection_scope": "fixed protocoltrain session innercal only",
+      "model_pid": 16199
+    },
+    {
+      "native_macro_f1": 0.9277708305552992,
+      "native_per_class_recall": [
+        1.0,
+        1.0,
+        0.864406779661017,
+        0.9230769230769231,
+        0.9743589743589743
+      ],
+      "native_confusion": [
+        [
+          214,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          159,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          2,
+          153,
+          22,
+          0
+        ],
+        [
+          0,
+          0,
+          3,
+          36,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0,
+          38
+        ]
+      ],
+      "native_accuracy": 0.9554140127388535,
+      "native_frame_accuracy": 0.9560200484688257,
+      "native_internal_cuts_per_clip": 0.2229299363057325,
+      "native_internal_cuts_per_min": 2.3132848645076005,
+      "native_A4C_to_A5C": 22,
+      "native_A5C_to_A4C": 3,
+      "native_A4C_A5C_errors": 25,
+      "segment_f1_50_multi": 0.8607221812822402,
+      "boundary_recall_multi": 0.9553014553014553,
+      "boundary_precision_multi": 0.7977430555555556,
+      "boundary_f1_multi": 0.8694418164616841,
+      "same_class_cut_rate_multi": 0.0905587668593449,
+      "multi_frame_accuracy": 0.9265992915190665,
+      "counts": {
+        "native_clips": 628,
+        "multi_streams": 300,
+        "native_positions": 36312,
+        "multi_positions": 38392,
+        "multi_true_changes": 962,
+        "multi_same_joins": 519,
+        "multi_predicted_segments": 1452,
+        "multi_true_segments": 1262,
+        "multi_matched_segments": 1168
+      },
+      "short_true_segments_10samples": 68,
+      "short_true_unmatched_10samples": 5,
+      "short_predicted_segments_10samples": 234,
+      "short_spurious_segments_10samples": 155,
+      "arm": "J-high",
+      "seed": 2026110257,
+      "step": 2000,
+      "backbone_lr": 3e-05,
+      "input_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "wall_seconds": 199.7156641483307,
+      "selection_scope": "fixed protocoltrain session innercal only",
+      "model_pid": 16199
+    }
+  ],
+  "new_external_development_forwards_at_selection": 0
+}
