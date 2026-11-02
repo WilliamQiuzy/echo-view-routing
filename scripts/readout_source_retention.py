@@ -14,6 +14,8 @@ from echo_routing.temporal import direct_view_training as d
 def readout():
  t.verify();freeze=t.j(t.OUT/'models_freeze.json');reader=t.j(t.OUT/'readout_freeze.json');assert freeze['actual_git_objects_verified'] and freeze['models_manifest_sha256']==t.sha(t.PUB/'models_manifest.json');assert t.j(t.PUB/'independent_models.json')['passed'] and reader['actual_git_objects_verified']
  for p,h in reader['code'].items():assert t.sha(ROOT/p)==h,p
+ if (t.PUB/'readout_receipt.json').exists():
+  complete=t.j(t.PUB/'readout_receipt.json');assert complete['all_cells_complete'] and complete['models_freeze_git_commit']==freeze['git_commit'] and t.sha(t.OUT/'source_scores.private.npz')==complete['private_score_sha256'];print(json.dumps({'existing_complete_readout_preserved':True,'new_model_forwards':0}),flush=True);return
  man=t.j(t.PUB/'models_manifest.json');data=t.Inputs();allq={};new=0
  for arm in t.ARMS:
   entry=man['models'][arm];rd=t.OUT/'models'/arm;assert t.sha(rd/'final.pt')==entry['bundle_sha256'];m=t.build();m.load_state_dict(torch.load(rd/'final.pt',map_location='cpu',weights_only=True)['model']);cells=[]
