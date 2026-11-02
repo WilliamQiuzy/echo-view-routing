@@ -114,3 +114,11 @@ J−F 是主要视觉联合学习对照。F−L 是完整时间模块包的比�
 第二训练seed固定2026110258，沿用第一seed的session分区和各自重建的构造bank，仅重新生成同分布6000步采样计划；F与所选J共享该计划、预训练权重及头初始化。首seed若预测完整资源充足，L也继续至6000；之后第二seed F/J各6000。正式外层2000/6000表可在整个预定矩阵全部冻结后一次运行，结果不影响已声明续训。
 
 训练每25步公开进度，每100步原子保存完整optimizer/RNG最新状态，每500步保存标准权重并在固定inner-calibration全序列评估。无故障时各逻辑步只更新一次；故障时最新checkpoint后的已执行物理更新留在追加日志并显式计为invalidated/replayed，不冒充从未花过计算。pending步如遇进程中断需保留可能已执行的歧义记账。推理仍按原合同，短段诊断显式定义为不超过10个10Hz位置，与整套主要分段指标并列。
+
+### 外层读出执行补充（首次新概率B3与外层数据算术前固定）
+
+B3只作与完整raw-argmax并列的附加控制。使用原V01五个half-window、八个native-score分位数及NMS5的40点网格；每个外层候选checkpoint的参数只从该checkpoint已有inner-calibration概率选择：multi-segmentF1优先，其次native macroF1、较少A4C/A5C双向错误、较小原网格顺序。没有另加source门槛；B3不决定J学习率或训练续程。实际B3阈值与候选选择文件在外层metadata/指标回读前冻结。
+
+独立CPU模型审计检查全部逐步日志、optimizer逐张量绑定/形状/有限moment/步数/lr，以及J全部149活跃视觉张量变化与9未使用张量不变；冻结11个固定step行和6个inner-selected package行。完全相同checkpoint的重复行共用一次外层概率缓存。外层读出按序列存原子概率和提交前缀；干净前缀恢复从cursor继续，pending歧义停下审计，不静默重跑。
+
+A08+B3使用原all_s0/s1/s2的缓存和原选择参数，核对原model identity、native顺序、window/centre/marker/order及完整缓存SHA，并通过同一原评估器重现已报告指标。这个参考从未作为新模型的teacher，内层A08曾见协议train来源的限制继续披露。外层表同时保留两个开发half，不把其中任何一半叫作本轮新holdout。
