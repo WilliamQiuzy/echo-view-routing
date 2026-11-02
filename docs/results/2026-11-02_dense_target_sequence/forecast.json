@@ -1,0 +1,60 @@
+{
+  "prospective": true,
+  "epoch": 1793651371.8795588,
+  "passed_pipeline_check": "c164ac72a1a8bce41560d0104841c6248754c202",
+  "all_caps_fit": true,
+  "formal_updates": 32000,
+  "schedule": {
+    "first_seed_pilots": {
+      "L": 2000,
+      "F": 2000,
+      "J-low": 2000,
+      "J-high": 2000
+    },
+    "first_seed_continuations_additional": {
+      "L": 4000,
+      "F": 4000,
+      "selected_J": 4000
+    },
+    "second_seed_total": {
+      "F": 6000,
+      "selected_J": 6000
+    }
+  },
+  "full_inner_readouts": 64,
+  "chunks_per_inner": 2769,
+  "total_inner_chunks": 177216,
+  "fixed_outer_checkpoint_rows": 11,
+  "inner_selected_package_maximum_rows": 6,
+  "outer_chunks_upper_forecast_per_row": 14000,
+  "outer_forecast_is_allowance_not_new_outer_metadata_or_result": true,
+  "outer_infer_chunks_upper": 238000,
+  "raw_J_update_seconds_used_for_all_arms": 0.4038209319114685,
+  "raw_complete_sequence_seconds_per_chunk": 0.10856766998767853,
+  "cost_hours": {
+    "training_all_arms": 3.589519394768609,
+    "latest_atomic_optimizer_writes": 0.20450354682074653,
+    "all_inner_eval": 5.3444245012601215,
+    "outer_17_rows_allowance": 7.177529293629858,
+    "coldstart_and_metadata_allowance": 0.08333333333333333,
+    "multiplicative_runtime_contingency": 1.2,
+    "additional_full_evaluation_closure_reserve_GPUh": 2,
+    "already_measured_GPU_job_h": 0.024792024890581767,
+    "total_prospective_GPU_job_h": 21.703964108665783
+  },
+  "actual_CPU_core_h_forecast": 30,
+  "CPU_includes_raw_PIL_io_training_eval_B3_grid_and_bootstrap_allowance": true,
+  "additional_peak_bytes_forecast": 24000000000,
+  "peak_components": "2.1GB source/module/prep;28 joint full milestones~9.8GB;3latest full optimizer~3.2GB;1atomic coexist~1.1GB;frozen-head milestones;all inner/outer probabilities/tables;generous archive buffer",
+  "currently_free_remote_bytes": 134440599552,
+  "phase_wall_h_forecast_including_elapsed": 23.703964108665783,
+  "caps": {
+    "GPU_job_h": 24,
+    "actual_CPU_core_h": 72,
+    "peak_bytes": 40000000000,
+    "wall_h": 48
+  },
+  "guards": "formal stops before22GPUjobh/68measuredCPUh/40GB/46phasewallh preserving latest checkpoint and closing reserve; no scientific source gate",
+  "B3_grid": "originalV01 5half_windows x8threshold_quantiles x1nms; choose only matching inner cached probabilities before outerreadout; CPU only",
+  "outer_budget_reforecast_rule": "check actual fixed outer chunk count at permitted post2000 stage; never infer beyond actual remaining caps; no performance-led candidate change"
+}

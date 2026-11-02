@@ -20,3 +20,7 @@ def resume_accounting(rows,next_update):
     maximum=max((int(r['u']) for r in rows),default=-1)+1
     if not 0<=next_update<=maximum:raise ValueError('checkpoint cursor beyond observed physical trace')
     return {'committed_physical_updates':len(rows),'checkpoint_next_update':next_update,'invalidated_after_checkpoint':sum(int(r['u'])>=next_update for r in rows)}
+
+
+def within_execution_limits(gpu_hours,cpu_hours,peak_bytes,wall_epoch):
+    return gpu_hours<22 and cpu_hours<68 and peak_bytes<40_000_000_000 and wall_epoch<1793820844.1596537-7200

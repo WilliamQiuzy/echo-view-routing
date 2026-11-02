@@ -1,0 +1,14 @@
+{
+  "source_strict_admitted": true,
+  "prototype_focused_tests": 13,
+  "local_tests_command": "pytest tests/test_dense_durable.py tests/test_dense_runtime.py tests/test_dense_sequence.py tests/test_jepa21_source.py -q",
+  "observed_initial_missing_module_tests": "5dense+2source+3runtime+2durable; additional offgrid start and inference binding failures before fixes",
+  "GPU_graph_check_passed": true,
+  "GPU_raw_pipeline_check_passed": true,
+  "earlier_failed_GPU_attempts_retained": {
+    "check1": "deterministic3DCE unsupported,0optimizerupdates",
+    "pipeline_check1": "unbound probability inference convenience,20FITupdates"
+  },
+  "formal_or_external_dev_forwards_before_final_launch": 0,
+  "same_source_and_objective_across_repairs": true
+}

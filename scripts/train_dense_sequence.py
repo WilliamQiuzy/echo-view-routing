@@ -2,14 +2,23 @@
 """A57 single-owner, direct complete-target timeline training and inner evaluation."""
 import os
 os.environ.setdefault('CUDA_VISIBLE_DEVICES','0');os.environ.setdefault('CUBLAS_WORKSPACE_CONFIG',':4096:8');os.environ.setdefault('OMP_NUM_THREADS','1');os.environ.setdefault('OPENBLAS_NUM_THREADS','1')
-import copy,hashlib,json,resource,sys,time
+import copy,hashlib,json,resource,subprocess,sys,time
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT))
 import numpy as np,torch
 from scripts.check_dense_sequence import build,opt,step,state,difference,read,write
 from echo_routing.temporal import dense_runtime as data,dense_sequence as dense,jepa21_source as source
-from echo_routing.temporal.dense_durable import atomic_torch_save,resume_accounting
+from echo_routing.temporal.dense_durable import atomic_torch_save,resume_accounting,within_execution_limits
 RUN=ROOT/'runs/a57_dense_sequence_v1';PUB=ROOT/'docs/results/2026-11-02_dense_target_sequence';CFG=ROOT/'configs/experiments/dense_target_sequence_v1.yaml'
+JOB_STARTED=time.time()
+def budget_guard():
+ past=[json.loads(x) for x in (RUN/'processes.jsonl').read_text().splitlines()]
+ gpu=(sum(r['full_process_wall_seconds'] for r in past if r['GPU_job'])+time.time()-JOB_STARTED+10)/3600
+ cpu=(sum(r['process_CPU_seconds'] for r in past)+resource.getrusage(resource.RUSAGE_SELF).ru_utime+resource.getrusage(resource.RUSAGE_SELF).ru_stime)/3600
+ size=sum(int(line.split()[0]) for line in subprocess.check_output(['du','-sb',str(RUN),str(ROOT/'checkpoints/a57_jepa21'),str(source.UPSTREAM)],text=True).splitlines())+1_100_000_000
+ assert within_execution_limits(gpu,cpu,size,time.time()),'execution guard stopped to preserve closing budget; retain latest checkpoint'
+ write(RUN/'running_resource_meter.json',{'GPU_job_hours_completed_plus_active':gpu,'worker_CPU_core_hours_completed_plus_active':cpu,'namespace_plus_next_atomic_checkpoint_bytes':size,'epoch':time.time(),'estimated_closing_reserve_GPUh':2,'note':'CPU excludes separately recorded non-GPU preparation and LLM coordination; terminal ledger adds measured prep'})
+
 def sha(p):
  h=hashlib.sha256()
  with Path(p).open('rb') as f:
@@ -42,13 +51,13 @@ def load_model_weights(m,p):
  else:m.load_state_dict(z['model'],strict=True)
 
 def evaluate_inner(m,seqs,pixels,folder,arm,cursor,cfg):
- folder.mkdir(parents=True,exist_ok=True);result_path=folder/'metrics.json'
+ folder.mkdir(parents=True,exist_ok=True);budget_guard();result_path=folder/'metrics.json'
  if result_path.exists():return read(result_path)
- m.eval();preds={};start=time.time();probfile=folder/'probabilities.private.npy'
+ m.eval();preds={};probs={};start=time.time();probfile=folder/'probabilities.private.npy'
  for i,q in enumerate(seqs):
-  p=data.predict_sequence(m,q,pixels);preds[q['id']]=p.argmax(1).astype(np.int8)
+  p=data.predict_sequence(m,q,pixels);probs[q['id']]=p;preds[q['id']]=p.argmax(1).astype(np.int8)
   if (i+1)%100==0:write(RUN/'runtimecoordination.json',{'phase':'inner_calibration','arm':arm,'seed':cfg['seed'],'step':cursor,'sequence_done':i+1,'sequences':len(seqs),'model_pid':os.getpid(),'epoch':time.time(),'next_action':'finish fixed inner readout then resume planned training'})
- np.save(folder/'predictions.private.npy',preds,allow_pickle=True);metrics,tables=data.metrics(seqs,preds)
+ np.save(probfile,probs,allow_pickle=True);np.save(folder/'predictions.private.npy',preds,allow_pickle=True);metrics,tables=data.metrics(seqs,preds)
  for k,t in tables.items():t.to_csv(folder/(k+'.private.csv'),index=False)
  row={**metrics,'arm':arm,'seed':cfg['seed'],'step':cursor,'backbone_lr':cfg['arms'][arm].get('encoder_lr',0),'input_sequence_sha256':read(PUB/'input_metadata.json')['roles']['inner_cal']['sequence_sha256'],'wall_seconds':time.time()-start,'selection_scope':'fixed protocoltrain session innercal only','model_pid':os.getpid()};write(result_path,row);return row
 
@@ -75,7 +84,8 @@ def train_one(arm,target,cfg,fit,cal,train_pixels,cal_pixels,plan):
   b=train_pixels.batch([fit[int(i)] for i in plan['sequence'][u]],plan['start'][u],'cuda');write(folder/'pending.json',{'attempt':attempt,'u':u,'epoch':time.time()});start=time.time();row=step(m,o,b,u);row.update({'attempt':attempt,'seed':cfg['seed'],'arm':arm,'wall_seconds':time.time()-start,'epoch':time.time()})
   with trace.open('a') as f:f.write(json.dumps(row)+'\n');f.flush();os.fsync(f.fileno())
   (folder/'pending.json').unlink()
-  if (u+1)%100==0 or u+1==target:atomic_torch_save(checkpoint(m,o,u+1,cfg,arm),latest)
+  if (u+1)%100==0 or u+1==target:
+   budget_guard();atomic_torch_save(checkpoint(m,o,u+1,cfg,arm),latest)
   if (u+1)%25==0:
    progress={'phase':'formal_training','arm':arm,'seed':cfg['seed'],'step':u+1,'target':target,'model_pid':os.getpid(),'epoch':time.time(),'last_loss':row['loss'],'log':str(trace.relative_to(ROOT)),'next_action':'continue declared matrix, inner evaluation every500'};write(RUN/'runtimecoordination.json',progress);write(RUN/'progress.json',progress);print(json.dumps(progress),flush=True)
   if (u+1)%500==0:
