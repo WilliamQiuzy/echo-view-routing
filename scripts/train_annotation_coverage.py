@@ -22,7 +22,7 @@ def pins():
   f=getattr(mod,'__file__',None)
   if f:
    p=Path(f).resolve()
-   if p.is_relative_to(ROOT) and '.venv' not in p.parts and p.suffix=='.py':paths.add(p.relative_to(ROOT))
+   if p.is_relative_to(ROOT) and '.venv' not in p.parts and p.suffix=='.py' and p.is_file():paths.add(p.relative_to(ROOT))
  for p in (ROOT/'configs/experiments').glob('*.yaml'):
   if p.name in ['video_risk_constrained_a5c_v1.yaml','video_within_view_v1.yaml','video_interval_recognition_v1.yaml','video_router_data_v1.yaml','video_session_correction_v1.yaml']:paths.add(p.relative_to(ROOT))
  return {str(p):sha(ROOT/p) for p in sorted(paths)}
