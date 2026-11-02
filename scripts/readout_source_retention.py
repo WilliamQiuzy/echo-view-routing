@@ -14,6 +14,7 @@ from echo_routing.temporal import direct_view_training as d
 def readout():
  t.verify();freeze=t.j(t.OUT/'models_freeze.json');reader=t.j(t.OUT/'readout_freeze.json');assert freeze['actual_git_objects_verified'] and freeze['models_manifest_sha256']==t.sha(t.PUB/'models_manifest.json');assert t.j(t.PUB/'independent_models.json')['passed'] and reader['actual_git_objects_verified']
  for p,h in reader['code'].items():assert t.sha(ROOT/p)==h,p
+ assert t.j(t.PUB/'matched_inputs.json')['passed'] and t.j(t.PUB/'matched_inputs.json')['models_manifest_sha256']==t.sha(t.PUB/'models_manifest.json')
  if (t.PUB/'readout_receipt.json').exists():
   complete=t.j(t.PUB/'readout_receipt.json');assert complete['all_cells_complete'] and complete['models_freeze_git_commit']==freeze['git_commit'] and t.sha(t.OUT/'source_scores.private.npz')==complete['private_score_sha256'];print(json.dumps({'existing_complete_readout_preserved':True,'new_model_forwards':0}),flush=True);return
  man=t.j(t.PUB/'models_manifest.json');data=t.Inputs();allq={};new=0
