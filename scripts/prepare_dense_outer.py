@@ -11,6 +11,7 @@ from scripts.train_dense_sequence import RUN,PUB,read,write,sha
 
 def prepare():
  models=read(PUB/'models_manifest.json');assert models['passed'] and models['formal_physical_updates']==32000 and models['new_external_development_forwards']==0
+ assert read(PUB/'decoder_choices.json')['model_manifest_sha256']==sha(PUB/'models_manifest.json')
  for q in models['outer_rows']:assert sha(ROOT/q['path'])==q['sha256']
  # Reuse the unchanged metadata-only half adapter; it rejects non-validation sources.
  from scripts import report_video_within_view as a08,trained_token_readout as ttr
@@ -23,7 +24,7 @@ def prepare():
   for q in seqs:q['joins']=np.zeros(0,int) if q['kind']=='native' else streams[q['id']].joins
   verify_partition(seqs,set(ctx.proto()['validation'][half]['clips']));private[half]={'eval_set':ev,'sequences':seqs};W=ttr.half_windows(seqs,5);ids=[q['id'] for q in seqs];basepins[half]={}
   for seed in [0,1,2]:
-   key=f'all_s{seed}';path=ROOT/f'runs/video_within_view_v1/evaluation/{half}/{key}.npz'
+   key=f'all_s{seed}';path=ROOT/f'runs/video_within_view_v1/evaluation/{half}/{key}.npz';assert sha(ROOT/f'models_frozen/video_within_view_v1/{key}/final.pt')==choices['provenance']['runs'][key]['final_sha256']
    with np.load(path) as z:
     assert str(z['identity'])==choices['provenance']['runs'][key]['identity'];ttr.check_windows(W,ids,z,'A08cached output');assert z['logits'].shape==(len(W['seq']),5) and np.isfinite(z['logits']).all();assert np.array_equal(z['order'],np.broadcast_to(np.arange(16,dtype=np.int8),z['order'].shape))
    basepins[half][str(seed)]={'path':str(path.relative_to(ROOT)),'sha256':sha(path),'identity':choices['provenance']['runs'][key]['identity'],'original_params':choices['choices'][key]['params'],'original_model_sha256':choices['provenance']['runs'][key]['final_sha256']}
