@@ -1,0 +1,64 @@
+{
+  "run_id": "A55",
+  "stage": "metadata_only_no_new_pixels_or_neural_model",
+  "old_bound_sha256": "d852c493428342fdd53f935195e44d898c477554fe5830b250bc367cd9243f8c",
+  "old_selection_sha256": "f30ade59317ee7d5a34ba64654ace1e558d625f96cf57430ed4eb0b9b3be2ab1",
+  "metadata_private_sha256": "c6fbf000b3d047b4b8169b8164b4ad25ac21fcbd8a3b5c920c5164c0b489b851",
+  "parent_plan_sha256": "c5dd1ad6cdeee4a8312296332afe8fcd557bdaa3cfe6a8f6afbdc2dddd8c2025",
+  "dense_plan_sha256": "150bf8fd24d0d0d4774a65a7cdaf00fc42ae884e054ba12175d83f5f3730e8af",
+  "counts": {
+    "pool": {
+      "physical_points": 3475,
+      "not_original_centres": 2906,
+      "classes": {
+        "0": 2146,
+        "1": 1329
+      }
+    },
+    "scheduled": {
+      "physical_points": 3475,
+      "not_original_centres": 2906,
+      "classes": {
+        "0": 2146,
+        "1": 1329
+      }
+    },
+    "patients": 36,
+    "quantity_pass": true,
+    "original_supervised_centres": 569,
+    "original_parent_requests": 569,
+    "scheduled_points_not_in_any_original_context": 51,
+    "supervised_marker_novelty_not_fresh_pixel_or_patient_claim": true
+  },
+  "source_original": {
+    "fit": 569,
+    "diagnostic": 133,
+    "patients": [
+      36,
+      10
+    ],
+    "videos": [
+      55,
+      13
+    ],
+    "raw_dimensions": [
+      500,
+      500
+    ]
+  },
+  "geometry_factor": "Ffull224resize versus exactA08short256centercrop224; originalW/Pidenticalfactorrejected",
+  "code": {
+    "echo_routing/temporal/annotation_coverage.py": "317c66ef370a20c382b1266b803b46680e29e34a1072dba10aadfc8586963558",
+    "scripts/prepare_annotation_coverage.py": "ff13269cf21238b6ec7331360718bc7caa2b6e175a0419ba496f5650dd022d10",
+    "docs/superpowers/plans/2026-11-01-five-hour-evidence-iteration.md": "ad5802144b80a948071b83dd1c589f0fab74dbd691d2c9be0a6a4ab75a1a0591"
+  },
+  "new_neural_forwards": 0,
+  "formal_updates": 0,
+  "metadata_computation_code_before_publication": {
+    "echo_routing/temporal/annotation_coverage.py": "317c66ef370a20c382b1266b803b46680e29e34a1072dba10aadfc8586963558",
+    "scripts/prepare_annotation_coverage.py": "2ac29771274b3c691a43b3e1fc7a9a50c66f23982c70ff4d62d047f3f54c8ce2",
+    "docs/superpowers/plans/2026-11-01-five-hour-evidence-iteration.md": "ad5802144b80a948071b83dd1c589f0fab74dbd691d2c9be0a6a4ab75a1a0591"
+  },
+  "metadata_manifest_before_publication_SHA256": "c344f5727ac89c2c83a51f665f50870cb7e2c62dc93e386c642fa2cb3211d32b",
+  "pre_pixel_publication_change": "Onlyreplace forthcomingper-cachepublicmapping with singleaggregatedigest; frozenprivatecohort/plans/source/countsunchanged; no re-computation or model/pixelread."
+}
