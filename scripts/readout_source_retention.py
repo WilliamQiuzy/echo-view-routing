@@ -12,7 +12,7 @@ from echo_routing.temporal import direct_view_training as d
 
 
 def readout():
- t.verify();freeze=t.j(t.OUT/'models_freeze.json');reader=t.j(t.OUT/'readout_freeze.json');assert freeze['actual_git_objects_verified'] and freeze['models_manifest_sha256']==t.sha(t.PUB/'models_manifest.json');assert t.j(t.PUB/'independent_models.json')['passed'] and reader['actual_git_objects_verified']
+ inputs=t.verify();assert torch.__version__==inputs['versions']['torch'] and np.__version__==inputs['versions']['numpy'];freeze=t.j(t.OUT/'models_freeze.json');reader=t.j(t.OUT/'readout_freeze.json');assert freeze['actual_git_objects_verified'] and freeze['models_manifest_sha256']==t.sha(t.PUB/'models_manifest.json');assert t.j(t.PUB/'independent_models.json')['passed'] and reader['actual_git_objects_verified']
  for p,h in reader['code'].items():assert t.sha(ROOT/p)==h,p
  assert t.j(t.PUB/'matched_inputs.json')['passed'] and t.j(t.PUB/'matched_inputs.json')['models_manifest_sha256']==t.sha(t.PUB/'models_manifest.json')
  if (t.PUB/'readout_receipt.json').exists():
@@ -32,7 +32,7 @@ def readout():
  with tmp.open('wb') as f:np.savez(f,**allq);f.flush();os.fsync(f.fileno())
  tmp.replace(path);d.sync_directory(t.OUT)
  d.write_json(t.OUT/'source_labels.private.json',{'y':[int(r['true_label']=='A5C') for r in data.source.diag],'discordant':[r['true_label']!=r['directory_label'] for r in data.source.diag],'patient':[r['patient'] for r in data.source.diag],'video':[r['video'] for r in data.source.diag]})
- d.write_json(t.PUB/'readout_receipt.json',{'run_id':'A56','reader_freeze_git_commit':reader['git_commit'],'models_freeze_git_commit':freeze['git_commit'],'new_source_model_forwards':new,'rows_per_model':133,'score_columns':5,'raw_logits':True,'private_score_sha256':t.sha(path),'all_cells_complete':True});print(json.dumps({'once_source_readout_complete':True,'model_forwards':new}),flush=True)
+ d.write_json(t.PUB/'readout_receipt.json',{'run_id':'A56','reader_freeze_git_commit':reader['git_commit'],'models_freeze_git_commit':freeze['git_commit'],'new_source_model_forwards':266,'source_model_forwards_this_invocation':new,'committed_source_forwards_reused_from_clean_prefix':266-new,'rows_per_model':133,'score_columns':5,'raw_logits':True,'private_score_sha256':t.sha(path),'all_cells_complete':True});print(json.dumps({'once_source_readout_complete':True,'model_forwards':new}),flush=True)
 
 
 if __name__=='__main__':
