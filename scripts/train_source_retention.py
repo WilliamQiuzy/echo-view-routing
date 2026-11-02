@@ -20,6 +20,7 @@ import echo_routing.vit.target_mvit as tm
 OUT=ROOT/'runs/a56_source_retention_v1';PUB=ROOT/'docs/results/2026-11-02_source_retention'
 CARD='docs/superpowers/plans/2026-11-02-fiveclass-source-retention.md';U=1200;ARMS=('Z','R')
 POOL_SHA=('96d1fb683e1a261d5be9a3cc7ec393637577bbf83b56140cec41f544c4f3b486','08255192dae3a90644ea062880bf6b2b298181ed12e9890d56ca04630f5adef4')
+COUNTS={'forwards':0,'backwards':0,'builds':0}
 LOGIT_SHA=('5884435770e8b65959b22ff77f74b0c2053cadf7fd2a5a28c842104df2f1a512','0a99be35b0cd78d650f5014c8ddc783173e6fb849ee556d6fa2a52c73f33d360')
 
 
@@ -85,6 +86,7 @@ def verify():
 
 
 def build(device='cuda'):
+ COUNTS['builds']+=1
  torch.set_num_threads(1);torch.manual_seed(sr.SEED);torch.cuda.manual_seed_all(sr.SEED);torch.use_deterministic_algorithms(True);torch.backends.cuda.matmul.allow_tf32=False;torch.backends.cudnn.allow_tf32=False;torch.backends.cudnn.deterministic=True;torch.backends.cudnn.benchmark=False
  m,h=a55.build(device);del h
  torch.manual_seed(sr.SEED);torch.cuda.manual_seed_all(sr.SEED)
@@ -95,7 +97,11 @@ def build(device='cuda'):
 def groups(m):return {'encoder':list(m.encoder.parameters()),'marker':list(m.marker_stem.parameters()),'classifier':list(m.classifier.parameters())}
 def optimizer(m):return torch.optim.AdamW([{'params':pp,'lr':1e-5 if k=='encoder' else 1e-4,'base_lr':1e-5 if k=='encoder' else 1e-4,'name':k} for k,pp in groups(m).items()],betas=(.9,.999),eps=1e-8,weight_decay=1e-4)
 def flat(m):return {k:v.detach().cpu() for k,v in m.state_dict().items()}
-def logits(m,fr,marker,device='cuda'):return m.classifier(m.embed(tm.to_rgb(torch.from_numpy(fr[None]).to(device)),tm.marker_planes(torch.tensor([marker],device=device))))
+def logits(m,fr,marker,device='cuda'):
+ COUNTS['forwards']+=1
+ q=m.classifier(m.embed(tm.to_rgb(torch.from_numpy(fr[None]).to(device)),tm.marker_planes(torch.tensor([marker],device=device))))
+ if q.requires_grad:q.register_hook(lambda g:COUNTS.__setitem__('backwards',COUNTS['backwards']+1))
+ return q
 def checkpoint(m,o,u,identity):return {'model':flat(m),'optimizer':o.state_dict(),'cpu_rng':torch.get_rng_state(),'cuda_rng':torch.cuda.get_rng_state_all(),'update':u,'identity':identity}
 def load(m,o,st):m.load_state_dict(st['model']);o.load_state_dict(st['optimizer']);torch.set_rng_state(st['cpu_rng']);torch.cuda.set_rng_state_all(st['cuda_rng'])
 
@@ -157,7 +163,7 @@ def check():
  del m,o,st;(OUT/'check_resume.pt').unlink();m=build();o=optimizer(m);torch.cuda.synchronize();start=time.time();timed=[]
  for u in range(20):timed.append(step(m,o,data,u,1.,schedule_index=120+u))
  a55.save(OUT/'timed_resume.pt',checkpoint(m,o,20,{}));torch.cuda.synchronize();elapsed=time.time()-start;(OUT/'timed_resume.pt').unlink();drift={n:float((v.double()-initial[n].double()).norm()) for n,v in flat(m).items()};assert all(any(drift[n]>0 for n,p in m.named_parameters() if p is pp) for values in groups(m).values() for pp in values[:1]);zeros=[n for n,p in m.named_parameters() if not torch.count_nonzero(p.grad)];assert sha(a51.BASE)==manifest['Base_A08_sha256']
- rec={'passed':True,'input_manifest_sha256':sha(PUB/'input_manifest.json'),'initial_full_state_sha256':initial_sha,'A08_FIT250_parity_max_abs':parity,'independent_CE_formula_error':abs(float(ce.detach())-ref),'production_grouped_gradient_relative_error':ge,'coefficient0_eight_replay_backwards_exactzero_and_source_gradients_unchanged':True,'repeat_forcedRzero_disk3plus3_fullstate_optimizer_bitwise':True,'all_selected_tensor_count':len(list(m.parameters())),'all_selected_parameter_count':sum(p.numel() for p in m.parameters()),'zero_gradient_tensor_names':zeros,'all_three_group_live_and_drift':True,'timed_steps':20,'timed_seconds_per_step_including_checkpoint':elapsed/20,'formal_training_forecast_GPU_hours':2*U*elapsed/20*1.3/3600,'closing_GPU_reserve_hours':.35,'FIT_forwards':250+8+8+16+24*16+20*16,'FIT_backwards':8+16+24*16+20*16,'new_diagnostic_forwards':0,'GPU_peak_reserved_bytes':torch.cuda.max_memory_reserved(),'FIT_check_mutable_models':6};rec['source_FIT_independent_pixel_logit_checks']=source_pixel_checks;write(PUB/'checks.json',rec);print(json.dumps(rec),flush=True)
+ rec={'passed':True,'input_manifest_sha256':sha(PUB/'input_manifest.json'),'initial_full_state_sha256':initial_sha,'A08_FIT250_parity_max_abs':parity,'independent_CE_formula_error':abs(float(ce.detach())-ref),'production_grouped_gradient_relative_error':ge,'coefficient0_eight_replay_backwards_exactzero_and_source_gradients_unchanged':True,'repeat_forcedRzero_disk3plus3_fullstate_optimizer_bitwise':True,'all_selected_tensor_count':len(list(m.parameters())),'all_selected_parameter_count':sum(p.numel() for p in m.parameters()),'zero_gradient_tensor_names':zeros,'all_three_group_live_and_drift':True,'timed_steps':20,'timed_seconds_per_step_including_checkpoint':elapsed/20,'formal_training_forecast_GPU_hours':2*U*elapsed/20*1.3/3600,'closing_GPU_reserve_hours':.35,'FIT_forwards':250+8+8+16+24*16+20*16,'FIT_backwards':8+16+24*16+20*16,'new_diagnostic_forwards':0,'GPU_peak_reserved_bytes':torch.cuda.max_memory_reserved(),'FIT_check_mutable_models':6};rec['source_FIT_independent_pixel_logit_checks']=source_pixel_checks;rec['FIT_forwards']=COUNTS['forwards'];rec['FIT_backwards']=COUNTS['backwards'];rec['FIT_check_mutable_models']=COUNTS['builds'];write(PUB/'checks.json',rec);print(json.dumps(rec),flush=True)
 
 
 def train():
@@ -178,10 +184,21 @@ def train():
 
 
 def audit_models():
- manifest=j(PUB/'models_manifest.json');data=Inputs();checks={}
+ manifest=j(PUB/'models_manifest.json');data=Inputs();checks={};m=build('cpu');initial=copy.deepcopy(flat(m));names={id(p):n for n,p in m.named_parameters()};expected_groups=[(k,[names[id(p)] for p in pp]) for k,pp in groups(m).items()];expected_zero={'encoder.blocks.15.attn.pool_q.pool.weight','encoder.blocks.15.attn.rel_pos_h','encoder.blocks.15.attn.rel_pos_t','encoder.blocks.15.attn.rel_pos_w'}
  for arm,e in manifest['models'].items():
-  rd=OUT/'models'/arm;assert sha(rd/'final.pt')==e['bundle_sha256'] and sha(rd/'optimizer_final.pt')==e['optimizer_final_sha256'] and sha(rd/'updates.private.jsonl')==e['journal_sha256'];st=torch.load(rd/'optimizer_final.pt',map_location='cpu',weights_only=True);logs=[json.loads(s) for s in (rd/'updates.private.jsonl').read_text().splitlines()];assert st['update']==len(logs)==U and state_sha(st['model'])==e['final_full_state_sha256'];assert all(int(v['step'])==U for v in st['optimizer']['state'].values());assert len(st['optimizer']['state'])==e['selected_tensors'];assert all(r['u']==i and r['source_plan_sha256']==arsha(data.plan[i]) and r['replay_plan_sha256']==arsha(data.replay[i]) and r['coefficient']==int(arm=='R') and r['physical_forwards']==r['physical_backwards']==16 for i,r in enumerate(logs));dt.validate_recovery(rd,U,U);assert len(e['unchanged_selected_names'])==4;checks[arm]={'steps':U,'optimizer_tensors':len(st['optimizer']['state']),'all_plan_and_compute_rows_verified':True,'fullstate_sha_verified':True,'four_structural_zero_tensors':e['unchanged_selected_names']};del st
- write(PUB/'independent_models.json',{'passed':True,'models_manifest_sha256':sha(PUB/'models_manifest.json'),'models':checks,'new_model_forwards':0});print(json.dumps({'models_audit_passed':True}),flush=True)
+  rd=OUT/'models'/arm;assert sha(rd/'final.pt')==e['bundle_sha256'] and sha(rd/'optimizer_final.pt')==e['optimizer_final_sha256'] and sha(rd/'updates.private.jsonl')==e['journal_sha256'];st=torch.load(rd/'optimizer_final.pt',map_location='cpu',weights_only=True);logs=[json.loads(s) for s in (rd/'updates.private.jsonl').read_text().splitlines()];assert st['update']==len(logs)==U and state_sha(st['model'])==e['final_full_state_sha256'];assert st['identity']==e['identity']==j(rd/'claim.json');assert state_sha(initial)==e['initial_full_state_sha256'];assert all(int(v['step'])==U for v in st['optimizer']['state'].values());assert len(st['optimizer']['state'])==e['selected_tensors'];assert all(r['u']==i and r['schedule_index']==i and r['source_plan_sha256']==arsha(data.plan[i]) and r['replay_plan_sha256']==arsha(data.replay[i]) and r['coefficient']==int(arm=='R') and r['physical_forwards']==r['physical_backwards']==16 for i,r in enumerate(logs));dt.validate_recovery(rd,U,U);assert set(e['unchanged_selected_names'])==expected_zero
+  seen=[]
+  for actual,(group_name,param_names) in zip(st['optimizer']['param_groups'],expected_groups,strict=True):
+   rate=1e-5 if group_name=='encoder' else 1e-4
+   assert actual['name']==group_name and actual['base_lr']==rate and actual['lr']==rate*lr_factor(U-1,120,U) and actual['betas']==(.9,.999) and actual['eps']==1e-8 and actual['weight_decay']==1e-4 and len(actual['params'])==len(param_names)
+   for index,name in zip(actual['params'],param_names,strict=True):
+    seen.append(index);mom=st['optimizer']['state'][index];v=st['model'][name];assert v.shape==initial[name].shape and torch.isfinite(v).all()
+    for key in ('exp_avg','exp_avg_sq'):assert mom[key].shape==v.shape and torch.isfinite(mom[key]).all()
+    assert (mom['exp_avg_sq']>=0).all()
+    if name in expected_zero:assert torch.equal(v,initial[name]) and torch.count_nonzero(mom['exp_avg'])==torch.count_nonzero(mom['exp_avg_sq'])==0
+    else:assert not torch.equal(v,initial[name]) and torch.count_nonzero(mom['exp_avg_sq'])>0
+  assert len(seen)==len(set(seen))==e['selected_tensors'];checks[arm]={'steps':U,'optimizer_tensors':len(seen),'all_plan_schedule_and_compute_rows_verified':True,'exact_optimizer_groups_binding_moments_shapes_finiteness_and_live_drift':True,'fullstate_sha_verified':True,'four_structural_zero_tensors':sorted(expected_zero)};del st
+ assert sha(a51.BASE)==j(PUB/'input_manifest.json')['Base_A08_sha256'];write(PUB/'independent_models.json',{'passed':True,'models_manifest_sha256':sha(PUB/'models_manifest.json'),'models':checks,'new_model_forwards':0});print(json.dumps({'models_audit_passed':True}),flush=True)
 
 
 def readout():
