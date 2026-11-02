@@ -23,3 +23,11 @@ def test_paired_plan_same_parent_labels_and_dense_coverage():
   assert sum(parents[i]['label'] for i in ids)==4
   for i,x in zip(ids,centres):assert int(x) in parents[int(i)]['points']
  assert len(set(c[p==0]))==10 and len(set(c[p==1]))==10
+
+
+def test_large_pool_does_not_pass_without_scheduled_exposure():
+ from echo_routing.temporal.annotation_coverage import coverage
+ parents=[{'key':['view'+str(y),'video'+str(i)+str(y)],'patient':str(i),'label':y,'points':list(range(100)),'centre':0} for i in range(21) for y in [0,1]]
+ p,d=make_plan(parents,updates=40);r=coverage(parents,p,d)
+ assert r['pool']['physical_points']==4200 and r['patients']==21
+ assert r['scheduled']['physical_points']<2276 and r['quantity_pass'] is False
