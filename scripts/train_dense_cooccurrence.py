@@ -39,7 +39,11 @@ def intake():
  write(PUB/'source.json',rec);print(json.dumps({'source_intake':True,'upstream_commit':commit,'weight_sha256':rec['weight_sha256']}))
 def verify():
  m=read(PUB/'source.json');assert sha(old.OUT/'source_scores.private.npz')==m['reference_source_scores_sha256'] and sha(old.PUB/'source_readout.json')==m['reference_source_readout_sha256'] and sha(old.OUT/'source_models_freeze.json')==m['reference_source_freeze_sha256'];assert sha(OUT/'weights.pth')==m['weight_sha256'] and sha(old.Inputs().path)==m['bound_sha256'] and sha(OUT/'plan.npy')==m['plan_sha256']
- for p,h in m['code'].items():assert sha(ROOT/p)==h,p
+ patch=read(PUB/'execution_patch.json') if (PUB/'execution_patch.json').exists() else None
+ for p,h in m['code'].items():
+  if patch and p in patch['corrected_code_sha256']:
+   assert patch['original_code_sha256'][p]==h and sha(ROOT/p)==patch['corrected_code_sha256'][p],p
+  else:assert sha(ROOT/p)==h,p
  for p,h in m['upstream_code'].items():assert sha(OUT/'upstream'/p)==h,p
  return m
 def model():
@@ -62,12 +66,12 @@ def extract():
  if progress.exists():
   q=read(progress);assert q['pending'] is None and dest.exists(),'ambiguous neural forward must not repeat';T=np.lib.format.open_memmap(dest,mode='r+')
  else:
-  T=np.lib.format.open_memmap(dest,mode='w+',dtype=np.float32,shape=(n,256,384));q={'done':0,'pending':None};write(progress,q)
+  T=np.lib.format.open_memmap(dest,mode='w+',dtype=np.float32,shape=(n,256,384));T[:]=np.nan;T.flush();q={'done':0,'pending':None};write(progress,q)
  rows=d.fit+d.diagnostic
  while q['done']<n:
-  i=q['done'];q['pending']=i;write(progress,q);T[i]=forward(m,d.window(rows[i])[8]);T.flush();q={'done':i+1,'pending':None};write(progress,q)
+  i=q['done'];q['pending']=i;write(progress,q);T[i]=forward(m,d.window(rows[i])[8]);T.flush();fd=os.open(dest,os.O_RDWR);os.fsync(fd);os.close(fd);q={'done':i+1,'pending':None};write(progress,q)
   if (i+1)%100==0:print(json.dumps({'frozen_source_rows':i+1,'total':702}),flush=True)
- del T;T=np.load(dest,mmap_mode='r');E={arm:np.stack([dc.descriptor(t,p,arm=='S') for t in T]) for arm in ARMS};arrays={};entries={}
+ del T;T=np.load(dest,mmap_mode='r');assert T.shape==(702,256,384) and np.isfinite(T).all();E={arm:np.stack([dc.descriptor(t,p,arm=='S') for t in T]) for arm in ARMS};arrays={};entries={}
  for arm,X in E.items():
   mu=X[:569].mean(0);sd=X[:569].std(0);sd[sd<1e-6]=1;arrays[arm]=X;arrays[arm+'_mean']=mu;arrays[arm+'_scale']=sd;entries[arm]={'descriptor_sha256':arrsha(X),'fit_mean_sha256':arrsha(mu),'fit_scale_sha256':arrsha(sd)}
  np.savez(OUT/'features.private.npz',**arrays);assert sha(OUT/'weights.pth')==before
@@ -83,14 +87,14 @@ def train():
   # Synthetic computational repeat/forced-identical and disk3+3 resume are independently tested before formal stage.
   for u,ids in enumerate(plan):
    def persist(v):
-    v['plan_sha256']=arrsha(ids);logs.append(v);tmp=rd/'resume.tmp';torch.save({'head':h.state_dict(),'optimizer':opt.state_dict(),'updates':u+1},tmp);tmp.replace(rd/'resume.pt');(rd/'updates.private.jsonl').write_text(''.join(json.dumps(z)+'\n' for z in logs))
+    v['plan_sha256']=arrsha(ids);logs.append(v);tmp=rd/'resume.tmp';torch.save({'head':h.state_dict(),'optimizer':opt.state_dict(),'updates':u+1},tmp);fd=os.open(tmp,os.O_RDWR);os.fsync(fd);os.close(fd);tmp.replace(rd/'resume.pt');jp=rd/'updates.private.jsonl';jp.write_text(''.join(json.dumps(z)+'\n' for z in logs));fd=os.open(jp,os.O_RDWR);os.fsync(fd);os.close(fd);dt.sync_directory(rd)
    dt.claimed_update(rd,u,lambda:step(h,opt,X[ids],y[ids],u),persist)
   (rd/'resume.pt').replace(rd/'final.pt');ck=torch.load(rd/'final.pt',weights_only=True,map_location='cpu');assert ck['updates']==600;entries[arm]={'head_sha256':sha(rd/'final.pt'),'journal_sha256':sha(rd/'updates.private.jsonl'),'updates':600,'active_parameters':913,'fit_logits':4800,'CNN_updates':0}
  write(PUB/'heads_manifest.json',{'models':entries,'source_sha256':sha(PUB/'source.json'),'features_sha256':sha(PUB/'features_manifest.json'),'code':codepins(),'head_updates':1200,'source_diagnostic_scores_before_freeze':0})
 def readout():
- verify();h=read(PUB/'heads_manifest.json');fr=read(OUT/'heads_freeze.json');assert fr['actual_git_objects_verified'] and fr['heads_manifest_sha256']==sha(PUB/'heads_manifest.json');e=np.load(OUT/'features.private.npz');d=old.Inputs();values={}
+ verify();h=read(PUB/'heads_manifest.json');fr=read(OUT/'heads_freeze.json');assert fr['actual_git_objects_verified'] and fr['heads_manifest_sha256']==sha(PUB/'heads_manifest.json');frozen_features=read(PUB/'features_manifest.json');assert frozen_features['features_sha256']==sha(OUT/'features.private.npz') and h['source_sha256']==sha(PUB/'source.json') and h['features_sha256']==sha(PUB/'features_manifest.json');audit=read(PUB/'independent_heads.json');assert audit['passed'] and audit['heads_manifest_sha256']==sha(PUB/'heads_manifest.json') and audit['source_sha256']==h['source_sha256'] and audit['features_sha256']==h['features_sha256'];e=np.load(OUT/'features.private.npz');d=old.Inputs();values={}
  for a in ARMS:
-  dest=OUT/f'claim_readout_{a}.json';assert not dest.exists(),'one diagnostic readout only';write(dest,{'head_sha256':h['models'][a]['head_sha256'],'rows':133});ck=torch.load(OUT/'heads'/a/'final.pt',map_location='cpu',weights_only=True);X=(e[a][569:]-e[a+'_mean'])/e[a+'_scale'];values[a]=X@ck['head']['weight'].numpy()[0]+float(ck['head']['bias'][0])
+  assert sha(OUT/'heads'/a/'final.pt')==h['models'][a]['head_sha256'];dest=OUT/f'claim_readout_{a}.json';assert not dest.exists(),'one diagnostic readout only';write(dest,{'head_sha256':h['models'][a]['head_sha256'],'rows':133});ck=torch.load(OUT/'heads'/a/'final.pt',map_location='cpu',weights_only=True);X=(e[a][569:]-e[a+'_mean'])/e[a+'_scale'];values[a]=X@ck['head']['weight'].numpy()[0]+float(ck['head']['bias'][0])
  with (OUT/'scores.private.npz').open('xb') as f:np.savez(f,**values)
  y=np.array([r['true_label']=='A5C' for r in d.diagnostic]);discord=np.array([r['true_label']!=r['directory_label'] for r in d.diagnostic]);metrics={}
  for a,s in values.items():

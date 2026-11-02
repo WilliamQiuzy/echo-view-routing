@@ -53,7 +53,7 @@ def final():
    c=mask&(scores['C']>0);s=mask&(scores['S']>0);assert rr['paired'][key]=={'shared':int((c&s).sum()),'C_only':int((c&~s).sum()),'S_only':int((~c&s).sum())}
   assert t.sha(O/'scores.private.npz')==rr['scores_sha256'];readout_verified=True
  else:readout_verified=False
- t.write(P/('independent_final.json' if readout_verified else 'independent_heads.json'),{'passed':True,'all702_token_descriptors_independently_reconstructed':True,'max_feature_error':feature_error,'all_fit_scalers_recomputed':True,'all1200_AdamW_updates_and_optimizer_states_reconstructed':True,'models':results,'source_readout_verified':readout_verified,'new_neural_forwards':0,'independent_fit_training_logits':9600,'independent_source_score_reconstructions':266 if readout_verified else 0,'new_target_readouts':0})
+ t.write(P/('independent_final.json' if readout_verified else 'independent_heads.json'),{'passed':True,'heads_manifest_sha256':t.sha(P/'heads_manifest.json'),'source_sha256':t.sha(P/'source.json'),'features_sha256':t.sha(P/'features_manifest.json'),'all702_token_descriptors_independently_reconstructed':True,'max_feature_error':feature_error,'all_fit_scalers_recomputed':True,'all1200_AdamW_updates_and_optimizer_states_reconstructed':True,'models':results,'source_readout_verified':readout_verified,'new_neural_forwards':0,'independent_fit_training_logits':9600,'independent_source_score_reconstructions':266 if readout_verified else 0,'new_target_readouts':0})
  print(json.dumps({'audit_passed':True,'readout_verified':readout_verified}))
 
 if __name__=='__main__':
