@@ -113,6 +113,9 @@ class DenseSequence(nn.Module):
         if self.arm=='L':return [self.head(features)*valid[:,None].to(features.dtype)]
         return self.head(features,valid)
 
+    def probabilities(self,u8,sample_mask):
+        return probabilities(self(u8,sample_mask))
+
 
 def probabilities(stages):
     return torch.softmax(expand_logits(stages[-1]).float(),dim=1).transpose(1,2)

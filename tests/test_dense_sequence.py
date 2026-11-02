@@ -59,6 +59,9 @@ def test_frozen_joint_same_initial_predictions_and_real_backbone_gradient():
     assert all(p.grad is None for p in f.encoder.parameters())
     assert all(p.grad is not None and torch.isfinite(p.grad).all() and p.grad.abs().sum()>0 for p in j.encoder.parameters())
     assert f(u8,mask)[-1].shape==(2,5,32)
+    p=f.probabilities(u8,mask)
+    assert p.shape==(2,64,5) and torch.allclose(p.sum(-1),torch.ones(2,64))
+    assert torch.allclose(p,torch.softmax(a.expand_logits(f(u8,mask)[-1]),dim=1).transpose(1,2))
 
 
 def test_joint_dropout_optimizer_rng_resume_matches_uninterrupted():
