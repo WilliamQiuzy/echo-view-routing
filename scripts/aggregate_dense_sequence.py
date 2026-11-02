@@ -21,7 +21,7 @@ def evaluate(preds,half,metadata):
 def boot_pair(left,right,seqs,left_tables,right_tables,seed=2026110257,n_boot=2000):
  # Stream resampling is conditional on this fixed constructed bank: shared source
  # clips make these intervals descriptive, not independent-patient uncertainty.
- a=left_tables['multi_seg'];b=right_tables['multi_seg'];assert a.stream.tolist()==b.stream.tolist();aa=a[['seg_matched','seg_pred','seg_true']].to_numpy();bb=b[['seg_matched','seg_pred','seg_true']].to_numpy();rng=np.random.default_rng(seed);d=[]
+ a=left_tables['multi_seg'];b=right_tables['multi_seg'];assert a.stream.tolist()==b.stream.tolist();n_multi=len(a);aa=a[['seg_matched','seg_pred','seg_true']].to_numpy();bb=b[['seg_matched','seg_pred','seg_true']].to_numpy();rng=np.random.default_rng(seed);d=[]
  for _ in range(n_boot):
   idx=rng.integers(0,len(a),len(a));x,y=aa[idx].sum(0),bb[idx].sum(0);d.append(2*x[0]/(x[1]+x[2])-2*y[0]/(y[1]+y[2]))
  nat=[q for q in seqs if q['kind']=='native'];groups={}
@@ -45,7 +45,7 @@ def boot_pair(left,right,seqs,left_tables,right_tables,seed=2026110257,n_boot=20
    x=int(np.bincount(a,minlength=5).argmax())==int(q['labels'][0]);y=int(np.bincount(b,minlength=5).argmax())==int(q['labels'][0]);name='native_both_correct' if x and y else 'native_both_wrong' if not x and not y else 'native_left_only_correct' if x else 'native_right_only_correct';exact[name]+=1
   elif q['kind']=='multi':
    truth=labels_to_segments(q['labels']);ma=match_segments(labels_to_segments(a),truth);mb=match_segments(labels_to_segments(b),truth);recovered=set(ma)-set(mb);lost=set(mb)-set(ma);exact['multi_true_segments_recovered']+=len(recovered);exact['multi_true_segments_lost']+=len(lost);exact['short_true_segments_recovered_10samples']+=sum(truth[i].end-truth[i].start<=10 for i in recovered);exact['short_true_segments_lost_10samples']+=sum(truth[i].end-truth[i].start<=10 for i in lost);exact['short_true_segments_recovered_16samples']+=sum(truth[i].end-truth[i].start<=16 for i in recovered);exact['short_true_segments_lost_16samples']+=sum(truth[i].end-truth[i].start<=16 for i in lost)
- return {'paired_conditional_stream_bootstrap_segmentF1_delta95':np.quantile(d,[.025,.975]).tolist(),'paired_session_bootstrap_nativeMacroF1_delta95':np.quantile(nf,[.025,.975]).tolist(),'bootstrap':{'replicates':n_boot,'seed':seed,'native_sessions':len(clusters),'multi_streams':len(a),'scope':'native grouped sessions (notpatients); constructedstreams conditional fixedbank, sharedsources not independent'},'exact_disagreements':exact}
+ return {'paired_conditional_stream_bootstrap_segmentF1_delta95':np.quantile(d,[.025,.975]).tolist(),'paired_session_bootstrap_nativeMacroF1_delta95':np.quantile(nf,[.025,.975]).tolist(),'bootstrap':{'replicates':n_boot,'seed':seed,'native_sessions':len(clusters),'multi_streams':n_multi,'scope':'native grouped sessions (notpatients); constructedstreams conditional fixedbank, sharedsources not independent'},'exact_disagreements':exact}
 
 def main():
  models=read(PUB/'models_manifest.json');pins=read(PUB/'outer_inputs.json');choices=read(PUB/'decoder_choices.json');assert choices['model_manifest_sha256']==sha(PUB/'models_manifest.json');assert read(PUB/'raw_outer_results.json')['model_manifest_sha256']==sha(PUB/'models_manifest.json');metadata=np.load(RUN/'outer_metadata.private.npy',allow_pickle=True).item();systems={};tables={};predictions={};rawcheck=read(PUB/'raw_outer_results.json');basehistorical=read(ROOT/'docs/results/2026-10-16_video_within_view/summary.json');records=[]
@@ -54,7 +54,7 @@ def main():
   for row in models['outer_rows']:
    key=row['sha256']
    if key not in done:
-    cursor=SequenceReadout(RUN/'outer_readout'/key/half,key+'|'+pins['outer_metadata_sha256']+'|'+half,len(seqs));assert cursor.cursor==len(seqs);probs={q['id']:cursor.load(i) for i,q in enumerate(seqs)};done[key]=probs
+    cursor=SequenceReadout(RUN/'outer_readout'/key/half,key+'|'+pins['outer_metadata_sha256']+'|'+half,len(seqs),lengths=[len(q['labels']) for q in seqs]);assert cursor.cursor==len(seqs);probs={q['id']:cursor.load(i) for i,q in enumerate(seqs)};done[key]=probs
    probs=done[key];params=choices['choices_by_checkpoint_sha256'][key]['params']
    for mode in ['raw','inner_B3']:
     name=row['row']+'|'+mode;pred={k:(v.argmax(1) if mode=='raw' else decode_with_prob('b3',v,{'decode':{'b3':params}})[0]) for k,v in probs.items()};m,t=evaluate(pred,half,metadata);systems[half][name]=m;tables[half][name]=t;predictions[half][name]=pred;records.append({**row,'half':half,'decoding':mode,**m})

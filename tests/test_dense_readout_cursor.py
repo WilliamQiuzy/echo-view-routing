@@ -27,3 +27,11 @@ def test_future_pixel_loader_materializes_only_validated_manifest_columns(tmp_pa
  def read(path,**kwargs):calls.append(kwargs);return original(path,**kwargs)
  monkeypatch.setattr(pd,'read_csv',read);monkeypatch.setattr(dense_runtime,'load_paths',lambda:SimpleNamespace(manifest_path=manifest));loader=a.ReadoutPixels([{'refs':[('v1',0,1.)]}])
  assert calls==[{'usecols':['video_id','frames_dir'],'dtype':str}] and loader.dirs=={'v1':'/images1'}
+
+
+def test_cursor_validates_journal_positions_and_expected_timeline_length(tmp_path):
+ a=api();r=a.SequenceReadout(tmp_path,'identity',2,lengths=[2,3]);r.run_one(0,lambda:np.full((2,5),.2));r=a.SequenceReadout(tmp_path,'identity',2,lengths=[2,3]);assert r.load(0).shape==(2,5)
+ with pytest.raises(ValueError):a.SequenceReadout(tmp_path,'identity',2,lengths=[1,3])
+ import json
+ p=tmp_path/'committed.jsonl';row=json.loads(p.read_text());row['positions']=1;p.write_text(json.dumps(row)+'\n')
+ with pytest.raises(ValueError):a.SequenceReadout(tmp_path,'identity',2,lengths=[2,3])

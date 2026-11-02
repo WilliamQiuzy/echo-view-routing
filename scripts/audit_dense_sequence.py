@@ -10,6 +10,10 @@ from echo_routing.temporal import dense_runtime as data
 from echo_routing.temporal.dev_train import lr_factor
 from scripts.train_dense_sequence import RUN,PUB,CFG,read,write,sha,make_plan
 
+def inner_artifacts(folder,step):
+ path=folder/f'inner_step{step}'
+ return {'inner_probabilities_sha256':sha(path/'probabilities.private.npy'),'inner_record_sha256':sha(path/'metrics.json'),'inner_predictions_sha256':sha(path/'predictions.private.npy'),'inner_sequence_sha256':read(PUB/'input_metadata.json')['roles']['inner_cal']['sequence_sha256']}
+
 def audit():
  assert read(RUN/'runtimecoordination.json')['phase']=='formal_matrix_complete_pending_frozen_outer_readout'
  cfg=read(CFG);selected=read(PUB/'inner_lr_selection.json')['selected_joint_arm'];seed1=cfg['seed'];seed2=2026110258;expected=[(seed1,'L',6000),(seed1,'F',6000),(seed1,selected,6000),(seed1,'J-high' if selected=='J-low' else 'J-low',2000),(seed2,'F',6000),(seed2,selected,6000)]
@@ -40,8 +44,8 @@ def audit():
   for step in range(500,count+1,500):
    identity=read(folder/f'step{step}.identity.json');path=folder/f'step{step}.pt';assert identity['sha256']==sha(path) and identity['source']==read(PUB/'source.json')['target_encoder_sha256'];record=read(folder/f'inner_step{step}/metrics.json');assert record['step']==step and record['seed']==seed and record['arm']==arm;inner.append(record)
    fixed=step in ([2000,6000] if count==6000 else [2000])
-   if fixed:entries.append({'row':f'seed{seed}_{arm}_fixed{step}','kind':'fixed_step','seed':seed,'arm':arm,'step':step,'path':str(path.relative_to(ROOT)),'sha256':identity['sha256']})
-  best=data.choose_inner(inner);path=folder/f"step{best['step']}.pt";entries.append({'row':f'seed{seed}_{arm}_inner_package','kind':'inner_selected_package','seed':seed,'arm':arm,'step':best['step'],'path':str(path.relative_to(ROOT)),'sha256':sha(path)})
+   if fixed:entries.append({'row':f'seed{seed}_{arm}_fixed{step}','kind':'fixed_step','seed':seed,'arm':arm,'step':step,'path':str(path.relative_to(ROOT)),'sha256':identity['sha256'],**inner_artifacts(folder,step)})
+  best=data.choose_inner(inner);path=folder/f"step{best['step']}.pt";entries.append({'row':f'seed{seed}_{arm}_inner_package','kind':'inner_selected_package','seed':seed,'arm':arm,'step':best['step'],'path':str(path.relative_to(ROOT)),'sha256':sha(path),**inner_artifacts(folder,best['step'])})
   models.append({'seed':seed,'arm':arm,'updates':count,'physical_rows':len(rows),'unique_logical_updates':len(set(logical)),'head_optimizer_tensors':len(head_names),'active_video_optimizer_tensors':len(active_names),'changed_video_tensors':len(changed),'inactive_video_tensors_unchanged':9,'finite_moments_exact_shapes_steps_lr_binding':True,'mean_first100_loss':float(np.mean([r['loss'] for r in rows[:100]])),'mean_last100_loss':float(np.mean([r['loss'] for r in rows[-100:]])),'latest_optimizer_sha256':sha(folder/'latest.pt'),'inner_chosen_step':best['step']});total+=len(rows);del z
  assert total==32000 and len(entries)==17
  record={'passed':True,'formal_physical_updates':total,'models':models,'outer_rows':entries,'all_formal_models_frozen_before_first_external_development_read':True,'new_external_development_forwards':0,'source_sha256':read(PUB/'source.json')['target_encoder_sha256'],'producer_git':read(RUN/'pipeline_freeze.json')['git_commit'],'epoch':time.time()};write(PUB/'models_manifest.json',record);print(json.dumps({'model_audit_passed':True,'updates':total,'rows':len(entries)}),flush=True)

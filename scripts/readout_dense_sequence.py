@@ -23,7 +23,7 @@ def main():
   for half in ['selection','calibration']:
    key=row['sha256']+'|'+half
    if key in completed:results.append({**row,'half':half,'reused_same_checkpoint':True,'raw_metrics':completed[key]});continue
-   half_start=time.time();seqs=metadata[half]['sequences'];pixels=ReadoutPixels(seqs);identity=row['sha256']+'|'+pins['outer_metadata_sha256']+'|'+half;folder=RUN/'outer_readout'/row['sha256']/half;cursor=SequenceReadout(folder,identity,len(seqs));initial_cursor=cursor.cursor
+   half_start=time.time();seqs=metadata[half]['sequences'];pixels=ReadoutPixels(seqs);identity=row['sha256']+'|'+pins['outer_metadata_sha256']+'|'+half;folder=RUN/'outer_readout'/row['sha256']/half;cursor=SequenceReadout(folder,identity,len(seqs),lengths=[len(q['labels']) for q in seqs]);initial_cursor=cursor.cursor
    if cursor.cursor<len(seqs):
     if model is None:model=build(row['arm'],local);load_model_weights(model,ROOT/row['path']);model.eval()
     for i in range(cursor.cursor,len(seqs)):

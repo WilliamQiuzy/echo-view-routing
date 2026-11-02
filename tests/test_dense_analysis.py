@@ -17,6 +17,19 @@ def test_paired_bootstrap_zero_identical_and_exact_recovered_segment_counts():
  p={x['id']:x['labels'].copy() for x in q};_,t=d.metrics(q,p)
  result=a.boot_pair(p,p,q,t,t,n_boot=30)
  assert result['paired_conditional_stream_bootstrap_segmentF1_delta95']==[0,0] and result['paired_session_bootstrap_nativeMacroF1_delta95']==[0,0]
+ assert result['bootstrap']['multi_streams']==1
  assert result['exact_disagreements']['native_both_correct']==2 and result['exact_disagreements']['multi_true_segments_recovered']==0
  bad={**p,'m':np.full(30,3)};_,b=d.metrics(q,bad);result=a.boot_pair(p,bad,q,t,b,n_boot=30)
  assert result['exact_disagreements']['multi_true_segments_recovered']==1 and result['exact_disagreements']['short_true_segments_recovered_16samples']==1 and result['exact_disagreements']['short_true_segments_recovered_10samples']==0
+
+
+def test_inner_probability_cache_admission_and_independent_raw_recount():
+ import pytest
+ from echo_routing.temporal import dense_runtime as d
+ a=importlib.import_module('echo_routing.temporal.dense_analysis')
+ q=[{'id':'n','kind':'native','labels':np.full(20,2),'refs':[('v',i,1.) for i in range(20)],'joins':np.array([],int)},{'id':'m','kind':'mixed','labels':np.array([2]*10+[3]*10),'refs':[('v',i,1.) for i in range(20)],'joins':np.array([10])}]
+ probs={x['id']:np.eye(5,dtype=np.float32)[x['labels']] for x in q};preds={k:v.argmax(1) for k,v in probs.items()};record=d.metrics(q,preds)[0];record['input_sequence_sha256']='fixedinput'
+ assert a.validate_inner_cache(probs,q,'fixedinput',record)['segment_f1_50_multi']==1
+ for bad in [{**probs,'n':probs['n'][:1]},{**probs,'n':probs['n']*.5},{**probs,'n':np.full((20,5),np.nan)},{'wrong':probs['n'],'m':probs['m']},{**probs,'n':np.eye(5)[np.full(20,0)]}]:
+  with pytest.raises(ValueError):a.validate_inner_cache(bad,q,'fixedinput',record)
+ with pytest.raises(ValueError):a.validate_inner_cache(probs,q,'differentinput',record)
