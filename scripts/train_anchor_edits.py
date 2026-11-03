@@ -34,6 +34,7 @@ def role_values(role):
 
 
 def prepare():
+    verify_freeze('training_prepare_freeze.json')
     verify_freeze('producer_freeze.json')
     if not read(PUB / 'cache_fit_manifest.json')['passed'] or (PUB / 'training_inputs.json').exists():
         raise ValueError('complete cache and fresh training preparation required')
