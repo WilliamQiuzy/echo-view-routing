@@ -10,7 +10,7 @@ import numpy as np,pandas as pd
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from scripts.anchor_common import RUN,PUB,read,write,sha,verify_freeze
+from scripts.anchor_common import RUN,PUB,read,write,sha,verify_freeze,sequences
 from echo_routing.temporal.anchor_readout_plan import TABLES,HALVES,SEEDS,BASE,system
 
 
@@ -76,17 +76,46 @@ def main():
           'pairs_short_true_unmatched_16samples','pairs_short_spurious_segments_16samples']
     rows=[{'table':table,'half':half,'system':name,**{k:m[k] for k in keys}} for table in TABLES for half in HALVES for name,m in summary['systems'][table][half].items()]
     pd.DataFrame(rows).to_csv(PUB/'task_tradeoffs.csv',index=False)
+    inner=[]
+    for item in read(PUB/'models_manifest.json')['inner_records']:
+        path=ROOT/item['inner_record_path']
+        if sha(path)!=item['inner_record_sha256']:raise ValueError('frozen inner diagnostic record changed')
+        record=read(path)
+        for policy,metric in record['policies'].items():
+            inner.append({'seed':item['seed'],'arm':item['arm'],'step':item['step'],'policy':policy,
+                          **{k:metric[k] for k in ['native_macro_f1','segment_f1_50_multi','short_true_unmatched_16samples','short_spurious_segments_16samples']}})
+    if len(inner)!=24:raise ValueError('complete fixed24 inner policy metric sets required')
+    pd.DataFrame(inner).to_csv(PUB/'inner_curves.csv',index=False)
     pd.DataFrame(oracle['oracle_domains']).to_csv(PUB/'action_space_oracle.csv',index=False)
     caches={mode:read(PUB/f'cache_{mode}_manifest.json') for mode in ['fit','outer']}
+    from echo_routing.temporal.structured_inputs import windows
+    from echo_routing.temporal.dense_sequence import chunk_starts
+    forward_counts={'a08':0,'jepa':0}
+    for mode,cache in caches.items():
+        for record in cache['records']:
+            source,role=record['source'],record['role'];qs=sequences(role)
+            fresh=[q for q in qs if (mode=='fit' and (source=='a08' or q['kind']!='native')) or role.startswith('confirmation_')]
+            units=[len(windows(len(q['refs']),5)['centre']) if source=='a08' else len(chunk_starts(len(q['refs']))) for q in fresh]
+            if sum(units)!=record['new_neural_units'] or record['prior_committed_sequences']!=0:
+                raise ValueError('sealed source physical workload failed independent geometry recount')
+            batch=32 if source=='a08' else 2
+            forward_counts[source]+=sum((n+batch-1)//batch for n in units)
     write(PUB/'source_physical_costs.json',{'source_cache_records':caches,
         'source_cache_GPU_job_wall_seconds':{mode:read(PUB/f'process_cache_{mode}_1.json')['full_process_wall_seconds'] for mode in caches},
         'new_A08_windows':sum(r['new_neural_units'] for x in caches.values() for r in x['records'] if r['source']=='a08'),
         'new_JEPA_chunks':sum(r['new_neural_units'] for x in caches.values() for r in x['records'] if r['source']=='jepa'),
+        'study_cache_producer_Python_forward_calls':forward_counts,
+        'forward_call_count_basis':'derived from exact sealed original axes and frozen batch loops:A08batch32/JEPA2;not GPUkernel counts;engineering separate',
         'engineering_profile_charged_separately':True,'engineering_GPU_checks_sha256':sha(PUB/'FIT_GPU_checks.json'),
-        'operational_A_requires':['full original A08 producer','feature extraction and utility policy'],
-        'operational_J_requires':['full original A08 producer','full frozen JEPA producer','feature extraction and utility policy'],
-        'cached_head_latency_is_not_full_system_inference_latency':True,'standalone_end_to_end_inference_latency_measured':False,
-        'matrix_shared_cache_charged_physically_once_not_per_logical_policy':True})
+        'operational_A_requires':['full original A08 producer','original fixed B3 decoder','feature extraction and utility policy'],
+        'operational_J_requires':['full original A08 producer','full frozen JEPA producer','original fixed B3 decoder','feature extraction and utility policy'],
+        'cached_head_latency_is_not_full_system_inference_latency':True,
+        'frozen_producers_pixel_preprocessing_and_original_B3_excluded_from_cached_head_latency':True,'standalone_end_to_end_inference_latency_measured':False,
+        'matrix_shared_cache_charged_physically_once_not_per_logical_policy':True,
+        'global_manifest_ID_path_columns_transiently_parsed':True,
+        'protected_label_columns_parsed_by_source_loader':False,'protected_media_forwards':0,
+        'protected_labels_used_for_training_or_selection':False,
+        'fresh_confirmation_classmetadata_labels_created_before_heads_only_for_prospective_bank_construction':True})
     write(PUB/'figure_receipt.json',{'passed':True,'summary_sha256':sha(PUB/'summary.json'),'action_space_diagnostic_sha256':sha(PUB/'action_space_diagnostic.json'),
           'figures':{str(p.relative_to(ROOT)):sha(p) for p in figures},'package_freeze_git':freeze['git_commit'],
           'all_plots_aggregate_only_no_model_metric_or_threshold_changes':True,'epoch':time.time()})
