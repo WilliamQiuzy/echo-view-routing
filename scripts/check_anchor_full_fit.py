@@ -27,13 +27,13 @@ def main():
     if sources != inputs['source_cache_identities']:
         raise ValueError('wholeFIT source cache identities changed')
     norms = {arm: read(verify_pin(pin)) for arm, pin in inputs['normalizers'].items()}
-    plans = {int(seed): np.load(verify_pin(pin), allow_pickle=True).item() for seed, pin in inputs['plans'].items()}
+    plans = {seed: np.load(verify_pin(pin), allow_pickle=True).item() for seed, pin in inputs['plans'].items()}
     arithmetic = validate(data, qs, a, base, norms, plans)
     torch.set_num_threads(1)
     torch.use_deterministic_algorithms(True)
     checks, total_updates, models = {}, 0, 0
     seed = 2026110359
-    plan = plans[seed]
+    plan = plans[str(seed)]
     for arm in ['A', 'J']:
         x = torch.from_numpy(normalize(data['features'][arm], norms[arm]))
         y = torch.from_numpy(data['targets'])
