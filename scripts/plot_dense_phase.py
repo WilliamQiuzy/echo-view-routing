@@ -45,6 +45,6 @@ def main():
                 record={k:r[k] for k in ['seed','arm','step','native_macro_f1','segment_f1_50_multi','model_checkpoint_sha256','input_sequence_sha256']};record['record_sha256']=hashlib.sha256(p.read_bytes()).hexdigest();curves.append(record);records.append(record)
             for ax,(key,title) in zip(axes,[('native_macro_f1','Native five-class macro-F1'),('segment_f1_50_multi','Multi-stream segment F1@50')]):ax.plot([r['step'] for r in records],[r[key] for r in records],style,color=color,label=f'{arm}, seed {seed-2026110256}');ax.set(xlabel='Optimizer updates',ylabel=title,ylim=(0,1.02));ax.grid(alpha=.2)
     axes[0].legend(fontsize=8);fig.suptitle('MD repeated training-only inner calibration; not independent validation');fig.tight_layout();fig.savefig(out/'multidepth_inner_curves.png',dpi=180);fig.savefig(out/'multidepth_inner_curves.svg');plt.close(fig)
-    (out/'multidepth_inner_curves.json').write_text(json.dumps({'rows':curves,'source_records_bound_in_model_manifest':True,'new_model_forwards':0},indent=2)+'\n')
+    (out/'multidepth_inner_curves.json').write_text(json.dumps({'rows':curves,'source_records_previously_checked_by_MD_model_audit':True,'record_sha256_per_row_exported':True,'new_model_forwards':0},indent=2)+'\n')
     print(json.dumps({'phase_figures':6,'fixed_rows':len(rows),'new_model_forwards':0}),flush=True)
 if __name__=='__main__':main()
