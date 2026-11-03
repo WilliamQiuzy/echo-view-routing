@@ -7,7 +7,7 @@ from scripts.structured_common import RUN,PUB,CFG,read,write,verify_freeze
 from scripts.supervise_structured_evidence import remaining_limits
 from echo_routing.temporal.structured_guard import storage_bytes,process_sample
 from echo_routing.temporal.dense_resource_accounting import terminal_queue_lock
-COMMANDS={'head_check':('scripts/check_structured_head_pipeline.py','run',900,False),'admission':('scripts/admit_structured_evidence.py','formal',900,False),'formal':('scripts/train_structured_evidence.py','formal',86400,False),'audit':('scripts/report_structured_evidence.py','audit',3600,False),'cache_outer':('scripts/produce_structured_cache.py','outer',21600,True),'readout':('scripts/readout_structured_evidence.py','run',21600,False),'aggregate':('scripts/aggregate_structured_evidence.py','run',14400,False)}
+COMMANDS={'head_check':('scripts/check_structured_head_pipeline.py','run',900,False),'admission':('scripts/admit_structured_evidence.py','formal',900,False),'runtime_admission':('scripts/admit_structured_head_runtime.py','run',900,False),'formal':('scripts/train_structured_evidence.py','formal',86400,False),'audit':('scripts/report_structured_evidence.py','audit',3600,False),'cache_outer':('scripts/produce_structured_cache.py','outer',21600,True),'readout':('scripts/readout_structured_evidence.py','run',21600,False),'aggregate':('scripts/aggregate_structured_evidence.py','run',14400,False)}
 
 def execute(stage,command,gpu,limit):
     with terminal_queue_lock(RUN/'exclusive_supervisor.lock'):
