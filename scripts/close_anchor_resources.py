@@ -20,6 +20,10 @@ def main():
         for path,expected in local['file_pins'].items():
             if sha(ROOT/path)!=expected:raise ValueError('local CPU receipt changed')
         actual=totals(records+local['receipts'])
+        unknown_worker_OS_statuses=sum(r.get('observed_worker_exit_code') is None for r in records)
+        directly_waited=all(r.get('child_exit_code_directly_waited') is True
+                            and r.get('observed_worker_exit_code') is not None
+                            and not r.get('OS_status_inferred_from_manifest',False) for r in records)
         pids={r[key] for r in records for key in ['model_pid','supervisor_pid'] if isinstance(r.get(key),int)}
         if any(Path(f'/proc/{pid}').exists() for pid in pids):raise ValueError('recorded execution/guardian PID still exists')
         gpu=subprocess.check_output(['nvidia-smi','--query-compute-apps=pid','--format=csv,noheader'],text=True).strip()
@@ -62,7 +66,8 @@ def main():
             'local_cpu_receipts_sha256':sha(PUB/'local_cpu_receipts.json'),'process_ledger_sha256':sha(RUN/'processes.jsonl'),
             'all_recorded_model_and_supervisor_PIDs_absent':True,'recorded_execution_PID_count':len(pids),
             'GPU_compute_processes_absent':True,'pending_claims':0,'same_queue_lock_held_through_checks_and_writes':True,
-            'new_worker_OS_statuses_directly_waited_not_inferred_from_manifests':True,
+            'new_worker_OS_statuses_directly_waited_not_inferred_from_manifests':directly_waited,
+            'unknown_server_worker_OS_status_count':unknown_worker_OS_statuses,
             'local_SELF_collection_snapshots_have_null_OS_status_not_failed_or_unknown_neural_jobs':True,
             'CPU_scope':'sum measured SELF+waitedCHILDREN receipts plus separate inherited completedallowances;legacy provenance/overlap uncertainty retained;not unique wholehost CPU',
             'prior_A55_A56_and_A57_A58_cost_receipts_retained_separately':True,'all_inherited_caps_passed':True,
@@ -75,8 +80,10 @@ def main():
         write(PUB/'resources.json',value)
         write(PUB/'terminal_exit_receipt.json',{'passed':True,'all_workers_absent':True,'GPU_idle':True,'pending_claims':0,
             'same_queue_lock_held':True,'worker_OS_exit_statuses':[{'stage':r['stage'],'attempt':r['attempt'],
-                'model_pid':r['model_pid'],'observed_worker_exit_code':r['observed_worker_exit_code']} for r in records],
-            'all_new_worker_statuses_directly_waited':True,'resource_receipt_sha256':sha(PUB/'resources.json'),'epoch':now})
+                'model_pid':r['model_pid'],'observed_worker_exit_code':r['observed_worker_exit_code'],
+                'child_exit_code_directly_waited':r.get('child_exit_code_directly_waited'),
+                'OS_status_inferred_from_manifest':r.get('OS_status_inferred_from_manifest',False)} for r in records],
+            'all_new_worker_statuses_directly_waited':directly_waited,'unknown_server_worker_OS_status_count':unknown_worker_OS_statuses,'resource_receipt_sha256':sha(PUB/'resources.json'),'epoch':now})
         write(RUN/'runtimecoordination.json',{'phase':'closed_complete','model_pid':None,'formal_optimizer_updates':24000,
              'metric_rows':70,'paired_comparisons':96,'all_authorized_stages_complete':True,
              'next_action':'root selective public integration and delete only capstone-a59;no automatic A60',
