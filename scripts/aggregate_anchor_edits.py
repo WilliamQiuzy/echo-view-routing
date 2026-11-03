@@ -11,6 +11,9 @@ import numpy as np,pandas as pd
 from scripts.anchor_common import RUN,PUB,CFG,read,write,sha,verify_pin,verify_freeze
 from scripts.readout_anchor_edits import contexts,role_for,pair_cache
 from scripts.train_anchor_edits import role_values
+from scripts.cache_anchor_edits import original_a08
+from echo_routing.temporal.baselines.registry import decode_with_prob
+from echo_routing.temporal.structured_metrics import compose_stress_predictions
 from echo_routing.temporal.anchor_metrics import evaluate,paired
 from echo_routing.temporal.anchor_readout_plan import plan as fixed_plan,TABLES,HALVES,BASE
 from echo_routing.temporal.structured_metrics import verify_reference
@@ -36,6 +39,23 @@ def main():
     for row in result['rows']:
         table,half,name=row['table'],row['half'],row['system'];pred=predictions[table][half][name]
         role=role_for(table,half);qs,a,j,b,sources=banks[role]
+        if row['role']=='reference':
+            if name.startswith('A08_s') and name.endswith('_original_B3'):
+                seed=int(name.split('_')[1][1:])
+                if table=='main':
+                    source,params=original_a08(half,qs,seed,cfg)
+                    expected_pred={q['id']:decode_with_prob('b3',p,{'decode':{'b3':params}})[0] for q,p in zip(qs,source)}
+                else:
+                    if seed!=0:raise ValueError('unplanned stress reference seed')
+                    expected_pred={q['id']:p for q,p in zip(qs,b)}
+            else:
+                values=a if name=='A08_s0_original_raw' else j if name=='JEPA_core_fixed6000_raw' else None
+                if values is None:raise ValueError('unplanned reference producer')
+                expected_pred={q['id']:p.argmax(1) for q,p in zip(qs,values)}
+            if table!='main':
+                expected_pred=compose_stress_predictions(predictions['main'][half][name],expected_pred,banks[half][0],qs)
+            if set(pred)!=set(expected_pred) or any(not np.array_equal(pred[k],v) for k,v in expected_pred.items()):
+                raise ValueError('reference labels disagree with pinned original source posterior/decoder')
         if row['role']=='policy':
             modelrow=modelrows[(row['seed'],row['arm'])]
             if row['weight_sha256']!=modelrow['final_sha256'] or sha(ROOT/modelrow['final_path'])!=row['weight_sha256']:
