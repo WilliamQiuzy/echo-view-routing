@@ -1,0 +1,96 @@
+{
+  "stage": "Task5_training_loop_runtime_source_wrappers_SPEC_review",
+  "reviewed_git_commit": "2aec6bffc0a08ec2c29aa470f90c5bab4909b712",
+  "reviewed_file_SHA256": {
+    "scripts/train_anchor_edits.py": "80115e4855692d8ef982a3bd22a0e50be74d88f3e162e96174b401d3c0f46178",
+    "echo_routing/temporal/anchor_runtime.py": "19aa38cc5366d493fcf786bb130398d10991bd019877c4284b60262d036b42e3",
+    "scripts/cache_anchor_edits.py": "836e14ac857516a232d9d0a9e68394fe20834fa72cfa93f37250bc371a2cbd48",
+    "scripts/anchor_common.py": "4c6b8debd33907fb60b8e39aaaaca6520d212ad14c1f50454c1cdf964a5d5abc",
+    "configs/experiments/anchor_edits_v1.json": "4cb2f7c3efd3c27766d3b78ec3063c410aae416abb24c1771691296d1e141ea7",
+    "tests/test_anchor_loop.py": "f744be8249fbee72e43439e0661ee9b4d7e43e5fd5b1e0a78b459362dde978f8",
+    "tests/test_anchor_runtime.py": "e5b59db9413b47db0c74a8e90c2721fbfba9f9b3eb38422e4ce01d3cfe081fa4",
+    "tests/test_anchor_producers.py": "24a2ab258ff762da34af88ee6ebbb2aad671bf207af00650a12f9cc63117a3d6"
+  },
+  "SPEC_status": "Issues Found",
+  "CODE_QUALITY_status": "Not started because inner readout replay SPEC blocker remains",
+  "required_changes": [
+    {
+      "id": "R3",
+      "file": "scripts/train_anchor_edits.py",
+      "line": 100,
+      "related_lines": [
+        91,
+        103,
+        165,
+        191
+      ],
+      "contract": "Twelve diagnostic inner records only, no ambiguous silent readout replay",
+      "issue": "inner() calls on_inner before persisting any pending readout intent. If the callback starts inference and the stage fails before the public result/marker is written, the milestone checkpoint and optimizer journal are clean. Resume at that milestone calls on_inner again with no indication that physical inner work already began. Optimizer updates are not replayed, but the inner readout is.",
+      "required_fix": "Create and directory-fsync a checkpoint/identity-bound pending inner claim before invoking the callback. On resume, reject an unresolved claim rather than recomputing. Clear it only after a durable result/marker commit; a fully committed existing result may be reconciled by identity/hash without redoing inference. Add the retained interrupted-inner regression and successful completion/resume coverage.",
+      "evidence": "The probe completes two synthetic updates, interrupts a started inner callback, then resumes at the same checkpoint; current code calls the callback again and returns instead of rejecting ambiguity. Existing normal completion/resume test passes."
+    }
+  ],
+  "otherwise_SPEC_checks": [
+    "Four physical heads are formed by two frozen seeds and two arms; each defaults to6000 and shared seed draw plan",
+    "A/J first62 FIT normalizer statistics checked equal and only role fit used to build targets, normalizers and plans",
+    "Full sequence label/posterior lengths are enforced by committed posterior readers and matcher; infer signature has no truth/kind/ID/join parameters",
+    "U/G use exactly one score pass; A operational inference duplicates A08 without JEPA input dependence",
+    "Original5 source wrapper calls windows(n,5), genuine16-frame pixels/markers and nearest original-centre assignment; no dense interpolation",
+    "JEPA uses full64/stride32/padded masks and positive-triangle probability stitch",
+    "Old native reuse requires identical full refs/gamma/order; old main/stress reuse pins historical manifests, identities, journals and complete axes",
+    "All new cache/model/normalizer/plan/result write paths in reviewed wrappers use A59 RUN/PUB; old caches opened readonly",
+    "New constructed contexts are actually passed through producer sequence wrappers; no native-logit concatenation",
+    "Fresh outer cache stage requires all24000 updates and frozen four models/twelve inner records before source work"
+  ],
+  "independent_test_receipt": {
+    "path": "docs/results/2026-11-03_anchor_edits/task5_runtime_SPEC_RED.json",
+    "SHA256": "657f881448ba531bdcb99aa0f714fa89127000c2d849b5c60e40cdb77fa772e0",
+    "raw_receipt": {
+      "stage": "task5_runtime_SPEC_RED",
+      "command": [
+        "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_anchor_loop.py",
+        "tests/test_anchor_runtime.py",
+        "tests/test_anchor_producers.py",
+        "docs/results/2026-11-03_anchor_edits/task5_loop_spec_probes.py"
+      ],
+      "measurement_host": "MacBook-Air-9.local",
+      "model_pid": 76737,
+      "supervisor_pid": 76727,
+      "started_epoch": 1793741390.622895,
+      "finished_epoch": 1793741394.1660218,
+      "full_process_wall_seconds": 3.5431268215179443,
+      "observed_worker_exit_code": 1,
+      "GPU_job": false,
+      "CUDA_context_occupied": false,
+      "CUDA_visibility_hidden_before_child_import": true,
+      "measured_child_CPU_seconds": 2.54142,
+      "measured_supervisor_CPU_seconds": 0.0007989999999999994,
+      "measured_CPU_core_seconds": 2.5422190000000002,
+      "scope": "local CPU synthetic software checks; no media or formal experiment updates",
+      "output": ".....F                                                                   [100%]\n=================================== FAILURES ===================================\n_____ test_interrupted_started_inner_readout_cannot_be_silently_reexecuted _____\n\ntmp_path = PosixPath('/private/var/folders/4l/s1hqgvzj2l10_dff3pw5m97m0000gn/T/pytest-of-williamqiu/pytest-253/test_interrupted_started_inner0')\n\n    def test_interrupted_started_inner_readout_cannot_be_silently_reexecuted(tmp_path):\n        m = importlib.import_module('scripts.train_anchor_edits')\n        data = {'features': {'A': np.zeros((2, 98), np.float64)},\n                'targets': np.ones(2, np.float32),\n                'kind_indices': {'native': np.array([0]), 'constructed': np.array([1])},\n                'candidate_rows': [{'feature_positions': 1}, {'feature_positions': 1}]}\n        norm = {'mean': np.zeros(98), 'std': np.ones(98)}\n        identity = {k: str(i) * 64 for i, k in enumerate(['code', 'config', 'sources', 'input', 'draw_plan', 'normalizer'], 1)}\n        plan = draw_plan(1, 1, 2026110359)\n        calls = []\n        def interrupted_inner(model, cursor, path):\n            calls.append(cursor)\n            raise OSError('synthetic interruption after inner readout work started')\n        model = UtilityRegressor('A', 2026110359)\n        with pytest.raises(OSError):\n            m.train_one(model, optimizer(model), data, plan, norm, identity, tmp_path,\n                        stop=2, latest_every=2, milestones=(2,), on_inner=interrupted_inner)\n        assert calls == [2] and (tmp_path / 'step2.pt').exists()\n        def resumed_inner(model, cursor, path):\n            calls.append(cursor)\n            return {'physical_readout_reexecuted': True}\n        resumed = UtilityRegressor('A', 2026110359)\n>       with pytest.raises((RuntimeError, ValueError), match='pending|ambiguous|inner|replay'):\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE       Failed: DID NOT RAISE any of (RuntimeError, ValueError)\n\ndocs/results/2026-11-03_anchor_edits/task5_loop_spec_probes.py:30: Failed\n=========================== short test summary info ============================\nFAILED docs/results/2026-11-03_anchor_edits/task5_loop_spec_probes.py::test_interrupted_started_inner_readout_cannot_be_silently_reexecuted\n",
+      "output_sha256": "a2e7000e4bec32da6936d1286cbd9d5335aefe7cdded32aaed3d820005d3802b"
+    },
+    "existing_focused_tests_passed": 5,
+    "new_contract_regression_tests_failed": 1
+  },
+  "independent_probe_source": {
+    "path": "docs/results/2026-11-03_anchor_edits/task5_loop_spec_probes.py",
+    "SHA256": "65688e407feaec3e3e683c632e8248b1f8068578f317f7b6399ab43e65863f7e"
+  },
+  "new_reviewer_measured_CPU_core_seconds": 2.5422190000000002,
+  "cost_scope": "New local receipt after previously sealed30.235629-second collector; must be merged once into next locked admission. Worker was notified directly. Earlier receipts and nested synthetic engineering work are not extra independent charges.",
+  "worker_cost_notification_sent": true,
+  "actual_formal_optimizer_updates": 0,
+  "server_or_GPU_job_started": false,
+  "unsubmitted_pipeline_checker_read": false,
+  "source_qualification_and_metadata_completed_records_not_modified": true,
+  "artifact_creation_only": {
+    "epoch": 1793741446.0694342,
+    "host": "MacBook-Air-9.local",
+    "PID": 78495
+  }
+}

@@ -9,3 +9,5 @@ A14–17已经训练过局部路由，A59不声称路由或utility学习是新�
 继承GPU24h/CPU72h/40GB与原更早deadline，不重置费用。起始GPU剩6.684573h，其中2h收尾储备；CPU conservative receipts+allowances剩54.036262h；tracked上界剩6375507422B。用户重启后SSH已于2026-11-03 16:10:52纽约时间恢复；root真实只读核对GPU0MiB/无app、A58closed、A59尚无runtime。唯一执行worker继续真实源资格化和实测全成本准入，正式更新仍0。
 
 历史连接失败保留在readiness：21:06:59UTC最后一次TCP超时，21:10:52UTC用户重启后SSH恢复。原预算/费用/更早deadline均不重置。监督器launch-intent与锁内账本两个问题已在0507f02修复并通过独立SPEC+QUALITY，1a09c8f补齐锁内本地测试费用，原IssuesFound/失败与CPU费用保留。真实metadata与400/214源严格载入均已完成，两个worker由父监督直接观测OS退出0。root核对31个Git对象和server SHA全部一致；FIT/inner为4236/928条，下一步实测FIT源前向与CPU候选训练图，再做覆盖完整矩阵的成本准入。
+
+真实FIT源GPU图检查已完成：7242由父监督直接观测OS退出0，GPU占用33.593256秒，原stride5 A08原始logit误差1.90735e-6、JEPA概率误差0。随后CPU小panel检查在12次工程更新后的逐tensor非零梯度断言失败（8696 OS1/CPU4.870384秒）；原失败保留，worker检查特征方差并单独冻结非退化工程control，正式数据/损失不变，全FIT图核验仍待缓存完成。正式更新0，这些均不是模型性能结果。
