@@ -10,6 +10,7 @@ from echo_routing.temporal.structured_context import classify_context_records
 original=supervisor.remaining_limits
 def corrected(budget,rows,now,gpu,closing=False):
     guard=read(RUN/'context_guard_receipt.json') if (RUN/'context_guard_receipt.json').exists() else None
+    if any(r['stage']=='formal' for r in rows) and (guard is None or not guard['passed']):raise RuntimeError('completed formal context guard receipt required before next stage')
     return original(budget,classify_context_records(rows,guard),now,gpu,closing)
 supervisor.remaining_limits=corrected
 if __name__=='__main__':supervisor.main()
