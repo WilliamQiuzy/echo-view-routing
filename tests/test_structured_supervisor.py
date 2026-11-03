@@ -13,3 +13,8 @@ def test_live_owner_and_same_exclusive_lock_refuse_second_worker(tmp_path):
     from echo_routing.temporal.dense_resource_accounting import terminal_queue_lock
     with terminal_queue_lock(tmp_path/'exclusive_supervisor.lock'):
         with pytest.raises(RuntimeError):m.execute('x',[sys.executable,'-c','pass'],False,10,tmp_path)
+
+def test_dual_budget_runtime_limit_retains_failed_cost_and_closure_reserve():
+    m=importlib.import_module('scripts.supervise_structured_evidence');b={'new_GPUjob_h':16,'cumulative_GPUjob_h':24,'prior_GPUjob_h':14.3839654494,'closure_GPUreserve_h':2,'new_CPUcore_h':48,'cumulative_CPUcore_h':72,'prior_summed_measured_CPUreceipt_h':14.2846472567,'prior_setup_budget_allowance_h':.25,'new_deadline':200000,'cumulative_deadline':190000}
+    rows=[{'GPU_job':True,'full_process_wall_seconds':3600,'process_CPU_seconds':100,'exit_code':1}];r=m.remaining_limits(b,rows,100000,True);assert abs(r['GPU_seconds']-(24-14.3839654494-1-2)*3600)<1e-6;assert r['wall_seconds']==90000
+    with pytest.raises(RuntimeError):m.remaining_limits(b,rows,190001,True)
