@@ -1,0 +1,26 @@
+{
+  "stage": "data_checks_RED",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "tests/test_anchor_data_checks.py"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 63491,
+  "supervisor_pid": 63481,
+  "started_epoch": 1793744146.072393,
+  "finished_epoch": 1793744147.430485,
+  "full_process_wall_seconds": 1.3580920696258545,
+  "observed_worker_exit_code": 1,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 0.940803,
+  "measured_supervisor_CPU_seconds": 0.0007050000000000025,
+  "measured_CPU_core_seconds": 0.9415079999999999,
+  "scope": "local CPU synthetic software checks; no media or formal experiment updates",
+  "output": "F                                                                        [100%]\n=================================== FAILURES ===================================\n__ test_actual_training_artifact_recounts_targets_scalers_and_full_seed_plan ___\n\n    def test_actual_training_artifact_recounts_targets_scalers_and_full_seed_plan():\n>       m = importlib.import_module('echo_routing.temporal.anchor_data_checks')\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\ntests/test_anchor_data_checks.py:13: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n../../../../../.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n<frozen importlib._bootstrap>:1387: in _gcd_import\n    ???\n<frozen importlib._bootstrap>:1360: in _find_and_load\n    ???\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nname = 'echo_routing.temporal.anchor_data_checks'\nimport_ = <function _gcd_import at 0x1045040e0>\n\n>   ???\nE   ModuleNotFoundError: No module named 'echo_routing.temporal.anchor_data_checks'\n\n<frozen importlib._bootstrap>:1324: ModuleNotFoundError\n=========================== short test summary info ============================\nFAILED tests/test_anchor_data_checks.py::test_actual_training_artifact_recounts_targets_scalers_and_full_seed_plan\n",
+  "output_sha256": "fa48399b4c1e5895c4e6c1d7537ba58fb80f762c360ba3a3ec698bf4d4e9a3c9"
+}

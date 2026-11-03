@@ -1,0 +1,26 @@
+{
+  "stage": "policy_cache_RED",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "tests/test_anchor_policy_cache.py"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 48763,
+  "supervisor_pid": 48753,
+  "started_epoch": 1793743674.7551959,
+  "finished_epoch": 1793743675.3243148,
+  "full_process_wall_seconds": 0.5691189765930176,
+  "observed_worker_exit_code": 1,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 0.361218,
+  "measured_supervisor_CPU_seconds": 0.0006420000000000037,
+  "measured_CPU_core_seconds": 0.36185999999999996,
+  "scope": "local CPU synthetic software checks; no media or formal experiment updates",
+  "output": "FF                                                                       [100%]\n=================================== FAILURES ===================================\n__ test_both_policies_commit_together_clean_resume_scores_and_labels_recount ___\n\ntmp_path = PosixPath('/private/var/folders/4l/s1hqgvzj2l10_dff3pw5m97m0000gn/T/pytest-of-williamqiu/pytest-258/test_both_policies_commit_toge0')\n\n    def test_both_policies_commit_together_clean_resume_scores_and_labels_recount(tmp_path):\n>       m = importlib.import_module('echo_routing.temporal.anchor_policy_cache')\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\ntests/test_anchor_policy_cache.py:10: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n../../../../../.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n<frozen importlib._bootstrap>:1387: in _gcd_import\n    ???\n<frozen importlib._bootstrap>:1360: in _find_and_load\n    ???\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nname = 'echo_routing.temporal.anchor_policy_cache'\nimport_ = <function _gcd_import at 0x100c680e0>\n\n>   ???\nE   ModuleNotFoundError: No module named 'echo_routing.temporal.anchor_policy_cache'\n\n<frozen importlib._bootstrap>:1324: ModuleNotFoundError\n_____ test_wrong_policy_output_or_spans_stops_with_durable_ambiguous_claim _____\n\ntmp_path = PosixPath('/private/var/folders/4l/s1hqgvzj2l10_dff3pw5m97m0000gn/T/pytest-of-williamqiu/pytest-258/test_wrong_policy_output_or_sp0')\n\n    def test_wrong_policy_output_or_spans_stops_with_durable_ambiguous_claim(tmp_path):\n>       m = importlib.import_module('echo_routing.temporal.anchor_policy_cache')\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\ntests/test_anchor_policy_cache.py:37: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n../../../../../.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n<frozen importlib._bootstrap>:1387: in _gcd_import\n    ???\n<frozen importlib._bootstrap>:1360: in _find_and_load\n    ???\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nname = 'echo_routing.temporal.anchor_policy_cache'\nimport_ = <function _gcd_import at 0x100c680e0>\n\n>   ???\nE   ModuleNotFoundError: No module named 'echo_routing.temporal.anchor_policy_cache'\n\n<frozen importlib._bootstrap>:1324: ModuleNotFoundError\n=========================== short test summary info ============================\nFAILED tests/test_anchor_policy_cache.py::test_both_policies_commit_together_clean_resume_scores_and_labels_recount\nFAILED tests/test_anchor_policy_cache.py::test_wrong_policy_output_or_spans_stops_with_durable_ambiguous_claim\n",
+  "output_sha256": "28a8b800c65931667da4b9f12ebcc7ab1592ea013c4a390a89f217cd7b798bf6"
+}

@@ -21,6 +21,7 @@ from echo_routing.temporal.anchor_edits import majority
 from echo_routing.temporal.baselines.registry import decode_with_prob
 from echo_routing.temporal.dense_runtime import metrics
 from echo_routing.temporal.dense_analysis import short_metrics
+from echo_routing.temporal.anchor_exposure import summarize as summarize_exposure
 
 
 def role_values(role):
@@ -60,6 +61,7 @@ def prepare():
         save_array(target, plan)
         plans[str(seed)] = array_pin(target)
     eligible_sequences = {row['sequence_index'] for row in data['candidate_rows']}
+    eligibility = summarize_exposure(qs, data['candidate_rows'])
     summary = {'passed': True, 'dataset': array_pin(path), 'normalizers': norms, 'plans': plans,
                'source_cache_identities': sources, 'FIT_sequence_sha256': read(PUB / 'input_manifest.json')['roles']['fit']['sha256'],
                'F_fit': data['F_fit'], 'FIT_operating_counts': data['FIT_operating_counts'],
@@ -69,6 +71,7 @@ def prepare():
                'normalizer_scope': 'all eligible FIT candidates only; population std floor1e-6',
                'native_utility_is_count_stability_proxy_not_macroF1_surrogate': True,
                'forwarded_sources_are_not_all_optimizer_exposed': True,
+               'candidate_eligibility': {k: v for k, v in eligibility.items() if not k.startswith('actual_')},
                'inner_or_outer_used_for_targets_normalizer_or_plan': False, 'formal_optimizer_updates': 0}
     write(PUB / 'training_inputs.json', summary)
 
@@ -214,6 +217,9 @@ def formal():
                       'next_action': 'complete all4x6000 and12 diagnostic inner records; freeze before outer'})
             result = train_one(model, opt, data, plan, normalizer, identity, folder,
                                on_inner=record_inner, on_progress=update_progress)
+            actual_rows = [json.loads(line) for line in (folder / 'physical_updates.jsonl').read_text().splitlines()]
+            result['actual_candidate_and_context_exposure'] = summarize_exposure(
+                sequences('fit'), data['candidate_rows'], [i for row in actual_rows for i in row['candidate_indices']])
             progress.append(result)
             records.append({'seed': seed, 'arm': arm, 'result': result,
                             'final_path': str((folder / 'step6000.pt').relative_to(ROOT)),
