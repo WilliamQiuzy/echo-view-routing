@@ -65,6 +65,9 @@ def execute(stage, command, run, pub, spent, declared_wall_seconds, GPU_job,
         merged = {row['receipt_id']: row for row in spent['receipt_records']}
         ledger = run / 'processes.jsonl'
         locked_rows = [json.loads(line) for line in ledger.read_text().splitlines()] if ledger.exists() else []
+        external = pub / 'local_cpu_receipts.json'
+        if external.exists():
+            locked_rows += json.loads(external.read_text())['receipts']
         for row in locked_rows:
             key = row['receipt_id']
             if key in merged and merged[key] != row:

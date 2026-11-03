@@ -1,0 +1,26 @@
+{
+  "stage": "local_cost_binding_RED",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "tests/test_anchor_supervisor.py"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 54524,
+  "supervisor_pid": 54514,
+  "started_epoch": 1793740705.235971,
+  "finished_epoch": 1793740706.151733,
+  "full_process_wall_seconds": 0.9157619476318359,
+  "observed_worker_exit_code": 1,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 0.524961,
+  "measured_supervisor_CPU_seconds": 0.0008139999999999988,
+  "measured_CPU_core_seconds": 0.525775,
+  "scope": "local CPU synthetic software checks; no media or formal experiment updates",
+  "output": "...F                                                                     [100%]\n=================================== FAILURES ===================================\n_ test_locked_external_local_CPU_receipts_are_included_even_when_caller_is_old _\n\ntmp_path = PosixPath('/private/var/folders/4l/s1hqgvzj2l10_dff3pw5m97m0000gn/T/pytest-of-williamqiu/pytest-250/test_locked_external_local_CPU0')\n\n    def test_locked_external_local_CPU_receipts_are_included_even_when_caller_is_old(tmp_path):\n        module = importlib.import_module('scripts.supervise_anchor_edits')\n        pub = tmp_path / 'pub'\n        pub.mkdir()\n        row = {'stage': 'local_checks', 'receipt_id': 'local-fixed', 'started_epoch': 100., 'finished_epoch': 101.,\n               'full_process_wall_seconds': 1., 'measured_CPU_core_seconds': 11., 'GPU_job': False,\n               'CUDA_context_occupied': False, 'observed_worker_exit_code': 0}\n        (pub / 'local_cpu_receipts.json').write_text(json.dumps({'receipts': [row]}))\n        result = run(tmp_path, 'pass')\n        expected = module.remaining_limits(module.totals([row]), result['started_epoch'])\n>       assert result['limits_at_launch']['remaining_CPU_seconds'] <= expected['remaining_CPU_seconds']\nE       assert 194530.543677 <= 194519.543677\n\ntests/test_anchor_supervisor.py:56: AssertionError\n=========================== short test summary info ============================\nFAILED tests/test_anchor_supervisor.py::test_locked_external_local_CPU_receipts_are_included_even_when_caller_is_old\n",
+  "output_sha256": "f4a574f3d6afef284b8078477be02ef23a05476ee4b79c9ede5801ed07874543"
+}

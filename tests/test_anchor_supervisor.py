@@ -41,3 +41,16 @@ def test_guard_timeout_or_exception_never_orphans_child_or_reports_success(tmp_p
     # Observed OS0 cannot mask an independently failed guardian stage.
     assert module.stage_exit_status({**row, 'observed_worker_exit_code': 0}) == 1
     assert not (tmp_path / 'run/active_process.json').exists()
+
+
+def test_locked_external_local_CPU_receipts_are_included_even_when_caller_is_old(tmp_path):
+    module = importlib.import_module('scripts.supervise_anchor_edits')
+    pub = tmp_path / 'pub'
+    pub.mkdir()
+    row = {'stage': 'local_checks', 'receipt_id': 'local-fixed', 'started_epoch': 100., 'finished_epoch': 101.,
+           'full_process_wall_seconds': 1., 'measured_CPU_core_seconds': 11., 'GPU_job': False,
+           'CUDA_context_occupied': False, 'observed_worker_exit_code': 0}
+    (pub / 'local_cpu_receipts.json').write_text(json.dumps({'receipts': [row]}))
+    result = run(tmp_path, 'pass')
+    expected = module.remaining_limits(module.totals([row]), result['started_epoch'])
+    assert result['limits_at_launch']['remaining_CPU_seconds'] <= expected['remaining_CPU_seconds']
