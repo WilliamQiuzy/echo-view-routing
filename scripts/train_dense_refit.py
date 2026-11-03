@@ -21,7 +21,9 @@ def context(admitted=False):
     for p,h in read(base.RUN/'pipeline_freeze.json')['objects'].items():assert sha(ROOT/p)==h,p
     torch.set_num_threads(1);torch.use_deterministic_algorithms(True);torch.backends.cuda.matmul.allow_tf32=False;torch.backends.cudnn.allow_tf32=False;torch.backends.cudnn.deterministic=True;torch.backends.cudnn.benchmark=False
     if admitted:
-        a=read(PUB/'admission.json');assert a['all_caps_fit'] and a['stage_freeze_git']==freeze['git_commit'] and a['formal_refit_updates_at_admission']==0
+        a=read(PUB/'admission.json');assert a['all_caps_fit'] and a['stage_freeze_git']==freeze['git_commit'] and a['formal_refit_updates_at_admission']==0 and a['checks_sha256']==sha(PUB/'checks.json') and a['MD_checks_sha256']==sha(base.PUB/'multidepth/checks.json') and a['preserved_MD_two_seed_obligations_included']
+        admission_freeze=read(RUN/'formal_admission_freeze.json')
+        for p,h in admission_freeze['objects'].items():assert sha(ROOT/p)==h,p
     return cfg,freeze
 
 def build(cfg):
