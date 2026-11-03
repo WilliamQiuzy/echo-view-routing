@@ -56,6 +56,8 @@ inner-B3为预定补充，不能只择较好解码。J两seed的selection segmen
 
 执行证据：[模型审计](models_manifest.json)核对32,000条物理更新、全部optimizer绑定/moment/步数/学习率、149视频张量变化和9项冻结；[所有冻结读出](raw_outer_results.json)完成后，独立从概率缓存逐项重现raw指标、A08原指标和配对分析。正式producer55745e1，模型审计381946a，decoder选择fd084fb先于外层metadata8e50ed7，reader及原参考冻结b42a1b2，最终缓存汇总58bec50。私有标识、原图、权重及逐例缓存留在服务器，无push/网页改动。
 
+补充[逐张量绑定审计](final_checkpoint_binding.json)直接验证六个模型的最终评估snapshot与已审计latest optimizer模型逐值相同（联合模型全部214项，冻结模型精确head项），不仅核对snapshot自身文件SHA。新增前向0、CPU11.435458核秒；后续refit/MD独立auditor沿用此绑定，运行中的训练producer保持不变。
+
 [输入作用域披露](input_scope_disclosure.json)保留冻结producer曾暂时解析全局CSV非路径字段的事实；只使用allowlist路径，受保护媒体新前向0、受保护标签未用于训练/选择。独立reader使用两列路径视图。“封存”不等于声称从未解析包含保护来源的清单字段。
 
 正式训练进程exit0，完整GPU-job墙钟23,113.8786秒、已计量CPU22,115.3546核秒；外层reader exit0，GPU-job墙钟2,818.3680秒、CPU2,730.5472核秒。两次工程预检失败及所有成功预检、CPU准备、诊断/审计成本保留在共享账本；训练结束后的空闲时间不计GPU/CPU用量。原[launch forecast](forecast.json)21.704GPUh是前瞻预测，不是已花费。后续完整实测[共享准入](full_refit/admission.json)包含保留MD及2GPUh收尾储备；阶段实际资源终账在全部授权工作结束后关闭。旧A55/A56不同口径费用原样保留，不把CPUupper与实际CPU拼成同口径总量。
