@@ -1,0 +1,519 @@
+{
+  "passed": true,
+  "models": [
+    {
+      "seed": 2026110257,
+      "arm": "F-MD",
+      "updates": 6000,
+      "physical_rows": 6000,
+      "head_optimizer_tensors": 56,
+      "active_video_optimizer_tensors": 0,
+      "changed_video_tensors": 0,
+      "frozen_image_tensors_unchanged": 3,
+      "exact_binding_moments_shapes_finite_steps_lr": true,
+      "tensors": 56,
+      "parameters": 1184906,
+      "all_weights_equal_latest_optimizer_model": true,
+      "latest_optimizer_sha256": "d52e73a9087a440eccf1e2004d31bec77a27f09bebfcdf953b185aa302696b8e",
+      "inner_chosen_step": 6000
+    },
+    {
+      "seed": 2026110257,
+      "arm": "J-MD",
+      "updates": 6000,
+      "physical_rows": 6000,
+      "head_optimizer_tensors": 56,
+      "active_video_optimizer_tensors": 155,
+      "changed_video_tensors": 155,
+      "frozen_image_tensors_unchanged": 3,
+      "exact_binding_moments_shapes_finite_steps_lr": true,
+      "tensors": 214,
+      "parameters": 88018058,
+      "all_weights_equal_latest_optimizer_model": true,
+      "latest_optimizer_sha256": "1670d17bbfdaf538c74128427ed596056c9335befd77c47145c7a91ec8fcf7d4",
+      "inner_chosen_step": 4000
+    },
+    {
+      "seed": 2026110258,
+      "arm": "F-MD",
+      "updates": 6000,
+      "physical_rows": 6000,
+      "head_optimizer_tensors": 56,
+      "active_video_optimizer_tensors": 0,
+      "changed_video_tensors": 0,
+      "frozen_image_tensors_unchanged": 3,
+      "exact_binding_moments_shapes_finite_steps_lr": true,
+      "tensors": 56,
+      "parameters": 1184906,
+      "all_weights_equal_latest_optimizer_model": true,
+      "latest_optimizer_sha256": "79e521823084a836c58b13bb7cfeab6af3e6514ec80790e2de5436887e18c0f4",
+      "inner_chosen_step": 6000
+    },
+    {
+      "seed": 2026110258,
+      "arm": "J-MD",
+      "updates": 6000,
+      "physical_rows": 6000,
+      "head_optimizer_tensors": 56,
+      "active_video_optimizer_tensors": 155,
+      "changed_video_tensors": 155,
+      "frozen_image_tensors_unchanged": 3,
+      "exact_binding_moments_shapes_finite_steps_lr": true,
+      "tensors": 214,
+      "parameters": 88018058,
+      "all_weights_equal_latest_optimizer_model": true,
+      "latest_optimizer_sha256": "9bfd44830a7773a4b2e123347a93eee11d5f61ccac7d887355904a50a3f87d31",
+      "inner_chosen_step": 5500
+    }
+  ],
+  "outer_rows": [
+    {
+      "row": "seed2026110257_F-MD_fixed2000",
+      "kind": "fixed_step",
+      "arm": "F-MD",
+      "seed": 2026110257,
+      "step": 2000,
+      "path": "runs/a57_dense_sequence_v1/multidepth_v1/seed2026110257/F-MD/step2000.pt",
+      "sha256": "fd08d7f3c9664eab3b25ddf39a5c2a370148e0fcc19fffc4f7f99cafadec6099",
+      "feature_contract": {
+        "kind": "official_four_depth_concat",
+        "normalized_blocks_zero_based": [
+          2,
+          5,
+          8,
+          11
+        ],
+        "norms_in_order": [
+          "norms_block.0",
+          "norms_block.1",
+          "norms_block.2",
+          "norms_block.3"
+        ],
+        "official_concat_axis": 2,
+        "feature_dim": 3072,
+        "spatial_mean_patches": 196,
+        "tubelets_per64_positions": 32,
+        "return_hierarchical": true,
+        "forward_training_argument": false,
+        "out_layers": null
+      },
+      "inner_probabilities_sha256": "f15fad971ef06a610a6775da14b5a640568f4ab154493194a0b1e49dd0c05f39",
+      "inner_predictions_sha256": "bf3d932f5bf2c84acb63c3ac2d004ea2f504d086e2dd8905598055ebd2246d4f",
+      "inner_record_sha256": "4032b597940524c111db1e7644dc8d4430e7f6dbcb01d4b7bbe69c520b604d68",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7"
+    },
+    {
+      "row": "seed2026110257_F-MD_fixed6000",
+      "kind": "fixed_step",
+      "arm": "F-MD",
+      "seed": 2026110257,
+      "step": 6000,
+      "path": "runs/a57_dense_sequence_v1/multidepth_v1/seed2026110257/F-MD/step6000.pt",
+      "sha256": "4dcb108a3d5d8cda6eaf361ceeef64b13214ec37aebc69797a2dd2c1ab7198af",
+      "feature_contract": {
+        "kind": "official_four_depth_concat",
+        "normalized_blocks_zero_based": [
+          2,
+          5,
+          8,
+          11
+        ],
+        "norms_in_order": [
+          "norms_block.0",
+          "norms_block.1",
+          "norms_block.2",
+          "norms_block.3"
+        ],
+        "official_concat_axis": 2,
+        "feature_dim": 3072,
+        "spatial_mean_patches": 196,
+        "tubelets_per64_positions": 32,
+        "return_hierarchical": true,
+        "forward_training_argument": false,
+        "out_layers": null
+      },
+      "inner_probabilities_sha256": "d4e796ec0214ca0b5d5baea2f3f84b6a2b5bf9923026aaeb51abf4a13a3625b9",
+      "inner_predictions_sha256": "5eca35f71ec7e0621203b23a27c410049914b4da6686cbac4aa6fc8c5505c609",
+      "inner_record_sha256": "2b4014c9d2180234a79976bfde5df054826e1be9fff1b446e46e730aa2cef178",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7"
+    },
+    {
+      "row": "seed2026110257_F-MD_inner_package",
+      "kind": "inner_selected_package",
+      "arm": "F-MD",
+      "seed": 2026110257,
+      "step": 6000,
+      "path": "runs/a57_dense_sequence_v1/multidepth_v1/seed2026110257/F-MD/step6000.pt",
+      "sha256": "4dcb108a3d5d8cda6eaf361ceeef64b13214ec37aebc69797a2dd2c1ab7198af",
+      "feature_contract": {
+        "kind": "official_four_depth_concat",
+        "normalized_blocks_zero_based": [
+          2,
+          5,
+          8,
+          11
+        ],
+        "norms_in_order": [
+          "norms_block.0",
+          "norms_block.1",
+          "norms_block.2",
+          "norms_block.3"
+        ],
+        "official_concat_axis": 2,
+        "feature_dim": 3072,
+        "spatial_mean_patches": 196,
+        "tubelets_per64_positions": 32,
+        "return_hierarchical": true,
+        "forward_training_argument": false,
+        "out_layers": null
+      },
+      "inner_probabilities_sha256": "d4e796ec0214ca0b5d5baea2f3f84b6a2b5bf9923026aaeb51abf4a13a3625b9",
+      "inner_predictions_sha256": "5eca35f71ec7e0621203b23a27c410049914b4da6686cbac4aa6fc8c5505c609",
+      "inner_record_sha256": "2b4014c9d2180234a79976bfde5df054826e1be9fff1b446e46e730aa2cef178",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7"
+    },
+    {
+      "row": "seed2026110257_J-MD_fixed2000",
+      "kind": "fixed_step",
+      "arm": "J-MD",
+      "seed": 2026110257,
+      "step": 2000,
+      "path": "runs/a57_dense_sequence_v1/multidepth_v1/seed2026110257/J-MD/step2000.pt",
+      "sha256": "951b3c0d19200e4dfbd1a27f5b3f7c46d4cc7d9df5ae7960ea7b24cec033032f",
+      "feature_contract": {
+        "kind": "official_four_depth_concat",
+        "normalized_blocks_zero_based": [
+          2,
+          5,
+          8,
+          11
+        ],
+        "norms_in_order": [
+          "norms_block.0",
+          "norms_block.1",
+          "norms_block.2",
+          "norms_block.3"
+        ],
+        "official_concat_axis": 2,
+        "feature_dim": 3072,
+        "spatial_mean_patches": 196,
+        "tubelets_per64_positions": 32,
+        "return_hierarchical": true,
+        "forward_training_argument": false,
+        "out_layers": null
+      },
+      "inner_probabilities_sha256": "3157203a24a6c1ef145de4f1adcf8e8f6ce56f73413f88a799ae565f76295ac7",
+      "inner_predictions_sha256": "1ee7dc441fbaf06f92df66424f755f048d6fca506f3d10bffebf7f08ce543caa",
+      "inner_record_sha256": "80de7cfd526f3f0d9fef3574c0ae1dde4058fdb4c8eb6b13b16fbf5ef38ce5c4",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7"
+    },
+    {
+      "row": "seed2026110257_J-MD_fixed6000",
+      "kind": "fixed_step",
+      "arm": "J-MD",
+      "seed": 2026110257,
+      "step": 6000,
+      "path": "runs/a57_dense_sequence_v1/multidepth_v1/seed2026110257/J-MD/step6000.pt",
+      "sha256": "7d141377f6ad6125e3fbc98a46a4ddba6d377b6f5a226384086607760a76e38a",
+      "feature_contract": {
+        "kind": "official_four_depth_concat",
+        "normalized_blocks_zero_based": [
+          2,
+          5,
+          8,
+          11
+        ],
+        "norms_in_order": [
+          "norms_block.0",
+          "norms_block.1",
+          "norms_block.2",
+          "norms_block.3"
+        ],
+        "official_concat_axis": 2,
+        "feature_dim": 3072,
+        "spatial_mean_patches": 196,
+        "tubelets_per64_positions": 32,
+        "return_hierarchical": true,
+        "forward_training_argument": false,
+        "out_layers": null
+      },
+      "inner_probabilities_sha256": "9b2c8e7ac6485505eace8287c468903e23861fb3141ee3e38f116bd5d58ed0e6",
+      "inner_predictions_sha256": "343e90166c53f239b0740e4c421b1221d1824cc012398e53c8662cad34761cb4",
+      "inner_record_sha256": "94db85dc43cd0e9ea5bf160f122b15a9f9c33d8d1ae029a201030fa2593e84ba",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7"
+    },
+    {
+      "row": "seed2026110257_J-MD_inner_package",
+      "kind": "inner_selected_package",
+      "arm": "J-MD",
+      "seed": 2026110257,
+      "step": 4000,
+      "path": "runs/a57_dense_sequence_v1/multidepth_v1/seed2026110257/J-MD/step4000.pt",
+      "sha256": "780374e2fb60bd9aeaa354b92d2bffc87d3f4c94e6f0bf7aa1d3072dea394da6",
+      "feature_contract": {
+        "kind": "official_four_depth_concat",
+        "normalized_blocks_zero_based": [
+          2,
+          5,
+          8,
+          11
+        ],
+        "norms_in_order": [
+          "norms_block.0",
+          "norms_block.1",
+          "norms_block.2",
+          "norms_block.3"
+        ],
+        "official_concat_axis": 2,
+        "feature_dim": 3072,
+        "spatial_mean_patches": 196,
+        "tubelets_per64_positions": 32,
+        "return_hierarchical": true,
+        "forward_training_argument": false,
+        "out_layers": null
+      },
+      "inner_probabilities_sha256": "ccd11d7994d960be3f7bfba37c8481ef0b0f53093b9eb02bccfdaee166abe7c1",
+      "inner_predictions_sha256": "2de18a13950199602a8f1ff5aa995ba1e1c4b8671d1a1569a3e8268242016578",
+      "inner_record_sha256": "21b72f7af916413d2fc5d14248836d295319f379b33380764c5bd7e222d95713",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7"
+    },
+    {
+      "row": "seed2026110258_F-MD_fixed2000",
+      "kind": "fixed_step",
+      "arm": "F-MD",
+      "seed": 2026110258,
+      "step": 2000,
+      "path": "runs/a57_dense_sequence_v1/multidepth_v1/seed2026110258/F-MD/step2000.pt",
+      "sha256": "71ec52fe8b082f37b516083c89a7efaaecba8fa02147e8b2e17dbc67c4752eb6",
+      "feature_contract": {
+        "kind": "official_four_depth_concat",
+        "normalized_blocks_zero_based": [
+          2,
+          5,
+          8,
+          11
+        ],
+        "norms_in_order": [
+          "norms_block.0",
+          "norms_block.1",
+          "norms_block.2",
+          "norms_block.3"
+        ],
+        "official_concat_axis": 2,
+        "feature_dim": 3072,
+        "spatial_mean_patches": 196,
+        "tubelets_per64_positions": 32,
+        "return_hierarchical": true,
+        "forward_training_argument": false,
+        "out_layers": null
+      },
+      "inner_probabilities_sha256": "16ea1cbe116248271a7a2a7aa2e9dcfacffd96a206ac3bf835885a640c421863",
+      "inner_predictions_sha256": "ae9e403d27ca909a144ae7926e44ef9f6498c89c99910516dcbada43debfeeb9",
+      "inner_record_sha256": "c5b4d616992c62b487b5b44100002b6ae4f363d5902f2704d06b310db55a9fbf",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7"
+    },
+    {
+      "row": "seed2026110258_F-MD_fixed6000",
+      "kind": "fixed_step",
+      "arm": "F-MD",
+      "seed": 2026110258,
+      "step": 6000,
+      "path": "runs/a57_dense_sequence_v1/multidepth_v1/seed2026110258/F-MD/step6000.pt",
+      "sha256": "c0aa6a85df43c407ea446347c4f6e0c92b73962850946834617ebbec6fb218a0",
+      "feature_contract": {
+        "kind": "official_four_depth_concat",
+        "normalized_blocks_zero_based": [
+          2,
+          5,
+          8,
+          11
+        ],
+        "norms_in_order": [
+          "norms_block.0",
+          "norms_block.1",
+          "norms_block.2",
+          "norms_block.3"
+        ],
+        "official_concat_axis": 2,
+        "feature_dim": 3072,
+        "spatial_mean_patches": 196,
+        "tubelets_per64_positions": 32,
+        "return_hierarchical": true,
+        "forward_training_argument": false,
+        "out_layers": null
+      },
+      "inner_probabilities_sha256": "e63f4058a3f0ad2ce8bada2776201b2c22b461a539a7b2f356908fe13eaaa717",
+      "inner_predictions_sha256": "f47838e7ca5e77d413c0a8a929b9e3127674459b27fb1e1f08b7238e5c909145",
+      "inner_record_sha256": "acbe6fb29656496913383bdb7429b62dc584ac3e6a4c9b76eb12a3c5da18fb03",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7"
+    },
+    {
+      "row": "seed2026110258_F-MD_inner_package",
+      "kind": "inner_selected_package",
+      "arm": "F-MD",
+      "seed": 2026110258,
+      "step": 6000,
+      "path": "runs/a57_dense_sequence_v1/multidepth_v1/seed2026110258/F-MD/step6000.pt",
+      "sha256": "c0aa6a85df43c407ea446347c4f6e0c92b73962850946834617ebbec6fb218a0",
+      "feature_contract": {
+        "kind": "official_four_depth_concat",
+        "normalized_blocks_zero_based": [
+          2,
+          5,
+          8,
+          11
+        ],
+        "norms_in_order": [
+          "norms_block.0",
+          "norms_block.1",
+          "norms_block.2",
+          "norms_block.3"
+        ],
+        "official_concat_axis": 2,
+        "feature_dim": 3072,
+        "spatial_mean_patches": 196,
+        "tubelets_per64_positions": 32,
+        "return_hierarchical": true,
+        "forward_training_argument": false,
+        "out_layers": null
+      },
+      "inner_probabilities_sha256": "e63f4058a3f0ad2ce8bada2776201b2c22b461a539a7b2f356908fe13eaaa717",
+      "inner_predictions_sha256": "f47838e7ca5e77d413c0a8a929b9e3127674459b27fb1e1f08b7238e5c909145",
+      "inner_record_sha256": "acbe6fb29656496913383bdb7429b62dc584ac3e6a4c9b76eb12a3c5da18fb03",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7"
+    },
+    {
+      "row": "seed2026110258_J-MD_fixed2000",
+      "kind": "fixed_step",
+      "arm": "J-MD",
+      "seed": 2026110258,
+      "step": 2000,
+      "path": "runs/a57_dense_sequence_v1/multidepth_v1/seed2026110258/J-MD/step2000.pt",
+      "sha256": "15b447dfcb4ef6ec7f9cd75c44c013724f503da735d3896eed4262c4d80cdcf4",
+      "feature_contract": {
+        "kind": "official_four_depth_concat",
+        "normalized_blocks_zero_based": [
+          2,
+          5,
+          8,
+          11
+        ],
+        "norms_in_order": [
+          "norms_block.0",
+          "norms_block.1",
+          "norms_block.2",
+          "norms_block.3"
+        ],
+        "official_concat_axis": 2,
+        "feature_dim": 3072,
+        "spatial_mean_patches": 196,
+        "tubelets_per64_positions": 32,
+        "return_hierarchical": true,
+        "forward_training_argument": false,
+        "out_layers": null
+      },
+      "inner_probabilities_sha256": "b596e0ba5236c63cf897bbe99d52ee5ed18cef2890390619bec5de47f4e07461",
+      "inner_predictions_sha256": "bb721fa431f30a9b2790d73c919c475f6eda89f47780d868a79920d2e005ff21",
+      "inner_record_sha256": "5682472c2481c52549a99e01bad498e0c6e8f004072df5f3707a99853d9f56d1",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7"
+    },
+    {
+      "row": "seed2026110258_J-MD_fixed6000",
+      "kind": "fixed_step",
+      "arm": "J-MD",
+      "seed": 2026110258,
+      "step": 6000,
+      "path": "runs/a57_dense_sequence_v1/multidepth_v1/seed2026110258/J-MD/step6000.pt",
+      "sha256": "73996070495d8d6cf730a7a051b01282593354c35525e8eaf8746468dffe1da2",
+      "feature_contract": {
+        "kind": "official_four_depth_concat",
+        "normalized_blocks_zero_based": [
+          2,
+          5,
+          8,
+          11
+        ],
+        "norms_in_order": [
+          "norms_block.0",
+          "norms_block.1",
+          "norms_block.2",
+          "norms_block.3"
+        ],
+        "official_concat_axis": 2,
+        "feature_dim": 3072,
+        "spatial_mean_patches": 196,
+        "tubelets_per64_positions": 32,
+        "return_hierarchical": true,
+        "forward_training_argument": false,
+        "out_layers": null
+      },
+      "inner_probabilities_sha256": "38e109ff6252961b01cba4dbb984d584ff628f33c9d51804a623261d8a521337",
+      "inner_predictions_sha256": "95c8ae52b914c4b4fbb34036fd5f1311d9c4d8cb83e32ba53ff70049a887f9db",
+      "inner_record_sha256": "5bb1efc3090fa353f44ee1183669d79ab77ac3ac5460659285434a659bbadbb9",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7"
+    },
+    {
+      "row": "seed2026110258_J-MD_inner_package",
+      "kind": "inner_selected_package",
+      "arm": "J-MD",
+      "seed": 2026110258,
+      "step": 5500,
+      "path": "runs/a57_dense_sequence_v1/multidepth_v1/seed2026110258/J-MD/step5500.pt",
+      "sha256": "7d7b5e244f46cad260ef9706b92fafaf0b089a10bca9f5a37049c3078f214676",
+      "feature_contract": {
+        "kind": "official_four_depth_concat",
+        "normalized_blocks_zero_based": [
+          2,
+          5,
+          8,
+          11
+        ],
+        "norms_in_order": [
+          "norms_block.0",
+          "norms_block.1",
+          "norms_block.2",
+          "norms_block.3"
+        ],
+        "official_concat_axis": 2,
+        "feature_dim": 3072,
+        "spatial_mean_patches": 196,
+        "tubelets_per64_positions": 32,
+        "return_hierarchical": true,
+        "forward_training_argument": false,
+        "out_layers": null
+      },
+      "inner_probabilities_sha256": "29beb66620fb01f93a5b86b37c38ad749a99c53382d3bd2c05a121ccc2ea1eaf",
+      "inner_predictions_sha256": "0f6ec30e4d7d00de62811dcfa73963a8e5642f02ade695df1545d87267357330",
+      "inner_record_sha256": "16a9342ed1ec44847d777b8ee892797ef0b1e33e532bfc7c4c3871c9980107f8",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7"
+    }
+  ],
+  "formal_physical_updates": 24000,
+  "source_sha256": "deb0cd98ea40ef59d21eb883e1deb517a9bcca614047e710d9fad136c750348c",
+  "feature_contract": {
+    "kind": "official_four_depth_concat",
+    "normalized_blocks_zero_based": [
+      2,
+      5,
+      8,
+      11
+    ],
+    "norms_in_order": [
+      "norms_block.0",
+      "norms_block.1",
+      "norms_block.2",
+      "norms_block.3"
+    ],
+    "official_concat_axis": 2,
+    "feature_dim": 3072,
+    "spatial_mean_patches": 196,
+    "tubelets_per64_positions": 32,
+    "return_hierarchical": true,
+    "forward_training_argument": false,
+    "out_layers": null
+  },
+  "producer_git": "b42a1b22a93c558dce43cffed32f325306ff9e6d",
+  "all_models_frozen_before_MD_outer_forward": true,
+  "new_MD_outer_forwards": 0,
+  "epoch": 1793710173.690693
+}
