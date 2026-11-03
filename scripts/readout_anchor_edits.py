@@ -109,7 +109,9 @@ def main():
                 if any(majority(v['G']['prediction'])!=majority(base) for v,base in zip(values,b)):
                     raise ValueError('whole-task source-only majority guard failed')
                 info={'identity':cache.identity,'journal_sha256':sha(cache.journal),'sequences':len(qs),
-                      'path':str(cache.path.relative_to(ROOT)),'source_cache_identities':sources}
+                      'path':str(cache.path.relative_to(ROOT)),'source_cache_identities':sources,
+                      'actual_head_score_forwards_shared_GU':sum(bool(v['spans']) for v in values),
+                      'candidate_scores_shared_GU':sum(len(v['scores']) for v in values)}
                 journals.append(info)
                 for policy in ['U','G']:
                     name=system(seed,arm+'-'+policy)
@@ -140,7 +142,9 @@ def main():
         'readout_freeze_git':freeze['git_commit'],'models_manifest_sha256':sha(PUB/'models_manifest.json'),
         'readout_plan_sha256':sha(PUB/'readout_plan.json'),'source_outer_cache_manifest_sha256':sha(PUB/'cache_outer_manifest.json'),
         'private_predictions':array_pin(private),'policy_pair_cache_cells':journals,
-        'G_U_scores_shared_physical_forward_once':True,'historical_A08_all3_reproduced':True,
+        'G_U_scores_shared_physical_forward_once':True,
+        'actual_physical_head_score_forwards':sum(r['actual_head_score_forwards_shared_GU'] for r in journals),
+        'actual_physical_candidate_scores':sum(r['candidate_scores_shared_GU'] for r in journals),'historical_A08_all3_reproduced':True,
         'all4heads12inner_frozen_before_outer':True,'no_outer_or_inner_model_selection':True,'epoch':time.time()})
     write(RUN/'runtimecoordination.json',{'phase':'all70fixed_readouts_complete_pending96paired_recounts','model_pid':None,
           'metric_rows':70,'epoch':time.time(),'next_action':'freeze predictions then independent70recount/96bootstrap/oracle'})
