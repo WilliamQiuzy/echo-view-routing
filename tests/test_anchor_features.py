@@ -24,6 +24,8 @@ def test_exact98_feature_order_regions_source_swap_and_empty_edges():
     assert a[25] == 2
     np.testing.assert_array_equal(a[:62], h[:62])
     np.testing.assert_array_equal(a[26:62], a[62:])
+    # A deployment can duplicate pA; no JEPA forward is needed for the A head.
+    np.testing.assert_array_equal(a, m.candidate_features(p, np.eye(5)[[4, 3, 2, 1, 0]], base, (1, 3), 'A'))
     np.testing.assert_array_equal(h[62:], m.source_features(j, (1, 3)))
     # Per-region 5mean, 5adjacent-difference, entropy, margin.
     np.testing.assert_array_equal(a[26:31], [1, 0, 0, 0, 0])

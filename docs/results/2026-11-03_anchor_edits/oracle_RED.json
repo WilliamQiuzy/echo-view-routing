@@ -1,0 +1,26 @@
+{
+  "stage": "oracle_RED",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "tests/test_anchor_oracle.py"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 15988,
+  "supervisor_pid": 15978,
+  "started_epoch": 1793739533.264126,
+  "finished_epoch": 1793739533.537992,
+  "full_process_wall_seconds": 0.2738659381866455,
+  "observed_worker_exit_code": 1,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 0.190637,
+  "measured_supervisor_CPU_seconds": 0.0013850000000000025,
+  "measured_CPU_core_seconds": 0.192022,
+  "scope": "local CPU synthetic software checks; no media or formal experiment updates",
+  "output": "FF                                                                       [100%]\n=================================== FAILURES ===================================\n__ test_exact_fractional_action_bound_matches_cartesian_enumeration_and_ties ___\n\n    def test_exact_fractional_action_bound_matches_cartesian_enumeration_and_ties():\n>       m = api()\n            ^^^^^\n\ntests/test_anchor_oracle.py:14: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/test_anchor_oracle.py:10: in api\n    return importlib.import_module('echo_routing.temporal.anchor_oracle')\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../../../../../.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n<frozen importlib._bootstrap>:1387: in _gcd_import\n    ???\n<frozen importlib._bootstrap>:1360: in _find_and_load\n    ???\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nname = 'echo_routing.temporal.anchor_oracle'\nimport_ = <function _gcd_import at 0x102e340e0>\n\n>   ???\nE   ModuleNotFoundError: No module named 'echo_routing.temporal.anchor_oracle'\n\n<frozen importlib._bootstrap>:1324: ModuleNotFoundError\n_ test_oracle_domains_raw_only_guarded_subset_and_union_is_not_joint_reachability _\n\n    def test_oracle_domains_raw_only_guarded_subset_and_union_is_not_joint_reachability():\n>       m = api()\n            ^^^^^\n\ntests/test_anchor_oracle.py:32: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/test_anchor_oracle.py:10: in api\n    return importlib.import_module('echo_routing.temporal.anchor_oracle')\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../../../../../.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n<frozen importlib._bootstrap>:1387: in _gcd_import\n    ???\n<frozen importlib._bootstrap>:1360: in _find_and_load\n    ???\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nname = 'echo_routing.temporal.anchor_oracle'\nimport_ = <function _gcd_import at 0x102e340e0>\n\n>   ???\nE   ModuleNotFoundError: No module named 'echo_routing.temporal.anchor_oracle'\n\n<frozen importlib._bootstrap>:1324: ModuleNotFoundError\n=========================== short test summary info ============================\nFAILED tests/test_anchor_oracle.py::test_exact_fractional_action_bound_matches_cartesian_enumeration_and_ties\nFAILED tests/test_anchor_oracle.py::test_oracle_domains_raw_only_guarded_subset_and_union_is_not_joint_reachability\n",
+  "output_sha256": "7102b8ec1f5bbebf44c2518fb322b0ad0a7349bff45eaebffa85953a57f52890"
+}
