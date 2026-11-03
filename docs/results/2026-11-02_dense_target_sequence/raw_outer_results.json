@@ -1,0 +1,3395 @@
+{
+  "status": "complete fixed frozen exploratory rows",
+  "rows": [
+    {
+      "row": "seed2026110257_F_fixed6000",
+      "kind": "fixed_step",
+      "seed": 2026110257,
+      "arm": "F",
+      "step": 6000,
+      "path": "runs/a57_dense_sequence_v1/seed2026110257/F/step6000.pt",
+      "sha256": "11f818322102fb1c9ff853dc85781852d1177df48115e39fc2f237858ada36d1",
+      "inner_probabilities_sha256": "f4ca094b52ea5beb2b89d2337390edc632d51686583c267a1a1cb525a4904307",
+      "inner_record_sha256": "970ca6ec2cc6dbc53e62635dd4a601c2d88c34add0c8231c98545de79c353dc3",
+      "inner_predictions_sha256": "425fd1c8e3efbcd9150b5b3422724fed06d5e48c170cf6abca0ca030e475747c",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "selection",
+      "reused_same_checkpoint": false,
+      "raw_metrics": {
+        "native_macro_f1": 0.8197431440998656,
+        "native_per_class_recall": [
+          0.9809523809523809,
+          0.9852941176470589,
+          0.632183908045977,
+          1.0,
+          0.9230769230769231
+        ],
+        "native_confusion": [
+          [
+            103,
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            67,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            55,
+            32,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            11,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0,
+            12
+          ]
+        ],
+        "native_accuracy": 0.8732394366197183,
+        "native_frame_accuracy": 0.8328824767057409,
+        "native_internal_cuts_per_clip": 0.33098591549295775,
+        "native_internal_cuts_per_min": 3.39044183949504,
+        "native_share_cut": 0.13028169014084506,
+        "segment_f1_50_multi": 0.8159392789373814,
+        "boundary_recall_multi": 0.9267015706806283,
+        "boundary_precision_multi": 0.8194444444444444,
+        "boundary_f1_multi": 0.8697788697788698,
+        "same_class_cut_rate_multi": 0.09565217391304348,
+        "multi_frame_accuracy": 0.8764788449969921,
+        "segment_f1_50_pairs": 0.8126410835214447,
+        "boundary_recall_pairs": 0.9571428571428572,
+        "counts": {
+          "native_clips": 284,
+          "multi_streams": 120,
+          "pair_streams": 137,
+          "multi_true_changes": 382,
+          "multi_same_joins": 230
+        },
+        "native_A4C_to_A5C": 32,
+        "native_A5C_to_A4C": 0,
+        "native_A4C_A5C_errors": 32,
+        "short_true_segments_10samples": 32,
+        "short_true_unmatched_10samples": 5,
+        "short_predicted_segments_10samples": 87,
+        "short_spurious_segments_10samples": 54,
+        "short_true_segments_16samples": 141,
+        "short_true_unmatched_16samples": 26,
+        "short_predicted_segments_16samples": 199,
+        "short_spurious_segments_16samples": 79
+      },
+      "inference_cost": {
+        "new_sequences": 541,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 125.13420748710632,
+        "includes_model_coldstart_on_first_half": true,
+        "full_fresh_readout": true,
+        "GPU_peak_reserved_bytes": 1042284544
+      }
+    },
+    {
+      "row": "seed2026110257_F_fixed6000",
+      "kind": "fixed_step",
+      "seed": 2026110257,
+      "arm": "F",
+      "step": 6000,
+      "path": "runs/a57_dense_sequence_v1/seed2026110257/F/step6000.pt",
+      "sha256": "11f818322102fb1c9ff853dc85781852d1177df48115e39fc2f237858ada36d1",
+      "inner_probabilities_sha256": "f4ca094b52ea5beb2b89d2337390edc632d51686583c267a1a1cb525a4904307",
+      "inner_record_sha256": "970ca6ec2cc6dbc53e62635dd4a601c2d88c34add0c8231c98545de79c353dc3",
+      "inner_predictions_sha256": "425fd1c8e3efbcd9150b5b3422724fed06d5e48c170cf6abca0ca030e475747c",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "calibration",
+      "reused_same_checkpoint": false,
+      "raw_metrics": {
+        "native_macro_f1": 0.8521390754706306,
+        "native_per_class_recall": [
+          0.9875,
+          0.9295774647887324,
+          0.7377049180327869,
+          0.7777777777777778,
+          1.0
+        ],
+        "native_confusion": [
+          [
+            79,
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            4,
+            66,
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            45,
+            16,
+            0
+          ],
+          [
+            0,
+            0,
+            4,
+            14,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            7
+          ]
+        ],
+        "native_accuracy": 0.890295358649789,
+        "native_frame_accuracy": 0.8696502129442156,
+        "native_internal_cuts_per_clip": 0.4978902953586498,
+        "native_internal_cuts_per_min": 4.94309851288138,
+        "native_share_cut": 0.13924050632911392,
+        "segment_f1_50_multi": 0.7942754919499105,
+        "boundary_recall_multi": 0.914572864321608,
+        "boundary_precision_multi": 0.7583333333333333,
+        "boundary_f1_multi": 0.8291571753986332,
+        "same_class_cut_rate_multi": 0.10945273631840796,
+        "multi_frame_accuracy": 0.8575616255829447,
+        "segment_f1_50_pairs": 0.8388888888888889,
+        "boundary_recall_pairs": 0.9137931034482759,
+        "counts": {
+          "native_clips": 237,
+          "multi_streams": 120,
+          "pair_streams": 115,
+          "multi_true_changes": 398,
+          "multi_same_joins": 201
+        },
+        "native_A4C_to_A5C": 16,
+        "native_A5C_to_A4C": 4,
+        "native_A4C_A5C_errors": 20,
+        "short_true_segments_10samples": 23,
+        "short_true_unmatched_10samples": 4,
+        "short_predicted_segments_10samples": 102,
+        "short_spurious_segments_10samples": 79,
+        "short_true_segments_16samples": 134,
+        "short_true_unmatched_16samples": 28,
+        "short_predicted_segments_16samples": 221,
+        "short_spurious_segments_16samples": 111
+      },
+      "inference_cost": {
+        "new_sequences": 472,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 107.57436513900757,
+        "includes_model_coldstart_on_first_half": false,
+        "full_fresh_readout": true,
+        "GPU_peak_reserved_bytes": 1042284544
+      }
+    },
+    {
+      "row": "seed2026110257_J-high_fixed6000",
+      "kind": "fixed_step",
+      "seed": 2026110257,
+      "arm": "J-high",
+      "step": 6000,
+      "path": "runs/a57_dense_sequence_v1/seed2026110257/J-high/step6000.pt",
+      "sha256": "2fa26f2b3ffbffd4d8481c6ac1ff2190572f18648e13f13dbf37333a17bdd985",
+      "inner_probabilities_sha256": "d6a9c4f93993fee8d958488f1b5d37dd1756203bc5ec9d7a6301dc52ad1b142a",
+      "inner_record_sha256": "713c5d8b9b78331f1af7c7574401aae360ef2e302a19742e30c80fcfe31e0d97",
+      "inner_predictions_sha256": "9b8b28d5620d62cb1dbfbd2cc41e1f6e3ee53fb979c8d798c0c7f1511d332323",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "selection",
+      "reused_same_checkpoint": false,
+      "raw_metrics": {
+        "native_macro_f1": 0.9307650263681765,
+        "native_per_class_recall": [
+          0.9904761904761905,
+          1.0,
+          0.9770114942528736,
+          0.6363636363636364,
+          1.0
+        ],
+        "native_confusion": [
+          [
+            104,
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            68,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            85,
+            2,
+            0
+          ],
+          [
+            0,
+            0,
+            4,
+            7,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            13
+          ]
+        ],
+        "native_accuracy": 0.9753521126760564,
+        "native_frame_accuracy": 0.9755936278929966,
+        "native_internal_cuts_per_clip": 0.1619718309859155,
+        "native_internal_cuts_per_min": 1.6591523895401261,
+        "native_share_cut": 0.056338028169014086,
+        "segment_f1_50_multi": 0.896551724137931,
+        "boundary_recall_multi": 0.9633507853403142,
+        "boundary_precision_multi": 0.8720379146919431,
+        "boundary_f1_multi": 0.9154228855721394,
+        "same_class_cut_rate_multi": 0.06521739130434782,
+        "multi_frame_accuracy": 0.9124390080876946,
+        "segment_f1_50_pairs": 0.9392523364485982,
+        "boundary_recall_pairs": 1.0,
+        "counts": {
+          "native_clips": 284,
+          "multi_streams": 120,
+          "pair_streams": 137,
+          "multi_true_changes": 382,
+          "multi_same_joins": 230
+        },
+        "native_A4C_to_A5C": 2,
+        "native_A5C_to_A4C": 4,
+        "native_A4C_A5C_errors": 6,
+        "short_true_segments_10samples": 32,
+        "short_true_unmatched_10samples": 1,
+        "short_predicted_segments_10samples": 66,
+        "short_spurious_segments_10samples": 30,
+        "short_true_segments_16samples": 141,
+        "short_true_unmatched_16samples": 5,
+        "short_predicted_segments_16samples": 186,
+        "short_spurious_segments_16samples": 39
+      },
+      "inference_cost": {
+        "new_sequences": 541,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 102.14784026145935,
+        "includes_model_coldstart_on_first_half": true,
+        "full_fresh_readout": true,
+        "GPU_peak_reserved_bytes": 1289748480
+      }
+    },
+    {
+      "row": "seed2026110257_J-high_fixed6000",
+      "kind": "fixed_step",
+      "seed": 2026110257,
+      "arm": "J-high",
+      "step": 6000,
+      "path": "runs/a57_dense_sequence_v1/seed2026110257/J-high/step6000.pt",
+      "sha256": "2fa26f2b3ffbffd4d8481c6ac1ff2190572f18648e13f13dbf37333a17bdd985",
+      "inner_probabilities_sha256": "d6a9c4f93993fee8d958488f1b5d37dd1756203bc5ec9d7a6301dc52ad1b142a",
+      "inner_record_sha256": "713c5d8b9b78331f1af7c7574401aae360ef2e302a19742e30c80fcfe31e0d97",
+      "inner_predictions_sha256": "9b8b28d5620d62cb1dbfbd2cc41e1f6e3ee53fb979c8d798c0c7f1511d332323",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "calibration",
+      "reused_same_checkpoint": false,
+      "raw_metrics": {
+        "native_macro_f1": 0.9788251060978332,
+        "native_per_class_recall": [
+          1.0,
+          1.0,
+          0.9672131147540983,
+          0.9444444444444444,
+          1.0
+        ],
+        "native_confusion": [
+          [
+            80,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            71,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            59,
+            2,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            17,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            7
+          ]
+        ],
+        "native_accuracy": 0.9873417721518988,
+        "native_frame_accuracy": 0.9794037561963276,
+        "native_internal_cuts_per_clip": 0.16033755274261605,
+        "native_internal_cuts_per_min": 1.5918452838092578,
+        "native_share_cut": 0.05485232067510549,
+        "segment_f1_50_multi": 0.9685414680648237,
+        "boundary_recall_multi": 0.9874371859296482,
+        "boundary_precision_multi": 0.9562043795620438,
+        "boundary_f1_multi": 0.9715698393077874,
+        "same_class_cut_rate_multi": 0.03482587064676617,
+        "multi_frame_accuracy": 0.9687541638907395,
+        "segment_f1_50_pairs": 0.9631728045325779,
+        "boundary_recall_pairs": 0.9655172413793104,
+        "counts": {
+          "native_clips": 237,
+          "multi_streams": 120,
+          "pair_streams": 115,
+          "multi_true_changes": 398,
+          "multi_same_joins": 201
+        },
+        "native_A4C_to_A5C": 2,
+        "native_A5C_to_A4C": 1,
+        "native_A4C_A5C_errors": 3,
+        "short_true_segments_10samples": 23,
+        "short_true_unmatched_10samples": 0,
+        "short_predicted_segments_10samples": 39,
+        "short_spurious_segments_10samples": 11,
+        "short_true_segments_16samples": 134,
+        "short_true_unmatched_16samples": 6,
+        "short_predicted_segments_16samples": 153,
+        "short_spurious_segments_16samples": 18
+      },
+      "inference_cost": {
+        "new_sequences": 472,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 91.65932059288025,
+        "includes_model_coldstart_on_first_half": false,
+        "full_fresh_readout": true,
+        "GPU_peak_reserved_bytes": 1289748480
+      }
+    },
+    {
+      "row": "seed2026110258_F_fixed6000",
+      "kind": "fixed_step",
+      "seed": 2026110258,
+      "arm": "F",
+      "step": 6000,
+      "path": "runs/a57_dense_sequence_v1/seed2026110258/F/step6000.pt",
+      "sha256": "b93387a327f0905fc9a7022513096592d2a3b471ddfc978e60e2c052444bdc9c",
+      "inner_probabilities_sha256": "094da498c5e92b6d0b63ee85704da81f223bf697f21dc47bc4127c43bd3a5afe",
+      "inner_record_sha256": "75cc9f873b97daf3c533fb0f7a7ebfdc33a4e187951ae78ea6c7c7163ca4b079",
+      "inner_predictions_sha256": "8424b3e412fe3ae944f21bded19a277c79a32d4a2f13a7ab27c0ffa5188a90fd",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "selection",
+      "reused_same_checkpoint": false,
+      "raw_metrics": {
+        "native_macro_f1": 0.8297559783579519,
+        "native_per_class_recall": [
+          0.9809523809523809,
+          0.9705882352941176,
+          0.7011494252873564,
+          0.9090909090909091,
+          0.9230769230769231
+        ],
+        "native_confusion": [
+          [
+            103,
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            2,
+            66,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            61,
+            26,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            10,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0,
+            12
+          ]
+        ],
+        "native_accuracy": 0.8873239436619719,
+        "native_frame_accuracy": 0.8508566275924256,
+        "native_internal_cuts_per_clip": 0.3274647887323944,
+        "native_internal_cuts_per_min": 3.3543733092876464,
+        "native_share_cut": 0.13380281690140844,
+        "segment_f1_50_multi": 0.8155893536121673,
+        "boundary_recall_multi": 0.9293193717277487,
+        "boundary_precision_multi": 0.8255813953488372,
+        "boundary_f1_multi": 0.874384236453202,
+        "same_class_cut_rate_multi": 0.08695652173913043,
+        "multi_frame_accuracy": 0.8746073123454314,
+        "segment_f1_50_pairs": 0.8181818181818182,
+        "boundary_recall_pairs": 0.9428571428571428,
+        "counts": {
+          "native_clips": 284,
+          "multi_streams": 120,
+          "pair_streams": 137,
+          "multi_true_changes": 382,
+          "multi_same_joins": 230
+        },
+        "native_A4C_to_A5C": 26,
+        "native_A5C_to_A4C": 1,
+        "native_A4C_A5C_errors": 27,
+        "short_true_segments_10samples": 32,
+        "short_true_unmatched_10samples": 7,
+        "short_predicted_segments_10samples": 83,
+        "short_spurious_segments_10samples": 52,
+        "short_true_segments_16samples": 141,
+        "short_true_unmatched_16samples": 28,
+        "short_predicted_segments_16samples": 192,
+        "short_spurious_segments_16samples": 76
+      },
+      "inference_cost": {
+        "new_sequences": 541,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 103.96384286880493,
+        "includes_model_coldstart_on_first_half": true,
+        "full_fresh_readout": true,
+        "GPU_peak_reserved_bytes": 1289748480
+      }
+    },
+    {
+      "row": "seed2026110258_F_fixed6000",
+      "kind": "fixed_step",
+      "seed": 2026110258,
+      "arm": "F",
+      "step": 6000,
+      "path": "runs/a57_dense_sequence_v1/seed2026110258/F/step6000.pt",
+      "sha256": "b93387a327f0905fc9a7022513096592d2a3b471ddfc978e60e2c052444bdc9c",
+      "inner_probabilities_sha256": "094da498c5e92b6d0b63ee85704da81f223bf697f21dc47bc4127c43bd3a5afe",
+      "inner_record_sha256": "75cc9f873b97daf3c533fb0f7a7ebfdc33a4e187951ae78ea6c7c7163ca4b079",
+      "inner_predictions_sha256": "8424b3e412fe3ae944f21bded19a277c79a32d4a2f13a7ab27c0ffa5188a90fd",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "calibration",
+      "reused_same_checkpoint": false,
+      "raw_metrics": {
+        "native_macro_f1": 0.8715854880065086,
+        "native_per_class_recall": [
+          0.9875,
+          0.9436619718309859,
+          0.7540983606557377,
+          0.7777777777777778,
+          1.0
+        ],
+        "native_confusion": [
+          [
+            79,
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            4,
+            67,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            46,
+            15,
+            0
+          ],
+          [
+            0,
+            0,
+            4,
+            14,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            7
+          ]
+        ],
+        "native_accuracy": 0.8987341772151899,
+        "native_frame_accuracy": 0.8846610346994345,
+        "native_internal_cuts_per_clip": 0.4092827004219409,
+        "native_internal_cuts_per_min": 4.063394540249948,
+        "native_share_cut": 0.12658227848101267,
+        "segment_f1_50_multi": 0.7890070921985816,
+        "boundary_recall_multi": 0.9195979899497487,
+        "boundary_precision_multi": 0.746938775510204,
+        "boundary_f1_multi": 0.8243243243243243,
+        "same_class_cut_rate_multi": 0.11940298507462686,
+        "multi_frame_accuracy": 0.8604263824117255,
+        "segment_f1_50_pairs": 0.8238482384823849,
+        "boundary_recall_pairs": 0.896551724137931,
+        "counts": {
+          "native_clips": 237,
+          "multi_streams": 120,
+          "pair_streams": 115,
+          "multi_true_changes": 398,
+          "multi_same_joins": 201
+        },
+        "native_A4C_to_A5C": 15,
+        "native_A5C_to_A4C": 4,
+        "native_A4C_A5C_errors": 19,
+        "short_true_segments_10samples": 23,
+        "short_true_unmatched_10samples": 4,
+        "short_predicted_segments_10samples": 114,
+        "short_spurious_segments_10samples": 88,
+        "short_true_segments_16samples": 134,
+        "short_true_unmatched_16samples": 26,
+        "short_predicted_segments_16samples": 240,
+        "short_spurious_segments_16samples": 125
+      },
+      "inference_cost": {
+        "new_sequences": 472,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 94.34361433982849,
+        "includes_model_coldstart_on_first_half": false,
+        "full_fresh_readout": true,
+        "GPU_peak_reserved_bytes": 1289748480
+      }
+    },
+    {
+      "row": "seed2026110258_J-high_fixed6000",
+      "kind": "fixed_step",
+      "seed": 2026110258,
+      "arm": "J-high",
+      "step": 6000,
+      "path": "runs/a57_dense_sequence_v1/seed2026110258/J-high/step6000.pt",
+      "sha256": "effa183435a7429ad17e6953e049c668555d4ac5f43b05f6fe21fc894a0a411e",
+      "inner_probabilities_sha256": "89fb07e52d2eba30dfcd24024ab4549be096ae8b80c11c3624601679a09bbd78",
+      "inner_record_sha256": "40f6b48b84a161e50e87ed518f38f90a9b124a71b9aff302ec779179a260002b",
+      "inner_predictions_sha256": "206d92dd8d45fe31f94d4ba0c49d9f32bbf97bb29cfc26b53987f3ea529d515a",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "selection",
+      "reused_same_checkpoint": false,
+      "raw_metrics": {
+        "native_macro_f1": 0.9357674489253437,
+        "native_per_class_recall": [
+          0.9904761904761905,
+          0.9705882352941176,
+          0.9885057471264368,
+          0.7272727272727273,
+          1.0
+        ],
+        "native_confusion": [
+          [
+            104,
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            66,
+            0,
+            0,
+            2
+          ],
+          [
+            0,
+            0,
+            86,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            3,
+            8,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            13
+          ]
+        ],
+        "native_accuracy": 0.9753521126760564,
+        "native_frame_accuracy": 0.9714457469191464,
+        "native_internal_cuts_per_clip": 0.1619718309859155,
+        "native_internal_cuts_per_min": 1.6591523895401261,
+        "native_share_cut": 0.05985915492957746,
+        "segment_f1_50_multi": 0.8874172185430463,
+        "boundary_recall_multi": 0.9764397905759162,
+        "boundary_precision_multi": 0.8574712643678161,
+        "boundary_f1_multi": 0.9130966952264382,
+        "same_class_cut_rate_multi": 0.06521739130434782,
+        "multi_frame_accuracy": 0.9225319163157543,
+        "segment_f1_50_pairs": 0.9417249417249417,
+        "boundary_recall_pairs": 1.0,
+        "counts": {
+          "native_clips": 284,
+          "multi_streams": 120,
+          "pair_streams": 137,
+          "multi_true_changes": 382,
+          "multi_same_joins": 230
+        },
+        "native_A4C_to_A5C": 1,
+        "native_A5C_to_A4C": 3,
+        "native_A4C_A5C_errors": 4,
+        "short_true_segments_10samples": 32,
+        "short_true_unmatched_10samples": 2,
+        "short_predicted_segments_10samples": 76,
+        "short_spurious_segments_10samples": 40,
+        "short_true_segments_16samples": 141,
+        "short_true_unmatched_16samples": 6,
+        "short_predicted_segments_16samples": 197,
+        "short_spurious_segments_16samples": 52
+      },
+      "inference_cost": {
+        "new_sequences": 541,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 102.25738167762756,
+        "includes_model_coldstart_on_first_half": true,
+        "full_fresh_readout": true,
+        "GPU_peak_reserved_bytes": 1289748480
+      }
+    },
+    {
+      "row": "seed2026110258_J-high_fixed6000",
+      "kind": "fixed_step",
+      "seed": 2026110258,
+      "arm": "J-high",
+      "step": 6000,
+      "path": "runs/a57_dense_sequence_v1/seed2026110258/J-high/step6000.pt",
+      "sha256": "effa183435a7429ad17e6953e049c668555d4ac5f43b05f6fe21fc894a0a411e",
+      "inner_probabilities_sha256": "89fb07e52d2eba30dfcd24024ab4549be096ae8b80c11c3624601679a09bbd78",
+      "inner_record_sha256": "40f6b48b84a161e50e87ed518f38f90a9b124a71b9aff302ec779179a260002b",
+      "inner_predictions_sha256": "206d92dd8d45fe31f94d4ba0c49d9f32bbf97bb29cfc26b53987f3ea529d515a",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "calibration",
+      "reused_same_checkpoint": false,
+      "raw_metrics": {
+        "native_macro_f1": 0.9788251060978332,
+        "native_per_class_recall": [
+          1.0,
+          1.0,
+          0.9672131147540983,
+          0.9444444444444444,
+          1.0
+        ],
+        "native_confusion": [
+          [
+            80,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            71,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            59,
+            2,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            17,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            7
+          ]
+        ],
+        "native_accuracy": 0.9873417721518988,
+        "native_frame_accuracy": 0.9760525029672554,
+        "native_internal_cuts_per_clip": 0.19831223628691982,
+        "native_internal_cuts_per_min": 1.9688612720798715,
+        "native_share_cut": 0.05063291139240506,
+        "segment_f1_50_multi": 0.9528301886792453,
+        "boundary_recall_multi": 0.9899497487437185,
+        "boundary_precision_multi": 0.933649289099526,
+        "boundary_f1_multi": 0.9609756097560975,
+        "same_class_cut_rate_multi": 0.04477611940298507,
+        "multi_frame_accuracy": 0.9652231845436375,
+        "segment_f1_50_pairs": 0.9518413597733711,
+        "boundary_recall_pairs": 0.9655172413793104,
+        "counts": {
+          "native_clips": 237,
+          "multi_streams": 120,
+          "pair_streams": 115,
+          "multi_true_changes": 398,
+          "multi_same_joins": 201
+        },
+        "native_A4C_to_A5C": 2,
+        "native_A5C_to_A4C": 1,
+        "native_A4C_A5C_errors": 3,
+        "short_true_segments_10samples": 23,
+        "short_true_unmatched_10samples": 1,
+        "short_predicted_segments_10samples": 52,
+        "short_spurious_segments_10samples": 24,
+        "short_true_segments_16samples": 134,
+        "short_true_unmatched_16samples": 9,
+        "short_predicted_segments_16samples": 163,
+        "short_spurious_segments_16samples": 31
+      },
+      "inference_cost": {
+        "new_sequences": 472,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 92.04354739189148,
+        "includes_model_coldstart_on_first_half": false,
+        "full_fresh_readout": true,
+        "GPU_peak_reserved_bytes": 1289748480
+      }
+    },
+    {
+      "row": "seed2026110257_L_fixed2000",
+      "kind": "fixed_step",
+      "seed": 2026110257,
+      "arm": "L",
+      "step": 2000,
+      "path": "runs/a57_dense_sequence_v1/seed2026110257/L/step2000.pt",
+      "sha256": "47ba12066ec9c11439d459c39bd8bf8660e7097d2833a305bffe326689cb2a01",
+      "inner_probabilities_sha256": "e7c5a65931d42a764699f72fa13d98c61b0b73cb95490a26b3fb9ba4e0695b05",
+      "inner_record_sha256": "c0d523f6970610d76966ffac52e3026d218b492b60876334408a4aece7c3bd61",
+      "inner_predictions_sha256": "04844bc2bdaa083a584b5c250b508d55d0444e587bafc34fc9127975207cb473",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "selection",
+      "reused_same_checkpoint": false,
+      "raw_metrics": {
+        "native_macro_f1": 0.7335051772292932,
+        "native_per_class_recall": [
+          0.9904761904761905,
+          0.8529411764705882,
+          0.42528735632183906,
+          1.0,
+          0.8461538461538461
+        ],
+        "native_confusion": [
+          [
+            104,
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            7,
+            58,
+            2,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            37,
+            50,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            11,
+            0
+          ],
+          [
+            0,
+            2,
+            0,
+            0,
+            11
+          ]
+        ],
+        "native_accuracy": 0.778169014084507,
+        "native_frame_accuracy": 0.7635707844905321,
+        "native_internal_cuts_per_clip": 2.757042253521127,
+        "native_internal_cuts_per_min": 28.241659152389538,
+        "native_share_cut": 0.45422535211267606,
+        "segment_f1_50_multi": 0.42300987797791983,
+        "boundary_recall_multi": 0.9083769633507853,
+        "boundary_precision_multi": 0.31574158325750684,
+        "boundary_f1_multi": 0.4686022957461175,
+        "same_class_cut_rate_multi": 0.34782608695652173,
+        "multi_frame_accuracy": 0.785107947329724,
+        "segment_f1_50_pairs": 0.4539877300613497,
+        "boundary_recall_pairs": 0.9142857142857143,
+        "counts": {
+          "native_clips": 284,
+          "multi_streams": 120,
+          "pair_streams": 137,
+          "multi_true_changes": 382,
+          "multi_same_joins": 230
+        },
+        "native_A4C_to_A5C": 50,
+        "native_A5C_to_A4C": 0,
+        "native_A4C_A5C_errors": 50,
+        "short_true_segments_10samples": 32,
+        "short_true_unmatched_10samples": 13,
+        "short_predicted_segments_10samples": 798,
+        "short_spurious_segments_10samples": 755,
+        "short_true_segments_16samples": 141,
+        "short_true_unmatched_16samples": 49,
+        "short_predicted_segments_16samples": 937,
+        "short_spurious_segments_16samples": 813
+      },
+      "inference_cost": {
+        "new_sequences": 541,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 106.16718578338623,
+        "includes_model_coldstart_on_first_half": true,
+        "full_fresh_readout": true,
+        "GPU_peak_reserved_bytes": 1289748480
+      }
+    },
+    {
+      "row": "seed2026110257_L_fixed2000",
+      "kind": "fixed_step",
+      "seed": 2026110257,
+      "arm": "L",
+      "step": 2000,
+      "path": "runs/a57_dense_sequence_v1/seed2026110257/L/step2000.pt",
+      "sha256": "47ba12066ec9c11439d459c39bd8bf8660e7097d2833a305bffe326689cb2a01",
+      "inner_probabilities_sha256": "e7c5a65931d42a764699f72fa13d98c61b0b73cb95490a26b3fb9ba4e0695b05",
+      "inner_record_sha256": "c0d523f6970610d76966ffac52e3026d218b492b60876334408a4aece7c3bd61",
+      "inner_predictions_sha256": "04844bc2bdaa083a584b5c250b508d55d0444e587bafc34fc9127975207cb473",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "calibration",
+      "reused_same_checkpoint": false,
+      "raw_metrics": {
+        "native_macro_f1": 0.7661472850217239,
+        "native_per_class_recall": [
+          0.975,
+          0.8732394366197183,
+          0.4918032786885246,
+          0.8888888888888888,
+          1.0
+        ],
+        "native_confusion": [
+          [
+            78,
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            6,
+            62,
+            0,
+            0,
+            3
+          ],
+          [
+            0,
+            0,
+            30,
+            31,
+            0
+          ],
+          [
+            0,
+            0,
+            2,
+            16,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            7
+          ]
+        ],
+        "native_accuracy": 0.8143459915611815,
+        "native_frame_accuracy": 0.8075822104307757,
+        "native_internal_cuts_per_clip": 2.548523206751055,
+        "native_internal_cuts_per_min": 25.30196187949452,
+        "native_share_cut": 0.3881856540084388,
+        "segment_f1_50_multi": 0.4792682926829268,
+        "boundary_recall_multi": 0.9472361809045227,
+        "boundary_precision_multi": 0.37624750499001997,
+        "boundary_f1_multi": 0.5385714285714286,
+        "same_class_cut_rate_multi": 0.31343283582089554,
+        "multi_frame_accuracy": 0.8094603597601598,
+        "segment_f1_50_pairs": 0.47866419294990725,
+        "boundary_recall_pairs": 0.9482758620689655,
+        "counts": {
+          "native_clips": 237,
+          "multi_streams": 120,
+          "pair_streams": 115,
+          "multi_true_changes": 398,
+          "multi_same_joins": 201
+        },
+        "native_A4C_to_A5C": 31,
+        "native_A5C_to_A4C": 2,
+        "native_A4C_A5C_errors": 33,
+        "short_true_segments_10samples": 23,
+        "short_true_unmatched_10samples": 7,
+        "short_predicted_segments_10samples": 660,
+        "short_spurious_segments_10samples": 625,
+        "short_true_segments_16samples": 134,
+        "short_true_unmatched_16samples": 38,
+        "short_predicted_segments_16samples": 801,
+        "short_spurious_segments_16samples": 681
+      },
+      "inference_cost": {
+        "new_sequences": 472,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 92.92729449272156,
+        "includes_model_coldstart_on_first_half": false,
+        "full_fresh_readout": true,
+        "GPU_peak_reserved_bytes": 1289748480
+      }
+    },
+    {
+      "row": "seed2026110257_L_fixed6000",
+      "kind": "fixed_step",
+      "seed": 2026110257,
+      "arm": "L",
+      "step": 6000,
+      "path": "runs/a57_dense_sequence_v1/seed2026110257/L/step6000.pt",
+      "sha256": "6e5923318c986ceb74e6079049e6165d6503105e7e8d3b49ab64b1f1849e8656",
+      "inner_probabilities_sha256": "7155c9423b115385a71a51cc287ba09f98c23a26aac8942157b18716b76d6444",
+      "inner_record_sha256": "bdfadd925545609065b500f267570d8ab5b3e653668a13a1efb6f82df56b169d",
+      "inner_predictions_sha256": "3d59af81b4b35e0e1e3b5303b8068738222fb64cbf04f0312c1db31223d77d6d",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "selection",
+      "reused_same_checkpoint": false,
+      "raw_metrics": {
+        "native_macro_f1": 0.7975470494417862,
+        "native_per_class_recall": [
+          0.9904761904761905,
+          0.8235294117647058,
+          0.7241379310344828,
+          0.9090909090909091,
+          0.8461538461538461
+        ],
+        "native_confusion": [
+          [
+            104,
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            10,
+            56,
+            1,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            63,
+            24,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            10,
+            0
+          ],
+          [
+            1,
+            1,
+            0,
+            0,
+            11
+          ]
+        ],
+        "native_accuracy": 0.8591549295774648,
+        "native_frame_accuracy": 0.8275924256086564,
+        "native_internal_cuts_per_clip": 2.9225352112676055,
+        "native_internal_cuts_per_min": 29.936880072137058,
+        "native_share_cut": 0.4154929577464789,
+        "segment_f1_50_multi": 0.4421175101803374,
+        "boundary_recall_multi": 0.9476439790575916,
+        "boundary_precision_multi": 0.3299908842297174,
+        "boundary_f1_multi": 0.48951994590939824,
+        "same_class_cut_rate_multi": 0.34782608695652173,
+        "multi_frame_accuracy": 0.813782501169708,
+        "segment_f1_50_pairs": 0.4583941605839416,
+        "boundary_recall_pairs": 0.9,
+        "counts": {
+          "native_clips": 284,
+          "multi_streams": 120,
+          "pair_streams": 137,
+          "multi_true_changes": 382,
+          "multi_same_joins": 230
+        },
+        "native_A4C_to_A5C": 24,
+        "native_A5C_to_A4C": 1,
+        "native_A4C_A5C_errors": 25,
+        "short_true_segments_10samples": 32,
+        "short_true_unmatched_10samples": 9,
+        "short_predicted_segments_10samples": 778,
+        "short_spurious_segments_10samples": 736,
+        "short_true_segments_16samples": 141,
+        "short_true_unmatched_16samples": 43,
+        "short_predicted_segments_16samples": 931,
+        "short_spurious_segments_16samples": 799
+      },
+      "inference_cost": {
+        "new_sequences": 541,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 103.39974570274353,
+        "includes_model_coldstart_on_first_half": true,
+        "full_fresh_readout": true,
+        "GPU_peak_reserved_bytes": 1289748480
+      }
+    },
+    {
+      "row": "seed2026110257_L_fixed6000",
+      "kind": "fixed_step",
+      "seed": 2026110257,
+      "arm": "L",
+      "step": 6000,
+      "path": "runs/a57_dense_sequence_v1/seed2026110257/L/step6000.pt",
+      "sha256": "6e5923318c986ceb74e6079049e6165d6503105e7e8d3b49ab64b1f1849e8656",
+      "inner_probabilities_sha256": "7155c9423b115385a71a51cc287ba09f98c23a26aac8942157b18716b76d6444",
+      "inner_record_sha256": "bdfadd925545609065b500f267570d8ab5b3e653668a13a1efb6f82df56b169d",
+      "inner_predictions_sha256": "3d59af81b4b35e0e1e3b5303b8068738222fb64cbf04f0312c1db31223d77d6d",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "calibration",
+      "reused_same_checkpoint": false,
+      "raw_metrics": {
+        "native_macro_f1": 0.7924801271860096,
+        "native_per_class_recall": [
+          0.9875,
+          0.7887323943661971,
+          0.7213114754098361,
+          0.7222222222222222,
+          1.0
+        ],
+        "native_confusion": [
+          [
+            79,
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            11,
+            56,
+            1,
+            0,
+            3
+          ],
+          [
+            0,
+            0,
+            44,
+            17,
+            0
+          ],
+          [
+            0,
+            0,
+            5,
+            13,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            7
+          ]
+        ],
+        "native_accuracy": 0.8396624472573839,
+        "native_frame_accuracy": 0.8154018012986106,
+        "native_internal_cuts_per_clip": 2.5274261603375527,
+        "native_internal_cuts_per_min": 25.09250855267751,
+        "native_share_cut": 0.39662447257383965,
+        "segment_f1_50_multi": 0.43935926773455375,
+        "boundary_recall_multi": 0.9522613065326633,
+        "boundary_precision_multi": 0.34144144144144145,
+        "boundary_f1_multi": 0.5026525198938993,
+        "same_class_cut_rate_multi": 0.34328358208955223,
+        "multi_frame_accuracy": 0.8097934710193204,
+        "segment_f1_50_pairs": 0.4925373134328358,
+        "boundary_recall_pairs": 0.9310344827586207,
+        "counts": {
+          "native_clips": 237,
+          "multi_streams": 120,
+          "pair_streams": 115,
+          "multi_true_changes": 398,
+          "multi_same_joins": 201
+        },
+        "native_A4C_to_A5C": 17,
+        "native_A5C_to_A4C": 5,
+        "native_A4C_A5C_errors": 22,
+        "short_true_segments_10samples": 23,
+        "short_true_unmatched_10samples": 4,
+        "short_predicted_segments_10samples": 783,
+        "short_spurious_segments_10samples": 747,
+        "short_true_segments_16samples": 134,
+        "short_true_unmatched_16samples": 38,
+        "short_predicted_segments_16samples": 926,
+        "short_spurious_segments_16samples": 812
+      },
+      "inference_cost": {
+        "new_sequences": 472,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 96.15460681915283,
+        "includes_model_coldstart_on_first_half": false,
+        "full_fresh_readout": true,
+        "GPU_peak_reserved_bytes": 1289748480
+      }
+    },
+    {
+      "row": "seed2026110257_L_inner_package",
+      "kind": "inner_selected_package",
+      "seed": 2026110257,
+      "arm": "L",
+      "step": 1000,
+      "path": "runs/a57_dense_sequence_v1/seed2026110257/L/step1000.pt",
+      "sha256": "22c59ab4b43cc89c8f7fbe73b745e2a986764ea86668fc64f64b7a7f382ce008",
+      "inner_probabilities_sha256": "38b3bf271ab88a07081cdf2b9da52947f31838446874e5341202c822d16f96e6",
+      "inner_record_sha256": "3187686c2e26a2c956912015adb36e943d07b57f16f8e081b46765318f99f2d1",
+      "inner_predictions_sha256": "f2383bc1773e07f4d2a58238f472f28f5f92c1a18d40def49966ec6781547bc4",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "selection",
+      "reused_same_checkpoint": false,
+      "raw_metrics": {
+        "native_macro_f1": 0.5870753619671608,
+        "native_per_class_recall": [
+          1.0,
+          0.6617647058823529,
+          0.08045977011494253,
+          1.0,
+          0.7692307692307693
+        ],
+        "native_confusion": [
+          [
+            105,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            15,
+            45,
+            0,
+            8,
+            0
+          ],
+          [
+            0,
+            0,
+            7,
+            80,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            11,
+            0
+          ],
+          [
+            1,
+            1,
+            0,
+            1,
+            10
+          ]
+        ],
+        "native_accuracy": 0.6267605633802817,
+        "native_frame_accuracy": 0.589780583107905,
+        "native_internal_cuts_per_clip": 1.6514084507042253,
+        "native_internal_cuts_per_min": 16.916140667267808,
+        "native_share_cut": 0.36971830985915494,
+        "segment_f1_50_multi": 0.38101694915254236,
+        "boundary_recall_multi": 0.8115183246073299,
+        "boundary_precision_multi": 0.3634232121922626,
+        "boundary_f1_multi": 0.5020242914979757,
+        "same_class_cut_rate_multi": 0.23478260869565218,
+        "multi_frame_accuracy": 0.649956553706303,
+        "segment_f1_50_pairs": 0.4159132007233273,
+        "boundary_recall_pairs": 0.7714285714285715,
+        "counts": {
+          "native_clips": 284,
+          "multi_streams": 120,
+          "pair_streams": 137,
+          "multi_true_changes": 382,
+          "multi_same_joins": 230
+        },
+        "native_A4C_to_A5C": 80,
+        "native_A5C_to_A4C": 0,
+        "native_A4C_A5C_errors": 80,
+        "short_true_segments_10samples": 32,
+        "short_true_unmatched_10samples": 15,
+        "short_predicted_segments_10samples": 549,
+        "short_spurious_segments_10samples": 522,
+        "short_true_segments_16samples": 141,
+        "short_true_unmatched_16samples": 67,
+        "short_predicted_segments_16samples": 677,
+        "short_spurious_segments_16samples": 587
+      },
+      "inference_cost": {
+        "new_sequences": 541,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 105.3990547657013,
+        "includes_model_coldstart_on_first_half": true,
+        "full_fresh_readout": true,
+        "GPU_peak_reserved_bytes": 1289748480
+      }
+    },
+    {
+      "row": "seed2026110257_L_inner_package",
+      "kind": "inner_selected_package",
+      "seed": 2026110257,
+      "arm": "L",
+      "step": 1000,
+      "path": "runs/a57_dense_sequence_v1/seed2026110257/L/step1000.pt",
+      "sha256": "22c59ab4b43cc89c8f7fbe73b745e2a986764ea86668fc64f64b7a7f382ce008",
+      "inner_probabilities_sha256": "38b3bf271ab88a07081cdf2b9da52947f31838446874e5341202c822d16f96e6",
+      "inner_record_sha256": "3187686c2e26a2c956912015adb36e943d07b57f16f8e081b46765318f99f2d1",
+      "inner_predictions_sha256": "f2383bc1773e07f4d2a58238f472f28f5f92c1a18d40def49966ec6781547bc4",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "calibration",
+      "reused_same_checkpoint": false,
+      "raw_metrics": {
+        "native_macro_f1": 0.6324981594854415,
+        "native_per_class_recall": [
+          0.9875,
+          0.7183098591549296,
+          0.03278688524590164,
+          1.0,
+          1.0
+        ],
+        "native_confusion": [
+          [
+            79,
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            14,
+            51,
+            0,
+            6,
+            0
+          ],
+          [
+            0,
+            0,
+            2,
+            59,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            18,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            7
+          ]
+        ],
+        "native_accuracy": 0.6624472573839663,
+        "native_frame_accuracy": 0.6900788940864344,
+        "native_internal_cuts_per_clip": 2.109704641350211,
+        "native_internal_cuts_per_min": 20.945332681700762,
+        "native_share_cut": 0.38396624472573837,
+        "segment_f1_50_multi": 0.4638949671772429,
+        "boundary_recall_multi": 0.8366834170854272,
+        "boundary_precision_multi": 0.4542974079126876,
+        "boundary_f1_multi": 0.5888594164456233,
+        "same_class_cut_rate_multi": 0.1691542288557214,
+        "multi_frame_accuracy": 0.6920719520319787,
+        "segment_f1_50_pairs": 0.4230769230769231,
+        "boundary_recall_pairs": 0.7586206896551724,
+        "counts": {
+          "native_clips": 237,
+          "multi_streams": 120,
+          "pair_streams": 115,
+          "multi_true_changes": 398,
+          "multi_same_joins": 201
+        },
+        "native_A4C_to_A5C": 59,
+        "native_A5C_to_A4C": 0,
+        "native_A4C_A5C_errors": 59,
+        "short_true_segments_10samples": 23,
+        "short_true_unmatched_10samples": 13,
+        "short_predicted_segments_10samples": 413,
+        "short_spurious_segments_10samples": 398,
+        "short_true_segments_16samples": 134,
+        "short_true_unmatched_16samples": 65,
+        "short_predicted_segments_16samples": 519,
+        "short_spurious_segments_16samples": 441
+      },
+      "inference_cost": {
+        "new_sequences": 472,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 93.04727602005005,
+        "includes_model_coldstart_on_first_half": false,
+        "full_fresh_readout": true,
+        "GPU_peak_reserved_bytes": 1289748480
+      }
+    },
+    {
+      "row": "seed2026110257_F_fixed2000",
+      "kind": "fixed_step",
+      "seed": 2026110257,
+      "arm": "F",
+      "step": 2000,
+      "path": "runs/a57_dense_sequence_v1/seed2026110257/F/step2000.pt",
+      "sha256": "5c759804df8da81829acc3a8a79c4d8e80a643debda7d98991d44007b01f4b62",
+      "inner_probabilities_sha256": "04a5cdaf91ebfdaa30568c9fcd85a73189ca16d0e7ae5479bedfb118c3ca3995",
+      "inner_record_sha256": "10981c4f43b0ad4871c3553894aa8644ea432f6c6deb2990e960605b0daa0a40",
+      "inner_predictions_sha256": "434280abbf795cf9c7bef759b81721c53b3b6d9230f03a550176bffee729d152",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "selection",
+      "reused_same_checkpoint": false,
+      "raw_metrics": {
+        "native_macro_f1": 0.7077265946283218,
+        "native_per_class_recall": [
+          0.9904761904761905,
+          0.8088235294117647,
+          0.3218390804597701,
+          1.0,
+          0.9230769230769231
+        ],
+        "native_confusion": [
+          [
+            104,
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            10,
+            55,
+            0,
+            3,
+            0
+          ],
+          [
+            0,
+            0,
+            28,
+            59,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            11,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0,
+            12
+          ]
+        ],
+        "native_accuracy": 0.7394366197183099,
+        "native_frame_accuracy": 0.7155996393146979,
+        "native_internal_cuts_per_clip": 0.852112676056338,
+        "native_internal_cuts_per_min": 8.72858431018936,
+        "native_share_cut": 0.24295774647887325,
+        "segment_f1_50_multi": 0.5866454689984102,
+        "boundary_recall_multi": 0.8848167539267016,
+        "boundary_precision_multi": 0.5314465408805031,
+        "boundary_f1_multi": 0.6640471512770137,
+        "same_class_cut_rate_multi": 0.1565217391304348,
+        "multi_frame_accuracy": 0.7818327651894926,
+        "segment_f1_50_pairs": 0.6147540983606558,
+        "boundary_recall_pairs": 0.8714285714285714,
+        "counts": {
+          "native_clips": 284,
+          "multi_streams": 120,
+          "pair_streams": 137,
+          "multi_true_changes": 382,
+          "multi_same_joins": 230
+        },
+        "native_A4C_to_A5C": 59,
+        "native_A5C_to_A4C": 0,
+        "native_A4C_A5C_errors": 59,
+        "short_true_segments_10samples": 32,
+        "short_true_unmatched_10samples": 12,
+        "short_predicted_segments_10samples": 309,
+        "short_spurious_segments_10samples": 273,
+        "short_true_segments_16samples": 141,
+        "short_true_unmatched_16samples": 43,
+        "short_predicted_segments_16samples": 443,
+        "short_spurious_segments_16samples": 323
+      },
+      "inference_cost": {
+        "new_sequences": 541,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 104.40612602233887,
+        "includes_model_coldstart_on_first_half": true,
+        "full_fresh_readout": true,
+        "GPU_peak_reserved_bytes": 1289748480
+      }
+    },
+    {
+      "row": "seed2026110257_F_fixed2000",
+      "kind": "fixed_step",
+      "seed": 2026110257,
+      "arm": "F",
+      "step": 2000,
+      "path": "runs/a57_dense_sequence_v1/seed2026110257/F/step2000.pt",
+      "sha256": "5c759804df8da81829acc3a8a79c4d8e80a643debda7d98991d44007b01f4b62",
+      "inner_probabilities_sha256": "04a5cdaf91ebfdaa30568c9fcd85a73189ca16d0e7ae5479bedfb118c3ca3995",
+      "inner_record_sha256": "10981c4f43b0ad4871c3553894aa8644ea432f6c6deb2990e960605b0daa0a40",
+      "inner_predictions_sha256": "434280abbf795cf9c7bef759b81721c53b3b6d9230f03a550176bffee729d152",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "calibration",
+      "reused_same_checkpoint": false,
+      "raw_metrics": {
+        "native_macro_f1": 0.7730044465338584,
+        "native_per_class_recall": [
+          0.9875,
+          0.8169014084507042,
+          0.39344262295081966,
+          1.0,
+          1.0
+        ],
+        "native_confusion": [
+          [
+            79,
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            9,
+            58,
+            0,
+            4,
+            0
+          ],
+          [
+            0,
+            0,
+            24,
+            37,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            18,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            7
+          ]
+        ],
+        "native_accuracy": 0.7848101265822784,
+        "native_frame_accuracy": 0.7749773092229282,
+        "native_internal_cuts_per_clip": 0.8607594936708861,
+        "native_internal_cuts_per_min": 8.545695734133911,
+        "native_share_cut": 0.2320675105485232,
+        "segment_f1_50_multi": 0.6143187066974596,
+        "boundary_recall_multi": 0.914572864321608,
+        "boundary_precision_multi": 0.5506807866868382,
+        "boundary_f1_multi": 0.6874409820585458,
+        "same_class_cut_rate_multi": 0.1890547263681592,
+        "multi_frame_accuracy": 0.798201199200533,
+        "segment_f1_50_pairs": 0.6334164588528678,
+        "boundary_recall_pairs": 0.8448275862068966,
+        "counts": {
+          "native_clips": 237,
+          "multi_streams": 120,
+          "pair_streams": 115,
+          "multi_true_changes": 398,
+          "multi_same_joins": 201
+        },
+        "native_A4C_to_A5C": 37,
+        "native_A5C_to_A4C": 0,
+        "native_A4C_A5C_errors": 37,
+        "short_true_segments_10samples": 23,
+        "short_true_unmatched_10samples": 5,
+        "short_predicted_segments_10samples": 310,
+        "short_spurious_segments_10samples": 276,
+        "short_true_segments_16samples": 134,
+        "short_true_unmatched_16samples": 26,
+        "short_predicted_segments_16samples": 429,
+        "short_spurious_segments_16samples": 315
+      },
+      "inference_cost": {
+        "new_sequences": 472,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 95.61649751663208,
+        "includes_model_coldstart_on_first_half": false,
+        "full_fresh_readout": true,
+        "GPU_peak_reserved_bytes": 1289748480
+      }
+    },
+    {
+      "row": "seed2026110257_F_inner_package",
+      "kind": "inner_selected_package",
+      "seed": 2026110257,
+      "arm": "F",
+      "step": 6000,
+      "path": "runs/a57_dense_sequence_v1/seed2026110257/F/step6000.pt",
+      "sha256": "11f818322102fb1c9ff853dc85781852d1177df48115e39fc2f237858ada36d1",
+      "inner_probabilities_sha256": "f4ca094b52ea5beb2b89d2337390edc632d51686583c267a1a1cb525a4904307",
+      "inner_record_sha256": "970ca6ec2cc6dbc53e62635dd4a601c2d88c34add0c8231c98545de79c353dc3",
+      "inner_predictions_sha256": "425fd1c8e3efbcd9150b5b3422724fed06d5e48c170cf6abca0ca030e475747c",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "selection",
+      "reused_same_checkpoint": true,
+      "raw_metrics": {
+        "native_macro_f1": 0.8197431440998656,
+        "native_per_class_recall": [
+          0.9809523809523809,
+          0.9852941176470589,
+          0.632183908045977,
+          1.0,
+          0.9230769230769231
+        ],
+        "native_confusion": [
+          [
+            103,
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            67,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            55,
+            32,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            11,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0,
+            12
+          ]
+        ],
+        "native_accuracy": 0.8732394366197183,
+        "native_frame_accuracy": 0.8328824767057409,
+        "native_internal_cuts_per_clip": 0.33098591549295775,
+        "native_internal_cuts_per_min": 3.39044183949504,
+        "native_share_cut": 0.13028169014084506,
+        "segment_f1_50_multi": 0.8159392789373814,
+        "boundary_recall_multi": 0.9267015706806283,
+        "boundary_precision_multi": 0.8194444444444444,
+        "boundary_f1_multi": 0.8697788697788698,
+        "same_class_cut_rate_multi": 0.09565217391304348,
+        "multi_frame_accuracy": 0.8764788449969921,
+        "segment_f1_50_pairs": 0.8126410835214447,
+        "boundary_recall_pairs": 0.9571428571428572,
+        "counts": {
+          "native_clips": 284,
+          "multi_streams": 120,
+          "pair_streams": 137,
+          "multi_true_changes": 382,
+          "multi_same_joins": 230
+        },
+        "native_A4C_to_A5C": 32,
+        "native_A5C_to_A4C": 0,
+        "native_A4C_A5C_errors": 32,
+        "short_true_segments_10samples": 32,
+        "short_true_unmatched_10samples": 5,
+        "short_predicted_segments_10samples": 87,
+        "short_spurious_segments_10samples": 54,
+        "short_true_segments_16samples": 141,
+        "short_true_unmatched_16samples": 26,
+        "short_predicted_segments_16samples": 199,
+        "short_spurious_segments_16samples": 79
+      }
+    },
+    {
+      "row": "seed2026110257_F_inner_package",
+      "kind": "inner_selected_package",
+      "seed": 2026110257,
+      "arm": "F",
+      "step": 6000,
+      "path": "runs/a57_dense_sequence_v1/seed2026110257/F/step6000.pt",
+      "sha256": "11f818322102fb1c9ff853dc85781852d1177df48115e39fc2f237858ada36d1",
+      "inner_probabilities_sha256": "f4ca094b52ea5beb2b89d2337390edc632d51686583c267a1a1cb525a4904307",
+      "inner_record_sha256": "970ca6ec2cc6dbc53e62635dd4a601c2d88c34add0c8231c98545de79c353dc3",
+      "inner_predictions_sha256": "425fd1c8e3efbcd9150b5b3422724fed06d5e48c170cf6abca0ca030e475747c",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "calibration",
+      "reused_same_checkpoint": true,
+      "raw_metrics": {
+        "native_macro_f1": 0.8521390754706306,
+        "native_per_class_recall": [
+          0.9875,
+          0.9295774647887324,
+          0.7377049180327869,
+          0.7777777777777778,
+          1.0
+        ],
+        "native_confusion": [
+          [
+            79,
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            4,
+            66,
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            45,
+            16,
+            0
+          ],
+          [
+            0,
+            0,
+            4,
+            14,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            7
+          ]
+        ],
+        "native_accuracy": 0.890295358649789,
+        "native_frame_accuracy": 0.8696502129442156,
+        "native_internal_cuts_per_clip": 0.4978902953586498,
+        "native_internal_cuts_per_min": 4.94309851288138,
+        "native_share_cut": 0.13924050632911392,
+        "segment_f1_50_multi": 0.7942754919499105,
+        "boundary_recall_multi": 0.914572864321608,
+        "boundary_precision_multi": 0.7583333333333333,
+        "boundary_f1_multi": 0.8291571753986332,
+        "same_class_cut_rate_multi": 0.10945273631840796,
+        "multi_frame_accuracy": 0.8575616255829447,
+        "segment_f1_50_pairs": 0.8388888888888889,
+        "boundary_recall_pairs": 0.9137931034482759,
+        "counts": {
+          "native_clips": 237,
+          "multi_streams": 120,
+          "pair_streams": 115,
+          "multi_true_changes": 398,
+          "multi_same_joins": 201
+        },
+        "native_A4C_to_A5C": 16,
+        "native_A5C_to_A4C": 4,
+        "native_A4C_A5C_errors": 20,
+        "short_true_segments_10samples": 23,
+        "short_true_unmatched_10samples": 4,
+        "short_predicted_segments_10samples": 102,
+        "short_spurious_segments_10samples": 79,
+        "short_true_segments_16samples": 134,
+        "short_true_unmatched_16samples": 28,
+        "short_predicted_segments_16samples": 221,
+        "short_spurious_segments_16samples": 111
+      }
+    },
+    {
+      "row": "seed2026110257_J-high_fixed2000",
+      "kind": "fixed_step",
+      "seed": 2026110257,
+      "arm": "J-high",
+      "step": 2000,
+      "path": "runs/a57_dense_sequence_v1/seed2026110257/J-high/step2000.pt",
+      "sha256": "30959d94e15abee63707b7826776e845945e9f000d58096a4a9abde513e26bb3",
+      "inner_probabilities_sha256": "15538b3ce59087c22496b9eef14d8b1f8a411d35d3f9ae5f97c349d16b6f17ac",
+      "inner_record_sha256": "863d43c5204bd7ea391e7d06c0c49be19bb3eaed05065ab21e3e9a75fb79a61c",
+      "inner_predictions_sha256": "d25cbd026cc7c5e71a35d87f72851f3cf856171148031e6b8b7f477c2465bce9",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "selection",
+      "reused_same_checkpoint": false,
+      "raw_metrics": {
+        "native_macro_f1": 0.9116668288361703,
+        "native_per_class_recall": [
+          0.9809523809523809,
+          1.0,
+          0.9310344827586207,
+          0.9090909090909091,
+          0.8461538461538461
+        ],
+        "native_confusion": [
+          [
+            103,
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            68,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            81,
+            6,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            10,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            1,
+            11
+          ]
+        ],
+        "native_accuracy": 0.9612676056338029,
+        "native_frame_accuracy": 0.965614667868951,
+        "native_internal_cuts_per_clip": 0.23943661971830985,
+        "native_internal_cuts_per_min": 2.452660054102795,
+        "native_share_cut": 0.09154929577464789,
+        "segment_f1_50_multi": 0.858195211786372,
+        "boundary_recall_multi": 0.9502617801047121,
+        "boundary_precision_multi": 0.7823275862068966,
+        "boundary_f1_multi": 0.8581560283687943,
+        "same_class_cut_rate_multi": 0.04782608695652174,
+        "multi_frame_accuracy": 0.9334937504177528,
+        "segment_f1_50_pairs": 0.908256880733945,
+        "boundary_recall_pairs": 0.9857142857142858,
+        "counts": {
+          "native_clips": 284,
+          "multi_streams": 120,
+          "pair_streams": 137,
+          "multi_true_changes": 382,
+          "multi_same_joins": 230
+        },
+        "native_A4C_to_A5C": 6,
+        "native_A5C_to_A4C": 1,
+        "native_A4C_A5C_errors": 7,
+        "short_true_segments_10samples": 32,
+        "short_true_unmatched_10samples": 6,
+        "short_predicted_segments_10samples": 112,
+        "short_spurious_segments_10samples": 87,
+        "short_true_segments_16samples": 141,
+        "short_true_unmatched_16samples": 20,
+        "short_predicted_segments_16samples": 244,
+        "short_spurious_segments_16samples": 106
+      },
+      "inference_cost": {
+        "new_sequences": 541,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 102.30241465568542,
+        "includes_model_coldstart_on_first_half": true,
+        "full_fresh_readout": true,
+        "GPU_peak_reserved_bytes": 1289748480
+      }
+    },
+    {
+      "row": "seed2026110257_J-high_fixed2000",
+      "kind": "fixed_step",
+      "seed": 2026110257,
+      "arm": "J-high",
+      "step": 2000,
+      "path": "runs/a57_dense_sequence_v1/seed2026110257/J-high/step2000.pt",
+      "sha256": "30959d94e15abee63707b7826776e845945e9f000d58096a4a9abde513e26bb3",
+      "inner_probabilities_sha256": "15538b3ce59087c22496b9eef14d8b1f8a411d35d3f9ae5f97c349d16b6f17ac",
+      "inner_record_sha256": "863d43c5204bd7ea391e7d06c0c49be19bb3eaed05065ab21e3e9a75fb79a61c",
+      "inner_predictions_sha256": "d25cbd026cc7c5e71a35d87f72851f3cf856171148031e6b8b7f477c2465bce9",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "calibration",
+      "reused_same_checkpoint": false,
+      "raw_metrics": {
+        "native_macro_f1": 0.979573367808662,
+        "native_per_class_recall": [
+          1.0,
+          1.0,
+          0.9508196721311475,
+          1.0,
+          1.0
+        ],
+        "native_confusion": [
+          [
+            80,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            71,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            58,
+            3,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            18,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            7
+          ]
+        ],
+        "native_accuracy": 0.9873417721518988,
+        "native_frame_accuracy": 0.9783564895622425,
+        "native_internal_cuts_per_clip": 0.25316455696202533,
+        "native_internal_cuts_per_min": 2.5134399218040913,
+        "native_share_cut": 0.10970464135021098,
+        "segment_f1_50_multi": 0.935813953488372,
+        "boundary_recall_multi": 0.9773869346733668,
+        "boundary_precision_multi": 0.8901601830663616,
+        "boundary_f1_multi": 0.9317365269461078,
+        "same_class_cut_rate_multi": 0.04477611940298507,
+        "multi_frame_accuracy": 0.9591605596269154,
+        "segment_f1_50_pairs": 0.9467787114845938,
+        "boundary_recall_pairs": 0.9655172413793104,
+        "counts": {
+          "native_clips": 237,
+          "multi_streams": 120,
+          "pair_streams": 115,
+          "multi_true_changes": 398,
+          "multi_same_joins": 201
+        },
+        "native_A4C_to_A5C": 3,
+        "native_A5C_to_A4C": 0,
+        "native_A4C_A5C_errors": 3,
+        "short_true_segments_10samples": 23,
+        "short_true_unmatched_10samples": 4,
+        "short_predicted_segments_10samples": 66,
+        "short_spurious_segments_10samples": 38,
+        "short_true_segments_16samples": 134,
+        "short_true_unmatched_16samples": 10,
+        "short_predicted_segments_16samples": 178,
+        "short_spurious_segments_16samples": 45
+      },
+      "inference_cost": {
+        "new_sequences": 472,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 91.16217064857483,
+        "includes_model_coldstart_on_first_half": false,
+        "full_fresh_readout": true,
+        "GPU_peak_reserved_bytes": 1289748480
+      }
+    },
+    {
+      "row": "seed2026110257_J-high_inner_package",
+      "kind": "inner_selected_package",
+      "seed": 2026110257,
+      "arm": "J-high",
+      "step": 3500,
+      "path": "runs/a57_dense_sequence_v1/seed2026110257/J-high/step3500.pt",
+      "sha256": "ccfda125872940ebaedc636c20d3b1bcdf82000dbfce3402e76f7318d4a93e6b",
+      "inner_probabilities_sha256": "35e29798b4899a85fdf56e577cfb003b071f329be2e64e1639695e16736b7ace",
+      "inner_record_sha256": "e938c929741edaa308be5b8a8e28516d70f15c5bda92ef6a7d50505b9ac92d5d",
+      "inner_predictions_sha256": "6ed1834e997c8b9ec733fc43dd489b4fe15833b1f4929e0b898b6d1a86479e4d",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "selection",
+      "reused_same_checkpoint": false,
+      "raw_metrics": {
+        "native_macro_f1": 0.9201770279503073,
+        "native_per_class_recall": [
+          0.9904761904761905,
+          0.9705882352941176,
+          0.9310344827586207,
+          0.9090909090909091,
+          1.0
+        ],
+        "native_confusion": [
+          [
+            104,
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            66,
+            0,
+            0,
+            2
+          ],
+          [
+            0,
+            0,
+            81,
+            6,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            10,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            13
+          ]
+        ],
+        "native_accuracy": 0.9647887323943662,
+        "native_frame_accuracy": 0.9512473700030057,
+        "native_internal_cuts_per_clip": 0.22887323943661972,
+        "native_internal_cuts_per_min": 2.3444544634806133,
+        "native_share_cut": 0.09154929577464789,
+        "segment_f1_50_multi": 0.862453531598513,
+        "boundary_recall_multi": 0.9528795811518325,
+        "boundary_precision_multi": 0.801762114537445,
+        "boundary_f1_multi": 0.8708133971291866,
+        "same_class_cut_rate_multi": 0.06086956521739131,
+        "multi_frame_accuracy": 0.9189893723681573,
+        "segment_f1_50_pairs": 0.908675799086758,
+        "boundary_recall_pairs": 0.9857142857142858,
+        "counts": {
+          "native_clips": 284,
+          "multi_streams": 120,
+          "pair_streams": 137,
+          "multi_true_changes": 382,
+          "multi_same_joins": 230
+        },
+        "native_A4C_to_A5C": 6,
+        "native_A5C_to_A4C": 1,
+        "native_A4C_A5C_errors": 7,
+        "short_true_segments_10samples": 32,
+        "short_true_unmatched_10samples": 3,
+        "short_predicted_segments_10samples": 90,
+        "short_spurious_segments_10samples": 61,
+        "short_true_segments_16samples": 141,
+        "short_true_unmatched_16samples": 8,
+        "short_predicted_segments_16samples": 229,
+        "short_spurious_segments_16samples": 89
+      },
+      "inference_cost": {
+        "new_sequences": 541,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 103.70050597190857,
+        "includes_model_coldstart_on_first_half": true,
+        "full_fresh_readout": true,
+        "GPU_peak_reserved_bytes": 1289748480
+      }
+    },
+    {
+      "row": "seed2026110257_J-high_inner_package",
+      "kind": "inner_selected_package",
+      "seed": 2026110257,
+      "arm": "J-high",
+      "step": 3500,
+      "path": "runs/a57_dense_sequence_v1/seed2026110257/J-high/step3500.pt",
+      "sha256": "ccfda125872940ebaedc636c20d3b1bcdf82000dbfce3402e76f7318d4a93e6b",
+      "inner_probabilities_sha256": "35e29798b4899a85fdf56e577cfb003b071f329be2e64e1639695e16736b7ace",
+      "inner_record_sha256": "e938c929741edaa308be5b8a8e28516d70f15c5bda92ef6a7d50505b9ac92d5d",
+      "inner_predictions_sha256": "6ed1834e997c8b9ec733fc43dd489b4fe15833b1f4929e0b898b6d1a86479e4d",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "calibration",
+      "reused_same_checkpoint": false,
+      "raw_metrics": {
+        "native_macro_f1": 0.9732203389830509,
+        "native_per_class_recall": [
+          1.0,
+          1.0,
+          0.9344262295081968,
+          1.0,
+          1.0
+        ],
+        "native_confusion": [
+          [
+            80,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            71,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            57,
+            4,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            18,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            7
+          ]
+        ],
+        "native_accuracy": 0.9831223628691983,
+        "native_frame_accuracy": 0.9592962368218949,
+        "native_internal_cuts_per_clip": 0.23628691983122363,
+        "native_internal_cuts_per_min": 2.3458772603504854,
+        "native_share_cut": 0.07172995780590717,
+        "segment_f1_50_multi": 0.9355742296918768,
+        "boundary_recall_multi": 0.9798994974874372,
+        "boundary_precision_multi": 0.9006928406466512,
+        "boundary_f1_multi": 0.9386281588447654,
+        "same_class_cut_rate_multi": 0.03980099502487562,
+        "multi_frame_accuracy": 0.9593604263824117,
+        "segment_f1_50_pairs": 0.9277777777777778,
+        "boundary_recall_pairs": 0.9482758620689655,
+        "counts": {
+          "native_clips": 237,
+          "multi_streams": 120,
+          "pair_streams": 115,
+          "multi_true_changes": 398,
+          "multi_same_joins": 201
+        },
+        "native_A4C_to_A5C": 4,
+        "native_A5C_to_A4C": 0,
+        "native_A4C_A5C_errors": 4,
+        "short_true_segments_10samples": 23,
+        "short_true_unmatched_10samples": 2,
+        "short_predicted_segments_10samples": 65,
+        "short_spurious_segments_10samples": 34,
+        "short_true_segments_16samples": 134,
+        "short_true_unmatched_16samples": 9,
+        "short_predicted_segments_16samples": 173,
+        "short_spurious_segments_16samples": 42
+      },
+      "inference_cost": {
+        "new_sequences": 472,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 92.56991314888,
+        "includes_model_coldstart_on_first_half": false,
+        "full_fresh_readout": true,
+        "GPU_peak_reserved_bytes": 1289748480
+      }
+    },
+    {
+      "row": "seed2026110257_J-low_fixed2000",
+      "kind": "fixed_step",
+      "seed": 2026110257,
+      "arm": "J-low",
+      "step": 2000,
+      "path": "runs/a57_dense_sequence_v1/seed2026110257/J-low/step2000.pt",
+      "sha256": "f9ff978e5521e839f1ae14770adb32e0bc71f66722a118d3027b3e6bc21269dc",
+      "inner_probabilities_sha256": "3a61709b800dd50b698924774d5e3c23e2cafb32f6b991529272875facf9d5f9",
+      "inner_record_sha256": "895a01761d9f3a46fcfa1265eb37c5095dd2e505798ed5e784047bf3dfe9f106",
+      "inner_predictions_sha256": "f58fa4e9144c77d759171fdd2cb0b5dac3324cee0c36119ec7a74964dedd247a",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "selection",
+      "reused_same_checkpoint": false,
+      "raw_metrics": {
+        "native_macro_f1": 0.8524582082652564,
+        "native_per_class_recall": [
+          0.9809523809523809,
+          0.9558823529411765,
+          0.8045977011494253,
+          0.9090909090909091,
+          1.0
+        ],
+        "native_confusion": [
+          [
+            103,
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            65,
+            0,
+            0,
+            3
+          ],
+          [
+            0,
+            0,
+            70,
+            17,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            10,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            13
+          ]
+        ],
+        "native_accuracy": 0.9190140845070423,
+        "native_frame_accuracy": 0.8845807033363391,
+        "native_internal_cuts_per_clip": 0.2992957746478873,
+        "native_internal_cuts_per_min": 3.065825067628494,
+        "native_share_cut": 0.11971830985915492,
+        "segment_f1_50_multi": 0.8294930875576036,
+        "boundary_recall_multi": 0.9319371727748691,
+        "boundary_precision_multi": 0.7688984881209503,
+        "boundary_f1_multi": 0.842603550295858,
+        "same_class_cut_rate_multi": 0.08260869565217391,
+        "multi_frame_accuracy": 0.9044849943185616,
+        "segment_f1_50_pairs": 0.8329621380846325,
+        "boundary_recall_pairs": 0.9857142857142858,
+        "counts": {
+          "native_clips": 284,
+          "multi_streams": 120,
+          "pair_streams": 137,
+          "multi_true_changes": 382,
+          "multi_same_joins": 230
+        },
+        "native_A4C_to_A5C": 17,
+        "native_A5C_to_A4C": 1,
+        "native_A4C_A5C_errors": 18,
+        "short_true_segments_10samples": 32,
+        "short_true_unmatched_10samples": 6,
+        "short_predicted_segments_10samples": 111,
+        "short_spurious_segments_10samples": 83,
+        "short_true_segments_16samples": 141,
+        "short_true_unmatched_16samples": 16,
+        "short_predicted_segments_16samples": 242,
+        "short_spurious_segments_16samples": 108
+      },
+      "inference_cost": {
+        "new_sequences": 541,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 102.01065421104431,
+        "includes_model_coldstart_on_first_half": true,
+        "full_fresh_readout": true,
+        "GPU_peak_reserved_bytes": 1289748480
+      }
+    },
+    {
+      "row": "seed2026110257_J-low_fixed2000",
+      "kind": "fixed_step",
+      "seed": 2026110257,
+      "arm": "J-low",
+      "step": 2000,
+      "path": "runs/a57_dense_sequence_v1/seed2026110257/J-low/step2000.pt",
+      "sha256": "f9ff978e5521e839f1ae14770adb32e0bc71f66722a118d3027b3e6bc21269dc",
+      "inner_probabilities_sha256": "3a61709b800dd50b698924774d5e3c23e2cafb32f6b991529272875facf9d5f9",
+      "inner_record_sha256": "895a01761d9f3a46fcfa1265eb37c5095dd2e505798ed5e784047bf3dfe9f106",
+      "inner_predictions_sha256": "f58fa4e9144c77d759171fdd2cb0b5dac3324cee0c36119ec7a74964dedd247a",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "calibration",
+      "reused_same_checkpoint": false,
+      "raw_metrics": {
+        "native_macro_f1": 0.9360081332394703,
+        "native_per_class_recall": [
+          0.9875,
+          1.0,
+          0.8360655737704918,
+          1.0,
+          1.0
+        ],
+        "native_confusion": [
+          [
+            79,
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            71,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            51,
+            10,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            18,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            7
+          ]
+        ],
+        "native_accuracy": 0.9535864978902954,
+        "native_frame_accuracy": 0.9245269845702716,
+        "native_internal_cuts_per_clip": 0.4219409282700422,
+        "native_internal_cuts_per_min": 4.189066536340152,
+        "native_share_cut": 0.13924050632911392,
+        "segment_f1_50_multi": 0.8825688073394495,
+        "boundary_recall_multi": 0.9547738693467337,
+        "boundary_precision_multi": 0.8407079646017699,
+        "boundary_f1_multi": 0.8941176470588236,
+        "same_class_cut_rate_multi": 0.07462686567164178,
+        "multi_frame_accuracy": 0.9286475682878081,
+        "segment_f1_50_pairs": 0.9080779944289693,
+        "boundary_recall_pairs": 0.9482758620689655,
+        "counts": {
+          "native_clips": 237,
+          "multi_streams": 120,
+          "pair_streams": 115,
+          "multi_true_changes": 398,
+          "multi_same_joins": 201
+        },
+        "native_A4C_to_A5C": 10,
+        "native_A5C_to_A4C": 0,
+        "native_A4C_A5C_errors": 10,
+        "short_true_segments_10samples": 23,
+        "short_true_unmatched_10samples": 2,
+        "short_predicted_segments_10samples": 82,
+        "short_spurious_segments_10samples": 51,
+        "short_true_segments_16samples": 134,
+        "short_true_unmatched_16samples": 11,
+        "short_predicted_segments_16samples": 195,
+        "short_spurious_segments_16samples": 67
+      },
+      "inference_cost": {
+        "new_sequences": 472,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 93.01033854484558,
+        "includes_model_coldstart_on_first_half": false,
+        "full_fresh_readout": true,
+        "GPU_peak_reserved_bytes": 1289748480
+      }
+    },
+    {
+      "row": "seed2026110257_J-low_inner_package",
+      "kind": "inner_selected_package",
+      "seed": 2026110257,
+      "arm": "J-low",
+      "step": 2000,
+      "path": "runs/a57_dense_sequence_v1/seed2026110257/J-low/step2000.pt",
+      "sha256": "f9ff978e5521e839f1ae14770adb32e0bc71f66722a118d3027b3e6bc21269dc",
+      "inner_probabilities_sha256": "3a61709b800dd50b698924774d5e3c23e2cafb32f6b991529272875facf9d5f9",
+      "inner_record_sha256": "895a01761d9f3a46fcfa1265eb37c5095dd2e505798ed5e784047bf3dfe9f106",
+      "inner_predictions_sha256": "f58fa4e9144c77d759171fdd2cb0b5dac3324cee0c36119ec7a74964dedd247a",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "selection",
+      "reused_same_checkpoint": true,
+      "raw_metrics": {
+        "native_macro_f1": 0.8524582082652564,
+        "native_per_class_recall": [
+          0.9809523809523809,
+          0.9558823529411765,
+          0.8045977011494253,
+          0.9090909090909091,
+          1.0
+        ],
+        "native_confusion": [
+          [
+            103,
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            65,
+            0,
+            0,
+            3
+          ],
+          [
+            0,
+            0,
+            70,
+            17,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            10,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            13
+          ]
+        ],
+        "native_accuracy": 0.9190140845070423,
+        "native_frame_accuracy": 0.8845807033363391,
+        "native_internal_cuts_per_clip": 0.2992957746478873,
+        "native_internal_cuts_per_min": 3.065825067628494,
+        "native_share_cut": 0.11971830985915492,
+        "segment_f1_50_multi": 0.8294930875576036,
+        "boundary_recall_multi": 0.9319371727748691,
+        "boundary_precision_multi": 0.7688984881209503,
+        "boundary_f1_multi": 0.842603550295858,
+        "same_class_cut_rate_multi": 0.08260869565217391,
+        "multi_frame_accuracy": 0.9044849943185616,
+        "segment_f1_50_pairs": 0.8329621380846325,
+        "boundary_recall_pairs": 0.9857142857142858,
+        "counts": {
+          "native_clips": 284,
+          "multi_streams": 120,
+          "pair_streams": 137,
+          "multi_true_changes": 382,
+          "multi_same_joins": 230
+        },
+        "native_A4C_to_A5C": 17,
+        "native_A5C_to_A4C": 1,
+        "native_A4C_A5C_errors": 18,
+        "short_true_segments_10samples": 32,
+        "short_true_unmatched_10samples": 6,
+        "short_predicted_segments_10samples": 111,
+        "short_spurious_segments_10samples": 83,
+        "short_true_segments_16samples": 141,
+        "short_true_unmatched_16samples": 16,
+        "short_predicted_segments_16samples": 242,
+        "short_spurious_segments_16samples": 108
+      }
+    },
+    {
+      "row": "seed2026110257_J-low_inner_package",
+      "kind": "inner_selected_package",
+      "seed": 2026110257,
+      "arm": "J-low",
+      "step": 2000,
+      "path": "runs/a57_dense_sequence_v1/seed2026110257/J-low/step2000.pt",
+      "sha256": "f9ff978e5521e839f1ae14770adb32e0bc71f66722a118d3027b3e6bc21269dc",
+      "inner_probabilities_sha256": "3a61709b800dd50b698924774d5e3c23e2cafb32f6b991529272875facf9d5f9",
+      "inner_record_sha256": "895a01761d9f3a46fcfa1265eb37c5095dd2e505798ed5e784047bf3dfe9f106",
+      "inner_predictions_sha256": "f58fa4e9144c77d759171fdd2cb0b5dac3324cee0c36119ec7a74964dedd247a",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "calibration",
+      "reused_same_checkpoint": true,
+      "raw_metrics": {
+        "native_macro_f1": 0.9360081332394703,
+        "native_per_class_recall": [
+          0.9875,
+          1.0,
+          0.8360655737704918,
+          1.0,
+          1.0
+        ],
+        "native_confusion": [
+          [
+            79,
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            71,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            51,
+            10,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            18,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            7
+          ]
+        ],
+        "native_accuracy": 0.9535864978902954,
+        "native_frame_accuracy": 0.9245269845702716,
+        "native_internal_cuts_per_clip": 0.4219409282700422,
+        "native_internal_cuts_per_min": 4.189066536340152,
+        "native_share_cut": 0.13924050632911392,
+        "segment_f1_50_multi": 0.8825688073394495,
+        "boundary_recall_multi": 0.9547738693467337,
+        "boundary_precision_multi": 0.8407079646017699,
+        "boundary_f1_multi": 0.8941176470588236,
+        "same_class_cut_rate_multi": 0.07462686567164178,
+        "multi_frame_accuracy": 0.9286475682878081,
+        "segment_f1_50_pairs": 0.9080779944289693,
+        "boundary_recall_pairs": 0.9482758620689655,
+        "counts": {
+          "native_clips": 237,
+          "multi_streams": 120,
+          "pair_streams": 115,
+          "multi_true_changes": 398,
+          "multi_same_joins": 201
+        },
+        "native_A4C_to_A5C": 10,
+        "native_A5C_to_A4C": 0,
+        "native_A4C_A5C_errors": 10,
+        "short_true_segments_10samples": 23,
+        "short_true_unmatched_10samples": 2,
+        "short_predicted_segments_10samples": 82,
+        "short_spurious_segments_10samples": 51,
+        "short_true_segments_16samples": 134,
+        "short_true_unmatched_16samples": 11,
+        "short_predicted_segments_16samples": 195,
+        "short_spurious_segments_16samples": 67
+      }
+    },
+    {
+      "row": "seed2026110258_F_fixed2000",
+      "kind": "fixed_step",
+      "seed": 2026110258,
+      "arm": "F",
+      "step": 2000,
+      "path": "runs/a57_dense_sequence_v1/seed2026110258/F/step2000.pt",
+      "sha256": "b4a8389e63c9ffc9212c07ca5d2149f4348e5813599a013139e14c8bed393414",
+      "inner_probabilities_sha256": "3869814c3bc8d2e6ae468a9435d199e131c8daf4de5d3662735902ec19c36e78",
+      "inner_record_sha256": "fc4b84391a4a9dcd46a012aa88c996c20fe501af54569d830d71e68f3cb04385",
+      "inner_predictions_sha256": "3f9cee83e0b031766480cf5193b8e93edae5f1dc8e6db871b2cd282c1507ef19",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "selection",
+      "reused_same_checkpoint": false,
+      "raw_metrics": {
+        "native_macro_f1": 0.8240652741733646,
+        "native_per_class_recall": [
+          0.9809523809523809,
+          0.8676470588235294,
+          0.7816091954022989,
+          0.9090909090909091,
+          1.0
+        ],
+        "native_confusion": [
+          [
+            103,
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            5,
+            59,
+            0,
+            0,
+            4
+          ],
+          [
+            0,
+            0,
+            68,
+            19,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            10,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            13
+          ]
+        ],
+        "native_accuracy": 0.8908450704225352,
+        "native_frame_accuracy": 0.8819957920048092,
+        "native_internal_cuts_per_clip": 0.8380281690140845,
+        "native_internal_cuts_per_min": 8.584310189359783,
+        "native_share_cut": 0.2535211267605634,
+        "segment_f1_50_multi": 0.6577498033044846,
+        "boundary_recall_multi": 0.9476439790575916,
+        "boundary_precision_multi": 0.5577812018489985,
+        "boundary_f1_multi": 0.7022308438409312,
+        "same_class_cut_rate_multi": 0.2391304347826087,
+        "multi_frame_accuracy": 0.8464674821201791,
+        "segment_f1_50_pairs": 0.6906187624750499,
+        "boundary_recall_pairs": 0.9285714285714286,
+        "counts": {
+          "native_clips": 284,
+          "multi_streams": 120,
+          "pair_streams": 137,
+          "multi_true_changes": 382,
+          "multi_same_joins": 230
+        },
+        "native_A4C_to_A5C": 19,
+        "native_A5C_to_A4C": 1,
+        "native_A4C_A5C_errors": 20,
+        "short_true_segments_10samples": 32,
+        "short_true_unmatched_10samples": 7,
+        "short_predicted_segments_10samples": 284,
+        "short_spurious_segments_10samples": 249,
+        "short_true_segments_16samples": 141,
+        "short_true_unmatched_16samples": 36,
+        "short_predicted_segments_16samples": 428,
+        "short_spurious_segments_16samples": 304
+      },
+      "inference_cost": {
+        "new_sequences": 541,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 100.7594313621521,
+        "includes_model_coldstart_on_first_half": true,
+        "full_fresh_readout": true,
+        "GPU_peak_reserved_bytes": 1289748480
+      }
+    },
+    {
+      "row": "seed2026110258_F_fixed2000",
+      "kind": "fixed_step",
+      "seed": 2026110258,
+      "arm": "F",
+      "step": 2000,
+      "path": "runs/a57_dense_sequence_v1/seed2026110258/F/step2000.pt",
+      "sha256": "b4a8389e63c9ffc9212c07ca5d2149f4348e5813599a013139e14c8bed393414",
+      "inner_probabilities_sha256": "3869814c3bc8d2e6ae468a9435d199e131c8daf4de5d3662735902ec19c36e78",
+      "inner_record_sha256": "fc4b84391a4a9dcd46a012aa88c996c20fe501af54569d830d71e68f3cb04385",
+      "inner_predictions_sha256": "3f9cee83e0b031766480cf5193b8e93edae5f1dc8e6db871b2cd282c1507ef19",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "calibration",
+      "reused_same_checkpoint": false,
+      "raw_metrics": {
+        "native_macro_f1": 0.7595226601062643,
+        "native_per_class_recall": [
+          0.975,
+          0.8309859154929577,
+          0.7213114754098361,
+          0.6666666666666666,
+          1.0
+        ],
+        "native_confusion": [
+          [
+            78,
+            1,
+            0,
+            0,
+            1
+          ],
+          [
+            5,
+            59,
+            0,
+            0,
+            7
+          ],
+          [
+            0,
+            0,
+            44,
+            17,
+            0
+          ],
+          [
+            0,
+            0,
+            6,
+            12,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            7
+          ]
+        ],
+        "native_accuracy": 0.8438818565400844,
+        "native_frame_accuracy": 0.8399776583118062,
+        "native_internal_cuts_per_clip": 1.0632911392405062,
+        "native_internal_cuts_per_min": 10.556447671577184,
+        "native_share_cut": 0.3037974683544304,
+        "segment_f1_50_multi": 0.5906040268456376,
+        "boundary_recall_multi": 0.907035175879397,
+        "boundary_precision_multi": 0.5135135135135135,
+        "boundary_f1_multi": 0.6557674841053588,
+        "same_class_cut_rate_multi": 0.2736318407960199,
+        "multi_frame_accuracy": 0.8036642238507662,
+        "segment_f1_50_pairs": 0.6635071090047393,
+        "boundary_recall_pairs": 0.8793103448275862,
+        "counts": {
+          "native_clips": 237,
+          "multi_streams": 120,
+          "pair_streams": 115,
+          "multi_true_changes": 398,
+          "multi_same_joins": 201
+        },
+        "native_A4C_to_A5C": 17,
+        "native_A5C_to_A4C": 6,
+        "native_A4C_A5C_errors": 23,
+        "short_true_segments_10samples": 23,
+        "short_true_unmatched_10samples": 4,
+        "short_predicted_segments_10samples": 320,
+        "short_spurious_segments_10samples": 293,
+        "short_true_segments_16samples": 134,
+        "short_true_unmatched_16samples": 40,
+        "short_predicted_segments_16samples": 469,
+        "short_spurious_segments_16samples": 369
+      },
+      "inference_cost": {
+        "new_sequences": 472,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 90.83294296264648,
+        "includes_model_coldstart_on_first_half": false,
+        "full_fresh_readout": true,
+        "GPU_peak_reserved_bytes": 1289748480
+      }
+    },
+    {
+      "row": "seed2026110258_F_inner_package",
+      "kind": "inner_selected_package",
+      "seed": 2026110258,
+      "arm": "F",
+      "step": 6000,
+      "path": "runs/a57_dense_sequence_v1/seed2026110258/F/step6000.pt",
+      "sha256": "b93387a327f0905fc9a7022513096592d2a3b471ddfc978e60e2c052444bdc9c",
+      "inner_probabilities_sha256": "094da498c5e92b6d0b63ee85704da81f223bf697f21dc47bc4127c43bd3a5afe",
+      "inner_record_sha256": "75cc9f873b97daf3c533fb0f7a7ebfdc33a4e187951ae78ea6c7c7163ca4b079",
+      "inner_predictions_sha256": "8424b3e412fe3ae944f21bded19a277c79a32d4a2f13a7ab27c0ffa5188a90fd",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "selection",
+      "reused_same_checkpoint": true,
+      "raw_metrics": {
+        "native_macro_f1": 0.8297559783579519,
+        "native_per_class_recall": [
+          0.9809523809523809,
+          0.9705882352941176,
+          0.7011494252873564,
+          0.9090909090909091,
+          0.9230769230769231
+        ],
+        "native_confusion": [
+          [
+            103,
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            2,
+            66,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            61,
+            26,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            10,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0,
+            12
+          ]
+        ],
+        "native_accuracy": 0.8873239436619719,
+        "native_frame_accuracy": 0.8508566275924256,
+        "native_internal_cuts_per_clip": 0.3274647887323944,
+        "native_internal_cuts_per_min": 3.3543733092876464,
+        "native_share_cut": 0.13380281690140844,
+        "segment_f1_50_multi": 0.8155893536121673,
+        "boundary_recall_multi": 0.9293193717277487,
+        "boundary_precision_multi": 0.8255813953488372,
+        "boundary_f1_multi": 0.874384236453202,
+        "same_class_cut_rate_multi": 0.08695652173913043,
+        "multi_frame_accuracy": 0.8746073123454314,
+        "segment_f1_50_pairs": 0.8181818181818182,
+        "boundary_recall_pairs": 0.9428571428571428,
+        "counts": {
+          "native_clips": 284,
+          "multi_streams": 120,
+          "pair_streams": 137,
+          "multi_true_changes": 382,
+          "multi_same_joins": 230
+        },
+        "native_A4C_to_A5C": 26,
+        "native_A5C_to_A4C": 1,
+        "native_A4C_A5C_errors": 27,
+        "short_true_segments_10samples": 32,
+        "short_true_unmatched_10samples": 7,
+        "short_predicted_segments_10samples": 83,
+        "short_spurious_segments_10samples": 52,
+        "short_true_segments_16samples": 141,
+        "short_true_unmatched_16samples": 28,
+        "short_predicted_segments_16samples": 192,
+        "short_spurious_segments_16samples": 76
+      }
+    },
+    {
+      "row": "seed2026110258_F_inner_package",
+      "kind": "inner_selected_package",
+      "seed": 2026110258,
+      "arm": "F",
+      "step": 6000,
+      "path": "runs/a57_dense_sequence_v1/seed2026110258/F/step6000.pt",
+      "sha256": "b93387a327f0905fc9a7022513096592d2a3b471ddfc978e60e2c052444bdc9c",
+      "inner_probabilities_sha256": "094da498c5e92b6d0b63ee85704da81f223bf697f21dc47bc4127c43bd3a5afe",
+      "inner_record_sha256": "75cc9f873b97daf3c533fb0f7a7ebfdc33a4e187951ae78ea6c7c7163ca4b079",
+      "inner_predictions_sha256": "8424b3e412fe3ae944f21bded19a277c79a32d4a2f13a7ab27c0ffa5188a90fd",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "calibration",
+      "reused_same_checkpoint": true,
+      "raw_metrics": {
+        "native_macro_f1": 0.8715854880065086,
+        "native_per_class_recall": [
+          0.9875,
+          0.9436619718309859,
+          0.7540983606557377,
+          0.7777777777777778,
+          1.0
+        ],
+        "native_confusion": [
+          [
+            79,
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            4,
+            67,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            46,
+            15,
+            0
+          ],
+          [
+            0,
+            0,
+            4,
+            14,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            7
+          ]
+        ],
+        "native_accuracy": 0.8987341772151899,
+        "native_frame_accuracy": 0.8846610346994345,
+        "native_internal_cuts_per_clip": 0.4092827004219409,
+        "native_internal_cuts_per_min": 4.063394540249948,
+        "native_share_cut": 0.12658227848101267,
+        "segment_f1_50_multi": 0.7890070921985816,
+        "boundary_recall_multi": 0.9195979899497487,
+        "boundary_precision_multi": 0.746938775510204,
+        "boundary_f1_multi": 0.8243243243243243,
+        "same_class_cut_rate_multi": 0.11940298507462686,
+        "multi_frame_accuracy": 0.8604263824117255,
+        "segment_f1_50_pairs": 0.8238482384823849,
+        "boundary_recall_pairs": 0.896551724137931,
+        "counts": {
+          "native_clips": 237,
+          "multi_streams": 120,
+          "pair_streams": 115,
+          "multi_true_changes": 398,
+          "multi_same_joins": 201
+        },
+        "native_A4C_to_A5C": 15,
+        "native_A5C_to_A4C": 4,
+        "native_A4C_A5C_errors": 19,
+        "short_true_segments_10samples": 23,
+        "short_true_unmatched_10samples": 4,
+        "short_predicted_segments_10samples": 114,
+        "short_spurious_segments_10samples": 88,
+        "short_true_segments_16samples": 134,
+        "short_true_unmatched_16samples": 26,
+        "short_predicted_segments_16samples": 240,
+        "short_spurious_segments_16samples": 125
+      }
+    },
+    {
+      "row": "seed2026110258_J-high_fixed2000",
+      "kind": "fixed_step",
+      "seed": 2026110258,
+      "arm": "J-high",
+      "step": 2000,
+      "path": "runs/a57_dense_sequence_v1/seed2026110258/J-high/step2000.pt",
+      "sha256": "ebda207f532375a2fc1782c8d7cc0265cac59f775aa4b9ddb3d64154635da82a",
+      "inner_probabilities_sha256": "3b29efde4608f0fa547421bcd83afe02d1383c345c8e00cd678425d959048ea5",
+      "inner_record_sha256": "cdd660b53fda75a520064e08f5a9095aa46c6293a979485b9bbecaf84a45a8b3",
+      "inner_predictions_sha256": "cdfab404d607ef386e40dd7ca3eeca84cdcf987eea6c6dd649ac9c12ae5ff600",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "selection",
+      "reused_same_checkpoint": false,
+      "raw_metrics": {
+        "native_macro_f1": 0.928970029383116,
+        "native_per_class_recall": [
+          0.9809523809523809,
+          0.9705882352941176,
+          1.0,
+          0.6363636363636364,
+          1.0
+        ],
+        "native_confusion": [
+          [
+            103,
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            66,
+            0,
+            0,
+            2
+          ],
+          [
+            0,
+            0,
+            87,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            4,
+            7,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            13
+          ]
+        ],
+        "native_accuracy": 0.971830985915493,
+        "native_frame_accuracy": 0.9630297565374211,
+        "native_internal_cuts_per_clip": 0.176056338028169,
+        "native_internal_cuts_per_min": 1.8034265103697023,
+        "native_share_cut": 0.04225352112676056,
+        "segment_f1_50_multi": 0.8029465930018416,
+        "boundary_recall_multi": 0.9319371727748691,
+        "boundary_precision_multi": 0.7672413793103449,
+        "boundary_f1_multi": 0.8416075650118203,
+        "same_class_cut_rate_multi": 0.1,
+        "multi_frame_accuracy": 0.8770804090635653,
+        "segment_f1_50_pairs": 0.9305555555555556,
+        "boundary_recall_pairs": 1.0,
+        "counts": {
+          "native_clips": 284,
+          "multi_streams": 120,
+          "pair_streams": 137,
+          "multi_true_changes": 382,
+          "multi_same_joins": 230
+        },
+        "native_A4C_to_A5C": 0,
+        "native_A5C_to_A4C": 4,
+        "native_A4C_A5C_errors": 4,
+        "short_true_segments_10samples": 32,
+        "short_true_unmatched_10samples": 5,
+        "short_predicted_segments_10samples": 103,
+        "short_spurious_segments_10samples": 71,
+        "short_true_segments_16samples": 141,
+        "short_true_unmatched_16samples": 18,
+        "short_predicted_segments_16samples": 225,
+        "short_spurious_segments_16samples": 94
+      },
+      "inference_cost": {
+        "new_sequences": 541,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 102.49041986465454,
+        "includes_model_coldstart_on_first_half": true,
+        "full_fresh_readout": true,
+        "GPU_peak_reserved_bytes": 1289748480
+      }
+    },
+    {
+      "row": "seed2026110258_J-high_fixed2000",
+      "kind": "fixed_step",
+      "seed": 2026110258,
+      "arm": "J-high",
+      "step": 2000,
+      "path": "runs/a57_dense_sequence_v1/seed2026110258/J-high/step2000.pt",
+      "sha256": "ebda207f532375a2fc1782c8d7cc0265cac59f775aa4b9ddb3d64154635da82a",
+      "inner_probabilities_sha256": "3b29efde4608f0fa547421bcd83afe02d1383c345c8e00cd678425d959048ea5",
+      "inner_record_sha256": "cdd660b53fda75a520064e08f5a9095aa46c6293a979485b9bbecaf84a45a8b3",
+      "inner_predictions_sha256": "cdfab404d607ef386e40dd7ca3eeca84cdcf987eea6c6dd649ac9c12ae5ff600",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "calibration",
+      "reused_same_checkpoint": false,
+      "raw_metrics": {
+        "native_macro_f1": 0.9900032349917302,
+        "native_per_class_recall": [
+          0.9875,
+          1.0,
+          1.0,
+          0.9444444444444444,
+          1.0
+        ],
+        "native_confusion": [
+          [
+            79,
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            71,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            61,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            17,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            7
+          ]
+        ],
+        "native_accuracy": 0.9915611814345991,
+        "native_frame_accuracy": 0.9687216365286602,
+        "native_internal_cuts_per_clip": 0.15611814345991562,
+        "native_internal_cuts_per_min": 1.5499546184458564,
+        "native_share_cut": 0.046413502109704644,
+        "segment_f1_50_multi": 0.9126034958601656,
+        "boundary_recall_multi": 0.964824120603015,
+        "boundary_precision_multi": 0.8552338530066815,
+        "boundary_f1_multi": 0.9067296340023613,
+        "same_class_cut_rate_multi": 0.029850746268656716,
+        "multi_frame_accuracy": 0.9494337108594271,
+        "segment_f1_50_pairs": 0.9352112676056338,
+        "boundary_recall_pairs": 0.9310344827586207,
+        "counts": {
+          "native_clips": 237,
+          "multi_streams": 120,
+          "pair_streams": 115,
+          "multi_true_changes": 398,
+          "multi_same_joins": 201
+        },
+        "native_A4C_to_A5C": 0,
+        "native_A5C_to_A4C": 1,
+        "native_A4C_A5C_errors": 1,
+        "short_true_segments_10samples": 23,
+        "short_true_unmatched_10samples": 1,
+        "short_predicted_segments_10samples": 94,
+        "short_spurious_segments_10samples": 61,
+        "short_true_segments_16samples": 134,
+        "short_true_unmatched_16samples": 13,
+        "short_predicted_segments_16samples": 200,
+        "short_spurious_segments_16samples": 69
+      },
+      "inference_cost": {
+        "new_sequences": 472,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 93.43609690666199,
+        "includes_model_coldstart_on_first_half": false,
+        "full_fresh_readout": true,
+        "GPU_peak_reserved_bytes": 1289748480
+      }
+    },
+    {
+      "row": "seed2026110258_J-high_inner_package",
+      "kind": "inner_selected_package",
+      "seed": 2026110258,
+      "arm": "J-high",
+      "step": 5500,
+      "path": "runs/a57_dense_sequence_v1/seed2026110258/J-high/step5500.pt",
+      "sha256": "21e9a4bc4d29d2cfcc485762ec4403a8c63aac319107dfc6afa769b4b30a966c",
+      "inner_probabilities_sha256": "5439176c12f1bd3e4e1529042f051c7ded98c7d07d107ddd99764dad12ef3908",
+      "inner_record_sha256": "e8d91c489539a4f34bc638b3be239a199e844332154b6c373ff2d73cb7031a67",
+      "inner_predictions_sha256": "bf67d126d6991095005eeab57f970c5a5a615f3e9b92ea5ebe441a7f0aa31061",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "selection",
+      "reused_same_checkpoint": false,
+      "raw_metrics": {
+        "native_macro_f1": 0.9483129034707982,
+        "native_per_class_recall": [
+          0.9904761904761905,
+          0.9705882352941176,
+          0.9885057471264368,
+          0.8181818181818182,
+          1.0
+        ],
+        "native_confusion": [
+          [
+            104,
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            66,
+            0,
+            0,
+            2
+          ],
+          [
+            0,
+            0,
+            86,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            2,
+            9,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            13
+          ]
+        ],
+        "native_accuracy": 0.9788732394366197,
+        "native_frame_accuracy": 0.9706642620979862,
+        "native_internal_cuts_per_clip": 0.16901408450704225,
+        "native_internal_cuts_per_min": 1.7312894499549143,
+        "native_share_cut": 0.056338028169014086,
+        "segment_f1_50_multi": 0.8882575757575758,
+        "boundary_recall_multi": 0.9764397905759162,
+        "boundary_precision_multi": 0.8594470046082949,
+        "boundary_f1_multi": 0.9142156862745098,
+        "same_class_cut_rate_multi": 0.05652173913043478,
+        "multi_frame_accuracy": 0.9230666399304859,
+        "segment_f1_50_pairs": 0.9351851851851852,
+        "boundary_recall_pairs": 1.0,
+        "counts": {
+          "native_clips": 284,
+          "multi_streams": 120,
+          "pair_streams": 137,
+          "multi_true_changes": 382,
+          "multi_same_joins": 230
+        },
+        "native_A4C_to_A5C": 1,
+        "native_A5C_to_A4C": 2,
+        "native_A4C_A5C_errors": 3,
+        "short_true_segments_10samples": 32,
+        "short_true_unmatched_10samples": 2,
+        "short_predicted_segments_10samples": 74,
+        "short_spurious_segments_10samples": 40,
+        "short_true_segments_16samples": 141,
+        "short_true_unmatched_16samples": 6,
+        "short_predicted_segments_16samples": 194,
+        "short_spurious_segments_16samples": 52
+      },
+      "inference_cost": {
+        "new_sequences": 541,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 101.65362286567688,
+        "includes_model_coldstart_on_first_half": true,
+        "full_fresh_readout": true,
+        "GPU_peak_reserved_bytes": 1289748480
+      }
+    },
+    {
+      "row": "seed2026110258_J-high_inner_package",
+      "kind": "inner_selected_package",
+      "seed": 2026110258,
+      "arm": "J-high",
+      "step": 5500,
+      "path": "runs/a57_dense_sequence_v1/seed2026110258/J-high/step5500.pt",
+      "sha256": "21e9a4bc4d29d2cfcc485762ec4403a8c63aac319107dfc6afa769b4b30a966c",
+      "inner_probabilities_sha256": "5439176c12f1bd3e4e1529042f051c7ded98c7d07d107ddd99764dad12ef3908",
+      "inner_record_sha256": "e8d91c489539a4f34bc638b3be239a199e844332154b6c373ff2d73cb7031a67",
+      "inner_predictions_sha256": "bf67d126d6991095005eeab57f970c5a5a615f3e9b92ea5ebe441a7f0aa31061",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "calibration",
+      "reused_same_checkpoint": false,
+      "raw_metrics": {
+        "native_macro_f1": 0.9788251060978332,
+        "native_per_class_recall": [
+          1.0,
+          1.0,
+          0.9672131147540983,
+          0.9444444444444444,
+          1.0
+        ],
+        "native_confusion": [
+          [
+            80,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            71,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            59,
+            2,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            17,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            7
+          ]
+        ],
+        "native_accuracy": 0.9873417721518988,
+        "native_frame_accuracy": 0.975075054108776,
+        "native_internal_cuts_per_clip": 0.18143459915611815,
+        "native_internal_cuts_per_min": 1.8012986106262654,
+        "native_share_cut": 0.05063291139240506,
+        "segment_f1_50_multi": 0.9527410207939508,
+        "boundary_recall_multi": 0.9899497487437185,
+        "boundary_precision_multi": 0.9380952380952381,
+        "boundary_f1_multi": 0.9633251833740831,
+        "same_class_cut_rate_multi": 0.04477611940298507,
+        "multi_frame_accuracy": 0.9648900732844771,
+        "segment_f1_50_pairs": 0.9629629629629629,
+        "boundary_recall_pairs": 0.9827586206896551,
+        "counts": {
+          "native_clips": 237,
+          "multi_streams": 120,
+          "pair_streams": 115,
+          "multi_true_changes": 398,
+          "multi_same_joins": 201
+        },
+        "native_A4C_to_A5C": 2,
+        "native_A5C_to_A4C": 1,
+        "native_A4C_A5C_errors": 3,
+        "short_true_segments_10samples": 23,
+        "short_true_unmatched_10samples": 1,
+        "short_predicted_segments_10samples": 49,
+        "short_spurious_segments_10samples": 22,
+        "short_true_segments_16samples": 134,
+        "short_true_unmatched_16samples": 9,
+        "short_predicted_segments_16samples": 161,
+        "short_spurious_segments_16samples": 29
+      },
+      "inference_cost": {
+        "new_sequences": 472,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 91.79245805740356,
+        "includes_model_coldstart_on_first_half": false,
+        "full_fresh_readout": true,
+        "GPU_peak_reserved_bytes": 1289748480
+      }
+    }
+  ],
+  "model_manifest_sha256": "a5d6c70cc9796f0cf8319bda7c6fa54526c383c80f012e7ec5399a6289d2bb87",
+  "readout_freeze_git": "b42a1b22a93c558dce43cffed32f325306ff9e6d",
+  "wall_seconds": 2813.9392375946045,
+  "new_training_updates_during_outer": 0
+}
