@@ -9,6 +9,9 @@ from echo_routing.temporal.segments import labels_to_segments
 
 def evaluate(predictions, context):
     result, tables = historical_evaluate(predictions, context)
+    confusion = np.asarray(result['native_confusion'])
+    result['native_per_class_recall'] = np.divide(np.diag(confusion), confusion.sum(1),
+        out=np.zeros(5, float), where=confusion.sum(1) > 0).tolist()
     fragment = tables['pairs_frag'].sum(numeric_only=True)
     ratio = lambda a, b: float(a / b) if b else None
     result['boundary_precision_pairs'] = ratio(fragment.t_matched, fragment.p_pred)
