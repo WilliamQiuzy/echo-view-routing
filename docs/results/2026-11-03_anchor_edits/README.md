@@ -8,4 +8,4 @@ A14–17已经训练过局部路由，A59不声称路由或utility学习是新�
 
 继承GPU24h/CPU72h/40GB与原更早deadline，不重置费用。起始GPU剩6.684573h，其中2h收尾储备；CPU conservative receipts+allowances剩54.036262h；tracked上界剩6375507422B。用户重启后SSH已于2026-11-03 16:10:52纽约时间恢复；root真实只读核对GPU0MiB/无app、A58closed、A59尚无runtime。唯一执行worker继续真实源资格化和实测全成本准入，正式更新仍0。
 
-历史连接失败保留在readiness：21:06:59UTC最后一次TCP超时，21:10:52UTC用户重启后SSH恢复。原预算/费用/更早deadline均不重置。独立审查发现监督器launch-intent与锁内账本两个问题，修正后再启动实际作业；资源公式、bank、cache、oracle的SPEC已通过，原失败和实测费用保留。
+历史连接失败保留在readiness：21:06:59UTC最后一次TCP超时，21:10:52UTC用户重启后SSH恢复。原预算/费用/更早deadline均不重置。监督器launch-intent与锁内账本两个问题已在0507f02修复并通过独立SPEC+QUALITY，1a09c8f补齐锁内本地测试费用，原IssuesFound/失败与CPU费用保留。真实metadata与400/214源严格载入均已完成，两个worker由父监督直接观测OS退出0。root核对31个Git对象和server SHA全部一致；FIT/inner为4236/928条，下一步实测FIT源前向与CPU候选训练图，再做覆盖完整矩阵的成本准入。

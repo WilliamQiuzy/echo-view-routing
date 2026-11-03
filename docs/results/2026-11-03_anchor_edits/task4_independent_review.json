@@ -1,0 +1,110 @@
+{
+  "stage": "Task4_fixed_whole_focused_SPEC_then_CODE_QUALITY_review",
+  "reviewed_git_commit": "0507f02296d898f0a03d587585f040516481fea8",
+  "reviewed_file_SHA256": {
+    "echo_routing/temporal/anchor_resources.py": "265292ec1ed6d6221199e14c3652c72b9a6c28ae75f27efc0a7021733bd4eb13",
+    "scripts/supervise_anchor_edits.py": "068cd1fa120cf1c7ea09422185276b489958832fdf5cd7f7820b43e75741be43",
+    "echo_routing/temporal/anchor_inputs.py": "7f75939a7dca92d2267be3a8468c4593a1ba09228a7a7e44e6fb1e0e3846f293",
+    "echo_routing/temporal/anchor_cache.py": "f98718880fb8195a3571b9a0f3fa6bccb7b4265d8ecc7ed8416ed957cdb3e96a",
+    "echo_routing/temporal/anchor_oracle.py": "c80f58ef345748b0f0b0af8525cedc20f1f9ab3d04125ba6a447c9796db603e6",
+    "tests/test_anchor_resources.py": "a0034bf1c4da89f452324fc8e3c1eaecdd07b892e8b748ec39a590beecfc4acf",
+    "tests/test_anchor_supervisor.py": "08ea5aa813b712912bc18013241d4674702a2255d40044b3f7cff65ed4a2c530",
+    "tests/test_anchor_inputs.py": "3550a3063ba81ccce8b4ff5101505ed8a64885ae7df3b37868cb3b7489384a14",
+    "tests/test_anchor_cache.py": "cfd734b3abebce0eaeb0488f2948037e841f54eb967697d971680831eae33b0f",
+    "tests/test_anchor_oracle.py": "07850dda21b18a681f441bc64c0da82908e1c518458ad7954fed97a1ac18d48c"
+  },
+  "review_sequence": [
+    {
+      "stage": "SPEC_recheck",
+      "status": "Approved"
+    },
+    {
+      "stage": "CODE_QUALITY_after_SPEC_approval",
+      "status": "Approved"
+    }
+  ],
+  "SPEC_status": "Approved",
+  "CODE_QUALITY_status": "Approved",
+  "required_changes": [],
+  "components": {
+    "resources": "SPEC and QUALITY Approved",
+    "single_queue_supervisor": "SPEC and QUALITY Approved",
+    "split_pure_bank_and_native_reuse": "SPEC and QUALITY Approved",
+    "posterior_cache": "SPEC and QUALITY Approved",
+    "one_action_fractional_oracle": "SPEC and QUALITY Approved"
+  },
+  "resolved_findings": [
+    {
+      "id": "R1",
+      "resolution": "write_json persists and directory-fsyncs durable_launch_intent before Popen, then records running_PID_bound; active/unknown claim survives supervisor interruption. Claims clear only after directly waited cleanup and durable receipt/ledger/public writes."
+    },
+    {
+      "id": "R2",
+      "resolution": "Caller constituent receipts and authoritative ledger are merged by receipt identity under ExclusiveQueue before bounds; conflicting identities fail before launching a child; totals independently revalidates receipts."
+    }
+  ],
+  "QUALITY_checks": "Inherited caps and2h reserve are retained; equal external/locked receipts count once, conflicting costs reject; source/cache original axes and read-only/durable-prefix behavior remain unchanged; constructor fixed seed/split/fragment recipe and disclosed confirmation construction label access remain aligned; Fraction oracle is exact over declared U/G action domains with original matcher/no-op ties. No concrete blocker found in this committed scope.",
+  "historical_IssuesFound_review": {
+    "path": "docs/results/2026-11-03_anchor_edits/task4_independent_spec_review.json",
+    "SHA256": "b52d28b1f9c28e13994becaa82a7cc4a578721057bef28cce7cb85a5047511cd",
+    "preserved_without_overwrite": true
+  },
+  "previous_independent_test_evidence": {
+    "path": "docs/results/2026-11-03_anchor_edits/task4_existing_GREEN.json",
+    "test_count": 20,
+    "reused_for_unchanged_input_cache_oracle_tests": true,
+    "new_cost_in_this_receipt": false
+  },
+  "new_quality_probe_source": {
+    "path": "docs/results/2026-11-03_anchor_edits/task4_fixed_quality_probes.py",
+    "SHA256": "30e825604ad7593d3e1aa099a6050f27025fdbdbb102d621601e16a70e4c7e1f"
+  },
+  "independent_test_receipt": {
+    "path": "docs/results/2026-11-03_anchor_edits/task4_fixed_independent_GREEN.json",
+    "SHA256": "196213b7874ee6685799ab9a195c49aaea0dbd47a8af0ca2ddc48f29bda382cf",
+    "raw_receipt": {
+      "stage": "task4_fixed_independent_GREEN",
+      "command": [
+        "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_anchor_resources.py",
+        "tests/test_anchor_supervisor.py",
+        "docs/results/2026-11-03_anchor_edits/task4_supervisor_spec_probes.py",
+        "docs/results/2026-11-03_anchor_edits/task4_fixed_quality_probes.py"
+      ],
+      "measurement_host": "MacBook-Air-9.local",
+      "model_pid": 48975,
+      "supervisor_pid": 48964,
+      "started_epoch": 1793740530.746412,
+      "finished_epoch": 1793740531.698572,
+      "full_process_wall_seconds": 0.9521598815917969,
+      "observed_worker_exit_code": 0,
+      "GPU_job": false,
+      "CUDA_context_occupied": false,
+      "CUDA_visibility_hidden_before_child_import": true,
+      "measured_child_CPU_seconds": 0.582616,
+      "measured_supervisor_CPU_seconds": 0.0010139999999999984,
+      "measured_CPU_core_seconds": 0.58363,
+      "scope": "local CPU synthetic software checks; no media or formal experiment updates",
+      "output": ".................                                                        [100%]\n",
+      "output_sha256": "f44919a3367dc52929a8af8f8919d5f9536d2eb90b5c6c6d38b1e58904be21bc"
+    },
+    "focused_tests_passed": 17,
+    "coverage": "Original12resource/supervisor + original2SPEC regressions +3quality probes for exact dedup, conflicting receipt rejection, and failed prelaunch-intent persistence"
+  },
+  "new_reviewer_measured_CPU_core_seconds": 0.58363,
+  "new_reviewer_measured_child_CPU_seconds": 0.582616,
+  "new_reviewer_measured_supervisor_CPU_seconds": 0.0010139999999999984,
+  "cost_scope": "New independent test receipt only. Earlier20GREEN/2RED receipts and all worker/reviewer costs remain separately retained; nested synthetic supervisor rows are already included in outer test CPU and must not be counted again.",
+  "uncommitted_runtime_wrappers_used_or_reviewed": false,
+  "approval_scope_limit": "Committed helpers and supervisor only; actual source qualification, runtime wrappers, full measured forecast/admission and formal execution remain outside this review.",
+  "server_work": false,
+  "formal_experiment_updates": 0,
+  "artifact_creation_only": {
+    "epoch": 1793740569.69648,
+    "host": "MacBook-Air-9.local",
+    "PID": 50207
+  }
+}
