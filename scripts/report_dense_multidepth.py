@@ -8,7 +8,8 @@ ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT))
 import numpy as np,pandas as pd,torch
 from scripts import train_dense_sequence as base,train_dense_multidepth as run
 from echo_routing.temporal import dense_runtime as data,dense_multidepth as md
-from echo_routing.temporal.multidepth_audit import verify_optimizer
+from echo_routing.temporal.multidepth_audit import verify_optimizer,verify_decoder_binding
+from echo_routing.temporal.dense_sequence import TwoStageTCN
 from echo_routing.temporal.dense_readout import SequenceReadout,ReadoutPixels
 from echo_routing.temporal.dense_analysis import validate_inner_cache
 from echo_routing.temporal.dev_train import lr_factor
@@ -24,14 +25,14 @@ def verify_freeze(name):
     return freeze
 
 def audit():
-    cfg,freeze=run.context(True);admission=read(PUB/'admission.json');source=torch.load(ROOT/cfg['source_state'],map_location='cpu',weights_only=True,mmap=True);models=[];rows=[];total=0
+    cfg,freeze=run.context(True);admission=read(PUB/'admission.json');source=torch.load(ROOT/cfg['source_state'],map_location='cpu',weights_only=True,mmap=True);assert len(source)==158;head_shapes={'head.'+n:tuple(v.shape) for n,v in TwoStageTCN(3072,128).state_dict().items()};assert len(head_shapes)==56;models=[];rows=[];total=0
     for seed in admission['training_seeds']:
         for arm in ['F-MD','J-MD']:
             folder=RUN/f'seed{seed}'/arm;assert not (folder/'pending.json').exists();trace=[json.loads(s) for s in (folder/'physical_updates.jsonl').read_text().splitlines()];assert [x['u'] for x in trace]==list(range(6000)),'any replay requires an explicit independent physical accounting audit'
             assert all(np.isfinite(x['loss']) and np.isfinite(x['gradient_norm']) and x['groups']['head']>0 and (arm=='F-MD' or x['groups']['active_video']>0) for x in trace)
             z=torch.load(folder/'latest.pt',map_location='cpu',weights_only=True,mmap=True);assert z['update']==6000 and z['seed']==seed and z['arm']==arm and z['schedule_total']==6000 and z['feature_contract']==md.FEATURE_CONTRACT and z['source_sha256']==sha(ROOT/cfg['source_state'])
             assert z['plan_canonical_sha256']==read(base.PUB/'independent_input_exposure.json')['plans'][str(seed)]['canonical_little_endian_int64_plan_sha256']
-            verified=verify_optimizer(z['model'],source,z['optimizer'],6000,arm=='J-MD',md.IMAGE_ONLY,lr_factor(5999,200,6000));assert verified['head_optimizer_tensors']==56 and verified['active_video_optimizer_tensors']==(155 if arm=='J-MD' else 0)
+            verified=verify_optimizer(z['model'],source,z['optimizer'],6000,arm=='J-MD',md.IMAGE_ONLY,lr_factor(5999,200,6000),head_shapes);assert verified['head_optimizer_tensors']==56 and verified['active_video_optimizer_tensors']==(155 if arm=='J-MD' else 0)
             inner=[]
             for step in range(500,6001,500):
                 path=folder/f'step{step}.pt';identity=read(folder/f'step{step}.identity.json');record=read(folder/f'inner_step{step}/metrics.json');assert sha(path)==identity['sha256']==record['model_checkpoint_sha256'] and identity['feature_contract']==record['feature_contract']==md.FEATURE_CONTRACT and record['seed']==seed and record['arm']==arm and record['step']==step;inner.append(record)
@@ -57,7 +58,7 @@ def calibrate():
     write(PUB/'decoder_choices.json',{'model_manifest_sha256':sha(PUB/'models_manifest.json'),'choices_by_checkpoint_sha256':choices,'feature_contract':md.FEATURE_CONTRACT,'grid':'originalV01 5halfwindow x8quantile NMS5','new_model_forwards':0,'MD_outer_reads_at_choices':0,'epoch':time.time()})
 
 def readout():
-    freeze=verify_freeze('outer_readout_freeze.json');cfg,_=run.context(True);models=read(PUB/'models_manifest.json');pins=read(base.PUB/'outer_inputs.json');assert sha(base.RUN/'outer_metadata.private.npy')==pins['outer_metadata_sha256'];metadata=np.load(base.RUN/'outer_metadata.private.npy',allow_pickle=True).item();completed={};results=[]
+    freeze=verify_freeze('outer_readout_freeze.json');cfg,_=run.context(True);models=read(PUB/'models_manifest.json');choices=read(PUB/'decoder_choices.json');verify_decoder_binding(models,choices,sha(PUB/'models_manifest.json'),md.FEATURE_CONTRACT);pins=read(base.PUB/'outer_inputs.json');assert sha(base.RUN/'outer_metadata.private.npy')==pins['outer_metadata_sha256'];metadata=np.load(base.RUN/'outer_metadata.private.npy',allow_pickle=True).item();completed={};results=[]
     for row in models['outer_rows']:
         assert sha(ROOT/row['path'])==row['sha256'] and row['feature_contract']==md.FEATURE_CONTRACT;model=None
         for half in ['selection','calibration']:
@@ -75,7 +76,7 @@ def readout():
     write(PUB/'raw_outer_results.json',{'model_manifest_sha256':sha(PUB/'models_manifest.json'),'feature_contract':md.FEATURE_CONTRACT,'rows':results,'readout_freeze_git':freeze['git_commit'],'new_training_updates_during_outer':0});print(json.dumps({'MD_outer_complete':len(results),'unique_checkpoint_halves':len(completed)}),flush=True)
 
 def aggregate():
-    verify_freeze('outer_readout_freeze.json');models=read(PUB/'models_manifest.json');pins=read(base.PUB/'outer_inputs.json');choices=read(PUB/'decoder_choices.json');assert choices['model_manifest_sha256']==sha(PUB/'models_manifest.json');raw=read(PUB/'raw_outer_results.json');assert raw['model_manifest_sha256']==sha(PUB/'models_manifest.json');metadata=np.load(base.RUN/'outer_metadata.private.npy',allow_pickle=True).item();systems={};comparisons={};records=[]
+    verify_freeze('outer_readout_freeze.json');models=read(PUB/'models_manifest.json');pins=read(base.PUB/'outer_inputs.json');choices=read(PUB/'decoder_choices.json');verify_decoder_binding(models,choices,sha(PUB/'models_manifest.json'),md.FEATURE_CONTRACT);raw=read(PUB/'raw_outer_results.json');assert raw['model_manifest_sha256']==sha(PUB/'models_manifest.json');metadata=np.load(base.RUN/'outer_metadata.private.npy',allow_pickle=True).item();systems={};comparisons={};records=[]
     for half in ['selection','calibration']:
         seqs=metadata[half]['sequences'];systems[half]={};comparisons[half]={};predictions={};tables={};done={}
         for row in models['outer_rows']:
