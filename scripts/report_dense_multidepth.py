@@ -11,6 +11,7 @@ from echo_routing.temporal import dense_runtime as data,dense_multidepth as md
 from echo_routing.temporal.multidepth_audit import verify_optimizer,verify_decoder_binding
 from echo_routing.temporal.dense_sequence import TwoStageTCN
 from echo_routing.temporal.dense_checkpoint_audit import compare_final_checkpoint
+from echo_routing.temporal.dense_reference_plan import md_reference_pairs
 from echo_routing.temporal.dense_readout import SequenceReadout,ReadoutPixels
 from echo_routing.temporal.dense_analysis import validate_inner_cache
 from echo_routing.temporal.dev_train import lr_factor
@@ -88,9 +89,16 @@ def aggregate():
             for mode in ['raw','inner_B3']:
                 params=choices['choices_by_checkpoint_sha256'][key]['params'];name=row['row']+'|'+mode;pred={k:(v.argmax(1) if mode=='raw' else decode_with_prob('b3',v,{'decode':{'b3':params}})[0]) for k,v in done[key].items()};m,t=evaluate(pred,half,metadata);systems[half][name]=m;predictions[name]=pred;tables[name]=t;records.append({**row,'half':half,'decoding':mode,**m})
                 if mode=='raw':assert m==next(x['raw_metrics'] for x in raw['rows'] if x['row']==row['row'] and x['half']==half)
-        for seed in read(PUB/'admission.json')['training_seeds']:
-            for mode in ['raw','inner_B3']:
-                left=f'seed{seed}_J-MD_fixed6000|{mode}';right=f'seed{seed}_F-MD_fixed6000|{mode}';comparisons[half][left+' - '+right]={'delta':{k:systems[half][left][k]-systems[half][right][k] for k in ['native_macro_f1','segment_f1_50_multi','boundary_recall_multi','native_internal_cuts_per_clip','native_A4C_A5C_errors']},**boot_pair(predictions[left],predictions[right],seqs,tables[left],tables[right])}
-    write(PUB/'summary.json',{'status':'exploratory reused development, cost-admitted MD tier completed','systems':systems,'paired_comparisons':comparisons,'model_manifest_sha256':sha(PUB/'models_manifest.json'),'decoder_choices_sha256':sha(PUB/'decoder_choices.json'),'core_outer_inputs_sha256':sha(base.PUB/'outer_inputs.json'),'feature_contract':md.FEATURE_CONTRACT,'raw_reader_metrics_independently_reproduced':True,'primary_comparison':'within-four-depth matched6000 J-MD minusF-MD raw byseed;innerB3supplementary','clinical_independent_validation':False,'protected_media_forwards':0});pd.json_normalize(records).to_csv(PUB/'metrics.csv',index=False);print(json.dumps({'MD_summary_complete':True,'rows':len(records)}),flush=True)
+        from echo_routing.evaluate.window_target import nearest_centre
+        for seed in [0,1,2]:
+            pin=pins['A08_cache_pins'][half][str(seed)];assert sha(ROOT/pin['path'])==pin['sha256'];probs={}
+            with np.load(ROOT/pin['path']) as z:
+                assert z['sequence_ids'].tolist()==[q['id'] for q in seqs];p=torch.softmax(torch.from_numpy(z['logits']),-1).numpy()
+                for i,q in enumerate(seqs):
+                    ix=np.flatnonzero(z['seq']==i);v=p[ix][nearest_centre(len(q['labels']),z['centre'][ix])];assert np.max(np.abs(v-z['sample_probs'][z['sample_offsets'][i]:z['sample_offsets'][i+1]]))<=1e-7;probs[q['id']]=v
+            name=f'A08_original_B3_s{seed}';pred={k:decode_with_prob('b3',v,{'decode':{'b3':pin['original_params']}})[0] for k,v in probs.items()};metrics,t=evaluate(pred,half,metadata);assert metrics==read(base.PUB/'A08_reference_metrics.json')['systems'][half][name];systems[half][name]=metrics;predictions[name]=pred;tables[name]=t;records.append({'row':name,'half':half,'decoding':'original_frozen_B3',**metrics})
+        for pair in md_reference_pairs(read(PUB/'admission.json')['training_seeds']):
+            left,right=pair['left'],pair['right'];comparisons[half][left+' - '+right]={'comparison_kind':pair['kind'],'delta':{k:systems[half][left][k]-systems[half][right][k] for k in ['native_macro_f1','segment_f1_50_multi','boundary_recall_multi','boundary_precision_multi','native_internal_cuts_per_clip','native_A4C_A5C_errors']},**boot_pair(predictions[left],predictions[right],seqs,tables[left],tables[right])}
+    write(PUB/'summary.json',{'status':'exploratory reused development, cost-admitted MD tier completed','systems':systems,'paired_comparisons':comparisons,'model_manifest_sha256':sha(PUB/'models_manifest.json'),'decoder_choices_sha256':sha(PUB/'decoder_choices.json'),'core_outer_inputs_sha256':sha(base.PUB/'outer_inputs.json'),'A08_reference_metrics_sha256':sha(base.PUB/'A08_reference_metrics.json'),'feature_contract':md.FEATURE_CONTRACT,'raw_reader_metrics_independently_reproduced':True,'all3_original_A08_metrics_reproduced':True,'primary_comparison':'unchanged within-four-depth matched6000 J-MD minusF-MD raw byseed;innerB3supplementary;fixedA08s0reference addendum beforeMDouteroutputs','clinical_independent_validation':False,'protected_media_forwards':0});pd.json_normalize(records).to_csv(PUB/'metrics.csv',index=False);print(json.dumps({'MD_summary_complete':True,'rows':len(records),'paired_comparisons':sum(map(len,comparisons.values()))}),flush=True)
 
 if __name__=='__main__':globals()[sys.argv[1]]()
