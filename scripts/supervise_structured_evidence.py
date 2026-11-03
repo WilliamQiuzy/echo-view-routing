@@ -36,8 +36,10 @@ def execute(stage,command,gpu,limit,out=RUN):
                 now=time.time()
                 if now-start>=effective:reason='effective_stage_or_shared_deadline_wall_limit'
                 proc=Path(f'/proc/{child.pid}/stat')
-                if proc.exists():
-                    fields=proc.read_text().split(') ',1)[1].split();cpu=(int(fields[11])+int(fields[12]))/os.sysconf('SC_CLK_TCK');own=resource.getrusage(resource.RUSAGE_SELF);cpu+=own.ru_utime+own.ru_stime-own0.ru_utime-own0.ru_stime
+                try:stat=proc.read_text()
+                except FileNotFoundError:stat=None
+                if stat is not None:
+                    fields=stat.split(') ',1)[1].split();cpu=(int(fields[11])+int(fields[12]))/os.sysconf('SC_CLK_TCK');own=resource.getrusage(resource.RUSAGE_SELF);cpu+=own.ru_utime+own.ru_stime-own0.ru_utime-own0.ru_stime
                     if cpu>=bounds['CPU_seconds']-10:reason='actual_running_worker_and_supervisor_CPU_limit'
                 if now-last_disk>=10:
                     paths=[str(p) for p in [out,PUB] if p.exists()];storage=sum(int(line.split()[0]) for line in subprocess.check_output(['du','-sB1',*paths],text=True).splitlines())+105_000_000
