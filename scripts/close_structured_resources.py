@@ -5,6 +5,8 @@ _COLLECTOR_START=time.time()
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT))
 from scripts.structured_common import RUN,PUB,CFG,read,write,sha,verify_freeze
+# Preload the common writer's import closure before the terminal CPU snapshot.
+from echo_routing.temporal.dense_readout import atomic_json
 from echo_routing.temporal.structured_resources import closed_costs
 from echo_routing.temporal.structured_context import classify_context_records
 from echo_routing.temporal.dense_resource_accounting import terminal_queue_lock
