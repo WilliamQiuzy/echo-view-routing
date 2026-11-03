@@ -1,0 +1,51 @@
+{
+  "passed": true,
+  "stage_freeze_git": "00ea0f02c8c605572f4028c9709ccba53bf77567",
+  "source_keys": 158,
+  "actual_input_shape": [
+    2,
+    64,
+    224,
+    224,
+    3
+  ],
+  "initial_RCE_RST_logits_max_abs": 0.0,
+  "lambda0_parent_optimizer_and_weights_exact": true,
+  "lambda0_parameter_max_abs": 0.0,
+  "new_loss_initial_diagnostic": {
+    "CE": 1.6982622146606445,
+    "S": 0.008189278654754162,
+    "weighted_S": 0.0012283918913453817,
+    "CE_logit_gradient_norm": 0.08203437179327011,
+    "weighted_S_logit_gradient_norm": 0.001161735039204359,
+    "logit_gradient_cosine": -0.012037123553454876,
+    "eligible_edges_per_chunk": [
+      31,
+      27
+    ],
+    "clamped_class_edges_per_stage": [
+      0,
+      0
+    ]
+  },
+  "repeat_parameter_max_abs": 0.0,
+  "repeat_loss_max_abs": 0.0,
+  "disk2plus2_resume_max_abs": 0.0,
+  "check_optimizer_updates": 34,
+  "check_neural_forwards": 37,
+  "diagnostic_logit_gradient_calls": 2,
+  "head_optimizer_tensors": 56,
+  "active_video_optimizer_tensors": 149,
+  "changed_video_tensors": 149,
+  "frozen_image_tensors_unchanged": 9,
+  "exact_binding_moments_shapes_finite_steps_lr": true,
+  "all205finite_nonzero_gradients": true,
+  "raw20_RST_seconds_per_update": 0.4721346616744995,
+  "atomic_full_optimizer_seconds": 2.181063175201416,
+  "atomic_full_optimizer_bytes": 1048153921,
+  "GPU_peak_reserved_bytes": 2621440000,
+  "formal_refit_updates": 0,
+  "new_outer_forwards": 0,
+  "protected_media_forwards": 0,
+  "pid": 143411
+}

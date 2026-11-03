@@ -1,0 +1,62 @@
+{
+  "all_caps_fit": true,
+  "stage_freeze_git": "00ea0f02c8c605572f4028c9709ccba53bf77567",
+  "checks_sha256": "359e940d73e9f37961fdc576c5fe0cb0f5523b2e5056e1bd7119c7dfd7bf0bbd",
+  "MD_checks_sha256": "cb85cf5a01795a16d7a4d03e3740d246e688e88318e276e03068ba5ce2ffdfe7",
+  "formal_refit_updates_at_admission": 0,
+  "preserved_MD_two_seed_obligations_included": true,
+  "already_GPUjob_h": 7.252561597559187,
+  "already_measured_CPUcore_h": 7.244062156388889,
+  "measured_auxiliary_CPU_receipts_count": 4,
+  "measured_prep_CPU_seconds": {
+    "source_acquisition.json": 11.893407,
+    "metadata_attempt1_failed_process.json": 7.864108,
+    "metadata_process.json": 9.143799,
+    "smoke_pixels_process.json": 5.526307,
+    "input_exposure_process.json": 5.954205,
+    "pilot_summary_process.json": 0.029287999999999998,
+    "source_qualification": 6.556127,
+    "POST_A56_ROC": 1.422175
+  },
+  "future_GPU_components_before_1point2contingency": {
+    "adaptive_12000_updates": 1.573782205581665,
+    "adaptive_2fixed6000_outer_rows": 0.16345465870367157,
+    "adaptive_120_latest_optimizer_writes": 0.0727021058400472,
+    "preserved_MD_24000_updates": 3.198038657506307,
+    "preserved_MD_48complete_inner_readouts": 4.008318375945091,
+    "preserved_MD_12logical_outer_rows": 0.9807279522220294,
+    "preserved_MD_240_latest_optimizer_writes": 0.1488862991333008,
+    "coldstart_audit_freeze_allowance": 0.15
+  },
+  "runtime_contingency": 1.2,
+  "global_closure_GPUh_reserve": 2,
+  "total_GPUjob_h_including_reserve": 21.607653903477722,
+  "CPU_total_conservative_h": 29.849154462307425,
+  "CPU_nonGPU_remaining_allowance_h": 10,
+  "unmetered_short_setup_forecast_CPU_allowance_h": 0.25,
+  "CPU_scope": "supervisedworkers+separateauxiliaryCPUPIDs+listedprep; noLLMwall or idle time; allowances areforecast,notspent",
+  "existing_actual_bytes": 16368555568,
+  "preserved_MD_new_storage_components": {
+    "joint_full_milestones": 8451319752,
+    "frozen_head_only_milestones": 114169224,
+    "all_joint_latest_optimizers": 2103469626,
+    "all_frozen_latest_optimizers": 723341310,
+    "one_atomic_optimizer_coexistence": 1051734813,
+    "inner_probabilities_predictions_tables_and_sequence_cache": 240000000,
+    "outer_probabilities_journals_and_all_decoding_tables": 48000000,
+    "new_trace_graph_public_code_and_figures_allowance": 128000000,
+    "serialization_and_operating_headroom": 1073741824,
+    "new_source_weight_copy": 0
+  },
+  "adaptive_new_storage_components": {
+    "adaptive_4fixed2000_6000_weights": 1411570336,
+    "adaptive_2latest_fulloptimizers": 2098307842,
+    "adaptive_bank_cache_logs_and_serialization": 200000000,
+    "shared_atomic_extra_if_refit_larger": 0
+  },
+  "peak_bytes_conservative": 34012210295,
+  "phase_wall_total_conservative_h": 34.82386090217034,
+  "no_remaining_core_model_readouts": true,
+  "priority": "adaptivepairformalfirst; preservedMDafter measured cost-only admission",
+  "epoch": 1793685731.726712
+}
