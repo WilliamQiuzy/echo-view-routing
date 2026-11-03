@@ -9,6 +9,8 @@ from echo_routing.temporal.structured_guard import storage_bytes,process_sample
 from echo_routing.temporal.dense_resource_accounting import terminal_queue_lock
 COMMANDS={'head_check':('scripts/check_structured_head_pipeline.py','run',900,False),'admission':('scripts/admit_structured_evidence.py','formal',900,False),'runtime_admission':('scripts/admit_structured_head_runtime.py','run',900,False),'formal':('scripts/train_structured_evidence.py','formal',86400,False),'audit':('scripts/report_structured_evidence.py','audit',3600,False),'cache_outer':('scripts/produce_structured_cache.py','outer',21600,True),'readout':('scripts/readout_structured_evidence.py','run',21600,False),'aggregate':('scripts/aggregate_structured_evidence.py','run',14400,False)}
 
+def stage_exit_status(record):return 0 if record['exit_code']==0 and record.get('termination_reason') is None and record.get('guardian_exception') is None else 1
+
 def execute(stage,command,gpu,limit):
     with terminal_queue_lock(RUN/'exclusive_supervisor.lock'):
         active=RUN/'active_process.json'
@@ -45,5 +47,5 @@ def execute(stage,command,gpu,limit):
         active.unlink();return record
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('stage',choices=COMMANDS);a=p.parse_args();script,mode,limit,gpu=COMMANDS[a.stage];r=execute(a.stage,[str(ROOT/'.venv/bin/python'),script,mode],gpu,limit);print(json.dumps(r),flush=True);raise SystemExit(r['exit_code'])
+    p=argparse.ArgumentParser();p.add_argument('stage',choices=COMMANDS);a=p.parse_args();script,mode,limit,gpu=COMMANDS[a.stage];r=execute(a.stage,[str(ROOT/'.venv/bin/python'),script,mode],gpu,limit);print(json.dumps(r),flush=True);raise SystemExit(stage_exit_status(r))
 if __name__=='__main__':main()
