@@ -1,0 +1,49 @@
+{
+  "status": "prospective feasibility only, actual newgraph timing still required before formaladmission",
+  "epoch": 1793683767.9814916,
+  "already_completed_plus_active_GPUjob_h": 6.798913538124826,
+  "completed_unique_checkpoint_halves": 12,
+  "remaining_core_GPU_h_conservative": 1.0177116061846416,
+  "MD_two_seed_components_GPUh": {
+    "training": 3.0680292941905836,
+    "48inner": 4.409150213539601,
+    "12logicalouter": 1.3168534585038822,
+    "240latest_optimizer_writes": 0.1533776601155599,
+    "coldstart": 0.0833333
+  },
+  "MD_remaining_including_1_15contingency_and_point15checks_GPUh": 10.535355515302069,
+  "adaptive_pair_components_GPUh": {
+    "12000training": 1.3945587700866289,
+    "2fixed6000outer": 0.19952325128846699,
+    "120latest_optimizer_writes": 0.07668883005777995,
+    "coldstart_metadata_cache": 0.05
+  },
+  "adaptive_remaining_including_1_2contingency_and_point15checks_GPUh": 2.2149250217194507,
+  "global_closure_GPUh_reserve": 2,
+  "total_GPUh_including_all_obligations_and_reserve": 22.566905681330987,
+  "actual_existing_bytes": 16312548724,
+  "prospective_MD_additional_storage_components": {
+    "24joint_full_milestones": 8497733568,
+    "24frozen_head_milestones": 116150976,
+    "2joint_latest": 2107506946,
+    "2frozen_latest": 729102960,
+    "one_atomic_coexistence": 1053753473,
+    "48inner_cache_tables": 240000000,
+    "12outer_cache_tables": 48000000,
+    "code_and_serialization_headroom": 1200000000
+  },
+  "prospective_refit_additional_storage_components": {
+    "4fixed2000_6000_fullweights": 1411570336,
+    "2latest_fulloptimizers": 2096306946,
+    "extra_conservative_atomic_coexistence": 1048153473,
+    "bank_inputs_cache_traces_headroom": 200000000
+  },
+  "peak_bytes_conservative": 35060827402,
+  "CPU_core_h_conservative_including_10h_nonGPUallowance": 30.445913403206163,
+  "phase_wall_hours_including_10hCPUallowance_and2hclosure": 35.691275988259946,
+  "basis_seconds_per_update": 0.4183676310259887,
+  "basis_seconds_per_chunk": 0.10856766998767853,
+  "MD_newgraph_speed_factor_assumption_notmeasurement": 1.1,
+  "refit_fixed2000_weights_retained_but_onlyfixed6000_evaluated_percard": true,
+  "all_caps_fit_provisionally": true
+}
