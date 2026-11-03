@@ -1,0 +1,26 @@
+{
+  "stage": "action_lengths_RED",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "tests/test_anchor_action_lengths.py"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 42857,
+  "supervisor_pid": 42846,
+  "started_epoch": 1793749789.5319061,
+  "finished_epoch": 1793749789.8405702,
+  "full_process_wall_seconds": 0.30866408348083496,
+  "observed_worker_exit_code": 2,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 0.222937,
+  "measured_supervisor_CPU_seconds": 0.0013909999999999999,
+  "measured_CPU_core_seconds": 0.224328,
+  "scope": "local CPU synthetic software checks; no media or formal experiment updates",
+  "output": "\n==================================== ERRORS ====================================\n_____________ ERROR collecting tests/test_anchor_action_lengths.py _____________\nImportError while importing test module '/Users/williamqiu/.config/superpowers/worktrees/echo-view-routing/a59-anchor-edits/tests/test_anchor_action_lengths.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n../../../../../.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/test_anchor_action_lengths.py:2: in <module>\n    from echo_routing.temporal.anchor_action_lengths import summarize\nE   ModuleNotFoundError: No module named 'echo_routing.temporal.anchor_action_lengths'\n=========================== short test summary info ============================\nERROR tests/test_anchor_action_lengths.py\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n",
+  "output_sha256": "d313d949d298153e06ff94e788493f731a2f7136c2c91aacd70ac238c98c2c8b"
+}
