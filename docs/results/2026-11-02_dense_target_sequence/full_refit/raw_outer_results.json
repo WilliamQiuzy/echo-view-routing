@@ -1,0 +1,419 @@
+{
+  "model_manifest_sha256": "8d4a4250f84d789b80d96c22656427e0f1f9792800647747490c322696a68f53",
+  "rows": [
+    {
+      "row": "R-CE_fixed6000",
+      "arm": "R-CE",
+      "step": 6000,
+      "seed": 2026110257,
+      "path": "runs/a57_dense_sequence_v1/full_refit_v1/R-CE/step6000.pt",
+      "sha256": "85a6900a887c2e158687dee19f76408245833ba1a6d232bc8b1756c256aeefc9",
+      "feature_contract": {
+        "kind": "official_final_layer768_dense_refit",
+        "source_video_tensors": 149,
+        "inactive_tensors": 9,
+        "head_tensors": 56,
+        "positions": 64,
+        "tubelet_positions": 32,
+        "TCN_channels": 128,
+        "stages": 2
+      },
+      "half": "selection",
+      "raw_metrics": {
+        "native_macro_f1": 0.9393019117248655,
+        "native_per_class_recall": [
+          0.9904761904761905,
+          1.0,
+          0.9885057471264368,
+          0.6363636363636364,
+          1.0
+        ],
+        "native_confusion": [
+          [
+            104,
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            68,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            86,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            4,
+            7,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            13
+          ]
+        ],
+        "native_accuracy": 0.9788732394366197,
+        "native_frame_accuracy": 0.975473399458972,
+        "native_internal_cuts_per_clip": 0.11971830985915492,
+        "native_internal_cuts_per_min": 1.2263300270513975,
+        "native_share_cut": 0.0528169014084507,
+        "segment_f1_50_multi": 0.8638941398865785,
+        "boundary_recall_multi": 0.9554973821989529,
+        "boundary_precision_multi": 0.8371559633027523,
+        "boundary_f1_multi": 0.8924205378973105,
+        "same_class_cut_rate_multi": 0.06521739130434782,
+        "multi_frame_accuracy": 0.9072254528440612,
+        "segment_f1_50_pairs": 0.9308755760368663,
+        "boundary_recall_pairs": 1.0,
+        "counts": {
+          "native_clips": 284,
+          "multi_streams": 120,
+          "pair_streams": 137,
+          "multi_true_changes": 382,
+          "multi_same_joins": 230
+        },
+        "native_A4C_to_A5C": 1,
+        "native_A5C_to_A4C": 4,
+        "native_A4C_A5C_errors": 5,
+        "short_true_segments_10samples": 32,
+        "short_true_unmatched_10samples": 4,
+        "short_predicted_segments_10samples": 85,
+        "short_spurious_segments_10samples": 53,
+        "short_true_segments_16samples": 141,
+        "short_true_unmatched_16samples": 13,
+        "short_predicted_segments_16samples": 199,
+        "short_spurious_segments_16samples": 63
+      },
+      "inference_cost": {
+        "new_sequences": 541,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 119.22909545898438,
+        "GPU_peak_reserved_bytes": 1352663040
+      }
+    },
+    {
+      "row": "R-CE_fixed6000",
+      "arm": "R-CE",
+      "step": 6000,
+      "seed": 2026110257,
+      "path": "runs/a57_dense_sequence_v1/full_refit_v1/R-CE/step6000.pt",
+      "sha256": "85a6900a887c2e158687dee19f76408245833ba1a6d232bc8b1756c256aeefc9",
+      "feature_contract": {
+        "kind": "official_final_layer768_dense_refit",
+        "source_video_tensors": 149,
+        "inactive_tensors": 9,
+        "head_tensors": 56,
+        "positions": 64,
+        "tubelet_positions": 32,
+        "TCN_channels": 128,
+        "stages": 2
+      },
+      "half": "calibration",
+      "raw_metrics": {
+        "native_macro_f1": 0.9788251060978332,
+        "native_per_class_recall": [
+          1.0,
+          1.0,
+          0.9672131147540983,
+          0.9444444444444444,
+          1.0
+        ],
+        "native_confusion": [
+          [
+            80,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            71,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            59,
+            2,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            17,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            7
+          ]
+        ],
+        "native_accuracy": 0.9873417721518988,
+        "native_frame_accuracy": 0.960552956782797,
+        "native_internal_cuts_per_clip": 0.11814345991561181,
+        "native_internal_cuts_per_min": 1.1729386301752427,
+        "native_share_cut": 0.05063291139240506,
+        "segment_f1_50_multi": 0.96,
+        "boundary_recall_multi": 0.9849246231155779,
+        "boundary_precision_multi": 0.9514563106796117,
+        "boundary_f1_multi": 0.9679012345679012,
+        "same_class_cut_rate_multi": 0.03482587064676617,
+        "multi_frame_accuracy": 0.9659560293137908,
+        "segment_f1_50_pairs": 0.9597701149425287,
+        "boundary_recall_pairs": 0.9482758620689655,
+        "counts": {
+          "native_clips": 237,
+          "multi_streams": 120,
+          "pair_streams": 115,
+          "multi_true_changes": 398,
+          "multi_same_joins": 201
+        },
+        "native_A4C_to_A5C": 2,
+        "native_A5C_to_A4C": 1,
+        "native_A4C_A5C_errors": 3,
+        "short_true_segments_10samples": 23,
+        "short_true_unmatched_10samples": 1,
+        "short_predicted_segments_10samples": 41,
+        "short_spurious_segments_10samples": 14,
+        "short_true_segments_16samples": 134,
+        "short_true_unmatched_16samples": 9,
+        "short_predicted_segments_16samples": 152,
+        "short_spurious_segments_16samples": 20
+      },
+      "inference_cost": {
+        "new_sequences": 472,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 105.27778577804565,
+        "GPU_peak_reserved_bytes": 1352663040
+      }
+    },
+    {
+      "row": "R-ST_fixed6000",
+      "arm": "R-ST",
+      "step": 6000,
+      "seed": 2026110257,
+      "path": "runs/a57_dense_sequence_v1/full_refit_v1/R-ST/step6000.pt",
+      "sha256": "5abf0286fcd2d0b673f50102a6e56656df0c6d21be57cbc637a45297c4e0bd2f",
+      "feature_contract": {
+        "kind": "official_final_layer768_dense_refit",
+        "source_video_tensors": 149,
+        "inactive_tensors": 9,
+        "head_tensors": 56,
+        "positions": 64,
+        "tubelet_positions": 32,
+        "TCN_channels": 128,
+        "stages": 2
+      },
+      "half": "selection",
+      "raw_metrics": {
+        "native_macro_f1": 0.9423284073467671,
+        "native_per_class_recall": [
+          0.9904761904761905,
+          0.9705882352941176,
+          0.9655172413793104,
+          0.9090909090909091,
+          1.0
+        ],
+        "native_confusion": [
+          [
+            104,
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            66,
+            0,
+            0,
+            2
+          ],
+          [
+            0,
+            0,
+            84,
+            3,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            10,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            13
+          ]
+        ],
+        "native_accuracy": 0.9753521126760564,
+        "native_frame_accuracy": 0.9689810640216411,
+        "native_internal_cuts_per_clip": 0.14084507042253522,
+        "native_internal_cuts_per_min": 1.4427412082957618,
+        "native_share_cut": 0.04225352112676056,
+        "segment_f1_50_multi": 0.8759541984732825,
+        "boundary_recall_multi": 0.9554973821989529,
+        "boundary_precision_multi": 0.8568075117370892,
+        "boundary_f1_multi": 0.9034653465346535,
+        "same_class_cut_rate_multi": 0.06956521739130435,
+        "multi_frame_accuracy": 0.9120379653766459,
+        "segment_f1_50_pairs": 0.9049773755656109,
+        "boundary_recall_pairs": 1.0,
+        "counts": {
+          "native_clips": 284,
+          "multi_streams": 120,
+          "pair_streams": 137,
+          "multi_true_changes": 382,
+          "multi_same_joins": 230
+        },
+        "native_A4C_to_A5C": 3,
+        "native_A5C_to_A4C": 1,
+        "native_A4C_A5C_errors": 4,
+        "short_true_segments_10samples": 32,
+        "short_true_unmatched_10samples": 5,
+        "short_predicted_segments_10samples": 73,
+        "short_spurious_segments_10samples": 44,
+        "short_true_segments_16samples": 141,
+        "short_true_unmatched_16samples": 15,
+        "short_predicted_segments_16samples": 188,
+        "short_spurious_segments_16samples": 53
+      },
+      "inference_cost": {
+        "new_sequences": 541,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 103.42628383636475,
+        "GPU_peak_reserved_bytes": 1352663040
+      }
+    },
+    {
+      "row": "R-ST_fixed6000",
+      "arm": "R-ST",
+      "step": 6000,
+      "seed": 2026110257,
+      "path": "runs/a57_dense_sequence_v1/full_refit_v1/R-ST/step6000.pt",
+      "sha256": "5abf0286fcd2d0b673f50102a6e56656df0c6d21be57cbc637a45297c4e0bd2f",
+      "feature_contract": {
+        "kind": "official_final_layer768_dense_refit",
+        "source_video_tensors": 149,
+        "inactive_tensors": 9,
+        "head_tensors": 56,
+        "positions": 64,
+        "tubelet_positions": 32,
+        "TCN_channels": 128,
+        "stages": 2
+      },
+      "half": "calibration",
+      "raw_metrics": {
+        "native_macro_f1": 0.9788251060978332,
+        "native_per_class_recall": [
+          1.0,
+          1.0,
+          0.9672131147540983,
+          0.9444444444444444,
+          1.0
+        ],
+        "native_confusion": [
+          [
+            80,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            71,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            59,
+            2,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            17,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            7
+          ]
+        ],
+        "native_accuracy": 0.9873417721518988,
+        "native_frame_accuracy": 0.9590169657194721,
+        "native_internal_cuts_per_clip": 0.20253164556962025,
+        "native_internal_cuts_per_min": 2.010751937443273,
+        "native_share_cut": 0.05063291139240506,
+        "segment_f1_50_multi": 0.9621212121212122,
+        "boundary_recall_multi": 0.9798994974874372,
+        "boundary_precision_multi": 0.9330143540669856,
+        "boundary_f1_multi": 0.9558823529411765,
+        "same_class_cut_rate_multi": 0.029850746268656716,
+        "multi_frame_accuracy": 0.9655562958027981,
+        "segment_f1_50_pairs": 0.9631728045325779,
+        "boundary_recall_pairs": 0.9482758620689655,
+        "counts": {
+          "native_clips": 237,
+          "multi_streams": 120,
+          "pair_streams": 115,
+          "multi_true_changes": 398,
+          "multi_same_joins": 201
+        },
+        "native_A4C_to_A5C": 2,
+        "native_A5C_to_A4C": 1,
+        "native_A4C_A5C_errors": 3,
+        "short_true_segments_10samples": 23,
+        "short_true_unmatched_10samples": 0,
+        "short_predicted_segments_10samples": 55,
+        "short_spurious_segments_10samples": 21,
+        "short_true_segments_16samples": 134,
+        "short_true_unmatched_16samples": 4,
+        "short_predicted_segments_16samples": 162,
+        "short_spurious_segments_16samples": 24
+      },
+      "inference_cost": {
+        "new_sequences": 472,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 92.69244813919067,
+        "GPU_peak_reserved_bytes": 1352663040
+      }
+    }
+  ],
+  "readout_freeze_git": "efdbe970c3ff7e4263fc3a4a11448bcf94f85cbe",
+  "new_training_updates_during_readout": 0
+}
