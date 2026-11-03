@@ -183,15 +183,36 @@ def restore(model, opt, value, identity, normalizer):
     return int(value['update'])
 
 
+def fsync_directory(path):
+    descriptor = os.open(Path(path), os.O_RDONLY | getattr(os, 'O_DIRECTORY', 0))
+    try:
+        os.fsync(descriptor)
+    finally:
+        os.close(descriptor)
+
+
+def durable_directory(path):
+    path = Path(path)
+    missing, cursor = [], path
+    while not cursor.exists():
+        missing.append(cursor)
+        cursor = cursor.parent
+    path.mkdir(parents=True, exist_ok=True)
+    for created in reversed(missing):
+        fsync_directory(created.parent)
+        fsync_directory(created)
+
+
 def atomic_save(value, path):
     path = Path(path)
-    path.parent.mkdir(parents=True, exist_ok=True)
+    durable_directory(path.parent)
     temp = path.with_suffix(path.suffix + '.tmp')
     with temp.open('xb') as handle:
         torch.save(value, handle)
         handle.flush()
         os.fsync(handle.fileno())
     os.replace(temp, path)
+    fsync_directory(path.parent)
 
 
 class UpdateJournal:
@@ -202,7 +223,7 @@ class UpdateJournal:
     """
     def __init__(self, folder, identity):
         self.folder, self.identity = Path(folder), checked_identity(identity)
-        self.folder.mkdir(parents=True, exist_ok=True)
+        durable_directory(self.folder)
         self.pending, self.trace = self.folder / 'pending.json', self.folder / 'physical_updates.jsonl'
         source = self.folder / 'identity.json'
         if source.exists():
@@ -213,6 +234,7 @@ class UpdateJournal:
                 json.dump(self.identity, handle, sort_keys=True)
                 handle.flush()
                 os.fsync(handle.fileno())
+            fsync_directory(self.folder)
         if self.pending.exists():
             raise ValueError('ambiguous pending physical update; no automatic replay')
         self.cursor = 0
@@ -238,6 +260,8 @@ class UpdateJournal:
             json.dump({'u': int(update), 'identity': self.identity}, handle, sort_keys=True)
             handle.flush()
             os.fsync(handle.fileno())
+        # The claim's name must survive a crash before any optimizer work.
+        fsync_directory(self.folder)
 
     def finish(self, row, checkpoint_value=None):
         if not self.pending.exists() or json.loads(self.pending.read_text()) != {'u': self.cursor, 'identity': self.identity} or row['u'] != self.cursor:
@@ -250,5 +274,7 @@ class UpdateJournal:
             handle.write(json.dumps({**row, 'identity': self.identity}, sort_keys=True, allow_nan=False) + '\n')
             handle.flush()
             os.fsync(handle.fileno())
+        fsync_directory(self.folder)
         self.pending.unlink()
+        fsync_directory(self.folder)
         self.cursor += 1

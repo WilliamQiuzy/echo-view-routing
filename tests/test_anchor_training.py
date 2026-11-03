@@ -1,6 +1,7 @@
 import copy
 import importlib
 import os
+import stat
 
 import numpy as np
 import pytest
@@ -160,3 +161,52 @@ def test_pending_claim_and_trace_latest_mismatch_never_silently_replay(tmp_path)
     changed = {**IDENTITY, 'config': 'f' * 64}
     with pytest.raises(ValueError):
         m.UpdateJournal(tmp_path, changed)
+
+
+def test_claim_checkpoint_trace_and_removal_have_durable_directory_ordering(tmp_path, monkeypatch):
+    m = api()
+    events = []
+    original_fsync, original_replace = os.fsync, os.replace
+    original_unlink = type(tmp_path).unlink
+    def observe_fsync(fd):
+        events.append('directory' if stat.S_ISDIR(os.fstat(fd).st_mode) else 'file')
+        original_fsync(fd)
+    def observe_replace(source, destination):
+        events.append('replace')
+        original_replace(source, destination)
+    def observe_unlink(path, *args, **kwargs):
+        if path.name == 'pending.json':
+            events.append('unlink_pending')
+        return original_unlink(path, *args, **kwargs)
+    monkeypatch.setattr(os, 'fsync', observe_fsync)
+    monkeypatch.setattr(os, 'replace', observe_replace)
+    monkeypatch.setattr(type(tmp_path), 'unlink', observe_unlink)
+    journal = m.UpdateJournal(tmp_path / 'new_run', IDENTITY)
+    # Newly created identity and directory entries are durably established.
+    assert events[-1] == 'directory'
+    events.clear()
+    journal.begin(0)
+    assert events == ['file', 'directory']
+    model = m.UtilityRegressor('A', 59)
+    opt = m.optimizer(model)
+    m.step(model, opt, batch(), 0)
+    value = m.checkpoint(model, opt, 1, IDENTITY, NORM)
+    events.clear()
+    journal.finish({'u': 0, 'loss': 1.}, value)
+    assert events == ['file', 'replace', 'directory', 'file', 'directory', 'unlink_pending', 'directory']
+    assert journal.resume_cursor() == 1
+
+
+def test_uncommitted_claim_directory_sync_failure_prevents_optimizer_work(tmp_path, monkeypatch):
+    m = api()
+    journal = m.UpdateJournal(tmp_path, IDENTITY)
+    calls = []
+    def fail_before_work(path):
+        calls.append(path)
+        raise OSError('synthetic directory persistence failure')
+    monkeypatch.setattr(m, 'fsync_directory', fail_before_work)
+    with pytest.raises(OSError):
+        journal.begin(0)
+    assert calls and journal.cursor == 0
+    assert not journal.trace.exists()
+    assert journal.pending.exists()

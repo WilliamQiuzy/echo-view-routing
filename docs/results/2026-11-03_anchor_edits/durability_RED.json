@@ -1,0 +1,26 @@
+{
+  "stage": "durability_RED",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "tests/test_anchor_training.py"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 92677,
+  "supervisor_pid": 92667,
+  "started_epoch": 1793738837.949035,
+  "finished_epoch": 1793738840.4784482,
+  "full_process_wall_seconds": 2.5294132232666016,
+  "observed_worker_exit_code": 1,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 1.785725,
+  "measured_supervisor_CPU_seconds": 0.001325999999999999,
+  "measured_CPU_core_seconds": 1.787051,
+  "scope": "local CPU synthetic software checks; no media or formal experiment updates",
+  "output": ".............FF                                                          [100%]\n=================================== FAILURES ===================================\n___ test_claim_checkpoint_trace_and_removal_have_durable_directory_ordering ____\n\ntmp_path = PosixPath('/private/var/folders/4l/s1hqgvzj2l10_dff3pw5m97m0000gn/T/pytest-of-williamqiu/pytest-237/test_claim_checkpoint_trace_an0')\nmonkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x11c12f860>\n\n    def test_claim_checkpoint_trace_and_removal_have_durable_directory_ordering(tmp_path, monkeypatch):\n        m = api()\n        events = []\n        original_fsync, original_replace = os.fsync, os.replace\n        original_unlink = type(tmp_path).unlink\n        def observe_fsync(fd):\n            events.append('directory' if stat.S_ISDIR(os.fstat(fd).st_mode) else 'file')\n            original_fsync(fd)\n        def observe_replace(source, destination):\n            events.append('replace')\n            original_replace(source, destination)\n        def observe_unlink(path, *args, **kwargs):\n            if path.name == 'pending.json':\n                events.append('unlink_pending')\n            return original_unlink(path, *args, **kwargs)\n        monkeypatch.setattr(os, 'fsync', observe_fsync)\n        monkeypatch.setattr(os, 'replace', observe_replace)\n        monkeypatch.setattr(type(tmp_path), 'unlink', observe_unlink)\n        journal = m.UpdateJournal(tmp_path / 'new_run', IDENTITY)\n        # Newly created identity and directory entries are durably established.\n>       assert events[-1] == 'directory'\nE       AssertionError: assert 'file' == 'directory'\nE         \nE         - directory\nE         + file\n\ntests/test_anchor_training.py:186: AssertionError\n____ test_uncommitted_claim_directory_sync_failure_prevents_optimizer_work _____\n\ntmp_path = PosixPath('/private/var/folders/4l/s1hqgvzj2l10_dff3pw5m97m0000gn/T/pytest-of-williamqiu/pytest-237/test_uncommitted_claim_directo0')\nmonkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x11c138590>\n\n    def test_uncommitted_claim_directory_sync_failure_prevents_optimizer_work(tmp_path, monkeypatch):\n        m = api()\n        journal = m.UpdateJournal(tmp_path, IDENTITY)\n        calls = []\n        def fail_before_work(path):\n            calls.append(path)\n            raise OSError('synthetic directory persistence failure')\n>       monkeypatch.setattr(m, 'fsync_directory', fail_before_work)\nE       AttributeError: <module 'echo_routing.temporal.anchor_training' from '/Users/williamqiu/.config/superpowers/worktrees/echo-view-routing/a59-anchor-edits/echo_routing/temporal/anchor_training.py'> has no attribute 'fsync_directory'\n\ntests/test_anchor_training.py:207: AttributeError\n=========================== short test summary info ============================\nFAILED tests/test_anchor_training.py::test_claim_checkpoint_trace_and_removal_have_durable_directory_ordering\nFAILED tests/test_anchor_training.py::test_uncommitted_claim_directory_sync_failure_prevents_optimizer_work\n",
+  "output_sha256": "ab2bbfbe2478a27ae6fd03ef79c4c929d29c2813ec3055f62e267746c06805a5"
+}
