@@ -1,14 +1,14 @@
 # A58：稳定识别与稠密变化证据的联合序列模型
 
-状态：**全部FIT/inner分数缓存完成；八头正式CPU训练已开始，尚无可与A08比较的外层结果。** 用户2026-11-03要求解释为何多轮未超过A08，并以论文级成果为目标重新规划、继续实验。已完成的A57保持封存。
+状态：**八个正式头均完成6000步，共48000次真实更新；24个inner读出及独立模型审计完成，尚无可与A08比较的外层结果。** 用户2026-11-03要求解释为何多轮未超过A08，并以论文级成果为目标重新规划、继续实验。已完成的A57保持封存。
 
-正式worker317679/监督317671于纽约13:00:42启动，`e8a025c`冻结模型/数据/完整缓存与成本准入，`c61d953`封存身份。root[独立实查](root_formal_start_verification.json)确认首个D0、seed2026110358已推进3200次正式更新且实际Adam计数3200。此前60次真实图检查与144次完整生命周期工程更新另计，不混入48000正式计划。全部八模型/24个inner点和选择冻结后才外层读出；训练内曲线不是独立A08比较。CPU参数进程被nvidia列出426MiB CUDA上下文占用；独立resource-only guard319479现已绑定原317679/start-ticks并确认主监督317671仍持同一锁。f83d3cd/d86f2a5的独立overlay把head_check与formal整段驻留GPU时间各计一次，原CPU模型/依赖不变。新保守预测累计GPU21.36138h（含2h储备）、CPUreceipt+allowances22.44968h，仍满足原上限；raw CPU-stage标志不被当成零GPU费用证明。首个D0已完成6000更新并进入6000点inner MAP，尚无外层A08比较。
+正式CPU worker317679/监督317671于纽约13:00:42启动，14:01:28完成；八头完整执行，无性能驱动停臂或重跑。`e8a025c`冻结正式模型/数据/完整缓存与成本准入，`591e090`封存正式输出。此前60次真实图检查与144次完整生命周期工程更新另计，不混入48000正式更新。root[完成核验](root_formal_completion_verification.json)独立核对八头、9179808次有效原位置曝光、共同seed初态/曝光、24个inner点、16个外层逻辑行与10个唯一checkpoint SHA；[独立审计](models_manifest.json)另行核查完整Adam矩/配方/实际计数、逐步计划及inner已存标签重数。全部模型/inner选择已在实际Git `fa0379b`冻结，新outer身份由`a039997`封存。唯一GPU worker333857/监督333847于19:05:10UTC启动outer/stress源缓存；root实查selection已完成75/541条、2223个A08窗口，21360MiB。缓存完成后按固定权重进行全矩阵和A08对照。inner曲线不能当成独立A08比较。
 
-[完整全矩阵预测准入](cache_admission.json)覆盖八个6000步头部、fixed/inner-selected主表、时长压力测试、全部控制、132组配对比较上界与收尾。预测累计GPU20.898512h（含尚未花费的2h储备）、CPUreceipt+allowances23.942696h、tracked-path峰值保守上界33.568447GB，均在继承上限内；这些不是实际终账。头部后端按实测成本冻结为CPU。
+[正式进程回执](formal_process.json)由父监督直接观测worker OS exit0；原worker/监督/resource guard及审计进程已退出，root于19:03:28UTC实查GPU为空。模型和Adam张量实际在CPU，但AdamW的CUDA健康检查创建426MiB上下文，因此正式整段3646.642420秒保守计作GPU占用一次；原worker+监督实测CPU3444.130686秒，独立guard实测6.627640秒只加一次。guard自身OS退出码仍为null，不由完整回执推断。阶段通过不等于全轮完成，后续读出、132组配对比较、核验和同步仍须执行。
 
-长GPU缓存worker PID293836/监督293826从16:25:12UTC运行；root[实时核验](root_live_cache_verification.json)观察到首个producer的200/4236条FIT序列进度、5099个A08窗口，逐条提交journal已到206，L40S24570MiB。进度每25条更新，journal每条推进，差异正常。正式模型更新仍为0；唯一worker在该不可变缓存作业运行期间补齐A58独立训练/读出/审计CLI，随后按卡继续，无常规审批等待。
+四个FIT/inner源缓存已在`989ee28`封存：A08 FIT181057/inner37124窗口，JEPA FIT13372chunk，inner928条只读复用。CPU头部后端按实测成本冻结。最近[完整成本预测](formal_context_GPU_admission.json)为累计GPU21.36138h（含尚未花费2h储备）、CPUreceipt+allowances22.44968h、tracked-path峰值上界33.62449GB；这是预测而非最终实际账单。所有历史费用、原更早截止与双重资源上限继续有效。
 
-运行中曾发生[监督器事件](guardian_incident_root_verification.json)：原监督器293826因`du`扫描撞上原子移除的临时文件而退出，生产worker293836始终继续，没有重跑。另行冻结的guardian300231接管同一队列锁和原PID/start-ticks资源约束，生产图/缓存身份保持不变。原监督器CPU缺口以独立900秒预算allowance处理，不写成实测CPU；被接管worker的OS退出码不能由非父守护直接取得，终账会把完整manifest证据与真实可观测退出码分开。17:01UTC实查原GPUworker与新guardian均存活，进度已到3025FIT/103469窗口，stderr空；此为进度快照，非模型成绩。
+早期缓存曾发生[监督器事件](guardian_incident_root_verification.json)：监督器293826因`du`扫描撞上原子移除的临时文件而退出，GPU生产worker293836始终继续，没有重跑。guardian300231接管同一锁及原PID/start-ticks约束；现在缓存完整且两PID均已退出。原监督器CPU缺口以独立900秒accounting allowance处理，不能写成实测CPU；被接管worker/guardian的OS退出码保持null，完整manifest、进程不存在和GPU释放作为完成证据。后续阶段使用健壮监督器和同一执行队列。
 
 [完整失败分析与研究重规划](RESEARCH_REPLAN.md)区分已验证性能瓶颈与未证实机制；[执行卡](../../superpowers/plans/2026-11-03-a58-structured-evidence.md)在实际Git `769737b`冻结，独立计划审查通过。历史源任务特异性分析补充于`88156a2`，未改实验卡。
 
