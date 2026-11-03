@@ -1,0 +1,42 @@
+{
+  "status": "working throughput estimate, not a guarantee or resource admission replacement",
+  "as_of_NewYork": "2026-11-03T11:38:00-05:00",
+  "observed_A08_dense_windows_per_second": 47.15793892115174,
+  "root_measured_A08_windows_completed": 33768,
+  "root_measured_A08_remaining_FIT_plus_inner": 184413,
+  "root_measured_A08_remaining_minutes_at_observed_rate": 65.17566438047659,
+  "remaining_JEPA_FIT_chunks": 13372,
+  "JEPA_typical_measured_minutes": 17.104188708464303,
+  "head_backend": "cpu",
+  "all8_head_training_seconds_measured_safety_upper": 5289.438241556163,
+  "inner_MAP_minutes_safety_estimate": 5.683410334066061,
+  "formal_start_NewYork_window": [
+    "2026-11-03T13:00:00-05:00",
+    "2026-11-03T13:20:00-05:00"
+  ],
+  "first_valid_A08_fixed6000_comparison_NewYork_window": [
+    "2026-11-03T14:40:00-05:00",
+    "2026-11-03T15:30:00-05:00"
+  ],
+  "conditions": [
+    "current observed throughput maintained",
+    "no new source/implementation/verification failures",
+    "finish all8x6000 and freeze inner choices before outer forwards",
+    "initial inner points are not an independent A08 comparison"
+  ],
+  "downstream_allowances_minutes": {
+    "all8_training_inner_freeze_expected": [
+      65,
+      80
+    ],
+    "outer_stress_source_cache_expected": [
+      25,
+      35
+    ],
+    "initial_point_metric_readout_expected": [
+      5,
+      10
+    ]
+  },
+  "closure": "Full132pairedcomparisons,stressinterpretation,independentaudit/resources/selectivemainsynccontinueafterfirstpointtable;notincludedascompleted."
+}
