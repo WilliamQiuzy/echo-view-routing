@@ -1,0 +1,48 @@
+{
+  "stage": "Task3_independent_SPEC_review",
+  "reviewed_git_commit": "d6de11ca6103f87f4a0aa2e2b3129de1413e9264",
+  "reviewed_file_SHA256": {
+    "echo_routing/temporal/anchor_training.py": "a7996b8fbd832ea7d8f8891ebdfdce3da8f7884dc4306bc7ec17862ac02fce5b",
+    "tests/test_anchor_training.py": "9b4b3b499ffa3b27eb338467a456b3c9ec29854566a00e8d71d2284499db64e5"
+  },
+  "SPEC_status": "Issues Found",
+  "required_changes": [
+    {
+      "file": "echo_routing/temporal/anchor_training.py",
+      "lines": [
+        186,
+        194,
+        234,
+        240,
+        249,
+        253
+      ],
+      "contract": "Durable atomic claim/checkpoint/journal lifecycle; no silent replay of physical updates",
+      "issue": "begin() fsyncs pending.json contents but never the containing directory. A host/filesystem crash may lose the newly created pending directory entry; the first trace creation is likewise not directory-synced. If a physical update ran before durable trace/checkpoint evidence, the prior checkpoint and absent claim/trace can look like a clean prefix and permit replay. atomic_save() also omits the directory fsync after replacement.",
+      "required_fix": "Fsync the directory after claim creation before any optimizer work, after atomic checkpoint replacement and first trace creation, and after removing a completed claim; retain conservative fail-closed ordering. Cover the directory sync ordering in a focused lifecycle test."
+    }
+  ],
+  "otherwise_spec_aligned": [
+    "3201-parameter matched zero-output A/J heads",
+    "fixed FP32 CPU detached candidate update path",
+    "fixed AdamW and warmup/cosine schedule with clip1",
+    "shared uniform-replacement 32+32 plans and empty-kind behavior",
+    "complete model/Adam/source/normalizer/recipe identities and actual counters",
+    "Torch/NumPy/Python RNG checkpoint and restore",
+    "process-level pending and trace/checkpoint mismatch rejection"
+  ],
+  "existing_worker_GREEN_receipt": {
+    "path": "docs/results/2026-11-03_anchor_edits/training_green_attempt1.json",
+    "SHA256": "e5e2dbee41815cd89c5069efcd8517f4079acdb083ca0bc214d1a9f113f674af",
+    "measured_CPU_core_seconds": 1.346744,
+    "counted_as_new_reviewer_cost": false
+  },
+  "independent_test_runs": [],
+  "additional_measured_test_child_CPU_core_seconds": 0,
+  "review_method": "Read-only static implementation/test inspection; no server work or test rerun",
+  "artifact_creation_only": {
+    "epoch": 1793738723.155735,
+    "host": "MacBook-Air-9.local",
+    "PID": 88861
+  }
+}
