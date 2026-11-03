@@ -1,0 +1,26 @@
+{
+  "stage": "feature_exposure_RED",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "tests/test_anchor_runtime.py"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 30021,
+  "supervisor_pid": 30011,
+  "started_epoch": 1793739974.7174468,
+  "finished_epoch": 1793739976.184432,
+  "full_process_wall_seconds": 1.4669852256774902,
+  "observed_worker_exit_code": 1,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 0.9125979999999999,
+  "measured_supervisor_CPU_seconds": 0.0007449999999999974,
+  "measured_CPU_core_seconds": 0.9133429999999999,
+  "scope": "local CPU synthetic software checks; no media or formal experiment updates",
+  "output": ".F                                                                       [100%]\n=================================== FAILURES ===================================\n_ test_training_preparation_uses_one_fixed_multi_Ffit_and_shared_candidate_axes _\n\n    def test_training_preparation_uses_one_fixed_multi_Ffit_and_shared_candidate_axes():\n        m = importlib.import_module('echo_routing.temporal.anchor_runtime')\n        qs = [{'id': 'native', 'kind': 'native', 'labels': np.zeros(7, int)},\n              {'id': 'multi', 'kind': 'multi', 'labels': np.array([0, 1, 1, 0, 0, 0, 0])}]\n        base = [np.zeros(7, int), np.zeros(7, int)]\n        a = [np.eye(5)[[0, 1, 0, 0, 0, 0, 0]], np.eye(5)[[0, 1, 1, 0, 0, 0, 0]]]\n        j = [np.full((7, 5), .2)] * 2\n        value = m.prepare_training(qs, a, j, base)\n        assert value['F_fit'] == .5\n        assert value['features']['A'].shape == value['features']['J'].shape == (2, 98)\n        np.testing.assert_array_equal(value['features']['A'][:, :62], value['features']['J'][:, :62])\n        assert value['kind_indices']['native'].tolist() == [0]\n        assert value['kind_indices']['constructed'].tolist() == [1]\n        assert value['targets'][1] == 3.\n        assert value['candidate_rows'][0]['sequence_index'] == 0\n>       assert value['candidate_rows'][0]['feature_positions'] == 7\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE       KeyError: 'feature_positions'\n\ntests/test_anchor_runtime.py:52: KeyError\n=========================== short test summary info ============================\nFAILED tests/test_anchor_runtime.py::test_training_preparation_uses_one_fixed_multi_Ffit_and_shared_candidate_axes\n",
+  "output_sha256": "144213b80b8cfdb4b20a3a12ab4921771d58ea9f3aa713a7cbd1a19d369b6eb4"
+}
