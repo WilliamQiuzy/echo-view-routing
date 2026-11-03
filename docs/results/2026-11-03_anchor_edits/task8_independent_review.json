@@ -1,0 +1,91 @@
+{
+  "stage": "Task8_fixed_reader_aggregate_oracle_terminal_SPEC_then_CODE_QUALITY_review",
+  "reviewed_git_commit": "28b002274c9909592f34fd82f692fda026b9731d",
+  "reviewed_file_SHA256": {
+    "scripts/readout_anchor_edits.py": "8de3ab47b07aedbdc00d20fe85562acb38de34551df14664e5f16d207872ae5e",
+    "scripts/aggregate_anchor_edits.py": "42339bb9ce2e877dea7fe2affd2bba206db767288c757b45d4e75bb469a58fff",
+    "scripts/oracle_anchor_edits.py": "d174a8ae87c0aa9df1d5d6bfb424056f8e8d4c04e49dd66c8086d53f012743bd",
+    "scripts/close_anchor_resources.py": "f9a131842f58cb1385f72418474d77879550abe2cfa1e26fad49f3256812d8ef"
+  },
+  "review_sequence": [
+    {
+      "stage": "SPEC_recheck",
+      "status": "Approved"
+    },
+    {
+      "stage": "CODE_QUALITY_after_SPEC",
+      "status": "Approved"
+    }
+  ],
+  "SPEC_status": "Approved",
+  "CODE_QUALITY_status": "Approved",
+  "required_changes": [],
+  "resolved_finding": {
+    "id": "R6",
+    "resolution": "Direct-wait claims now require each actual server receipt to have direct_wait=True, nonnull observed OS status and no manifest inference. Separate unknown-server counts and raw per-row null/direct/inferred fields are retained; local SELF snapshots remain separate."
+  },
+  "component_results": {
+    "reader": "SPEC and QUALITY Approved",
+    "aggregate": "SPEC and QUALITY Approved",
+    "oracle": "SPEC and QUALITY Approved",
+    "terminal_resources": "SPEC and QUALITY Approved"
+  },
+  "review_checks": [
+    "Reader binds prior model/12inner seal and all pinned source/reference caches, fixed6000 and one shared G/U score cache; exact70rows and24physical policy-cache cells required",
+    "Stress replaces only multi and copies native/pair labels byte-identically from corresponding main predictions",
+    "Aggregate independently rederives all reference/policy full-axis labels and70metrics, then all96 declared5000 paired whole-session/stream/pair bootstrap comparisons with null/undefined accounting",
+    "Oracle requires frozen70/96 summary, covers12 U/G multi domains with exact raw-supported maxONE action and keeps label-assisted alternatives separate from systems, gates and training",
+    "Terminal GPU/CPU costs use closed actual receipts plus explicit collector CPU and inherited allowances; unused reserve is not actual cost, storage remains explicitly conservative upper forecast/retained bound, unknown OS outcomes remain null"
+  ],
+  "historical_IssuesFound_review": {
+    "path": "docs/results/2026-11-03_anchor_edits/task8_independent_spec_review.json",
+    "SHA256": "14c79e9d5d27c1d3a971cb38bf57039cc2195a38b7a116f403fd82c6ab20479c",
+    "preserved_without_overwrite": true
+  },
+  "independent_test_receipt": {
+    "path": "docs/results/2026-11-03_anchor_edits/task8_fixed_independent_GREEN.json",
+    "SHA256": "2e1f607a9078d8b47097eccb8ec6666b2bfa1ca6d941212c17debb92a5ee49a8",
+    "raw_receipt": {
+      "stage": "task8_fixed_independent_GREEN",
+      "command": [
+        "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "docs/results/2026-11-03_anchor_edits/task8_closure_spec_probes.py"
+      ],
+      "measurement_host": "MacBook-Air-9.local",
+      "model_pid": 53231,
+      "supervisor_pid": 53221,
+      "started_epoch": 1793746984.55042,
+      "finished_epoch": 1793746987.712723,
+      "full_process_wall_seconds": 3.1623029708862305,
+      "observed_worker_exit_code": 0,
+      "GPU_job": false,
+      "CUDA_context_occupied": false,
+      "CUDA_visibility_hidden_before_child_import": true,
+      "measured_child_CPU_seconds": 2.17788,
+      "measured_supervisor_CPU_seconds": 0.0009080000000000043,
+      "measured_CPU_core_seconds": 2.178788,
+      "scope": "local CPU synthetic software checks; no media or formal experiment updates",
+      "output": "..                                                                       [100%]\n",
+      "output_sha256": "99db33d5c94c6f7da021687c7391181685cc33299c5435b1c861e2db3be3ec87"
+    },
+    "focused_tests_passed": 2
+  },
+  "new_reviewer_measured_CPU_core_seconds": 2.178788,
+  "Task8_total_new_reviewer_measured_CPU_seconds_including_RED": 4.308312,
+  "cost_scope": "RED and GREEN are separate actual local SELF+CHILDREN receipts; worker notified of each for one locked merge. Synthetic closure fields/rows inside tests are not real experiment receipts or extra independent costs.",
+  "worker_cost_notification_sent": true,
+  "server_work": false,
+  "formal_optimizer_updates": 0,
+  "real_source_forwards": 0,
+  "active_source39_or_producer_accessed": false,
+  "unsubmitted_timing_checker_or_admission_revision_read": false,
+  "scope_limit": "Software graph/contract review only. The reviewer did not execute actual70row readout,96comparisons,oracle or terminal closure. Final findings/figures/public integration remain later authorized work.",
+  "artifact_creation_only": {
+    "epoch": 1793747046.319157,
+    "host": "MacBook-Air-9.local",
+    "PID": 55200
+  }
+}

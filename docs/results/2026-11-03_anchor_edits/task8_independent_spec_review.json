@@ -1,0 +1,71 @@
+{
+  "stage": "Task8_reader_aggregate_oracle_terminal_SPEC_review",
+  "reviewed_git_commit": "d18f1b7948ee37767d41a8228c08a6ac5836e84c",
+  "reviewed_file_SHA256": {
+    "scripts/readout_anchor_edits.py": "8de3ab47b07aedbdc00d20fe85562acb38de34551df14664e5f16d207872ae5e",
+    "scripts/aggregate_anchor_edits.py": "42339bb9ce2e877dea7fe2affd2bba206db767288c757b45d4e75bb469a58fff",
+    "scripts/oracle_anchor_edits.py": "d174a8ae87c0aa9df1d5d6bfb424056f8e8d4c04e49dd66c8086d53f012743bd",
+    "scripts/close_anchor_resources.py": "d5a74030a2d5b3b8d22f1a747b55b4ba1d8da5e31ba7725f59cc091c17376baf"
+  },
+  "SPEC_status": "Issues Found",
+  "CODE_QUALITY_status": "Pending terminal receipt truth fix",
+  "component_SPEC_results": {
+    "reader_70rows_and_prior_frozen_models": "Approved",
+    "aggregate_96whole_unit_recounts": "Approved",
+    "post_frozen_readout_12domain_oracle": "Approved",
+    "terminal_resource_receipt_truth": "Issues Found"
+  },
+  "required_changes": [
+    {
+      "id": "R6",
+      "file": "scripts/close_anchor_resources.py",
+      "contract": "OS observation claims must follow actual receipts, keeping unknown exits null",
+      "issue": "Both directly-waited completion flags were hardcoded True even when a server receipt had null observed OS status and false direct-wait flag.",
+      "required_fix": "Derive aggregate waited/inferred booleans and unknown-server counts from actual server receipts; preserve per-row null/direct/inference fields. Do not count local running-SELF null snapshots as neural-worker exit observations.",
+      "evidence": "Pure substituted-IO closure fixture preserved one raw null worker status but emitted both aggregate wait flags True; independent probe failed on that contradiction."
+    }
+  ],
+  "independent_test_receipt": {
+    "path": "docs/results/2026-11-03_anchor_edits/task8_closure_SPEC_RED.json",
+    "SHA256": "3b0b91dd8ed6bc99b9e05c34a68cdb875efad5d4d2d62741608876dc4d86982b",
+    "raw_receipt": {
+      "stage": "task8_closure_SPEC_RED",
+      "command": [
+        "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "docs/results/2026-11-03_anchor_edits/task8_closure_spec_probes.py"
+      ],
+      "measurement_host": "MacBook-Air-9.local",
+      "model_pid": 48045,
+      "supervisor_pid": 48035,
+      "started_epoch": 1793746820.3954508,
+      "finished_epoch": 1793746823.541964,
+      "full_process_wall_seconds": 3.1465132236480713,
+      "observed_worker_exit_code": 1,
+      "GPU_job": false,
+      "CUDA_context_occupied": false,
+      "CUDA_visibility_hidden_before_child_import": true,
+      "measured_child_CPU_seconds": 2.128761,
+      "measured_supervisor_CPU_seconds": 0.0007630000000000015,
+      "measured_CPU_core_seconds": 2.129524,
+      "scope": "local CPU synthetic software checks; no media or formal experiment updates",
+      "output": ".F                                                                       [100%]\n=================================== FAILURES ===================================\n______ test_terminal_direct_wait_claim_follows_unknown_server_OS_receipt _______\n\ntmp_path = PosixPath('/private/var/folders/4l/s1hqgvzj2l10_dff3pw5m97m0000gn/T/pytest-of-williamqiu/pytest-271/test_terminal_direct_wait_clai0')\nmonkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x1499b0740>\n\n    def test_terminal_direct_wait_claim_follows_unknown_server_OS_receipt(tmp_path, monkeypatch):\n        m = importlib.import_module('scripts.close_anchor_resources')\n        run, pub = tmp_path / 'run', tmp_path / 'pub'\n        run.mkdir(); pub.mkdir()\n        monkeypatch.setattr(m, 'RUN', run)\n        monkeypatch.setattr(m, 'PUB', pub)\n        monkeypatch.setattr(m, 'ROOT', tmp_path)\n        record = {'stage': 'unknown_synthetic_stage', 'attempt': 1, 'receipt_id': 'synthetic:1',\n                  'measurement_host': 'synthetic-host', 'model_pid': 12345, 'supervisor_pid': 54321,\n                  'started_epoch': 1000., 'finished_epoch': 1001., 'full_process_wall_seconds': 1.,\n                  'measured_CPU_core_seconds': .5, 'GPU_job': False, 'CUDA_context_occupied': False,\n                  'observed_worker_exit_code': None, 'child_exit_code_directly_waited': False}\n        (run / 'processes.jsonl').write_text(json.dumps(record) + '\\n')\n        models = []\n        for seed in [2026110359, 2026110360]:\n            for arm in ['A', 'J']:\n                folder = run / 'models' / f'seed{seed}' / arm\n                folder.mkdir(parents=True)\n                (folder / 'latest.pt').write_bytes(b'x')\n                models.append({'seed': seed, 'arm': arm,\n                               'milestones': [{'path': f'fixture_{seed}_{arm}_{step}', 'sha256': 'a' * 64}\n                                              for step in [2000, 4000, 6000]]})\n        fixtures = {'local_cpu_receipts.json': {'file_pins': {}, 'receipts': []},\n                    'summary.json': {'formal_models': 4, 'formal_optimizer_updates': 24000, 'metric_rows': 70, 'paired_comparison_count': 96},\n                    'action_space_diagnostic.json': {'domain_count': 12},\n                    'models_manifest.json': {'passed': True, 'models': models},\n                    'formal_admission.json': {'storage': {'incremental_tracked_path_peak_upper_bytes': 100}},\n                    'anchor_edits_v1.json': {'source': {'a08': {'path': 'fixture_a', 'sha256': 'a' * 64},\n                                                     'jepa': {'path': 'fixture_j', 'sha256': 'b' * 64}}}}\n        for name in ['summary.json', 'action_space_diagnostic.json', 'models_manifest.json', 'local_cpu_receipts.json', 'formal_admission.json']:\n            (pub / name).write_text(json.dumps(fixtures[name]))\n        original_read = m.read\n        monkeypatch.setattr(m, 'read', lambda path: fixtures[Path(path).name] if Path(path).name in fixtures else original_read(path))\n        monkeypatch.setattr(m, 'verify_freeze', lambda name: {'objects': {}})\n        monkeypatch.setattr(m, 'verify_pin', lambda pin: Path(pin['path']))\n        def fake_output(args, **kwargs):\n            if args[0] == 'nvidia-smi': return ''\n            if args[0] == 'du': return f'0 {run}\\n0 {pub}\\n'\n            raise AssertionError('unexpected external command')\n        monkeypatch.setattr(m.subprocess, 'check_output', fake_output)\n        m.main()\n        resources = json.loads((pub / 'resources.json').read_text())\n        terminal = json.loads((pub / 'terminal_exit_receipt.json').read_text())\n        assert resources['actual_totals']['unknown_observed_worker_OS_statuses'] == 1\n        assert terminal['worker_OS_exit_statuses'][0]['observed_worker_exit_code'] is None\n>       assert resources['new_worker_OS_statuses_directly_waited_not_inferred_from_manifests'] is False\nE       assert True is False\n\ndocs/results/2026-11-03_anchor_edits/task8_closure_spec_probes.py:61: AssertionError\n----------------------------- Captured stdout call -----------------------------\n{\"closed\": true, \"new_GPU_job_hours\": 0.0, \"cumulative_GPU_job_hours\": 17.31542736033599, \"cumulative_CPU_accounting_hours\": 17.964358619444443, \"cumulative_tracked_storage_upper_bytes\": 33739492579}\n=========================== short test summary info ============================\nFAILED docs/results/2026-11-03_anchor_edits/task8_closure_spec_probes.py::test_terminal_direct_wait_claim_follows_unknown_server_OS_receipt\n",
+      "output_sha256": "7e9a9e34539b8e8797006c5d913e505a5c1d2277d2eff87696bda2e94b013a7d"
+    },
+    "smoke_tests_passed": 1,
+    "contract_probes_failed": 1
+  },
+  "new_reviewer_measured_CPU_core_seconds": 2.129524,
+  "worker_cost_notification_sent": true,
+  "no_cache_to_FIT_preparation_blocker": true,
+  "real_server_or_GPU_work": false,
+  "real_terminal_closure_executed": false,
+  "unsubmitted_timing_checker_or_admission_revision_read": false,
+  "artifact_creation_only": {
+    "epoch": 1793747046.3018749,
+    "host": "MacBook-Air-9.local",
+    "PID": 55200
+  }
+}
