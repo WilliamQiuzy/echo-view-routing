@@ -156,7 +156,7 @@ def gpu():
 
 
 def cpu():
-    freeze = verify_freeze('FIT_graph_freeze.json')
+    freeze = verify_freeze('CPU_graph_freeze.json')
     gpu_result = read(PUB / 'FIT_GPU_checks.json')
     if not gpu_result['passed']:
         raise ValueError('real source graph checks are incomplete')
