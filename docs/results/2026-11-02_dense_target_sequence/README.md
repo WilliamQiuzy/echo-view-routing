@@ -55,3 +55,7 @@ inner-B3为预定补充，不能只择较好解码。J两seed的selection segmen
 ![完整任务权衡](figures/development_pareto.png)
 
 ![真短段与假短段](figures/short_segments_and_native_errors.png)
+
+全阶段终账：GPU-job墙钟14.383965小时；实际CPU测量receipt之和14.284647核小时，历史receipt的host/PID/start缺口使跨receipt重叠无法完全排除，不能称完整唯一host CPU。短暂未计量准备另列.25小时预算allowance，预算合计14.534647核小时；它不是测得已花费用。保留任务路径的apparent/allocated较大值加单个最大atomic与100MB余量，storage保守上界32.827926GB；不是观测到的全机峰值。43个测量receipt与3个测量失败均保留，12个GPU-job已关闭，GPU空闲，无剩余授权模型阶段。旧A55/A56 CPUupper与本轮实际口径单列。
+
+[最终验证](verification.json)重算全部150行native混淆及准确率、48组配对分母、44项CPU检查、18个历史freeze的272个真实Git对象绑定与报告链接。[收尾工程记录](closure_engineering_notes.json)明确保留一次部署遗漏：外部precheck因缺少已通过的CPU测试文件失败，shell继续执行了内部source/model检查与锁均通过的资源collector；随后补齐同一测试文件并逐项postcheck，没有重跑资源或模型算术。该短precheck未测CPU，包含在单列准备allowance，未伪称通过初检。后续root本地整合与监测器删除另记coordination tail，不预收未来费用。
