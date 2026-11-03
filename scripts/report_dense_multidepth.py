@@ -10,6 +10,7 @@ from scripts import train_dense_sequence as base,train_dense_multidepth as run
 from echo_routing.temporal import dense_runtime as data,dense_multidepth as md
 from echo_routing.temporal.multidepth_audit import verify_optimizer,verify_decoder_binding
 from echo_routing.temporal.dense_sequence import TwoStageTCN
+from echo_routing.temporal.dense_checkpoint_audit import compare_final_checkpoint
 from echo_routing.temporal.dense_readout import SequenceReadout,ReadoutPixels
 from echo_routing.temporal.dense_analysis import validate_inner_cache
 from echo_routing.temporal.dev_train import lr_factor
@@ -37,6 +38,7 @@ def audit():
             for step in range(500,6001,500):
                 path=folder/f'step{step}.pt';identity=read(folder/f'step{step}.identity.json');record=read(folder/f'inner_step{step}/metrics.json');assert sha(path)==identity['sha256']==record['model_checkpoint_sha256'] and identity['feature_contract']==record['feature_contract']==md.FEATURE_CONTRACT and record['seed']==seed and record['arm']==arm and record['step']==step;inner.append(record)
             best=data.choose_inner(inner)
+            final=torch.load(folder/'step6000.pt',map_location='cpu',weights_only=True,mmap=True);verified.update(compare_final_checkpoint(final,z['model'],arm=='J-MD',md.FEATURE_CONTRACT));del final
             for step,kind in [(2000,'fixed_step'),(6000,'fixed_step'),(best['step'],'inner_selected_package')]:
                 innerpath=folder/f'inner_step{step}';rows.append({'row':f'seed{seed}_{arm}_'+(f'fixed{step}' if kind=='fixed_step' else 'inner_package'),'kind':kind,'arm':arm,'seed':seed,'step':step,'path':str((folder/f'step{step}.pt').relative_to(ROOT)),'sha256':sha(folder/f'step{step}.pt'),'feature_contract':md.FEATURE_CONTRACT,'inner_probabilities_sha256':sha(innerpath/'probabilities.private.npy'),'inner_predictions_sha256':sha(innerpath/'predictions.private.npy'),'inner_record_sha256':sha(innerpath/'metrics.json'),'inner_sequence_sha256':read(base.PUB/'input_metadata.json')['roles']['inner_cal']['sequence_sha256']})
             models.append({'seed':seed,'arm':arm,'updates':6000,'physical_rows':len(trace),**verified,'latest_optimizer_sha256':sha(folder/'latest.pt'),'inner_chosen_step':best['step']});total+=len(trace);del z
