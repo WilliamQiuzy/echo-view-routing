@@ -186,6 +186,7 @@ def formal():
                     old = read(target)
                     if old['weight_sha256'] != sha(path) or old['identity'] != identity:
                         raise ValueError('existing inner diagnostic record binding changed')
+                    verify_pin(old['private_predictions'])
                     return {'path': str(target.relative_to(ROOT)), 'sha256': sha(target)}
                 predictions = {policy: {} for policy in ['U', 'G']}
                 guard_matches, candidates, accepted = 0, 0, {'U': 0, 'G': 0}
@@ -199,8 +200,11 @@ def formal():
                     guard_matches += majority(result['G']['prediction']) == majority(b)
                 if guard_matches != len(inner_qs):
                     raise ValueError('global majority protection failed on complete inner axes')
+                private_labels = folder / f'inner_step{cursor}_labels.private.npy'
+                save_array(private_labels, predictions)
                 value = {'seed': seed, 'arm': arm, 'step': cursor, 'weight_sha256': sha(path),
                          'identity': identity, 'source_cache_identities': inner_sources,
+                         'private_predictions': array_pin(private_labels),
                          'policies': {policy: {**metrics(inner_qs, pred)[0], **short_metrics(inner_qs, pred, 16)}
                                       for policy, pred in predictions.items()},
                          'candidate_count': candidates, 'accepted_actions': accepted,
