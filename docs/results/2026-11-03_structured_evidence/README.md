@@ -1,8 +1,8 @@
 # A58：稳定识别与稠密变化证据的联合序列模型
 
-状态：**八头/48000步已完成；固定6000步D1/D2首轮外层点估计已出，未超过原A08，完整统计与收尾继续。** 用户2026-11-03要求解释为何多轮未超过A08，并以论文级成果为目标重新规划、继续实验。已完成的A57保持封存。
+状态：**8头/48000步、24个inner点、72项读出及132组配对统计已完成，完整汇总在`34002ea`封存；主任务未超过A08，资源/图件核验与同步收尾继续。**
 
-正式CPU worker317679/监督317671于纽约13:00:42启动，14:01:28完成；八头完整执行，无性能驱动停臂或重跑。`e8a025c`冻结正式模型/数据/完整缓存与成本准入，`591e090`封存正式输出。此前60次真实图检查与144次完整生命周期工程更新另计，不混入48000正式更新。root[完成核验](root_formal_completion_verification.json)独立核对八头、9179808次有效原位置曝光、共同seed初态/曝光、24个inner点、16个外层逻辑行与10个唯一checkpoint SHA；[独立审计](models_manifest.json)另行核查完整Adam矩/配方/实际计数、逐步计划及inner已存标签重数。全部模型/inner选择已在实际Git `fa0379b`冻结，新outer身份由`a039997`封存。outer/stress十个源缓存prefix现已全部完成并在`5b6ba67`封存，GPU worker333857由父监督直接观测OS exit0，1338.304661秒GPU占用/1319.183991秒实测CPU。读出代码、输入及32个Git对象在`d86f663`绑定；CPU reader339899/监督339891随后完成72项main/selected/stress/参考读出，正在继续独立重数和132组配对统计。inner曲线不能当成独立A08比较。
+正式CPU worker317679/监督317671于纽约13:00:42启动，14:01:28完成；八头完整执行，无性能驱动停臂或重跑。`e8a025c`冻结正式模型/数据/完整缓存与成本准入，`591e090`封存正式输出。此前60次真实图检查与144次完整生命周期工程更新另计，不混入48000正式更新。root[完成核验](root_formal_completion_verification.json)独立核对八头、9179808次有效原位置曝光、共同seed初态/曝光、24个inner点、16个外层逻辑行与10个唯一checkpoint SHA；[独立审计](models_manifest.json)另行核查完整Adam矩/配方/实际计数、逐步计划及inner已存标签重数。全部模型/inner选择已在实际Git `fa0379b`冻结，新outer身份由`a039997`封存。outer/stress十个源缓存prefix现已全部完成并在`5b6ba67`封存，GPU worker333857由父监督直接观测OS exit0，1338.304661秒GPU占用/1319.183991秒实测CPU。读出代码、输入及32个Git对象在`d86f663`绑定；CPU reader339899/监督339891随后完成72项main/selected/stress/参考读出，独立重数和132组配对统计现已完成，剩余资源、图件与同步收尾。inner曲线不能当成独立A08比较。
 
 [正式进程回执](formal_process.json)由父监督直接观测worker OS exit0；原worker/监督/resource guard及审计进程已退出，root于19:03:28UTC实查GPU为空。模型和Adam张量实际在CPU，但AdamW的CUDA健康检查创建426MiB上下文，因此正式整段3646.642420秒保守计作GPU占用一次；原worker+监督实测CPU3444.130686秒，独立guard实测6.627640秒只加一次。guard自身OS退出码仍为null，不由完整回执推断。阶段通过不等于全轮完成，后续读出、132组配对比较、核验和同步仍须执行。
 
@@ -10,15 +10,9 @@
 
 早期缓存曾发生[监督器事件](guardian_incident_root_verification.json)：监督器293826因`du`扫描撞上原子移除的临时文件而退出，GPU生产worker293836始终继续，没有重跑。guardian300231接管同一锁及原PID/start-ticks约束；现在缓存完整且两PID均已退出。原监督器CPU缺口以独立900秒accounting allowance处理，不能写成实测CPU；被接管worker/guardian的OS退出码保持null，完整manifest、进程不存在和GPU释放作为完成证据。后续阶段使用健壮监督器和同一执行队列。
 
-[首轮固定6000步主比较](primary_fixed6000_preliminary.json)已在`e365da5`封存，root另行[核对点估计算术与冻结权重身份](root_primary_point_verification.json)。以下均为两个head seed的完整点估计范围，尚待服务器私有标签独立重数及132组配对区间；不是新临床验证。
+[完整研究结论与证据缺口](FINDINGS.md)包含全部四臂、两个seed、主/selected/stress结果及95%配对区间。[summary.json](summary.json)与[metrics.csv](metrics.csv)已完成独立缓存重数，root另行[核对72行/132项算术及480个训练bin](root_final_scientific_verification.json)。主D2−D1 selection片段差为−.046334/−.043495，区间分别[−.069696,−.023862]/[−.066933,−.021255]；calibration+.001198/+.001263，区间跨0。D0也有类似原生/真短漏检损害，不能只归咎于显式duration表。
 
-| multi片段F1@50 | selection（120流） | calibration（120流） |
-|---|---:|---:|
-| 原A08-s0+B3 | .956349 | .982692 |
-| D1：A08轨迹+学习duration | .941414–.945344 | .966667–.966732 |
-| D2：同A08 unary+JEPA轨迹 | .897919–.899010 | .967930 |
-
-D2−D1在selection为−.046334/−.043495，calibration为+.001198/+.001263，尚未显示跨半部稳定增量。D2 selection原生macroF1为.930765，低于A08 .978591，A5C召回7/11对11/11。D1假短≤16段从A08的9降为6，却把真实短段漏检从7/141升至18/141，边界召回由.965969降为.939791；不能把少切当成功。D2 calibration虽部分修复D1，真实短段漏检仍12/134对A08 5/134。所有D0/D3、inner-selected、stress、完整混淆/恢复损害与配对区间继续按冻结协议完成，不据这批结果临时停臂、调参或增臂。
+正结果单独保留：时长stress的calibration D2相对A08片段F1提高3.26/3.16个百分点，条件固定bank区间均高于0，短段FN23/159对54/159；但selection没有稳定片段增益，原生识别损害未消失。stress仍是新构造bank和重复开发来源，不能写成全任务或新临床验证胜出。首批点估计`e365da5`只作历史快照，最终统计以`34002ea`为准。
 
 [完整失败分析与研究重规划](RESEARCH_REPLAN.md)区分已验证性能瓶颈与未证实机制；[执行卡](../../superpowers/plans/2026-11-03-a58-structured-evidence.md)在实际Git `769737b`冻结，独立计划审查通过。历史源任务特异性分析补充于`88156a2`，未改实验卡。
 
