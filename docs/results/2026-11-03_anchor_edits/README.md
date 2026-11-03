@@ -6,6 +6,6 @@ A58的JEPA增量在短段压力calibration成立，但整段联合解码仍损�
 
 A14–17已经训练过局部路由，A59不声称路由或utility学习是新方法。新条件与完整控制见[执行卡](../../superpowers/plans/2026-11-03-a59-anchor-edits.md)。机械保住原生macroF1不等于保住帧准确率、真短段或临床识别，所有损害仍完整报告。
 
-继承GPU24h/CPU72h/40GB与原更早deadline，不重置费用。起始GPU剩6.684573h，其中2h收尾储备；CPU conservative receipts+allowances剩54.036262h；tracked上界剩6375507422B。服务器初查空闲，后续SSH超时；本地准备继续，不能把准备/旧快照写成正式训练或新结果。
+继承GPU24h/CPU72h/40GB与原更早deadline，不重置费用。起始GPU剩6.684573h，其中2h收尾储备；CPU conservative receipts+allowances剩54.036262h；tracked上界剩6375507422B。用户重启后SSH已于2026-11-03 16:10:52纽约时间恢复；root真实只读核对GPU0MiB/无app、A58closed、A59尚无runtime。唯一执行worker继续真实源资格化和实测全成本准入，正式更新仍0。
 
-最后单次TCP复核：2026-11-03 21:06:59UTC仍在认证前超时；这属于现有服务器连通性阻塞，并非等待方案确认。实际源资格化、媒体前向吞吐、全成本准入和正式训练尚未开始，均需连接恢复；本地独立实现继续推进。
+历史连接失败保留在readiness：21:06:59UTC最后一次TCP超时，21:10:52UTC用户重启后SSH恢复。原预算/费用/更早deadline均不重置。独立审查发现监督器launch-intent与锁内账本两个问题，修正后再启动实际作业；资源公式、bank、cache、oracle的SPEC已通过，原失败和实测费用保留。

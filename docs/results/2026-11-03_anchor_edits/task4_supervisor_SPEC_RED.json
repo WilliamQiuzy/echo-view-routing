@@ -1,0 +1,26 @@
+{
+  "stage": "task4_supervisor_SPEC_RED",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "docs/results/2026-11-03_anchor_edits/task4_supervisor_spec_probes.py"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 39063,
+  "supervisor_pid": 39053,
+  "started_epoch": 1793740233.595693,
+  "finished_epoch": 1793740233.862289,
+  "full_process_wall_seconds": 0.26659584045410156,
+  "observed_worker_exit_code": 1,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 0.2177,
+  "measured_supervisor_CPU_seconds": 0.0011890000000000043,
+  "measured_CPU_core_seconds": 0.218889,
+  "scope": "local CPU synthetic software checks; no media or formal experiment updates",
+  "output": "FF                                                                       [100%]\n=================================== FAILURES ===================================\n______________ test_active_intent_is_durable_before_child_launch _______________\n\ntmp_path = PosixPath('/private/var/folders/4l/s1hqgvzj2l10_dff3pw5m97m0000gn/T/pytest-of-williamqiu/pytest-247/test_active_intent_is_durable_0')\nmonkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x107336a80>\n\n    def test_active_intent_is_durable_before_child_launch(tmp_path, monkeypatch):\n        m = importlib.import_module('scripts.supervise_anchor_edits')\n        run = tmp_path / 'run'\n        observed = []\n        original = m.subprocess.Popen\n        def observe_launch(*args, **kwargs):\n            observed.append((run / 'active_process.json').exists())\n            return original(*args, **kwargs)\n        monkeypatch.setattr(m.subprocess, 'Popen', observe_launch)\n        row = m.execute('prelaunch_probe', [sys.executable, '-c', 'pass'], run, tmp_path / 'pub',\n                        m.totals([]), 1., False, storage_probe=lambda: 0, GPU_probe=lambda: [])\n        assert row['observed_worker_exit_code'] == 0\n>       assert observed and all(observed), 'worker launches before any durable active intent exists'\nE       AssertionError: worker launches before any durable active intent exists\nE       assert ([False] and False)\nE        +  where False = all([False])\n\ndocs/results/2026-11-03_anchor_edits/task4_supervisor_spec_probes.py:19: AssertionError\n_ test_new_locked_stage_accounts_for_prior_ledger_cost_even_with_stale_caller_snapshot _\n\ntmp_path = PosixPath('/private/var/folders/4l/s1hqgvzj2l10_dff3pw5m97m0000gn/T/pytest-of-williamqiu/pytest-247/test_new_locked_stage_accounts0')\n\n    def test_new_locked_stage_accounts_for_prior_ledger_cost_even_with_stale_caller_snapshot(tmp_path):\n        m = importlib.import_module('scripts.supervise_anchor_edits')\n        run, pub = tmp_path / 'run', tmp_path / 'pub'\n        before = m.totals([])\n        first = m.execute('first_probe', [sys.executable, '-c', 'sum(i*i for i in range(100000))'],\n                          run, pub, before, 1., False, storage_probe=lambda: 0, GPU_probe=lambda: [])\n        assert first['measured_CPU_core_seconds'] > 0\n        second = m.execute('second_probe', [sys.executable, '-c', 'pass'], run, pub, before, 1., False,\n                           storage_probe=lambda: 0, GPU_probe=lambda: [])\n        expected = m.remaining_limits(m.totals([first]), time.time(), potential_GPU_context=True)\n>       assert second['limits_at_launch']['remaining_CPU_seconds'] <= expected['remaining_CPU_seconds'], \\\n            'locked stage ignores completed ledger costs when caller computed spent before acquiring lock'\nE       AssertionError: locked stage ignores completed ledger costs when caller computed spent before acquiring lock\nE       assert 194530.543677 <= 194530.52456199998\n\ndocs/results/2026-11-03_anchor_edits/task4_supervisor_spec_probes.py:32: AssertionError\n=========================== short test summary info ============================\nFAILED docs/results/2026-11-03_anchor_edits/task4_supervisor_spec_probes.py::test_active_intent_is_durable_before_child_launch\nFAILED docs/results/2026-11-03_anchor_edits/task4_supervisor_spec_probes.py::test_new_locked_stage_accounts_for_prior_ledger_cost_even_with_stale_caller_snapshot\n",
+  "output_sha256": "2041389d092bac31eeb5a84ec7569be9c87448ad3dabf218dfe7a56250aade5e"
+}
