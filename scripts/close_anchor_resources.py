@@ -11,7 +11,7 @@ from echo_routing.temporal.anchor_resources import ExclusiveQueue,totals,PRIOR_S
 def main():
     with ExclusiveQueue(RUN/'exclusive_supervisor.lock'):
         names=['producer_freeze.json','training_prepare_freeze.json','wholeFIT_check_freeze.json','formal_admission_freeze.json',
-               'formal_freeze.json','audit_freeze.json','outer_freeze.json','readout_freeze.json','aggregate_freeze.json',
+               'formal_freeze.json','audit_freeze.json','outer_admission_freeze.json','outer_freeze.json','readout_freeze.json','aggregate_freeze.json',
                'oracle_freeze.json','package_freeze.json','terminal_freeze.json']
         contracts={name:verify_freeze(name) for name in names}
         if (RUN/'active_process.json').exists():raise ValueError('active queue claim prevents terminal closure')

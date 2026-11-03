@@ -11,12 +11,17 @@ from echo_routing.temporal.anchor_resources import totals,forecast
 from echo_routing.temporal.structured_guard import storage_bytes
 
 
-def main():
-    freeze=verify_freeze('formal_admission_freeze.json');inputs=read(PUB/'training_inputs.json');check=read(PUB/'wholeFIT_checks.json')
+def main(mode='formal'):
+    if mode not in ['formal','outer']:raise ValueError('explicit formal/outer admission stage')
+    freeze=verify_freeze(mode+'_admission_freeze.json');inputs=read(PUB/'training_inputs.json');check=read(PUB/'wholeFIT_checks.json')
     cached=read(PUB/'cache_fit_manifest.json');roles=read(PUB/'input_manifest.json')['roles'];gpu=read(PUB/'FIT_GPU_checks.json')
     if not all(v['passed'] for v in [inputs,check,cached]) or check['training_inputs_sha256']!=sha(PUB/'training_inputs.json'):
         raise ValueError('complete cache and actualwholeFIT frozen graph checks required')
-    if (RUN/'models').exists():raise ValueError('new formal admission required before formal outcomes')
+    if mode=='formal' and (RUN/'models').exists():raise ValueError('new formal admission required before formal outcomes')
+    if mode=='outer':
+        manifest=read(PUB/'models_manifest.json')
+        if not manifest['passed'] or manifest['formal_optimizer_updates']!=24000 or not manifest['all_models_and12_inner_records_frozen']:
+            raise ValueError('all fixed models and12inner must seal before outer admission')
     rows=[json.loads(line) for line in (RUN/'processes.jsonl').read_text().splitlines()]
     local=read(PUB/'local_cpu_receipts.json')
     for path,expected in local['file_pins'].items():
@@ -31,21 +36,25 @@ def main():
     cpu={k:v for k,v in old.items() if k not in ['FIT_candidate_targets_features_normalizers_plans','source_cache_worker_and_probes',
          'four_fixed6000_heads_checkpoint_and_trace','inflight_admission_and_transition_margin']}
     cpu['source_outer_cache_worker_and_probes']=1.2*source
-    cpu['four_fixed6000_heads_checkpoint_and_trace']=2*24000*max(v['conservative_full_update_timing_seconds'] for v in check['heads'].values())+240*io+120
+    if mode=='formal':
+        cpu['four_fixed6000_heads_checkpoint_and_trace']=2*24000*max(v['conservative_full_update_timing_seconds'] for v in check['heads'].values())+240*io+120
+    else:
+        cpu.pop('all12inner_GU_records',None)
     cpu['inflight_admission_transition_fullFIT_audit_margin']=120.
     storage=storage_forecast(roles,storage_bytes([RUN,PUB]));wall=source+sum(v for k,v in cpu.items() if k!='source_outer_cache_worker_and_probes')
     caps=forecast(spent,source,sum(cpu.values()),storage['incremental_tracked_path_peak_upper_bytes'],time.time(),wall)
-    write(PUB/'formal_admission.json',{**caps,'remaining_GPU_seconds':source,'remaining_CPU_components_seconds':cpu,
+    write(PUB/(mode+'_admission.json'),{**caps,'remaining_GPU_seconds':source,'remaining_CPU_components_seconds':cpu,
         'remaining_CPU_seconds':sum(cpu.values()),'remaining_serial_wall_seconds':wall,'storage':storage,
         'closed_actual_totals_at_snapshot':{k:v for k,v in spent.items() if k!='receipt_records'},
         'wholeFIT_checks_sha256':sha(PUB/'wholeFIT_checks.json'),'training_inputs_sha256':sha(PUB/'training_inputs.json'),
         'processes_sha256':sha(RUN/'processes.jsonl'),'local_cpu_receipts_sha256':sha(PUB/'local_cpu_receipts.json'),
         'remaining_neural_units':{'original5A08_windows':units_a,'JEPA64_chunks':units_j},
         'all4x6000_12inner_70rows_96bootstrap_oracle_audits_figures_closure_included':True,
-        'formal_optimizer_updates_at_admission':0,'engineering_updates_before_formal':84+check['engineering_optimizer_updates'],
+        'formal_optimizer_updates_at_admission':0 if mode=='formal' else 24000,'engineering_updates_before_formal':84+check['engineering_optimizer_updates'],
         'engineering_mutable_models_before_formal':16+check['engineering_mutable_models'],
         'admission_freeze_git':freeze['git_commit'],'epoch':time.time()})
     if not caps['all_caps_fit']:raise ValueError('complete actual remaining workflow does not fit inherited caps')
     print(caps,flush=True)
 
-if __name__=='__main__':main()
+if __name__=='__main__':
+    main(sys.argv[1] if len(sys.argv)==2 else 'formal')
