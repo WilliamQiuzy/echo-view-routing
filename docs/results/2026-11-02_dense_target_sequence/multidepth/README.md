@@ -1,6 +1,6 @@
 # A57-MD：官方四层特征的匹配冻结/联合适配控制
 
-**状态：两seed四模型已完成24,000步及48次完整inner读取，独立模型审计通过，正固定inner解码；MD外层尚未读取。** [正式进程回执](formal_process.json)记录PID172643正常退出，GPU-job墙钟17,935.2159秒、CPU17,379.1941核秒；[模型审计](models_manifest.json)核对每个模型6000条物理更新、全部155视频/56头部optimizer绑定与moment、3个图像张量不变，并直接验证最终评估snapshot逐值等于latest optimizer模型。固定2000/6000和inner包共12逻辑行均保留。两F的inner包为6000，两J为4000/5500；只由既定训练内规则选择，尚无MD外层结论。
+**状态：两seed四模型已完成24,000步及48次完整inner读取，独立模型审计与全部inner解码冻结完成，固定外层读取运行中。** [正式进程回执](formal_process.json)记录PID172643正常退出，GPU-job墙钟17,935.2159秒、CPU17,379.1941核秒；[模型审计](models_manifest.json)核对每个模型6000条物理更新、全部155视频/56头部optimizer绑定与moment、3个图像张量不变，并直接验证最终评估snapshot逐值等于latest optimizer模型。固定2000/6000和inner包共12逻辑行均保留。两F的inner包为6000，两J为4000/5500；只由既定训练内规则选择。[全部解码选择](decoder_choices.json)先于[37对象外层冻结](readout_identity.json)与首次MD外层前向；完整MD外层结论仍待读取和独立缓存汇总。
 
 [实际图检查](checks.json)完成33次优化更新，严格158键、四层768拼接为3072；初始F/J与hierarchical最后768对独立官方final输出误差均0，155视频+56头部optimizer/梯度有限，六个早层norm活跃、3图像分支不变，重复和磁盘2+2误差0。[纯成本准入](admission.json)在首个正式更新前以e78691c提交双seed档位，含已完成任务、全部MD及2GPU小时收尾储备的GPU预测20.66491小时，新增峰值保守33.81295GB；不是已花费用量。
 
