@@ -12,7 +12,7 @@ sys.path.insert(0, str(ROOT))
 import numpy as np
 import torch
 from scripts.anchor_common import RUN, PUB, CFG, read, write, sha, digest, verify_pin, verify_freeze
-from scripts.train_anchor_edits import role_values
+from scripts.train_anchor_edits import role_values, train_one
 from echo_routing.temporal.anchor_data_checks import validate
 from echo_routing.temporal.anchor_features import normalize
 from echo_routing.temporal.anchor_training import UtilityRegressor, optimizer, step, checkpoint, restore, atomic_save
@@ -76,13 +76,17 @@ def main():
         if not all(live.values()):
             raise ValueError('actual complete-FIT normalized fixed-plan gradient support needs diagnosis')
         models += 1
-        model, times = UtilityRegressor(arm, seed), []
+        model = UtilityRegressor(arm, seed)
         opt = optimizer(model)
-        for u in range(20):
-            start = time.perf_counter()
-            step(model, opt, batch(u), u)
-            times.append(time.perf_counter() - start)
-            total_updates += 1
+        timing_folder = RUN / 'engineering' / f'wholeFIT_{arm}_physical_timing'
+        start = time.perf_counter()
+        physical = train_one(model, opt, data, plan, norms[arm], identity, timing_folder,
+                             stop=20, latest_every=5, milestones=())
+        complete_pipeline_seconds = time.perf_counter() - start
+        total_updates += physical['new_updates_this_process']
+        import json
+        timing_rows = [json.loads(line) for line in (timing_folder / 'physical_updates.jsonl').read_text().splitlines()]
+        times = [row['optimizer_update_wall_seconds'] for row in timing_rows]
         start = time.perf_counter()
         atomic_save(checkpoint(model, opt, 20, identity, norms[arm]), RUN / 'engineering' / f'wholeFIT_{arm}_timed.pt')
         checks[arm] = {'all_four_tensor_gradient_history_live': live,
@@ -93,6 +97,10 @@ def main():
                        'actual_physical_candidates_per_update': sum(32 for kind in ['native', 'constructed'] if len(data['kind_indices'][kind])),
                        'actual_plan_empty_kind_mask': {kind: not len(data['kind_indices'][kind]) for kind in ['native', 'constructed']},
                        'fixed_plan_update_max_seconds': max(times),
+                       'complete_pipeline_20updates_wall_seconds': complete_pipeline_seconds,
+                       'complete_pipeline_per_update_average_including_setup_and_every5checkpoint': complete_pipeline_seconds / 20,
+                       'conservative_full_update_timing_seconds': max(max(times), complete_pipeline_seconds / 20),
+                       'physical_trace_pending_claim_directory_sync_and_checkpoint_timing_included': True,
                        'fixed_plan_update_median_seconds': float(np.median(times)),
                        'complete_checkpoint_and_directory_sync_seconds': time.perf_counter() - start}
     if torch.cuda.is_initialized():

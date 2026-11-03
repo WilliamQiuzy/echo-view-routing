@@ -31,7 +31,7 @@ def main():
     cpu={k:v for k,v in old.items() if k not in ['FIT_candidate_targets_features_normalizers_plans','source_cache_worker_and_probes',
          'four_fixed6000_heads_checkpoint_and_trace','inflight_admission_and_transition_margin']}
     cpu['source_outer_cache_worker_and_probes']=1.2*source
-    cpu['four_fixed6000_heads_checkpoint_and_trace']=2*24000*max(v['fixed_plan_update_max_seconds'] for v in check['heads'].values())+240*io+120
+    cpu['four_fixed6000_heads_checkpoint_and_trace']=2*24000*max(v['conservative_full_update_timing_seconds'] for v in check['heads'].values())+240*io+120
     cpu['inflight_admission_transition_fullFIT_audit_margin']=120.
     storage=storage_forecast(roles,storage_bytes([RUN,PUB]));wall=source+sum(v for k,v in cpu.items() if k!='source_outer_cache_worker_and_probes')
     caps=forecast(spent,source,sum(cpu.values()),storage['incremental_tracked_path_peak_upper_bytes'],time.time(),wall)
