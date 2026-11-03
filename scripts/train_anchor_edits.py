@@ -14,7 +14,7 @@ import numpy as np
 import torch
 from scripts.anchor_common import RUN, PUB, CFG, read, write, sha, digest, verify_pin, verify_freeze, sequences, save_array, array_pin
 from scripts.cache_anchor_edits import reader
-from echo_routing.temporal.anchor_training import UtilityRegressor, optimizer, draw_plan, step, checkpoint, restore, atomic_save, UpdateJournal
+from echo_routing.temporal.anchor_training import UtilityRegressor, optimizer, draw_plan, step, checkpoint, restore, atomic_save, UpdateJournal, fsync_directory
 from echo_routing.temporal.anchor_features import fit_normalizer, normalize
 from echo_routing.temporal.anchor_runtime import infer, prepare_training
 from echo_routing.temporal.anchor_edits import majority
@@ -79,6 +79,9 @@ def train_one(model, opt, data, plan, normalizer, identity, folder, stop=6000,
         raise ValueError('bounded fixed-schedule update cursor required')
     journal = UpdateJournal(folder, identity)
     folder = Path(folder)
+    inner_pending = folder / 'inner_pending.json'
+    if inner_pending.exists():
+        raise ValueError('ambiguous pending inner readout; no automatic replay')
     latest = folder / 'latest.pt'
     if not latest.exists() and journal.cursor == 0:
         atomic_save(checkpoint(model, opt, 0, identity, normalizer), latest)
@@ -96,10 +99,22 @@ def train_one(model, opt, data, plan, normalizer, identity, folder, stop=6000,
             value = read(marker)
             if any(value[k] != v for k, v in expected.items()):
                 raise ValueError('completed inner/checkpoint binding changed')
+            result = value['callback_result']
+            if isinstance(result, dict) and 'path' in result and 'sha256' in result:
+                verify_pin(result)
             return
+        if inner_pending.exists():
+            raise ValueError('ambiguous pending inner readout')
+        with inner_pending.open('x') as handle:
+            json.dump(expected, handle, sort_keys=True)
+            handle.flush()
+            os.fsync(handle.fileno())
+        fsync_directory(folder)
         result = on_inner(model, cursor, path) if on_inner is not None else None
         write(marker, {**expected, 'callback_result': result,
                        'engineering_helper_without_inner_requested': on_inner is None})
+        inner_pending.unlink()
+        fsync_directory(folder)
     if start in milestones:
         inner(start)
     for update in range(start, stop):
