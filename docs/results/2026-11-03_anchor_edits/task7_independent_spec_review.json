@@ -1,0 +1,89 @@
+{
+  "stage": "Task7_fullFIT_entrypoint_matrix_audit_pair_metrics_SPEC_review",
+  "reviewed_git_commit": "18148b4cdeec4c067be2d0d4a876dcceb1332ae5",
+  "reviewed_file_SHA256": {
+    "scripts/check_anchor_full_fit.py": "4f25a82dba1b2fd7164a2b2c6b30d70e410e5d07967b46ee392fb85eb13182f6",
+    "scripts/audit_anchor_edits.py": "5c8cd6d36e883b17a6cfccdafd73b9cdc9feb8dc6bebfaf5e2736e9bd5907bf7",
+    "echo_routing/temporal/anchor_audit.py": "d8a5d0cdfeabaa356b8c2ff272a847527883b18e6d763867d36cec8027a30ee3",
+    "echo_routing/temporal/anchor_metrics.py": "6304f7735e1d5041938fcd871195d2c8a8e919997c14220ef0d312aafe5e0477",
+    "scripts/train_anchor_edits.py": "abda6be6658de4236b0cf4e917f92b5326c9edf074dc1fc61c3a851b44110566",
+    "tests/test_anchor_audit.py": "04e70ae1f94eac31cc5414fdaec153142a5b8251f719c70627bef646fc6817af",
+    "tests/test_anchor_metrics.py": "54eacdfb09c842adb41b57ea435e94a6f884eae53aa34fa2303a725a6f042056"
+  },
+  "SPEC_status": "Issues Found",
+  "CODE_QUALITY_status": "Not started because full-FIT entrypoint seed integrity blocker remains",
+  "required_changes": [
+    {
+      "id": "R5",
+      "file": "scripts/check_anchor_full_fit.py",
+      "line": 30,
+      "related_lines": [
+        31,
+        36,
+        41
+      ],
+      "contract": "The checker must qualify the exact actual plans that canonical formal trainer keys will use, with complete unique canonical seed identities",
+      "issue": "The entrypoint converts seed keys with int() while constructing plans before validate. Noncanonical duplicate aliases are overwritten before the validator sees them. An incorrect canonical359 plan followed by a correct leading-zero359 alias becomes the correct alias plan at validation; formal training still selects the incorrect canonical key.",
+      "required_fix": "Preserve original input plan keys through validate. Only after successful exact/canonical/unique validation may the entrypoint normalize keys for engineering-loop access. Retain the synthetic entrypoint regression.",
+      "independent_evidence": "With fully substituted synthetic IO and a valid-domain but wrong canonical plan, validate returns success after alias erasure. The probe deliberately raises immediately after arithmetic, proving the bypass without any engineering optimizer work or real FIT access."
+    }
+  ],
+  "component_SPEC_results": {
+    "full_FIT_entrypoint": "Issues Found",
+    "matrix_trace_Adam_inner_private_label_audit": "Approved in reviewed committed scope",
+    "pair_short_boundary_supplements": "Approved in reviewed committed scope"
+  },
+  "otherwise_SPEC_checks": "Full-FIT checker uses cached whole-FIT normalizers and fixed plans, separate engineering updates/counters, exact repeated2plus2resume and zero-output checks. Audit requires exact4model matrix,24000updates,6000rows each, fixed draw/exposure/LR histories, all milestone Adam counters/moments/tensor drift,12 identity-bound inner label pins and metric recounts. Pair supplements retain original multi primary, class-aware IoU50 counts and explicit denominators; inherited boundary precision/recall undefined replicates remain null/countable and short-count bootstrap differences have no ratio denominator.70/96 plan unchanged.",
+  "independent_test_receipt": {
+    "path": "docs/results/2026-11-03_anchor_edits/task7_entrypoint_SPEC_RED.json",
+    "SHA256": "e58025f26f7228dee9c95420a7ed1a7f4b2f26c228fc5582d56ad75f89ac114a",
+    "raw_receipt": {
+      "stage": "task7_entrypoint_SPEC_RED",
+      "command": [
+        "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_anchor_audit.py",
+        "tests/test_anchor_metrics.py",
+        "docs/results/2026-11-03_anchor_edits/task7_full_fit_spec_probes.py"
+      ],
+      "measurement_host": "MacBook-Air-9.local",
+      "model_pid": 20086,
+      "supervisor_pid": 20076,
+      "started_epoch": 1793745939.926063,
+      "finished_epoch": 1793745943.092661,
+      "full_process_wall_seconds": 3.166597843170166,
+      "observed_worker_exit_code": 1,
+      "GPU_job": false,
+      "CUDA_context_occupied": false,
+      "CUDA_visibility_hidden_before_child_import": true,
+      "measured_child_CPU_seconds": 2.201842,
+      "measured_supervisor_CPU_seconds": 0.0007909999999999983,
+      "measured_CPU_core_seconds": 2.202633,
+      "scope": "local CPU synthetic software checks; no media or formal experiment updates",
+      "output": "..F                                                                      [100%]\n=================================== FAILURES ===================================\n_____ test_full_fit_entrypoint_must_not_erase_seed_alias_before_validator ______\n\ntmp_path = PosixPath('/private/var/folders/4l/s1hqgvzj2l10_dff3pw5m97m0000gn/T/pytest-of-williamqiu/pytest-265/test_full_fit_entrypoint_must_0')\nmonkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x158db7f20>\n\n    def test_full_fit_entrypoint_must_not_erase_seed_alias_before_validator(tmp_path, monkeypatch):\n        m = importlib.import_module('scripts.check_anchor_full_fit')\n        qs = [{'id': 'native', 'kind': 'native', 'labels': np.zeros(7, int)},\n              {'id': 'multi', 'kind': 'multi', 'labels': np.array([0, 1, 1, 0, 0, 0, 0])}]\n        a = [np.eye(5)[[0, 1, 0, 0, 1, 0, 0]], np.eye(5)[[0, 1, 1, 0, 0, 0, 0]]]\n        b = [np.zeros(7, int), np.zeros(7, int)]\n        j = [np.full((7, 5), .2)] * 2\n        data = prepare_training(qs, a, j, b)\n        norms = {arm: fit_normalizer(data['features'][arm]) for arm in ['A', 'J']}\n        correct = draw_plan(2, 1, 2026110359)\n        bad_canonical = copy.deepcopy(correct)\n        bad_canonical['native'][100, 0] = 1 - bad_canonical['native'][100, 0]\n        other = draw_plan(2, 1, 2026110360)\n        source = {'a08': 'synthetic', 'jepa': 'synthetic'}\n        def pin(name): return {'path': name, 'sha256': 'a' * 64}\n        inputs = {'dataset': pin('dataset'), 'source_cache_identities': source,\n                  'normalizers': {arm: pin('norm_' + arm) for arm in ['A', 'J']},\n                  'plans': {'2026110359': pin('canonical_bad'), '02026110359': pin('alias_good'),\n                            '2026110360': pin('second_good')}}\n        arrays = {'dataset': data, 'canonical_bad': bad_canonical, 'alias_good': correct, 'second_good': other}\n        monkeypatch.setattr(m, 'verify_freeze', lambda name: {'objects': {}, 'git_commit': 'synthetic'})\n        monkeypatch.setattr(m, 'verify_pin', lambda value: Path(value['path']))\n        monkeypatch.setattr(m, 'read', lambda path: inputs if Path(path).name == 'training_inputs.json' else norms[Path(path).name[-1]])\n        monkeypatch.setattr(m.np, 'load', lambda path, **kwargs: SimpleNamespace(item=lambda: arrays[str(path)]))\n        monkeypatch.setattr(m, 'role_values', lambda role: (qs, a, j, b, source))\n        actual_validate = m.validate\n        def stop_after_arithmetic(*args, **kwargs):\n            actual_validate(*args, **kwargs)\n            raise RuntimeError('aliased entrypoint incorrectly passed arithmetic; stop before engineering optimizer work')\n        monkeypatch.setattr(m, 'validate', stop_after_arithmetic)\n        with pytest.raises(ValueError, match='seed|alias|canonical'):\n>           m.main()\n\ndocs/results/2026-11-03_anchor_edits/task7_full_fit_spec_probes.py:44: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \nscripts/check_anchor_full_fit.py:31: in main\n    arithmetic = validate(data, qs, a, base, norms, plans)\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nargs = ({'F_fit': 0.5, 'FIT_operating_counts': {'M': 1, 'P': 1, 'T': 3}, 'features': {'A': array([[ 0.69314718,  0.69314718, ...,\n       [0, 0, 0, ..., 0, 0, 0],\n       [0, 0, 0, ..., 0, 0, 0],\n       [0, 0, 0, ..., 0, 0, 0]], shape=(6000, 32))}})\nkwargs = {}\n\n    def stop_after_arithmetic(*args, **kwargs):\n        actual_validate(*args, **kwargs)\n>       raise RuntimeError('aliased entrypoint incorrectly passed arithmetic; stop before engineering optimizer work')\nE       RuntimeError: aliased entrypoint incorrectly passed arithmetic; stop before engineering optimizer work\n\ndocs/results/2026-11-03_anchor_edits/task7_full_fit_spec_probes.py:41: RuntimeError\n=========================== short test summary info ============================\nFAILED docs/results/2026-11-03_anchor_edits/task7_full_fit_spec_probes.py::test_full_fit_entrypoint_must_not_erase_seed_alias_before_validator\n",
+      "output_sha256": "e59a5ffc3f9086fefc5342e9526716b560d56c50b573c72410ba90bfc8bb8779"
+    },
+    "existing_new_audit_and_metrics_tests_passed": 2,
+    "new_entrypoint_contract_probe_failed": 1
+  },
+  "independent_probe_source": {
+    "path": "docs/results/2026-11-03_anchor_edits/task7_full_fit_spec_probes.py",
+    "SHA256": "d138eb65b1070075ff45ec8da9a77afeb5ac1384966a987586693e83f6c3545f"
+  },
+  "new_reviewer_measured_CPU_core_seconds": 2.202633,
+  "cost_scope": "New local synthetic receipt only, worker directly notified for one locked merge. Earlier Task6 GREEN0.973715seconds and RED0.997351seconds remain separate; no test receipt replaces another.",
+  "worker_cost_notification_sent": true,
+  "Task6_status_unchanged": "SPEC and QUALITY Approved; separate task6_independent_review.json",
+  "real_FIT_data_accessed": false,
+  "engineering_optimizer_updates_in_entrypoint_probe": 0,
+  "server_work": false,
+  "formal_optimizer_updates": 0,
+  "active_producer_or_source39_accessed": false,
+  "artifact_creation_only": {
+    "epoch": 1793745994.49464,
+    "host": "MacBook-Air-9.local",
+    "PID": 21761
+  }
+}

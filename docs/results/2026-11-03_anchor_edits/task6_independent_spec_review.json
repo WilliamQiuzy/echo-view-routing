@@ -1,0 +1,92 @@
+{
+  "stage": "Task6_new_policy_cache_plan_data_recount_exposure_SPEC_review",
+  "reviewed_git_commit": "6b40bd3d967099183e0dc56ab85dfb42307399be",
+  "reviewed_file_SHA256": {
+    "echo_routing/temporal/anchor_policy_cache.py": "6eeb84123d3bf35ea919998ed46398d0ac2f12468a17bdcaf6154719c126f1e0",
+    "echo_routing/temporal/anchor_readout_plan.py": "93caf807d2adcd3b550ac5bec9ab2dfdf888976eae03e82e313cc8396963f629",
+    "echo_routing/temporal/anchor_data_checks.py": "74a36d04d255adc927a831cfbb7cfbdfb2c87a1531cf321e79e28d6661fc085f",
+    "echo_routing/temporal/anchor_exposure.py": "2decfa6af433e0ef8d5c57a3fab1ff39eaa88f52298397aa98d99be1e42941dd",
+    "scripts/train_anchor_edits.py": "f0aed2ee6a9308563fc2d19e8e6f013bf555bd0683edfb75bd2e75c35ffaa8d6",
+    "tests/test_anchor_policy_cache.py": "6d92e7398709b7f4b266dae5471ae9ebd6f3c08e8e56010efea966f9654d640d",
+    "tests/test_anchor_readout_plan.py": "a7180c2caad1def3e5f486236bf7c799dab47422071b250c4918610351c1b192",
+    "tests/test_anchor_data_checks.py": "965f8142d3ca5c41aa3bd346aa920dd1025085e3b6f238b9a522836b28ca151f",
+    "tests/test_anchor_exposure.py": "d55c97a43d9401fa1b36506dac0903a2cd73e4cd01517296c5bb0c8e12c1d023"
+  },
+  "SPEC_status": "Issues Found",
+  "CODE_QUALITY_status": "Not started because complete seed-plan qualification is incomplete",
+  "component_SPEC_results": {
+    "paired_policy_cache": "Approved for shared scores, Base/raw/score policy recheck, joint durable commit and no silent replay",
+    "readout_plan": "Approved for70rows,96contrasts,fixed6000,full seeds/halves/tables and same physical G/U model",
+    "FIT_data_recount": "Issues Found: missing required seed set check",
+    "exposure_summary_and_six_line_trainer_hook": "Approved for separated eligibility/actual axes and conservative context counts"
+  },
+  "required_changes": [
+    {
+      "id": "R4",
+      "file": "echo_routing/temporal/anchor_data_checks.py",
+      "line": 55,
+      "related_lines": [
+        59,
+        61
+      ],
+      "contract": "Complete actual FIT artifact qualification includes both fixed seeded draw plans before formal optimization",
+      "issue": "The function only validates plans that happen to be supplied. Empty plans or a mapping containing only2026110359 bypass missing plan validation and still return complete_normalizers_and_seed_plans_recounted=True.",
+      "required_fix": "Before recounting plans, require exactly the declared seeds2026110359 and2026110360 after key normalization, rejecting missing/extra seeds and duplicate numeric/string aliases. Then validate each actual supplied frozen plan and return complete success only after both pass.",
+      "independent_evidence": "Two new parametrized probes for missing both/one fixed seed failed with DID NOT RAISE; original five focused tests passed."
+    }
+  ],
+  "otherwise_SPEC_checks": "PolicyPairCache saves one score vector and both policies in one directory-durable prefix commit and rederives labels/accepted/vetoed actions solely from Base/raw/scores. Readout matrix gives48policy+22reference rows and96predeclared contrasts. Data recount independently derives full-sequence matcher deltas and exactFP32 targets, population normalizers, common/duplicate blocks and each provided draw array. Exposure separates actual candidate multiplicity and unique feature axes from whole-sequence conservative source/session envelopes without private IDs.",
+  "independent_test_receipt": {
+    "path": "docs/results/2026-11-03_anchor_edits/task6_data_SPEC_RED.json",
+    "SHA256": "955e4b13e698c346ba67e3dbae8ccce54a3291e8316a8d0a5b30dbc0db6071dc",
+    "raw_receipt": {
+      "stage": "task6_data_SPEC_RED",
+      "command": [
+        "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_anchor_policy_cache.py",
+        "tests/test_anchor_readout_plan.py",
+        "tests/test_anchor_data_checks.py",
+        "tests/test_anchor_exposure.py",
+        "docs/results/2026-11-03_anchor_edits/task6_data_spec_probes.py"
+      ],
+      "measurement_host": "MacBook-Air-9.local",
+      "model_pid": 85704,
+      "supervisor_pid": 85694,
+      "started_epoch": 1793744859.3870761,
+      "finished_epoch": 1793744860.4220579,
+      "full_process_wall_seconds": 1.0349817276000977,
+      "observed_worker_exit_code": 1,
+      "GPU_job": false,
+      "CUDA_context_occupied": false,
+      "CUDA_visibility_hidden_before_child_import": true,
+      "measured_child_CPU_seconds": 0.9964339999999999,
+      "measured_supervisor_CPU_seconds": 0.0009170000000000011,
+      "measured_CPU_core_seconds": 0.9973509999999999,
+      "scope": "local CPU synthetic software checks; no media or formal experiment updates",
+      "output": ".....FF                                                                  [100%]\n=================================== FAILURES ===================================\n________ test_complete_plan_recount_rejects_missing_declared_seed[both] ________\n\nmissing = 'both'\n\n    @pytest.mark.parametrize('missing', ['both', 'one'])\n    def test_complete_plan_recount_rejects_missing_declared_seed(missing):\n        m = importlib.import_module('echo_routing.temporal.anchor_data_checks')\n        qs = [{'id': 'native', 'kind': 'native', 'labels': np.zeros(7, int)},\n              {'id': 'multi', 'kind': 'multi', 'labels': np.array([0, 1, 1, 0, 0, 0, 0])}]\n        a = [np.eye(5)[[0, 1, 0, 0, 0, 0, 0]], np.eye(5)[[0, 1, 1, 0, 0, 0, 0]]]\n        b = [np.zeros(7, int), np.zeros(7, int)]\n        data = prepare_training(qs, a, [np.full((7, 5), .2)] * 2, b)\n        norms = {arm: fit_normalizer(data['features'][arm]) for arm in ['A', 'J']}\n        plans = {} if missing == 'both' else {2026110359: draw_plan(1, 1, 2026110359)}\n>       with pytest.raises(ValueError, match='seed|plan|complete'):\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE       Failed: DID NOT RAISE ValueError\n\ndocs/results/2026-11-03_anchor_edits/task6_data_spec_probes.py:20: Failed\n________ test_complete_plan_recount_rejects_missing_declared_seed[one] _________\n\nmissing = 'one'\n\n    @pytest.mark.parametrize('missing', ['both', 'one'])\n    def test_complete_plan_recount_rejects_missing_declared_seed(missing):\n        m = importlib.import_module('echo_routing.temporal.anchor_data_checks')\n        qs = [{'id': 'native', 'kind': 'native', 'labels': np.zeros(7, int)},\n              {'id': 'multi', 'kind': 'multi', 'labels': np.array([0, 1, 1, 0, 0, 0, 0])}]\n        a = [np.eye(5)[[0, 1, 0, 0, 0, 0, 0]], np.eye(5)[[0, 1, 1, 0, 0, 0, 0]]]\n        b = [np.zeros(7, int), np.zeros(7, int)]\n        data = prepare_training(qs, a, [np.full((7, 5), .2)] * 2, b)\n        norms = {arm: fit_normalizer(data['features'][arm]) for arm in ['A', 'J']}\n        plans = {} if missing == 'both' else {2026110359: draw_plan(1, 1, 2026110359)}\n>       with pytest.raises(ValueError, match='seed|plan|complete'):\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE       Failed: DID NOT RAISE ValueError\n\ndocs/results/2026-11-03_anchor_edits/task6_data_spec_probes.py:20: Failed\n=========================== short test summary info ============================\nFAILED docs/results/2026-11-03_anchor_edits/task6_data_spec_probes.py::test_complete_plan_recount_rejects_missing_declared_seed[both]\nFAILED docs/results/2026-11-03_anchor_edits/task6_data_spec_probes.py::test_complete_plan_recount_rejects_missing_declared_seed[one]\n",
+      "output_sha256": "554d4c6a74f82469bf471a138bb41f7fabbe2ebe15502e9e2aff87018f79c223"
+    },
+    "original_tests_passed": 5,
+    "new_contract_regressions_failed": 2
+  },
+  "independent_probe_source": {
+    "path": "docs/results/2026-11-03_anchor_edits/task6_data_spec_probes.py",
+    "SHA256": "e483c1d4ea604299d3a4a86d28d8cf894e33ef05aef1d897e44c36243f7464b3"
+  },
+  "new_reviewer_measured_CPU_core_seconds": 0.9973509999999999,
+  "cost_scope": "New local synthetic receipt only; worker notified directly to merge once under the locked ledger. Earlier costs remain separate. No formal optimizer updates, source forwards or server/GPU work.",
+  "worker_cost_notification_sent": true,
+  "server_work": false,
+  "formal_optimizer_updates": 0,
+  "real_source_forwards": 0,
+  "unsubmitted_full_FIT_checker_read": false,
+  "active_producer_accessed": false,
+  "artifact_creation_only": {
+    "epoch": 1793744900.011591,
+    "host": "MacBook-Air-9.local",
+    "PID": 86953
+  }
+}

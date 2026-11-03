@@ -1,0 +1,94 @@
+{
+  "stage": "Task7_fixed_fullFIT_matrix_audit_pair_metrics_SPEC_then_CODE_QUALITY_review",
+  "reviewed_git_commit": "cfc638d310a9062193c7046d5d855f49cf8c3885",
+  "original_feature_commit": "18148b4cdeec4c067be2d0d4a876dcceb1332ae5",
+  "reviewed_file_SHA256": {
+    "scripts/check_anchor_full_fit.py": "af1ded4b341175089ba90e32c3784a3fbe2161ba2baaf3f3e93367063521bbe1",
+    "scripts/audit_anchor_edits.py": "5c8cd6d36e883b17a6cfccdafd73b9cdc9feb8dc6bebfaf5e2736e9bd5907bf7",
+    "echo_routing/temporal/anchor_audit.py": "d8a5d0cdfeabaa356b8c2ff272a847527883b18e6d763867d36cec8027a30ee3",
+    "echo_routing/temporal/anchor_metrics.py": "dbbe873d70e2d48e5e97575cb494ec7ede0c361968e4b2f42319d84daacd8d38",
+    "tests/test_anchor_audit.py": "04e70ae1f94eac31cc5414fdaec153142a5b8251f719c70627bef646fc6817af",
+    "tests/test_anchor_metrics.py": "54eacdfb09c842adb41b57ea435e94a6f884eae53aa34fa2303a725a6f042056"
+  },
+  "review_sequence": [
+    {
+      "stage": "SPEC_recheck",
+      "status": "Approved"
+    },
+    {
+      "stage": "CODE_QUALITY_after_SPEC",
+      "status": "Approved"
+    }
+  ],
+  "SPEC_status": "Approved",
+  "CODE_QUALITY_status": "Approved",
+  "required_changes": [],
+  "resolved_finding": {
+    "id": "R5",
+    "resolution": "Whole-FIT entrypoint preserves raw plan keys through complete canonical/alias validation, then selects the canonical string key used by formal trainer. A canonical wrong plan cannot be hidden behind a correct aliased plan."
+  },
+  "component_results": {
+    "full_FIT_actual_artifact_checker": "SPEC and QUALITY Approved in committed scope",
+    "matrix_trace_Adam_and12_inner_private_label_audit": "SPEC and QUALITY Approved",
+    "pair_short_boundary_metric_supplements": "SPEC and QUALITY Approved"
+  },
+  "QUALITY_checks": "Exact4model matrix,6000updates per model, shared draw histories/exposure/LR and all milestone full-model/Adam contracts are checked; private inner predictions are source/weight/hash bound and metrics independently recounted. Whole-FIT engineering uses actual FIT artifacts, fixed normalized plans and separate engineering costs. Pair supplements use the unchanged class-aware one-to-one IoU50 matcher, explicit true/predicted denominators and matching whole-pair bootstrap weights; count differences remain finite while undefined precision/recall replicates remain counted/null through the qualified helper. Original multi primary and70/96 row/contrast identity remain unchanged.",
+  "historical_IssuesFound_review": {
+    "path": "docs/results/2026-11-03_anchor_edits/task7_independent_spec_review.json",
+    "SHA256": "0e4a1e8b8d87973355b336dc79639094c29a96ab42d83f788b517f343cef54df",
+    "preserved_without_overwrite": true
+  },
+  "independent_test_receipt": {
+    "path": "docs/results/2026-11-03_anchor_edits/task7_fixed_independent_GREEN.json",
+    "SHA256": "163818bff39df04ffb74920e4fc782c8c8785a1c0ad786541a6d757071621ee0",
+    "raw_receipt": {
+      "stage": "task7_fixed_independent_GREEN",
+      "command": [
+        "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/test_anchor_audit.py",
+        "tests/test_anchor_metrics.py",
+        "docs/results/2026-11-03_anchor_edits/task7_full_fit_spec_probes.py"
+      ],
+      "measurement_host": "MacBook-Air-9.local",
+      "model_pid": 23433,
+      "supervisor_pid": 23423,
+      "started_epoch": 1793746045.074261,
+      "finished_epoch": 1793746048.320124,
+      "full_process_wall_seconds": 3.2458629608154297,
+      "observed_worker_exit_code": 0,
+      "GPU_job": false,
+      "CUDA_context_occupied": false,
+      "CUDA_visibility_hidden_before_child_import": true,
+      "measured_child_CPU_seconds": 2.265374,
+      "measured_supervisor_CPU_seconds": 0.0008330000000000004,
+      "measured_CPU_core_seconds": 2.266207,
+      "scope": "local CPU synthetic software checks; no media or formal experiment updates",
+      "output": "...                                                                      [100%]\n",
+      "output_sha256": "cf426ab35f3b06fccef8290fde5325d90af130a79da1d1752031518df77c4236"
+    },
+    "focused_tests_passed": 3
+  },
+  "independent_entrypoint_probe": {
+    "path": "docs/results/2026-11-03_anchor_edits/task7_full_fit_spec_probes.py",
+    "SHA256": "d138eb65b1070075ff45ec8da9a77afeb5ac1384966a987586693e83f6c3545f",
+    "real_IO_replaced": true,
+    "execution_stops_at_validation_before_engineering_optimization": true
+  },
+  "new_reviewer_measured_CPU_core_seconds": 2.266207,
+  "cost_scope": "New GREEN receipt only, worker notified to merge once under lock. Prior Task7 RED2.202633seconds and both Task6 RED/GREEN receipts remain separately retained. No receipt is replaced by GREEN.",
+  "worker_cost_notification_sent": true,
+  "server_work": false,
+  "real_FIT_data_accessed": false,
+  "engineering_optimizer_updates_in_entrypoint_probe": 0,
+  "formal_optimizer_updates": 0,
+  "active_source39_or_producer_accessed": false,
+  "scope_limit": "Software contract approval only; no actual full-FIT checker, formal matrix audit, outer readout or performance result was executed by this reviewer.",
+  "artifact_creation_only": {
+    "epoch": 1793746102.487722,
+    "host": "MacBook-Air-9.local",
+    "PID": 25229
+  }
+}
