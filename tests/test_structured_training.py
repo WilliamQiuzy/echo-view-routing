@@ -22,3 +22,25 @@ def test_actual_optimizer_binding_repeat_and_disk_resume_keep_exact_model_and_mo
     with pytest.raises(ValueError):m.restore(model,opt,expected,'changed-input')
     assert m.optimizer_binding(model,opt)
     model=StructuredEvidence('D0',58);opt=m.optimizer(model);assert all(p is not model.duration for g in opt.param_groups for p in g['params']);before=model.duration.detach().clone();m.step(model,opt,batch,0);assert torch.equal(before,model.duration)
+
+def test_changed_optimizer_recipe_fails_binding():
+    m=importlib.import_module('echo_routing.temporal.structured_training')
+    model=StructuredEvidence('D2',58);opt=m.optimizer(model)
+    opt.param_groups[0]['weight_decay']=.05
+    assert not m.optimizer_binding(model,opt)
+
+@pytest.mark.parametrize('fault',['cursor','recipe'])
+def test_checkpoint_counter_and_optimizer_recipe_fail_closed(fault):
+    m=importlib.import_module('echo_routing.temporal.structured_training')
+    model=StructuredEvidence('D2',58);opt=m.optimizer(model)
+    batch=[(torch.softmax(torch.randn(n,5),1),torch.softmax(torch.randn(n,5),1),torch.arange(n)%5) for n in [7,11]]
+    m.step(model,opt,batch,0);payload=m.checkpoint(model,opt,1,'fixed')
+    wrong=copy.deepcopy(payload)
+    if fault=='cursor':
+        wrong['update']=2
+        # Even a matching two-update warmup LR cannot disguise one actual Adam step.
+        wrong['optimizer']['param_groups'][0]['lr']=2e-5
+    else:wrong['optimizer']['param_groups'][0]['betas']=(.8,.9)
+    fresh=StructuredEvidence('D2',58);freshopt=m.optimizer(fresh)
+    with pytest.raises(ValueError,match='cursor|counter|optimizer'):
+        m.restore(fresh,freshopt,wrong,'fixed')
