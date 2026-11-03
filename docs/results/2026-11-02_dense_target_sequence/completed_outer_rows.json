@@ -1,0 +1,649 @@
+{
+  "status": "complete rows; final independent candidate aggregate audit pending",
+  "all_model_and_decoder_choices_frozen": true,
+  "A08_reference_metrics_sha256": "c2d3becbc4125b7c3c06ea5d0c1457db62cbc866dc50352d61f203fdd0dcb843",
+  "model_manifest_sha256": "a5d6c70cc9796f0cf8319bda7c6fa54526c383c80f012e7ec5399a6289d2bb87",
+  "rows": [
+    {
+      "row": "seed2026110257_F_fixed6000",
+      "half": "selection",
+      "raw": {
+        "native_macro_f1": 0.8197431440998656,
+        "native_per_class_recall": [
+          0.9809523809523809,
+          0.9852941176470589,
+          0.632183908045977,
+          1.0,
+          0.9230769230769231
+        ],
+        "native_confusion": [
+          [
+            103,
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            67,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            55,
+            32,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            11,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0,
+            12
+          ]
+        ],
+        "native_accuracy": 0.8732394366197183,
+        "native_frame_accuracy": 0.8328824767057409,
+        "native_internal_cuts_per_clip": 0.33098591549295775,
+        "native_internal_cuts_per_min": 3.39044183949504,
+        "native_share_cut": 0.13028169014084506,
+        "segment_f1_50_multi": 0.8159392789373814,
+        "boundary_recall_multi": 0.9267015706806283,
+        "boundary_precision_multi": 0.8194444444444444,
+        "boundary_f1_multi": 0.8697788697788698,
+        "same_class_cut_rate_multi": 0.09565217391304348,
+        "multi_frame_accuracy": 0.8764788449969921,
+        "segment_f1_50_pairs": 0.8126410835214447,
+        "boundary_recall_pairs": 0.9571428571428572,
+        "counts": {
+          "native_clips": 284,
+          "multi_streams": 120,
+          "pair_streams": 137,
+          "multi_true_changes": 382,
+          "multi_same_joins": 230
+        },
+        "native_A4C_to_A5C": 32,
+        "native_A5C_to_A4C": 0,
+        "native_A4C_A5C_errors": 32,
+        "short_true_segments_10samples": 32,
+        "short_true_unmatched_10samples": 5,
+        "short_predicted_segments_10samples": 87,
+        "short_spurious_segments_10samples": 54,
+        "short_true_segments_16samples": 141,
+        "short_true_unmatched_16samples": 26,
+        "short_predicted_segments_16samples": 199,
+        "short_spurious_segments_16samples": 79
+      },
+      "inner_B3": {
+        "native_macro_f1": 0.8205534306853683,
+        "native_per_class_recall": [
+          0.9809523809523809,
+          0.9705882352941176,
+          0.6436781609195402,
+          1.0,
+          0.9230769230769231
+        ],
+        "native_confusion": [
+          [
+            103,
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            2,
+            66,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            56,
+            31,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            11,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0,
+            12
+          ]
+        ],
+        "native_accuracy": 0.8732394366197183,
+        "native_frame_accuracy": 0.8229636308987075,
+        "native_internal_cuts_per_clip": 0.028169014084507043,
+        "native_internal_cuts_per_min": 0.2885482416591524,
+        "native_share_cut": 0.017605633802816902,
+        "segment_f1_50_multi": 0.8527291452111225,
+        "boundary_recall_multi": 0.8769633507853403,
+        "boundary_precision_multi": 0.9598853868194842,
+        "boundary_f1_multi": 0.9165526675786594,
+        "same_class_cut_rate_multi": 0.043478260869565216,
+        "multi_frame_accuracy": 0.8761446427377849,
+        "segment_f1_50_pairs": 0.8439024390243902,
+        "boundary_recall_pairs": 0.9,
+        "counts": {
+          "native_clips": 284,
+          "multi_streams": 120,
+          "pair_streams": 137,
+          "multi_true_changes": 382,
+          "multi_same_joins": 230
+        },
+        "native_A4C_to_A5C": 31,
+        "native_A5C_to_A4C": 0,
+        "native_A4C_A5C_errors": 31,
+        "short_true_segments_10samples": 32,
+        "short_true_unmatched_10samples": 7,
+        "short_predicted_segments_10samples": 35,
+        "short_spurious_segments_10samples": 7,
+        "short_true_segments_16samples": 141,
+        "short_true_unmatched_16samples": 33,
+        "short_predicted_segments_16samples": 126,
+        "short_spurious_segments_16samples": 17
+      }
+    },
+    {
+      "row": "seed2026110257_F_fixed6000",
+      "half": "calibration",
+      "raw": {
+        "native_macro_f1": 0.8521390754706306,
+        "native_per_class_recall": [
+          0.9875,
+          0.9295774647887324,
+          0.7377049180327869,
+          0.7777777777777778,
+          1.0
+        ],
+        "native_confusion": [
+          [
+            79,
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            4,
+            66,
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            45,
+            16,
+            0
+          ],
+          [
+            0,
+            0,
+            4,
+            14,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            7
+          ]
+        ],
+        "native_accuracy": 0.890295358649789,
+        "native_frame_accuracy": 0.8696502129442156,
+        "native_internal_cuts_per_clip": 0.4978902953586498,
+        "native_internal_cuts_per_min": 4.94309851288138,
+        "native_share_cut": 0.13924050632911392,
+        "segment_f1_50_multi": 0.7942754919499105,
+        "boundary_recall_multi": 0.914572864321608,
+        "boundary_precision_multi": 0.7583333333333333,
+        "boundary_f1_multi": 0.8291571753986332,
+        "same_class_cut_rate_multi": 0.10945273631840796,
+        "multi_frame_accuracy": 0.8575616255829447,
+        "segment_f1_50_pairs": 0.8388888888888889,
+        "boundary_recall_pairs": 0.9137931034482759,
+        "counts": {
+          "native_clips": 237,
+          "multi_streams": 120,
+          "pair_streams": 115,
+          "multi_true_changes": 398,
+          "multi_same_joins": 201
+        },
+        "native_A4C_to_A5C": 16,
+        "native_A5C_to_A4C": 4,
+        "native_A4C_A5C_errors": 20,
+        "short_true_segments_10samples": 23,
+        "short_true_unmatched_10samples": 4,
+        "short_predicted_segments_10samples": 102,
+        "short_spurious_segments_10samples": 79,
+        "short_true_segments_16samples": 134,
+        "short_true_unmatched_16samples": 28,
+        "short_predicted_segments_16samples": 221,
+        "short_spurious_segments_16samples": 111
+      },
+      "inner_B3": {
+        "native_macro_f1": 0.8475896493615714,
+        "native_per_class_recall": [
+          0.9875,
+          0.9295774647887324,
+          0.7213114754098361,
+          0.7777777777777778,
+          1.0
+        ],
+        "native_confusion": [
+          [
+            79,
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            4,
+            66,
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            44,
+            17,
+            0
+          ],
+          [
+            0,
+            0,
+            4,
+            14,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            7
+          ]
+        ],
+        "native_accuracy": 0.8860759493670886,
+        "native_frame_accuracy": 0.8816588703483907,
+        "native_internal_cuts_per_clip": 0.02531645569620253,
+        "native_internal_cuts_per_min": 0.25134399218040915,
+        "native_share_cut": 0.004219409282700422,
+        "segment_f1_50_multi": 0.8356713426853707,
+        "boundary_recall_multi": 0.864321608040201,
+        "boundary_precision_multi": 0.9555555555555556,
+        "boundary_f1_multi": 0.9076517150395779,
+        "same_class_cut_rate_multi": 0.01990049751243781,
+        "multi_frame_accuracy": 0.8339107261825449,
+        "segment_f1_50_pairs": 0.8461538461538461,
+        "boundary_recall_pairs": 0.7931034482758621,
+        "counts": {
+          "native_clips": 237,
+          "multi_streams": 120,
+          "pair_streams": 115,
+          "multi_true_changes": 398,
+          "multi_same_joins": 201
+        },
+        "native_A4C_to_A5C": 17,
+        "native_A5C_to_A4C": 4,
+        "native_A4C_A5C_errors": 21,
+        "short_true_segments_10samples": 23,
+        "short_true_unmatched_10samples": 4,
+        "short_predicted_segments_10samples": 28,
+        "short_spurious_segments_10samples": 7,
+        "short_true_segments_16samples": 134,
+        "short_true_unmatched_16samples": 34,
+        "short_predicted_segments_16samples": 125,
+        "short_spurious_segments_16samples": 24
+      }
+    },
+    {
+      "row": "seed2026110257_J-high_fixed6000",
+      "half": "selection",
+      "raw": {
+        "native_macro_f1": 0.9307650263681765,
+        "native_per_class_recall": [
+          0.9904761904761905,
+          1.0,
+          0.9770114942528736,
+          0.6363636363636364,
+          1.0
+        ],
+        "native_confusion": [
+          [
+            104,
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            68,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            85,
+            2,
+            0
+          ],
+          [
+            0,
+            0,
+            4,
+            7,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            13
+          ]
+        ],
+        "native_accuracy": 0.9753521126760564,
+        "native_frame_accuracy": 0.9755936278929966,
+        "native_internal_cuts_per_clip": 0.1619718309859155,
+        "native_internal_cuts_per_min": 1.6591523895401261,
+        "native_share_cut": 0.056338028169014086,
+        "segment_f1_50_multi": 0.896551724137931,
+        "boundary_recall_multi": 0.9633507853403142,
+        "boundary_precision_multi": 0.8720379146919431,
+        "boundary_f1_multi": 0.9154228855721394,
+        "same_class_cut_rate_multi": 0.06521739130434782,
+        "multi_frame_accuracy": 0.9124390080876946,
+        "segment_f1_50_pairs": 0.9392523364485982,
+        "boundary_recall_pairs": 1.0,
+        "counts": {
+          "native_clips": 284,
+          "multi_streams": 120,
+          "pair_streams": 137,
+          "multi_true_changes": 382,
+          "multi_same_joins": 230
+        },
+        "native_A4C_to_A5C": 2,
+        "native_A5C_to_A4C": 4,
+        "native_A4C_A5C_errors": 6,
+        "short_true_segments_10samples": 32,
+        "short_true_unmatched_10samples": 1,
+        "short_predicted_segments_10samples": 66,
+        "short_spurious_segments_10samples": 30,
+        "short_true_segments_16samples": 141,
+        "short_true_unmatched_16samples": 5,
+        "short_predicted_segments_16samples": 186,
+        "short_spurious_segments_16samples": 39
+      },
+      "inner_B3": {
+        "native_macro_f1": 0.9307650263681765,
+        "native_per_class_recall": [
+          0.9904761904761905,
+          1.0,
+          0.9770114942528736,
+          0.6363636363636364,
+          1.0
+        ],
+        "native_confusion": [
+          [
+            104,
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            68,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            85,
+            2,
+            0
+          ],
+          [
+            0,
+            0,
+            4,
+            7,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            13
+          ]
+        ],
+        "native_accuracy": 0.9753521126760564,
+        "native_frame_accuracy": 0.9798016230838593,
+        "native_internal_cuts_per_clip": 0.007042253521126761,
+        "native_internal_cuts_per_min": 0.0721370604147881,
+        "native_share_cut": 0.007042253521126761,
+        "segment_f1_50_multi": 0.9246231155778895,
+        "boundary_recall_multi": 0.9476439790575916,
+        "boundary_precision_multi": 0.9705093833780161,
+        "boundary_f1_multi": 0.9589403973509933,
+        "same_class_cut_rate_multi": 0.030434782608695653,
+        "multi_frame_accuracy": 0.9193235746273645,
+        "segment_f1_50_pairs": 0.983132530120482,
+        "boundary_recall_pairs": 1.0,
+        "counts": {
+          "native_clips": 284,
+          "multi_streams": 120,
+          "pair_streams": 137,
+          "multi_true_changes": 382,
+          "multi_same_joins": 230
+        },
+        "native_A4C_to_A5C": 2,
+        "native_A5C_to_A4C": 4,
+        "native_A4C_A5C_errors": 6,
+        "short_true_segments_10samples": 32,
+        "short_true_unmatched_10samples": 3,
+        "short_predicted_segments_10samples": 35,
+        "short_spurious_segments_10samples": 2,
+        "short_true_segments_16samples": 141,
+        "short_true_unmatched_16samples": 11,
+        "short_predicted_segments_16samples": 145,
+        "short_spurious_segments_16samples": 7
+      }
+    },
+    {
+      "row": "seed2026110257_J-high_fixed6000",
+      "half": "calibration",
+      "raw": {
+        "native_macro_f1": 0.9788251060978332,
+        "native_per_class_recall": [
+          1.0,
+          1.0,
+          0.9672131147540983,
+          0.9444444444444444,
+          1.0
+        ],
+        "native_confusion": [
+          [
+            80,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            71,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            59,
+            2,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            17,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            7
+          ]
+        ],
+        "native_accuracy": 0.9873417721518988,
+        "native_frame_accuracy": 0.9794037561963276,
+        "native_internal_cuts_per_clip": 0.16033755274261605,
+        "native_internal_cuts_per_min": 1.5918452838092578,
+        "native_share_cut": 0.05485232067510549,
+        "segment_f1_50_multi": 0.9685414680648237,
+        "boundary_recall_multi": 0.9874371859296482,
+        "boundary_precision_multi": 0.9562043795620438,
+        "boundary_f1_multi": 0.9715698393077874,
+        "same_class_cut_rate_multi": 0.03482587064676617,
+        "multi_frame_accuracy": 0.9687541638907395,
+        "segment_f1_50_pairs": 0.9631728045325779,
+        "boundary_recall_pairs": 0.9655172413793104,
+        "counts": {
+          "native_clips": 237,
+          "multi_streams": 120,
+          "pair_streams": 115,
+          "multi_true_changes": 398,
+          "multi_same_joins": 201
+        },
+        "native_A4C_to_A5C": 2,
+        "native_A5C_to_A4C": 1,
+        "native_A4C_A5C_errors": 3,
+        "short_true_segments_10samples": 23,
+        "short_true_unmatched_10samples": 0,
+        "short_predicted_segments_10samples": 39,
+        "short_spurious_segments_10samples": 11,
+        "short_true_segments_16samples": 134,
+        "short_true_unmatched_16samples": 6,
+        "short_predicted_segments_16samples": 153,
+        "short_spurious_segments_16samples": 18
+      },
+      "inner_B3": {
+        "native_macro_f1": 0.9788251060978332,
+        "native_per_class_recall": [
+          1.0,
+          1.0,
+          0.9672131147540983,
+          0.9444444444444444,
+          1.0
+        ],
+        "native_confusion": [
+          [
+            80,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            71,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            59,
+            2,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            17,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            7
+          ]
+        ],
+        "native_accuracy": 0.9873417721518988,
+        "native_frame_accuracy": 0.9754241429868045,
+        "native_internal_cuts_per_clip": 0.016877637130801686,
+        "native_internal_cuts_per_min": 0.1675626614536061,
+        "native_share_cut": 0.012658227848101266,
+        "segment_f1_50_multi": 0.9717624148003895,
+        "boundary_recall_multi": 0.9673366834170855,
+        "boundary_precision_multi": 0.9897172236503856,
+        "boundary_f1_multi": 0.9783989834815756,
+        "same_class_cut_rate_multi": 0.014925373134328358,
+        "multi_frame_accuracy": 0.961292471685543,
+        "segment_f1_50_pairs": 0.9707602339181286,
+        "boundary_recall_pairs": 0.9310344827586207,
+        "counts": {
+          "native_clips": 237,
+          "multi_streams": 120,
+          "pair_streams": 115,
+          "multi_true_changes": 398,
+          "multi_same_joins": 201
+        },
+        "native_A4C_to_A5C": 2,
+        "native_A5C_to_A4C": 1,
+        "native_A4C_A5C_errors": 3,
+        "short_true_segments_10samples": 23,
+        "short_true_unmatched_10samples": 2,
+        "short_predicted_segments_10samples": 26,
+        "short_spurious_segments_10samples": 1,
+        "short_true_segments_16samples": 134,
+        "short_true_unmatched_16samples": 10,
+        "short_predicted_segments_16samples": 134,
+        "short_spurious_segments_16samples": 4
+      }
+    }
+  ],
+  "epoch": 1793682929.7100139
+}
