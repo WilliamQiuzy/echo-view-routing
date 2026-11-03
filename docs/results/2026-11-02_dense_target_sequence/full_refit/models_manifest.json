@@ -1,0 +1,96 @@
+{
+  "passed": true,
+  "models": [
+    {
+      "arm": "R-CE",
+      "physical_updates": 6000,
+      "head_optimizer_tensors": 56,
+      "active_video_optimizer_tensors": 149,
+      "changed_video_tensors": 149,
+      "frozen_image_tensors_unchanged": 9,
+      "exact_binding_moments_shapes_finite_steps_lr": true,
+      "tensors": 214,
+      "parameters": 87723146,
+      "all_weights_equal_latest_optimizer_model": true,
+      "latest_optimizer_sha256": "7c2db424d5551bb2b478a2feb4e8524caba61321ae8fd672474039820f48d5ea",
+      "mean_first100_CE": 1.2717080926895141,
+      "mean_last100_CE": 0.061394947223816415,
+      "mean_first100_S": 0.07406097475904971,
+      "mean_last100_S": 2.2039562237262724
+    },
+    {
+      "arm": "R-ST",
+      "physical_updates": 6000,
+      "head_optimizer_tensors": 56,
+      "active_video_optimizer_tensors": 149,
+      "changed_video_tensors": 149,
+      "frozen_image_tensors_unchanged": 9,
+      "exact_binding_moments_shapes_finite_steps_lr": true,
+      "tensors": 214,
+      "parameters": 87723146,
+      "all_weights_equal_latest_optimizer_model": true,
+      "latest_optimizer_sha256": "5f74316aff849907c404e8a3bca2bedc1fbc91a72986de941dc3c63ef020b478",
+      "mean_first100_CE": 1.275263661891222,
+      "mean_last100_CE": 0.12064741239883006,
+      "mean_first100_S": 0.06125123731326312,
+      "mean_last100_S": 0.10922666098922491
+    }
+  ],
+  "outer_rows": [
+    {
+      "row": "R-CE_fixed6000",
+      "arm": "R-CE",
+      "step": 6000,
+      "seed": 2026110257,
+      "path": "runs/a57_dense_sequence_v1/full_refit_v1/R-CE/step6000.pt",
+      "sha256": "85a6900a887c2e158687dee19f76408245833ba1a6d232bc8b1756c256aeefc9",
+      "feature_contract": {
+        "kind": "official_final_layer768_dense_refit",
+        "source_video_tensors": 149,
+        "inactive_tensors": 9,
+        "head_tensors": 56,
+        "positions": 64,
+        "tubelet_positions": 32,
+        "TCN_channels": 128,
+        "stages": 2
+      }
+    },
+    {
+      "row": "R-ST_fixed6000",
+      "arm": "R-ST",
+      "step": 6000,
+      "seed": 2026110257,
+      "path": "runs/a57_dense_sequence_v1/full_refit_v1/R-ST/step6000.pt",
+      "sha256": "5abf0286fcd2d0b673f50102a6e56656df0c6d21be57cbc637a45297c4e0bd2f",
+      "feature_contract": {
+        "kind": "official_final_layer768_dense_refit",
+        "source_video_tensors": 149,
+        "inactive_tensors": 9,
+        "head_tensors": 56,
+        "positions": 64,
+        "tubelet_positions": 32,
+        "TCN_channels": 128,
+        "stages": 2
+      }
+    }
+  ],
+  "formal_physical_updates": 12000,
+  "source_sha256": "deb0cd98ea40ef59d21eb883e1deb517a9bcca614047e710d9fad136c750348c",
+  "input_metadata_sha256": "6e549a59378abe6e667dea09c19c36590dfb3faa39d08ac9cb78768b3c0fc15b",
+  "config_sha256": "f7083b7a99a78a0f7d744bf5704a26dae1a99e7b5801091398ac1b12e5da7d3a",
+  "B3_transfer_sha256": "870c21d3651a54f2149c78e4f69e9335a2b5d9d836df6cf6e8f0bc28f22fea31",
+  "feature_contract": {
+    "kind": "official_final_layer768_dense_refit",
+    "source_video_tensors": 149,
+    "inactive_tensors": 9,
+    "head_tensors": 56,
+    "positions": 64,
+    "tubelet_positions": 32,
+    "TCN_channels": 128,
+    "stages": 2
+  },
+  "producer_git": "00ea0f02c8c605572f4028c9709ccba53bf77567",
+  "new_refit_outer_forwards": 0,
+  "former_inner_role": "TRAINING;no checkpoint or B3selection",
+  "epoch": 1793691169.038952
+}
