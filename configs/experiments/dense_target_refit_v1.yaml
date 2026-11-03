@@ -1,0 +1,20 @@
+{
+  "experiment":"a57_full_data_stability_refit_v1",
+  "card":"docs/superpowers/plans/2026-11-03-a57-full-data-stability-refit.md",
+  "adaptive_after_reused_outer_feedback":true,
+  "seed":2026110257,"recipe_seed":2026110259,
+  "arms":{"R-CE":0.0,"R-ST":0.15},
+  "base_config":"configs/experiments/dense_target_sequence_v1.yaml",
+  "source_state":"checkpoints/a57_jepa21/target_encoder.pt",
+  "source_manifest":"docs/results/2026-11-02_dense_target_sequence/source.json",
+  "protocol_train_clips":3364,"protocol_train_sessions":502,"constructed_streams":1500,
+  "steps":6000,"save_optimizer_every":100,"weight_milestones":[2000,6000],
+  "evaluate_fixed_steps":[6000],"no_inner_readout_or_selection":true,
+  "head_lr":0.001,"body_lr":0.00003,"weight_decay":0.05,"betas":[0.9,0.999],"eps":1e-8,"clip":1.0,"warmup":200,"schedule_total":6000,
+  "geometry":"unchanged64positions/32tubelets/4x16RGB/stride32/triangularprobabilitystitch",
+  "feature_contract":"official_final_layer768/spatialmean196/two_stage_TCN128",
+  "regularizer":"FP32logsoftmax/squaredlater-minus-detached-earlier/cap16/bothstages/chunkeligibleedge5classnorm/all4originalpositionsvalidandequallabel",
+  "B3_supplement":"verbatim parentseed2026110257_J-high_fixed6000 innerparameters;no refitcalibration",
+  "protected_sources":"officialtest/Pediatric/Unity/quarantine excluded",
+  "shared_caps":{"GPUjob_h":24,"actual_CPUcore_h":72,"added_bytes":40000000000,"phase_wall_h":48,"closure_GPUh":2}
+}
