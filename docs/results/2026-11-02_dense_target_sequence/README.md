@@ -1,6 +1,6 @@
 # A57：直接完整五类序列学习（核心轮完成）
 
-**核心轮完成并独立审计：J在两个seed、两个复用外层半区均优于匹配F，但未建立超过A08。** 全部32,000次正式更新、6个模型、64次完整inner评估、17个逻辑外层行（28个去重checkpoint-half）完成。74行完整指标和12组配对比较见[汇总](summary.json)与[CSV](metrics.csv)。后续自适应full-refit已完成：局部A5C改善伴随短段FP/FN及其他类代价，未超过A08，详见[已封存结果](full_refit/README.md)。四层MD双seed矩阵已完成，正进行冻结后的完整外层读取；共享研究阶段仍未关闭。
+**核心轮完成并独立审计：J在两个seed、两个复用外层半区均优于匹配F，但未建立超过A08。** 全部32,000次正式更新、6个模型、64次完整inner评估、17个逻辑外层行（28个去重checkpoint-half）完成。74行完整指标和12组配对比较见[汇总](summary.json)与[CSV](metrics.csv)。后续自适应full-refit已完成：局部A5C改善伴随短段FP/FN及其他类代价，未超过A08，详见[已封存结果](full_refit/README.md)。四层MD也已完成54行指标/16组配对分析：J−F在两个seed、两个半区均改善，仍未超过A08完整任务。全阶段12模型、68,000次正式更新均已完成，见[阶段对照与图表](phase_comparison/README.md)、[MD完整结果](multidepth/README.md)及[共享资源终账](resources.json)。
 
 研究问题是：直接从EchoJEPA2.1稠密视频token预测完整五类时间轴，并把序列CE反传到全部活跃视频路径，能否改善识别与分段？本轮不依赖Base固定切点、单向A4C修复或source133准入门槛。J−F是匹配适配比较；F−L同时改变时间模块和容量，不能单独证明时间顺序机制。
 
@@ -48,7 +48,7 @@ inner-B3为预定补充，不能只择较好解码。J两seed的selection segmen
 
 正式训练进程exit0，完整GPU-job墙钟23,113.8786秒、已计量CPU22,115.3546核秒；外层reader exit0，GPU-job墙钟2,818.3680秒、CPU2,730.5472核秒。两次工程预检失败及所有成功预检、CPU准备、诊断/审计成本保留在共享账本；训练结束后的空闲时间不计GPU/CPU用量。原[launch forecast](forecast.json)21.704GPUh是前瞻预测，不是已花费。后续完整实测[共享准入](full_refit/admission.json)包含保留MD及2GPUh收尾储备；阶段实际资源终账在全部授权工作结束后关闭。旧A55/A56不同口径费用原样保留，不把CPUupper与实际CPU拼成同口径总量。
 
-下一步已经具体执行：[自适应全部训练来源CE/ST重拟合](full_refit/README.md)在本轮复用外层反馈后另立card，旧628inner转为训练、不再选择；[四层MD控制](multidepth/README.md)配置在任何本轮外层反馈前冻结、已通过真实图检查，保持原匹配目标与成本准入。二者不修改本轮结果。官方test、Pediatric、Unity与隔离媒体不前向，独立临床/患者泛化及发表目标均未建立。
+下一步已经具体执行：[自适应全部训练来源CE/ST重拟合](full_refit/README.md)在本轮复用外层反馈后另立card，旧628inner转为训练、不再选择；[四层MD控制](multidepth/README.md)配置在任何本轮外层反馈前冻结、24,000步及全部固定读出已完成，保持原匹配目标与成本准入。二者保留各自结果，不改变本核心轮结论。官方test、Pediatric、Unity与隔离媒体不前向，独立临床/患者泛化及发表目标均未建立。
 
 ![内层曲线](figures/inner_learning_curves.png)
 
