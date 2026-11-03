@@ -38,4 +38,4 @@ A58新增确认了哪些问题：
 
 论文证据缺口仍在：A08历史见过部分inner来源；所有开发半部重复使用，session不是确认患者；clip标签传播不等于逐帧可见性，拼接变化不等于真实扫查。用户目前没有人工标注资源，[独立标注协议](annotation_protocol.md)仍未执行。本轮不能宣称独立临床验证、解剖机制证据或达到论文目标。
 
-实际GPU/CPU、计量缺口、tracked-path保守存储上界和进程退出以最终[resources.json](resources.json)、[terminal_exit_receipt.json](terminal_exit_receipt.json)为准；资源收尾尚在进行，不把早期forecast记作实际费用。源码保留在隔离工作区，完整模型/优化器/逐例预测保留在服务器，公开目录只保留汇总、配置身份和哈希。
+实际终账已在`7155ff2`封存：[resources.json](resources.json)、[terminal_exit_receipt.json](terminal_exit_receipt.json)与[root独立核验](root_terminal_verification.json)。A58新增GPU占用2.931462小时，连同A57累计17.315427/24小时；新增实测CPU回执含collector/本地最终检查2.929091小时，累计实测回执17.213738小时，另计独立setup/orphan accounting allowances后17.963738/72小时。新增tracked-path存储保守上界796567045字节，累计33.624493/40GB，不是实测文件系统峰值。14个现行合同及26个源/头部milestone权重哈希通过，root实查37个相关进程均退出、GPU为空、队列锁可取得、pending0。被接管缓存worker的OS退出码仍null；原监督器CPU与采样尾段缺口及历史回执重叠局限照录，900秒allowance不是实测CPU。未花费的2GPU小时储备没有计作实际费用。root协调/公开同步尾段另列，不冒充worker CPU。源码保留在隔离工作区，完整模型/优化器/逐例预测保留在服务器，公开目录只保留汇总、配置身份和哈希。
