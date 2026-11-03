@@ -2,7 +2,7 @@
 
 状态：**全部FIT/inner分数缓存完成；八头正式CPU训练已开始，尚无可与A08比较的外层结果。** 用户2026-11-03要求解释为何多轮未超过A08，并以论文级成果为目标重新规划、继续实验。已完成的A57保持封存。
 
-正式worker317679/监督317671于纽约13:00:42启动，`e8a025c`冻结模型/数据/完整缓存与成本准入，`c61d953`封存身份。root[独立实查](root_formal_start_verification.json)确认首个D0、seed2026110358已推进3200次正式更新且实际Adam计数3200。此前60次真实图检查与144次完整生命周期工程更新另计，不混入48000正式计划。全部八模型/24个inner点和选择冻结后才外层读出；训练内曲线不是独立A08比较。CPU参数进程被nvidia列出426MiB CUDA上下文占用，正在单独追加保守整段GPU驻留计费与运行guard，不能凭raw CPU-stage标志宣称GPU费用为0。
+正式worker317679/监督317671于纽约13:00:42启动，`e8a025c`冻结模型/数据/完整缓存与成本准入，`c61d953`封存身份。root[独立实查](root_formal_start_verification.json)确认首个D0、seed2026110358已推进3200次正式更新且实际Adam计数3200。此前60次真实图检查与144次完整生命周期工程更新另计，不混入48000正式计划。全部八模型/24个inner点和选择冻结后才外层读出；训练内曲线不是独立A08比较。CPU参数进程被nvidia列出426MiB CUDA上下文占用；独立resource-only guard319479现已绑定原317679/start-ticks并确认主监督317671仍持同一锁。f83d3cd/d86f2a5的独立overlay把head_check与formal整段驻留GPU时间各计一次，原CPU模型/依赖不变。新保守预测累计GPU21.36138h（含2h储备）、CPUreceipt+allowances22.44968h，仍满足原上限；raw CPU-stage标志不被当成零GPU费用证明。首个D0已完成6000更新并进入6000点inner MAP，尚无外层A08比较。
 
 [完整全矩阵预测准入](cache_admission.json)覆盖八个6000步头部、fixed/inner-selected主表、时长压力测试、全部控制、132组配对比较上界与收尾。预测累计GPU20.898512h（含尚未花费的2h储备）、CPUreceipt+allowances23.942696h、tracked-path峰值保守上界33.568447GB，均在继承上限内；这些不是实际终账。头部后端按实测成本冻结为CPU。
 

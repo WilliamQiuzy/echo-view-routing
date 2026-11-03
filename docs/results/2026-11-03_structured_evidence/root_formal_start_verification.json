@@ -22,5 +22,31 @@
   "engineering_updates_excluded_from_formal_count": true,
   "source_bodies_frozen": true,
   "A08_comparable_outer_metrics_available": false,
-  "resource_classification_note": "nvidia-smi lists this CPU-parameter optimizer process with426MiB CUDA context; worker is preparing separately frozen conservative full-wall GPU accounting/guard supplement without changing active model dependencies. Raw supervisor GPU_jobFalse is not proof of zero occupied GPU wall."
+  "resource_classification_note": "nvidia-smi lists this CPU-parameter optimizer process with426MiB CUDA context; worker is preparing separately frozen conservative full-wall GPU accounting/guard supplement without changing active model dependencies. Raw supervisor GPU_jobFalse is not proof of zero occupied GPU wall.",
+  "follow_up_context_guard_verified": {
+    "guard_PID": 319479,
+    "primary_supervisor_PID": 317671,
+    "formal_PID": 317679,
+    "same_queue_owner": true,
+    "formal_process_start_ticks": 8052259,
+    "elapsed_GPU_occupied_seconds_observed": 436.24565863609314,
+    "remaining_original_GPU_bound_seconds_observed": 21413.162925004955,
+    "heartbeat_epoch": 1793729278.416672,
+    "guard_model_updates_or_forwards": 0,
+    "overlay_code_commits": [
+      "f83d3cd",
+      "d86f2a5"
+    ],
+    "raw_CPU_job_flag_not_overwritten": true
+  },
+  "follow_up_formal_progress": {
+    "phase": "formal_inner_MAP",
+    "arm": "D0",
+    "seed": 2026110358,
+    "checkpoint_step": 6000,
+    "inner_sequences_done": 300,
+    "inner_sequences_total": 928,
+    "epoch": 1793729285.810696,
+    "no_outer_A08_comparison_yet": true
+  }
 }
