@@ -15,6 +15,7 @@ from echo_routing.temporal.anchor_training import UtilityRegressor,optimizer,res
 from echo_routing.temporal.anchor_runtime import infer
 from echo_routing.temporal.anchor_policy_cache import PolicyPairCache
 from echo_routing.temporal.anchor_metrics import evaluate
+from echo_routing.temporal.anchor_source_binding import validate as validate_sources
 from echo_routing.temporal.anchor_edits import majority
 from echo_routing.temporal.anchor_readout_plan import plan as fixed_plan,system,TABLES,HALVES,BASE
 from echo_routing.temporal.structured_metrics import stress_context,compose_stress_predictions,verify_reference
@@ -31,6 +32,17 @@ def contexts(cfg):
     main=np.load(path,allow_pickle=True).item()
     return {table:{half:main[half] if table=='main' else stress_context(main[half],sequences(role_for(table,half)))
                    for half in HALVES} for table in TABLES}
+
+
+def validate_source_banks(outer,banks):
+    observed={}
+    manifest=read(PUB/'input_manifest.json')
+    for role,(qs,a,j,b,sources) in banks.items():
+        for source in ['a08','jepa']:
+            observed[(source,role)]={'identity':sources[source],
+                'journal_sha256':sha(RUN/'cache'/source/role/'committed.jsonl'),
+                'committed_sequences':len(qs),'input_sha256':manifest['roles'][role]['sha256']}
+    return validate_sources(outer['records'],observed)
 
 
 def pair_identity(row,role,sources):
@@ -63,6 +75,7 @@ def main():
     if not outer['passed'] or not all(r['complete'] for r in outer['records']):raise ValueError('complete matched source caches required')
     torch.set_num_threads(1);torch.use_deterministic_algorithms(True)
     ctx=contexts(cfg);banks={role_for(t,h):role_values(role_for(t,h)) for t in TABLES for h in HALVES}
+    validate_source_banks(outer,banks)
     predictions={t:{h:{} for h in HALVES} for t in TABLES};rows=[];journals=[]
     original=read(ROOT/'docs/results/2026-11-02_dense_target_sequence/A08_reference_metrics.json')['systems']
     def publish(table,half,name,pred,info):

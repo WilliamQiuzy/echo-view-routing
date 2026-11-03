@@ -9,7 +9,7 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT))
 import numpy as np,pandas as pd
 from scripts.anchor_common import RUN,PUB,CFG,read,write,sha,verify_pin,verify_freeze
-from scripts.readout_anchor_edits import contexts,role_for,pair_cache
+from scripts.readout_anchor_edits import contexts,role_for,pair_cache,validate_source_banks
 from scripts.train_anchor_edits import role_values
 from scripts.cache_anchor_edits import original_a08
 from echo_routing.temporal.baselines.registry import decode_with_prob
@@ -31,6 +31,7 @@ def main():
         if result[field]!=sha(PUB/path):raise ValueError('readout source/model/plan pin changed')
     predictions=np.load(verify_pin(result['private_predictions']),allow_pickle=True).item();ctx=contexts(cfg)
     banks={role_for(t,h):role_values(role_for(t,h)) for t in TABLES for h in HALVES}
+    validate_source_banks(read(PUB/'cache_outer_manifest.json'),banks)
     modelrows={(r['seed'],r['arm']):r for r in manifest['models']}
     expected={(r['table'],r['half'],r['system'],r['role']) for r in plan['rows']}
     actual=[(r['table'],r['half'],r['system'],r['role']) for r in result['rows']]
