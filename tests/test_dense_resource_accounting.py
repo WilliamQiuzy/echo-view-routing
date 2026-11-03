@@ -10,3 +10,8 @@ def test_duplicate_workers_or_overlapping_GPU_jobs_are_rejected():
     a=importlib.import_module('echo_routing.temporal.dense_resource_accounting');one={'model_pid':1,'GPU_job':True,'process_CPU_seconds':1.,'full_process_wall_seconds':3.,'start_epoch':0.,'end_epoch':3.,'exit_code':0}
     with pytest.raises(ValueError):a.closed_totals([one,one])
     with pytest.raises(ValueError):a.closed_totals([one,{**one,'model_pid':2,'start_epoch':1.,'end_epoch':4.}])
+
+def test_GPU_receipts_require_finite_closed_intervals_and_consistent_actual_wall():
+    a=importlib.import_module('echo_routing.temporal.dense_resource_accounting');one={'model_pid':1,'GPU_job':True,'process_CPU_seconds':1.,'full_process_wall_seconds':3.,'start_epoch':0.,'end_epoch':3.,'exit_code':0}
+    for change in [{'start_epoch':float('nan')},{'end_epoch':float('inf')},{'end_epoch':-1.},{'full_process_wall_seconds':1.}]:
+        with pytest.raises(ValueError):a.closed_totals([{**one,**change}])

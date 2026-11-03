@@ -11,7 +11,8 @@ def closed_totals(records):
         cpu+=c;failed=row.get('exit_code',0)!=0 or not row.get('ok',True);failures+=bool(failed)
         if row['GPU_job']:
             start,end=float(row['start_epoch']),float(row['end_epoch'])
-            if end<start:raise ValueError('closed GPU worker interval required')
+            if not math.isfinite(start) or not math.isfinite(end) or end<start:raise ValueError('finite closed GPU worker interval required')
+            if abs(w-(end-start))>.01:raise ValueError('GPU actual wall differs from closed worker interval')
             gpu.append((start,end));wall+=w;failed_wall+=w if failed else 0.
     gpu.sort()
     if any(b[0]<a[1]-1e-3 for a,b in zip(gpu,gpu[1:])):raise ValueError('overlapping GPU workers violate the single queue')
