@@ -17,3 +17,5 @@ A14–17已经训练过局部路由，A59不声称路由或utility学习是新�
 完整缓存/矩阵成本准入已通过并在c016469/71d3f9e封存：预测累计GPU21.434302小时（包含未花费的2小时收尾储备）、CPU accounting23.011658小时、tracked上界34.484451GB；预测不是实耗。root实查唯一14991/14974及start_ticks306343一致，A08FIT已提交1309/4236条，39个实际Git对象与server SHA一致。缓存完成后继续全FIT真实候选图与正式准入，再执行四模型各6000步。
 
 正式训练33027/33010已由父监督直接观测OS退出0：143.888347秒wall/70.453209 CPU秒，CUDA隐藏、无GPU context。root独立读取四份latest：各update6000、全部Adam计数6000、各6000条physical trace；46个formal/64个audit实际Git对象与server SHA均匹配。全FIT实际553候选（121native/432constructed），148工程更新与24000正式更新分列。内层不选checkpoint；尚无新模型外层A08比较结果。下一步全部权重/12inner/policy actualGit封存，再全70行/96比较/oracle/闭环，监控继续。
+
+70行固定读出已齐（ebd0526），root独立从5×5混淆与M/P/T重算主表并匹配server SHA。J-G两seed主selection片段F1 .9498525/.9507874、cal .9808429/.9779904，均低A08 .9563492/.9826923；J-G相对A-G只在selection点估计有增量，cal反向。short16 selection FN6/6对7，但FP17/16对9；cal FN4/5对5、FP11/13对8。G宏F1恒等是机械属性，seed360cal帧准确率.993437低于Base .993926；不能称稳定性/短段净收益成功。96配对区间和12oracle继续，不由负点估计调参或提前停止。
