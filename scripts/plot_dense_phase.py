@@ -36,5 +36,15 @@ def main():
     fig.suptitle('Short segments <=16 samples / 1.6 seconds; FN and FP shown separately')
     fig.tight_layout();fig.savefig(out/'fixed6000_short_segments.png',dpi=180);fig.savefig(out/'fixed6000_short_segments.svg');plt.close(fig)
     (out/'figure_inputs.json').write_text(json.dumps({'input_sha256':{str(p.relative_to(ROOT)):hashlib.sha256(p.read_bytes()).hexdigest() for p in paths},'fixed_rows':[{k:v for k,v in r.items() if k in ['half','label','system_key']} for r in rows],'new_model_forwards':0,'fixed6000_raw_only_primary_display':True,'all_modes_and_controls_retained_in_component_reports':True,'A08_is_operational_reference_not_matched_architecture_control':True,'reused_development_not_independent_validation':True},indent=2)+'\n')
-    print(json.dumps({'phase_figures':4,'fixed_rows':len(rows),'new_model_forwards':0}),flush=True)
+    fig,axes=plt.subplots(1,2,figsize=(10,3.8));curves=[]
+    for seed,style in [(2026110257,'-'),(2026110258,'--')]:
+        for arm,color in [('F-MD','#2166ac'),('J-MD','#762a83')]:
+            records=[]
+            for step in range(500,6001,500):
+                p=ROOT/f'runs/a57_dense_sequence_v1/multidepth_v1/seed{seed}/{arm}/inner_step{step}/metrics.json';r=read(p);assert r['seed']==seed and r['arm']==arm and r['step']==step
+                record={k:r[k] for k in ['seed','arm','step','native_macro_f1','segment_f1_50_multi','model_checkpoint_sha256','input_sequence_sha256']};record['record_sha256']=hashlib.sha256(p.read_bytes()).hexdigest();curves.append(record);records.append(record)
+            for ax,(key,title) in zip(axes,[('native_macro_f1','Native five-class macro-F1'),('segment_f1_50_multi','Multi-stream segment F1@50')]):ax.plot([r['step'] for r in records],[r[key] for r in records],style,color=color,label=f'{arm}, seed {seed-2026110256}');ax.set(xlabel='Optimizer updates',ylabel=title,ylim=(0,1.02));ax.grid(alpha=.2)
+    axes[0].legend(fontsize=8);fig.suptitle('MD repeated training-only inner calibration; not independent validation');fig.tight_layout();fig.savefig(out/'multidepth_inner_curves.png',dpi=180);fig.savefig(out/'multidepth_inner_curves.svg');plt.close(fig)
+    (out/'multidepth_inner_curves.json').write_text(json.dumps({'rows':curves,'source_records_bound_in_model_manifest':True,'new_model_forwards':0},indent=2)+'\n')
+    print(json.dumps({'phase_figures':6,'fixed_rows':len(rows),'new_model_forwards':0}),flush=True)
 if __name__=='__main__':main()
