@@ -6,6 +6,8 @@
 
 长GPU缓存worker PID293836/监督293826从16:25:12UTC运行；root[实时核验](root_live_cache_verification.json)观察到首个producer的200/4236条FIT序列进度、5099个A08窗口，逐条提交journal已到206，L40S24570MiB。进度每25条更新，journal每条推进，差异正常。正式模型更新仍为0；唯一worker在该不可变缓存作业运行期间补齐A58独立训练/读出/审计CLI，随后按卡继续，无常规审批等待。
 
+运行中曾发生[监督器事件](guardian_incident_root_verification.json)：原监督器293826因`du`扫描撞上原子移除的临时文件而退出，生产worker293836始终继续，没有重跑。另行冻结的guardian300231接管同一队列锁和原PID/start-ticks资源约束，生产图/缓存身份保持不变。原监督器CPU缺口以独立900秒预算allowance处理，不写成实测CPU；被接管worker的OS退出码不能由非父守护直接取得，终账会把完整manifest证据与真实可观测退出码分开。17:01UTC实查原GPUworker与新guardian均存活，进度已到3025FIT/103469窗口，stderr空；此为进度快照，非模型成绩。
+
 [完整失败分析与研究重规划](RESEARCH_REPLAN.md)区分已验证性能瓶颈与未证实机制；[执行卡](../../superpowers/plans/2026-11-03-a58-structured-evidence.md)在实际Git `769737b`冻结，独立计划审查通过。历史源任务特异性分析补充于`88156a2`，未改实验卡。
 
 本轮假设：A08的稳定识别分数与JEPA的更细概率轨迹，能否在**相同训练/推理分数的条件序列模型**里形成增量，而不牺牲真实短段与原生识别？这不是已得到的结论。仅改变旧平滑阈值没有被接纳。
