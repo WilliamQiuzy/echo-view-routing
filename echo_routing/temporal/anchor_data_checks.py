@@ -13,6 +13,19 @@ def metric_counts(prediction, truth):
 
 
 def validate(data, sequences, a08, baselines, normalizers, plans):
+    normalized_plans = {}
+    for raw_seed, plan in plans.items():
+        if isinstance(raw_seed, bool) or not isinstance(raw_seed, (int, np.integer, str)):
+            raise ValueError('canonical declared seed-plan identities required')
+        try:
+            seed = int(raw_seed)
+        except ValueError as error:
+            raise ValueError('invalid seed-plan identity') from error
+        if isinstance(raw_seed, str) and raw_seed != str(seed) or seed in normalized_plans:
+            raise ValueError('duplicate or noncanonical seed-plan alias')
+        normalized_plans[seed] = plan
+    if set(normalized_plans) != {2026110359, 2026110360}:
+        raise ValueError('complete exact two declared seed plans required')
     if not len(sequences) == len(a08) == len(baselines):
         raise ValueError('whole fixed FIT axes differ')
     pooled = np.asarray([metric_counts(b, q['labels']) for q, b in zip(sequences, baselines) if q['kind'] != 'native']).sum(0)
@@ -52,7 +65,7 @@ def validate(data, sequences, a08, baselines, normalizers, plans):
     a, j = data['features']['A'], data['features']['J']
     if not np.array_equal(a[:, :62], j[:, :62]) or not np.array_equal(a[:, 26:62], a[:, 62:]):
         raise ValueError('matched first62/A-duplicate feature contract changed')
-    for seed, plan in plans.items():
+    for seed, plan in normalized_plans.items():
         wanted = draw_plan(len(data['kind_indices']['native']), len(data['kind_indices']['constructed']), int(seed))
         if any(not np.array_equal(plan[k], wanted[k]) for k in ['native', 'constructed']) or plan['no_action_domain'] != wanted['no_action_domain']:
             raise ValueError('actual pre-frozen shared kind-balanced draw plan changed')

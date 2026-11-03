@@ -1,0 +1,26 @@
+{
+  "stage": "complete_seed_RED",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "tests/test_anchor_data_checks.py"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 88435,
+  "supervisor_pid": 88425,
+  "started_epoch": 1793744945.962325,
+  "finished_epoch": 1793744947.447948,
+  "full_process_wall_seconds": 1.4856228828430176,
+  "observed_worker_exit_code": 1,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 0.954456,
+  "measured_supervisor_CPU_seconds": 0.00081,
+  "measured_CPU_core_seconds": 0.955266,
+  "scope": "local CPU synthetic software checks; no media or formal experiment updates",
+  "output": "F                                                                        [100%]\n=================================== FAILURES ===================================\n__ test_actual_training_artifact_recounts_targets_scalers_and_full_seed_plan ___\n\n    def test_actual_training_artifact_recounts_targets_scalers_and_full_seed_plan():\n        m = importlib.import_module('echo_routing.temporal.anchor_data_checks')\n        qs = [{'id': 'n', 'kind': 'native', 'labels': np.zeros(7, int)},\n              {'id': 'c', 'kind': 'multi', 'labels': np.array([0, 1, 1, 0, 0, 0, 0])}]\n        a = [np.eye(5)[[0, 1, 0, 0, 0, 0, 0]], np.eye(5)[[0, 1, 1, 0, 0, 0, 0]]]\n        base = [np.zeros(7, int), np.zeros(7, int)]\n        data = prepare_training(qs, a, [np.full((7, 5), .2)] * 2, base)\n        norms = {arm: fit_normalizer(data['features'][arm]) for arm in ['A', 'J']}\n        plans = {seed: draw_plan(1, 1, seed) for seed in [2026110359, 2026110360]}\n        assert m.validate(data, qs, a, base, norms, plans)['all_candidate_targets_independently_recounted']\n        for fault in ['target', 'normalizer', 'plan', 'candidate_span', 'seed_missing_both', 'seed_missing_one', 'seed_extra', 'seed_alias']:\n            bad, normalizers, draw = copy.deepcopy(data), copy.deepcopy(norms), copy.deepcopy(plans)\n            if fault == 'target':\n                bad['targets'][0] += 1\n            elif fault == 'normalizer':\n                normalizers['J']['std'][0] += 1\n            elif fault == 'plan':\n                draw[2026110359]['native'][0, 0] = 1\n            elif fault == 'candidate_span':\n                bad['candidate_rows'][0]['span'] = (0, 1)\n            elif fault == 'seed_missing_both':\n                draw = {}\n            elif fault == 'seed_missing_one':\n                draw.pop(2026110360)\n            elif fault == 'seed_extra':\n                draw[2026110361] = draw_plan(1, 1, 2026110361)\n            else:\n                draw['2026110359'] = draw[2026110359]\n>           with pytest.raises(ValueError):\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^\nE           Failed: DID NOT RAISE ValueError\n\ntests/test_anchor_data_checks.py:40: Failed\n=========================== short test summary info ============================\nFAILED tests/test_anchor_data_checks.py::test_actual_training_artifact_recounts_targets_scalers_and_full_seed_plan\n",
+  "output_sha256": "ae12275f5b557cdd99ed8898f6d8d33c7162b89af8d22ca1e1ae7832fd0f316b"
+}
