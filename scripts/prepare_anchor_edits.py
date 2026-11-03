@@ -13,6 +13,29 @@ from scripts.anchor_common import RUN, PUB, CFG, read, write, verify_pin, verify
 from echo_routing.temporal.anchor_inputs import construct_bank, verify_native_groups, workload
 
 
+def qualify():
+    verify_freeze('preparation_freeze.json')
+    from scripts.cache_anchor_edits import build_source
+    import torch
+    from scripts.anchor_common import digest
+    cfg, records = read(CFG), {}
+    for name, keys in [('a08', 400), ('jepa', 214)]:
+        model = build_source(name, cfg, 'cpu')
+        state = model.state_dict()
+        if len(state) != keys or any(p.requires_grad for p in model.parameters()):
+            raise ValueError('complete frozen producer qualification failed')
+        records[name] = {'state_keys': len(state), 'parameters': sum(p.numel() for p in model.parameters()),
+                         'all_parameters_frozen': True, 'source_sha256': cfg['source'][name]['sha256'],
+                         'key_shape_dtype_digest': digest([(k, list(v.shape), str(v.dtype)) for k, v in state.items()]),
+                         'model_forwards': 0}
+        del model
+    if torch.cuda.is_initialized():
+        raise ValueError('CPU source qualification unexpectedly initialized CUDA')
+    write(PUB / 'source_qualification.json', {'passed': True, 'sources': records,
+          'CUDA_initialized': False, 'model_forwards': 0, 'new_optimizer_updates': 0})
+    print({'A59_source_qualification_passed': True, 'sources': records}, flush=True)
+
+
 def metadata():
     verify_freeze('preparation_freeze.json')
     if (PUB / 'input_manifest.json').exists():
@@ -76,6 +99,9 @@ def metadata():
 
 
 if __name__ == '__main__':
-    if sys.argv[1:] != ['metadata']:
-        raise ValueError('explicit metadata stage required')
-    metadata()
+    if sys.argv[1:] == ['metadata']:
+        metadata()
+    elif sys.argv[1:] == ['qualify']:
+        qualify()
+    else:
+        raise ValueError('explicit metadata/qualify stage required')
