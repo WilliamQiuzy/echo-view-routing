@@ -56,7 +56,7 @@ def exposure(fit,cal):
 def main():
     resource.setrlimit(resource.RLIMIT_CPU,(1200,1205));freeze=read(RUN/'diagnosis_freeze.json')
     for p,h in freeze['objects'].items():assert sha(ROOT/p)==h,p
-    models=read(base.PUB/'models_manifest.json');choices=read(base.PUB/'decoder_choices.json');pins=read(base.PUB/'outer_inputs.json');assert sha(RUN/'outer_metadata.private.npy')==pins['outer_metadata_sha256'];metadata=np.load(RUN/'outer_metadata.private.npy',allow_pickle=True).item();fit,cal=base.inputs('fit'),base.inputs('inner_cal');systems={};paired={};allcurves=[]
+    models=read(base.PUB/'models_manifest.json');choices=read(base.PUB/'decoder_choices.json');pins=read(base.PUB/'outer_inputs.json');primary=read(base.PUB/'primary_outer_rows.json');assert len(primary['rows'])==8 and primary['model_manifest_sha256']==sha(base.PUB/'models_manifest.json');assert sha(RUN/'outer_metadata.private.npy')==pins['outer_metadata_sha256'];metadata=np.load(RUN/'outer_metadata.private.npy',allow_pickle=True).item();fit,cal=base.inputs('fit'),base.inputs('inner_cal');systems={};paired={};allcurves=[]
     for half in ['selection','calibration']:
         seqs=metadata[half]['sequences'];probsystems={};predsystems={};systems[half]={};paired[half]={}
         for seed in [0,1,2]:
@@ -75,7 +75,7 @@ def main():
             m,_=evaluate(pred,half,metadata)
             if key.startswith('A08_'):assert m==read(base.PUB/'A08_reference_metrics.json')['systems'][half]['A08_original_B3_'+key[4:]]
             else:
-                seed,arm,mode=key.split('_',2);row=f'seed{seed}_{arm}_fixed6000';old=next(x for x in read(base.PUB/'completed_outer_rows.json')['rows'] if x['row']==row and x['half']==half);assert m==old[mode]
+                seed,arm,mode=key.split('_',2);row=f'seed{seed}_{arm}_fixed6000';old=next(x for x in primary['rows'] if x['row']==row and x['half']==half);assert m==old[mode]
             systems[half][key]={'canonical_metrics':m,**summarize(seqs,pred,probsystems[key])}
             if not key.startswith('A08_'):
                 ref=predsystems['A08_s0'];nat=[q for q in seqs if q['kind']=='native'];cc=np.array([int(np.bincount(pred[q['id']],minlength=5).argmax())==q['labels'][0] for q in nat]);rr=np.array([int(np.bincount(ref[q['id']],minlength=5).argmax())==q['labels'][0] for q in nat]);paired[half][key]={'native_clip_majority':correctness_cells(cc,rr)}
