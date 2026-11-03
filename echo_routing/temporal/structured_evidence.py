@@ -90,7 +90,7 @@ class StructuredEvidence(torch.nn.Module):
     def __init__(self,arm,seed,classes=5,ages=129):
         super().__init__()
         if arm not in ['D0','D1','D2','D3'] or classes<1 or ages<2:raise ValueError('declared arm/classes/age states required')
-        self.arm,self.classes,self.ages=arm,classes,ages
+        self.arm,self.seed,self.classes,self.ages=arm,int(seed),classes,ages
         with torch.random.fork_rng(devices=[]):
             torch.manual_seed(seed);self.transition=torch.nn.Sequential(torch.nn.Linear(8*classes,64),torch.nn.GELU(),torch.nn.Linear(64,classes*classes));torch.nn.init.zeros_(self.transition[-1].weight);torch.nn.init.zeros_(self.transition[-1].bias)
         self.duration=torch.nn.Parameter(torch.zeros(classes,ages),requires_grad=arm!='D0')
