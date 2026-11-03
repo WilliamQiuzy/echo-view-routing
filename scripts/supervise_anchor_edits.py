@@ -17,6 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from echo_routing.temporal.anchor_resources import ExclusiveQueue, totals, remaining_limits
 from echo_routing.temporal.structured_guard import process_sample, storage_bytes
+from echo_routing.temporal.anchor_cache import durable_directory, fsync_directory
 
 
 def write_json(path, value):
@@ -49,14 +50,27 @@ def stage_exit_status(record):
 def execute(stage, command, run, pub, spent, declared_wall_seconds, GPU_job,
             storage_probe=None, GPU_probe=None):
     run, pub = Path(run), Path(pub)
-    run.mkdir(parents=True, exist_ok=True)
-    pub.mkdir(parents=True, exist_ok=True)
+    durable_directory(run)
+    durable_directory(pub)
     storage_probe = storage_probe or (lambda: storage_bytes([run, pub]))
     GPU_probe = GPU_probe or GPU_processes
     with ExclusiveQueue(run / 'exclusive_supervisor.lock'):
         active = run / 'active_process.json'
         if active.exists():
             raise RuntimeError('existing queue claim requires independent reconciliation')
+        # Caller snapshots may predate another completed locked stage. Merge
+        # actual receipt identities inside this lock, including external costs.
+        if 'receipt_records' not in spent:
+            raise ValueError('aggregate without constituent receipt identities cannot be safely merged')
+        merged = {row['receipt_id']: row for row in spent['receipt_records']}
+        ledger = run / 'processes.jsonl'
+        locked_rows = [json.loads(line) for line in ledger.read_text().splitlines()] if ledger.exists() else []
+        for row in locked_rows:
+            key = row['receipt_id']
+            if key in merged and merged[key] != row:
+                raise ValueError('same receipt identity has conflicting locked costs')
+            merged[key] = row
+        spent = totals(list(merged.values()))
         if GPU_probe():
             raise RuntimeError('an existing GPU owner prevents a second queue')
         bounds = remaining_limits(spent, time.time(), potential_GPU_context=True)
@@ -79,10 +93,16 @@ def execute(stage, command, run, pub, spent, declared_wall_seconds, GPU_job,
             resource.setrlimit(resource.RLIMIT_CPU, (limit, limit + 5))
         with (run / f'{stage}_{attempt}.stdout.log').open('w') as stdout, (run / f'{stage}_{attempt}.stderr.log').open('w') as stderr:
             try:
+                write_json(active, {'stage': stage, 'attempt': attempt, 'state': 'durable_launch_intent',
+                                    'model_pid': None, 'supervisor_pid': os.getpid(),
+                                    'measurement_host': socket.gethostname(), 'started_epoch': start,
+                                    'command_sha256': hashlib.sha256(json.dumps(command).encode()).hexdigest(),
+                                    'GPU_job': bool(GPU_job)})
                 child = subprocess.Popen(command, cwd=ROOT, env=environment, stdout=stdout, stderr=stderr, preexec_fn=child_limit)
                 sample = process_sample(child.pid)
                 start_ticks = sample['start_ticks'] if sample else None
                 write_json(active, {'stage': stage, 'attempt': attempt, 'model_pid': child.pid,
+                                    'state': 'running_PID_bound',
                                     'supervisor_pid': os.getpid(), 'measurement_host': socket.gethostname(),
                                     'started_epoch': start, 'process_start_ticks': start_ticks,
                                     'GPU_job': bool(GPU_job), 'CUDA_visibility_hidden': not GPU_job})
@@ -157,9 +177,11 @@ def execute(stage, command, run, pub, spent, declared_wall_seconds, GPU_job,
             handle.write(json.dumps(row, sort_keys=True, allow_nan=False) + '\n')
             handle.flush()
             os.fsync(handle.fileno())
+        fsync_directory(run)
         write_json(pub / f'process_{stage}_{attempt}.json', row)
         if active.exists():
             active.unlink()
+            fsync_directory(run)
         return row
 
 

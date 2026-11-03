@@ -1,6 +1,7 @@
 """A59 accounting within the unchanged original cumulative research envelope."""
 import fcntl
 import math
+import copy
 from pathlib import Path
 
 
@@ -57,6 +58,7 @@ def totals(receipts):
             'closed_receipts': len(receipts), 'failed_stages': failures,
             'unknown_observed_worker_OS_statuses': unknown, 'GPU_intervals_disjoint': True,
             'complete_host_PID_start_provenance': not legacy, 'receipt_based_identity_count': legacy,
+            'receipt_records': copy.deepcopy(receipts),
             'prior_CPU_overlap_uncertainty_retained': True,
             'scope': 'sum of measured receipts plus separate completed historical allowances; not unique whole-host CPU'}
 
