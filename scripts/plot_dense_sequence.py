@@ -16,16 +16,16 @@ def main():
   seed,arm,count=model['seed'],model['arm'],model['updates'];rows=[read(RUN/f'seed{seed}'/arm/f'inner_step{u}/metrics.json') for u in range(500,count+1,500)];style='-' if seed==2026110257 else '--';label=f'{arm}, seed {1 if seed==2026110257 else 2}'
   for ax,(key,title) in zip(axes,keys):ax.plot([r['step'] for r in rows],[r[key] for r in rows],style,color=colors[arm],label=label,linewidth=1.5);ax.set(xlabel='Optimizer updates',ylabel=title);ax.set_ylim(0,1.02);ax.grid(alpha=.2)
  axes[0].legend(fontsize=7,loc='lower right');fig.suptitle('A57 training-only inner calibration (repeated selection data)');fig.tight_layout();fig.savefig(figures/'inner_learning_curves.png',dpi=180);fig.savefig(figures/'inner_learning_curves.svg');plt.close(fig)
- fig,axes=plt.subplots(1,2,figsize=(10,4.4))
+ fig,axes=plt.subplots(1,2,figsize=(14,4.8))
  for half,ax in zip(['selection','calibration'],axes):
   systems=summary['systems'][half]
   for seed,index in [(2026110257,1),(2026110258,2)]:
    for arm,color in [('F','#2166ac'),(selected,'#b2182b')]:
     for mode,marker in [('raw','o'),('inner_B3','s')]:
-     m=systems[f'seed{seed}_{arm}_fixed6000|{mode}'];ax.scatter(m['native_macro_f1'],m['segment_f1_50_multi'],color=color,marker=marker,s=45,alpha=.85);ax.annotate(f'{"F" if arm=="F" else "J"}{index} {"raw" if mode=="raw" else "B3"}',(m['native_macro_f1'],m['segment_f1_50_multi']),xytext=(4,3),textcoords='offset points',fontsize=7)
+     m=systems[f'seed{seed}_{arm}_fixed6000|{mode}'];ax.scatter(m['native_macro_f1'],m['segment_f1_50_multi'],facecolors=color if index==1 else 'none',edgecolors=color,marker=marker,s=55,linewidths=1.5,label=f'{"F" if arm=="F" else "J"}{index} {"raw" if mode=="raw" else "B3"}')
   for seed in [0,1,2]:
-   m=systems[f'A08_original_B3_s{seed}'];ax.scatter(m['native_macro_f1'],m['segment_f1_50_multi'],color='#238b45',marker='*',s=85);ax.annotate(f'A08 s{seed}',(m['native_macro_f1'],m['segment_f1_50_multi']),xytext=(4,-9),textcoords='offset points',fontsize=7)
-  ax.set(xlabel='Native five-class macro-F1',ylabel='Multi-stream segment F1@50',title=f'Reused development: {half}');ax.grid(alpha=.2)
+   m=systems[f'A08_original_B3_s{seed}'];ax.scatter(m['native_macro_f1'],m['segment_f1_50_multi'],color=['#238b45','#74c476','#005a32'][seed],marker='*',s=85,label=f'A08 s{seed}')
+  ax.set(xlabel='Native five-class macro-F1',ylabel='Multi-stream segment F1@50',title=f'Reused development: {half}');ax.grid(alpha=.2);ax.legend(loc='center left',bbox_to_anchor=(1.01,.5),fontsize=7)
  fig.suptitle('Fixed 6000-update models; original A08+B3 references');fig.tight_layout();fig.savefig(figures/'development_pareto.png',dpi=180);fig.savefig(figures/'development_pareto.svg');plt.close(fig)
  fig,axes=plt.subplots(2,2,figsize=(10,7))
  for half,column in [('selection',0),('calibration',1)]:
