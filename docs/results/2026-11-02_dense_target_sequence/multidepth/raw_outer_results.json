@@ -1,0 +1,2909 @@
+{
+  "model_manifest_sha256": "7af237ef8fca6b03e48f15489985f4d7fe7b1fedc5735dbc575e00f999ec27a6",
+  "feature_contract": {
+    "kind": "official_four_depth_concat",
+    "normalized_blocks_zero_based": [
+      2,
+      5,
+      8,
+      11
+    ],
+    "norms_in_order": [
+      "norms_block.0",
+      "norms_block.1",
+      "norms_block.2",
+      "norms_block.3"
+    ],
+    "official_concat_axis": 2,
+    "feature_dim": 3072,
+    "spatial_mean_patches": 196,
+    "tubelets_per64_positions": 32,
+    "return_hierarchical": true,
+    "forward_training_argument": false,
+    "out_layers": null
+  },
+  "rows": [
+    {
+      "row": "seed2026110257_F-MD_fixed2000",
+      "kind": "fixed_step",
+      "arm": "F-MD",
+      "seed": 2026110257,
+      "step": 2000,
+      "path": "runs/a57_dense_sequence_v1/multidepth_v1/seed2026110257/F-MD/step2000.pt",
+      "sha256": "fd08d7f3c9664eab3b25ddf39a5c2a370148e0fcc19fffc4f7f99cafadec6099",
+      "feature_contract": {
+        "kind": "official_four_depth_concat",
+        "normalized_blocks_zero_based": [
+          2,
+          5,
+          8,
+          11
+        ],
+        "norms_in_order": [
+          "norms_block.0",
+          "norms_block.1",
+          "norms_block.2",
+          "norms_block.3"
+        ],
+        "official_concat_axis": 2,
+        "feature_dim": 3072,
+        "spatial_mean_patches": 196,
+        "tubelets_per64_positions": 32,
+        "return_hierarchical": true,
+        "forward_training_argument": false,
+        "out_layers": null
+      },
+      "inner_probabilities_sha256": "f15fad971ef06a610a6775da14b5a640568f4ab154493194a0b1e49dd0c05f39",
+      "inner_predictions_sha256": "bf3d932f5bf2c84acb63c3ac2d004ea2f504d086e2dd8905598055ebd2246d4f",
+      "inner_record_sha256": "4032b597940524c111db1e7644dc8d4430e7f6dbcb01d4b7bbe69c520b604d68",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "selection",
+      "reused_same_checkpoint": false,
+      "raw_metrics": {
+        "native_macro_f1": 0.6780461178724363,
+        "native_per_class_recall": [
+          0.9904761904761905,
+          0.8382352941176471,
+          0.2413793103448276,
+          1.0,
+          0.8461538461538461
+        ],
+        "native_confusion": [
+          [
+            104,
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            11,
+            57,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            1,
+            21,
+            65,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            11,
+            0
+          ],
+          [
+            1,
+            1,
+            0,
+            0,
+            11
+          ]
+        ],
+        "native_accuracy": 0.7183098591549296,
+        "native_frame_accuracy": 0.6902314397354975,
+        "native_internal_cuts_per_clip": 0.721830985915493,
+        "native_internal_cuts_per_min": 7.39404869251578,
+        "native_share_cut": 0.21830985915492956,
+        "segment_f1_50_multi": 0.5898078529657477,
+        "boundary_recall_multi": 0.8743455497382199,
+        "boundary_precision_multi": 0.5808695652173913,
+        "boundary_f1_multi": 0.6980146290491118,
+        "same_class_cut_rate_multi": 0.1608695652173913,
+        "multi_frame_accuracy": 0.7648552904217633,
+        "segment_f1_50_pairs": 0.6108786610878661,
+        "boundary_recall_pairs": 0.8571428571428571,
+        "counts": {
+          "native_clips": 284,
+          "multi_streams": 120,
+          "pair_streams": 137,
+          "multi_true_changes": 382,
+          "multi_same_joins": 230
+        },
+        "native_A4C_to_A5C": 65,
+        "native_A5C_to_A4C": 0,
+        "native_A4C_A5C_errors": 65,
+        "short_true_segments_10samples": 32,
+        "short_true_unmatched_10samples": 9,
+        "short_predicted_segments_10samples": 244,
+        "short_spurious_segments_10samples": 207,
+        "short_true_segments_16samples": 141,
+        "short_true_unmatched_16samples": 46,
+        "short_predicted_segments_16samples": 372,
+        "short_spurious_segments_16samples": 268
+      },
+      "inference_cost": {
+        "new_sequences": 541,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 118.08531308174133,
+        "GPU_peak_reserved_bytes": 1197473792
+      }
+    },
+    {
+      "row": "seed2026110257_F-MD_fixed2000",
+      "kind": "fixed_step",
+      "arm": "F-MD",
+      "seed": 2026110257,
+      "step": 2000,
+      "path": "runs/a57_dense_sequence_v1/multidepth_v1/seed2026110257/F-MD/step2000.pt",
+      "sha256": "fd08d7f3c9664eab3b25ddf39a5c2a370148e0fcc19fffc4f7f99cafadec6099",
+      "feature_contract": {
+        "kind": "official_four_depth_concat",
+        "normalized_blocks_zero_based": [
+          2,
+          5,
+          8,
+          11
+        ],
+        "norms_in_order": [
+          "norms_block.0",
+          "norms_block.1",
+          "norms_block.2",
+          "norms_block.3"
+        ],
+        "official_concat_axis": 2,
+        "feature_dim": 3072,
+        "spatial_mean_patches": 196,
+        "tubelets_per64_positions": 32,
+        "return_hierarchical": true,
+        "forward_training_argument": false,
+        "out_layers": null
+      },
+      "inner_probabilities_sha256": "f15fad971ef06a610a6775da14b5a640568f4ab154493194a0b1e49dd0c05f39",
+      "inner_predictions_sha256": "bf3d932f5bf2c84acb63c3ac2d004ea2f504d086e2dd8905598055ebd2246d4f",
+      "inner_record_sha256": "4032b597940524c111db1e7644dc8d4430e7f6dbcb01d4b7bbe69c520b604d68",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "calibration",
+      "reused_same_checkpoint": false,
+      "raw_metrics": {
+        "native_macro_f1": 0.7263230047787872,
+        "native_per_class_recall": [
+          0.975,
+          0.8169014084507042,
+          0.2459016393442623,
+          1.0,
+          1.0
+        ],
+        "native_confusion": [
+          [
+            78,
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            12,
+            58,
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            15,
+            46,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            18,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            7
+          ]
+        ],
+        "native_accuracy": 0.7426160337552743,
+        "native_frame_accuracy": 0.7583606786287789,
+        "native_internal_cuts_per_clip": 0.9156118143459916,
+        "native_internal_cuts_per_min": 9.09027438385813,
+        "native_share_cut": 0.21518987341772153,
+        "segment_f1_50_multi": 0.6031496062992125,
+        "boundary_recall_multi": 0.8944723618090452,
+        "boundary_precision_multi": 0.5632911392405063,
+        "boundary_f1_multi": 0.6912621359223301,
+        "same_class_cut_rate_multi": 0.1791044776119403,
+        "multi_frame_accuracy": 0.7750832778147901,
+        "segment_f1_50_pairs": 0.5902439024390244,
+        "boundary_recall_pairs": 0.7931034482758621,
+        "counts": {
+          "native_clips": 237,
+          "multi_streams": 120,
+          "pair_streams": 115,
+          "multi_true_changes": 398,
+          "multi_same_joins": 201
+        },
+        "native_A4C_to_A5C": 46,
+        "native_A5C_to_A4C": 0,
+        "native_A4C_A5C_errors": 46,
+        "short_true_segments_10samples": 23,
+        "short_true_unmatched_10samples": 7,
+        "short_predicted_segments_10samples": 279,
+        "short_spurious_segments_10samples": 254,
+        "short_true_segments_16samples": 134,
+        "short_true_unmatched_16samples": 32,
+        "short_predicted_segments_16samples": 408,
+        "short_spurious_segments_16samples": 300
+      },
+      "inference_cost": {
+        "new_sequences": 472,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 104.3251371383667,
+        "GPU_peak_reserved_bytes": 1197473792
+      }
+    },
+    {
+      "row": "seed2026110257_F-MD_fixed6000",
+      "kind": "fixed_step",
+      "arm": "F-MD",
+      "seed": 2026110257,
+      "step": 6000,
+      "path": "runs/a57_dense_sequence_v1/multidepth_v1/seed2026110257/F-MD/step6000.pt",
+      "sha256": "4dcb108a3d5d8cda6eaf361ceeef64b13214ec37aebc69797a2dd2c1ab7198af",
+      "feature_contract": {
+        "kind": "official_four_depth_concat",
+        "normalized_blocks_zero_based": [
+          2,
+          5,
+          8,
+          11
+        ],
+        "norms_in_order": [
+          "norms_block.0",
+          "norms_block.1",
+          "norms_block.2",
+          "norms_block.3"
+        ],
+        "official_concat_axis": 2,
+        "feature_dim": 3072,
+        "spatial_mean_patches": 196,
+        "tubelets_per64_positions": 32,
+        "return_hierarchical": true,
+        "forward_training_argument": false,
+        "out_layers": null
+      },
+      "inner_probabilities_sha256": "d4e796ec0214ca0b5d5baea2f3f84b6a2b5bf9923026aaeb51abf4a13a3625b9",
+      "inner_predictions_sha256": "5eca35f71ec7e0621203b23a27c410049914b4da6686cbac4aa6fc8c5505c609",
+      "inner_record_sha256": "2b4014c9d2180234a79976bfde5df054826e1be9fff1b446e46e730aa2cef178",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "selection",
+      "reused_same_checkpoint": false,
+      "raw_metrics": {
+        "native_macro_f1": 0.7989988067416389,
+        "native_per_class_recall": [
+          0.9809523809523809,
+          0.9558823529411765,
+          0.5747126436781609,
+          1.0,
+          0.9230769230769231
+        ],
+        "native_confusion": [
+          [
+            103,
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            3,
+            65,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            50,
+            37,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            11,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0,
+            12
+          ]
+        ],
+        "native_accuracy": 0.8485915492957746,
+        "native_frame_accuracy": 0.8109407874962429,
+        "native_internal_cuts_per_clip": 0.2992957746478873,
+        "native_internal_cuts_per_min": 3.065825067628494,
+        "native_share_cut": 0.1267605633802817,
+        "segment_f1_50_multi": 0.7511150758251561,
+        "boundary_recall_multi": 0.9162303664921466,
+        "boundary_precision_multi": 0.7014028056112225,
+        "boundary_f1_multi": 0.7945516458569807,
+        "same_class_cut_rate_multi": 0.14782608695652175,
+        "multi_frame_accuracy": 0.859100327518214,
+        "segment_f1_50_pairs": 0.7336244541484717,
+        "boundary_recall_pairs": 0.9428571428571428,
+        "counts": {
+          "native_clips": 284,
+          "multi_streams": 120,
+          "pair_streams": 137,
+          "multi_true_changes": 382,
+          "multi_same_joins": 230
+        },
+        "native_A4C_to_A5C": 37,
+        "native_A5C_to_A4C": 0,
+        "native_A4C_A5C_errors": 37,
+        "short_true_segments_10samples": 32,
+        "short_true_unmatched_10samples": 8,
+        "short_predicted_segments_10samples": 151,
+        "short_spurious_segments_10samples": 117,
+        "short_true_segments_16samples": 141,
+        "short_true_unmatched_16samples": 29,
+        "short_predicted_segments_16samples": 269,
+        "short_spurious_segments_16samples": 147
+      },
+      "inference_cost": {
+        "new_sequences": 541,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 103.03955078125,
+        "GPU_peak_reserved_bytes": 1212153856
+      }
+    },
+    {
+      "row": "seed2026110257_F-MD_fixed6000",
+      "kind": "fixed_step",
+      "arm": "F-MD",
+      "seed": 2026110257,
+      "step": 6000,
+      "path": "runs/a57_dense_sequence_v1/multidepth_v1/seed2026110257/F-MD/step6000.pt",
+      "sha256": "4dcb108a3d5d8cda6eaf361ceeef64b13214ec37aebc69797a2dd2c1ab7198af",
+      "feature_contract": {
+        "kind": "official_four_depth_concat",
+        "normalized_blocks_zero_based": [
+          2,
+          5,
+          8,
+          11
+        ],
+        "norms_in_order": [
+          "norms_block.0",
+          "norms_block.1",
+          "norms_block.2",
+          "norms_block.3"
+        ],
+        "official_concat_axis": 2,
+        "feature_dim": 3072,
+        "spatial_mean_patches": 196,
+        "tubelets_per64_positions": 32,
+        "return_hierarchical": true,
+        "forward_training_argument": false,
+        "out_layers": null
+      },
+      "inner_probabilities_sha256": "d4e796ec0214ca0b5d5baea2f3f84b6a2b5bf9923026aaeb51abf4a13a3625b9",
+      "inner_predictions_sha256": "5eca35f71ec7e0621203b23a27c410049914b4da6686cbac4aa6fc8c5505c609",
+      "inner_record_sha256": "2b4014c9d2180234a79976bfde5df054826e1be9fff1b446e46e730aa2cef178",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "calibration",
+      "reused_same_checkpoint": false,
+      "raw_metrics": {
+        "native_macro_f1": 0.8059194715425072,
+        "native_per_class_recall": [
+          0.975,
+          0.9154929577464789,
+          0.6229508196721312,
+          0.7777777777777778,
+          1.0
+        ],
+        "native_confusion": [
+          [
+            78,
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            4,
+            65,
+            0,
+            0,
+            2
+          ],
+          [
+            0,
+            1,
+            38,
+            22,
+            0
+          ],
+          [
+            0,
+            0,
+            4,
+            14,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            7
+          ]
+        ],
+        "native_accuracy": 0.8523206751054853,
+        "native_frame_accuracy": 0.834950778468198,
+        "native_internal_cuts_per_clip": 0.569620253164557,
+        "native_internal_cuts_per_min": 5.655239824059206,
+        "native_share_cut": 0.1350210970464135,
+        "segment_f1_50_multi": 0.7187765505522515,
+        "boundary_recall_multi": 0.9020100502512562,
+        "boundary_precision_multi": 0.6660482374768089,
+        "boundary_f1_multi": 0.7662753468516542,
+        "same_class_cut_rate_multi": 0.12437810945273632,
+        "multi_frame_accuracy": 0.8294470353097935,
+        "segment_f1_50_pairs": 0.7593582887700535,
+        "boundary_recall_pairs": 0.8620689655172413,
+        "counts": {
+          "native_clips": 237,
+          "multi_streams": 120,
+          "pair_streams": 115,
+          "multi_true_changes": 398,
+          "multi_same_joins": 201
+        },
+        "native_A4C_to_A5C": 22,
+        "native_A5C_to_A4C": 4,
+        "native_A4C_A5C_errors": 26,
+        "short_true_segments_10samples": 23,
+        "short_true_unmatched_10samples": 4,
+        "short_predicted_segments_10samples": 172,
+        "short_spurious_segments_10samples": 147,
+        "short_true_segments_16samples": 134,
+        "short_true_unmatched_16samples": 34,
+        "short_predicted_segments_16samples": 290,
+        "short_spurious_segments_16samples": 185
+      },
+      "inference_cost": {
+        "new_sequences": 472,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 92.22962093353271,
+        "GPU_peak_reserved_bytes": 1212153856
+      }
+    },
+    {
+      "row": "seed2026110257_F-MD_inner_package",
+      "kind": "inner_selected_package",
+      "arm": "F-MD",
+      "seed": 2026110257,
+      "step": 6000,
+      "path": "runs/a57_dense_sequence_v1/multidepth_v1/seed2026110257/F-MD/step6000.pt",
+      "sha256": "4dcb108a3d5d8cda6eaf361ceeef64b13214ec37aebc69797a2dd2c1ab7198af",
+      "feature_contract": {
+        "kind": "official_four_depth_concat",
+        "normalized_blocks_zero_based": [
+          2,
+          5,
+          8,
+          11
+        ],
+        "norms_in_order": [
+          "norms_block.0",
+          "norms_block.1",
+          "norms_block.2",
+          "norms_block.3"
+        ],
+        "official_concat_axis": 2,
+        "feature_dim": 3072,
+        "spatial_mean_patches": 196,
+        "tubelets_per64_positions": 32,
+        "return_hierarchical": true,
+        "forward_training_argument": false,
+        "out_layers": null
+      },
+      "inner_probabilities_sha256": "d4e796ec0214ca0b5d5baea2f3f84b6a2b5bf9923026aaeb51abf4a13a3625b9",
+      "inner_predictions_sha256": "5eca35f71ec7e0621203b23a27c410049914b4da6686cbac4aa6fc8c5505c609",
+      "inner_record_sha256": "2b4014c9d2180234a79976bfde5df054826e1be9fff1b446e46e730aa2cef178",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "selection",
+      "reused_same_checkpoint": true,
+      "raw_metrics": {
+        "native_macro_f1": 0.7989988067416389,
+        "native_per_class_recall": [
+          0.9809523809523809,
+          0.9558823529411765,
+          0.5747126436781609,
+          1.0,
+          0.9230769230769231
+        ],
+        "native_confusion": [
+          [
+            103,
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            3,
+            65,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            50,
+            37,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            11,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0,
+            12
+          ]
+        ],
+        "native_accuracy": 0.8485915492957746,
+        "native_frame_accuracy": 0.8109407874962429,
+        "native_internal_cuts_per_clip": 0.2992957746478873,
+        "native_internal_cuts_per_min": 3.065825067628494,
+        "native_share_cut": 0.1267605633802817,
+        "segment_f1_50_multi": 0.7511150758251561,
+        "boundary_recall_multi": 0.9162303664921466,
+        "boundary_precision_multi": 0.7014028056112225,
+        "boundary_f1_multi": 0.7945516458569807,
+        "same_class_cut_rate_multi": 0.14782608695652175,
+        "multi_frame_accuracy": 0.859100327518214,
+        "segment_f1_50_pairs": 0.7336244541484717,
+        "boundary_recall_pairs": 0.9428571428571428,
+        "counts": {
+          "native_clips": 284,
+          "multi_streams": 120,
+          "pair_streams": 137,
+          "multi_true_changes": 382,
+          "multi_same_joins": 230
+        },
+        "native_A4C_to_A5C": 37,
+        "native_A5C_to_A4C": 0,
+        "native_A4C_A5C_errors": 37,
+        "short_true_segments_10samples": 32,
+        "short_true_unmatched_10samples": 8,
+        "short_predicted_segments_10samples": 151,
+        "short_spurious_segments_10samples": 117,
+        "short_true_segments_16samples": 141,
+        "short_true_unmatched_16samples": 29,
+        "short_predicted_segments_16samples": 269,
+        "short_spurious_segments_16samples": 147
+      }
+    },
+    {
+      "row": "seed2026110257_F-MD_inner_package",
+      "kind": "inner_selected_package",
+      "arm": "F-MD",
+      "seed": 2026110257,
+      "step": 6000,
+      "path": "runs/a57_dense_sequence_v1/multidepth_v1/seed2026110257/F-MD/step6000.pt",
+      "sha256": "4dcb108a3d5d8cda6eaf361ceeef64b13214ec37aebc69797a2dd2c1ab7198af",
+      "feature_contract": {
+        "kind": "official_four_depth_concat",
+        "normalized_blocks_zero_based": [
+          2,
+          5,
+          8,
+          11
+        ],
+        "norms_in_order": [
+          "norms_block.0",
+          "norms_block.1",
+          "norms_block.2",
+          "norms_block.3"
+        ],
+        "official_concat_axis": 2,
+        "feature_dim": 3072,
+        "spatial_mean_patches": 196,
+        "tubelets_per64_positions": 32,
+        "return_hierarchical": true,
+        "forward_training_argument": false,
+        "out_layers": null
+      },
+      "inner_probabilities_sha256": "d4e796ec0214ca0b5d5baea2f3f84b6a2b5bf9923026aaeb51abf4a13a3625b9",
+      "inner_predictions_sha256": "5eca35f71ec7e0621203b23a27c410049914b4da6686cbac4aa6fc8c5505c609",
+      "inner_record_sha256": "2b4014c9d2180234a79976bfde5df054826e1be9fff1b446e46e730aa2cef178",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "calibration",
+      "reused_same_checkpoint": true,
+      "raw_metrics": {
+        "native_macro_f1": 0.8059194715425072,
+        "native_per_class_recall": [
+          0.975,
+          0.9154929577464789,
+          0.6229508196721312,
+          0.7777777777777778,
+          1.0
+        ],
+        "native_confusion": [
+          [
+            78,
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            4,
+            65,
+            0,
+            0,
+            2
+          ],
+          [
+            0,
+            1,
+            38,
+            22,
+            0
+          ],
+          [
+            0,
+            0,
+            4,
+            14,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            7
+          ]
+        ],
+        "native_accuracy": 0.8523206751054853,
+        "native_frame_accuracy": 0.834950778468198,
+        "native_internal_cuts_per_clip": 0.569620253164557,
+        "native_internal_cuts_per_min": 5.655239824059206,
+        "native_share_cut": 0.1350210970464135,
+        "segment_f1_50_multi": 0.7187765505522515,
+        "boundary_recall_multi": 0.9020100502512562,
+        "boundary_precision_multi": 0.6660482374768089,
+        "boundary_f1_multi": 0.7662753468516542,
+        "same_class_cut_rate_multi": 0.12437810945273632,
+        "multi_frame_accuracy": 0.8294470353097935,
+        "segment_f1_50_pairs": 0.7593582887700535,
+        "boundary_recall_pairs": 0.8620689655172413,
+        "counts": {
+          "native_clips": 237,
+          "multi_streams": 120,
+          "pair_streams": 115,
+          "multi_true_changes": 398,
+          "multi_same_joins": 201
+        },
+        "native_A4C_to_A5C": 22,
+        "native_A5C_to_A4C": 4,
+        "native_A4C_A5C_errors": 26,
+        "short_true_segments_10samples": 23,
+        "short_true_unmatched_10samples": 4,
+        "short_predicted_segments_10samples": 172,
+        "short_spurious_segments_10samples": 147,
+        "short_true_segments_16samples": 134,
+        "short_true_unmatched_16samples": 34,
+        "short_predicted_segments_16samples": 290,
+        "short_spurious_segments_16samples": 185
+      }
+    },
+    {
+      "row": "seed2026110257_J-MD_fixed2000",
+      "kind": "fixed_step",
+      "arm": "J-MD",
+      "seed": 2026110257,
+      "step": 2000,
+      "path": "runs/a57_dense_sequence_v1/multidepth_v1/seed2026110257/J-MD/step2000.pt",
+      "sha256": "951b3c0d19200e4dfbd1a27f5b3f7c46d4cc7d9df5ae7960ea7b24cec033032f",
+      "feature_contract": {
+        "kind": "official_four_depth_concat",
+        "normalized_blocks_zero_based": [
+          2,
+          5,
+          8,
+          11
+        ],
+        "norms_in_order": [
+          "norms_block.0",
+          "norms_block.1",
+          "norms_block.2",
+          "norms_block.3"
+        ],
+        "official_concat_axis": 2,
+        "feature_dim": 3072,
+        "spatial_mean_patches": 196,
+        "tubelets_per64_positions": 32,
+        "return_hierarchical": true,
+        "forward_training_argument": false,
+        "out_layers": null
+      },
+      "inner_probabilities_sha256": "3157203a24a6c1ef145de4f1adcf8e8f6ce56f73413f88a799ae565f76295ac7",
+      "inner_predictions_sha256": "1ee7dc441fbaf06f92df66424f755f048d6fca506f3d10bffebf7f08ce543caa",
+      "inner_record_sha256": "80de7cfd526f3f0d9fef3574c0ae1dde4058fdb4c8eb6b13b16fbf5ef38ce5c4",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "selection",
+      "reused_same_checkpoint": false,
+      "raw_metrics": {
+        "native_macro_f1": 0.9291012807124336,
+        "native_per_class_recall": [
+          0.9809523809523809,
+          1.0,
+          0.9195402298850575,
+          1.0,
+          0.9230769230769231
+        ],
+        "native_confusion": [
+          [
+            103,
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            68,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            80,
+            7,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            11,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0,
+            12
+          ]
+        ],
+        "native_accuracy": 0.9647887323943662,
+        "native_frame_accuracy": 0.9529906822963631,
+        "native_internal_cuts_per_clip": 0.23943661971830985,
+        "native_internal_cuts_per_min": 2.452660054102795,
+        "native_share_cut": 0.09154929577464789,
+        "segment_f1_50_multi": 0.8526413345690455,
+        "boundary_recall_multi": 0.9476439790575916,
+        "boundary_precision_multi": 0.7921225382932167,
+        "boundary_f1_multi": 0.8629320619785459,
+        "same_class_cut_rate_multi": 0.05652173913043478,
+        "multi_frame_accuracy": 0.9120379653766459,
+        "segment_f1_50_pairs": 0.8883826879271071,
+        "boundary_recall_pairs": 0.9857142857142858,
+        "counts": {
+          "native_clips": 284,
+          "multi_streams": 120,
+          "pair_streams": 137,
+          "multi_true_changes": 382,
+          "multi_same_joins": 230
+        },
+        "native_A4C_to_A5C": 7,
+        "native_A5C_to_A4C": 0,
+        "native_A4C_A5C_errors": 7,
+        "short_true_segments_10samples": 32,
+        "short_true_unmatched_10samples": 3,
+        "short_predicted_segments_10samples": 97,
+        "short_spurious_segments_10samples": 65,
+        "short_true_segments_16samples": 141,
+        "short_true_unmatched_16samples": 14,
+        "short_predicted_segments_16samples": 232,
+        "short_spurious_segments_16samples": 97
+      },
+      "inference_cost": {
+        "new_sequences": 541,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 103.72573852539062,
+        "GPU_peak_reserved_bytes": 1444937728
+      }
+    },
+    {
+      "row": "seed2026110257_J-MD_fixed2000",
+      "kind": "fixed_step",
+      "arm": "J-MD",
+      "seed": 2026110257,
+      "step": 2000,
+      "path": "runs/a57_dense_sequence_v1/multidepth_v1/seed2026110257/J-MD/step2000.pt",
+      "sha256": "951b3c0d19200e4dfbd1a27f5b3f7c46d4cc7d9df5ae7960ea7b24cec033032f",
+      "feature_contract": {
+        "kind": "official_four_depth_concat",
+        "normalized_blocks_zero_based": [
+          2,
+          5,
+          8,
+          11
+        ],
+        "norms_in_order": [
+          "norms_block.0",
+          "norms_block.1",
+          "norms_block.2",
+          "norms_block.3"
+        ],
+        "official_concat_axis": 2,
+        "feature_dim": 3072,
+        "spatial_mean_patches": 196,
+        "tubelets_per64_positions": 32,
+        "return_hierarchical": true,
+        "forward_training_argument": false,
+        "out_layers": null
+      },
+      "inner_probabilities_sha256": "3157203a24a6c1ef145de4f1adcf8e8f6ce56f73413f88a799ae565f76295ac7",
+      "inner_predictions_sha256": "1ee7dc441fbaf06f92df66424f755f048d6fca506f3d10bffebf7f08ce543caa",
+      "inner_record_sha256": "80de7cfd526f3f0d9fef3574c0ae1dde4058fdb4c8eb6b13b16fbf5ef38ce5c4",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "calibration",
+      "reused_same_checkpoint": false,
+      "raw_metrics": {
+        "native_macro_f1": 0.9732203389830509,
+        "native_per_class_recall": [
+          1.0,
+          1.0,
+          0.9344262295081968,
+          1.0,
+          1.0
+        ],
+        "native_confusion": [
+          [
+            80,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            71,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            57,
+            4,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            18,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            7
+          ]
+        ],
+        "native_accuracy": 0.9831223628691983,
+        "native_frame_accuracy": 0.9574111568805418,
+        "native_internal_cuts_per_clip": 0.24050632911392406,
+        "native_internal_cuts_per_min": 2.3877679257138866,
+        "native_share_cut": 0.0759493670886076,
+        "segment_f1_50_multi": 0.9127640036730946,
+        "boundary_recall_multi": 0.9773869346733668,
+        "boundary_precision_multi": 0.8625277161862528,
+        "boundary_f1_multi": 0.9163722025912838,
+        "same_class_cut_rate_multi": 0.06965174129353234,
+        "multi_frame_accuracy": 0.9491672218520986,
+        "segment_f1_50_pairs": 0.9550561797752809,
+        "boundary_recall_pairs": 0.9482758620689655,
+        "counts": {
+          "native_clips": 237,
+          "multi_streams": 120,
+          "pair_streams": 115,
+          "multi_true_changes": 398,
+          "multi_same_joins": 201
+        },
+        "native_A4C_to_A5C": 4,
+        "native_A5C_to_A4C": 0,
+        "native_A4C_A5C_errors": 4,
+        "short_true_segments_10samples": 23,
+        "short_true_unmatched_10samples": 3,
+        "short_predicted_segments_10samples": 81,
+        "short_spurious_segments_10samples": 50,
+        "short_true_segments_16samples": 134,
+        "short_true_unmatched_16samples": 9,
+        "short_predicted_segments_16samples": 190,
+        "short_spurious_segments_16samples": 59
+      },
+      "inference_cost": {
+        "new_sequences": 472,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 93.16312432289124,
+        "GPU_peak_reserved_bytes": 1444937728
+      }
+    },
+    {
+      "row": "seed2026110257_J-MD_fixed6000",
+      "kind": "fixed_step",
+      "arm": "J-MD",
+      "seed": 2026110257,
+      "step": 6000,
+      "path": "runs/a57_dense_sequence_v1/multidepth_v1/seed2026110257/J-MD/step6000.pt",
+      "sha256": "7d141377f6ad6125e3fbc98a46a4ddba6d377b6f5a226384086607760a76e38a",
+      "feature_contract": {
+        "kind": "official_four_depth_concat",
+        "normalized_blocks_zero_based": [
+          2,
+          5,
+          8,
+          11
+        ],
+        "norms_in_order": [
+          "norms_block.0",
+          "norms_block.1",
+          "norms_block.2",
+          "norms_block.3"
+        ],
+        "official_concat_axis": 2,
+        "feature_dim": 3072,
+        "spatial_mean_patches": 196,
+        "tubelets_per64_positions": 32,
+        "return_hierarchical": true,
+        "forward_training_argument": false,
+        "out_layers": null
+      },
+      "inner_probabilities_sha256": "9b2c8e7ac6485505eace8287c468903e23861fb3141ee3e38f116bd5d58ed0e6",
+      "inner_predictions_sha256": "343e90166c53f239b0740e4c421b1221d1824cc012398e53c8662cad34761cb4",
+      "inner_record_sha256": "94db85dc43cd0e9ea5bf160f122b15a9f9c33d8d1ae029a201030fa2593e84ba",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "selection",
+      "reused_same_checkpoint": false,
+      "raw_metrics": {
+        "native_macro_f1": 0.9626144303094627,
+        "native_per_class_recall": [
+          0.9904761904761905,
+          1.0,
+          1.0,
+          0.7272727272727273,
+          1.0
+        ],
+        "native_confusion": [
+          [
+            104,
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            68,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            87,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            3,
+            8,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            13
+          ]
+        ],
+        "native_accuracy": 0.9859154929577465,
+        "native_frame_accuracy": 0.9788397956116621,
+        "native_internal_cuts_per_clip": 0.15140845070422534,
+        "native_internal_cuts_per_min": 1.550946798917944,
+        "native_share_cut": 0.056338028169014086,
+        "segment_f1_50_multi": 0.872865275142315,
+        "boundary_recall_multi": 0.9685863874345549,
+        "boundary_precision_multi": 0.8564814814814815,
+        "boundary_f1_multi": 0.9090909090909091,
+        "same_class_cut_rate_multi": 0.08695652173913043,
+        "multi_frame_accuracy": 0.9082949000735245,
+        "segment_f1_50_pairs": 0.9575471698113207,
+        "boundary_recall_pairs": 1.0,
+        "counts": {
+          "native_clips": 284,
+          "multi_streams": 120,
+          "pair_streams": 137,
+          "multi_true_changes": 382,
+          "multi_same_joins": 230
+        },
+        "native_A4C_to_A5C": 0,
+        "native_A5C_to_A4C": 3,
+        "native_A4C_A5C_errors": 3,
+        "short_true_segments_10samples": 32,
+        "short_true_unmatched_10samples": 2,
+        "short_predicted_segments_10samples": 63,
+        "short_spurious_segments_10samples": 28,
+        "short_true_segments_16samples": 141,
+        "short_true_unmatched_16samples": 7,
+        "short_predicted_segments_16samples": 197,
+        "short_spurious_segments_16samples": 51
+      },
+      "inference_cost": {
+        "new_sequences": 541,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 104.05820989608765,
+        "GPU_peak_reserved_bytes": 1444937728
+      }
+    },
+    {
+      "row": "seed2026110257_J-MD_fixed6000",
+      "kind": "fixed_step",
+      "arm": "J-MD",
+      "seed": 2026110257,
+      "step": 6000,
+      "path": "runs/a57_dense_sequence_v1/multidepth_v1/seed2026110257/J-MD/step6000.pt",
+      "sha256": "7d141377f6ad6125e3fbc98a46a4ddba6d377b6f5a226384086607760a76e38a",
+      "feature_contract": {
+        "kind": "official_four_depth_concat",
+        "normalized_blocks_zero_based": [
+          2,
+          5,
+          8,
+          11
+        ],
+        "norms_in_order": [
+          "norms_block.0",
+          "norms_block.1",
+          "norms_block.2",
+          "norms_block.3"
+        ],
+        "official_concat_axis": 2,
+        "feature_dim": 3072,
+        "spatial_mean_patches": 196,
+        "tubelets_per64_positions": 32,
+        "return_hierarchical": true,
+        "forward_training_argument": false,
+        "out_layers": null
+      },
+      "inner_probabilities_sha256": "9b2c8e7ac6485505eace8287c468903e23861fb3141ee3e38f116bd5d58ed0e6",
+      "inner_predictions_sha256": "343e90166c53f239b0740e4c421b1221d1824cc012398e53c8662cad34761cb4",
+      "inner_record_sha256": "94db85dc43cd0e9ea5bf160f122b15a9f9c33d8d1ae029a201030fa2593e84ba",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "calibration",
+      "reused_same_checkpoint": false,
+      "raw_metrics": {
+        "native_macro_f1": 0.9856102003642988,
+        "native_per_class_recall": [
+          1.0,
+          1.0,
+          0.9836065573770492,
+          0.9444444444444444,
+          1.0
+        ],
+        "native_confusion": [
+          [
+            80,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            71,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            60,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            17,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            7
+          ]
+        ],
+        "native_accuracy": 0.9915611814345991,
+        "native_frame_accuracy": 0.9771695873769461,
+        "native_internal_cuts_per_clip": 0.11814345991561181,
+        "native_internal_cuts_per_min": 1.1729386301752427,
+        "native_share_cut": 0.0379746835443038,
+        "segment_f1_50_multi": 0.9555345316934721,
+        "boundary_recall_multi": 0.9899497487437185,
+        "boundary_precision_multi": 0.9403341288782816,
+        "boundary_f1_multi": 0.9645042839657283,
+        "same_class_cut_rate_multi": 0.03980099502487562,
+        "multi_frame_accuracy": 0.9661558960692871,
+        "segment_f1_50_pairs": 0.9684813753581661,
+        "boundary_recall_pairs": 0.9655172413793104,
+        "counts": {
+          "native_clips": 237,
+          "multi_streams": 120,
+          "pair_streams": 115,
+          "multi_true_changes": 398,
+          "multi_same_joins": 201
+        },
+        "native_A4C_to_A5C": 1,
+        "native_A5C_to_A4C": 1,
+        "native_A4C_A5C_errors": 2,
+        "short_true_segments_10samples": 23,
+        "short_true_unmatched_10samples": 0,
+        "short_predicted_segments_10samples": 48,
+        "short_spurious_segments_10samples": 20,
+        "short_true_segments_16samples": 134,
+        "short_true_unmatched_16samples": 8,
+        "short_predicted_segments_16samples": 163,
+        "short_spurious_segments_16samples": 27
+      },
+      "inference_cost": {
+        "new_sequences": 472,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 93.71945214271545,
+        "GPU_peak_reserved_bytes": 1444937728
+      }
+    },
+    {
+      "row": "seed2026110257_J-MD_inner_package",
+      "kind": "inner_selected_package",
+      "arm": "J-MD",
+      "seed": 2026110257,
+      "step": 4000,
+      "path": "runs/a57_dense_sequence_v1/multidepth_v1/seed2026110257/J-MD/step4000.pt",
+      "sha256": "780374e2fb60bd9aeaa354b92d2bffc87d3f4c94e6f0bf7aa1d3072dea394da6",
+      "feature_contract": {
+        "kind": "official_four_depth_concat",
+        "normalized_blocks_zero_based": [
+          2,
+          5,
+          8,
+          11
+        ],
+        "norms_in_order": [
+          "norms_block.0",
+          "norms_block.1",
+          "norms_block.2",
+          "norms_block.3"
+        ],
+        "official_concat_axis": 2,
+        "feature_dim": 3072,
+        "spatial_mean_patches": 196,
+        "tubelets_per64_positions": 32,
+        "return_hierarchical": true,
+        "forward_training_argument": false,
+        "out_layers": null
+      },
+      "inner_probabilities_sha256": "ccd11d7994d960be3f7bfba37c8481ef0b0f53093b9eb02bccfdaee166abe7c1",
+      "inner_predictions_sha256": "2de18a13950199602a8f1ff5aa995ba1e1c4b8671d1a1569a3e8268242016578",
+      "inner_record_sha256": "21b72f7af916413d2fc5d14248836d295319f379b33380764c5bd7e222d95713",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "selection",
+      "reused_same_checkpoint": false,
+      "raw_metrics": {
+        "native_macro_f1": 0.9269218068868854,
+        "native_per_class_recall": [
+          1.0,
+          0.9558823529411765,
+          0.9770114942528736,
+          0.7272727272727273,
+          1.0
+        ],
+        "native_confusion": [
+          [
+            105,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            65,
+            0,
+            0,
+            2
+          ],
+          [
+            0,
+            0,
+            85,
+            2,
+            0
+          ],
+          [
+            0,
+            0,
+            3,
+            8,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            13
+          ]
+        ],
+        "native_accuracy": 0.971830985915493,
+        "native_frame_accuracy": 0.9702434625788999,
+        "native_internal_cuts_per_clip": 0.2147887323943662,
+        "native_internal_cuts_per_min": 2.200180342651037,
+        "native_share_cut": 0.07746478873239436,
+        "segment_f1_50_multi": 0.8645640074211502,
+        "boundary_recall_multi": 0.9685863874345549,
+        "boundary_precision_multi": 0.8114035087719298,
+        "boundary_f1_multi": 0.883054892601432,
+        "same_class_cut_rate_multi": 0.0782608695652174,
+        "multi_frame_accuracy": 0.9144442216429383,
+        "segment_f1_50_pairs": 0.9136363636363637,
+        "boundary_recall_pairs": 1.0,
+        "counts": {
+          "native_clips": 284,
+          "multi_streams": 120,
+          "pair_streams": 137,
+          "multi_true_changes": 382,
+          "multi_same_joins": 230
+        },
+        "native_A4C_to_A5C": 2,
+        "native_A5C_to_A4C": 3,
+        "native_A4C_A5C_errors": 5,
+        "short_true_segments_10samples": 32,
+        "short_true_unmatched_10samples": 2,
+        "short_predicted_segments_10samples": 93,
+        "short_spurious_segments_10samples": 58,
+        "short_true_segments_16samples": 141,
+        "short_true_unmatched_16samples": 8,
+        "short_predicted_segments_16samples": 228,
+        "short_spurious_segments_16samples": 83
+      },
+      "inference_cost": {
+        "new_sequences": 541,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 104.57640337944031,
+        "GPU_peak_reserved_bytes": 1444937728
+      }
+    },
+    {
+      "row": "seed2026110257_J-MD_inner_package",
+      "kind": "inner_selected_package",
+      "arm": "J-MD",
+      "seed": 2026110257,
+      "step": 4000,
+      "path": "runs/a57_dense_sequence_v1/multidepth_v1/seed2026110257/J-MD/step4000.pt",
+      "sha256": "780374e2fb60bd9aeaa354b92d2bffc87d3f4c94e6f0bf7aa1d3072dea394da6",
+      "feature_contract": {
+        "kind": "official_four_depth_concat",
+        "normalized_blocks_zero_based": [
+          2,
+          5,
+          8,
+          11
+        ],
+        "norms_in_order": [
+          "norms_block.0",
+          "norms_block.1",
+          "norms_block.2",
+          "norms_block.3"
+        ],
+        "official_concat_axis": 2,
+        "feature_dim": 3072,
+        "spatial_mean_patches": 196,
+        "tubelets_per64_positions": 32,
+        "return_hierarchical": true,
+        "forward_training_argument": false,
+        "out_layers": null
+      },
+      "inner_probabilities_sha256": "ccd11d7994d960be3f7bfba37c8481ef0b0f53093b9eb02bccfdaee166abe7c1",
+      "inner_predictions_sha256": "2de18a13950199602a8f1ff5aa995ba1e1c4b8671d1a1569a3e8268242016578",
+      "inner_record_sha256": "21b72f7af916413d2fc5d14248836d295319f379b33380764c5bd7e222d95713",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "calibration",
+      "reused_same_checkpoint": false,
+      "raw_metrics": {
+        "native_macro_f1": 0.9829495246231419,
+        "native_per_class_recall": [
+          1.0,
+          0.9859154929577465,
+          0.9836065573770492,
+          0.9444444444444444,
+          1.0
+        ],
+        "native_confusion": [
+          [
+            80,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            70,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            60,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            17,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            7
+          ]
+        ],
+        "native_accuracy": 0.9873417721518988,
+        "native_frame_accuracy": 0.9745165119039307,
+        "native_internal_cuts_per_clip": 0.16455696202531644,
+        "native_internal_cuts_per_min": 1.6337359491726593,
+        "native_share_cut": 0.05907172995780591,
+        "segment_f1_50_multi": 0.9483568075117371,
+        "boundary_recall_multi": 0.9899497487437185,
+        "boundary_precision_multi": 0.9227166276346604,
+        "boundary_f1_multi": 0.9551515151515152,
+        "same_class_cut_rate_multi": 0.03980099502487562,
+        "multi_frame_accuracy": 0.9651565622918055,
+        "segment_f1_50_pairs": 0.9572649572649573,
+        "boundary_recall_pairs": 0.9482758620689655,
+        "counts": {
+          "native_clips": 237,
+          "multi_streams": 120,
+          "pair_streams": 115,
+          "multi_true_changes": 398,
+          "multi_same_joins": 201
+        },
+        "native_A4C_to_A5C": 1,
+        "native_A5C_to_A4C": 1,
+        "native_A4C_A5C_errors": 2,
+        "short_true_segments_10samples": 23,
+        "short_true_unmatched_10samples": 0,
+        "short_predicted_segments_10samples": 58,
+        "short_spurious_segments_10samples": 28,
+        "short_true_segments_16samples": 134,
+        "short_true_unmatched_16samples": 6,
+        "short_predicted_segments_16samples": 170,
+        "short_spurious_segments_16samples": 32
+      },
+      "inference_cost": {
+        "new_sequences": 472,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 92.97597002983093,
+        "GPU_peak_reserved_bytes": 1444937728
+      }
+    },
+    {
+      "row": "seed2026110258_F-MD_fixed2000",
+      "kind": "fixed_step",
+      "arm": "F-MD",
+      "seed": 2026110258,
+      "step": 2000,
+      "path": "runs/a57_dense_sequence_v1/multidepth_v1/seed2026110258/F-MD/step2000.pt",
+      "sha256": "71ec52fe8b082f37b516083c89a7efaaecba8fa02147e8b2e17dbc67c4752eb6",
+      "feature_contract": {
+        "kind": "official_four_depth_concat",
+        "normalized_blocks_zero_based": [
+          2,
+          5,
+          8,
+          11
+        ],
+        "norms_in_order": [
+          "norms_block.0",
+          "norms_block.1",
+          "norms_block.2",
+          "norms_block.3"
+        ],
+        "official_concat_axis": 2,
+        "feature_dim": 3072,
+        "spatial_mean_patches": 196,
+        "tubelets_per64_positions": 32,
+        "return_hierarchical": true,
+        "forward_training_argument": false,
+        "out_layers": null
+      },
+      "inner_probabilities_sha256": "16ea1cbe116248271a7a2a7aa2e9dcfacffd96a206ac3bf835885a640c421863",
+      "inner_predictions_sha256": "ae9e403d27ca909a144ae7926e44ef9f6498c89c99910516dcbada43debfeeb9",
+      "inner_record_sha256": "c5b4d616992c62b487b5b44100002b6ae4f363d5902f2704d06b310db55a9fbf",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "selection",
+      "reused_same_checkpoint": false,
+      "raw_metrics": {
+        "native_macro_f1": 0.7642896746924318,
+        "native_per_class_recall": [
+          0.9904761904761905,
+          0.8529411764705882,
+          0.5747126436781609,
+          0.8181818181818182,
+          0.9230769230769231
+        ],
+        "native_confusion": [
+          [
+            104,
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            9,
+            58,
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            50,
+            37,
+            0
+          ],
+          [
+            0,
+            0,
+            2,
+            9,
+            0
+          ],
+          [
+            1,
+            0,
+            0,
+            0,
+            12
+          ]
+        ],
+        "native_accuracy": 0.8204225352112676,
+        "native_frame_accuracy": 0.8452058911932672,
+        "native_internal_cuts_per_clip": 0.9859154929577465,
+        "native_internal_cuts_per_min": 10.099188458070333,
+        "native_share_cut": 0.2711267605633803,
+        "segment_f1_50_multi": 0.5932075471698113,
+        "boundary_recall_multi": 0.9214659685863874,
+        "boundary_precision_multi": 0.5007112375533428,
+        "boundary_f1_multi": 0.6488479262672812,
+        "same_class_cut_rate_multi": 0.2608695652173913,
+        "multi_frame_accuracy": 0.833366753559254,
+        "segment_f1_50_pairs": 0.6088560885608856,
+        "boundary_recall_pairs": 0.8857142857142857,
+        "counts": {
+          "native_clips": 284,
+          "multi_streams": 120,
+          "pair_streams": 137,
+          "multi_true_changes": 382,
+          "multi_same_joins": 230
+        },
+        "native_A4C_to_A5C": 37,
+        "native_A5C_to_A4C": 2,
+        "native_A4C_A5C_errors": 39,
+        "short_true_segments_10samples": 32,
+        "short_true_unmatched_10samples": 9,
+        "short_predicted_segments_10samples": 357,
+        "short_spurious_segments_10samples": 320,
+        "short_true_segments_16samples": 141,
+        "short_true_unmatched_16samples": 40,
+        "short_predicted_segments_16samples": 495,
+        "short_spurious_segments_16samples": 376
+      },
+      "inference_cost": {
+        "new_sequences": 541,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 102.91202640533447,
+        "GPU_peak_reserved_bytes": 1444937728
+      }
+    },
+    {
+      "row": "seed2026110258_F-MD_fixed2000",
+      "kind": "fixed_step",
+      "arm": "F-MD",
+      "seed": 2026110258,
+      "step": 2000,
+      "path": "runs/a57_dense_sequence_v1/multidepth_v1/seed2026110258/F-MD/step2000.pt",
+      "sha256": "71ec52fe8b082f37b516083c89a7efaaecba8fa02147e8b2e17dbc67c4752eb6",
+      "feature_contract": {
+        "kind": "official_four_depth_concat",
+        "normalized_blocks_zero_based": [
+          2,
+          5,
+          8,
+          11
+        ],
+        "norms_in_order": [
+          "norms_block.0",
+          "norms_block.1",
+          "norms_block.2",
+          "norms_block.3"
+        ],
+        "official_concat_axis": 2,
+        "feature_dim": 3072,
+        "spatial_mean_patches": 196,
+        "tubelets_per64_positions": 32,
+        "return_hierarchical": true,
+        "forward_training_argument": false,
+        "out_layers": null
+      },
+      "inner_probabilities_sha256": "16ea1cbe116248271a7a2a7aa2e9dcfacffd96a206ac3bf835885a640c421863",
+      "inner_predictions_sha256": "ae9e403d27ca909a144ae7926e44ef9f6498c89c99910516dcbada43debfeeb9",
+      "inner_record_sha256": "c5b4d616992c62b487b5b44100002b6ae4f363d5902f2704d06b310db55a9fbf",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "calibration",
+      "reused_same_checkpoint": false,
+      "raw_metrics": {
+        "native_macro_f1": 0.7269040234291755,
+        "native_per_class_recall": [
+          0.9625,
+          0.7605633802816901,
+          0.5409836065573771,
+          0.7777777777777778,
+          1.0
+        ],
+        "native_confusion": [
+          [
+            77,
+            2,
+            0,
+            0,
+            1
+          ],
+          [
+            13,
+            54,
+            0,
+            0,
+            4
+          ],
+          [
+            0,
+            1,
+            33,
+            27,
+            0
+          ],
+          [
+            0,
+            0,
+            4,
+            14,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            7
+          ]
+        ],
+        "native_accuracy": 0.7805907172995781,
+        "native_frame_accuracy": 0.7749074914473225,
+        "native_internal_cuts_per_clip": 1.029535864978903,
+        "native_internal_cuts_per_min": 10.221322348669972,
+        "native_share_cut": 0.2489451476793249,
+        "segment_f1_50_multi": 0.5437722419928825,
+        "boundary_recall_multi": 0.9221105527638191,
+        "boundary_precision_multi": 0.4784876140808344,
+        "boundary_f1_multi": 0.6300429184549357,
+        "same_class_cut_rate_multi": 0.27860696517412936,
+        "multi_frame_accuracy": 0.7731512325116588,
+        "segment_f1_50_pairs": 0.5664488017429193,
+        "boundary_recall_pairs": 0.8620689655172413,
+        "counts": {
+          "native_clips": 237,
+          "multi_streams": 120,
+          "pair_streams": 115,
+          "multi_true_changes": 398,
+          "multi_same_joins": 201
+        },
+        "native_A4C_to_A5C": 27,
+        "native_A5C_to_A4C": 4,
+        "native_A4C_A5C_errors": 31,
+        "short_true_segments_10samples": 23,
+        "short_true_unmatched_10samples": 6,
+        "short_predicted_segments_10samples": 399,
+        "short_spurious_segments_10samples": 374,
+        "short_true_segments_16samples": 134,
+        "short_true_unmatched_16samples": 38,
+        "short_predicted_segments_16samples": 537,
+        "short_spurious_segments_16samples": 439
+      },
+      "inference_cost": {
+        "new_sequences": 472,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 91.57624959945679,
+        "GPU_peak_reserved_bytes": 1444937728
+      }
+    },
+    {
+      "row": "seed2026110258_F-MD_fixed6000",
+      "kind": "fixed_step",
+      "arm": "F-MD",
+      "seed": 2026110258,
+      "step": 6000,
+      "path": "runs/a57_dense_sequence_v1/multidepth_v1/seed2026110258/F-MD/step6000.pt",
+      "sha256": "c0aa6a85df43c407ea446347c4f6e0c92b73962850946834617ebbec6fb218a0",
+      "feature_contract": {
+        "kind": "official_four_depth_concat",
+        "normalized_blocks_zero_based": [
+          2,
+          5,
+          8,
+          11
+        ],
+        "norms_in_order": [
+          "norms_block.0",
+          "norms_block.1",
+          "norms_block.2",
+          "norms_block.3"
+        ],
+        "official_concat_axis": 2,
+        "feature_dim": 3072,
+        "spatial_mean_patches": 196,
+        "tubelets_per64_positions": 32,
+        "return_hierarchical": true,
+        "forward_training_argument": false,
+        "out_layers": null
+      },
+      "inner_probabilities_sha256": "e63f4058a3f0ad2ce8bada2776201b2c22b461a539a7b2f356908fe13eaaa717",
+      "inner_predictions_sha256": "f47838e7ca5e77d413c0a8a929b9e3127674459b27fb1e1f08b7238e5c909145",
+      "inner_record_sha256": "acbe6fb29656496913383bdb7429b62dc584ac3e6a4c9b76eb12a3c5da18fb03",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "selection",
+      "reused_same_checkpoint": false,
+      "raw_metrics": {
+        "native_macro_f1": 0.8148481930416146,
+        "native_per_class_recall": [
+          0.9809523809523809,
+          0.9558823529411765,
+          0.632183908045977,
+          1.0,
+          0.9230769230769231
+        ],
+        "native_confusion": [
+          [
+            103,
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            3,
+            65,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            55,
+            32,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            11,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0,
+            12
+          ]
+        ],
+        "native_accuracy": 0.8661971830985915,
+        "native_frame_accuracy": 0.8134655846107605,
+        "native_internal_cuts_per_clip": 0.3415492957746479,
+        "native_internal_cuts_per_min": 3.4986474301172223,
+        "native_share_cut": 0.13732394366197184,
+        "segment_f1_50_multi": 0.7357142857142858,
+        "boundary_recall_multi": 0.9293193717277487,
+        "boundary_precision_multi": 0.7128514056224899,
+        "boundary_f1_multi": 0.8068181818181818,
+        "same_class_cut_rate_multi": 0.1782608695652174,
+        "multi_frame_accuracy": 0.8492079406456787,
+        "segment_f1_50_pairs": 0.7164179104477612,
+        "boundary_recall_pairs": 0.9142857142857143,
+        "counts": {
+          "native_clips": 284,
+          "multi_streams": 120,
+          "pair_streams": 137,
+          "multi_true_changes": 382,
+          "multi_same_joins": 230
+        },
+        "native_A4C_to_A5C": 32,
+        "native_A5C_to_A4C": 0,
+        "native_A4C_A5C_errors": 32,
+        "short_true_segments_10samples": 32,
+        "short_true_unmatched_10samples": 9,
+        "short_predicted_segments_10samples": 138,
+        "short_spurious_segments_10samples": 108,
+        "short_true_segments_16samples": 141,
+        "short_true_unmatched_16samples": 31,
+        "short_predicted_segments_16samples": 271,
+        "short_spurious_segments_16samples": 151
+      },
+      "inference_cost": {
+        "new_sequences": 541,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 106.98863339424133,
+        "GPU_peak_reserved_bytes": 1444937728
+      }
+    },
+    {
+      "row": "seed2026110258_F-MD_fixed6000",
+      "kind": "fixed_step",
+      "arm": "F-MD",
+      "seed": 2026110258,
+      "step": 6000,
+      "path": "runs/a57_dense_sequence_v1/multidepth_v1/seed2026110258/F-MD/step6000.pt",
+      "sha256": "c0aa6a85df43c407ea446347c4f6e0c92b73962850946834617ebbec6fb218a0",
+      "feature_contract": {
+        "kind": "official_four_depth_concat",
+        "normalized_blocks_zero_based": [
+          2,
+          5,
+          8,
+          11
+        ],
+        "norms_in_order": [
+          "norms_block.0",
+          "norms_block.1",
+          "norms_block.2",
+          "norms_block.3"
+        ],
+        "official_concat_axis": 2,
+        "feature_dim": 3072,
+        "spatial_mean_patches": 196,
+        "tubelets_per64_positions": 32,
+        "return_hierarchical": true,
+        "forward_training_argument": false,
+        "out_layers": null
+      },
+      "inner_probabilities_sha256": "e63f4058a3f0ad2ce8bada2776201b2c22b461a539a7b2f356908fe13eaaa717",
+      "inner_predictions_sha256": "f47838e7ca5e77d413c0a8a929b9e3127674459b27fb1e1f08b7238e5c909145",
+      "inner_record_sha256": "acbe6fb29656496913383bdb7429b62dc584ac3e6a4c9b76eb12a3c5da18fb03",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "calibration",
+      "reused_same_checkpoint": false,
+      "raw_metrics": {
+        "native_macro_f1": 0.8001756625851966,
+        "native_per_class_recall": [
+          0.975,
+          0.9154929577464789,
+          0.6557377049180327,
+          0.6666666666666666,
+          1.0
+        ],
+        "native_confusion": [
+          [
+            78,
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            4,
+            65,
+            0,
+            0,
+            2
+          ],
+          [
+            0,
+            1,
+            40,
+            20,
+            0
+          ],
+          [
+            0,
+            0,
+            6,
+            12,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            7
+          ]
+        ],
+        "native_accuracy": 0.8523206751054853,
+        "native_frame_accuracy": 0.8410249249458912,
+        "native_internal_cuts_per_clip": 0.6033755274261603,
+        "native_internal_cuts_per_min": 5.990365146966417,
+        "native_share_cut": 0.1518987341772152,
+        "segment_f1_50_multi": 0.7322497861420018,
+        "boundary_recall_multi": 0.914572864321608,
+        "boundary_precision_multi": 0.6854990583804144,
+        "boundary_f1_multi": 0.7836383207750269,
+        "same_class_cut_rate_multi": 0.11940298507462686,
+        "multi_frame_accuracy": 0.8345769487008661,
+        "segment_f1_50_pairs": 0.7365728900255755,
+        "boundary_recall_pairs": 0.8793103448275862,
+        "counts": {
+          "native_clips": 237,
+          "multi_streams": 120,
+          "pair_streams": 115,
+          "multi_true_changes": 398,
+          "multi_same_joins": 201
+        },
+        "native_A4C_to_A5C": 20,
+        "native_A5C_to_A4C": 6,
+        "native_A4C_A5C_errors": 26,
+        "short_true_segments_10samples": 23,
+        "short_true_unmatched_10samples": 5,
+        "short_predicted_segments_10samples": 161,
+        "short_spurious_segments_10samples": 137,
+        "short_true_segments_16samples": 134,
+        "short_true_unmatched_16samples": 34,
+        "short_predicted_segments_16samples": 285,
+        "short_spurious_segments_16samples": 177
+      },
+      "inference_cost": {
+        "new_sequences": 472,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 94.50845766067505,
+        "GPU_peak_reserved_bytes": 1444937728
+      }
+    },
+    {
+      "row": "seed2026110258_F-MD_inner_package",
+      "kind": "inner_selected_package",
+      "arm": "F-MD",
+      "seed": 2026110258,
+      "step": 6000,
+      "path": "runs/a57_dense_sequence_v1/multidepth_v1/seed2026110258/F-MD/step6000.pt",
+      "sha256": "c0aa6a85df43c407ea446347c4f6e0c92b73962850946834617ebbec6fb218a0",
+      "feature_contract": {
+        "kind": "official_four_depth_concat",
+        "normalized_blocks_zero_based": [
+          2,
+          5,
+          8,
+          11
+        ],
+        "norms_in_order": [
+          "norms_block.0",
+          "norms_block.1",
+          "norms_block.2",
+          "norms_block.3"
+        ],
+        "official_concat_axis": 2,
+        "feature_dim": 3072,
+        "spatial_mean_patches": 196,
+        "tubelets_per64_positions": 32,
+        "return_hierarchical": true,
+        "forward_training_argument": false,
+        "out_layers": null
+      },
+      "inner_probabilities_sha256": "e63f4058a3f0ad2ce8bada2776201b2c22b461a539a7b2f356908fe13eaaa717",
+      "inner_predictions_sha256": "f47838e7ca5e77d413c0a8a929b9e3127674459b27fb1e1f08b7238e5c909145",
+      "inner_record_sha256": "acbe6fb29656496913383bdb7429b62dc584ac3e6a4c9b76eb12a3c5da18fb03",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "selection",
+      "reused_same_checkpoint": true,
+      "raw_metrics": {
+        "native_macro_f1": 0.8148481930416146,
+        "native_per_class_recall": [
+          0.9809523809523809,
+          0.9558823529411765,
+          0.632183908045977,
+          1.0,
+          0.9230769230769231
+        ],
+        "native_confusion": [
+          [
+            103,
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            3,
+            65,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            55,
+            32,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            11,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0,
+            12
+          ]
+        ],
+        "native_accuracy": 0.8661971830985915,
+        "native_frame_accuracy": 0.8134655846107605,
+        "native_internal_cuts_per_clip": 0.3415492957746479,
+        "native_internal_cuts_per_min": 3.4986474301172223,
+        "native_share_cut": 0.13732394366197184,
+        "segment_f1_50_multi": 0.7357142857142858,
+        "boundary_recall_multi": 0.9293193717277487,
+        "boundary_precision_multi": 0.7128514056224899,
+        "boundary_f1_multi": 0.8068181818181818,
+        "same_class_cut_rate_multi": 0.1782608695652174,
+        "multi_frame_accuracy": 0.8492079406456787,
+        "segment_f1_50_pairs": 0.7164179104477612,
+        "boundary_recall_pairs": 0.9142857142857143,
+        "counts": {
+          "native_clips": 284,
+          "multi_streams": 120,
+          "pair_streams": 137,
+          "multi_true_changes": 382,
+          "multi_same_joins": 230
+        },
+        "native_A4C_to_A5C": 32,
+        "native_A5C_to_A4C": 0,
+        "native_A4C_A5C_errors": 32,
+        "short_true_segments_10samples": 32,
+        "short_true_unmatched_10samples": 9,
+        "short_predicted_segments_10samples": 138,
+        "short_spurious_segments_10samples": 108,
+        "short_true_segments_16samples": 141,
+        "short_true_unmatched_16samples": 31,
+        "short_predicted_segments_16samples": 271,
+        "short_spurious_segments_16samples": 151
+      }
+    },
+    {
+      "row": "seed2026110258_F-MD_inner_package",
+      "kind": "inner_selected_package",
+      "arm": "F-MD",
+      "seed": 2026110258,
+      "step": 6000,
+      "path": "runs/a57_dense_sequence_v1/multidepth_v1/seed2026110258/F-MD/step6000.pt",
+      "sha256": "c0aa6a85df43c407ea446347c4f6e0c92b73962850946834617ebbec6fb218a0",
+      "feature_contract": {
+        "kind": "official_four_depth_concat",
+        "normalized_blocks_zero_based": [
+          2,
+          5,
+          8,
+          11
+        ],
+        "norms_in_order": [
+          "norms_block.0",
+          "norms_block.1",
+          "norms_block.2",
+          "norms_block.3"
+        ],
+        "official_concat_axis": 2,
+        "feature_dim": 3072,
+        "spatial_mean_patches": 196,
+        "tubelets_per64_positions": 32,
+        "return_hierarchical": true,
+        "forward_training_argument": false,
+        "out_layers": null
+      },
+      "inner_probabilities_sha256": "e63f4058a3f0ad2ce8bada2776201b2c22b461a539a7b2f356908fe13eaaa717",
+      "inner_predictions_sha256": "f47838e7ca5e77d413c0a8a929b9e3127674459b27fb1e1f08b7238e5c909145",
+      "inner_record_sha256": "acbe6fb29656496913383bdb7429b62dc584ac3e6a4c9b76eb12a3c5da18fb03",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "calibration",
+      "reused_same_checkpoint": true,
+      "raw_metrics": {
+        "native_macro_f1": 0.8001756625851966,
+        "native_per_class_recall": [
+          0.975,
+          0.9154929577464789,
+          0.6557377049180327,
+          0.6666666666666666,
+          1.0
+        ],
+        "native_confusion": [
+          [
+            78,
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            4,
+            65,
+            0,
+            0,
+            2
+          ],
+          [
+            0,
+            1,
+            40,
+            20,
+            0
+          ],
+          [
+            0,
+            0,
+            6,
+            12,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            7
+          ]
+        ],
+        "native_accuracy": 0.8523206751054853,
+        "native_frame_accuracy": 0.8410249249458912,
+        "native_internal_cuts_per_clip": 0.6033755274261603,
+        "native_internal_cuts_per_min": 5.990365146966417,
+        "native_share_cut": 0.1518987341772152,
+        "segment_f1_50_multi": 0.7322497861420018,
+        "boundary_recall_multi": 0.914572864321608,
+        "boundary_precision_multi": 0.6854990583804144,
+        "boundary_f1_multi": 0.7836383207750269,
+        "same_class_cut_rate_multi": 0.11940298507462686,
+        "multi_frame_accuracy": 0.8345769487008661,
+        "segment_f1_50_pairs": 0.7365728900255755,
+        "boundary_recall_pairs": 0.8793103448275862,
+        "counts": {
+          "native_clips": 237,
+          "multi_streams": 120,
+          "pair_streams": 115,
+          "multi_true_changes": 398,
+          "multi_same_joins": 201
+        },
+        "native_A4C_to_A5C": 20,
+        "native_A5C_to_A4C": 6,
+        "native_A4C_A5C_errors": 26,
+        "short_true_segments_10samples": 23,
+        "short_true_unmatched_10samples": 5,
+        "short_predicted_segments_10samples": 161,
+        "short_spurious_segments_10samples": 137,
+        "short_true_segments_16samples": 134,
+        "short_true_unmatched_16samples": 34,
+        "short_predicted_segments_16samples": 285,
+        "short_spurious_segments_16samples": 177
+      }
+    },
+    {
+      "row": "seed2026110258_J-MD_fixed2000",
+      "kind": "fixed_step",
+      "arm": "J-MD",
+      "seed": 2026110258,
+      "step": 2000,
+      "path": "runs/a57_dense_sequence_v1/multidepth_v1/seed2026110258/J-MD/step2000.pt",
+      "sha256": "15b447dfcb4ef6ec7f9cd75c44c013724f503da735d3896eed4262c4d80cdcf4",
+      "feature_contract": {
+        "kind": "official_four_depth_concat",
+        "normalized_blocks_zero_based": [
+          2,
+          5,
+          8,
+          11
+        ],
+        "norms_in_order": [
+          "norms_block.0",
+          "norms_block.1",
+          "norms_block.2",
+          "norms_block.3"
+        ],
+        "official_concat_axis": 2,
+        "feature_dim": 3072,
+        "spatial_mean_patches": 196,
+        "tubelets_per64_positions": 32,
+        "return_hierarchical": true,
+        "forward_training_argument": false,
+        "out_layers": null
+      },
+      "inner_probabilities_sha256": "b596e0ba5236c63cf897bbe99d52ee5ed18cef2890390619bec5de47f4e07461",
+      "inner_predictions_sha256": "bb721fa431f30a9b2790d73c919c475f6eda89f47780d868a79920d2e005ff21",
+      "inner_record_sha256": "5682472c2481c52549a99e01bad498e0c6e8f004072df5f3707a99853d9f56d1",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "selection",
+      "reused_same_checkpoint": false,
+      "raw_metrics": {
+        "native_macro_f1": 0.9447990388012716,
+        "native_per_class_recall": [
+          0.9809523809523809,
+          1.0,
+          0.9770114942528736,
+          0.8181818181818182,
+          0.9230769230769231
+        ],
+        "native_confusion": [
+          [
+            103,
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            68,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            85,
+            2,
+            0
+          ],
+          [
+            0,
+            0,
+            2,
+            9,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            0,
+            12
+          ]
+        ],
+        "native_accuracy": 0.9753521126760564,
+        "native_frame_accuracy": 0.9638112413585813,
+        "native_internal_cuts_per_clip": 0.2676056338028169,
+        "native_internal_cuts_per_min": 2.7412082957619477,
+        "native_share_cut": 0.08098591549295775,
+        "segment_f1_50_multi": 0.8386508659981768,
+        "boundary_recall_multi": 0.9712041884816754,
+        "boundary_precision_multi": 0.7810526315789473,
+        "boundary_f1_multi": 0.8658109684947491,
+        "same_class_cut_rate_multi": 0.07391304347826087,
+        "multi_frame_accuracy": 0.9169173183610722,
+        "segment_f1_50_pairs": 0.8954545454545455,
+        "boundary_recall_pairs": 1.0,
+        "counts": {
+          "native_clips": 284,
+          "multi_streams": 120,
+          "pair_streams": 137,
+          "multi_true_changes": 382,
+          "multi_same_joins": 230
+        },
+        "native_A4C_to_A5C": 2,
+        "native_A5C_to_A4C": 2,
+        "native_A4C_A5C_errors": 4,
+        "short_true_segments_10samples": 32,
+        "short_true_unmatched_10samples": 3,
+        "short_predicted_segments_10samples": 122,
+        "short_spurious_segments_10samples": 88,
+        "short_true_segments_16samples": 141,
+        "short_true_unmatched_16samples": 13,
+        "short_predicted_segments_16samples": 248,
+        "short_spurious_segments_16samples": 109
+      },
+      "inference_cost": {
+        "new_sequences": 541,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 104.2309057712555,
+        "GPU_peak_reserved_bytes": 1444937728
+      }
+    },
+    {
+      "row": "seed2026110258_J-MD_fixed2000",
+      "kind": "fixed_step",
+      "arm": "J-MD",
+      "seed": 2026110258,
+      "step": 2000,
+      "path": "runs/a57_dense_sequence_v1/multidepth_v1/seed2026110258/J-MD/step2000.pt",
+      "sha256": "15b447dfcb4ef6ec7f9cd75c44c013724f503da735d3896eed4262c4d80cdcf4",
+      "feature_contract": {
+        "kind": "official_four_depth_concat",
+        "normalized_blocks_zero_based": [
+          2,
+          5,
+          8,
+          11
+        ],
+        "norms_in_order": [
+          "norms_block.0",
+          "norms_block.1",
+          "norms_block.2",
+          "norms_block.3"
+        ],
+        "official_concat_axis": 2,
+        "feature_dim": 3072,
+        "spatial_mean_patches": 196,
+        "tubelets_per64_positions": 32,
+        "return_hierarchical": true,
+        "forward_training_argument": false,
+        "out_layers": null
+      },
+      "inner_probabilities_sha256": "b596e0ba5236c63cf897bbe99d52ee5ed18cef2890390619bec5de47f4e07461",
+      "inner_predictions_sha256": "bb721fa431f30a9b2790d73c919c475f6eda89f47780d868a79920d2e005ff21",
+      "inner_record_sha256": "5682472c2481c52549a99e01bad498e0c6e8f004072df5f3707a99853d9f56d1",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "calibration",
+      "reused_same_checkpoint": false,
+      "raw_metrics": {
+        "native_macro_f1": 0.9696242387205645,
+        "native_per_class_recall": [
+          0.9875,
+          1.0,
+          0.9508196721311475,
+          0.9444444444444444,
+          1.0
+        ],
+        "native_confusion": [
+          [
+            79,
+            1,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            71,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            58,
+            3,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            17,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            7
+          ]
+        ],
+        "native_accuracy": 0.9789029535864979,
+        "native_frame_accuracy": 0.971514347552887,
+        "native_internal_cuts_per_clip": 0.21940928270042195,
+        "native_internal_cuts_per_min": 2.178314598896879,
+        "native_share_cut": 0.08016877637130802,
+        "segment_f1_50_multi": 0.9429373246024322,
+        "boundary_recall_multi": 0.9874371859296482,
+        "boundary_precision_multi": 0.9118329466357309,
+        "boundary_f1_multi": 0.9481302774427021,
+        "same_class_cut_rate_multi": 0.04975124378109453,
+        "multi_frame_accuracy": 0.9594270486342439,
+        "segment_f1_50_pairs": 0.9497206703910615,
+        "boundary_recall_pairs": 0.9655172413793104,
+        "counts": {
+          "native_clips": 237,
+          "multi_streams": 120,
+          "pair_streams": 115,
+          "multi_true_changes": 398,
+          "multi_same_joins": 201
+        },
+        "native_A4C_to_A5C": 3,
+        "native_A5C_to_A4C": 1,
+        "native_A4C_A5C_errors": 4,
+        "short_true_segments_10samples": 23,
+        "short_true_unmatched_10samples": 2,
+        "short_predicted_segments_10samples": 64,
+        "short_spurious_segments_10samples": 32,
+        "short_true_segments_16samples": 134,
+        "short_true_unmatched_16samples": 7,
+        "short_predicted_segments_16samples": 172,
+        "short_spurious_segments_16samples": 39
+      },
+      "inference_cost": {
+        "new_sequences": 472,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 92.95565485954285,
+        "GPU_peak_reserved_bytes": 1444937728
+      }
+    },
+    {
+      "row": "seed2026110258_J-MD_fixed6000",
+      "kind": "fixed_step",
+      "arm": "J-MD",
+      "seed": 2026110258,
+      "step": 6000,
+      "path": "runs/a57_dense_sequence_v1/multidepth_v1/seed2026110258/J-MD/step6000.pt",
+      "sha256": "73996070495d8d6cf730a7a051b01282593354c35525e8eaf8746468dffe1da2",
+      "feature_contract": {
+        "kind": "official_four_depth_concat",
+        "normalized_blocks_zero_based": [
+          2,
+          5,
+          8,
+          11
+        ],
+        "norms_in_order": [
+          "norms_block.0",
+          "norms_block.1",
+          "norms_block.2",
+          "norms_block.3"
+        ],
+        "official_concat_axis": 2,
+        "feature_dim": 3072,
+        "spatial_mean_patches": 196,
+        "tubelets_per64_positions": 32,
+        "return_hierarchical": true,
+        "forward_training_argument": false,
+        "out_layers": null
+      },
+      "inner_probabilities_sha256": "38e109ff6252961b01cba4dbb984d584ff628f33c9d51804a623261d8a521337",
+      "inner_predictions_sha256": "95c8ae52b914c4b4fbb34036fd5f1311d9c4d8cb83e32ba53ff70049a887f9db",
+      "inner_record_sha256": "5bb1efc3090fa353f44ee1183669d79ab77ac3ac5460659285434a659bbadbb9",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "selection",
+      "reused_same_checkpoint": false,
+      "raw_metrics": {
+        "native_macro_f1": 0.9640172263529928,
+        "native_per_class_recall": [
+          0.9809523809523809,
+          0.9852941176470589,
+          1.0,
+          0.8181818181818182,
+          1.0
+        ],
+        "native_confusion": [
+          [
+            103,
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            67,
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            87,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            2,
+            9,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            13
+          ]
+        ],
+        "native_accuracy": 0.9823943661971831,
+        "native_frame_accuracy": 0.9715058611361587,
+        "native_internal_cuts_per_clip": 0.21830985915492956,
+        "native_internal_cuts_per_min": 2.236248872858431,
+        "native_share_cut": 0.05985915492957746,
+        "segment_f1_50_multi": 0.8947867298578199,
+        "boundary_recall_multi": 0.9659685863874345,
+        "boundary_precision_multi": 0.8521939953810623,
+        "boundary_f1_multi": 0.905521472392638,
+        "same_class_cut_rate_multi": 0.04782608695652174,
+        "multi_frame_accuracy": 0.9334269099659114,
+        "segment_f1_50_pairs": 0.918552036199095,
+        "boundary_recall_pairs": 1.0,
+        "counts": {
+          "native_clips": 284,
+          "multi_streams": 120,
+          "pair_streams": 137,
+          "multi_true_changes": 382,
+          "multi_same_joins": 230
+        },
+        "native_A4C_to_A5C": 0,
+        "native_A5C_to_A4C": 2,
+        "native_A4C_A5C_errors": 2,
+        "short_true_segments_10samples": 32,
+        "short_true_unmatched_10samples": 2,
+        "short_predicted_segments_10samples": 79,
+        "short_spurious_segments_10samples": 40,
+        "short_true_segments_16samples": 141,
+        "short_true_unmatched_16samples": 6,
+        "short_predicted_segments_16samples": 201,
+        "short_spurious_segments_16samples": 56
+      },
+      "inference_cost": {
+        "new_sequences": 541,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 104.23061490058899,
+        "GPU_peak_reserved_bytes": 1444937728
+      }
+    },
+    {
+      "row": "seed2026110258_J-MD_fixed6000",
+      "kind": "fixed_step",
+      "arm": "J-MD",
+      "seed": 2026110258,
+      "step": 6000,
+      "path": "runs/a57_dense_sequence_v1/multidepth_v1/seed2026110258/J-MD/step6000.pt",
+      "sha256": "73996070495d8d6cf730a7a051b01282593354c35525e8eaf8746468dffe1da2",
+      "feature_contract": {
+        "kind": "official_four_depth_concat",
+        "normalized_blocks_zero_based": [
+          2,
+          5,
+          8,
+          11
+        ],
+        "norms_in_order": [
+          "norms_block.0",
+          "norms_block.1",
+          "norms_block.2",
+          "norms_block.3"
+        ],
+        "official_concat_axis": 2,
+        "feature_dim": 3072,
+        "spatial_mean_patches": 196,
+        "tubelets_per64_positions": 32,
+        "return_hierarchical": true,
+        "forward_training_argument": false,
+        "out_layers": null
+      },
+      "inner_probabilities_sha256": "38e109ff6252961b01cba4dbb984d584ff628f33c9d51804a623261d8a521337",
+      "inner_predictions_sha256": "95c8ae52b914c4b4fbb34036fd5f1311d9c4d8cb83e32ba53ff70049a887f9db",
+      "inner_record_sha256": "5bb1efc3090fa353f44ee1183669d79ab77ac3ac5460659285434a659bbadbb9",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "calibration",
+      "reused_same_checkpoint": false,
+      "raw_metrics": {
+        "native_macro_f1": 0.9856102003642988,
+        "native_per_class_recall": [
+          1.0,
+          1.0,
+          0.9836065573770492,
+          0.9444444444444444,
+          1.0
+        ],
+        "native_confusion": [
+          [
+            80,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            71,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            60,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            17,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            7
+          ]
+        ],
+        "native_accuracy": 0.9915611814345991,
+        "native_frame_accuracy": 0.9759128674160441,
+        "native_internal_cuts_per_clip": 0.16877637130801687,
+        "native_internal_cuts_per_min": 1.675626614536061,
+        "native_share_cut": 0.05485232067510549,
+        "segment_f1_50_multi": 0.9575871819038643,
+        "boundary_recall_multi": 0.9874371859296482,
+        "boundary_precision_multi": 0.9290780141843972,
+        "boundary_f1_multi": 0.9573690621193667,
+        "same_class_cut_rate_multi": 0.03980099502487562,
+        "multi_frame_accuracy": 0.9686875416389074,
+        "segment_f1_50_pairs": 0.9827586206896551,
+        "boundary_recall_pairs": 0.9482758620689655,
+        "counts": {
+          "native_clips": 237,
+          "multi_streams": 120,
+          "pair_streams": 115,
+          "multi_true_changes": 398,
+          "multi_same_joins": 201
+        },
+        "native_A4C_to_A5C": 1,
+        "native_A5C_to_A4C": 1,
+        "native_A4C_A5C_errors": 2,
+        "short_true_segments_10samples": 23,
+        "short_true_unmatched_10samples": 0,
+        "short_predicted_segments_10samples": 54,
+        "short_spurious_segments_10samples": 26,
+        "short_true_segments_16samples": 134,
+        "short_true_unmatched_16samples": 6,
+        "short_predicted_segments_16samples": 164,
+        "short_spurious_segments_16samples": 29
+      },
+      "inference_cost": {
+        "new_sequences": 472,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 93.82332396507263,
+        "GPU_peak_reserved_bytes": 1444937728
+      }
+    },
+    {
+      "row": "seed2026110258_J-MD_inner_package",
+      "kind": "inner_selected_package",
+      "arm": "J-MD",
+      "seed": 2026110258,
+      "step": 5500,
+      "path": "runs/a57_dense_sequence_v1/multidepth_v1/seed2026110258/J-MD/step5500.pt",
+      "sha256": "7d7b5e244f46cad260ef9706b92fafaf0b089a10bca9f5a37049c3078f214676",
+      "feature_contract": {
+        "kind": "official_four_depth_concat",
+        "normalized_blocks_zero_based": [
+          2,
+          5,
+          8,
+          11
+        ],
+        "norms_in_order": [
+          "norms_block.0",
+          "norms_block.1",
+          "norms_block.2",
+          "norms_block.3"
+        ],
+        "official_concat_axis": 2,
+        "feature_dim": 3072,
+        "spatial_mean_patches": 196,
+        "tubelets_per64_positions": 32,
+        "return_hierarchical": true,
+        "forward_training_argument": false,
+        "out_layers": null
+      },
+      "inner_probabilities_sha256": "29beb66620fb01f93a5b86b37c38ad749a99c53382d3bd2c05a121ccc2ea1eaf",
+      "inner_predictions_sha256": "0f6ec30e4d7d00de62811dcfa73963a8e5642f02ade695df1545d87267357330",
+      "inner_record_sha256": "16a9342ed1ec44847d777b8ee892797ef0b1e33e532bfc7c4c3871c9980107f8",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "selection",
+      "reused_same_checkpoint": false,
+      "raw_metrics": {
+        "native_macro_f1": 0.9640172263529928,
+        "native_per_class_recall": [
+          0.9809523809523809,
+          0.9852941176470589,
+          1.0,
+          0.8181818181818182,
+          1.0
+        ],
+        "native_confusion": [
+          [
+            103,
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            67,
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            87,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            2,
+            9,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            13
+          ]
+        ],
+        "native_accuracy": 0.9823943661971831,
+        "native_frame_accuracy": 0.9718665464382327,
+        "native_internal_cuts_per_clip": 0.2007042253521127,
+        "native_internal_cuts_per_min": 2.0559062218214605,
+        "native_share_cut": 0.06338028169014084,
+        "segment_f1_50_multi": 0.889943074003795,
+        "boundary_recall_multi": 0.9607329842931938,
+        "boundary_precision_multi": 0.8495370370370371,
+        "boundary_f1_multi": 0.9017199017199017,
+        "same_class_cut_rate_multi": 0.04782608695652174,
+        "multi_frame_accuracy": 0.9330258672548627,
+        "segment_f1_50_pairs": 0.9227272727272727,
+        "boundary_recall_pairs": 1.0,
+        "counts": {
+          "native_clips": 284,
+          "multi_streams": 120,
+          "pair_streams": 137,
+          "multi_true_changes": 382,
+          "multi_same_joins": 230
+        },
+        "native_A4C_to_A5C": 0,
+        "native_A5C_to_A4C": 2,
+        "native_A4C_A5C_errors": 2,
+        "short_true_segments_10samples": 32,
+        "short_true_unmatched_10samples": 2,
+        "short_predicted_segments_10samples": 80,
+        "short_spurious_segments_10samples": 42,
+        "short_true_segments_16samples": 141,
+        "short_true_unmatched_16samples": 7,
+        "short_predicted_segments_16samples": 201,
+        "short_spurious_segments_16samples": 58
+      },
+      "inference_cost": {
+        "new_sequences": 541,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 104.0515365600586,
+        "GPU_peak_reserved_bytes": 1444937728
+      }
+    },
+    {
+      "row": "seed2026110258_J-MD_inner_package",
+      "kind": "inner_selected_package",
+      "arm": "J-MD",
+      "seed": 2026110258,
+      "step": 5500,
+      "path": "runs/a57_dense_sequence_v1/multidepth_v1/seed2026110258/J-MD/step5500.pt",
+      "sha256": "7d7b5e244f46cad260ef9706b92fafaf0b089a10bca9f5a37049c3078f214676",
+      "feature_contract": {
+        "kind": "official_four_depth_concat",
+        "normalized_blocks_zero_based": [
+          2,
+          5,
+          8,
+          11
+        ],
+        "norms_in_order": [
+          "norms_block.0",
+          "norms_block.1",
+          "norms_block.2",
+          "norms_block.3"
+        ],
+        "official_concat_axis": 2,
+        "feature_dim": 3072,
+        "spatial_mean_patches": 196,
+        "tubelets_per64_positions": 32,
+        "return_hierarchical": true,
+        "forward_training_argument": false,
+        "out_layers": null
+      },
+      "inner_probabilities_sha256": "29beb66620fb01f93a5b86b37c38ad749a99c53382d3bd2c05a121ccc2ea1eaf",
+      "inner_predictions_sha256": "0f6ec30e4d7d00de62811dcfa73963a8e5642f02ade695df1545d87267357330",
+      "inner_record_sha256": "16a9342ed1ec44847d777b8ee892797ef0b1e33e532bfc7c4c3871c9980107f8",
+      "inner_sequence_sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7",
+      "half": "calibration",
+      "reused_same_checkpoint": false,
+      "raw_metrics": {
+        "native_macro_f1": 0.9856102003642988,
+        "native_per_class_recall": [
+          1.0,
+          1.0,
+          0.9836065573770492,
+          0.9444444444444444,
+          1.0
+        ],
+        "native_confusion": [
+          [
+            80,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            71,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            60,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            17,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            7
+          ]
+        ],
+        "native_accuracy": 0.9915611814345991,
+        "native_frame_accuracy": 0.9746561474551421,
+        "native_internal_cuts_per_clip": 0.17721518987341772,
+        "native_internal_cuts_per_min": 1.759407945262864,
+        "native_share_cut": 0.05485232067510549,
+        "segment_f1_50_multi": 0.9548022598870056,
+        "boundary_recall_multi": 0.9874371859296482,
+        "boundary_precision_multi": 0.9268867924528302,
+        "boundary_f1_multi": 0.9562043795620438,
+        "same_class_cut_rate_multi": 0.03482587064676617,
+        "multi_frame_accuracy": 0.9683544303797469,
+        "segment_f1_50_pairs": 0.9715909090909091,
+        "boundary_recall_pairs": 0.9482758620689655,
+        "counts": {
+          "native_clips": 237,
+          "multi_streams": 120,
+          "pair_streams": 115,
+          "multi_true_changes": 398,
+          "multi_same_joins": 201
+        },
+        "native_A4C_to_A5C": 1,
+        "native_A5C_to_A4C": 1,
+        "native_A4C_A5C_errors": 2,
+        "short_true_segments_10samples": 23,
+        "short_true_unmatched_10samples": 0,
+        "short_predicted_segments_10samples": 55,
+        "short_spurious_segments_10samples": 26,
+        "short_true_segments_16samples": 134,
+        "short_true_unmatched_16samples": 6,
+        "short_predicted_segments_16samples": 163,
+        "short_spurious_segments_16samples": 29
+      },
+      "inference_cost": {
+        "new_sequences": 472,
+        "previously_committed_sequences": 0,
+        "decode_model_stitch_cache_wall_seconds_this_process": 93.09044909477234,
+        "GPU_peak_reserved_bytes": 1444937728
+      }
+    }
+  ],
+  "readout_freeze_git": "1cc7affacc44cb466f2c972ad95e029f3c5a0e86",
+  "new_training_updates_during_outer": 0
+}
