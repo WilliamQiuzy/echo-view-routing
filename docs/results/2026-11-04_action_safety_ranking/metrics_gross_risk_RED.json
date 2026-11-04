@@ -1,0 +1,31 @@
+{
+  "stage": "metrics_gross_risk_RED",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "tests/test_safety_metrics.py"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 16034,
+  "supervisor_pid": 16023,
+  "started_epoch": 1793777057.85726,
+  "finished_epoch": 1793777059.6203651,
+  "full_process_wall_seconds": 1.7631051540374756,
+  "observed_worker_exit_code": 1,
+  "stage_exit_code": 1,
+  "termination_reason": null,
+  "exception": null,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 1.227365,
+  "measured_supervisor_CPU_seconds": 0.0014780000000000036,
+  "measured_CPU_core_seconds": 1.2288430000000001,
+  "durable_claim_before_Popen": true,
+  "scope": "local synthetic checks;SELF region+waited CHILDREN;final JSON bookkeeping and wrapper imports separate metadata",
+  "output": "FFF                                                                      [100%]\n=================================== FAILURES ===================================\n______ test_gross_harm_and_repair_do_not_disappear_when_net_error_is_zero ______\ntests/test_safety_metrics.py:8: in test_gross_harm_and_repair_do_not_disappear_when_net_error_is_zero\n    m=importlib.import_module('echo_routing.temporal.safety_metrics');q=[{'id':'synthetic','kind':'native','labels':np.array([0,0])}]\n      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../../../../../.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n<frozen importlib._bootstrap>:1387: in _gcd_import\n    ???\n<frozen importlib._bootstrap>:1360: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1324: in _find_and_load_unlocked\n    ???\nE   ModuleNotFoundError: No module named 'echo_routing.temporal.safety_metrics'\n___ test_unsafe_positive_safety_score_count_proxy_regret_and_fixed_risk_bins ___\ntests/test_safety_metrics.py:15: in test_unsafe_positive_safety_score_count_proxy_regret_and_fixed_risk_bins\n    m=importlib.import_module('echo_routing.temporal.safety_metrics');b=np.r_[np.full(20,2),np.full(18,3)];q={'id':'synthetic','kind':'native','labels':np.full(38,3)}\n      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../../../../../.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n<frozen importlib._bootstrap>:1387: in _gcd_import\n    ???\n<frozen importlib._bootstrap>:1360: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1324: in _find_and_load_unlocked\n    ???\nE   ModuleNotFoundError: No module named 'echo_routing.temporal.safety_metrics'\n_________ test_new_gross_native_intervals_use_same_whole_session_draws _________\ntests/test_safety_metrics.py:28: in test_new_gross_native_intervals_use_same_whole_session_draws\n    m=importlib.import_module('echo_routing.temporal.safety_metrics');left={'session_order':['s1','s2'],'session_gross':np.array([[1,0],[3,0]]),'stream_gross':{'multi':[('m',np.array([2,1]))],'pair':[('p',np.array([1,2]))]}}\n      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../../../../../.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n<frozen importlib._bootstrap>:1387: in _gcd_import\n    ???\n<frozen importlib._bootstrap>:1360: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1324: in _find_and_load_unlocked\n    ???\nE   ModuleNotFoundError: No module named 'echo_routing.temporal.safety_metrics'\n=========================== short test summary info ============================\nFAILED tests/test_safety_metrics.py::test_gross_harm_and_repair_do_not_disappear_when_net_error_is_zero\nFAILED tests/test_safety_metrics.py::test_unsafe_positive_safety_score_count_proxy_regret_and_fixed_risk_bins\nFAILED tests/test_safety_metrics.py::test_new_gross_native_intervals_use_same_whole_session_draws\n",
+  "output_sha256": "760e1ab99bf074518e03cf5aa5ae7aa819a2779e2b7a0c7b8b327bc8b3464672"
+}
