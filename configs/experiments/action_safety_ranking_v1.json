@@ -1,0 +1,296 @@
+{
+  "run_id": "A61",
+  "namespace": "runs/a61_action_safety_ranking_v1",
+  "card": {
+    "path": "docs/superpowers/plans/2026-11-04-a61-action-safety-ranking.md",
+    "sha256": "5b68d3e5f9953f9120e3e70f51792ca13e05cc58f4db76e34f3aad9cc24b57b2"
+  },
+  "source": {
+    "a08": {
+      "path": "models_frozen/video_within_view_v1/all_s0/final.pt",
+      "sha256": "9b144925f32fac7d725d13231a132abeb6635fa44b6fe0dbcec7f5b59d035bbc",
+      "original_choices": "docs/results/2026-10-16_video_within_view/choices.json",
+      "original_choices_sha256": "b2a731e5f4393187ee9954f710821ac04938652f0a7d00e0381ad0b8b21cf27e",
+      "stride": 5,
+      "window": 16,
+      "slots": 16,
+      "slot_order": "identity",
+      "marker": "middle_original_target_slot",
+      "preprocess": "gammaLUT_then_bilinear_shortside256_centercrop224_RGBuint8_EchoPrime_0to255_meanstd",
+      "precision": "FP32_TF32off_eval",
+      "original_B3": {
+        "half_window": 7,
+        "threshold": 0.19660949291632382,
+        "nms_radius": 5,
+        "threshold_quantile": 0.999
+      }
+    },
+    "jepa": {
+      "path": "runs/a57_dense_sequence_v1/seed2026110257/J-high/step6000.pt",
+      "sha256": "2fa26f2b3ffbffd4d8481c6ac1ff2190572f18648e13f13dbf37333a17bdd985",
+      "model_manifest": "docs/results/2026-11-02_dense_target_sequence/models_manifest.json",
+      "model_manifest_sha256": "a5d6c70cc9796f0cf8319bda7c6fa54526c383c80f012e7ec5399a6289d2bb87",
+      "source_manifest": "docs/results/2026-11-02_dense_target_sequence/source.json",
+      "source_manifest_sha256": "dbe6b45ef274e434a0ab526885dc6c74589394abb92b601307a50c761c3e4e1b",
+      "precision": "BF16encoder_FP32head_eval",
+      "chunk": 64,
+      "stride": 32,
+      "stitch": "positive_triangle_probabilities",
+      "features": "final_fiveclass_probabilities_only"
+    }
+  },
+  "data": {
+    "input_manifest": "docs/results/2026-11-02_dense_target_sequence/input_metadata.json",
+    "input_manifest_sha256": "1e684c35051e0d35e9e18035e7237b95d1977aed4ca8658129ac3d82940888d2",
+    "roles": {
+      "fit": {
+        "path": "runs/a57_dense_sequence_v1/fit_sequences.private.npy",
+        "sha256": "950930864fd27a8da5a05ff9f3c3d5e572006123b3c03ee350484a5159b04b68"
+      },
+      "inner_cal": {
+        "path": "runs/a57_dense_sequence_v1/inner_cal_sequences.private.npy",
+        "sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7"
+      }
+    },
+    "old_outer_metadata": "runs/a57_dense_sequence_v1/outer_metadata.private.npy",
+    "old_outer_metadata_sha256": "4e67f3499889ad11f98662d93e3f49a63e51e4c6d3fd646bebcb98535cb0fa9a",
+    "outer_inputs": "docs/results/2026-11-02_dense_target_sequence/outer_inputs.json",
+    "outer_inputs_sha256": "c452cb1bae5b0eab6dea351831285c52020228de03eb61223b64bd3971909b9f",
+    "frame_metadata_columns": [
+      "video_id",
+      "frames_dir"
+    ],
+    "new_head_training_only": "reuse_A59_FIT2736native_1500mixed;inner628native_300mixed_calibration_diagnostic_not_independent",
+    "old_A08_inner_exposure": "notOOF_or_independent_validation",
+    "old_A57_roles_are_native_group_sources_only": true,
+    "new_joined_context_never_spliced": true,
+    "old_A58_pins": {
+      "input_manifest.json": {
+        "path": "docs/results/2026-11-03_structured_evidence/input_manifest.json",
+        "sha256": "5a0e0f26a9faa4ee708047254896eeea2713769549d2f3d129b3c96fbb46e2d5"
+      },
+      "cache_fit_manifest.json": {
+        "path": "docs/results/2026-11-03_structured_evidence/cache_fit_manifest.json",
+        "sha256": "fad55a6b6394354f8c9d9204ee7c1b5ab6f05f14a8dbaa53a26b558a3a9041a2"
+      },
+      "cache_outer_manifest.json": {
+        "path": "docs/results/2026-11-03_structured_evidence/cache_outer_manifest.json",
+        "sha256": "c694b2933d9148a8d502c766106d50510d729dc40894a4b0710d9c0fdf95404b"
+      },
+      "producer_identity.json": {
+        "path": "docs/results/2026-11-03_structured_evidence/producer_identity.json",
+        "sha256": "d2d018d9f07e3606538b732a1431f971a85aecabac377dc0f21c446be415a1c7"
+      },
+      "resources.json": {
+        "path": "docs/results/2026-11-03_structured_evidence/resources.json",
+        "sha256": "c168adad5be442fd495add455f2effa6ce91e10183a14f9ac7345da70b3b1780"
+      },
+      "terminal_exit_receipt.json": {
+        "path": "docs/results/2026-11-03_structured_evidence/terminal_exit_receipt.json",
+        "sha256": "8bb7c76503dd1cff7ef9e71840f40c3833c1b93eae410e09a40344e56e1982cc"
+      }
+    },
+    "A08_FIT_inner_cache_route": "strict_readonly_reuse_of_complete_A59_original_stride5_allcontext_cache;no_new_FIT_or_inner_neuralforward"
+  },
+  "channel_mapping": {
+    "version": "family5_v1",
+    "classes": [
+      "PLAX",
+      "PSAX",
+      "A4C",
+      "A5C",
+      "SC4C"
+    ],
+    "ontology": {
+      "path": "configs/labels.yaml",
+      "sha256": "4c200c57a9ebd86603db5c45f8441d489e89ce4be9ea95d40abe88c7f38d566c"
+    },
+    "training_index_mapping": "models_frozen/e1_echoviewclip_probe/v1/feature_manifest.json",
+    "training_index_mapping_sha256": "56f59166ba3f1b428867e4ec9a7e6dfd800cb5bccd79db8191d3c916421f17c3",
+    "source_chain": "A08 train_video_within_view->A07/vso TrainingData;JEPA prepare_dense_sequence->prepare_video_feature_temporal.TrainingData;both index.label_index family5_v1;no channel permutation"
+  },
+  "banks": {
+    "seed": 2026110461,
+    "RNG_domains": {
+      "selection": [
+        2026110461,
+        61,
+        2
+      ],
+      "calibration": [
+        2026110461,
+        61,
+        3
+      ]
+    },
+    "streams_each_half": 120,
+    "fragment_support": [
+      4,
+      80
+    ],
+    "n_fragments": [
+      4,
+      8
+    ],
+    "gamma090_prob": 0.5,
+    "p_same_next": 0.35
+  },
+  "model": {
+    "utility_layers": [
+      109,
+      32,
+      1
+    ],
+    "utility_parameters": 3553,
+    "risk_position_layers": [
+      47,
+      32,
+      3
+    ],
+    "risk_position_parameters": 1635,
+    "risk_candidate_layers": [
+      109,
+      32,
+      1
+    ],
+    "risk_parameters_total": 5188,
+    "output_initialization": "zero"
+  },
+  "training": {
+    "arms": [
+      "U-P",
+      "U-L",
+      "S-P",
+      "S-L"
+    ],
+    "seeds": [
+      2026110461,
+      2026110462
+    ],
+    "updates_each": 6000,
+    "physical_models": 10,
+    "total_formal_updates": 60000,
+    "AdamW": {
+      "lr": 0.001,
+      "weight_decay": 0.01,
+      "betas": [
+        0.9,
+        0.999
+      ],
+      "eps": 1e-08
+    },
+    "warmup": 100,
+    "cosine_total": 6000,
+    "clip": 1.0,
+    "precision": "FP32",
+    "kind_candidate_batch": [
+      32,
+      32
+    ],
+    "sampling": "uniformreplacement_from_complete_kind_candidate_lists",
+    "draw_RNG_domains": "[seed,61,utility_or_risk,kind]",
+    "loss": "pointwise_group_MSE+all_unequal_pair_logistic_ifL;equal_kinds;risk_percandidate_meanpositionCE+candidateBCE",
+    "F_fit": "Base_pooled_multi_segmentF1_new1500FITbank",
+    "native_utility": "samecountcost_stabilityproxy_not_nativeMacroF1_surrogate",
+    "milestones": [
+      2000,
+      4000,
+      6000
+    ],
+    "latest_every": 100,
+    "inner_selection": false,
+    "CUDA_VISIBLE_DEVICES": "",
+    "utility_updates": 48000,
+    "risk_updates": 12000,
+    "kind_utility_groups": [
+      32,
+      32
+    ],
+    "kind_risk_candidates": [
+      32,
+      32
+    ],
+    "inner_role": "diagnostic_calibration_only_no_checkpoint_choice",
+    "all_milestones_full_state": true
+  },
+  "budget": {
+    "origin_worktree_birth_epoch": 1793771887.0295548,
+    "original_origin": 1793648044.1596537,
+    "GPUjob_h": 24,
+    "CPUaccounting_h": 72,
+    "tracked_peak_upper_bytes": 40000000000,
+    "deadline": 1793820844.1596537,
+    "closure_GPUreserve_h": 2,
+    "prior_GPUjob_h": 18.41335994296604,
+    "prior_summed_measured_CPUreceipt_h": 18.448515337222222,
+    "prior_completed_CPU_allowance_h": 0.75,
+    "prior_tracked_storage_upper_bytes": 35332702254,
+    "prior_legacy_overlap_and_orphan_uncertainties_retained": true,
+    "A60_administrative_tail_CPU_seconds_separate": 0.052479
+  },
+  "policies": [
+    "E",
+    "N",
+    "C"
+  ],
+  "target_names": [
+    "u",
+    "H",
+    "R",
+    "delta_short16_FP",
+    "v"
+  ],
+  "target_scale": "common utility sqrt((mean(u\u00b2)+mean(v\u00b2))/2) floor1 no centering",
+  "majority_guard": "all sequences,bincount5argmax",
+  "candidate_contract": "oldA08components+allmaxconstantJruns;trimonlyends;dedupcompleteactionkey;maxone;strictutility>0",
+  "inference_truth_kind_or_ID_inputs": false,
+  "prior_A60": {
+    "input_manifest.json": {
+      "path": "docs/results/2026-11-03_jepa_proposals/input_manifest.json",
+      "sha256": "63b02472671b7e4a8f39825dd945a236535e896b0fe2f7ce8ac5b22323d8ec8c"
+    },
+    "cache_outer_manifest.json": {
+      "path": "docs/results/2026-11-03_jepa_proposals/cache_outer_manifest.json",
+      "sha256": "adaa33fbfa6684cf7337a8ed3c310eb5e99b621acbc9e0807206113b228ffc43"
+    },
+    "models_manifest.json": {
+      "path": "docs/results/2026-11-03_jepa_proposals/models_manifest.json",
+      "sha256": "7ea4466107f30b5f886085ac4481198211fa7d8c35b383cfdcb93d20261f7248"
+    },
+    "source_cache_qualification.json": {
+      "path": "docs/results/2026-11-03_jepa_proposals/source_cache_qualification.json",
+      "sha256": "96e612af88c302fadb6fabc411078c060861434951e0c290bb92120f5a285caa"
+    },
+    "summary.json": {
+      "path": "docs/results/2026-11-03_jepa_proposals/summary.json",
+      "sha256": "7cbd7c5f48e33bc1461aed3519edc41a5f51cd01672f36db073965cb258cd95a"
+    },
+    "action_space_diagnostic.json": {
+      "path": "docs/results/2026-11-03_jepa_proposals/action_space_diagnostic.json",
+      "sha256": "38e342f434f4c3ac2a79b2ef6bb37da22dfe0bc7bb09c519be3c320277e272a1"
+    },
+    "resources.json": {
+      "path": "docs/results/2026-11-03_jepa_proposals/resources.json",
+      "sha256": "38a826a32c4de34bd92c411ef31d92c3e0bf6e1dc0a26bdfb9182d4f47c28103"
+    },
+    "terminal_exit_receipt.json": {
+      "path": "docs/results/2026-11-03_jepa_proposals/terminal_exit_receipt.json",
+      "sha256": "ab68028ef887fcbb27944ba086aeae9995d953d3a57e1bcc7be5423d9103c172"
+    },
+    "collector_OS_exit_receipt.json": {
+      "path": "docs/results/2026-11-03_jepa_proposals/collector_OS_exit_receipt.json",
+      "sha256": "e4ee51bde7602cefa4b9e32e9da13ebde840cbe620205e722d601d1d12a47146"
+    }
+  },
+  "inference_top_first_no_fallback": true,
+  "calibration": "minimum unsafe N-admitted top r;noneunsafe1/noadmitted0;strict r<tau",
+  "scientific_matrix": {
+    "metric_rows": 314,
+    "paired_comparisons": 240,
+    "bootstrap_replicates": 5000,
+    "oracle_cells": 60,
+    "native_attribution_cells": 56,
+    "old_A60_G_oracle_reproductions": 16
+  },
+  "source_forwards": "only_new_A61_240confirmation_genuine_joined_contexts"
+}
