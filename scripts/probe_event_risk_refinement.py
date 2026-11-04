@@ -80,7 +80,7 @@ def main():
         for i,q in enumerate(sequences(role)):
             if role=='inner_cal' and q['kind']!='native':continue
             pa,pj=a.load(i),j.load(i);base=decode_with_prob('b3',pa,{'decode':{'b3':params}})[0];records.append(observed_geometry(base,pa.argmax(1),pj.argmax(1)))
-        geometry[role]={k:sum(v[k] for v in records) for k in records[0] if isinstance(records[0][k],(int,float))};geometry[role]['input_sha256']=m['roles'][role]['sha256']
+        geometry[role]={k:sum(v[k] for v in records) for k in records[0] if isinstance(records[0][k],(int,float))};geometry[role].update(input_sha256=m['roles'][role]['sha256'],max_C=max(v['all_C'] for v in records),max_T=max(v['T'] for v in records))
     future={role:aggregate_bounds([len(q['refs']) for q in sequences(role)]) for role in ['CAL_mixed','AUDIT_mixed','a62_confirmation_selection','a62_confirmation_calibration']}
     T=max(r['max_length'] for r in m['roles'].values());folder=RUN/'cost_refinement_v1';folder.mkdir(exist_ok=False);profiles=[]
     for name in ['empty','envelope','legal_RLE','long_K']:
