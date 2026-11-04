@@ -18,6 +18,10 @@ def completion_state(science_complete=True):return {'server_scientific_collectio
 def validate_science(pub):
     pub=Path(pub);m=read(pub/'models_manifest.json');s=read(pub/'summary.json');o=read(pub/'action_space_diagnostic.json');n=read(pub/'native_attribution.json');r=read(pub/'regression_summary.json');f=read(pub/'figure_receipt.json')
     if (m['formal_optimizer_updates'],len(m['models']),len(m['fullstates']),len(m['inner_records']),len(m['thresholds']),s['metric_rows'],s['paired_comparison_count'],o['new_full_oracle_count'],o['readonly_old_oracle_count'],o['support_count'],n['cell_count'],n['base_reference_count'],r['record_count'],len(f['artifacts']))!=(24000,4,16,26,6,156,240,6,30,48,24,2,16,18):raise ValueError('complete original authorized scientific matrix required even when result negative')
+    package=read(pub/'package_receipt.json')
+    if package.get('passed') is not True:raise ValueError('successful complete package receipt required before full closure')
+    for field,name in [('FINDINGS_sha256','FINDINGS.md'),('README_sha256','README.md'),('source_costs_sha256','inference_costs.json')]:
+        if package[field]!=sha(pub/name):raise ValueError('frozen package report/cost bytes changed or missing')
     return True
 
 

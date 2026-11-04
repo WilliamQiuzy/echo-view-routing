@@ -90,3 +90,19 @@ def test_complete_report_audit_acceptance_and_figure_crossbindings(monkeypatch):
   old=obj[key];obj[key]=bad
   with pytest.raises(ValueError):m.validate_report_inputs()
   obj[key]=old
+
+def test_full_close_package_passed_and_report_cost_pins(tmp_path):
+ import pytest,hashlib
+ from scripts.close_event_risk import validate_science
+ docs={'models_manifest.json':{'formal_optimizer_updates':24000,'models':[{}]*4,'fullstates':[{}]*16,'inner_records':[{}]*26,'thresholds':[{}]*6},'summary.json':{'metric_rows':156,'paired_comparison_count':240},'action_space_diagnostic.json':{'new_full_oracle_count':6,'readonly_old_oracle_count':30,'support_count':48},'native_attribution.json':{'cell_count':24,'base_reference_count':2},'regression_summary.json':{'record_count':16},'figure_receipt.json':{'artifacts':[{}]*18}}
+ for n,v in docs.items():(tmp_path/n).write_text(json.dumps(v))
+ package={'passed':True}
+ for key,name in [('FINDINGS_sha256','FINDINGS.md'),('README_sha256','README.md'),('source_costs_sha256','inference_costs.json')]:
+  (tmp_path/name).write_text('frozen');package[key]=hashlib.sha256((tmp_path/name).read_bytes()).hexdigest()
+ (tmp_path/'package_receipt.json').write_text(json.dumps(package));assert validate_science(tmp_path)
+ package['passed']=False;(tmp_path/'package_receipt.json').write_text(json.dumps(package))
+ with pytest.raises(ValueError):validate_science(tmp_path)
+ package['passed']=True;(tmp_path/'package_receipt.json').write_text(json.dumps(package));(tmp_path/'README.md').write_text('changed')
+ with pytest.raises(ValueError):validate_science(tmp_path)
+ (tmp_path/'README.md').unlink()
+ with pytest.raises((ValueError,FileNotFoundError)):validate_science(tmp_path)
