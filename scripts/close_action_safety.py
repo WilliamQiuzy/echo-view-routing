@@ -23,7 +23,7 @@ def sample(pid):
 def main():
     with ExclusiveQueue(RUN/'exclusive_supervisor.lock'):
         if (PUB/'resources.json').exists() or (PUB/'terminal_exit_receipt.json').exists():raise ValueError('terminal evidence exists; no overwrite/repeated collector')
-        names=['cost_probe_freeze.json','formal_admission_freeze.json','producer_precache_admission_freeze.json','producer_precache_freeze.json','role_cost_freeze.json','formal_measured_admission_freeze.json','formal_freeze.json','audit_freeze.json','outer_measured_admission_freeze.json','outer_freeze.json','readout_freeze.json','aggregate_freeze.json','oracle_freeze.json','native_freeze.json','package_freeze.json','terminal_freeze.json']
+        names=['cost_probe_freeze.json','formal_admission_freeze.json','producer_precache_admission_freeze.json','producer_precache_freeze.json','role_cost_freeze.json','formal_measured_admission_freeze.json','formal_freeze.json','audit_freeze.json','outer_measured_admission_freeze.json','outer_freeze.json','readout_freeze.json','aggregate_freeze.json','oracle_freeze.json','native_freeze.json','package_freeze.json','figure_repair_freeze.json','terminal_freeze.json']
         contracts={n:verify_freeze(n) for n in names}
         history_pin=read(PUB/'historical_Git_proof_identity.json');proof=read(verify_pin(history_pin));raw={n:(PUB/(n+'.json')).read_bytes() for n in EXPECTED}
         for n in EXPECTED:
