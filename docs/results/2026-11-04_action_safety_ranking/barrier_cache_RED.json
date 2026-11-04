@@ -1,0 +1,31 @@
+{
+  "stage": "barrier_cache_RED",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "tests/test_safety_barrier_cache.py"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 81212,
+  "supervisor_pid": 81201,
+  "started_epoch": 1793775961.642509,
+  "finished_epoch": 1793775961.937983,
+  "full_process_wall_seconds": 0.2954740524291992,
+  "observed_worker_exit_code": 1,
+  "stage_exit_code": 1,
+  "termination_reason": null,
+  "exception": null,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 0.19017399999999998,
+  "measured_supervisor_CPU_seconds": 0.0015250000000000003,
+  "measured_CPU_core_seconds": 0.19169899999999998,
+  "durable_claim_before_Popen": true,
+  "scope": "local synthetic checks;SELF region+waited CHILDREN;final JSON bookkeeping and wrapper imports separate metadata",
+  "output": "FF                                                                       [100%]\n=================================== FAILURES ===================================\n_____ test_complete_models_taus_and_actual_seal_are_required_before_outer ______\ntests/test_safety_barrier_cache.py:7: in test_complete_models_taus_and_actual_seal_are_required_before_outer\n    m=importlib.import_module('echo_routing.temporal.safety_barrier');from echo_routing.temporal.safety_training import SEEDS,ARMS\n      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../../../../../.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n<frozen importlib._bootstrap>:1387: in _gcd_import\n    ???\n<frozen importlib._bootstrap>:1360: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1324: in _find_and_load_unlocked\n    ???\nE   ModuleNotFoundError: No module named 'echo_routing.temporal.safety_barrier'\n_ test_joint_cache_prefix_resume_empty_and_ambiguous_callback_no_extra_forward _\ntests/test_safety_barrier_cache.py:19: in test_joint_cache_prefix_resume_empty_and_ambiguous_callback_no_extra_forward\n    m=importlib.import_module('echo_routing.temporal.safety_policy_cache');from echo_routing.temporal.safety_runtime import policies\n      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../../../../../.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n<frozen importlib._bootstrap>:1387: in _gcd_import\n    ???\n<frozen importlib._bootstrap>:1360: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1324: in _find_and_load_unlocked\n    ???\nE   ModuleNotFoundError: No module named 'echo_routing.temporal.safety_policy_cache'\n=========================== short test summary info ============================\nFAILED tests/test_safety_barrier_cache.py::test_complete_models_taus_and_actual_seal_are_required_before_outer\nFAILED tests/test_safety_barrier_cache.py::test_joint_cache_prefix_resume_empty_and_ambiguous_callback_no_extra_forward\n",
+  "output_sha256": "6af70643c078c43fdd5cdd2ab6842af745c0951dc9631072bbb825eae030306f"
+}
