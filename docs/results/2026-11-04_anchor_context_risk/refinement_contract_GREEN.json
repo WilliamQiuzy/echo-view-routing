@@ -1,0 +1,31 @@
+{
+  "stage": "refinement_contract_GREEN",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "tests/test_event_risk_engineering.py"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 27291,
+  "supervisor_pid": 27280,
+  "started_epoch": 1793835636.559839,
+  "finished_epoch": 1793835639.696521,
+  "full_process_wall_seconds": 3.1366820335388184,
+  "observed_worker_exit_code": 1,
+  "stage_exit_code": 1,
+  "termination_reason": null,
+  "exception": null,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 2.21432,
+  "measured_supervisor_CPU_seconds": 0.0010139999999999984,
+  "measured_CPU_core_seconds": 2.215334,
+  "durable_claim_before_Popen": true,
+  "scope": "local synthetic checks;SELF region+waited CHILDREN;final JSON bookkeeping and wrapper imports separate metadata",
+  "output": "F.                                                                       [100%]\n=================================== FAILURES ===================================\n_________ test_engineering_coverage_is_registered_not_caller_selected __________\ntests/test_event_risk_engineering.py:12: in test_engineering_coverage_is_registered_not_caller_selected\n    with pytest.raises(ValueError):validate_coverage(tmp_path,'refinement_probe_freeze.json',{},[])\n                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\necho_routing/temporal/event_risk_engineering.py:22: in validate_coverage\n    required=set(source_closure(root,entries+inputs+list(base)))\n                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\necho_routing/temporal/event_risk_contracts.py:57: in source_closure\n    for node in ast.walk(ast.parse(p.read_text())):\n                                   ^^^^^^^^^^^^^\n../../../../../.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/pathlib.py:1027: in read_text\n    with self.open(mode='r', encoding=encoding, errors=errors) as f:\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../../../../../.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/pathlib.py:1013: in open\n    return io.open(self, mode, buffering, encoding, errors, newline)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   FileNotFoundError: [Errno 2] No such file or directory: '/private/var/folders/4l/s1hqgvzj2l10_dff3pw5m97m0000gn/T/pytest-of-williamqiu/pytest-412/test_engineering_coverage_is_r0/scripts/probe_event_risk_refinement.py'\n=========================== short test summary info ============================\nFAILED tests/test_event_risk_engineering.py::test_engineering_coverage_is_registered_not_caller_selected\n",
+  "output_sha256": "96c812eb1276f69d4981797e699b155b85ebd23571b0419b2054e4c4cac684ec"
+}

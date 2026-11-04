@@ -1,0 +1,31 @@
+{
+  "stage": "refinement_solver_RED",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "tests/test_event_risk_engineering.py::test_complete_integer_solver_pool_is_synthetic_and_fixed_truth"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 29591,
+  "supervisor_pid": 29581,
+  "started_epoch": 1793835710.893336,
+  "finished_epoch": 1793835713.767641,
+  "full_process_wall_seconds": 2.874305009841919,
+  "observed_worker_exit_code": 1,
+  "stage_exit_code": 1,
+  "termination_reason": null,
+  "exception": null,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 2.126025,
+  "measured_supervisor_CPU_seconds": 0.0009819999999999968,
+  "measured_CPU_core_seconds": 2.127007,
+  "durable_claim_before_Popen": true,
+  "scope": "local synthetic checks;SELF region+waited CHILDREN;final JSON bookkeeping and wrapper imports separate metadata",
+  "output": "F                                                                        [100%]\n=================================== FAILURES ===================================\n________ test_complete_integer_solver_pool_is_synthetic_and_fixed_truth ________\ntests/test_event_risk_engineering.py:32: in test_complete_integer_solver_pool_is_synthetic_and_fixed_truth\n    from scripts.probe_event_risk_refinement import solver_pools\nE   ImportError: cannot import name 'solver_pools' from 'scripts.probe_event_risk_refinement' (/Users/williamqiu/.config/superpowers/worktrees/echo-view-routing/a62-anchor-context-risk/scripts/probe_event_risk_refinement.py)\n=========================== short test summary info ============================\nFAILED tests/test_event_risk_engineering.py::test_complete_integer_solver_pool_is_synthetic_and_fixed_truth\n",
+  "output_sha256": "7a300b79c5983854c4671f85d8a0e88752b07d8ab9c1a63533efeeb02daeb03c"
+}
