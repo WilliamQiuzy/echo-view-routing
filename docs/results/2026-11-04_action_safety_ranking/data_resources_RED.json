@@ -1,0 +1,31 @@
+{
+  "stage": "data_resources_RED",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "tests/test_safety_data_resources.py"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 92391,
+  "supervisor_pid": 92380,
+  "started_epoch": 1793773186.739296,
+  "finished_epoch": 1793773187.048844,
+  "full_process_wall_seconds": 0.30954813957214355,
+  "observed_worker_exit_code": 1,
+  "stage_exit_code": 1,
+  "termination_reason": null,
+  "exception": null,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 0.198289,
+  "measured_supervisor_CPU_seconds": 0.0015470000000000015,
+  "measured_CPU_core_seconds": 0.19983599999999999,
+  "durable_claim_before_Popen": true,
+  "scope": "local synthetic checks;SELF region+waited CHILDREN;final JSON bookkeeping and wrapper imports separate metadata",
+  "output": "FFF                                                                      [100%]\n=================================== FAILURES ===================================\n_____ test_full_fit_dataset_query_groups_positions_RMS_and_exact_seedplans _____\ntests/test_safety_data_resources.py:10: in test_full_fit_dataset_query_groups_positions_RMS_and_exact_seedplans\n    m=api('data');from echo_routing.temporal.safety_targets import effects\n      ^^^^^^^^^^^\ntests/test_safety_data_resources.py:6: in api\n    def api(n):return importlib.import_module('echo_routing.temporal.safety_'+n)\n                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../../../../../.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n<frozen importlib._bootstrap>:1387: in _gcd_import\n    ???\n<frozen importlib._bootstrap>:1360: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1324: in _find_and_load_unlocked\n    ???\nE   ModuleNotFoundError: No module named 'echo_routing.temporal.safety_data'\n__________ test_inherited_A60_costs_and_CPU_deadline_not_GPU_reserve ___________\ntests/test_safety_data_resources.py:27: in test_inherited_A60_costs_and_CPU_deadline_not_GPU_reserve\n    m=api('resources');spent=m.totals([])\n      ^^^^^^^^^^^^^^^^\ntests/test_safety_data_resources.py:6: in api\n    def api(n):return importlib.import_module('echo_routing.temporal.safety_'+n)\n                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../../../../../.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n<frozen importlib._bootstrap>:1387: in _gcd_import\n    ???\n<frozen importlib._bootstrap>:1360: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1324: in _find_and_load_unlocked\n    ???\nE   ModuleNotFoundError: No module named 'echo_routing.temporal.safety_resources'\n_____ test_supervisor_durable_claim_precedes_child_and_actual_failure_lock _____\ntests/test_safety_data_resources.py:36: in test_supervisor_durable_claim_precedes_child_and_actual_failure_lock\n    m=importlib.import_module('scripts.supervise_action_safety');r=api('resources')\n      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../../../../../.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n<frozen importlib._bootstrap>:1387: in _gcd_import\n    ???\n<frozen importlib._bootstrap>:1360: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1324: in _find_and_load_unlocked\n    ???\nE   ModuleNotFoundError: No module named 'scripts.supervise_action_safety'\n=========================== short test summary info ============================\nFAILED tests/test_safety_data_resources.py::test_full_fit_dataset_query_groups_positions_RMS_and_exact_seedplans\nFAILED tests/test_safety_data_resources.py::test_inherited_A60_costs_and_CPU_deadline_not_GPU_reserve\nFAILED tests/test_safety_data_resources.py::test_supervisor_durable_claim_precedes_child_and_actual_failure_lock\n",
+  "output_sha256": "e59c0115cf05960ec12ce8ee90f9ac9d7ac55389bb6d287cf529e6d402888683"
+}
