@@ -1,6 +1,6 @@
 # A59：固定A08锚点的局部修复
 
-**结论：本轮没有建立超过A08的稳定净增益。** 四个局部修复头各完成6000步，共24,000次真实更新；12份inner诊断、70行固定读出、96组各5000次配对bootstrap、12个标签辅助候选域诊断和图表均已完成。资源、进程退出和主工作区同步仍在收尾，阶段监控继续。
+**结论：本轮没有建立超过A08的稳定净增益。** 四个局部修复头各完成6000步，共24,000次真实更新；12份inner诊断、70行固定读出、96组各5000次配对bootstrap、12个标签辅助候选域诊断和图表均已完成。计算、统计、补充报告与实际资源退出核验均完成；公开同步与用户修改保护证明以[integration记录](integration_receipt.json)为准。
 
 研究问题是：保留原stride5 A08-s0+B3的类别决策，让JEPA只帮助挑选raw A08支持的局部修复，能否补回真短段/变化？A57已暴露JEPA识别与内部碎片化损害；A58在短段压力calibration有局部增量，完整联合解码仍伤害A08。本轮固定A08默认输出，每完整序列最多一个修复，比较同权重的多数类保护G/无保护U；两种输入A（A08+重复A08）与J（同A08+JEPA）共享两seed初始化、计划和固定6000步。A14–17已有路由实验，本轮不声称路由或utility学习的新颖性。
 
@@ -37,6 +37,8 @@ G域主任务上限仅比Base高约0.215/0.195个百分点。新构造calibratio
 
 原生五类混淆、A4C/A5C双向错误、边界P/R、pair与multi短段FN/FP、恢复/损害、候选长度/接受/veto、曲线/资源完整数据见[结构化统计](summary.json)、[全部70行](metrics.csv)、[动作域诊断](action_space_oracle.csv)。[配对效应图](paired_effects.png)与[训练曲线](training_curves.png)均有同名PDF；图中所有seed/半部及三表保留，G/U共享模型和评分，缓存head延迟不冒充整个A08+JEPA系统成本。
 
-预算不重置，继承原24GPU-job小时/72实际worker CPU-core小时/40GB tracked上界与原更早deadline，历史费用和不确定性均保留；未花费的2小时收尾储备不算实耗。最终实际费用/退出证明在resources与terminal记录完成后补齐。模型、原始数据和per-case标签留服务器；不改网页、不push，主目录8个已暂存理论文件及其他用户修改继续保护。
+预算不重置，继承原24GPU-job小时/72实际worker CPU-core小时/40GB tracked上界与原更早deadline，历史费用和不确定性均保留；未花费的2小时收尾储备不算实耗。实际新增GPU1.019559小时，历史累计GPU18.334986/24小时；累计计量CPU18.253671小时，加原已单列的0.75小时历史allowance后为19.003671/72小时，无新增allowance。累计tracked保守上界34,541,577,626字节/40GB，不是真实全文件系统峰值。协调与最后元数据工具开销另列。最终[资源对账](resources_final.json)和[退出记录](terminal_exit_receipt_final.json)保留原收尾字节与accepted长度补项的9.403279 CPU秒追加链，所有模型/监督器与collector已退出，GPU空闲、pending0。模型、原始数据和per-case标签留服务器；不改网页、不push，主目录8个已暂存理论文件及其他用户修改继续保护。
 
 证据链：[执行卡](../../superpowers/plans/2026-11-03-a59-anchor-edits.md)、[完整研究动因](RESEARCH_REPLAN.md)、[正式训练核验](root_formal_completion_verification.json)、[首轮点估计独立核验](primary_fixed6000_preliminary_root_verification.json)。全部历史准备/失败/修复保留在本目录与Git记录，以上为最终科学状态，历史snapshot不代表当前进度。
+
+主目录同步只涉及exact public清单中的新A59材料；主索引在原工作字节之后追加，8个已暂存理论文件及其他已有修改的保护核验见[integration记录](integration_receipt.json)。不push、不改网页、不自动A60。
