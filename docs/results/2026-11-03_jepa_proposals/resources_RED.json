@@ -1,0 +1,31 @@
+{
+  "stage": "resources_RED",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "tests/test_proposal_resources.py"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 71447,
+  "supervisor_pid": 71436,
+  "started_epoch": 1793760104.669342,
+  "finished_epoch": 1793760104.876606,
+  "full_process_wall_seconds": 0.20726394653320312,
+  "observed_worker_exit_code": 2,
+  "stage_exit_code": 1,
+  "termination_reason": null,
+  "exception": null,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 0.165443,
+  "measured_supervisor_CPU_seconds": 0.000958999999999998,
+  "measured_CPU_core_seconds": 0.166402,
+  "durable_claim_before_Popen": true,
+  "scope": "local synthetic checks;SELF region+waited CHILDREN;final JSON bookkeeping and wrapper imports separate metadata",
+  "output": "\n==================================== ERRORS ====================================\n______________ ERROR collecting tests/test_proposal_resources.py _______________\nImportError while importing test module '/Users/williamqiu/.config/superpowers/worktrees/echo-view-routing/a60-jepa-proposals/tests/test_proposal_resources.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n../../../../../.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/test_proposal_resources.py:2: in <module>\n    from echo_routing.temporal.proposal_resources import totals,forecast,PRIOR_GPU_HOURS,PRIOR_MEASURED_CPU_HOURS,PRIOR_STORAGE_UPPER_BYTES\nE   ModuleNotFoundError: No module named 'echo_routing.temporal.proposal_resources'\n=========================== short test summary info ============================\nERROR tests/test_proposal_resources.py\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n",
+  "output_sha256": "defbd2ed3bff27c422a85911ac0fb5279a556a4bf0f27b403f1763bc5b624ac0"
+}
