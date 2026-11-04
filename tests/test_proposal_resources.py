@@ -38,3 +38,9 @@ def test_CPU_stage_does_not_claim_foreign_GPU_and_stops_own_context(tmp_path):
         return [json.loads(p.read_text())['model_pid']] if p.exists() and json.loads(p.read_text()).get('model_pid') else []
     r=execute('context_fixture',[sys.executable,'-c','import time;time.sleep(3)'],run,pub,totals([]),2,False,GPU_probe=GPU,storage_probe=lambda:0)
     assert r['termination_reason']=='unexpected_CPU_stage_CUDA_context' and r['CUDA_context_occupied']
+
+def test_CPU_supervisor_bounds_use_CPU_and_original_deadline(tmp_path):
+    import sys
+    r=execute('CPU_bounds',[sys.executable,'-c','pass'],tmp_path/'run',tmp_path/'pub',totals([]),14400,False,GPU_probe=lambda:[],storage_probe=lambda:0)
+    assert r['effective_stage_wall_limit_seconds']==14400
+    assert r['limits_at_launch']['stage_wall_seconds']>r['limits_at_launch']['remaining_GPU_seconds_before_reserve']

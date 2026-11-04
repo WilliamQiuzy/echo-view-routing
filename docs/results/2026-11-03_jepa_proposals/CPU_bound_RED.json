@@ -1,0 +1,31 @@
+{
+  "stage": "CPU_bound_RED",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "tests/test_proposal_resources.py::test_CPU_supervisor_bounds_use_CPU_and_original_deadline"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 90673,
+  "supervisor_pid": 90662,
+  "started_epoch": 1793760676.7063391,
+  "finished_epoch": 1793760677.2764192,
+  "full_process_wall_seconds": 0.570080041885376,
+  "observed_worker_exit_code": 1,
+  "stage_exit_code": 1,
+  "termination_reason": null,
+  "exception": null,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 0.366471,
+  "measured_supervisor_CPU_seconds": 0.0010300000000000014,
+  "measured_CPU_core_seconds": 0.36750099999999997,
+  "durable_claim_before_Popen": true,
+  "scope": "local synthetic checks;SELF region+waited CHILDREN;final JSON bookkeeping and wrapper imports separate metadata",
+  "output": "F                                                                        [100%]\n=================================== FAILURES ===================================\n___________ test_CPU_supervisor_bounds_use_CPU_and_original_deadline ___________\ntests/test_proposal_resources.py:45: in test_CPU_supervisor_bounds_use_CPU_and_original_deadline\n    assert r['effective_stage_wall_limit_seconds']==14400\nE   assert 13184.050813674916 == 14400\n=========================== short test summary info ============================\nFAILED tests/test_proposal_resources.py::test_CPU_supervisor_bounds_use_CPU_and_original_deadline\n",
+  "output_sha256": "528d6568fcf82dbb74ec404fbad08126027907781e76040a67e0f2cd46f1fb90"
+}

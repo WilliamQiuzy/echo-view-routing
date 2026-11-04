@@ -77,7 +77,7 @@ def execute(stage, command, run, pub, spent, declared_wall_seconds, GPU_job,
         initial_GPU_owners = GPU_probe()
         if GPU_job and initial_GPU_owners:
             raise RuntimeError('an existing GPU owner prevents a second GPU queue')
-        bounds = remaining_limits(spent, time.time(), potential_GPU_context=True)
+        bounds = remaining_limits(spent, time.time(), potential_GPU_context=GPU_job)
         effective = min(float(declared_wall_seconds), bounds['stage_wall_seconds'] - 10.)
         if not math.isfinite(effective) or effective <= 0:
             raise RuntimeError('no admitted shared resource room remains')
