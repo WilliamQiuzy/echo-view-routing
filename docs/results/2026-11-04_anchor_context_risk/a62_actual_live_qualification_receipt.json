@@ -1,0 +1,243 @@
+{
+  "stage": "actual_live_readonly_qualification",
+  "observed_worker_exit_code": 0,
+  "started_epoch": 1793832435.362689,
+  "finished_epoch": 1793832439.772028,
+  "full_process_wall_seconds": 4.40933895111084,
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": null,
+  "measured_CPU_core_seconds": 0.33626700000000004,
+  "local_SELF_plus_waited_SSH_CPU_seconds": 0.017194,
+  "remote_readonly_probe_CPU_included_if_observed": true,
+  "scope": "one bounded SSH liveprobe; localSELF+waitedSSH plus disjoint remoteSELF+waitednvidia; final JSON/tool tails unknown",
+  "stdout": {
+    "epoch": 1793832437.8542774,
+    "boot_id": "09960950-5572-4f17-8b8f-8200fc394bd9",
+    "uptime": "27915.42",
+    "A62_namespace_exists": false,
+    "namespace_status": {
+      "a57_dense_sequence_v1": {
+        "exists": true,
+        "active": null,
+        "pending_count": 0,
+        "locks": {
+          "exclusive_supervisor.lock": "available_readonly_probe"
+        }
+      },
+      "a58_structured_evidence_v1": {
+        "exists": true,
+        "active": null,
+        "pending_count": 0,
+        "locks": {
+          "exclusive_supervisor.lock": "available_readonly_probe"
+        }
+      },
+      "a59_anchor_edits_v1": {
+        "exists": true,
+        "active": null,
+        "pending_count": 0,
+        "locks": {
+          "exclusive_supervisor.lock": "available_readonly_probe"
+        }
+      },
+      "a60_jepa_proposals_v1": {
+        "exists": true,
+        "active": null,
+        "pending_count": 0,
+        "locks": {
+          "exclusive_supervisor.lock": "available_readonly_probe"
+        }
+      },
+      "a61_action_safety_ranking_v1": {
+        "exists": true,
+        "active": null,
+        "pending_count": 0,
+        "locks": {
+          "exclusive_supervisor.lock": "available_readonly_probe"
+        }
+      }
+    },
+    "GPU_state": "NVIDIA L40S, 16617 MiB, 46068 MiB, 79 %",
+    "visible_project_or_GPU_processes": [
+      {
+        "pid": 262888,
+        "uid": 1001,
+        "start_ticks": 2625289,
+        "script_basenames": [
+          "ex3_external_forward.py",
+          "ex3_readout.py"
+        ],
+        "GPU_owner": false,
+        "cwd_basename": "ex3_helena_input_v1"
+      },
+      {
+        "pid": 262890,
+        "uid": 1001,
+        "start_ticks": 2625289,
+        "script_basenames": [],
+        "GPU_owner": false,
+        "cwd_basename": "echo-view-routing"
+      },
+      {
+        "pid": 263516,
+        "uid": 1001,
+        "start_ticks": 2639308,
+        "script_basenames": [],
+        "GPU_owner": false,
+        "cwd_basename": "william"
+      },
+      {
+        "pid": 278408,
+        "uid": 1001,
+        "start_ticks": 2760924,
+        "script_basenames": [
+          "ex3_external_forward.py"
+        ],
+        "GPU_owner": true,
+        "cwd_basename": "echo-view-routing"
+      }
+    ],
+    "GPU_compute_rows": [
+      "278408, 16608 MiB"
+    ],
+    "required_prior_files": {
+      "docs/results/2026-11-04_a61_residual_case_analysis/analysis_manifest.json": {
+        "exists": false,
+        "sha256": null,
+        "expected_sha256": "bd6e650e35c7eb71112b62b0fbf6bce460020197effe84e118d0fc6acd028732"
+      },
+      "docs/results/2026-11-04_a61_residual_case_analysis/case_clarification.anonymous.json": {
+        "exists": false,
+        "sha256": null,
+        "expected_sha256": "db030d08cb040122e8f632a06b01c9c78879082eb741125bbdd665d3ae4dea88"
+      },
+      "docs/results/2026-11-04_a61_residual_case_analysis/case_evidence.anonymous.json": {
+        "exists": false,
+        "sha256": null,
+        "expected_sha256": "a441f5384101ee547f294cbe0ce8f0ca29be17b13a5299a9ad8c21532fcafe29"
+      },
+      "docs/results/2026-11-04_action_safety_ranking/calibration.json": {
+        "exists": true,
+        "sha256": "2e7a56d7d441be74ced0a8270034711372cc0721e4267c79737757c4e2091b51",
+        "expected_sha256": "2e7a56d7d441be74ced0a8270034711372cc0721e4267c79737757c4e2091b51"
+      },
+      "docs/results/2026-11-04_action_safety_ranking/input_manifest.json": {
+        "exists": true,
+        "sha256": "d599cd48bdf23e599e16dc02db6888c7e5f1f2616f5dff9eea57a05e13a60a8b",
+        "expected_sha256": "d599cd48bdf23e599e16dc02db6888c7e5f1f2616f5dff9eea57a05e13a60a8b"
+      },
+      "docs/results/2026-11-04_action_safety_ranking/models_manifest.json": {
+        "exists": true,
+        "sha256": "ed20ecdf41d05cdc9b1b8c74adf9ced90f5533f936c297ce2653ebcd1d640e20",
+        "expected_sha256": "ed20ecdf41d05cdc9b1b8c74adf9ced90f5533f936c297ce2653ebcd1d640e20"
+      },
+      "docs/results/2026-11-04_action_safety_ranking/public_source_manifest.json": {
+        "exists": false,
+        "sha256": null,
+        "expected_sha256": "0c8d4a74d80ba282008e08735ca4649fa4493604296510ecfc231d32906c1e8a"
+      },
+      "docs/results/2026-11-04_action_safety_ranking/readout_plan.json": {
+        "exists": true,
+        "sha256": "a86312f4576d1c36df7111dab6fec37d43871d21facf5b3be89facf2fe69d302",
+        "expected_sha256": "a86312f4576d1c36df7111dab6fec37d43871d21facf5b3be89facf2fe69d302"
+      },
+      "docs/results/2026-11-04_action_safety_ranking/resources.json": {
+        "exists": true,
+        "sha256": "e62c092a2951ea207c7d07cb0d555cfb434f320b798a17fdb82a1cc1342bec62",
+        "expected_sha256": "e62c092a2951ea207c7d07cb0d555cfb434f320b798a17fdb82a1cc1342bec62"
+      },
+      "docs/results/2026-11-04_action_safety_ranking/training_inputs.json": {
+        "exists": true,
+        "sha256": "a708fbcb97af208d72b9080da0de9ef2821c98c4eddb3ade308b472b90ceeb29",
+        "expected_sha256": "a708fbcb97af208d72b9080da0de9ef2821c98c4eddb3ade308b472b90ceeb29"
+      },
+      "echo_routing/temporal/anchor_oracle.py": {
+        "exists": true,
+        "sha256": "c80f58ef345748b0f0b0af8525cedc20f1f9ab3d04125ba6a447c9796db603e6",
+        "expected_sha256": "c80f58ef345748b0f0b0af8525cedc20f1f9ab3d04125ba6a447c9796db603e6"
+      },
+      "echo_routing/temporal/baselines/b3_js_divergence.py": {
+        "exists": true,
+        "sha256": "8419851384c624d1b95eaf703178fe38955e25b2d9657037ffa94ebf3d2ce854",
+        "expected_sha256": "8419851384c624d1b95eaf703178fe38955e25b2d9657037ffa94ebf3d2ce854"
+      },
+      "echo_routing/temporal/proposal_actions.py": {
+        "exists": true,
+        "sha256": "48f3b6db4d5b39482ed108bf3087aea873f25bdd71777577cfd4d8c4a47b0017",
+        "expected_sha256": "48f3b6db4d5b39482ed108bf3087aea873f25bdd71777577cfd4d8c4a47b0017"
+      },
+      "echo_routing/temporal/proposal_features.py": {
+        "exists": true,
+        "sha256": "bc031823805646c4712392adefc507331ab5d03e66522368b71593e364bae45b",
+        "expected_sha256": "bc031823805646c4712392adefc507331ab5d03e66522368b71593e364bae45b"
+      },
+      "echo_routing/temporal/safety_features.py": {
+        "exists": true,
+        "sha256": "b3bc18ec7c11aaa667c0b6bbe73f0644a086b805f19b53a869ba922b83a1c973",
+        "expected_sha256": "b3bc18ec7c11aaa667c0b6bbe73f0644a086b805f19b53a869ba922b83a1c973"
+      },
+      "echo_routing/temporal/safety_policy.py": {
+        "exists": true,
+        "sha256": "198f7d5738515c41ce248c56ff72743a00f87ac675b44e39cb18f831491f4679",
+        "expected_sha256": "198f7d5738515c41ce248c56ff72743a00f87ac675b44e39cb18f831491f4679"
+      },
+      "echo_routing/temporal/safety_runtime.py": {
+        "exists": true,
+        "sha256": "dfa17e864c17659de8268d2df6c3ffa14bda28acc6a42905480d982a3c4baf4e",
+        "expected_sha256": "dfa17e864c17659de8268d2df6c3ffa14bda28acc6a42905480d982a3c4baf4e"
+      },
+      "echo_routing/temporal/safety_training.py": {
+        "exists": true,
+        "sha256": "a067b03fefdc0677d57529ac4fb27d738a4df769f5e923fa408346ba2eb2b2f3",
+        "expected_sha256": "a067b03fefdc0677d57529ac4fb27d738a4df769f5e923fa408346ba2eb2b2f3"
+      },
+      "docs/results/2026-11-04_action_safety_ranking/FIT_checks.json": {
+        "exists": true,
+        "sha256": "0e4caf13a0d979a8957ce1ac14a64e5df8b2426facc15ae1a64d77c0e2db95ba",
+        "expected_sha256": "0e4caf13a0d979a8957ce1ac14a64e5df8b2426facc15ae1a64d77c0e2db95ba"
+      },
+      "docs/results/2026-11-04_action_safety_ranking/action_space_diagnostic.json": {
+        "exists": true,
+        "sha256": "4a28a1f8a821e599cfe6405726e83968695b128524e2b8dd43b4f37ce47c7200",
+        "expected_sha256": "4a28a1f8a821e599cfe6405726e83968695b128524e2b8dd43b4f37ce47c7200"
+      },
+      "docs/results/2026-11-04_action_safety_ranking/cache_outer_manifest.json": {
+        "exists": true,
+        "sha256": "dc57f7e9e630eb0f19ff93bf515a62dbf3c58d146a30377cc9e2a83994f6207d",
+        "expected_sha256": "dc57f7e9e630eb0f19ff93bf515a62dbf3c58d146a30377cc9e2a83994f6207d"
+      },
+      "docs/results/2026-11-04_action_safety_ranking/collector_OS_exit_receipt.json": {
+        "exists": true,
+        "sha256": "36318950a6c4da0d2c3eebfc707f1bdeb010bcd5796b8e83f175fe0328f6e1e8",
+        "expected_sha256": "36318950a6c4da0d2c3eebfc707f1bdeb010bcd5796b8e83f175fe0328f6e1e8"
+      },
+      "configs/experiments/action_safety_ranking_v1.json": {
+        "exists": true,
+        "sha256": "8011b59df4f99a34783ef6b6b0310a86b13f53cf4f9fd91da59c23e739c5163d",
+        "expected_sha256": "8011b59df4f99a34783ef6b6b0310a86b13f53cf4f9fd91da59c23e739c5163d"
+      },
+      "docs/results/2026-11-04_action_safety_ranking/outer_metrics.json": {
+        "exists": true,
+        "sha256": "e7fe25abedf227b79f7b9995fb9f1bdeca856ea42b8ce34a526d1c3c93aef835",
+        "expected_sha256": "e7fe25abedf227b79f7b9995fb9f1bdeca856ea42b8ce34a526d1c3c93aef835"
+      },
+      "docs/results/2026-11-04_action_safety_ranking/producer_precache_manifest.json": {
+        "exists": true,
+        "sha256": "62602926dff217cedeb003e09611785695a20fae0e32d5145a5215952762978e",
+        "expected_sha256": "62602926dff217cedeb003e09611785695a20fae0e32d5145a5215952762978e"
+      }
+    },
+    "actual_A62_ledger_receipts": 0,
+    "A61_closed_pins": {
+      "resources.json": "e62c092a2951ea207c7d07cb0d555cfb434f320b798a17fdb82a1cc1342bec62",
+      "terminal_exit_receipt.json": "59f7447a58fe68987ff9cf0d2e7329b5c79a6b1e5d49af1aea0df96e47454088",
+      "collector_OS_exit_receipt.json": "36318950a6c4da0d2c3eebfc707f1bdeb010bcd5796b8e83f175fe0328f6e1e8"
+    },
+    "A61_collector_observed_OS": 0,
+    "remote_SELF_plus_waited_probe_CPU_seconds": 0.31907300000000005,
+    "scope": "one bounded readonly live qualification; process visibility incomplete if OS denies; no model/source/stage launch"
+  },
+  "stderr": "",
+  "GPU_job": false,
+  "CUDA_context_occupied": false
+}

@@ -28,8 +28,9 @@ def main():
                 if row['true_prediction_frame_confusion5']!=sealed['decoded_position_confusion']['native'] or (row['Base_correct_to_wrong'],row['Base_wrong_to_correct'],row['frame_error_delta'])!=(gross['H'],gross['R'],gross['dE']):raise ValueError('native cube/gross/CM mismatch sealed row')
                 cubes.append({'table':'main','half':half,'seed':seed,'system':system(seed,policy),**row})
     cfg=read(CFG);evidence_path=next(p for p in cfg['prior_source_pins'] if p.endswith('/case_evidence.anonymous.json'))
-    if sha(ROOT/evidence_path)!=cfg['prior_source_pins'][evidence_path]:raise ValueError('original declared two-case evidence pin changed')
-    evidence=read(ROOT/evidence_path);old=old_records()['outer_metrics.json']
+    from echo_routing.temporal.event_risk_context import verify as verify_context
+    binding=read(PUB/'prior_context_binding.json');paths=verify_context(ROOT,cfg,binding,{commit:read(verify_pin(p)) for commit,p in binding['actual_Git_proofs'].items()})
+    evidence=read(paths[evidence_path]);old=old_records()['outer_metrics.json']
     for case in [r for r in evidence['cases'] if r['seed']==SEEDS[0]]:
         axis=case['case'].replace(' ','_');role=case['source_role'];oldrow=next(r for r in old['rows'] if r.get('seed')==SEEDS[0] and r.get('arm')=='S-L' and r.get('policy')=='C' and r.get('source_role')==role);folder=ROOT/oldrow['policy_cache']['path'];journal=folder/'committed.jsonl'
         if sha(journal)!=oldrow['policy_cache']['journal_sha256']:raise ValueError('declared regression old journal changed')

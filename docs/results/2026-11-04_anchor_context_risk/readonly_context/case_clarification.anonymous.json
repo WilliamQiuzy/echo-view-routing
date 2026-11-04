@@ -1,0 +1,227 @@
+{
+  "scope": "last postclosure cached case clarification only; noNN/SGD/fullstage/threshold/files changed",
+  "source_private_evidence_sha256": "d2bf968b15744f724d7a332ea877449eeb43b10c306a40e07563e7695b006748",
+  "CPU_SELF_plus_waitedchildren_seconds_through_sample": 1.84743,
+  "wall_seconds": 0.0047533512115478516,
+  "SELF_observed_OS_exit": null,
+  "write_exit_tail_unmetered": true,
+  "cases": [
+    {
+      "case": "Case A",
+      "seed": 2026110461,
+      "lost_true_units": [],
+      "action_touches_axis_start": true,
+      "action_touches_axis_end": false,
+      "added_boundaries": [
+        {
+          "position_relation": "action_end",
+          "Base_transition": [
+            "PLAX",
+            "PLAX"
+          ],
+          "edited_transition": [
+            "PSAX",
+            "PLAX"
+          ]
+        }
+      ],
+      "removed_boundaries": [],
+      "Base_runs_overlapping_action": [
+        {
+          "class": "PLAX",
+          "complete_run_length": 146,
+          "positions_inside_action": 40
+        }
+      ],
+      "edited_runs_overlapping_action": [
+        {
+          "class": "PSAX",
+          "complete_run_length": 40,
+          "positions_inside_action": 40
+        }
+      ],
+      "Base_A4C_runs_intersecting_action": 0,
+      "edited_A4C_runs_intersecting_action": 0
+    },
+    {
+      "case": "Case B",
+      "seed": 2026110461,
+      "lost_true_units": [
+        {
+          "class": "A4C",
+          "length": 11
+        },
+        {
+          "class": "A5C",
+          "length": 9
+        }
+      ],
+      "action_touches_axis_start": false,
+      "action_touches_axis_end": false,
+      "added_boundaries": [
+        {
+          "position_relation": "action_end",
+          "Base_transition": [
+            "SC4C",
+            "SC4C"
+          ],
+          "edited_transition": [
+            "A4C",
+            "SC4C"
+          ]
+        }
+      ],
+      "removed_boundaries": [
+        {
+          "position_relation": "action_start",
+          "Base_transition": [
+            "A4C",
+            "A5C"
+          ],
+          "edited_transition": [
+            "A4C",
+            "A4C"
+          ]
+        },
+        {
+          "position_relation": "inside_action",
+          "Base_transition": [
+            "A5C",
+            "A4C"
+          ],
+          "edited_transition": [
+            "A4C",
+            "A4C"
+          ]
+        },
+        {
+          "position_relation": "inside_action",
+          "Base_transition": [
+            "A4C",
+            "SC4C"
+          ],
+          "edited_transition": [
+            "A4C",
+            "A4C"
+          ]
+        }
+      ],
+      "Base_runs_overlapping_action": [
+        {
+          "class": "A5C",
+          "complete_run_length": 10,
+          "positions_inside_action": 10
+        },
+        {
+          "class": "A4C",
+          "complete_run_length": 35,
+          "positions_inside_action": 35
+        },
+        {
+          "class": "SC4C",
+          "complete_run_length": 11,
+          "positions_inside_action": 1
+        }
+      ],
+      "edited_runs_overlapping_action": [
+        {
+          "class": "A4C",
+          "complete_run_length": 56,
+          "positions_inside_action": 46
+        }
+      ],
+      "Base_A4C_runs_intersecting_action": 1,
+      "edited_A4C_runs_intersecting_action": 1
+    },
+    {
+      "case": "Case B",
+      "seed": 2026110462,
+      "lost_true_units": [
+        {
+          "class": "A4C",
+          "length": 11
+        },
+        {
+          "class": "A5C",
+          "length": 9
+        }
+      ],
+      "action_touches_axis_start": false,
+      "action_touches_axis_end": false,
+      "added_boundaries": [
+        {
+          "position_relation": "action_end",
+          "Base_transition": [
+            "SC4C",
+            "SC4C"
+          ],
+          "edited_transition": [
+            "A4C",
+            "SC4C"
+          ]
+        }
+      ],
+      "removed_boundaries": [
+        {
+          "position_relation": "action_start",
+          "Base_transition": [
+            "A4C",
+            "A5C"
+          ],
+          "edited_transition": [
+            "A4C",
+            "A4C"
+          ]
+        },
+        {
+          "position_relation": "inside_action",
+          "Base_transition": [
+            "A5C",
+            "A4C"
+          ],
+          "edited_transition": [
+            "A4C",
+            "A4C"
+          ]
+        },
+        {
+          "position_relation": "inside_action",
+          "Base_transition": [
+            "A4C",
+            "SC4C"
+          ],
+          "edited_transition": [
+            "A4C",
+            "A4C"
+          ]
+        }
+      ],
+      "Base_runs_overlapping_action": [
+        {
+          "class": "A5C",
+          "complete_run_length": 10,
+          "positions_inside_action": 10
+        },
+        {
+          "class": "A4C",
+          "complete_run_length": 35,
+          "positions_inside_action": 35
+        },
+        {
+          "class": "SC4C",
+          "complete_run_length": 11,
+          "positions_inside_action": 1
+        }
+      ],
+      "edited_runs_overlapping_action": [
+        {
+          "class": "A4C",
+          "complete_run_length": 56,
+          "positions_inside_action": 46
+        }
+      ],
+      "Base_A4C_runs_intersecting_action": 1,
+      "edited_A4C_runs_intersecting_action": 1
+    }
+  ]
+}

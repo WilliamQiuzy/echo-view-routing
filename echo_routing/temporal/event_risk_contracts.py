@@ -18,7 +18,7 @@ SPECS={
  'readout':(['readout_event_risk'],['models_manifest.json','calibration.json','readout_plan.json','outer_identity.json','source_adoption.json','input_manifest.json']),
  'aggregate':(['aggregate_event_risk'],['outer_metrics.json','readout_plan.json','models_manifest.json','calibration.json']),
  'oracle':(['oracle_event_risk'],['summary.json','outer_metrics.json','models_manifest.json','calibration.json','readout_plan.json']),
- 'forensics':(['forensics_event_risk'],['summary.json','outer_metrics.json','models_manifest.json','calibration.json','readout_plan.json']),
+ 'forensics':(['forensics_event_risk'],['prior_context_binding.json','summary.json','outer_metrics.json','models_manifest.json','calibration.json','readout_plan.json']),
  'package':(['package_event_risk'],['summary.json','outer_metrics.json','inner_metrics.json','models_manifest.json','calibration.json','action_space_diagnostic.json','native_attribution.json','regression_summary.json','model_audit.json','acceptance.json']),
  'terminal':(['close_event_risk','wait_event_risk_collector'],['summary.json','outer_metrics.json','models_manifest.json','calibration.json','readout_plan.json','action_space_diagnostic.json','native_attribution.json','regression_summary.json','package_receipt.json','FINDINGS.md','README.md','inference_costs.json','figure_receipt.json','independent_scientific_review.json','root_figure_visual_QA.json']),
 }
