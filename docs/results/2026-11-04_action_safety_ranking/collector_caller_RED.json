@@ -1,0 +1,31 @@
+{
+  "stage": "collector_caller_RED",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "tests/test_safety_collector_caller.py"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 82237,
+  "supervisor_pid": 82226,
+  "started_epoch": 1793816529.212677,
+  "finished_epoch": 1793816529.465638,
+  "full_process_wall_seconds": 0.2529609203338623,
+  "observed_worker_exit_code": 1,
+  "stage_exit_code": 1,
+  "termination_reason": null,
+  "exception": null,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 0.16262,
+  "measured_supervisor_CPU_seconds": 0.0011549999999999998,
+  "measured_CPU_core_seconds": 0.16377499999999998,
+  "durable_claim_before_Popen": true,
+  "scope": "local synthetic checks;SELF region+waited CHILDREN;final JSON bookkeeping and wrapper imports separate metadata",
+  "output": "F                                                                        [100%]\n=================================== FAILURES ===================================\n__________ test_one_direct_wait_and_incremental_cpu_not_doublecounted __________\ntests/test_safety_collector_caller.py:7: in test_one_direct_wait_and_incremental_cpu_not_doublecounted\n    from scripts import call_action_safety_collector as m\nE   ImportError: cannot import name 'call_action_safety_collector' from 'scripts' (unknown location)\n=========================== short test summary info ============================\nFAILED tests/test_safety_collector_caller.py::test_one_direct_wait_and_incremental_cpu_not_doublecounted\n",
+  "output_sha256": "9e143aefa5de03042685ebe53b624894a0169329387b8be2cb8b96ec6c2d86e5"
+}
