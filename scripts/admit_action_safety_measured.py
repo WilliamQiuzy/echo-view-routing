@@ -13,7 +13,8 @@ from echo_routing.temporal.structured_guard import storage_bytes
 
 def main(mode):
     if mode not in ['formal','outer']:raise ValueError('fixed formal/outer measured admission required')
-    freeze=verify_freeze(mode+'_admission_freeze.json');failed=PUB/'formal_admission_v1_failed.json';old=read(failed)
+    freeze=verify_freeze(mode+'_measured_admission_freeze.json');verify_freeze('formal_admission_freeze.json');failed=PUB/'formal_admission_v1_failed.json';old=read(failed)
+    if sha(RUN/'formal_admission_freeze.json')!=sha(PUB/'formal_admission_identity_v1.json'):raise ValueError('executed initial admission source contract must remain byte-identical')
     if old['all_caps_fit'] or sha(failed)!='5006e43eddeac9e2aba8437d0b7d0c5600f1be7e255d6eb1ac21c45710f02063':raise ValueError('exact initial failed forecast must remain unchanged')
     output=PUB/(mode+'_admission_v2.json');canonical=PUB/(mode+'_admission.json')
     if output.exists():raise ValueError('measured admission already attempted; preserve result, no silent overwrite')

@@ -26,7 +26,7 @@ def complete_measured(roles,checks,costs,measurement,retained_bytes,formal_pendi
     for h in HALVES:
         bench=t['task_701'];pairs=g[h]['N']-g[h]['native_N']-120
         if g[h]['native_N']>bench['native_sessions'] or pairs>bench['pairs'] or 120>bench['multi'] or pairs<0:raise ValueError('synthetic5000 bootstrap geometry fails full task unit bound')
-    max_candidates=max([g[r]['C'] for r in OUTER_ROLES if not r.startswith('a61_confirmation_')]+[roles[r]['max_length']+math.ceil(roles[r]['max_length']/2) for r in OUTER_ROLES if r.startswith('a61_confirmation_')])
+    max_candidates=max([costs['role_geometry'][r]['max_C'] for r in OUTER_ROLES if not r.startswith('a61_confirmation_')]+[roles[r]['max_length']+math.ceil(roles[r]['max_length']/2) for r in OUTER_ROLES if r.startswith('a61_confirmation_')])
     if t['integer_solver']['streams']<120 or t['integer_solver']['options_each']<1+max_candidates:raise ValueError('integer whole-bank solver benchmark fails declared candidate bound')
     base=complete(roles,checks,costs,retained_bytes,formal_pending);dense=t['dense_701'];long=t['long_701'];short=t['task_16'];large=t['task_701']
     def evaluation(v):return 2*(short['evaluation_prepare_max_seconds']*v['N']/short['N']+large['evaluation_prepare_max_seconds']*v['T']/(large['N']*large['T']))
