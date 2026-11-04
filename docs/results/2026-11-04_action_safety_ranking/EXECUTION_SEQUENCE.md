@@ -1,3 +1,11 @@
+# Current engineering sequence amendment (formal running)
+
+The original checklist below is retained as a historical record. The original V1 full admission failed and remains unchanged. Actual component/RLE/whole-role cost stages and the versioned measured admission have since completed; the full matrix was admitted and formal CPU training started. The240 teacher streams perproducer were already genuinely forwarded under the prospective, independently admitted early-producer amendment at formal production0. After all60000/24inner/8tau/56sets are independently audited and actually Git-sealed, run a fresh measured outer admission, then `cache_action_safety.py --adopt-precache` as a **CPU read-only binding stage, zero new source forwards**. Do not run another teacher-forward route. Original head/GT barrier remains mandatory. Preserve executed V1 and the independent producer/component/RLE/whole-role contracts.
+
+Terminal verification uses all current executed contract names (including distinct measured admissions and read-only source binding). The two historical component/RLE identities are separately proven from actual Git for121+131 bindings; only their exact pinned cost-prose document revisions are permitted to differ currently, with every algorithm/data object exact. Original three metadata/FIT/checker proofs and exact four-path config projection remain independent and unchanged. Source production0, final head binding60000, actual per-attempt costs, caller OS and protected-root integration stay distinct.
+
+---
+
 # A61 runtime sequence after restored access
 
 This is an execution checklist, not another approval gate or a reset. The three completed CPU stages remain closed: metadata, FIT preparation and the130-update/22-model graph check. Cost probe/formal/source/outer result stages have not started as of this record. Preserve original24GPU/72CPU/40GB caps, deadline1793820844.1596537 and2GPU-hour closing reserve. The fixed60000/314/240/60+16/56 scope cannot be silently shortened to fit a later admission.
