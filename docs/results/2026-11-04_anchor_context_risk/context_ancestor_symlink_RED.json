@@ -1,0 +1,31 @@
+{
+  "stage": "context_ancestor_symlink_RED",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "tests/test_event_risk_context.py::test_readonly_context_parent_symlink_rejects_even_matching_bytes"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 37982,
+  "supervisor_pid": 37971,
+  "started_epoch": 1793832838.50744,
+  "finished_epoch": 1793832839.197581,
+  "full_process_wall_seconds": 0.690140962600708,
+  "observed_worker_exit_code": 1,
+  "stage_exit_code": 1,
+  "termination_reason": null,
+  "exception": null,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 0.47831199999999996,
+  "measured_supervisor_CPU_seconds": 0.0010930000000000002,
+  "measured_CPU_core_seconds": 0.47940499999999997,
+  "durable_claim_before_Popen": true,
+  "scope": "local synthetic checks;SELF region+waited CHILDREN;final JSON bookkeeping and wrapper imports separate metadata",
+  "output": "F                                                                        [100%]\n=================================== FAILURES ===================================\n_______ test_readonly_context_parent_symlink_rejects_even_matching_bytes _______\ntests/test_event_risk_context.py:38: in test_readonly_context_parent_symlink_rejects_even_matching_bytes\n    with pytest.raises(ValueError):context.verify(tmp_path,cfg,binding,proofs)\n         ^^^^^^^^^^^^^^^^^^^^^^^^^\nE   Failed: DID NOT RAISE ValueError\n=========================== short test summary info ============================\nFAILED tests/test_event_risk_context.py::test_readonly_context_parent_symlink_rejects_even_matching_bytes\n",
+  "output_sha256": "580b6271fe69888d6438244b13a45d7a8c91c632e342f02a00bd2cf28d0e816e"
+}
