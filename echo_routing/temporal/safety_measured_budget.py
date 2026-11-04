@@ -70,7 +70,7 @@ def complete_measured(roles,checks,costs,measurement,retained_bytes,formal_pendi
             # retained high-RLE run work. Reference fragment count is <=8.
             v=g[r]
             return 2*(rc[r]['descriptor_max_seconds']+pk['seconds']*v['C2']/pk['C2']+high['descriptor_max_seconds']*v['CR']/high['CR'])
-        def whole_IO(r):return 2*(rc[r]['cache_write_seconds']+rc[r]['cache_read_seconds'])
+        def whole_IO(r):return 2*(rc[r]['cache_initialization_seconds']+rc[r]['cache_write_seconds']+rc[r]['cache_read_seconds']+rc[r]['geometry_and_dummy_policy_seconds'])
         def whole_oracle(r):return 2*(rc[r]['oracle_max_seconds']+high['oracle_max_seconds']*g[r]['CR']/high['CR'])
         descriptors=4*28*sum(whole_descriptor(r)+(0 if r in HALVES else whole_descriptor('selection' if r.endswith('selection') else 'calibration')) for r in OUTER_ROLES)
         caches=36*sum(whole_IO(r) for r in OUTER_ROLES)

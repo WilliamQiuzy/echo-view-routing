@@ -53,7 +53,7 @@ def timed_role(role,qs,pa,pj,base,folder,F_fit):
     for arm in ['U-L','S-L']:
         for policy in ['E','N','C']:
             start=time.perf_counter();action_summary(generated,base,values,policy,arm,F_fit);descriptor.append(time.perf_counter()-start)
-    cache=SafetyCache(folder/role,'synthetic_role_'+role,base,raws_a,raws_j,.9);start=time.perf_counter()
+    start=time.perf_counter();cache=SafetyCache(folder/role,'synthetic_role_'+role,base,raws_a,raws_j,.9);cache_initialization_seconds=time.perf_counter()-start;start=time.perf_counter()
     for i,v in enumerate(values):cache.run_one(i,lambda v=v:copy.deepcopy(v))
     write_seconds=time.perf_counter()-start;start=time.perf_counter()
     for i in range(len(values)):cache.load(i)
@@ -64,7 +64,7 @@ def timed_role(role,qs,pa,pj,base,folder,F_fit):
             for b,a,j,q in zip(base,raws_a,raws_j,generated):
                 pools.append(options(b,a,j,q['labels'],domain,safety));coverage(b,a,j,q['labels'],domain,safety)
             solve(pools,domain,safety);oracle.append(time.perf_counter()-start)
-    return {'N':len(base),'T':sum(map(len,base)),'descriptor_max_seconds':max(descriptor),'all6_descriptor_seconds':descriptor,'geometry_and_dummy_policy_seconds':geometry_policy_seconds,'cache_write_seconds':write_seconds,'cache_read_seconds':read_seconds,'oracle_max_seconds':max(oracle),'all6_oracle_seconds':oracle,'structural_true_run_ceiling_from_reference_source_clip_changes':max(bounds),'structural_true_run_bound_histogram':{str(k):bounds.count(k) for k in sorted(set(bounds))},'native_one_constant_family_per_qualified_clip_construction_invariant':True,'actual_GT_values_not_read_for_this_bound':True,'synthetic_truth_max_runs':8,'synthetic_score_matrix_no_heads':True}
+    return {'N':len(base),'T':sum(map(len,base)),'descriptor_max_seconds':max(descriptor),'all6_descriptor_seconds':descriptor,'geometry_and_dummy_policy_seconds':geometry_policy_seconds,'cache_initialization_seconds':cache_initialization_seconds,'cache_write_seconds':write_seconds,'cache_read_seconds':read_seconds,'oracle_max_seconds':max(oracle),'all6_oracle_seconds':oracle,'structural_true_run_ceiling_from_reference_source_clip_changes':max(bounds),'structural_true_run_bound_histogram':{str(k):bounds.count(k) for k in sorted(set(bounds))},'native_one_constant_family_per_qualified_clip_construction_invariant':True,'actual_GT_values_not_read_for_this_bound':True,'synthetic_truth_max_runs':8,'synthetic_score_matrix_no_heads':True}
 
 
 def main():
