@@ -1,0 +1,85 @@
+{
+  "reviewer": "a62_card_review",
+  "status": "Issues Found",
+  "review_kind": "Lifecycle/CLI narrow static SPEC",
+  "snapshot": "cb5ef6e7b8234bf53c78af12ebcbe7f1f0e7d989",
+  "issues": [
+    {
+      "file": "scripts/audit_event_risk.py",
+      "lines": [
+        18,
+        21
+      ],
+      "issue": "Independently recompute expected formal identity from currently pinned training_inputs and verified formal_freeze; completion-provided identity alone can self-consistently bind trace and states to a different input/code/config/draw."
+    },
+    {
+      "file": "scripts/event_risk_common.py",
+      "lines": [
+        40,
+        48
+      ],
+      "issue": "Operational prior_A61 pins are not cross-bound to approved basis pins or explicit fixed A61 receipts/config. A different models_manifest/input/calibration pin can pass config validation while readers trust it and cache metadata cites fixed A61 constants. Validate exact prior_A61 key set and each approved path/SHA."
+    }
+  ],
+  "qualified_dependency_clarifications": [
+    "ProbabilityCache/SafetyCache readonly constructor rejects incomplete cursor before eager payload validation. Thus readonly-prefix construction concern is resolved by qualified dependency, not an observed fallback; explicit local guard is advisory defense.",
+    "Provided dense_runtime.metrics contract uses native and stream tables without requiring pair bank; short_metrics uses mixed only, gross_frames preinitializes native/multi/pair zeros. Explicit inner pair null/zero output is therefore valid."
+  ],
+  "scope_status": "All committed new lifecycle/runtime/source/analysis/raw-q cache changes, listed CLIs, config/fee changes and fixtures statically read; no old pure-algorithm reaudit. Actual stage-freeze construction, complete forecast and outer matrix CLI remain future scope.",
+  "limitations": [
+    "No actual metadata/source/FIT72/formal/NN/SGD/SSH/server/main work or new test execution.",
+    "No uncommitted probe/readout/cost/forensics files read.",
+    "Static approval does not authorize or prove actual admission, OS exit, resource closure or experiment success."
+  ],
+  "static_read_receipts": [
+    {
+      "path": "/tmp/a62_lifecycle_spec_inventory_receipt.json",
+      "CPU_seconds": 0.074707
+    },
+    {
+      "path": "/tmp/a62_lifecycle_spec_lifecycle_read_receipt.json",
+      "CPU_seconds": 0.092931
+    },
+    {
+      "path": "/tmp/a62_lifecycle_spec_modified_contracts_read_receipt.json",
+      "CPU_seconds": 0.11115599999999999
+    },
+    {
+      "path": "/tmp/a62_lifecycle_spec_execution_tests_read_receipt.json",
+      "CPU_seconds": 0.084738
+    },
+    {
+      "path": "/tmp/a62_lifecycle_spec_runtime_source_read_receipt.json",
+      "CPU_seconds": 0.08380399999999999
+    },
+    {
+      "path": "/tmp/a62_lifecycle_spec_analysis_read_receipt.json",
+      "CPU_seconds": 0.083491
+    },
+    {
+      "path": "/tmp/a62_lifecycle_spec_prepare_cache_cli_read_receipt.json",
+      "CPU_seconds": 0.086272
+    },
+    {
+      "path": "/tmp/a62_lifecycle_spec_common_full_read_receipt.json",
+      "CPU_seconds": 0.081368
+    },
+    {
+      "path": "/tmp/a62_lifecycle_spec_check_train_cli_read_receipt.json",
+      "CPU_seconds": 0.08571899999999999
+    },
+    {
+      "path": "/tmp/a62_lifecycle_spec_audit_calibrate_cli_read_receipt.json",
+      "CPU_seconds": 0.087564
+    },
+    {
+      "path": "/tmp/a62_lifecycle_spec_supervisor_full_read_receipt.json",
+      "CPU_seconds": 0.08019199999999999
+    }
+  ],
+  "charge_scope": "Use aggregate once OR referenced disjoint receipts, never both. No prior review costs added.",
+  "unmetered_tail": "Prior process output/write/exit, shell/tool service/wait overhead, this JSON serialization/write/exit, subsequent tools and model reasoning unmetered. Partial tool CPU only.",
+  "created_at_utc": "2026-11-04T22:04:02Z",
+  "aggregate_receipt_prepare_SELF_CPU_seconds_to_snapshot": 0.059796999999999996,
+  "known_measured_tool_CPU_seconds": 1.011739
+}
