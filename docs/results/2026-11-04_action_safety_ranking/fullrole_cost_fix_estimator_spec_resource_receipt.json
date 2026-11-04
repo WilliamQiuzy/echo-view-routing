@@ -1,0 +1,40 @@
+{
+  "stage": "a61_fullrole_harness_fix_and_estimator_increment_spec_read",
+  "scopes": [
+    {
+      "scope": "harness numeric F_fit and source-piece bound fix",
+      "revision": "d7d6b434fbbe60f97d271c5fa9f99310305297b3",
+      "paths": [
+        "scripts/probe_action_safety_role_costs.py",
+        "tests/test_safety_role_costs.py"
+      ],
+      "bytes_read": 8331
+    },
+    {
+      "scope": "whole-role estimator increment only",
+      "revision": "e2a82a1848df8d1a33b5dde9107feef33a3c097b",
+      "paths": [
+        "docs/results/2026-11-04_action_safety_ranking/COST_REFINEMENT.md",
+        "docs/results/2026-11-04_action_safety_ranking/role_budget_GREEN.json",
+        "docs/results/2026-11-04_action_safety_ranking/role_budget_RED.json",
+        "echo_routing/temporal/safety_measured_budget.py",
+        "echo_routing/temporal/safety_rle_budget.py",
+        "scripts/admit_action_safety_measured.py",
+        "tests/test_safety_rle_budget.py"
+      ],
+      "bytes_read": 30742
+    }
+  ],
+  "scope": "harness fixes and separate prospective whole-role estimator increment; no benchmark/data/outcomes/admission execution",
+  "wall_seconds_through_sample": 0.050305958000000005,
+  "self_user_seconds_through_sample": 0.036564,
+  "self_system_seconds_through_sample": 0.025169,
+  "waitedchildren_user_seconds_through_sample": 0.007871,
+  "waitedchildren_system_seconds_through_sample": 0.011092,
+  "self_plus_waitedchildren_cpu_seconds_through_sample": 0.080696,
+  "read_interval_cpu_seconds": 0.029748999999999998,
+  "tests": 0,
+  "forwards": 0,
+  "server_jobs": 0,
+  "unmetered_limitation": "launcher, receipt-write/exit tail and model reasoning unmetered"
+}
