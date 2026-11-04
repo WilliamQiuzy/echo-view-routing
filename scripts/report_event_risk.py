@@ -11,10 +11,12 @@ from echo_routing.temporal.event_risk_metrics import TABLES,HALVES,SEEDS,BASE,sy
 
 def validate_report_inputs():
     verify_freeze('package_freeze.json');p=plan();s=read(PUB/'summary.json');o=read(PUB/'outer_metrics.json');i=read(PUB/'inner_metrics.json');m=read(PUB/'model_audit.json');c=read(PUB/'calibration.json');a=read(PUB/'action_space_diagnostic.json');n=read(PUB/'native_attribution.json');r=read(PUB/'regression_summary.json');f=read(PUB/'figure_receipt.json')
-    if (len(o['rows']),len(i['rows']),len(s['paired_comparisons']),m['formal_optimizer_updates'],len(m['models']),len(m['fullstates']),len(c['thresholds']),a['new_full_oracle_count'],a['readonly_old_oracle_count'],a['support_count'],n['cell_count'],n['base_reference_count'],r['record_count'],len(f['artifacts']))!=(156,26,240,24000,4,16,6,6,30,48,24,2,16,18):raise ValueError('complete audited scientific/figure counts before any complete report')
+    if m.get('passed') is not True or (len(o['rows']),len(i['rows']),len(s['paired_comparisons']),m['formal_optimizer_updates'],len(m['models']),len(m['fullstates']),len(c['thresholds']),a['new_full_oracle_count'],a['readonly_old_oracle_count'],a['support_count'],n['cell_count'],n['base_reference_count'],r['record_count'],len(f['artifacts']))!=(156,26,240,24000,4,16,6,6,30,48,24,2,16,18):raise ValueError('complete audited scientific/figure counts before any complete report')
     if {(v['table'],v['half'],v['system']) for v in o['rows']}!={(v['table'],v['half'],v['system']) for v in p['rows']} or {(v['table'],v['half'],v['seed'],v['contrast']) for v in s['paired_comparisons']}!={(v['table'],v['half'],v['seed'],v['contrast']) for v in p['comparisons']}:raise ValueError('fixed endpoint identities before reporting')
-    for field,name in [('outer_metrics_sha256','outer_metrics.json'),('models_manifest_sha256','models_manifest.json'),('calibration_sha256','calibration.json'),('readout_plan_sha256','readout_plan.json')]:
+    for field,name in [('outer_metrics_sha256','outer_metrics.json'),('models_manifest_sha256','models_manifest.json'),('calibration_sha256','calibration.json'),('readout_plan_sha256','readout_plan.json'),('acceptance_sha256','acceptance.json')]:
         if s[field]!=sha(PUB/name):raise ValueError('scientific report source crosshash changed')
+    for field,name in [('summary_sha256','summary.json'),('outer_metrics_sha256','outer_metrics.json'),('inner_metrics_sha256','inner_metrics.json'),('regression_sha256','regression_summary.json'),('native_sha256','native_attribution.json')]:
+        if f[field]!=sha(PUB/name):raise ValueError('actual figure receipt scientific input crosshash changed')
     for v in f['artifacts']:
         if sha(PUB/v['path'])!=v['sha256']:raise ValueError('complete actual figure/CSV bytes before reporting')
     return True

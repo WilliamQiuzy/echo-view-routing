@@ -1,0 +1,25 @@
+{
+  "scope": "software checks only, not actual FIT72 or formal training",
+  "local_synthetic_optimizer_updates": 18,
+  "synthetic_updated_mutable_models": 9,
+  "synthetic_EventRisk_MLP_forward_calls": 24,
+  "source_teacher_forwards": 0,
+  "actual_FIT72_updates_at_record_creation": 0,
+  "formal_updates_at_record_creation": 0,
+  "update_receipts": {
+    "task2_model_GREEN.json": 6,
+    "review_task2_quality_99f788d_20261104a.json": 6,
+    "task3_cache_loop_GREEN.json": 2,
+    "task3_C6_CUDA_GREEN.json": 2,
+    "review_task3_quality_21fc050_20261104a.json": 2
+  },
+  "extra_forward_receipts": {
+    "task2_model_GREEN.json": 1,
+    "review_task2_quality_99f788d_20261104a.json": 1,
+    "inference_GREEN.json": 2,
+    "review_lifecycle_quality_df8b1fc_20261104a.json": 2
+  },
+  "RED_scopes": "model/cacheloop/inference initial RED failed before NN. CUDA-entry RED used None dummy and failed before any valid model/SGD. C6 isolated probe pure. Constructor timing fixture monkeypatches EventRisk/infer_events and performs no NN. All CPU failures remain separately charged.",
+  "nested_toy_child_CPU": "included in outer actual SELF+waitedCHILDREN receipt, not separately recharged",
+  "metadata_import_reasoning_tool_tail_CPU": "unmetered where explicitly disclosed; not represented as zero"
+}

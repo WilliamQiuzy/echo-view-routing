@@ -67,3 +67,26 @@ def test_complete_report_cannot_be_written_from_partial_counts(monkeypatch):
  values={'summary.json':{'paired_comparisons':[]},'outer_metrics.json':{'rows':[]},'inner_metrics.json':{'rows':[]},'model_audit.json':{'formal_optimizer_updates':0,'models':[],'fullstates':[]},'calibration.json':{'thresholds':[]},'action_space_diagnostic.json':{'new_full_oracle_count':0,'readonly_old_oracle_count':0,'support_count':0},'native_attribution.json':{'cell_count':0,'base_reference_count':0},'regression_summary.json':{'record_count':0},'figure_receipt.json':{'artifacts':[]}}
  monkeypatch.setattr(m,'read',lambda p:values[Path(p).name])
  with pytest.raises(ValueError,match='complete'):m.report()
+
+def test_unspawned_launch_failure_and_nullable_actual_caps():
+ from scripts.close_event_risk import has_retained_failure,actual_caps_status
+ row={'observed_worker_exit_code':None,'child_exit_code_directly_waited':False,'termination_reason':'guardian_exception_fail_closed'}
+ assert has_retained_failure([row],[],None,[])
+ assert has_retained_failure([],[],{'state':'durable_launch_intent'},[])
+ assert has_retained_failure([],[],None,['pending.json'])
+ assert actual_caps_status(1,0,105000000,1793830000,True) is None
+ assert actual_caps_status(21601,0,105000000,1793830000,False) is False
+
+
+def test_complete_report_audit_acceptance_and_figure_crossbindings(monkeypatch):
+ import pytest
+ import scripts.report_event_risk as m
+ from echo_routing.temporal.event_risk_metrics import plan
+ p=plan();h='a'*64;summary={'paired_comparisons':p['comparisons'],**{k:h for k in ['outer_metrics_sha256','models_manifest_sha256','calibration_sha256','readout_plan_sha256','acceptance_sha256']}}
+ values={'summary.json':summary,'outer_metrics.json':{'rows':p['rows']},'inner_metrics.json':{'rows':p['inner_rows']},'model_audit.json':{'passed':True,'formal_optimizer_updates':24000,'models':[{}]*4,'fullstates':[{}]*16},'calibration.json':{'thresholds':[{}]*6},'action_space_diagnostic.json':{'new_full_oracle_count':6,'readonly_old_oracle_count':30,'support_count':48},'native_attribution.json':{'cell_count':24,'base_reference_count':2},'regression_summary.json':{'record_count':16},'figure_receipt.json':{'artifacts':[{'path':f'figure{i}','sha256':h} for i in range(18)],**{k:h for k in ['summary_sha256','outer_metrics_sha256','inner_metrics_sha256','regression_sha256','native_sha256']}}}
+ monkeypatch.setattr(m,'verify_freeze',lambda n:{});monkeypatch.setattr(m,'read',lambda p:values[Path(p).name]);monkeypatch.setattr(m,'sha',lambda p:h)
+ assert m.validate_report_inputs()
+ for obj,key,bad in [(summary,'acceptance_sha256','b'*64),(values['model_audit.json'],'passed',False),(values['figure_receipt.json'],'regression_sha256','b'*64)]:
+  old=obj[key];obj[key]=bad
+  with pytest.raises(ValueError):m.validate_report_inputs()
+  obj[key]=old
