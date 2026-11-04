@@ -1,0 +1,118 @@
+{
+  "scope": "independent actual formal code/input/Adam-counter/physical-trace check; no efficacy access or forward",
+  "git_commit": "12f8b5b8d8a001b3fb5695b26fe97f996ff2640c",
+  "formal_identity_sha256": "4e8ef29e5e6aedcd47c8eb62295c688f94b31e77e897bf4a139103cb7fcc5708",
+  "actual_Git_objects": 46,
+  "local_git_or_worktree_mismatches": [],
+  "SSH_exit": 0,
+  "server": {
+    "epoch": 1793762318.8892243,
+    "verified_objects": 46,
+    "mismatches": [],
+    "models": [
+      {
+        "seed": 2026110360,
+        "arm": "A",
+        "update": 6000,
+        "Adam_steps": [
+          6000,
+          6000,
+          6000,
+          6000
+        ],
+        "trace_count": 6000,
+        "trace_exact0to5999": true,
+        "CPU_model_tensors": true,
+        "latest_sha256": "bf86082dcf40148ba281c1af26fd0494706b1f3deb83d7c4d3f754066998ef4a"
+      },
+      {
+        "seed": 2026110360,
+        "arm": "J",
+        "update": 6000,
+        "Adam_steps": [
+          6000,
+          6000,
+          6000,
+          6000
+        ],
+        "trace_count": 6000,
+        "trace_exact0to5999": true,
+        "CPU_model_tensors": true,
+        "latest_sha256": "ec03538141903881780b53bcb78b63c20085cad0218dedf74470cf0710ae1e90"
+      },
+      {
+        "seed": 2026110361,
+        "arm": "A",
+        "update": 6000,
+        "Adam_steps": [
+          6000,
+          6000,
+          6000,
+          6000
+        ],
+        "trace_count": 6000,
+        "trace_exact0to5999": true,
+        "CPU_model_tensors": true,
+        "latest_sha256": "0a9f579914fb086d91429c4e9fdc080949619c4dabe60ceb155367abc5748397"
+      },
+      {
+        "seed": 2026110361,
+        "arm": "J",
+        "update": 6000,
+        "Adam_steps": [
+          6000,
+          6000,
+          6000,
+          6000
+        ],
+        "trace_count": 6000,
+        "trace_exact0to5999": true,
+        "CPU_model_tensors": true,
+        "latest_sha256": "1f4120e23f7aeea744d4d695c8d9cf79613f50a7555273149772bb4ce45e506b"
+      }
+    ],
+    "formal_parentwait_receipts": [
+      {
+        "CPU_scope": "SELF plus waited CHILDREN including worker and probes; post-snapshot JSON bookkeeping unmetered",
+        "CUDA_context_occupied": false,
+        "CUDA_visibility_hidden": true,
+        "GPU_job": false,
+        "OS_status_inferred_from_manifest": false,
+        "attempt": 1,
+        "child_exit_code_directly_waited": true,
+        "effective_stage_wall_limit_seconds": 3600.0,
+        "finished_epoch": 1793762251.3773901,
+        "foreign_GPU_wall_not_charged_as_A60": true,
+        "full_process_wall_seconds": 154.1656789779663,
+        "guardian_exception": null,
+        "limits_at_launch": {
+          "closing": false,
+          "earlier_deadline_epoch": 1793820844.1596537,
+          "remaining_CPU_seconds": 190682.93230900003,
+          "remaining_GPU_seconds_before_reserve": 13194.050813674916,
+          "stage_wall_seconds": 58746.94801592827
+        },
+        "maximum_sampled_tracked_storage_upper_bytes": 178256960,
+        "measured_CPU_core_seconds": 80.35013699999999,
+        "measured_child_and_waited_probe_CPU_seconds": 79.72748499999999,
+        "measured_supervisor_CPU_seconds": 0.6226519999999998,
+        "measurement_host": "computeinstance-e00xzdz7651kfdkgx6",
+        "model_pid": 22548,
+        "observed_worker_exit_code": 0,
+        "preexisting_foreign_GPU_owners": [],
+        "process_start_ticks": 361141,
+        "receipt_id": "formal:1",
+        "stage": "formal",
+        "started_epoch": 1793762097.2117112,
+        "supervisor_pid": 22512,
+        "termination_reason": null
+      }
+    ],
+    "active_claim_exists": false,
+    "GPU_apps": "",
+    "probe_CUDA_initialized": false
+  },
+  "coordination_tool_overhead_CPU_unmetered_not_worker_receipt": true,
+  "epoch": 1793762319.2827039,
+  "passed": true
+}
