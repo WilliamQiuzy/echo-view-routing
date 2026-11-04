@@ -14,3 +14,10 @@ def test_terminal_complete_matrix_direct_wait_and_pid_reuse_are_separate():
     assert m.process_relation(row,42,{'start_ticks':101,'start_epoch':190.})=='reused_different_start_ticks'
     assert m.process_relation(row,42,{'start_ticks':100,'start_epoch':190.})=='possibly_same_owned_live_process'
     assert m.process_relation(row,42,None)=='absent'
+
+
+def test_collector_cannot_declare_overall_completion_before_its_wait_and_root_integration():
+    m=importlib.import_module('echo_routing.temporal.safety_terminal');state=m.collector_state()
+    assert state['server_scientific_and_resource_collection_complete']
+    assert state['collector_final_caller_OS_receipt_pending'] and state['protected_public_integration_pending']
+    assert not state['all_authorized_stages_complete'] and state['phase']!='closed_complete'

@@ -1,6 +1,10 @@
 """A61 terminal success gates and honest OS/process-identity statements."""
 
 
+def collector_state():
+    return {'phase':'server_scientific_closed_pending_caller_OS_and_public_integration','server_scientific_and_resource_collection_complete':True,'collector_final_caller_OS_receipt_pending':True,'protected_public_integration_pending':True,'all_authorized_stages_complete':False}
+
+
 def validate_science(summary,oracle,native,models):
     if not (summary['formal_models']==10 and summary['formal_optimizer_updates']==60000 and summary['metric_rows']==314 and summary['paired_comparison_count']==240 and summary['all314_metrics_independently_recounted'] and oracle['all_maxone_G_and_noop'] and oracle['domain_count']==60 and oracle['overlapping_A60_G_oracles_exactly_reproduced']==16 and native['passed'] and native['cell_count']==56 and models['passed'] and models['all10finals24inner8taus56sets_frozen']):raise ValueError('all60000/314/240/60+16/56 actual scientific stages required')
     return True
