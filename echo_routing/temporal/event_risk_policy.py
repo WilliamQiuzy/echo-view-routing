@@ -22,7 +22,11 @@ def decode(base,actions,old_scores,q1,q2,taus):
 def calibrate(rows,population='CAL'):
     if population!='CAL':raise ValueError('AUDIT/outer cannot fit thresholds')
     for r in rows:
-        if not isinstance(r['N'],(bool,np.bool_)) or not isinstance(r['unsafe'],(bool,np.bool_)) or any(not math.isfinite(r[k]) or not 0<=r[k]<=1 for k in ['r','q1','q2']):raise ValueError('complete finite CAL top events required')
+        if not isinstance(r['N'],(bool,np.bool_)) or not isinstance(r['unsafe'],(bool,np.bool_)):raise ValueError('explicit CAL top admission/event flags required')
+        for key in ['r','q1','q2']:
+            value=r[key]
+            if value is None and not r['N']:continue
+            if not isinstance(value,(int,float,np.integer,np.floating)) or not math.isfinite(value) or not 0<=value<=1:raise ValueError('N-admitted tops require finite event scores; no-top rows retain None')
     group=[r for r in rows if r['N']];bad=[r for r in group if r['unsafe']];out={'total_axes':len(rows),'N_admitted':len(group),'unsafe_N_top':len(bad),'calibration_limited':len(group)<20 or len(bad)<5,'population':'same frozen original N-top set for all three gates','independent_safety_guarantee':False}
     for name,key in [('M0','r'),('R1','q1'),('R2','q2')]:
         tau=min(r[key] for r in bad) if bad else (1. if group else 0.);accepted=[r for r in group if r[key]<tau]

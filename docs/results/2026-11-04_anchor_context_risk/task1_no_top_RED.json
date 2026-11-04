@@ -1,0 +1,31 @@
+{
+  "stage": "task1_no_top_RED",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "tests/test_event_risk_policy.py::test_no_positive_top_missing_scores_keeps_CAL_axis_but_never_calibrates_it"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 93940,
+  "supervisor_pid": 93929,
+  "started_epoch": 1793825251.3580449,
+  "finished_epoch": 1793825251.756672,
+  "full_process_wall_seconds": 0.39862704277038574,
+  "observed_worker_exit_code": 1,
+  "stage_exit_code": 1,
+  "termination_reason": null,
+  "exception": null,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 0.35123499999999996,
+  "measured_supervisor_CPU_seconds": 0.001205999999999997,
+  "measured_CPU_core_seconds": 0.35244099999999995,
+  "durable_claim_before_Popen": true,
+  "scope": "local synthetic checks;SELF region+waited CHILDREN;final JSON bookkeeping and wrapper imports separate metadata",
+  "output": "F                                                                        [100%]\n=================================== FAILURES ===================================\n__ test_no_positive_top_missing_scores_keeps_CAL_axis_but_never_calibrates_it __\ntests/test_event_risk_policy.py:27: in test_no_positive_top_missing_scores_keeps_CAL_axis_but_never_calibrates_it\n    m=api();r={'N':False,'unsafe':False,'r':None,'q1':None,'q2':None};out=m.calibrate([r]);assert out['total_axes']==1 and out['N_admitted']==0 and out['R1']['tau']==0\n                                                                          ^^^^^^^^^^^^^^^^\necho_routing/temporal/event_risk_policy.py:25: in calibrate\n    if not isinstance(r['N'],(bool,np.bool_)) or not isinstance(r['unsafe'],(bool,np.bool_)) or any(not math.isfinite(r[k]) or not 0<=r[k]<=1 for k in ['r','q1','q2']):raise ValueError('complete finite CAL top events required')\n                                                                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\necho_routing/temporal/event_risk_policy.py:25: in <genexpr>\n    if not isinstance(r['N'],(bool,np.bool_)) or not isinstance(r['unsafe'],(bool,np.bool_)) or any(not math.isfinite(r[k]) or not 0<=r[k]<=1 for k in ['r','q1','q2']):raise ValueError('complete finite CAL top events required')\n                                                                                                        ^^^^^^^^^^^^^^^^^^^\nE   TypeError: must be real number, not NoneType\n=========================== short test summary info ============================\nFAILED tests/test_event_risk_policy.py::test_no_positive_top_missing_scores_keeps_CAL_axis_but_never_calibrates_it\n",
+  "output_sha256": "92f0e71eda078998e87e9cf7b39487122cdda78c3f05bc29a1e1bd5572d6b0bc"
+}

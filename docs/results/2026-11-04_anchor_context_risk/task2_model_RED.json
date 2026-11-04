@@ -1,0 +1,31 @@
+{
+  "stage": "task2_model_RED",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "tests/test_event_risk_model.py"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 90980,
+  "supervisor_pid": 90969,
+  "started_epoch": 1793825158.036741,
+  "finished_epoch": 1793825159.1734111,
+  "full_process_wall_seconds": 1.1366701126098633,
+  "observed_worker_exit_code": 1,
+  "stage_exit_code": 1,
+  "termination_reason": null,
+  "exception": null,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 0.863213,
+  "measured_supervisor_CPU_seconds": 0.001166999999999998,
+  "measured_CPU_core_seconds": 0.86438,
+  "durable_claim_before_Popen": true,
+  "scope": "local synthetic checks;SELF region+waited CHILDREN;final JSON bookkeeping and wrapper imports separate metadata",
+  "output": "FF                                                                       [100%]\n=================================== FAILURES ===================================\n______ test_6625_matched_init_zero_output_BCE_and_live_repeat_diskresume _______\ntests/test_event_risk_model.py:16: in test_6625_matched_init_zero_output_BCE_and_live_repeat_diskresume\n    m=api();torch.set_num_threads(1);a=m.EventRisk('R1',2026110461);other=m.EventRisk('R2',2026110461)\n      ^^^^^\ntests/test_event_risk_model.py:6: in api\n    def api():return importlib.import_module('echo_routing.temporal.event_risk_model')\n                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../../../../../.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n<frozen importlib._bootstrap>:1387: in _gcd_import\n    ???\n<frozen importlib._bootstrap>:1360: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1324: in _find_and_load_unlocked\n    ???\nE   ModuleNotFoundError: No module named 'echo_routing.temporal.event_risk_model'\n_ test_reject_foreign_model_optimizer_missing_params_seed_alias_and_nonbinary __\ntests/test_event_risk_model.py:39: in test_reject_foreign_model_optimizer_missing_params_seed_alias_and_nonbinary\n    m=api();a=m.EventRisk('R1',2026110462);b=m.EventRisk('R1',2026110462)\n      ^^^^^\ntests/test_event_risk_model.py:6: in api\n    def api():return importlib.import_module('echo_routing.temporal.event_risk_model')\n                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../../../../../.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n<frozen importlib._bootstrap>:1387: in _gcd_import\n    ???\n<frozen importlib._bootstrap>:1360: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1324: in _find_and_load_unlocked\n    ???\nE   ModuleNotFoundError: No module named 'echo_routing.temporal.event_risk_model'\n=========================== short test summary info ============================\nFAILED tests/test_event_risk_model.py::test_6625_matched_init_zero_output_BCE_and_live_repeat_diskresume\nFAILED tests/test_event_risk_model.py::test_reject_foreign_model_optimizer_missing_params_seed_alias_and_nonbinary\n",
+  "output_sha256": "6c29064741ce987d26b05ed8a3a7d6cca72ee9f0c9455c7d9822ee88250ad636"
+}

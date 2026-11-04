@@ -22,3 +22,7 @@ def test_same_CAL_population_first_unsafe_ties_saturation_and_audit_no_tau_fit()
  assert all(m.calibrate([])[k]['tau']==0 for k in ['M0','R1','R2'])
  assert all(m.calibrate([{'N':True,'unsafe':False,'r':1.,'q1':1.,'q2':1.}])[k]['tau']==1 for k in ['M0','R1','R2'])
  with pytest.raises(ValueError):m.calibrate(rows,population='AUDIT')
+
+def test_no_positive_top_missing_scores_keeps_CAL_axis_but_never_calibrates_it():
+ m=api();r={'N':False,'unsafe':False,'r':None,'q1':None,'q2':None};out=m.calibrate([r]);assert out['total_axes']==1 and out['N_admitted']==0 and out['R1']['tau']==0
+ with pytest.raises(ValueError):m.calibrate([{**r,'N':True}])
