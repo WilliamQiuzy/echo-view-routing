@@ -1,0 +1,31 @@
+{
+  "stage": "task3_runtime_RED",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "tests/test_event_risk_runtime.py"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 14642,
+  "supervisor_pid": 14631,
+  "started_epoch": 1793825850.137861,
+  "finished_epoch": 1793825850.331816,
+  "full_process_wall_seconds": 0.1939549446105957,
+  "observed_worker_exit_code": 1,
+  "stage_exit_code": 1,
+  "termination_reason": null,
+  "exception": null,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 0.147073,
+  "measured_supervisor_CPU_seconds": 0.001008000000000002,
+  "measured_CPU_core_seconds": 0.14808100000000002,
+  "durable_claim_before_Popen": true,
+  "scope": "local synthetic checks;SELF region+waited CHILDREN;final JSON bookkeeping and wrapper imports separate metadata",
+  "output": "FF                                                                       [100%]\n=================================== FAILURES ===================================\n_______ test_A62_claim_before_child_direct_wait_and_foreign_CPU_allowed ________\ntests/test_event_risk_runtime.py:5: in test_A62_claim_before_child_direct_wait_and_foreign_CPU_allowed\n    m=importlib.import_module('scripts.supervise_event_risk');b=importlib.import_module('echo_routing.temporal.event_risk_budget');orig=m.subprocess.Popen\n      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../../../../../.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n<frozen importlib._bootstrap>:1387: in _gcd_import\n    ???\n<frozen importlib._bootstrap>:1360: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1324: in _find_and_load_unlocked\n    ???\nE   ModuleNotFoundError: No module named 'scripts.supervise_event_risk'\n________ test_locked_ledger_merge_and_GPU_foreign_refusal_has_no_child _________\ntests/test_event_risk_runtime.py:19: in test_locked_ledger_merge_and_GPU_foreign_refusal_has_no_child\n    m=importlib.import_module('scripts.supervise_event_risk');b=importlib.import_module('echo_routing.temporal.event_risk_budget');run=tmp_path/'r';pub=tmp_path/'p';run.mkdir();pub.mkdir()\n      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../../../../../.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n<frozen importlib._bootstrap>:1387: in _gcd_import\n    ???\n<frozen importlib._bootstrap>:1360: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1324: in _find_and_load_unlocked\n    ???\nE   ModuleNotFoundError: No module named 'scripts.supervise_event_risk'\n=========================== short test summary info ============================\nFAILED tests/test_event_risk_runtime.py::test_A62_claim_before_child_direct_wait_and_foreign_CPU_allowed\nFAILED tests/test_event_risk_runtime.py::test_locked_ledger_merge_and_GPU_foreign_refusal_has_no_child\n",
+  "output_sha256": "8e61b74a9eec62623e1d72db848fe636442dad110de55c152620bd85eedbcd21"
+}

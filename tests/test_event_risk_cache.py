@@ -3,7 +3,7 @@ import numpy as np
 import pytest
 
 def test_new_joint_q_cache_empty_prefix_and_pending_no_replay(tmp_path):
- m=importlib.import_module('echo_routing.temporal.event_risk_cache');b=np.zeros(5,int);taus={k:.5 for k in ['L0','M0','R1','R2']};refs=[{'source':'frozen','sha256':'a'*64}]
+ m=importlib.import_module('echo_routing.temporal.event_risk_cache');b=np.zeros(5,int);taus={k:.5 for k in ['L0','M0','R1','R2']};refs=[{'source':'frozen','sha256':'a'*64,'scores_sha256':__import__('hashlib').sha256(np.empty((0,6),np.float64).tobytes()).hexdigest()}]
  c=m.EventCache(tmp_path/'cache','identity',[b],[b],[b],taus,refs)
  def predict():
   assert c.pending.exists()
@@ -28,3 +28,8 @@ def test_complete_headless_adoption_checks_every_expected_payload_and_production
  assert out['verified_payloads']==1080 and out['new_source_forwards']==0 and out['new_event_updates_at_production']==0 and out['formal_updates_at_binding']==24000
  bad=json.loads(json.dumps(manifest));bad['records']=bad['records'][:-1]
  with pytest.raises(ValueError):m.adopt_sources(bad,expected,root=tmp_path,formal_updates=24000)
+
+def test_nonempty_C6_cannot_be_swapped_under_unchanged_old_reference(tmp_path):
+ import hashlib
+ m=importlib.import_module('echo_routing.temporal.event_risk_cache');b=np.zeros(5,int);raw=b.copy();raw[1]=1;old=np.array([[.2,.1,.9,0.,.1,.1]],np.float64);ref={'source':'frozen_sha_verified','sha256':'a'*64,'scores_sha256':hashlib.sha256(old.tobytes()).hexdigest()};taus={k:.5 for k in ['L0','M0','R1','R2']};c=m.EventCache(tmp_path/'cache','identity',[b],[raw],[b],taus,[ref]);changed=old.copy();changed[0,0]=3
+ with pytest.raises(ValueError):c._check({'old_scores':changed,'q':np.array([[.1,.2]]),'old_reference':ref,'seconds':0.},0)

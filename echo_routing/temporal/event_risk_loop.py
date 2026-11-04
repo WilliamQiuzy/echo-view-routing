@@ -9,6 +9,7 @@ from echo_routing.temporal.anchor_cache import sha
 
 
 def train_one(model,opt,data,plan,identity,folder,stop=6000,latest_every=100,milestones=(2000,4000,6000),on_progress=None):
+    if torch.cuda.is_initialized():raise ValueError('unexpected CUDA context before journal/model access')
     if isinstance(stop,bool) or not isinstance(stop,int) or not 0<=stop<=6000 or latest_every<1:raise ValueError('fixed bounded6000 schedule required')
     validate_draw_plan(plan,len(data['kind_indices']['native']),len(data['kind_indices']['constructed']),model.seed)
     folder=Path(folder);journal=UpdateJournal(folder,identity);latest=folder/'latest.pt'
@@ -17,6 +18,7 @@ def train_one(model,opt,data,plan,identity,folder,stop=6000,latest_every=100,mil
     if start!=loaded or start>stop:raise ValueError('physical trace/latest/cursor mismatch; no replay/rollback')
     x,y=data['x'][model.arm],data['y']
     for u in range(start,stop):
+        if torch.cuda.is_initialized():raise ValueError('unexpected CUDA context before physical update')
         idx=candidate_indices(plan,u,data['kind_indices']['native'],data['kind_indices']['constructed']);journal.begin(u);t=time.perf_counter();row=step(model,opt,{'x':x[idx],'y':y[idx]},u);row.update(candidate_indices=idx.tolist(),source_kind_blocks=plan['source_kinds'],optimizer_update_wall_seconds=time.perf_counter()-t)
         cursor=u+1;state=checkpoint(model,opt,cursor,identity,data['normalizers']) if cursor%latest_every==0 or cursor in milestones else None
         if cursor in milestones:atomic_save(folder/f'step{cursor}.pt',state)

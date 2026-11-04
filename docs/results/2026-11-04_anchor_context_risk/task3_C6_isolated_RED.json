@@ -1,0 +1,31 @@
+{
+  "stage": "task3_C6_isolated_RED",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "docs/results/2026-11-04_anchor_context_risk/frozen_C6_binding_RED_probe.py"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 20742,
+  "supervisor_pid": 20731,
+  "started_epoch": 1793826044.3769448,
+  "finished_epoch": 1793826044.893814,
+  "full_process_wall_seconds": 0.516869306564331,
+  "observed_worker_exit_code": 1,
+  "stage_exit_code": 1,
+  "termination_reason": null,
+  "exception": null,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 0.34091299999999997,
+  "measured_supervisor_CPU_seconds": 0.0010349999999999995,
+  "measured_CPU_core_seconds": 0.341948,
+  "durable_claim_before_Popen": true,
+  "scope": "local synthetic checks;SELF region+waited CHILDREN;final JSON bookkeeping and wrapper imports separate metadata",
+  "output": "F                                                                        [100%]\n=================================== FAILURES ===================================\n_______________ test_previous_snapshot_rejects_changed_valid_C6 ________________\ndocs/results/2026-11-04_anchor_context_risk/frozen_C6_binding_RED_probe.py:9: in test_previous_snapshot_rejects_changed_valid_C6\n    with pytest.raises(ValueError):cache._check({'old_scores':changed,'q':np.array([[.1,.2]]),'old_reference':ref,'seconds':0.},0)\n         ^^^^^^^^^^^^^^^^^^^^^^^^^\nE   Failed: DID NOT RAISE ValueError\n=========================== short test summary info ============================\nFAILED docs/results/2026-11-04_anchor_context_risk/frozen_C6_binding_RED_probe.py::test_previous_snapshot_rejects_changed_valid_C6\n",
+  "output_sha256": "138f4eb8cef5f86aafb21df0fd30ba2aa3c17f7dc7d285411ce3e0a69cd317e0"
+}

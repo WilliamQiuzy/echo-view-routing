@@ -14,3 +14,8 @@ def test_fixed_draw_physical_updates_and_pending_checkpoint_rejection(tmp_path):
  rows=[json.loads(x) for x in (tmp_path/'model/physical_updates.jsonl').read_text().splitlines()];assert len(rows)==2 and all(len(r['candidate_indices'])==64 for r in rows)
  (tmp_path/'model/pending.json').write_text('{}')
  with pytest.raises(ValueError):m.train_one(a,o,d,plan,identity,tmp_path/'model',stop=2,latest_every=1,milestones=())
+
+def test_existing_CUDA_context_rejected_before_journal_or_model_access(tmp_path,monkeypatch):
+ m=importlib.import_module('echo_routing.temporal.event_risk_loop');monkeypatch.setattr(m.torch.cuda,'is_initialized',lambda:True)
+ with pytest.raises(ValueError,match='CUDA'):m.train_one(None,None,None,None,None,tmp_path/'never',stop=1)
+ assert not (tmp_path/'never').exists()

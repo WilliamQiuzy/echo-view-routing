@@ -1,0 +1,57 @@
+{
+  "reviewer": "a62_card_review",
+  "status": "Issues Found",
+  "review_kind": "Task3 narrow static SPEC",
+  "snapshot": "5887afceb1ec02d5fe8f31b4102f1bf959982905",
+  "issues": [
+    {
+      "file": "echo_routing/temporal/event_risk_cache.py",
+      "lines": [
+        18,
+        18
+      ],
+      "issue": "Matching old_reference metadata does not bind the supplied old_scores C6 bytes to the frozen old C6 result. Require a canonical C6 score hash from the independently SHA-verified original payload and reject swapped scores."
+    },
+    {
+      "file": "echo_routing/temporal/event_risk_loop.py",
+      "lines": [
+        11,
+        26
+      ],
+      "issue": "CUDA initialization is only checked after all updates. Fail closed at entry before journal/state/SGD, and before updates if progress callbacks can initialize CUDA, to satisfy immediate anomalous-context stop rule."
+    }
+  ],
+  "qualified_dependency_clarification": "Executor supplied ProbabilityCache constructor lines70-79 eager self.load(i), whose qualified load checks actual payload SHA, probability finite/simplex and original-axis five-class shape. Accepted without reopening old library; actual source/channel/context and head Git barrier remain future caller obligations.",
+  "limitations": [
+    "Static SPEC only; no new test result or actual stage validation claimed.",
+    "No uncommitted CLI/runtime, server, old-library full review, SSH or NN executed.",
+    "Metrics middle was reread only because initial batched tool output truncated; separately metered once."
+  ],
+  "static_read_receipts": [
+    {
+      "path": "/tmp/a62_task3_spec_cache_read_receipt.json",
+      "CPU_seconds": 0.08360599999999999
+    },
+    {
+      "path": "/tmp/a62_task3_spec_loop_read_receipt.json",
+      "CPU_seconds": 0.08334799999999999
+    },
+    {
+      "path": "/tmp/a62_task3_spec_metrics_read_receipt.json",
+      "CPU_seconds": 0.08137699999999999
+    },
+    {
+      "path": "/tmp/a62_task3_spec_accounting_read_receipt.json",
+      "CPU_seconds": 0.084209
+    },
+    {
+      "path": "/tmp/a62_task3_spec_metrics_truncated_read_receipt.json",
+      "CPU_seconds": 0.07622200000000001
+    }
+  ],
+  "charge_scope": "Use aggregate once OR referenced disjoint receipts, never both. No previous Task1/2 or plan-review costs added.",
+  "unmetered_tail": "Prior per-process final output/write/exit, shell/tool service, this JSON serialization/write/exit, subsequent tools and model reasoning unmetered. Partial tool CPU only.",
+  "created_at_utc": "2026-11-04T20:59:52Z",
+  "aggregate_receipt_prepare_SELF_CPU_seconds_to_snapshot": 0.057555,
+  "known_measured_tool_CPU_seconds": 0.466317
+}

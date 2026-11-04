@@ -1,5 +1,5 @@
 """A62 old C6 reference plus two event scores; sealed teacher read-only adoption."""
-import json,math,os
+import hashlib,json,math,os
 from pathlib import Path
 import numpy as np
 from echo_routing.temporal.anchor_cache import ProbabilityCache,atomic_json,fsync_directory,sha
@@ -16,6 +16,7 @@ class EventCache(ProbabilityCache):
     def _check(self,v,i):
         b=self.bases[i];all_actions=propose(b,self.raw_a[i],self.raw_j[i]);actions,rejected=partition(b,all_actions);old=np.asarray(v['old_scores'],np.float64);q=np.asarray(v['q'],np.float64)
         if old.shape!=(len(actions),6) or q.shape!=(len(actions),2) or not np.isfinite(old).all() or not np.isfinite(q).all() or (q<0).any() or (q>1).any() or v['old_reference']!=self.old_references[i]:raise ValueError('aligned finite C6/C2 and exact frozen oldscore reference required')
+        if hashlib.sha256(old.tobytes(order='C')).hexdigest()!=self.old_references[i].get('scores_sha256'):raise ValueError('exact frozen float64 old C6 byte digest changed')
         for a,s in zip(actions,old):
             K=np.count_nonzero(apply(b,a)!=b);u,h,r,n,fp,e=s
             if min(h,r,n)<0 or abs(h+r+n-K)>max(1e-5,K*1e-6) or not 0<=fp<=1 or not max(fp,h/K)-1e-7<=e<=max(fp,min(h,1))+1e-7:raise ValueError('old gross probability sums/evidence changed')
