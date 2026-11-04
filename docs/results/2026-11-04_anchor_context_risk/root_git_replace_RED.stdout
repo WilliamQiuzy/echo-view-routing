@@ -1,0 +1,16 @@
+..........F                                                              [100%]
+=================================== FAILURES ===================================
+_ test_default_replace_refs_and_legacy_grafts_are_rejected_without_modifying_them _
+
+tmp_path = PosixPath('/private/var/folders/4l/s1hqgvzj2l10_dff3pw5m97m0000gn/T/pytest-of-williamqiu/pytest-364/test_default_replace_refs_and_0')
+
+    def test_default_replace_refs_and_legacy_grafts_are_rejected_without_modifying_them(tmp_path):
+        m=importlib.import_module('echo_routing.temporal.event_risk_git_integration');repo,files,head=fixture(tmp_path)
+        replacement=git(repo,'commit-tree',git(repo,'rev-parse',head+'^{tree}'),'-m','replacement toy object')
+        git(repo,'replace',head,replacement);before=(repo/'.git/index').read_bytes()
+>       with pytest.raises(m.IntegrationError) as e:m.integrate(repo,head,'refs/heads/main',files,'A62')
+E       Failed: DID NOT RAISE <class 'echo_routing.temporal.event_risk_git_integration.IntegrationError'>
+
+tests/test_event_risk_git_integration.py:130: Failed
+=========================== short test summary info ============================
+FAILED tests/test_event_risk_git_integration.py::test_default_replace_refs_and_legacy_grafts_are_rejected_without_modifying_them

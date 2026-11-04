@@ -18,7 +18,7 @@ def sha(raw):return hashlib.sha256(raw).hexdigest()
 
 def environment(**extra):
     env={k:v for k,v in os.environ.items() if k not in ['GIT_INDEX_FILE','GIT_DIR','GIT_WORK_TREE','GIT_COMMON_DIR','GIT_OBJECT_DIRECTORY','GIT_ALTERNATE_OBJECT_DIRECTORIES']}
-    return {**env,'GIT_OPTIONAL_LOCKS':'0',**extra}
+    return {**env,'GIT_OPTIONAL_LOCKS':'0','GIT_NO_REPLACE_OBJECTS':'1',**extra}
 
 
 def command(repo,*args,env=None,data=None):
@@ -84,12 +84,18 @@ def allowed(path):
 def eligibility(repo):
     # A configured/new user hook is a gate. The plumbing path below cannot run
     # that gate faithfully, so reject before entering rather than bypass it.
-    forbidden={'GIT_CONFIG','GIT_CONFIG_COUNT','GIT_CONFIG_PARAMETERS','GIT_CONFIG_GLOBAL','GIT_CONFIG_SYSTEM','GIT_CONFIG_NOSYSTEM','GIT_INDEX_FILE','GIT_DIR','GIT_WORK_TREE','GIT_COMMON_DIR','GIT_OBJECT_DIRECTORY','GIT_ALTERNATE_OBJECT_DIRECTORIES','GIT_NAMESPACE','GIT_REPLACE_REF_BASE'}
+    forbidden={'GIT_CONFIG','GIT_CONFIG_COUNT','GIT_CONFIG_PARAMETERS','GIT_CONFIG_GLOBAL','GIT_CONFIG_SYSTEM','GIT_CONFIG_NOSYSTEM','GIT_INDEX_FILE','GIT_DIR','GIT_WORK_TREE','GIT_COMMON_DIR','GIT_OBJECT_DIRECTORY','GIT_ALTERNATE_OBJECT_DIRECTORIES','GIT_NAMESPACE','GIT_REPLACE_REF_BASE','GIT_NO_REPLACE_OBJECTS','GIT_GRAFT_FILE','GIT_SHALLOW_FILE'}
     if any(k in os.environ for k in forbidden):raise ValueError('Git environment override is outside narrow integration eligibility')
     def plain(*args):
         p=subprocess.run(['git','-C',str(repo),*args],stdout=subprocess.PIPE,stderr=subprocess.PIPE,env=environment(),timeout=10)
         if p.returncode not in [0,1]:raise ValueError('cannot verify original Git gate/configuration')
         return p.returncode,p.stdout
+    rc,value=plain('for-each-ref','--format=%(refname)','refs/replace/')
+    if rc or value.strip():raise ValueError('default refs/replace must not change raw expected Git objects')
+    rc,value=plain('rev-parse','--git-path','info/grafts')
+    if rc:raise ValueError('cannot check legacy graft identity')
+    grafts=Path(value.decode().strip());grafts=grafts if grafts.is_absolute() else Path(repo)/grafts
+    if grafts.exists() and (not grafts.is_file() or grafts.read_bytes().strip()):raise ValueError('legacy grafts are outside raw Git integration eligibility')
     rc,value=plain('config','--get-all','core.hooksPath')
     if rc==0:raise ValueError('configured user hooksPath gate must not be bypassed')
     for name in ['core.sparseCheckout','core.splitIndex']:
@@ -101,7 +107,7 @@ def eligibility(repo):
     if hooks.exists():
         if not hooks.is_dir():raise ValueError('unreadable default hook directory')
         if any(p.is_file() and not p.name.endswith('.sample') and os.access(p,os.X_OK) for p in hooks.iterdir()):raise ValueError('active user hook gate must not be bypassed')
-    return {'configured_hooksPath':False,'active_default_hooks':False,'split_sparse_configuration':False,'Git_environment_override':False}
+    return {'configured_hooksPath':False,'active_default_hooks':False,'split_sparse_configuration':False,'Git_environment_override':False,'default_replace_refs':False,'legacy_grafts':False,'raw_Git_no_replace_objects_invariant':True}
 
 
 def fsync_dir(path):

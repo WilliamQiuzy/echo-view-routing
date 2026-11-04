@@ -21,9 +21,9 @@ an explicit SHA256 and must be absent from both current HEAD and index.
 
 The helper checks configured/default executable hooks and rejects a newly added
 user gate rather than bypassing it. It also rejects Git environment overrides,
-active sequencers/merges, split/sparse configuration/indexes, skip-worktree
+default replace refs/legacy grafts, active sequencers/merges, split/sparse configuration/indexes, skip-worktree
 entries and unmerged stages. Eligibility is checked again for apply and before
-publication. Unknown or changed state fails closed. A preexisting foreign lock
+publication. Every plumbing command also fixes GIT_NO_REPLACE_OBJECTS=1, so raw object identity remains invariant. Unknown or changed state fails closed. A preexisting foreign lock
 is never removed. There is no broad lock cleanup or force update.
 
 Dry run is the default. Actual apply needs current expected HEAD, full attached

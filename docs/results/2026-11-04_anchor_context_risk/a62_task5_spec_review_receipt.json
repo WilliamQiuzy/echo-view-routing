@@ -1,0 +1,41 @@
+{
+  "reviewer": "a62_card_review",
+  "status": "Issues Found",
+  "review_kind": "Task5 narrow static SPEC",
+  "snapshot": "d04173a12ce7cf5691e83d0545f9ae3e34e02075",
+  "issues": [
+    {
+      "file": "echo_routing/temporal/event_risk_git_integration.py",
+      "lines": [
+        84,
+        104
+      ],
+      "issue": "Eligibility does not reject default refs/replace, and plumbing does not disable replacement objects. A replaced expected HEAD/tree can make ls-tree/diff-tree report only new A62 paths while the newly serialized commit tree differs from the raw expected HEAD by unrelated content. Require no replacement-object reinterpretation or reject such repositories before constructing the tree."
+    }
+  ],
+  "other_scope_status": "Independent physical trace/fullstate and actual three-blob Git barrier contracts, A62 path allowlist, preserved index entries, hook/environment/split/sparse guards, prepared ref/index partial-state disclosure and CLI unknown-publication status pass static inspection.",
+  "limitations": [
+    "No actual trained model/OS/barrier/publication result validated.",
+    "No tests, SSH, NN, main integration or uncommitted current config/prepare/source/CLI accessed.",
+    "Helper middle was reread only because initial tool output truncated; separately metered once."
+  ],
+  "static_read_receipts": [
+    {
+      "path": "/tmp/a62_task5_spec_audit_read_receipt.json",
+      "CPU_seconds": 0.084129
+    },
+    {
+      "path": "/tmp/a62_task5_spec_git_integration_read_receipt.json",
+      "CPU_seconds": 0.101337
+    },
+    {
+      "path": "/tmp/a62_task5_spec_git_truncated_read_receipt.json",
+      "CPU_seconds": 0.08988199999999999
+    }
+  ],
+  "charge_scope": "Use aggregate once OR referenced disjoint receipts, never both. No prior review costs added.",
+  "unmetered_tail": "Prior per-process final output/write/exit, shell/tool service/wait overhead, this JSON serialization/write/exit, subsequent tools and model reasoning unmetered. Partial tool CPU only.",
+  "created_at_utc": "2026-11-04T21:12:23Z",
+  "aggregate_receipt_prepare_SELF_CPU_seconds_to_snapshot": 0.06084,
+  "known_measured_tool_CPU_seconds": 0.336188
+}

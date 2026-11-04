@@ -121,3 +121,15 @@ def test_exact_A62_allowlist_excludes_other_rounds_main_index_and_web():
     m=importlib.import_module('echo_routing.temporal.event_risk_git_integration')
     for p in ['echo_routing/temporal/event_risk_model.py','scripts/train_event_risk.py','tests/test_event_risk_scope.py','configs/experiments/anchor_context_risk_v1.json','docs/superpowers/plans/2026-11-04-a62-anchor-context-risk.md','docs/superpowers/plans/2026-11-04-a62-anchor-context-risk.basis.json','docs/results/2026-11-04_anchor_context_risk/report.json']:assert m.allowed(p)
     for p in ['echo_routing/temporal/safety_model.py','scripts/train_action_safety.py','docs/EXPERIMENT_INDEX.md','docs/superpowers/plans/2026-11-04-a63-plan.md','docs/results/2026-11-04_action_safety_ranking/report.json','web/index.html','docs/results/2026-11-04_anchor_context_risk/../x']:assert not m.allowed(p)
+
+
+def test_default_replace_refs_and_legacy_grafts_are_rejected_without_modifying_them(tmp_path):
+    m=importlib.import_module('echo_routing.temporal.event_risk_git_integration');repo,files,head=fixture(tmp_path)
+    replacement=git(repo,'commit-tree',git(repo,'rev-parse',head+'^{tree}'),'-m','replacement toy object')
+    git(repo,'replace',head,replacement);before=(repo/'.git/index').read_bytes()
+    with pytest.raises(m.IntegrationError) as e:m.integrate(repo,head,'refs/heads/main',files,'A62')
+    assert 'replace' in str(e.value).lower() and (repo/'.git/index').read_bytes()==before
+    assert git(repo,'show-ref','--verify','refs/replace/'+head).split()[0]==replacement
+    git(repo,'replace','-d',head);grafts=repo/'.git/info/grafts';grafts.write_text(head+'\n')
+    with pytest.raises(m.IntegrationError) as e:m.integrate(repo,head,'refs/heads/main',files,'A62')
+    assert 'graft' in str(e.value).lower() and grafts.read_text()==head+'\n'
