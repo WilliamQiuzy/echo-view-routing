@@ -26,3 +26,15 @@ def test_GPU_reserve_does_not_invent_shorter_CPU_wall_deadline():
     t=totals([]);now=DEADLINE_EPOCH-3600
     assert forecast(t,0,10,0,now,100)['all_caps_fit']
     assert remaining_limits(t,now,potential_GPU_context=False)['stage_wall_seconds']==3600
+
+def test_CPU_stage_does_not_claim_foreign_GPU_and_stops_own_context(tmp_path):
+    import json,sys
+    from scripts.supervise_jepa_proposals import execute
+    run=tmp_path/'cpu';pub=tmp_path/'pub'
+    r=execute('CPU_fixture',[sys.executable,'-c','import time;time.sleep(.12)'],run,pub,totals([]),2,False,GPU_probe=lambda:[999999],storage_probe=lambda:0)
+    assert r['observed_worker_exit_code']==0 and not r['CUDA_context_occupied'] and r['preexisting_foreign_GPU_owners']==[999999]
+    def GPU():
+        p=run/'active_process.json'
+        return [json.loads(p.read_text())['model_pid']] if p.exists() and json.loads(p.read_text()).get('model_pid') else []
+    r=execute('context_fixture',[sys.executable,'-c','import time;time.sleep(3)'],run,pub,totals([]),2,False,GPU_probe=GPU,storage_probe=lambda:0)
+    assert r['termination_reason']=='unexpected_CPU_stage_CUDA_context' and r['CUDA_context_occupied']

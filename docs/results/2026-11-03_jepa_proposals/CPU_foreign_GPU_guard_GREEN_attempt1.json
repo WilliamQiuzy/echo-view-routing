@@ -1,0 +1,31 @@
+{
+  "stage": "CPU_foreign_GPU_guard_GREEN_attempt1",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "tests/test_proposal_resources.py::test_CPU_stage_does_not_claim_foreign_GPU_and_stops_own_context"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 87698,
+  "supervisor_pid": 87697,
+  "started_epoch": 1793760580.559924,
+  "finished_epoch": 1793760581.256133,
+  "full_process_wall_seconds": 0.696209192276001,
+  "observed_worker_exit_code": 0,
+  "stage_exit_code": 0,
+  "termination_reason": null,
+  "exception": null,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 0.372625,
+  "measured_supervisor_CPU_seconds": 0.0009819999999999976,
+  "measured_CPU_core_seconds": 0.37360699999999997,
+  "durable_claim_before_Popen": true,
+  "scope": "local synthetic checks;SELF region+waited CHILDREN;final JSON bookkeeping and wrapper imports separate metadata",
+  "output": ".                                                                        [100%]\n",
+  "output_sha256": "423b1d0e014eb1eab96f4420f7b344c2615be505dd574b756ac884826ca74f2d"
+}

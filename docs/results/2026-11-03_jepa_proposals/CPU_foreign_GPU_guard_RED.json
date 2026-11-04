@@ -1,0 +1,31 @@
+{
+  "stage": "CPU_foreign_GPU_guard_RED",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "tests/test_proposal_resources.py::test_CPU_stage_does_not_claim_foreign_GPU_and_stops_own_context"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 87225,
+  "supervisor_pid": 87214,
+  "started_epoch": 1793760567.452242,
+  "finished_epoch": 1793760568.034071,
+  "full_process_wall_seconds": 0.5818290710449219,
+  "observed_worker_exit_code": 1,
+  "stage_exit_code": 1,
+  "termination_reason": null,
+  "exception": null,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 0.374212,
+  "measured_supervisor_CPU_seconds": 0.0011500000000000052,
+  "measured_CPU_core_seconds": 0.375362,
+  "durable_claim_before_Popen": true,
+  "scope": "local synthetic checks;SELF region+waited CHILDREN;final JSON bookkeeping and wrapper imports separate metadata",
+  "output": "F                                                                        [100%]\n=================================== FAILURES ===================================\n_______ test_CPU_stage_does_not_claim_foreign_GPU_and_stops_own_context ________\ntests/test_proposal_resources.py:34: in test_CPU_stage_does_not_claim_foreign_GPU_and_stops_own_context\n    r=execute('CPU_fixture',[sys.executable,'-c','import time;time.sleep(.12)'],run,pub,totals([]),2,False,GPU_probe=lambda:[999999],storage_probe=lambda:0)\n      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nscripts/supervise_jepa_proposals.py:78: in execute\n    raise RuntimeError('an existing GPU owner prevents a second queue')\nE   RuntimeError: an existing GPU owner prevents a second queue\n=========================== short test summary info ============================\nFAILED tests/test_proposal_resources.py::test_CPU_stage_does_not_claim_foreign_GPU_and_stops_own_context\n",
+  "output_sha256": "d8ff567bc82f4ce9cbd978273cd57adf21ad0f067c54fc132c5f456c22a72149"
+}

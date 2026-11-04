@@ -74,8 +74,9 @@ def execute(stage, command, run, pub, spent, declared_wall_seconds, GPU_job,
                 raise ValueError('same receipt identity has conflicting locked costs')
             merged[key] = row
         spent = totals(list(merged.values()))
-        if GPU_probe():
-            raise RuntimeError('an existing GPU owner prevents a second queue')
+        initial_GPU_owners = GPU_probe()
+        if GPU_job and initial_GPU_owners:
+            raise RuntimeError('an existing GPU owner prevents a second GPU queue')
         bounds = remaining_limits(spent, time.time(), potential_GPU_context=True)
         effective = min(float(declared_wall_seconds), bounds['stage_wall_seconds'] - 10.)
         if not math.isfinite(effective) or effective <= 0:
@@ -123,8 +124,10 @@ def execute(stage, command, run, pub, spent, declared_wall_seconds, GPU_job,
                     if now - last_GPU >= 3:
                         owners = GPU_probe()
                         context_occupied |= child.pid in owners
-                        if any(pid != child.pid for pid in owners):
+                        if GPU_job and any(pid != child.pid for pid in owners):
                             reason = 'unexpected_foreign_GPU_owner'
+                        if not GPU_job and child.pid in owners:
+                            reason = 'unexpected_CPU_stage_CUDA_context'
                         last_GPU = now
                     own = resource.getrusage(resource.RUSAGE_SELF)
                     waited = resource.getrusage(resource.RUSAGE_CHILDREN)
@@ -170,6 +173,8 @@ def execute(stage, command, run, pub, spent, declared_wall_seconds, GPU_job,
                'measured_CPU_core_seconds': cc + sc, 'measured_child_and_waited_probe_CPU_seconds': cc,
                'measured_supervisor_CPU_seconds': sc, 'GPU_job': bool(GPU_job),
                'CUDA_context_occupied': bool(context_occupied), 'CUDA_visibility_hidden': not GPU_job,
+               'preexisting_foreign_GPU_owners': initial_GPU_owners,
+               'foreign_GPU_wall_not_charged_as_A60': True,
                'observed_worker_exit_code': code, 'child_exit_code_directly_waited': child is not None,
                'OS_status_inferred_from_manifest': False, 'termination_reason': reason,
                'guardian_exception': exception, 'maximum_sampled_tracked_storage_upper_bytes': max_storage,
