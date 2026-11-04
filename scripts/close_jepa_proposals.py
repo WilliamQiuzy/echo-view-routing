@@ -11,6 +11,7 @@ from echo_routing.temporal.proposal_resources import ExclusiveQueue,totals,PRIOR
 
 def main():
     with ExclusiveQueue(RUN/'exclusive_supervisor.lock'):
+        if (PUB/'resources.json').exists() or (PUB/'terminal_exit_receipt.json').exists():raise ValueError('terminal evidence already exists;never overwrite a completed or partial closure')
         names=['fullFIT_check_freeze.json','formal_admission_freeze.json',
                'formal_freeze.json','audit_freeze.json','outer_admission_freeze.json','outer_freeze.json','readout_freeze.json','aggregate_freeze.json',
                'oracle_freeze.json','package_freeze.json','native_attribution_freeze.json','terminal_freeze.json']
