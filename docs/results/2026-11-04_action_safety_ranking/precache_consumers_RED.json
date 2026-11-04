@@ -1,0 +1,31 @@
+{
+  "stage": "precache_consumers_RED",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "tests/test_safety_precache_consumers.py"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 16212,
+  "supervisor_pid": 16202,
+  "started_epoch": 1793808408.934779,
+  "finished_epoch": 1793808412.240488,
+  "full_process_wall_seconds": 3.30570912361145,
+  "observed_worker_exit_code": 1,
+  "stage_exit_code": 1,
+  "termination_reason": null,
+  "exception": null,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 2.322175,
+  "measured_supervisor_CPU_seconds": 0.0012410000000000008,
+  "measured_CPU_core_seconds": 2.323416,
+  "durable_claim_before_Popen": true,
+  "scope": "local synthetic checks;SELF region+waited CHILDREN;final JSON bookkeeping and wrapper imports separate metadata",
+  "output": "FF                                                                       [100%]\n=================================== FAILURES ===================================\n____ test_physical_production_attempts_are_separate_from_readonly_adoption _____\ntests/test_safety_precache_consumers.py:8: in test_physical_production_attempts_are_separate_from_readonly_adoption\n    value=source_costs([record],{('a08','fresh'):[3]},[prod,adopt],production_stage='producer_precache')\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   TypeError: source_costs() got an unexpected keyword argument 'production_stage'\n___________ test_complete_source_binding_uses_adopted_immutable_path ___________\ntests/test_safety_precache_consumers.py:24: in test_complete_source_binding_uses_adopted_immutable_path\n    (pub/'input_manifest.json').write_text(json.dumps(inputs));m.source_banks({'records':records,'read_only_early_producer_cache_adopted':True},banks)\n                                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nscripts/readout_action_safety.py:52: in source_banks\n    if not row['complete'] or row['identity']!=ids[s] or row['journal_sha256']!=sha(folder/'committed.jsonl') or row['input_sha256']!=inputs['roles'][role]['sha256'] or row['committed_sequences']!=len(q):raise ValueError('source/input/order/gamma/completeaxis cache binding changed')\n                                                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\necho_routing/temporal/anchor_cache.py:14: in sha\n    with Path(path).open('rb') as handle:\n         ^^^^^^^^^^^^^^^^^^^^^\n../../../../../.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/pathlib.py:1013: in open\n    return io.open(self, mode, buffering, encoding, errors, newline)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   FileNotFoundError: [Errno 2] No such file or directory: '/private/var/folders/4l/s1hqgvzj2l10_dff3pw5m97m0000gn/T/pytest-of-williamqiu/pytest-329/test_complete_source_binding_u0/runs/a61_action_safety_ranking_v1/cache/a08/a61_confirmation_selection/committed.jsonl'\n=========================== short test summary info ============================\nFAILED tests/test_safety_precache_consumers.py::test_physical_production_attempts_are_separate_from_readonly_adoption\nFAILED tests/test_safety_precache_consumers.py::test_complete_source_binding_uses_adopted_immutable_path\n",
+  "output_sha256": "b1234bfa574b30755e1b694bb3ffdab64b53f1ec76f8c1fd5aaa26f6873c5109"
+}

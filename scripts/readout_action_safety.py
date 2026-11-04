@@ -48,7 +48,13 @@ def source_banks(outer,banks):
     count=0
     for role,(q,a,j,b,ids) in banks.items():
         for s in ['a08','jepa']:
-            old=inputs['source_cache_roles'].get(role,{}).get(s);row=old or fresh[(s,role)];folder=ROOT/old['path'] if old else RUN/'cache'/s/role
+            old=inputs['source_cache_roles'].get(role,{}).get(s);row=old or fresh[(s,role)]
+            if old:folder=ROOT/old['path']
+            elif outer.get('read_only_early_producer_cache_adopted'):
+                from echo_routing.temporal.safety_precache import folder as expected_precache_folder
+                if row['path']!=expected_precache_folder(s,role):raise ValueError('adopted cache must retain its original independent producer path')
+                folder=ROOT/row['path']
+            else:folder=RUN/'cache'/s/role
             if not row['complete'] or row['identity']!=ids[s] or row['journal_sha256']!=sha(folder/'committed.jsonl') or row['input_sha256']!=inputs['roles'][role]['sha256'] or row['committed_sequences']!=len(q):raise ValueError('source/input/order/gamma/completeaxis cache binding changed')
             count+=1
     if count!=20:raise ValueError('complete20 outer source-role cells required')
