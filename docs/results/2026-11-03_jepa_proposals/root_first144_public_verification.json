@@ -1,0 +1,3728 @@
+{
+  "scope": "independent public144coverage,scalar-delta andinterval-validity check;bootstrapnotrerun",
+  "summary_sha256": "7cbd7c5f48e33bc1461aed3519edc41a5f51cd01672f36db073965cb258cd95a",
+  "outer_metrics_sha256": "b21b323069691a6491ae80958d1480718d07d1dc3e5d5eb8260d54850a86fa83",
+  "all144fixed_cells_exactly_once": true,
+  "scalar_deltas_checked": 5760,
+  "mismatches": [],
+  "replicates_each": 5000,
+  "source_reports_all124_original_axes_and_all96_descriptors_recounted": true,
+  "conditional_sharedsource_development_CIs_not_population_validation": true,
+  "selected_predeclared_primary_and_Base_contrasts": [
+    {
+      "bootstrap": {
+        "multi_streams": 120,
+        "native_sessions": 36,
+        "pair_streams": 137,
+        "replicates": 5000,
+        "scope": "conditionalconstructedbankswithsharedsources; sessionsnotconfirmedpatients; noindependentclinicalpopulationclaim",
+        "seed": 2026110360,
+        "short_count_intervals": "differencesinresampledwhole-banktotals;pairedtruedenominatorsidenticalineachreplicate",
+        "undefined_ratios": "reportedasnullifallundefined;otherwiseintervalconditionalonfinitepairedreplicateswithcountsdisclosed",
+        "units": "complete sessions / complete fixed streams / complete fixed pairs"
+      },
+      "contrast": "J-R-A-R",
+      "delta": {
+        "boundary_f1_multi": -0.0026109660574412663,
+        "boundary_f1_pairs": 0.0,
+        "boundary_precision_multi": -0.0026041666666666297,
+        "boundary_precision_pairs": 0.0,
+        "boundary_recall_multi": -0.002617801047120394,
+        "boundary_recall_pairs": 0.0,
+        "multi_frame_accuracy": -0.004946193436267676,
+        "multi_frame_errors": 74,
+        "native_A4C_A5C_errors": 0,
+        "native_A4C_to_A5C": 0,
+        "native_A5C_to_A4C": 0,
+        "native_accuracy": 0.0,
+        "native_frame_accuracy": -0.0005410279531109508,
+        "native_frame_errors": 9,
+        "native_internal_cuts_per_clip": 0.0035211267605633756,
+        "native_internal_cuts_per_min": 0.03606853020739409,
+        "native_macro_f1": 0.0,
+        "native_share_cut": 0.0,
+        "pair_frame_errors": -20,
+        "pairs_frame_accuracy": 0.0035143208574942575,
+        "pairs_short_predicted_segments_10samples": 0,
+        "pairs_short_predicted_segments_16samples": -3,
+        "pairs_short_spurious_segments_10samples": 1,
+        "pairs_short_spurious_segments_16samples": 1,
+        "pairs_short_true_segments_10samples": 0,
+        "pairs_short_true_segments_16samples": 0,
+        "pairs_short_true_unmatched_10samples": 0,
+        "pairs_short_true_unmatched_16samples": 1,
+        "same_class_cut_rate_multi": 0.004347826086956524,
+        "same_class_cut_rate_pairs": 0.0,
+        "segment_f1_50_multi": 0.001988071570576455,
+        "segment_f1_50_pairs": -0.004819277108433773,
+        "short_predicted_segments_10samples": 0,
+        "short_predicted_segments_16samples": -2,
+        "short_spurious_segments_10samples": -1,
+        "short_spurious_segments_16samples": -1,
+        "short_true_segments_10samples": 0,
+        "short_true_segments_16samples": 0,
+        "short_true_unmatched_10samples": 0,
+        "short_true_unmatched_16samples": -1
+      },
+      "delta95": {
+        "boundary_precision_multi": [
+          -0.014511009723554421,
+          0.00795017324248436
+        ],
+        "boundary_precision_pairs": [
+          0.0,
+          0.0
+        ],
+        "boundary_recall_multi": [
+          -0.008287292817679481,
+          0.0
+        ],
+        "boundary_recall_pairs": [
+          0.0,
+          0.0
+        ],
+        "multi_frame_accuracy": [
+          -0.011796273744127093,
+          0.0007400101622136734
+        ],
+        "native_accuracy": [
+          0.0,
+          0.0
+        ],
+        "native_frame_accuracy": [
+          -0.0013548299808196634,
+          0.0
+        ],
+        "native_frame_errors": [
+          0.0,
+          27.0
+        ],
+        "native_internal_cuts_per_clip": [
+          0.0,
+          0.009554140127388533
+        ],
+        "native_macro_f1": [
+          0.0,
+          0.0
+        ],
+        "pairs_short_spurious_segments_10samples": [
+          0.0,
+          3.0
+        ],
+        "pairs_short_spurious_segments_16samples": [
+          0.0,
+          3.0
+        ],
+        "pairs_short_true_unmatched_10samples": [
+          0.0,
+          0.0
+        ],
+        "pairs_short_true_unmatched_16samples": [
+          0.0,
+          3.0
+        ],
+        "same_class_cut_rate_multi": [
+          0.0,
+          0.013452914798206279
+        ],
+        "segment_f1_50_multi": [
+          -0.008684023902183905,
+          0.012165814939025958
+        ],
+        "segment_f1_50_pairs": [
+          -0.01492537313432829,
+          0.0
+        ],
+        "short_spurious_segments_10samples": [
+          -5.0,
+          2.0
+        ],
+        "short_spurious_segments_16samples": [
+          -6.0,
+          3.0
+        ],
+        "short_true_unmatched_10samples": [
+          0.0,
+          0.0
+        ],
+        "short_true_unmatched_16samples": [
+          -3.0,
+          0.0
+        ]
+      },
+      "exact_disagreements": {
+        "multi_short_true_segments_lost_10samples": 0,
+        "multi_short_true_segments_lost_16samples": 0,
+        "multi_short_true_segments_recovered_10samples": 0,
+        "multi_short_true_segments_recovered_16samples": 1,
+        "multi_true_segments_lost": 2,
+        "multi_true_segments_recovered": 3,
+        "native_both_correct": 281,
+        "native_both_wrong": 3,
+        "native_left_only_correct": 0,
+        "native_right_only_correct": 0,
+        "pair_short_true_segments_lost_10samples": 0,
+        "pair_short_true_segments_lost_16samples": 1,
+        "pair_short_true_segments_recovered_10samples": 0,
+        "pair_short_true_segments_recovered_16samples": 0,
+        "pair_true_segments_lost": 1,
+        "pair_true_segments_recovered": 0
+      },
+      "half": "selection",
+      "left": "seed2026110360_J-R_fixed6000",
+      "native_confusion_delta": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "native_per_class_f1_delta": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "right": "seed2026110360_A-R_fixed6000",
+      "seed": 2026110360,
+      "table": "main",
+      "undefined_bootstrap_replicates": {
+        "boundary_precision_multi": 0,
+        "boundary_precision_pairs": 0,
+        "boundary_recall_multi": 0,
+        "boundary_recall_pairs": 0,
+        "multi_frame_accuracy": 0,
+        "native_accuracy": 0,
+        "native_frame_accuracy": 0,
+        "native_frame_errors": 0,
+        "native_internal_cuts_per_clip": 0,
+        "native_macro_f1": 0,
+        "pairs_short_spurious_segments_10samples": 0,
+        "pairs_short_spurious_segments_16samples": 0,
+        "pairs_short_true_unmatched_10samples": 0,
+        "pairs_short_true_unmatched_16samples": 0,
+        "same_class_cut_rate_multi": 0,
+        "segment_f1_50_multi": 0,
+        "segment_f1_50_pairs": 0,
+        "short_spurious_segments_10samples": 0,
+        "short_spurious_segments_16samples": 0,
+        "short_true_unmatched_10samples": 0,
+        "short_true_unmatched_16samples": 0
+      }
+    },
+    {
+      "bootstrap": {
+        "multi_streams": 120,
+        "native_sessions": 36,
+        "pair_streams": 137,
+        "replicates": 5000,
+        "scope": "conditionalconstructedbankswithsharedsources; sessionsnotconfirmedpatients; noindependentclinicalpopulationclaim",
+        "seed": 2026110360,
+        "short_count_intervals": "differencesinresampledwhole-banktotals;pairedtruedenominatorsidenticalineachreplicate",
+        "undefined_ratios": "reportedasnullifallundefined;otherwiseintervalconditionalonfinitepairedreplicateswithcountsdisclosed",
+        "units": "complete sessions / complete fixed streams / complete fixed pairs"
+      },
+      "contrast": "J-R-A08_s0_original_B3",
+      "delta": {
+        "boundary_f1_multi": 0.0025089751958224937,
+        "boundary_f1_pairs": 0.01368843922035412,
+        "boundary_precision_multi": 0.004978950777202118,
+        "boundary_precision_pairs": 0.026625506463438198,
+        "boundary_recall_multi": 0.0,
+        "boundary_recall_pairs": 0.0,
+        "multi_frame_accuracy": 0.001136287681304693,
+        "multi_frame_errors": -17,
+        "native_A4C_A5C_errors": 0,
+        "native_A4C_to_A5C": 0,
+        "native_A5C_to_A4C": 0,
+        "native_accuracy": 0.0,
+        "native_frame_accuracy": -0.0015028554253081472,
+        "native_frame_errors": 25,
+        "native_internal_cuts_per_clip": 0.0,
+        "native_internal_cuts_per_min": 0.0,
+        "native_macro_f1": 0.0,
+        "native_share_cut": -0.003521126760563379,
+        "pair_frame_errors": -74,
+        "pairs_frame_accuracy": 0.013002987172728853,
+        "pairs_short_predicted_segments_10samples": -1,
+        "pairs_short_predicted_segments_16samples": -4,
+        "pairs_short_spurious_segments_10samples": 1,
+        "pairs_short_spurious_segments_16samples": -3,
+        "pairs_short_true_segments_10samples": 0,
+        "pairs_short_true_segments_16samples": 0,
+        "pairs_short_true_unmatched_10samples": 0,
+        "pairs_short_true_unmatched_16samples": 0,
+        "same_class_cut_rate_multi": 0.008695652173913045,
+        "same_class_cut_rate_pairs": 0.0,
+        "segment_f1_50_multi": 0.005877433809839294,
+        "segment_f1_50_pairs": 0.009488312964086587,
+        "short_predicted_segments_10samples": -9,
+        "short_predicted_segments_16samples": -10,
+        "short_spurious_segments_10samples": -1,
+        "short_spurious_segments_16samples": -4,
+        "short_true_segments_10samples": 0,
+        "short_true_segments_16samples": 0,
+        "short_true_unmatched_10samples": 0,
+        "short_true_unmatched_16samples": 0
+      },
+      "delta95": {
+        "boundary_precision_multi": [
+          -0.010138018554650356,
+          0.02161626338223912
+        ],
+        "boundary_precision_pairs": [
+          0.0,
+          0.06633689788604868
+        ],
+        "boundary_recall_multi": [
+          -0.010362694300518172,
+          0.010498687664041943
+        ],
+        "boundary_recall_pairs": [
+          0.0,
+          0.0
+        ],
+        "multi_frame_accuracy": [
+          -0.008383572268898892,
+          0.009642719162595566
+        ],
+        "native_accuracy": [
+          0.0,
+          0.0
+        ],
+        "native_frame_accuracy": [
+          -0.005435969968822868,
+          0.0021753440853491874
+        ],
+        "native_frame_errors": [
+          -30.0,
+          95.0
+        ],
+        "native_internal_cuts_per_clip": [
+          -0.010715245775729644,
+          0.008620689655172417
+        ],
+        "native_macro_f1": [
+          0.0,
+          0.0
+        ],
+        "pairs_short_spurious_segments_10samples": [
+          0.0,
+          3.0
+        ],
+        "pairs_short_spurious_segments_16samples": [
+          -8.0,
+          0.0
+        ],
+        "pairs_short_true_unmatched_10samples": [
+          0.0,
+          0.0
+        ],
+        "pairs_short_true_unmatched_16samples": [
+          0.0,
+          0.0
+        ],
+        "same_class_cut_rate_multi": [
+          0.0,
+          0.022123893805309734
+        ],
+        "segment_f1_50_multi": [
+          -0.00831731985507873,
+          0.020727559203025065
+        ],
+        "segment_f1_50_pairs": [
+          0.0,
+          0.026588073509610875
+        ],
+        "short_spurious_segments_10samples": [
+          -5.0,
+          2.0
+        ],
+        "short_spurious_segments_16samples": [
+          -10.0,
+          1.0
+        ],
+        "short_true_unmatched_10samples": [
+          0.0,
+          0.0
+        ],
+        "short_true_unmatched_16samples": [
+          -3.0,
+          3.0
+        ]
+      },
+      "exact_disagreements": {
+        "multi_short_true_segments_lost_10samples": 0,
+        "multi_short_true_segments_lost_16samples": 1,
+        "multi_short_true_segments_recovered_10samples": 0,
+        "multi_short_true_segments_recovered_16samples": 1,
+        "multi_true_segments_lost": 4,
+        "multi_true_segments_recovered": 6,
+        "native_both_correct": 281,
+        "native_both_wrong": 3,
+        "native_left_only_correct": 0,
+        "native_right_only_correct": 0,
+        "pair_short_true_segments_lost_10samples": 0,
+        "pair_short_true_segments_lost_16samples": 0,
+        "pair_short_true_segments_recovered_10samples": 0,
+        "pair_short_true_segments_recovered_16samples": 0,
+        "pair_true_segments_lost": 0,
+        "pair_true_segments_recovered": 1
+      },
+      "half": "selection",
+      "left": "seed2026110360_J-R_fixed6000",
+      "native_confusion_delta": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "native_per_class_f1_delta": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "right": "A08_s0_original_B3",
+      "seed": 2026110360,
+      "table": "main",
+      "undefined_bootstrap_replicates": {
+        "boundary_precision_multi": 0,
+        "boundary_precision_pairs": 0,
+        "boundary_recall_multi": 0,
+        "boundary_recall_pairs": 0,
+        "multi_frame_accuracy": 0,
+        "native_accuracy": 0,
+        "native_frame_accuracy": 0,
+        "native_frame_errors": 0,
+        "native_internal_cuts_per_clip": 0,
+        "native_macro_f1": 0,
+        "pairs_short_spurious_segments_10samples": 0,
+        "pairs_short_spurious_segments_16samples": 0,
+        "pairs_short_true_unmatched_10samples": 0,
+        "pairs_short_true_unmatched_16samples": 0,
+        "same_class_cut_rate_multi": 0,
+        "segment_f1_50_multi": 0,
+        "segment_f1_50_pairs": 0,
+        "short_spurious_segments_10samples": 0,
+        "short_spurious_segments_16samples": 0,
+        "short_true_unmatched_10samples": 0,
+        "short_true_unmatched_16samples": 0
+      }
+    },
+    {
+      "bootstrap": {
+        "multi_streams": 120,
+        "native_sessions": 36,
+        "pair_streams": 137,
+        "replicates": 5000,
+        "scope": "conditionalconstructedbankswithsharedsources; sessionsnotconfirmedpatients; noindependentclinicalpopulationclaim",
+        "seed": 2026110360,
+        "short_count_intervals": "differencesinresampledwhole-banktotals;pairedtruedenominatorsidenticalineachreplicate",
+        "undefined_ratios": "reportedasnullifallundefined;otherwiseintervalconditionalonfinitepairedreplicateswithcountsdisclosed",
+        "units": "complete sessions / complete fixed streams / complete fixed pairs"
+      },
+      "contrast": "J-R-A-R",
+      "delta": {
+        "boundary_f1_multi": -0.006569966741670874,
+        "boundary_f1_pairs": 0.007192088702427379,
+        "boundary_precision_multi": -0.005303030303030254,
+        "boundary_precision_pairs": 0.0003912363067292146,
+        "boundary_recall_multi": -0.007853403141361293,
+        "boundary_recall_pairs": 0.014285714285714235,
+        "multi_frame_accuracy": 0.0032751821402312586,
+        "multi_frame_errors": -49,
+        "native_A4C_A5C_errors": 0,
+        "native_A4C_to_A5C": 0,
+        "native_A5C_to_A4C": 0,
+        "native_accuracy": 0.0,
+        "native_frame_accuracy": 0.0,
+        "native_frame_errors": 0,
+        "native_internal_cuts_per_clip": 0.0,
+        "native_internal_cuts_per_min": 0.0,
+        "native_macro_f1": 0.0,
+        "native_share_cut": 0.0,
+        "pair_frame_errors": -15,
+        "pairs_frame_accuracy": 0.0026357406431206654,
+        "pairs_short_predicted_segments_10samples": -1,
+        "pairs_short_predicted_segments_16samples": 3,
+        "pairs_short_spurious_segments_10samples": 0,
+        "pairs_short_spurious_segments_16samples": 0,
+        "pairs_short_true_segments_10samples": 0,
+        "pairs_short_true_segments_16samples": 0,
+        "pairs_short_true_unmatched_10samples": 0,
+        "pairs_short_true_unmatched_16samples": -1,
+        "same_class_cut_rate_multi": -0.004347826086956521,
+        "same_class_cut_rate_pairs": 0.0,
+        "segment_f1_50_multi": 0.004927732512571059,
+        "segment_f1_50_pairs": 0.002444392956441166,
+        "short_predicted_segments_10samples": -3,
+        "short_predicted_segments_16samples": 0,
+        "short_spurious_segments_10samples": 0,
+        "short_spurious_segments_16samples": 0,
+        "short_true_segments_10samples": 0,
+        "short_true_segments_16samples": 0,
+        "short_true_unmatched_10samples": 0,
+        "short_true_unmatched_16samples": 0
+      },
+      "delta95": {
+        "boundary_precision_multi": [
+          -0.020087031531261765,
+          0.007612791712244966
+        ],
+        "boundary_precision_pairs": [
+          0.0,
+          0.001811966448282712
+        ],
+        "boundary_recall_multi": [
+          -0.017766497461928932,
+          0.0
+        ],
+        "boundary_recall_pairs": [
+          0.0,
+          0.046875
+        ],
+        "multi_frame_accuracy": [
+          -0.00211728280035299,
+          0.01024611629300163
+        ],
+        "native_accuracy": [
+          0.0,
+          0.0
+        ],
+        "native_frame_accuracy": [
+          0.0,
+          0.0
+        ],
+        "native_frame_errors": [
+          0.0,
+          0.0
+        ],
+        "native_internal_cuts_per_clip": [
+          0.0,
+          0.0
+        ],
+        "native_macro_f1": [
+          0.0,
+          0.0
+        ],
+        "pairs_short_spurious_segments_10samples": [
+          0.0,
+          0.0
+        ],
+        "pairs_short_spurious_segments_16samples": [
+          0.0,
+          0.0
+        ],
+        "pairs_short_true_unmatched_10samples": [
+          0.0,
+          0.0
+        ],
+        "pairs_short_true_unmatched_16samples": [
+          -3.0,
+          0.0
+        ],
+        "same_class_cut_rate_multi": [
+          -0.013452914798206279,
+          0.0
+        ],
+        "segment_f1_50_multi": [
+          -0.003688711541063616,
+          0.0150959177816772
+        ],
+        "segment_f1_50_pairs": [
+          0.0,
+          0.0075814711793953755
+        ],
+        "short_spurious_segments_10samples": [
+          -5.0,
+          5.0
+        ],
+        "short_spurious_segments_16samples": [
+          -5.0,
+          5.0
+        ],
+        "short_true_unmatched_10samples": [
+          0.0,
+          0.0
+        ],
+        "short_true_unmatched_16samples": [
+          -3.0,
+          3.0
+        ]
+      },
+      "exact_disagreements": {
+        "multi_short_true_segments_lost_10samples": 0,
+        "multi_short_true_segments_lost_16samples": 1,
+        "multi_short_true_segments_recovered_10samples": 0,
+        "multi_short_true_segments_recovered_16samples": 1,
+        "multi_true_segments_lost": 1,
+        "multi_true_segments_recovered": 3,
+        "native_both_correct": 281,
+        "native_both_wrong": 3,
+        "native_left_only_correct": 0,
+        "native_right_only_correct": 0,
+        "pair_short_true_segments_lost_10samples": 0,
+        "pair_short_true_segments_lost_16samples": 0,
+        "pair_short_true_segments_recovered_10samples": 0,
+        "pair_short_true_segments_recovered_16samples": 1,
+        "pair_true_segments_lost": 0,
+        "pair_true_segments_recovered": 1
+      },
+      "half": "selection",
+      "left": "seed2026110361_J-R_fixed6000",
+      "native_confusion_delta": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "native_per_class_f1_delta": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "right": "seed2026110361_A-R_fixed6000",
+      "seed": 2026110361,
+      "table": "main",
+      "undefined_bootstrap_replicates": {
+        "boundary_precision_multi": 0,
+        "boundary_precision_pairs": 0,
+        "boundary_recall_multi": 0,
+        "boundary_recall_pairs": 0,
+        "multi_frame_accuracy": 0,
+        "native_accuracy": 0,
+        "native_frame_accuracy": 0,
+        "native_frame_errors": 0,
+        "native_internal_cuts_per_clip": 0,
+        "native_macro_f1": 0,
+        "pairs_short_spurious_segments_10samples": 0,
+        "pairs_short_spurious_segments_16samples": 0,
+        "pairs_short_true_unmatched_10samples": 0,
+        "pairs_short_true_unmatched_16samples": 0,
+        "same_class_cut_rate_multi": 0,
+        "segment_f1_50_multi": 0,
+        "segment_f1_50_pairs": 0,
+        "short_spurious_segments_10samples": 0,
+        "short_spurious_segments_16samples": 0,
+        "short_true_unmatched_10samples": 0,
+        "short_true_unmatched_16samples": 0
+      }
+    },
+    {
+      "bootstrap": {
+        "multi_streams": 120,
+        "native_sessions": 36,
+        "pair_streams": 137,
+        "replicates": 5000,
+        "scope": "conditionalconstructedbankswithsharedsources; sessionsnotconfirmedpatients; noindependentclinicalpopulationclaim",
+        "seed": 2026110360,
+        "short_count_intervals": "differencesinresampledwhole-banktotals;pairedtruedenominatorsidenticalineachreplicate",
+        "undefined_ratios": "reportedasnullifallundefined;otherwiseintervalconditionalonfinitepairedreplicateswithcountsdisclosed",
+        "units": "complete sessions / complete fixed streams / complete fixed pairs"
+      },
+      "contrast": "J-R-A08_s0_original_B3",
+      "delta": {
+        "boundary_f1_multi": -0.00010199086161877258,
+        "boundary_f1_pairs": 0.0208805279227815,
+        "boundary_precision_multi": 0.0023747841105354883,
+        "boundary_precision_pairs": 0.027016742770167412,
+        "boundary_recall_multi": -0.002617801047120394,
+        "boundary_recall_pairs": 0.014285714285714235,
+        "multi_frame_accuracy": 0.005681438406523576,
+        "multi_frame_errors": -85,
+        "native_A4C_A5C_errors": 0,
+        "native_A4C_to_A5C": 0,
+        "native_A5C_to_A4C": 0,
+        "native_accuracy": 0.0,
+        "native_frame_accuracy": -0.0019236549443943929,
+        "native_frame_errors": 32,
+        "native_internal_cuts_per_clip": 0.0,
+        "native_internal_cuts_per_min": 0.0,
+        "native_macro_f1": 0.0,
+        "native_share_cut": -0.003521126760563379,
+        "pair_frame_errors": -78,
+        "pairs_frame_accuracy": 0.013705851344227749,
+        "pairs_short_predicted_segments_10samples": -2,
+        "pairs_short_predicted_segments_16samples": -1,
+        "pairs_short_spurious_segments_10samples": 0,
+        "pairs_short_spurious_segments_16samples": -4,
+        "pairs_short_true_segments_10samples": 0,
+        "pairs_short_true_segments_16samples": 0,
+        "pairs_short_true_unmatched_10samples": 0,
+        "pairs_short_true_unmatched_16samples": -2,
+        "same_class_cut_rate_multi": -0.004347826086956521,
+        "same_class_cut_rate_pairs": 0.0,
+        "segment_f1_50_multi": 0.005877433809839294,
+        "segment_f1_50_pairs": 0.016751983028961526,
+        "short_predicted_segments_10samples": -9,
+        "short_predicted_segments_16samples": -6,
+        "short_spurious_segments_10samples": 0,
+        "short_spurious_segments_16samples": -1,
+        "short_true_segments_10samples": 0,
+        "short_true_segments_16samples": 0,
+        "short_true_unmatched_10samples": 0,
+        "short_true_unmatched_16samples": 0
+      },
+      "delta95": {
+        "boundary_precision_multi": [
+          -0.013994489032306708,
+          0.019180219170047932
+        ],
+        "boundary_precision_pairs": [
+          0.0,
+          0.06686395985101329
+        ],
+        "boundary_recall_multi": [
+          -0.012108010345051061,
+          0.00540540540540535
+        ],
+        "boundary_recall_pairs": [
+          0.0,
+          0.046875
+        ],
+        "multi_frame_accuracy": [
+          -0.0017290651636737097,
+          0.012293135144216887
+        ],
+        "native_accuracy": [
+          0.0,
+          0.0
+        ],
+        "native_frame_accuracy": [
+          -0.00592350677676898,
+          0.0021596756169952073
+        ],
+        "native_frame_errors": [
+          -30.0,
+          113.0
+        ],
+        "native_internal_cuts_per_clip": [
+          -0.010715245775729644,
+          0.008620689655172417
+        ],
+        "native_macro_f1": [
+          0.0,
+          0.0
+        ],
+        "pairs_short_spurious_segments_10samples": [
+          0.0,
+          0.0
+        ],
+        "pairs_short_spurious_segments_16samples": [
+          -9.0,
+          0.0
+        ],
+        "pairs_short_true_unmatched_10samples": [
+          0.0,
+          0.0
+        ],
+        "pairs_short_true_unmatched_16samples": [
+          -5.0,
+          0.0
+        ],
+        "same_class_cut_rate_multi": [
+          -0.013452914798206279,
+          0.0
+        ],
+        "segment_f1_50_multi": [
+          -0.006906590981898192,
+          0.019920642945243823
+        ],
+        "segment_f1_50_pairs": [
+          0.0023200354469736866,
+          0.03667537740292949
+        ],
+        "short_spurious_segments_10samples": [
+          -4.0,
+          5.0
+        ],
+        "short_spurious_segments_16samples": [
+          -7.0,
+          5.0
+        ],
+        "short_true_unmatched_10samples": [
+          0.0,
+          0.0
+        ],
+        "short_true_unmatched_16samples": [
+          -3.0,
+          3.0
+        ]
+      },
+      "exact_disagreements": {
+        "multi_short_true_segments_lost_10samples": 0,
+        "multi_short_true_segments_lost_16samples": 1,
+        "multi_short_true_segments_recovered_10samples": 0,
+        "multi_short_true_segments_recovered_16samples": 1,
+        "multi_true_segments_lost": 3,
+        "multi_true_segments_recovered": 5,
+        "native_both_correct": 281,
+        "native_both_wrong": 3,
+        "native_left_only_correct": 0,
+        "native_right_only_correct": 0,
+        "pair_short_true_segments_lost_10samples": 0,
+        "pair_short_true_segments_lost_16samples": 0,
+        "pair_short_true_segments_recovered_10samples": 0,
+        "pair_short_true_segments_recovered_16samples": 2,
+        "pair_true_segments_lost": 0,
+        "pair_true_segments_recovered": 3
+      },
+      "half": "selection",
+      "left": "seed2026110361_J-R_fixed6000",
+      "native_confusion_delta": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "native_per_class_f1_delta": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "right": "A08_s0_original_B3",
+      "seed": 2026110361,
+      "table": "main",
+      "undefined_bootstrap_replicates": {
+        "boundary_precision_multi": 0,
+        "boundary_precision_pairs": 0,
+        "boundary_recall_multi": 0,
+        "boundary_recall_pairs": 0,
+        "multi_frame_accuracy": 0,
+        "native_accuracy": 0,
+        "native_frame_accuracy": 0,
+        "native_frame_errors": 0,
+        "native_internal_cuts_per_clip": 0,
+        "native_macro_f1": 0,
+        "pairs_short_spurious_segments_10samples": 0,
+        "pairs_short_spurious_segments_16samples": 0,
+        "pairs_short_true_unmatched_10samples": 0,
+        "pairs_short_true_unmatched_16samples": 0,
+        "same_class_cut_rate_multi": 0,
+        "segment_f1_50_multi": 0,
+        "segment_f1_50_pairs": 0,
+        "short_spurious_segments_10samples": 0,
+        "short_spurious_segments_16samples": 0,
+        "short_true_unmatched_10samples": 0,
+        "short_true_unmatched_16samples": 0
+      }
+    },
+    {
+      "bootstrap": {
+        "multi_streams": 120,
+        "native_sessions": 36,
+        "pair_streams": 115,
+        "replicates": 5000,
+        "scope": "conditionalconstructedbankswithsharedsources; sessionsnotconfirmedpatients; noindependentclinicalpopulationclaim",
+        "seed": 2026110360,
+        "short_count_intervals": "differencesinresampledwhole-banktotals;pairedtruedenominatorsidenticalineachreplicate",
+        "undefined_ratios": "reportedasnullifallundefined;otherwiseintervalconditionalonfinitepairedreplicateswithcountsdisclosed",
+        "units": "complete sessions / complete fixed streams / complete fixed pairs"
+      },
+      "contrast": "J-R-A-R",
+      "delta": {
+        "boundary_f1_multi": -0.0012327909887359656,
+        "boundary_f1_pairs": 0.0,
+        "boundary_precision_multi": -0.0024441384101934194,
+        "boundary_precision_pairs": 0.0,
+        "boundary_recall_multi": 0.0,
+        "boundary_recall_pairs": 0.0,
+        "multi_frame_accuracy": -0.0007994670219853006,
+        "multi_frame_errors": 12,
+        "native_A4C_A5C_errors": 0,
+        "native_A4C_to_A5C": 0,
+        "native_A5C_to_A4C": 0,
+        "native_accuracy": 0.0,
+        "native_frame_accuracy": -0.00020945332681698847,
+        "native_frame_errors": 3,
+        "native_internal_cuts_per_clip": 0.0042194092827004225,
+        "native_internal_cuts_per_min": 0.041890665363401525,
+        "native_macro_f1": 0.0,
+        "native_share_cut": 0.0042194092827004225,
+        "pair_frame_errors": -14,
+        "pairs_frame_accuracy": 0.0028670899037477326,
+        "pairs_short_predicted_segments_10samples": -2,
+        "pairs_short_predicted_segments_16samples": -1,
+        "pairs_short_spurious_segments_10samples": 0,
+        "pairs_short_spurious_segments_16samples": 0,
+        "pairs_short_true_segments_10samples": 0,
+        "pairs_short_true_segments_16samples": 0,
+        "pairs_short_true_unmatched_10samples": 0,
+        "pairs_short_true_unmatched_16samples": 0,
+        "same_class_cut_rate_multi": 0.0,
+        "same_class_cut_rate_pairs": 0.0,
+        "segment_f1_50_multi": -0.0009458058784334034,
+        "segment_f1_50_pairs": 0.0,
+        "short_predicted_segments_10samples": -2,
+        "short_predicted_segments_16samples": 2,
+        "short_spurious_segments_10samples": 1,
+        "short_spurious_segments_16samples": 2,
+        "short_true_segments_10samples": 0,
+        "short_true_segments_16samples": 0,
+        "short_true_unmatched_10samples": 0,
+        "short_true_unmatched_16samples": 0
+      },
+      "delta95": {
+        "boundary_precision_multi": [
+          -0.007630832197501653,
+          0.0
+        ],
+        "boundary_precision_pairs": [
+          0.0,
+          0.0
+        ],
+        "boundary_recall_multi": [
+          0.0,
+          0.0
+        ],
+        "boundary_recall_pairs": [
+          0.0,
+          0.0
+        ],
+        "multi_frame_accuracy": [
+          -0.0033469066824348055,
+          0.0018426243294076678
+        ],
+        "native_accuracy": [
+          0.0,
+          0.0
+        ],
+        "native_frame_accuracy": [
+          -0.0005803086758712466,
+          0.0
+        ],
+        "native_frame_errors": [
+          0.0,
+          9.0
+        ],
+        "native_internal_cuts_per_clip": [
+          0.0,
+          0.012821888412017148
+        ],
+        "native_macro_f1": [
+          0.0,
+          0.0
+        ],
+        "pairs_short_spurious_segments_10samples": [
+          0.0,
+          0.0
+        ],
+        "pairs_short_spurious_segments_16samples": [
+          0.0,
+          0.0
+        ],
+        "pairs_short_true_unmatched_10samples": [
+          0.0,
+          0.0
+        ],
+        "pairs_short_true_unmatched_16samples": [
+          0.0,
+          0.0
+        ],
+        "same_class_cut_rate_multi": [
+          0.0,
+          0.0
+        ],
+        "segment_f1_50_multi": [
+          -0.0029261479138502746,
+          0.0
+        ],
+        "segment_f1_50_pairs": [
+          0.0,
+          0.0
+        ],
+        "short_spurious_segments_10samples": [
+          0.0,
+          3.0
+        ],
+        "short_spurious_segments_16samples": [
+          0.0,
+          5.0
+        ],
+        "short_true_unmatched_10samples": [
+          0.0,
+          0.0
+        ],
+        "short_true_unmatched_16samples": [
+          0.0,
+          0.0
+        ]
+      },
+      "exact_disagreements": {
+        "multi_short_true_segments_lost_10samples": 0,
+        "multi_short_true_segments_lost_16samples": 0,
+        "multi_short_true_segments_recovered_10samples": 0,
+        "multi_short_true_segments_recovered_16samples": 0,
+        "multi_true_segments_lost": 0,
+        "multi_true_segments_recovered": 0,
+        "native_both_correct": 236,
+        "native_both_wrong": 1,
+        "native_left_only_correct": 0,
+        "native_right_only_correct": 0,
+        "pair_short_true_segments_lost_10samples": 0,
+        "pair_short_true_segments_lost_16samples": 0,
+        "pair_short_true_segments_recovered_10samples": 0,
+        "pair_short_true_segments_recovered_16samples": 0,
+        "pair_true_segments_lost": 0,
+        "pair_true_segments_recovered": 0
+      },
+      "half": "calibration",
+      "left": "seed2026110360_J-R_fixed6000",
+      "native_confusion_delta": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "native_per_class_f1_delta": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "right": "seed2026110360_A-R_fixed6000",
+      "seed": 2026110360,
+      "table": "main",
+      "undefined_bootstrap_replicates": {
+        "boundary_precision_multi": 0,
+        "boundary_precision_pairs": 0,
+        "boundary_recall_multi": 0,
+        "boundary_recall_pairs": 0,
+        "multi_frame_accuracy": 0,
+        "native_accuracy": 0,
+        "native_frame_accuracy": 0,
+        "native_frame_errors": 0,
+        "native_internal_cuts_per_clip": 0,
+        "native_macro_f1": 0,
+        "pairs_short_spurious_segments_10samples": 0,
+        "pairs_short_spurious_segments_16samples": 0,
+        "pairs_short_true_unmatched_10samples": 0,
+        "pairs_short_true_unmatched_16samples": 0,
+        "same_class_cut_rate_multi": 0,
+        "segment_f1_50_multi": 0,
+        "segment_f1_50_pairs": 0,
+        "short_spurious_segments_10samples": 0,
+        "short_spurious_segments_16samples": 0,
+        "short_true_unmatched_10samples": 0,
+        "short_true_unmatched_16samples": 0
+      }
+    },
+    {
+      "bootstrap": {
+        "multi_streams": 120,
+        "native_sessions": 36,
+        "pair_streams": 115,
+        "replicates": 5000,
+        "scope": "conditionalconstructedbankswithsharedsources; sessionsnotconfirmedpatients; noindependentclinicalpopulationclaim",
+        "seed": 2026110360,
+        "short_count_intervals": "differencesinresampledwhole-banktotals;pairedtruedenominatorsidenticalineachreplicate",
+        "undefined_ratios": "reportedasnullifallundefined;otherwiseintervalconditionalonfinitepairedreplicateswithcountsdisclosed",
+        "units": "complete sessions / complete fixed streams / complete fixed pairs"
+      },
+      "contrast": "J-R-A08_s0_original_B3",
+      "delta": {
+        "boundary_f1_multi": 0.0,
+        "boundary_f1_pairs": -0.009153318077803285,
+        "boundary_precision_multi": 0.0,
+        "boundary_precision_pairs": -0.0006265664160400863,
+        "boundary_recall_multi": 0.0,
+        "boundary_recall_pairs": -0.017241379310344862,
+        "multi_frame_accuracy": 0.00719520319786815,
+        "multi_frame_errors": -108,
+        "native_A4C_A5C_errors": 0,
+        "native_A4C_to_A5C": 0,
+        "native_A5C_to_A4C": 0,
+        "native_accuracy": 0.0,
+        "native_frame_accuracy": -0.0014661732877190303,
+        "native_frame_errors": 21,
+        "native_internal_cuts_per_clip": 0.0,
+        "native_internal_cuts_per_min": 0.0,
+        "native_macro_f1": 0.0,
+        "native_share_cut": 0.0042194092827004225,
+        "pair_frame_errors": -18,
+        "pairs_frame_accuracy": 0.003686258447675561,
+        "pairs_short_predicted_segments_10samples": -4,
+        "pairs_short_predicted_segments_16samples": 1,
+        "pairs_short_spurious_segments_10samples": 0,
+        "pairs_short_spurious_segments_16samples": 0,
+        "pairs_short_true_segments_10samples": 0,
+        "pairs_short_true_segments_16samples": 0,
+        "pairs_short_true_unmatched_10samples": 1,
+        "pairs_short_true_unmatched_16samples": 1,
+        "same_class_cut_rate_multi": 0.0,
+        "same_class_cut_rate_pairs": 0.0,
+        "segment_f1_50_multi": 0.0,
+        "segment_f1_50_pairs": -0.0029659588810246884,
+        "short_predicted_segments_10samples": -9,
+        "short_predicted_segments_16samples": -5,
+        "short_spurious_segments_10samples": 0,
+        "short_spurious_segments_16samples": 0,
+        "short_true_segments_10samples": 0,
+        "short_true_segments_16samples": 0,
+        "short_true_unmatched_10samples": -2,
+        "short_true_unmatched_16samples": 0
+      },
+      "delta95": {
+        "boundary_precision_multi": [
+          -0.00021816078997563548,
+          0.00021641146526383268
+        ],
+        "boundary_precision_pairs": [
+          -0.0029239766081871066,
+          0.0
+        ],
+        "boundary_recall_multi": [
+          -0.010101649405446939,
+          0.010127224828118016
+        ],
+        "boundary_recall_pairs": [
+          -0.05555555555555558,
+          0.0
+        ],
+        "multi_frame_accuracy": [
+          0.00397648604766476,
+          0.010369327493725452
+        ],
+        "native_accuracy": [
+          0.0,
+          0.0
+        ],
+        "native_frame_accuracy": [
+          -0.004465695843999745,
+          0.0
+        ],
+        "native_frame_errors": [
+          0.0,
+          60.0
+        ],
+        "native_internal_cuts_per_clip": [
+          -0.012988424618859401,
+          0.011363636363636364
+        ],
+        "native_macro_f1": [
+          0.0,
+          0.0
+        ],
+        "pairs_short_spurious_segments_10samples": [
+          0.0,
+          0.0
+        ],
+        "pairs_short_spurious_segments_16samples": [
+          0.0,
+          0.0
+        ],
+        "pairs_short_true_unmatched_10samples": [
+          0.0,
+          3.0
+        ],
+        "pairs_short_true_unmatched_16samples": [
+          0.0,
+          3.0
+        ],
+        "same_class_cut_rate_multi": [
+          0.0,
+          0.0
+        ],
+        "segment_f1_50_multi": [
+          -0.003935123248542139,
+          0.0039504855451420705
+        ],
+        "segment_f1_50_pairs": [
+          -0.009168666557375202,
+          0.0
+        ],
+        "short_spurious_segments_10samples": [
+          0.0,
+          0.0
+        ],
+        "short_spurious_segments_16samples": [
+          0.0,
+          0.0
+        ],
+        "short_true_unmatched_10samples": [
+          -5.0,
+          0.0
+        ],
+        "short_true_unmatched_16samples": [
+          -4.0,
+          4.0
+        ]
+      },
+      "exact_disagreements": {
+        "multi_short_true_segments_lost_10samples": 0,
+        "multi_short_true_segments_lost_16samples": 2,
+        "multi_short_true_segments_recovered_10samples": 2,
+        "multi_short_true_segments_recovered_16samples": 2,
+        "multi_true_segments_lost": 2,
+        "multi_true_segments_recovered": 2,
+        "native_both_correct": 236,
+        "native_both_wrong": 1,
+        "native_left_only_correct": 0,
+        "native_right_only_correct": 0,
+        "pair_short_true_segments_lost_10samples": 1,
+        "pair_short_true_segments_lost_16samples": 1,
+        "pair_short_true_segments_recovered_10samples": 0,
+        "pair_short_true_segments_recovered_16samples": 0,
+        "pair_true_segments_lost": 1,
+        "pair_true_segments_recovered": 0
+      },
+      "half": "calibration",
+      "left": "seed2026110360_J-R_fixed6000",
+      "native_confusion_delta": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "native_per_class_f1_delta": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "right": "A08_s0_original_B3",
+      "seed": 2026110360,
+      "table": "main",
+      "undefined_bootstrap_replicates": {
+        "boundary_precision_multi": 0,
+        "boundary_precision_pairs": 0,
+        "boundary_recall_multi": 0,
+        "boundary_recall_pairs": 0,
+        "multi_frame_accuracy": 0,
+        "native_accuracy": 0,
+        "native_frame_accuracy": 0,
+        "native_frame_errors": 0,
+        "native_internal_cuts_per_clip": 0,
+        "native_macro_f1": 0,
+        "pairs_short_spurious_segments_10samples": 0,
+        "pairs_short_spurious_segments_16samples": 0,
+        "pairs_short_true_unmatched_10samples": 0,
+        "pairs_short_true_unmatched_16samples": 0,
+        "same_class_cut_rate_multi": 0,
+        "segment_f1_50_multi": 0,
+        "segment_f1_50_pairs": 0,
+        "short_spurious_segments_10samples": 0,
+        "short_spurious_segments_16samples": 0,
+        "short_true_unmatched_10samples": 0,
+        "short_true_unmatched_16samples": 0
+      }
+    },
+    {
+      "bootstrap": {
+        "multi_streams": 120,
+        "native_sessions": 36,
+        "pair_streams": 115,
+        "replicates": 5000,
+        "scope": "conditionalconstructedbankswithsharedsources; sessionsnotconfirmedpatients; noindependentclinicalpopulationclaim",
+        "seed": 2026110360,
+        "short_count_intervals": "differencesinresampledwhole-banktotals;pairedtruedenominatorsidenticalineachreplicate",
+        "undefined_ratios": "reportedasnullifallundefined;otherwiseintervalconditionalonfinitepairedreplicateswithcountsdisclosed",
+        "units": "complete sessions / complete fixed streams / complete fixed pairs"
+      },
+      "contrast": "J-R-A-R",
+      "delta": {
+        "boundary_f1_multi": 0.0025438596491228482,
+        "boundary_f1_pairs": 0.01814882032667886,
+        "boundary_precision_multi": 9.950248756218638e-05,
+        "boundary_precision_pairs": 0.0012315270935960854,
+        "boundary_recall_multi": 0.005025125628140614,
+        "boundary_recall_pairs": 0.034482758620689724,
+        "multi_frame_accuracy": -0.0004663557628247217,
+        "multi_frame_errors": 7,
+        "native_A4C_A5C_errors": 0,
+        "native_A4C_to_A5C": 0,
+        "native_A5C_to_A4C": 0,
+        "native_accuracy": 0.0,
+        "native_frame_accuracy": 0.00020945332681698847,
+        "native_frame_errors": -3,
+        "native_internal_cuts_per_clip": -0.0042194092827004225,
+        "native_internal_cuts_per_min": -0.041890665363401525,
+        "native_macro_f1": 0.0,
+        "native_share_cut": -0.0042194092827004225,
+        "pair_frame_errors": -15,
+        "pairs_frame_accuracy": 0.0030718820397296343,
+        "pairs_short_predicted_segments_10samples": 1,
+        "pairs_short_predicted_segments_16samples": 1,
+        "pairs_short_spurious_segments_10samples": 0,
+        "pairs_short_spurious_segments_16samples": 0,
+        "pairs_short_true_segments_10samples": 0,
+        "pairs_short_true_segments_16samples": 0,
+        "pairs_short_true_unmatched_10samples": -2,
+        "pairs_short_true_unmatched_16samples": -2,
+        "same_class_cut_rate_multi": 0.0,
+        "same_class_cut_rate_pairs": 0.0,
+        "segment_f1_50_multi": 3.705350526150841e-05,
+        "segment_f1_50_pairs": 0.005914773491060621,
+        "short_predicted_segments_10samples": 6,
+        "short_predicted_segments_16samples": 9,
+        "short_spurious_segments_10samples": 1,
+        "short_spurious_segments_16samples": 2,
+        "short_true_segments_10samples": 0,
+        "short_true_segments_16samples": 0,
+        "short_true_unmatched_10samples": -2,
+        "short_true_unmatched_16samples": -1
+      },
+      "delta95": {
+        "boundary_precision_multi": [
+          0.0,
+          0.000300035345264715
+        ],
+        "boundary_precision_pairs": [
+          0.0,
+          0.00462962962962965
+        ],
+        "boundary_recall_multi": [
+          0.0,
+          0.012854298624546158
+        ],
+        "boundary_recall_pairs": [
+          0.0,
+          0.09090909090909094
+        ],
+        "multi_frame_accuracy": [
+          -0.003129179351891831,
+          0.002249562481505318
+        ],
+        "native_accuracy": [
+          0.0,
+          0.0
+        ],
+        "native_frame_accuracy": [
+          0.0,
+          0.0005803086758712466
+        ],
+        "native_frame_errors": [
+          -9.0,
+          0.0
+        ],
+        "native_internal_cuts_per_clip": [
+          -0.012821888412017169,
+          0.0
+        ],
+        "native_macro_f1": [
+          0.0,
+          0.0
+        ],
+        "pairs_short_spurious_segments_10samples": [
+          0.0,
+          0.0
+        ],
+        "pairs_short_spurious_segments_16samples": [
+          0.0,
+          0.0
+        ],
+        "pairs_short_true_unmatched_10samples": [
+          -5.0,
+          0.0
+        ],
+        "pairs_short_true_unmatched_16samples": [
+          -5.0,
+          0.0
+        ],
+        "same_class_cut_rate_multi": [
+          0.0,
+          0.0
+        ],
+        "segment_f1_50_multi": [
+          -0.004864631261680924,
+          0.004062777020179403
+        ],
+        "segment_f1_50_pairs": [
+          0.0,
+          0.01519090348052576
+        ],
+        "short_spurious_segments_10samples": [
+          0.0,
+          3.0
+        ],
+        "short_spurious_segments_16samples": [
+          0.0,
+          5.0
+        ],
+        "short_true_unmatched_10samples": [
+          -5.0,
+          0.0
+        ],
+        "short_true_unmatched_16samples": [
+          -4.0,
+          2.0
+        ]
+      },
+      "exact_disagreements": {
+        "multi_short_true_segments_lost_10samples": 0,
+        "multi_short_true_segments_lost_16samples": 1,
+        "multi_short_true_segments_recovered_10samples": 2,
+        "multi_short_true_segments_recovered_16samples": 2,
+        "multi_true_segments_lost": 1,
+        "multi_true_segments_recovered": 2,
+        "native_both_correct": 236,
+        "native_both_wrong": 1,
+        "native_left_only_correct": 0,
+        "native_right_only_correct": 0,
+        "pair_short_true_segments_lost_10samples": 0,
+        "pair_short_true_segments_lost_16samples": 0,
+        "pair_short_true_segments_recovered_10samples": 2,
+        "pair_short_true_segments_recovered_16samples": 2,
+        "pair_true_segments_lost": 0,
+        "pair_true_segments_recovered": 2
+      },
+      "half": "calibration",
+      "left": "seed2026110361_J-R_fixed6000",
+      "native_confusion_delta": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "native_per_class_f1_delta": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "right": "seed2026110361_A-R_fixed6000",
+      "seed": 2026110361,
+      "table": "main",
+      "undefined_bootstrap_replicates": {
+        "boundary_precision_multi": 0,
+        "boundary_precision_pairs": 0,
+        "boundary_recall_multi": 0,
+        "boundary_recall_pairs": 0,
+        "multi_frame_accuracy": 0,
+        "native_accuracy": 0,
+        "native_frame_accuracy": 0,
+        "native_frame_errors": 0,
+        "native_internal_cuts_per_clip": 0,
+        "native_macro_f1": 0,
+        "pairs_short_spurious_segments_10samples": 0,
+        "pairs_short_spurious_segments_16samples": 0,
+        "pairs_short_true_unmatched_10samples": 0,
+        "pairs_short_true_unmatched_16samples": 0,
+        "same_class_cut_rate_multi": 0,
+        "segment_f1_50_multi": 0,
+        "segment_f1_50_pairs": 0,
+        "short_spurious_segments_10samples": 0,
+        "short_spurious_segments_16samples": 0,
+        "short_true_unmatched_10samples": 0,
+        "short_true_unmatched_16samples": 0
+      }
+    },
+    {
+      "bootstrap": {
+        "multi_streams": 120,
+        "native_sessions": 36,
+        "pair_streams": 115,
+        "replicates": 5000,
+        "scope": "conditionalconstructedbankswithsharedsources; sessionsnotconfirmedpatients; noindependentclinicalpopulationclaim",
+        "seed": 2026110360,
+        "short_count_intervals": "differencesinresampledwhole-banktotals;pairedtruedenominatorsidenticalineachreplicate",
+        "undefined_ratios": "reportedasnullifallundefined;otherwiseintervalconditionalonfinitepairedreplicateswithcountsdisclosed",
+        "units": "complete sessions / complete fixed streams / complete fixed pairs"
+      },
+      "contrast": "J-R-A08_s0_original_B3",
+      "delta": {
+        "boundary_f1_multi": 0.0,
+        "boundary_f1_pairs": 0.008995502248875575,
+        "boundary_precision_multi": 0.0,
+        "boundary_precision_pairs": 0.000604960677555999,
+        "boundary_recall_multi": 0.0,
+        "boundary_recall_pairs": 0.017241379310344862,
+        "multi_frame_accuracy": 0.0061292471685543415,
+        "multi_frame_errors": -92,
+        "native_A4C_A5C_errors": 0,
+        "native_A4C_to_A5C": 0,
+        "native_A5C_to_A4C": 0,
+        "native_accuracy": 0.0,
+        "native_frame_accuracy": -0.0012567199609020419,
+        "native_frame_errors": 18,
+        "native_internal_cuts_per_clip": -0.0042194092827004225,
+        "native_internal_cuts_per_min": -0.041890665363401525,
+        "native_macro_f1": 0.0,
+        "native_share_cut": 0.0,
+        "pair_frame_errors": -20,
+        "pairs_frame_accuracy": 0.004095842719639475,
+        "pairs_short_predicted_segments_10samples": 1,
+        "pairs_short_predicted_segments_16samples": 2,
+        "pairs_short_spurious_segments_10samples": 0,
+        "pairs_short_spurious_segments_16samples": 0,
+        "pairs_short_true_segments_10samples": 0,
+        "pairs_short_true_segments_16samples": 0,
+        "pairs_short_true_unmatched_10samples": -1,
+        "pairs_short_true_unmatched_16samples": -1,
+        "same_class_cut_rate_multi": 0.0,
+        "same_class_cut_rate_pairs": 0.0,
+        "segment_f1_50_multi": -0.0019230769230769162,
+        "segment_f1_50_pairs": 0.0029488146100359325,
+        "short_predicted_segments_10samples": -6,
+        "short_predicted_segments_16samples": -2,
+        "short_spurious_segments_10samples": 1,
+        "short_spurious_segments_16samples": 1,
+        "short_true_segments_10samples": 0,
+        "short_true_segments_16samples": 0,
+        "short_true_unmatched_10samples": -2,
+        "short_true_unmatched_16samples": 1
+      },
+      "delta95": {
+        "boundary_precision_multi": [
+          -0.00021816078997563548,
+          0.00021641146526383268
+        ],
+        "boundary_precision_pairs": [
+          -0.001612903225806539,
+          0.003898677716320411
+        ],
+        "boundary_recall_multi": [
+          -0.010101649405446939,
+          0.010127224828118016
+        ],
+        "boundary_recall_pairs": [
+          -0.03703703703703709,
+          0.08163265306122447
+        ],
+        "multi_frame_accuracy": [
+          0.003000693258420989,
+          0.0091423814438464
+        ],
+        "native_accuracy": [
+          0.0,
+          0.0
+        ],
+        "native_frame_accuracy": [
+          -0.004337366819462921,
+          0.0
+        ],
+        "native_frame_errors": [
+          0.0,
+          54.0
+        ],
+        "native_internal_cuts_per_clip": [
+          -0.01442307692307692,
+          0.0
+        ],
+        "native_macro_f1": [
+          0.0,
+          0.0
+        ],
+        "pairs_short_spurious_segments_10samples": [
+          0.0,
+          0.0
+        ],
+        "pairs_short_spurious_segments_16samples": [
+          0.0,
+          0.0
+        ],
+        "pairs_short_true_unmatched_10samples": [
+          -5.0,
+          2.0
+        ],
+        "pairs_short_true_unmatched_16samples": [
+          -5.0,
+          2.0
+        ],
+        "same_class_cut_rate_multi": [
+          0.0,
+          0.0
+        ],
+        "segment_f1_50_multi": [
+          -0.007727701683901436,
+          0.002949116420480341
+        ],
+        "segment_f1_50_pairs": [
+          -0.006058741706226503,
+          0.014401780902339305
+        ],
+        "short_spurious_segments_10samples": [
+          0.0,
+          3.0
+        ],
+        "short_spurious_segments_16samples": [
+          0.0,
+          3.0
+        ],
+        "short_true_unmatched_10samples": [
+          -5.0,
+          0.0
+        ],
+        "short_true_unmatched_16samples": [
+          -3.0,
+          5.0
+        ]
+      },
+      "exact_disagreements": {
+        "multi_short_true_segments_lost_10samples": 0,
+        "multi_short_true_segments_lost_16samples": 3,
+        "multi_short_true_segments_recovered_10samples": 2,
+        "multi_short_true_segments_recovered_16samples": 2,
+        "multi_true_segments_lost": 3,
+        "multi_true_segments_recovered": 2,
+        "native_both_correct": 236,
+        "native_both_wrong": 1,
+        "native_left_only_correct": 0,
+        "native_right_only_correct": 0,
+        "pair_short_true_segments_lost_10samples": 1,
+        "pair_short_true_segments_lost_16samples": 1,
+        "pair_short_true_segments_recovered_10samples": 2,
+        "pair_short_true_segments_recovered_16samples": 2,
+        "pair_true_segments_lost": 1,
+        "pair_true_segments_recovered": 2
+      },
+      "half": "calibration",
+      "left": "seed2026110361_J-R_fixed6000",
+      "native_confusion_delta": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "native_per_class_f1_delta": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "right": "A08_s0_original_B3",
+      "seed": 2026110361,
+      "table": "main",
+      "undefined_bootstrap_replicates": {
+        "boundary_precision_multi": 0,
+        "boundary_precision_pairs": 0,
+        "boundary_recall_multi": 0,
+        "boundary_recall_pairs": 0,
+        "multi_frame_accuracy": 0,
+        "native_accuracy": 0,
+        "native_frame_accuracy": 0,
+        "native_frame_errors": 0,
+        "native_internal_cuts_per_clip": 0,
+        "native_macro_f1": 0,
+        "pairs_short_spurious_segments_10samples": 0,
+        "pairs_short_spurious_segments_16samples": 0,
+        "pairs_short_true_unmatched_10samples": 0,
+        "pairs_short_true_unmatched_16samples": 0,
+        "same_class_cut_rate_multi": 0,
+        "segment_f1_50_multi": 0,
+        "segment_f1_50_pairs": 0,
+        "short_spurious_segments_10samples": 0,
+        "short_spurious_segments_16samples": 0,
+        "short_true_unmatched_10samples": 0,
+        "short_true_unmatched_16samples": 0
+      }
+    },
+    {
+      "bootstrap": {
+        "multi_streams": 120,
+        "native_sessions": 36,
+        "pair_streams": 137,
+        "replicates": 5000,
+        "scope": "conditionalconstructedbankswithsharedsources; sessionsnotconfirmedpatients; noindependentclinicalpopulationclaim",
+        "seed": 2026110360,
+        "short_count_intervals": "differencesinresampledwhole-banktotals;pairedtruedenominatorsidenticalineachreplicate",
+        "undefined_ratios": "reportedasnullifallundefined;otherwiseintervalconditionalonfinitepairedreplicateswithcountsdisclosed",
+        "units": "complete sessions / complete fixed streams / complete fixed pairs"
+      },
+      "contrast": "J-R-A-R",
+      "delta": {
+        "boundary_f1_multi": 0.0051715149619434575,
+        "boundary_f1_pairs": 0.0,
+        "boundary_precision_multi": -0.002808417110993555,
+        "boundary_precision_pairs": 0.0,
+        "boundary_recall_multi": 0.01055408970976257,
+        "boundary_recall_pairs": 0.0,
+        "multi_frame_accuracy": 0.00549685457765825,
+        "multi_frame_errors": -90,
+        "native_A4C_A5C_errors": 0,
+        "native_A4C_to_A5C": 0,
+        "native_A5C_to_A4C": 0,
+        "native_accuracy": 0.0,
+        "native_frame_accuracy": -0.0005410279531109508,
+        "native_frame_errors": 9,
+        "native_internal_cuts_per_clip": 0.0035211267605633756,
+        "native_internal_cuts_per_min": 0.03606853020739409,
+        "native_macro_f1": 0.0,
+        "native_share_cut": 0.0,
+        "pair_frame_errors": -20,
+        "pairs_frame_accuracy": 0.0035143208574942575,
+        "pairs_short_predicted_segments_10samples": 0,
+        "pairs_short_predicted_segments_16samples": -3,
+        "pairs_short_spurious_segments_10samples": 1,
+        "pairs_short_spurious_segments_16samples": 1,
+        "pairs_short_true_segments_10samples": 0,
+        "pairs_short_true_segments_16samples": 0,
+        "pairs_short_true_unmatched_10samples": 0,
+        "pairs_short_true_unmatched_16samples": 1,
+        "same_class_cut_rate_multi": -0.009478672985781991,
+        "same_class_cut_rate_pairs": 0.0,
+        "segment_f1_50_multi": 0.008061641078718873,
+        "segment_f1_50_pairs": -0.004819277108433773,
+        "short_predicted_segments_10samples": 1,
+        "short_predicted_segments_16samples": 2,
+        "short_spurious_segments_10samples": -2,
+        "short_spurious_segments_16samples": -1,
+        "short_true_segments_10samples": 0,
+        "short_true_segments_16samples": 0,
+        "short_true_unmatched_10samples": -5,
+        "short_true_unmatched_16samples": -5
+      },
+      "delta95": {
+        "boundary_precision_multi": [
+          -0.01369136465483307,
+          0.006988680137113631
+        ],
+        "boundary_precision_pairs": [
+          0.0,
+          0.0
+        ],
+        "boundary_recall_multi": [
+          -0.002739914195393636,
+          0.025906735751295318
+        ],
+        "boundary_recall_pairs": [
+          0.0,
+          0.0
+        ],
+        "multi_frame_accuracy": [
+          -0.001827543612461474,
+          0.014712488184827847
+        ],
+        "native_accuracy": [
+          0.0,
+          0.0
+        ],
+        "native_frame_accuracy": [
+          -0.0013548299808196634,
+          0.0
+        ],
+        "native_frame_errors": [
+          0.0,
+          27.0
+        ],
+        "native_internal_cuts_per_clip": [
+          0.0,
+          0.009554140127388533
+        ],
+        "native_macro_f1": [
+          0.0,
+          0.0
+        ],
+        "pairs_short_spurious_segments_10samples": [
+          0.0,
+          3.0
+        ],
+        "pairs_short_spurious_segments_16samples": [
+          0.0,
+          3.0
+        ],
+        "pairs_short_true_unmatched_10samples": [
+          0.0,
+          0.0
+        ],
+        "pairs_short_true_unmatched_16samples": [
+          0.0,
+          3.0
+        ],
+        "same_class_cut_rate_multi": [
+          -0.02843940419769805,
+          0.00896860986547085
+        ],
+        "segment_f1_50_multi": [
+          0.0009599089914804044,
+          0.016515270501411643
+        ],
+        "segment_f1_50_pairs": [
+          -0.01492537313432829,
+          0.0
+        ],
+        "short_spurious_segments_10samples": [
+          -6.0,
+          0.0
+        ],
+        "short_spurious_segments_16samples": [
+          -3.0,
+          0.0
+        ],
+        "short_true_unmatched_10samples": [
+          -10.0,
+          0.0
+        ],
+        "short_true_unmatched_16samples": [
+          -10.0,
+          0.0
+        ]
+      },
+      "exact_disagreements": {
+        "multi_short_true_segments_lost_10samples": 1,
+        "multi_short_true_segments_lost_16samples": 1,
+        "multi_short_true_segments_recovered_10samples": 6,
+        "multi_short_true_segments_recovered_16samples": 6,
+        "multi_true_segments_lost": 1,
+        "multi_true_segments_recovered": 7,
+        "native_both_correct": 281,
+        "native_both_wrong": 3,
+        "native_left_only_correct": 0,
+        "native_right_only_correct": 0,
+        "pair_short_true_segments_lost_10samples": 0,
+        "pair_short_true_segments_lost_16samples": 1,
+        "pair_short_true_segments_recovered_10samples": 0,
+        "pair_short_true_segments_recovered_16samples": 0,
+        "pair_true_segments_lost": 1,
+        "pair_true_segments_recovered": 0
+      },
+      "half": "selection",
+      "left": "seed2026110360_J-R_fixed6000",
+      "native_confusion_delta": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "native_per_class_f1_delta": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "right": "seed2026110360_A-R_fixed6000",
+      "seed": 2026110360,
+      "table": "a60_confirmation",
+      "undefined_bootstrap_replicates": {
+        "boundary_precision_multi": 0,
+        "boundary_precision_pairs": 0,
+        "boundary_recall_multi": 0,
+        "boundary_recall_pairs": 0,
+        "multi_frame_accuracy": 0,
+        "native_accuracy": 0,
+        "native_frame_accuracy": 0,
+        "native_frame_errors": 0,
+        "native_internal_cuts_per_clip": 0,
+        "native_macro_f1": 0,
+        "pairs_short_spurious_segments_10samples": 0,
+        "pairs_short_spurious_segments_16samples": 0,
+        "pairs_short_true_unmatched_10samples": 0,
+        "pairs_short_true_unmatched_16samples": 0,
+        "same_class_cut_rate_multi": 0,
+        "segment_f1_50_multi": 0,
+        "segment_f1_50_pairs": 0,
+        "short_spurious_segments_10samples": 0,
+        "short_spurious_segments_16samples": 0,
+        "short_true_unmatched_10samples": 0,
+        "short_true_unmatched_16samples": 0
+      }
+    },
+    {
+      "bootstrap": {
+        "multi_streams": 120,
+        "native_sessions": 36,
+        "pair_streams": 137,
+        "replicates": 5000,
+        "scope": "conditionalconstructedbankswithsharedsources; sessionsnotconfirmedpatients; noindependentclinicalpopulationclaim",
+        "seed": 2026110360,
+        "short_count_intervals": "differencesinresampledwhole-banktotals;pairedtruedenominatorsidenticalineachreplicate",
+        "undefined_ratios": "reportedasnullifallundefined;otherwiseintervalconditionalonfinitepairedreplicateswithcountsdisclosed",
+        "units": "complete sessions / complete fixed streams / complete fixed pairs"
+      },
+      "contrast": "J-R-A08_s0_original_B3",
+      "delta": {
+        "boundary_f1_multi": 0.01333823452187155,
+        "boundary_f1_pairs": 0.01368843922035412,
+        "boundary_precision_multi": -0.0024406387027384735,
+        "boundary_precision_pairs": 0.026625506463438198,
+        "boundary_recall_multi": 0.0237467018469657,
+        "boundary_recall_pairs": 0.0,
+        "multi_frame_accuracy": 0.005008245281866497,
+        "multi_frame_errors": -82,
+        "native_A4C_A5C_errors": 0,
+        "native_A4C_to_A5C": 0,
+        "native_A5C_to_A4C": 0,
+        "native_accuracy": 0.0,
+        "native_frame_accuracy": -0.0015028554253081472,
+        "native_frame_errors": 25,
+        "native_internal_cuts_per_clip": 0.0,
+        "native_internal_cuts_per_min": 0.0,
+        "native_macro_f1": 0.0,
+        "native_share_cut": -0.003521126760563379,
+        "pair_frame_errors": -74,
+        "pairs_frame_accuracy": 0.013002987172728853,
+        "pairs_short_predicted_segments_10samples": -1,
+        "pairs_short_predicted_segments_16samples": -4,
+        "pairs_short_spurious_segments_10samples": 1,
+        "pairs_short_spurious_segments_16samples": -3,
+        "pairs_short_true_segments_10samples": 0,
+        "pairs_short_true_segments_16samples": 0,
+        "pairs_short_true_unmatched_10samples": 0,
+        "pairs_short_true_unmatched_16samples": 0,
+        "same_class_cut_rate_multi": -0.0047393364928910026,
+        "same_class_cut_rate_pairs": 0.0,
+        "segment_f1_50_multi": 0.018372597196126605,
+        "segment_f1_50_pairs": 0.009488312964086587,
+        "short_predicted_segments_10samples": 0,
+        "short_predicted_segments_16samples": 7,
+        "short_spurious_segments_10samples": -3,
+        "short_spurious_segments_16samples": -4,
+        "short_true_segments_10samples": 0,
+        "short_true_segments_16samples": 0,
+        "short_true_unmatched_10samples": -13,
+        "short_true_unmatched_16samples": -12
+      },
+      "delta95": {
+        "boundary_precision_multi": [
+          -0.013527219717751879,
+          0.0075018469772749445
+        ],
+        "boundary_precision_pairs": [
+          0.0,
+          0.06633689788604868
+        ],
+        "boundary_recall_multi": [
+          0.0025508581295113214,
+          0.04497354497354489
+        ],
+        "boundary_recall_pairs": [
+          0.0,
+          0.0
+        ],
+        "multi_frame_accuracy": [
+          -0.00018216764736743438,
+          0.009509263219122828
+        ],
+        "native_accuracy": [
+          0.0,
+          0.0
+        ],
+        "native_frame_accuracy": [
+          -0.005435969968822868,
+          0.0021753440853491874
+        ],
+        "native_frame_errors": [
+          -30.0,
+          95.0
+        ],
+        "native_internal_cuts_per_clip": [
+          -0.010715245775729644,
+          0.008620689655172417
+        ],
+        "native_macro_f1": [
+          0.0,
+          0.0
+        ],
+        "pairs_short_spurious_segments_10samples": [
+          0.0,
+          3.0
+        ],
+        "pairs_short_spurious_segments_16samples": [
+          -8.0,
+          0.0
+        ],
+        "pairs_short_true_unmatched_10samples": [
+          0.0,
+          0.0
+        ],
+        "pairs_short_true_unmatched_16samples": [
+          0.0,
+          0.0
+        ],
+        "same_class_cut_rate_multi": [
+          -0.022026431718061665,
+          0.010051520227399621
+        ],
+        "segment_f1_50_multi": [
+          0.007303035153618714,
+          0.030337707719685927
+        ],
+        "segment_f1_50_pairs": [
+          0.0,
+          0.026588073509610875
+        ],
+        "short_spurious_segments_10samples": [
+          -7.0,
+          0.0
+        ],
+        "short_spurious_segments_16samples": [
+          -8.0,
+          -1.0
+        ],
+        "short_true_unmatched_10samples": [
+          -20.0,
+          -6.0
+        ],
+        "short_true_unmatched_16samples": [
+          -20.0,
+          -4.0
+        ]
+      },
+      "exact_disagreements": {
+        "multi_short_true_segments_lost_10samples": 1,
+        "multi_short_true_segments_lost_16samples": 2,
+        "multi_short_true_segments_recovered_10samples": 14,
+        "multi_short_true_segments_recovered_16samples": 14,
+        "multi_true_segments_lost": 2,
+        "multi_true_segments_recovered": 15,
+        "native_both_correct": 281,
+        "native_both_wrong": 3,
+        "native_left_only_correct": 0,
+        "native_right_only_correct": 0,
+        "pair_short_true_segments_lost_10samples": 0,
+        "pair_short_true_segments_lost_16samples": 0,
+        "pair_short_true_segments_recovered_10samples": 0,
+        "pair_short_true_segments_recovered_16samples": 0,
+        "pair_true_segments_lost": 0,
+        "pair_true_segments_recovered": 1
+      },
+      "half": "selection",
+      "left": "seed2026110360_J-R_fixed6000",
+      "native_confusion_delta": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "native_per_class_f1_delta": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "right": "A08_s0_original_B3",
+      "seed": 2026110360,
+      "table": "a60_confirmation",
+      "undefined_bootstrap_replicates": {
+        "boundary_precision_multi": 0,
+        "boundary_precision_pairs": 0,
+        "boundary_recall_multi": 0,
+        "boundary_recall_pairs": 0,
+        "multi_frame_accuracy": 0,
+        "native_accuracy": 0,
+        "native_frame_accuracy": 0,
+        "native_frame_errors": 0,
+        "native_internal_cuts_per_clip": 0,
+        "native_macro_f1": 0,
+        "pairs_short_spurious_segments_10samples": 0,
+        "pairs_short_spurious_segments_16samples": 0,
+        "pairs_short_true_unmatched_10samples": 0,
+        "pairs_short_true_unmatched_16samples": 0,
+        "same_class_cut_rate_multi": 0,
+        "segment_f1_50_multi": 0,
+        "segment_f1_50_pairs": 0,
+        "short_spurious_segments_10samples": 0,
+        "short_spurious_segments_16samples": 0,
+        "short_true_unmatched_10samples": 0,
+        "short_true_unmatched_16samples": 0
+      }
+    },
+    {
+      "bootstrap": {
+        "multi_streams": 120,
+        "native_sessions": 36,
+        "pair_streams": 137,
+        "replicates": 5000,
+        "scope": "conditionalconstructedbankswithsharedsources; sessionsnotconfirmedpatients; noindependentclinicalpopulationclaim",
+        "seed": 2026110360,
+        "short_count_intervals": "differencesinresampledwhole-banktotals;pairedtruedenominatorsidenticalineachreplicate",
+        "undefined_ratios": "reportedasnullifallundefined;otherwiseintervalconditionalonfinitepairedreplicateswithcountsdisclosed",
+        "units": "complete sessions / complete fixed streams / complete fixed pairs"
+      },
+      "contrast": "J-R-A-R",
+      "delta": {
+        "boundary_f1_multi": 0.005118191161356589,
+        "boundary_f1_pairs": 0.007192088702427379,
+        "boundary_precision_multi": -0.0026716353168499962,
+        "boundary_precision_pairs": 0.0003912363067292146,
+        "boundary_recall_multi": 0.01055408970976257,
+        "boundary_recall_pairs": 0.014285714285714235,
+        "multi_frame_accuracy": 0.002320894155011355,
+        "multi_frame_errors": -38,
+        "native_A4C_A5C_errors": 0,
+        "native_A4C_to_A5C": 0,
+        "native_A5C_to_A4C": 0,
+        "native_accuracy": 0.0,
+        "native_frame_accuracy": 0.0,
+        "native_frame_errors": 0,
+        "native_internal_cuts_per_clip": 0.0,
+        "native_internal_cuts_per_min": 0.0,
+        "native_macro_f1": 0.0,
+        "native_share_cut": 0.0,
+        "pair_frame_errors": -15,
+        "pairs_frame_accuracy": 0.0026357406431206654,
+        "pairs_short_predicted_segments_10samples": -1,
+        "pairs_short_predicted_segments_16samples": 3,
+        "pairs_short_spurious_segments_10samples": 0,
+        "pairs_short_spurious_segments_16samples": 0,
+        "pairs_short_true_segments_10samples": 0,
+        "pairs_short_true_segments_16samples": 0,
+        "pairs_short_true_unmatched_10samples": 0,
+        "pairs_short_true_unmatched_16samples": -1,
+        "same_class_cut_rate_multi": -0.0047393364928910026,
+        "same_class_cut_rate_pairs": 0.0,
+        "segment_f1_50_multi": 0.00588235294117645,
+        "segment_f1_50_pairs": 0.002444392956441166,
+        "short_predicted_segments_10samples": 3,
+        "short_predicted_segments_16samples": 0,
+        "short_spurious_segments_10samples": -1,
+        "short_spurious_segments_16samples": -1,
+        "short_true_segments_10samples": 0,
+        "short_true_segments_16samples": 0,
+        "short_true_unmatched_10samples": -4,
+        "short_true_unmatched_16samples": -4
+      },
+      "delta95": {
+        "boundary_precision_multi": [
+          -0.009306459430753953,
+          0.0010611857755784073
+        ],
+        "boundary_precision_pairs": [
+          0.0,
+          0.001811966448282712
+        ],
+        "boundary_recall_multi": [
+          -0.010101010101010055,
+          0.03141361256544506
+        ],
+        "boundary_recall_pairs": [
+          0.0,
+          0.046875
+        ],
+        "multi_frame_accuracy": [
+          -0.0024262571236072757,
+          0.007805364638249166
+        ],
+        "native_accuracy": [
+          0.0,
+          0.0
+        ],
+        "native_frame_accuracy": [
+          0.0,
+          0.0
+        ],
+        "native_frame_errors": [
+          0.0,
+          0.0
+        ],
+        "native_internal_cuts_per_clip": [
+          0.0,
+          0.0
+        ],
+        "native_macro_f1": [
+          0.0,
+          0.0
+        ],
+        "pairs_short_spurious_segments_10samples": [
+          0.0,
+          0.0
+        ],
+        "pairs_short_spurious_segments_16samples": [
+          0.0,
+          0.0
+        ],
+        "pairs_short_true_unmatched_10samples": [
+          0.0,
+          0.0
+        ],
+        "pairs_short_true_unmatched_16samples": [
+          -3.0,
+          0.0
+        ],
+        "same_class_cut_rate_multi": [
+          -0.02094240837696336,
+          0.010204081632653059
+        ],
+        "segment_f1_50_multi": [
+          -0.003475293766360246,
+          0.016414400480167124
+        ],
+        "segment_f1_50_pairs": [
+          0.0,
+          0.0075814711793953755
+        ],
+        "short_spurious_segments_10samples": [
+          -7.0,
+          4.0
+        ],
+        "short_spurious_segments_16samples": [
+          -6.0,
+          4.0
+        ],
+        "short_true_unmatched_10samples": [
+          -10.0,
+          2.0
+        ],
+        "short_true_unmatched_16samples": [
+          -10.0,
+          2.0
+        ]
+      },
+      "exact_disagreements": {
+        "multi_short_true_segments_lost_10samples": 6,
+        "multi_short_true_segments_lost_16samples": 6,
+        "multi_short_true_segments_recovered_10samples": 10,
+        "multi_short_true_segments_recovered_16samples": 10,
+        "multi_true_segments_lost": 7,
+        "multi_true_segments_recovered": 12,
+        "native_both_correct": 281,
+        "native_both_wrong": 3,
+        "native_left_only_correct": 0,
+        "native_right_only_correct": 0,
+        "pair_short_true_segments_lost_10samples": 0,
+        "pair_short_true_segments_lost_16samples": 0,
+        "pair_short_true_segments_recovered_10samples": 0,
+        "pair_short_true_segments_recovered_16samples": 1,
+        "pair_true_segments_lost": 0,
+        "pair_true_segments_recovered": 1
+      },
+      "half": "selection",
+      "left": "seed2026110361_J-R_fixed6000",
+      "native_confusion_delta": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "native_per_class_f1_delta": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "right": "seed2026110361_A-R_fixed6000",
+      "seed": 2026110361,
+      "table": "a60_confirmation",
+      "undefined_bootstrap_replicates": {
+        "boundary_precision_multi": 0,
+        "boundary_precision_pairs": 0,
+        "boundary_recall_multi": 0,
+        "boundary_recall_pairs": 0,
+        "multi_frame_accuracy": 0,
+        "native_accuracy": 0,
+        "native_frame_accuracy": 0,
+        "native_frame_errors": 0,
+        "native_internal_cuts_per_clip": 0,
+        "native_macro_f1": 0,
+        "pairs_short_spurious_segments_10samples": 0,
+        "pairs_short_spurious_segments_16samples": 0,
+        "pairs_short_true_unmatched_10samples": 0,
+        "pairs_short_true_unmatched_16samples": 0,
+        "same_class_cut_rate_multi": 0,
+        "segment_f1_50_multi": 0,
+        "segment_f1_50_pairs": 0,
+        "short_spurious_segments_10samples": 0,
+        "short_spurious_segments_16samples": 0,
+        "short_true_unmatched_10samples": 0,
+        "short_true_unmatched_16samples": 0
+      }
+    },
+    {
+      "bootstrap": {
+        "multi_streams": 120,
+        "native_sessions": 36,
+        "pair_streams": 137,
+        "replicates": 5000,
+        "scope": "conditionalconstructedbankswithsharedsources; sessionsnotconfirmedpatients; noindependentclinicalpopulationclaim",
+        "seed": 2026110360,
+        "short_count_intervals": "differencesinresampledwhole-banktotals;pairedtruedenominatorsidenticalineachreplicate",
+        "undefined_ratios": "reportedasnullifallundefined;otherwiseintervalconditionalonfinitepairedreplicateswithcountsdisclosed",
+        "units": "complete sessions / complete fixed streams / complete fixed pairs"
+      },
+      "contrast": "J-R-A08_s0_original_B3",
+      "delta": {
+        "boundary_f1_multi": 0.015578727841501605,
+        "boundary_f1_pairs": 0.0208805279227815,
+        "boundary_precision_multi": -0.008276830981613803,
+        "boundary_precision_pairs": 0.027016742770167412,
+        "boundary_recall_multi": 0.0316622691292876,
+        "boundary_recall_pairs": 0.014285714285714235,
+        "multi_frame_accuracy": 0.002198741831063389,
+        "multi_frame_errors": -36,
+        "native_A4C_A5C_errors": 0,
+        "native_A4C_to_A5C": 0,
+        "native_A5C_to_A4C": 0,
+        "native_accuracy": 0.0,
+        "native_frame_accuracy": -0.0019236549443943929,
+        "native_frame_errors": 32,
+        "native_internal_cuts_per_clip": 0.0,
+        "native_internal_cuts_per_min": 0.0,
+        "native_macro_f1": 0.0,
+        "native_share_cut": -0.003521126760563379,
+        "pair_frame_errors": -78,
+        "pairs_frame_accuracy": 0.013705851344227749,
+        "pairs_short_predicted_segments_10samples": -2,
+        "pairs_short_predicted_segments_16samples": -1,
+        "pairs_short_spurious_segments_10samples": 0,
+        "pairs_short_spurious_segments_16samples": -4,
+        "pairs_short_true_segments_10samples": 0,
+        "pairs_short_true_segments_16samples": 0,
+        "pairs_short_true_unmatched_10samples": 0,
+        "pairs_short_true_unmatched_16samples": -2,
+        "same_class_cut_rate_multi": -0.0047393364928910026,
+        "same_class_cut_rate_pairs": 0.0,
+        "segment_f1_50_multi": 0.017837837837837878,
+        "segment_f1_50_pairs": 0.016751983028961526,
+        "short_predicted_segments_10samples": 11,
+        "short_predicted_segments_16samples": 10,
+        "short_spurious_segments_10samples": -1,
+        "short_spurious_segments_16samples": -2,
+        "short_true_segments_10samples": 0,
+        "short_true_segments_16samples": 0,
+        "short_true_unmatched_10samples": -14,
+        "short_true_unmatched_16samples": -13
+      },
+      "delta95": {
+        "boundary_precision_multi": [
+          -0.022509102223910116,
+          0.004512935955181715
+        ],
+        "boundary_precision_pairs": [
+          0.0,
+          0.06686395985101329
+        ],
+        "boundary_recall_multi": [
+          0.007998938992042449,
+          0.0554191155891408
+        ],
+        "boundary_recall_pairs": [
+          0.0,
+          0.046875
+        ],
+        "multi_frame_accuracy": [
+          -0.005166255734371719,
+          0.008259546721034046
+        ],
+        "native_accuracy": [
+          0.0,
+          0.0
+        ],
+        "native_frame_accuracy": [
+          -0.00592350677676898,
+          0.0021596756169952073
+        ],
+        "native_frame_errors": [
+          -30.0,
+          113.0
+        ],
+        "native_internal_cuts_per_clip": [
+          -0.010715245775729644,
+          0.008620689655172417
+        ],
+        "native_macro_f1": [
+          0.0,
+          0.0
+        ],
+        "pairs_short_spurious_segments_10samples": [
+          0.0,
+          0.0
+        ],
+        "pairs_short_spurious_segments_16samples": [
+          -9.0,
+          0.0
+        ],
+        "pairs_short_true_unmatched_10samples": [
+          0.0,
+          0.0
+        ],
+        "pairs_short_true_unmatched_16samples": [
+          -5.0,
+          0.0
+        ],
+        "same_class_cut_rate_multi": [
+          -0.022323930973734776,
+          0.010000000000000009
+        ],
+        "segment_f1_50_multi": [
+          0.0052978246475012675,
+          0.0307664421621105
+        ],
+        "segment_f1_50_pairs": [
+          0.0023200354469736866,
+          0.03667537740292949
+        ],
+        "short_spurious_segments_10samples": [
+          -5.0,
+          3.0
+        ],
+        "short_spurious_segments_16samples": [
+          -7.0,
+          3.0
+        ],
+        "short_true_unmatched_10samples": [
+          -22.0,
+          -7.0
+        ],
+        "short_true_unmatched_16samples": [
+          -21.0,
+          -5.0
+        ]
+      },
+      "exact_disagreements": {
+        "multi_short_true_segments_lost_10samples": 1,
+        "multi_short_true_segments_lost_16samples": 2,
+        "multi_short_true_segments_recovered_10samples": 15,
+        "multi_short_true_segments_recovered_16samples": 15,
+        "multi_true_segments_lost": 2,
+        "multi_true_segments_recovered": 17,
+        "native_both_correct": 281,
+        "native_both_wrong": 3,
+        "native_left_only_correct": 0,
+        "native_right_only_correct": 0,
+        "pair_short_true_segments_lost_10samples": 0,
+        "pair_short_true_segments_lost_16samples": 0,
+        "pair_short_true_segments_recovered_10samples": 0,
+        "pair_short_true_segments_recovered_16samples": 2,
+        "pair_true_segments_lost": 0,
+        "pair_true_segments_recovered": 3
+      },
+      "half": "selection",
+      "left": "seed2026110361_J-R_fixed6000",
+      "native_confusion_delta": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "native_per_class_f1_delta": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "right": "A08_s0_original_B3",
+      "seed": 2026110361,
+      "table": "a60_confirmation",
+      "undefined_bootstrap_replicates": {
+        "boundary_precision_multi": 0,
+        "boundary_precision_pairs": 0,
+        "boundary_recall_multi": 0,
+        "boundary_recall_pairs": 0,
+        "multi_frame_accuracy": 0,
+        "native_accuracy": 0,
+        "native_frame_accuracy": 0,
+        "native_frame_errors": 0,
+        "native_internal_cuts_per_clip": 0,
+        "native_macro_f1": 0,
+        "pairs_short_spurious_segments_10samples": 0,
+        "pairs_short_spurious_segments_16samples": 0,
+        "pairs_short_true_unmatched_10samples": 0,
+        "pairs_short_true_unmatched_16samples": 0,
+        "same_class_cut_rate_multi": 0,
+        "segment_f1_50_multi": 0,
+        "segment_f1_50_pairs": 0,
+        "short_spurious_segments_10samples": 0,
+        "short_spurious_segments_16samples": 0,
+        "short_true_unmatched_10samples": 0,
+        "short_true_unmatched_16samples": 0
+      }
+    },
+    {
+      "bootstrap": {
+        "multi_streams": 120,
+        "native_sessions": 36,
+        "pair_streams": 115,
+        "replicates": 5000,
+        "scope": "conditionalconstructedbankswithsharedsources; sessionsnotconfirmedpatients; noindependentclinicalpopulationclaim",
+        "seed": 2026110360,
+        "short_count_intervals": "differencesinresampledwhole-banktotals;pairedtruedenominatorsidenticalineachreplicate",
+        "undefined_ratios": "reportedasnullifallundefined;otherwiseintervalconditionalonfinitepairedreplicateswithcountsdisclosed",
+        "units": "complete sessions / complete fixed streams / complete fixed pairs"
+      },
+      "contrast": "J-R-A-R",
+      "delta": {
+        "boundary_f1_multi": 0.006188882904759163,
+        "boundary_f1_pairs": 0.0,
+        "boundary_precision_multi": -0.0021553325901151332,
+        "boundary_precision_pairs": 0.0,
+        "boundary_recall_multi": 0.01308900523560208,
+        "boundary_recall_pairs": 0.0,
+        "multi_frame_accuracy": 0.0014561747409689296,
+        "multi_frame_errors": -26,
+        "native_A4C_A5C_errors": 0,
+        "native_A4C_to_A5C": 0,
+        "native_A5C_to_A4C": 0,
+        "native_accuracy": 0.0,
+        "native_frame_accuracy": -0.00020945332681698847,
+        "native_frame_errors": 3,
+        "native_internal_cuts_per_clip": 0.0042194092827004225,
+        "native_internal_cuts_per_min": 0.041890665363401525,
+        "native_macro_f1": 0.0,
+        "native_share_cut": 0.0042194092827004225,
+        "pair_frame_errors": -14,
+        "pairs_frame_accuracy": 0.0028670899037477326,
+        "pairs_short_predicted_segments_10samples": -2,
+        "pairs_short_predicted_segments_16samples": -1,
+        "pairs_short_spurious_segments_10samples": 0,
+        "pairs_short_spurious_segments_16samples": 0,
+        "pairs_short_true_segments_10samples": 0,
+        "pairs_short_true_segments_16samples": 0,
+        "pairs_short_true_unmatched_10samples": 0,
+        "pairs_short_true_unmatched_16samples": 0,
+        "same_class_cut_rate_multi": -0.003968253968253968,
+        "same_class_cut_rate_pairs": 0.0,
+        "segment_f1_50_multi": 0.0025210146552575585,
+        "segment_f1_50_pairs": 0.0,
+        "short_predicted_segments_10samples": 9,
+        "short_predicted_segments_16samples": 9,
+        "short_spurious_segments_10samples": 2,
+        "short_spurious_segments_16samples": 1,
+        "short_true_segments_10samples": 0,
+        "short_true_segments_16samples": 0,
+        "short_true_unmatched_10samples": -5,
+        "short_true_unmatched_16samples": -5
+      },
+      "delta95": {
+        "boundary_precision_multi": [
+          -0.008621828779314564,
+          0.0014120972529702177
+        ],
+        "boundary_precision_pairs": [
+          0.0,
+          0.0
+        ],
+        "boundary_recall_multi": [
+          -0.002577319587628857,
+          0.02863961813842486
+        ],
+        "boundary_recall_pairs": [
+          0.0,
+          0.0
+        ],
+        "multi_frame_accuracy": [
+          -0.0009479729177576168,
+          0.0041788723398319735
+        ],
+        "native_accuracy": [
+          0.0,
+          0.0
+        ],
+        "native_frame_accuracy": [
+          -0.0005803086758712466,
+          0.0
+        ],
+        "native_frame_errors": [
+          0.0,
+          9.0
+        ],
+        "native_internal_cuts_per_clip": [
+          0.0,
+          0.012821888412017148
+        ],
+        "native_macro_f1": [
+          0.0,
+          0.0
+        ],
+        "pairs_short_spurious_segments_10samples": [
+          0.0,
+          0.0
+        ],
+        "pairs_short_spurious_segments_16samples": [
+          0.0,
+          0.0
+        ],
+        "pairs_short_true_unmatched_10samples": [
+          0.0,
+          0.0
+        ],
+        "pairs_short_true_unmatched_16samples": [
+          0.0,
+          0.0
+        ],
+        "same_class_cut_rate_multi": [
+          -0.019379844961240317,
+          0.008264462809917356
+        ],
+        "segment_f1_50_multi": [
+          -0.0032210376336880425,
+          0.008808629183112142
+        ],
+        "segment_f1_50_pairs": [
+          0.0,
+          0.0
+        ],
+        "short_spurious_segments_10samples": [
+          0.0,
+          5.0
+        ],
+        "short_spurious_segments_16samples": [
+          0.0,
+          3.0
+        ],
+        "short_true_unmatched_10samples": [
+          -10.0,
+          0.0
+        ],
+        "short_true_unmatched_16samples": [
+          -10.0,
+          0.0
+        ]
+      },
+      "exact_disagreements": {
+        "multi_short_true_segments_lost_10samples": 1,
+        "multi_short_true_segments_lost_16samples": 1,
+        "multi_short_true_segments_recovered_10samples": 6,
+        "multi_short_true_segments_recovered_16samples": 6,
+        "multi_true_segments_lost": 2,
+        "multi_true_segments_recovered": 6,
+        "native_both_correct": 236,
+        "native_both_wrong": 1,
+        "native_left_only_correct": 0,
+        "native_right_only_correct": 0,
+        "pair_short_true_segments_lost_10samples": 0,
+        "pair_short_true_segments_lost_16samples": 0,
+        "pair_short_true_segments_recovered_10samples": 0,
+        "pair_short_true_segments_recovered_16samples": 0,
+        "pair_true_segments_lost": 0,
+        "pair_true_segments_recovered": 0
+      },
+      "half": "calibration",
+      "left": "seed2026110360_J-R_fixed6000",
+      "native_confusion_delta": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "native_per_class_f1_delta": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "right": "seed2026110360_A-R_fixed6000",
+      "seed": 2026110360,
+      "table": "a60_confirmation",
+      "undefined_bootstrap_replicates": {
+        "boundary_precision_multi": 0,
+        "boundary_precision_pairs": 0,
+        "boundary_recall_multi": 0,
+        "boundary_recall_pairs": 0,
+        "multi_frame_accuracy": 0,
+        "native_accuracy": 0,
+        "native_frame_accuracy": 0,
+        "native_frame_errors": 0,
+        "native_internal_cuts_per_clip": 0,
+        "native_macro_f1": 0,
+        "pairs_short_spurious_segments_10samples": 0,
+        "pairs_short_spurious_segments_16samples": 0,
+        "pairs_short_true_unmatched_10samples": 0,
+        "pairs_short_true_unmatched_16samples": 0,
+        "same_class_cut_rate_multi": 0,
+        "segment_f1_50_multi": 0,
+        "segment_f1_50_pairs": 0,
+        "short_spurious_segments_10samples": 0,
+        "short_spurious_segments_16samples": 0,
+        "short_true_unmatched_10samples": 0,
+        "short_true_unmatched_16samples": 0
+      }
+    },
+    {
+      "bootstrap": {
+        "multi_streams": 120,
+        "native_sessions": 36,
+        "pair_streams": 115,
+        "replicates": 5000,
+        "scope": "conditionalconstructedbankswithsharedsources; sessionsnotconfirmedpatients; noindependentclinicalpopulationclaim",
+        "seed": 2026110360,
+        "short_count_intervals": "differencesinresampledwhole-banktotals;pairedtruedenominatorsidenticalineachreplicate",
+        "undefined_ratios": "reportedasnullifallundefined;otherwiseintervalconditionalonfinitepairedreplicateswithcountsdisclosed",
+        "units": "complete sessions / complete fixed streams / complete fixed pairs"
+      },
+      "contrast": "J-R-A08_s0_original_B3",
+      "delta": {
+        "boundary_f1_multi": 0.020802546107516973,
+        "boundary_f1_pairs": -0.009153318077803285,
+        "boundary_precision_multi": 0.004462597382951405,
+        "boundary_precision_pairs": -0.0006265664160400863,
+        "boundary_recall_multi": 0.03403141361256545,
+        "boundary_recall_pairs": -0.017241379310344862,
+        "multi_frame_accuracy": 0.008905068608233035,
+        "multi_frame_errors": -159,
+        "native_A4C_A5C_errors": 0,
+        "native_A4C_to_A5C": 0,
+        "native_A5C_to_A4C": 0,
+        "native_accuracy": 0.0,
+        "native_frame_accuracy": -0.0014661732877190303,
+        "native_frame_errors": 21,
+        "native_internal_cuts_per_clip": 0.0,
+        "native_internal_cuts_per_min": 0.0,
+        "native_macro_f1": 0.0,
+        "native_share_cut": 0.0042194092827004225,
+        "pair_frame_errors": -18,
+        "pairs_frame_accuracy": 0.003686258447675561,
+        "pairs_short_predicted_segments_10samples": -4,
+        "pairs_short_predicted_segments_16samples": 1,
+        "pairs_short_spurious_segments_10samples": 0,
+        "pairs_short_spurious_segments_16samples": 0,
+        "pairs_short_true_segments_10samples": 0,
+        "pairs_short_true_segments_16samples": 0,
+        "pairs_short_true_unmatched_10samples": 1,
+        "pairs_short_true_unmatched_16samples": 1,
+        "same_class_cut_rate_multi": -0.003968253968253968,
+        "same_class_cut_rate_pairs": 0.0,
+        "segment_f1_50_multi": 0.01339817101276608,
+        "segment_f1_50_pairs": -0.0029659588810246884,
+        "short_predicted_segments_10samples": 8,
+        "short_predicted_segments_16samples": 8,
+        "short_spurious_segments_10samples": 1,
+        "short_spurious_segments_16samples": 0,
+        "short_true_segments_10samples": 0,
+        "short_true_segments_16samples": 0,
+        "short_true_unmatched_10samples": -12,
+        "short_true_unmatched_16samples": -12
+      },
+      "delta95": {
+        "boundary_precision_multi": [
+          0.0007123605340933287,
+          0.011365127121018873
+        ],
+        "boundary_precision_pairs": [
+          -0.0029239766081871066,
+          0.0
+        ],
+        "boundary_recall_multi": [
+          0.01804007765086258,
+          0.051813471502590636
+        ],
+        "boundary_recall_pairs": [
+          -0.05555555555555558,
+          0.0
+        ],
+        "multi_frame_accuracy": [
+          0.006100806713101684,
+          0.012256768204384025
+        ],
+        "native_accuracy": [
+          0.0,
+          0.0
+        ],
+        "native_frame_accuracy": [
+          -0.004465695843999745,
+          0.0
+        ],
+        "native_frame_errors": [
+          0.0,
+          60.0
+        ],
+        "native_internal_cuts_per_clip": [
+          -0.012988424618859401,
+          0.011363636363636364
+        ],
+        "native_macro_f1": [
+          0.0,
+          0.0
+        ],
+        "pairs_short_spurious_segments_10samples": [
+          0.0,
+          0.0
+        ],
+        "pairs_short_spurious_segments_16samples": [
+          0.0,
+          0.0
+        ],
+        "pairs_short_true_unmatched_10samples": [
+          0.0,
+          3.0
+        ],
+        "pairs_short_true_unmatched_16samples": [
+          0.0,
+          3.0
+        ],
+        "same_class_cut_rate_multi": [
+          -0.012658227848101264,
+          0.0
+        ],
+        "segment_f1_50_multi": [
+          0.0048485656444458985,
+          0.02364129901810297
+        ],
+        "segment_f1_50_pairs": [
+          -0.009168666557375202,
+          0.0
+        ],
+        "short_spurious_segments_10samples": [
+          -2.0,
+          4.0
+        ],
+        "short_spurious_segments_16samples": [
+          -3.0,
+          3.0
+        ],
+        "short_true_unmatched_10samples": [
+          -19.0,
+          -6.0
+        ],
+        "short_true_unmatched_16samples": [
+          -19.0,
+          -6.0
+        ]
+      },
+      "exact_disagreements": {
+        "multi_short_true_segments_lost_10samples": 0,
+        "multi_short_true_segments_lost_16samples": 0,
+        "multi_short_true_segments_recovered_10samples": 12,
+        "multi_short_true_segments_recovered_16samples": 12,
+        "multi_true_segments_lost": 0,
+        "multi_true_segments_recovered": 12,
+        "native_both_correct": 236,
+        "native_both_wrong": 1,
+        "native_left_only_correct": 0,
+        "native_right_only_correct": 0,
+        "pair_short_true_segments_lost_10samples": 1,
+        "pair_short_true_segments_lost_16samples": 1,
+        "pair_short_true_segments_recovered_10samples": 0,
+        "pair_short_true_segments_recovered_16samples": 0,
+        "pair_true_segments_lost": 1,
+        "pair_true_segments_recovered": 0
+      },
+      "half": "calibration",
+      "left": "seed2026110360_J-R_fixed6000",
+      "native_confusion_delta": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "native_per_class_f1_delta": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "right": "A08_s0_original_B3",
+      "seed": 2026110360,
+      "table": "a60_confirmation",
+      "undefined_bootstrap_replicates": {
+        "boundary_precision_multi": 0,
+        "boundary_precision_pairs": 0,
+        "boundary_recall_multi": 0,
+        "boundary_recall_pairs": 0,
+        "multi_frame_accuracy": 0,
+        "native_accuracy": 0,
+        "native_frame_accuracy": 0,
+        "native_frame_errors": 0,
+        "native_internal_cuts_per_clip": 0,
+        "native_macro_f1": 0,
+        "pairs_short_spurious_segments_10samples": 0,
+        "pairs_short_spurious_segments_16samples": 0,
+        "pairs_short_true_unmatched_10samples": 0,
+        "pairs_short_true_unmatched_16samples": 0,
+        "same_class_cut_rate_multi": 0,
+        "segment_f1_50_multi": 0,
+        "segment_f1_50_pairs": 0,
+        "short_spurious_segments_10samples": 0,
+        "short_spurious_segments_16samples": 0,
+        "short_true_unmatched_10samples": 0,
+        "short_true_unmatched_16samples": 0
+      }
+    },
+    {
+      "bootstrap": {
+        "multi_streams": 120,
+        "native_sessions": 36,
+        "pair_streams": 115,
+        "replicates": 5000,
+        "scope": "conditionalconstructedbankswithsharedsources; sessionsnotconfirmedpatients; noindependentclinicalpopulationclaim",
+        "seed": 2026110360,
+        "short_count_intervals": "differencesinresampledwhole-banktotals;pairedtruedenominatorsidenticalineachreplicate",
+        "undefined_ratios": "reportedasnullifallundefined;otherwiseintervalconditionalonfinitepairedreplicateswithcountsdisclosed",
+        "units": "complete sessions / complete fixed streams / complete fixed pairs"
+      },
+      "contrast": "J-R-A-R",
+      "delta": {
+        "boundary_f1_multi": -0.0024913442721661294,
+        "boundary_f1_pairs": 0.01814882032667886,
+        "boundary_precision_multi": -0.0054979735565743315,
+        "boundary_precision_pairs": 0.0012315270935960854,
+        "boundary_recall_multi": 0.0,
+        "boundary_recall_pairs": 0.034482758620689724,
+        "multi_frame_accuracy": -0.00033604032483902646,
+        "multi_frame_errors": 6,
+        "native_A4C_A5C_errors": 0,
+        "native_A4C_to_A5C": 0,
+        "native_A5C_to_A4C": 0,
+        "native_accuracy": 0.0,
+        "native_frame_accuracy": 0.00020945332681698847,
+        "native_frame_errors": -3,
+        "native_internal_cuts_per_clip": -0.0042194092827004225,
+        "native_internal_cuts_per_min": -0.041890665363401525,
+        "native_macro_f1": 0.0,
+        "native_share_cut": -0.0042194092827004225,
+        "pair_frame_errors": -15,
+        "pairs_frame_accuracy": 0.0030718820397296343,
+        "pairs_short_predicted_segments_10samples": 1,
+        "pairs_short_predicted_segments_16samples": 1,
+        "pairs_short_spurious_segments_10samples": 0,
+        "pairs_short_spurious_segments_16samples": 0,
+        "pairs_short_true_segments_10samples": 0,
+        "pairs_short_true_segments_16samples": 0,
+        "pairs_short_true_unmatched_10samples": -2,
+        "pairs_short_true_unmatched_16samples": -2,
+        "same_class_cut_rate_multi": 0.003968253968253968,
+        "same_class_cut_rate_pairs": 0.0,
+        "segment_f1_50_multi": 0.0001618812302972561,
+        "segment_f1_50_pairs": 0.005914773491060621,
+        "short_predicted_segments_10samples": 3,
+        "short_predicted_segments_16samples": 7,
+        "short_spurious_segments_10samples": 0,
+        "short_spurious_segments_16samples": 1,
+        "short_true_segments_10samples": 0,
+        "short_true_segments_16samples": 0,
+        "short_true_unmatched_10samples": -2,
+        "short_true_unmatched_16samples": -1
+      },
+      "delta95": {
+        "boundary_precision_multi": [
+          -0.014678353797948209,
+          0.0006493860170331039
+        ],
+        "boundary_precision_pairs": [
+          0.0,
+          0.00462962962962965
+        ],
+        "boundary_recall_multi": [
+          -0.018372703412073425,
+          0.020231762639935674
+        ],
+        "boundary_recall_pairs": [
+          0.0,
+          0.09090909090909094
+        ],
+        "multi_frame_accuracy": [
+          -0.002728680391398522,
+          0.0021901306198513935
+        ],
+        "native_accuracy": [
+          0.0,
+          0.0
+        ],
+        "native_frame_accuracy": [
+          0.0,
+          0.0005803086758712466
+        ],
+        "native_frame_errors": [
+          -9.0,
+          0.0
+        ],
+        "native_internal_cuts_per_clip": [
+          -0.012821888412017169,
+          0.0
+        ],
+        "native_macro_f1": [
+          0.0,
+          0.0
+        ],
+        "pairs_short_spurious_segments_10samples": [
+          0.0,
+          0.0
+        ],
+        "pairs_short_spurious_segments_16samples": [
+          0.0,
+          0.0
+        ],
+        "pairs_short_true_unmatched_10samples": [
+          -5.0,
+          0.0
+        ],
+        "pairs_short_true_unmatched_16samples": [
+          -5.0,
+          0.0
+        ],
+        "same_class_cut_rate_multi": [
+          -0.016194331983805668,
+          0.02409638554216867
+        ],
+        "segment_f1_50_multi": [
+          -0.009818646012146545,
+          0.011132026934566192
+        ],
+        "segment_f1_50_pairs": [
+          0.0,
+          0.01519090348052576
+        ],
+        "short_spurious_segments_10samples": [
+          -3.0,
+          3.0
+        ],
+        "short_spurious_segments_16samples": [
+          -2.0,
+          5.0
+        ],
+        "short_true_unmatched_10samples": [
+          -8.0,
+          4.0
+        ],
+        "short_true_unmatched_16samples": [
+          -8.0,
+          5.0
+        ]
+      },
+      "exact_disagreements": {
+        "multi_short_true_segments_lost_10samples": 4,
+        "multi_short_true_segments_lost_16samples": 5,
+        "multi_short_true_segments_recovered_10samples": 6,
+        "multi_short_true_segments_recovered_16samples": 6,
+        "multi_true_segments_lost": 6,
+        "multi_true_segments_recovered": 7,
+        "native_both_correct": 236,
+        "native_both_wrong": 1,
+        "native_left_only_correct": 0,
+        "native_right_only_correct": 0,
+        "pair_short_true_segments_lost_10samples": 0,
+        "pair_short_true_segments_lost_16samples": 0,
+        "pair_short_true_segments_recovered_10samples": 2,
+        "pair_short_true_segments_recovered_16samples": 2,
+        "pair_true_segments_lost": 0,
+        "pair_true_segments_recovered": 2
+      },
+      "half": "calibration",
+      "left": "seed2026110361_J-R_fixed6000",
+      "native_confusion_delta": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "native_per_class_f1_delta": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "right": "seed2026110361_A-R_fixed6000",
+      "seed": 2026110361,
+      "table": "a60_confirmation",
+      "undefined_bootstrap_replicates": {
+        "boundary_precision_multi": 0,
+        "boundary_precision_pairs": 0,
+        "boundary_recall_multi": 0,
+        "boundary_recall_pairs": 0,
+        "multi_frame_accuracy": 0,
+        "native_accuracy": 0,
+        "native_frame_accuracy": 0,
+        "native_frame_errors": 0,
+        "native_internal_cuts_per_clip": 0,
+        "native_macro_f1": 0,
+        "pairs_short_spurious_segments_10samples": 0,
+        "pairs_short_spurious_segments_16samples": 0,
+        "pairs_short_true_unmatched_10samples": 0,
+        "pairs_short_true_unmatched_16samples": 0,
+        "same_class_cut_rate_multi": 0,
+        "segment_f1_50_multi": 0,
+        "segment_f1_50_pairs": 0,
+        "short_spurious_segments_10samples": 0,
+        "short_spurious_segments_16samples": 0,
+        "short_true_unmatched_10samples": 0,
+        "short_true_unmatched_16samples": 0
+      }
+    },
+    {
+      "bootstrap": {
+        "multi_streams": 120,
+        "native_sessions": 36,
+        "pair_streams": 115,
+        "replicates": 5000,
+        "scope": "conditionalconstructedbankswithsharedsources; sessionsnotconfirmedpatients; noindependentclinicalpopulationclaim",
+        "seed": 2026110360,
+        "short_count_intervals": "differencesinresampledwhole-banktotals;pairedtruedenominatorsidenticalineachreplicate",
+        "undefined_ratios": "reportedasnullifallundefined;otherwiseintervalconditionalonfinitepairedreplicateswithcountsdisclosed",
+        "units": "complete sessions / complete fixed streams / complete fixed pairs"
+      },
+      "contrast": "J-R-A08_s0_original_B3",
+      "delta": {
+        "boundary_f1_multi": 0.010871506469325332,
+        "boundary_f1_pairs": 0.008995502248875575,
+        "boundary_precision_multi": -0.0016529345946495466,
+        "boundary_precision_pairs": 0.000604960677555999,
+        "boundary_recall_multi": 0.020942408376963373,
+        "boundary_recall_pairs": 0.017241379310344862,
+        "multi_frame_accuracy": 0.005992719126295176,
+        "multi_frame_errors": -107,
+        "native_A4C_A5C_errors": 0,
+        "native_A4C_to_A5C": 0,
+        "native_A5C_to_A4C": 0,
+        "native_accuracy": 0.0,
+        "native_frame_accuracy": -0.0012567199609020419,
+        "native_frame_errors": 18,
+        "native_internal_cuts_per_clip": -0.0042194092827004225,
+        "native_internal_cuts_per_min": -0.041890665363401525,
+        "native_macro_f1": 0.0,
+        "native_share_cut": 0.0,
+        "pair_frame_errors": -20,
+        "pairs_frame_accuracy": 0.004095842719639475,
+        "pairs_short_predicted_segments_10samples": 1,
+        "pairs_short_predicted_segments_16samples": 2,
+        "pairs_short_spurious_segments_10samples": 0,
+        "pairs_short_spurious_segments_16samples": 0,
+        "pairs_short_true_segments_10samples": 0,
+        "pairs_short_true_segments_16samples": 0,
+        "pairs_short_true_unmatched_10samples": -1,
+        "pairs_short_true_unmatched_16samples": -1,
+        "same_class_cut_rate_multi": 0.0,
+        "same_class_cut_rate_pairs": 0.0,
+        "segment_f1_50_multi": 0.0080178508212021,
+        "segment_f1_50_pairs": 0.0029488146100359325,
+        "short_predicted_segments_10samples": 5,
+        "short_predicted_segments_16samples": 7,
+        "short_spurious_segments_10samples": 0,
+        "short_spurious_segments_16samples": 0,
+        "short_true_segments_10samples": 0,
+        "short_true_segments_16samples": 0,
+        "short_true_unmatched_10samples": -9,
+        "short_true_unmatched_16samples": -8
+      },
+      "delta95": {
+        "boundary_precision_multi": [
+          -0.0081510026728812,
+          0.0022135451786530714
+        ],
+        "boundary_precision_pairs": [
+          -0.001612903225806539,
+          0.003898677716320411
+        ],
+        "boundary_recall_multi": [
+          0.005154307900246452,
+          0.04087193460490468
+        ],
+        "boundary_recall_pairs": [
+          -0.03703703703703709,
+          0.08163265306122447
+        ],
+        "multi_frame_accuracy": [
+          0.0036683966507589233,
+          0.008581119418191716
+        ],
+        "native_accuracy": [
+          0.0,
+          0.0
+        ],
+        "native_frame_accuracy": [
+          -0.004337366819462921,
+          0.0
+        ],
+        "native_frame_errors": [
+          0.0,
+          54.0
+        ],
+        "native_internal_cuts_per_clip": [
+          -0.01442307692307692,
+          0.0
+        ],
+        "native_macro_f1": [
+          0.0,
+          0.0
+        ],
+        "pairs_short_spurious_segments_10samples": [
+          0.0,
+          0.0
+        ],
+        "pairs_short_spurious_segments_16samples": [
+          0.0,
+          0.0
+        ],
+        "pairs_short_true_unmatched_10samples": [
+          -5.0,
+          2.0
+        ],
+        "pairs_short_true_unmatched_16samples": [
+          -5.0,
+          2.0
+        ],
+        "same_class_cut_rate_multi": [
+          -0.01568627450980392,
+          0.01568781843446039
+        ],
+        "segment_f1_50_multi": [
+          -0.0017202013623759476,
+          0.019070551834476278
+        ],
+        "segment_f1_50_pairs": [
+          -0.006058741706226503,
+          0.014401780902339305
+        ],
+        "short_spurious_segments_10samples": [
+          -3.0,
+          3.0
+        ],
+        "short_spurious_segments_16samples": [
+          -3.0,
+          3.0
+        ],
+        "short_true_unmatched_10samples": [
+          -15.0,
+          -4.0
+        ],
+        "short_true_unmatched_16samples": [
+          -15.0,
+          -2.0
+        ]
+      },
+      "exact_disagreements": {
+        "multi_short_true_segments_lost_10samples": 0,
+        "multi_short_true_segments_lost_16samples": 1,
+        "multi_short_true_segments_recovered_10samples": 9,
+        "multi_short_true_segments_recovered_16samples": 9,
+        "multi_true_segments_lost": 2,
+        "multi_true_segments_recovered": 10,
+        "native_both_correct": 236,
+        "native_both_wrong": 1,
+        "native_left_only_correct": 0,
+        "native_right_only_correct": 0,
+        "pair_short_true_segments_lost_10samples": 1,
+        "pair_short_true_segments_lost_16samples": 1,
+        "pair_short_true_segments_recovered_10samples": 2,
+        "pair_short_true_segments_recovered_16samples": 2,
+        "pair_true_segments_lost": 1,
+        "pair_true_segments_recovered": 2
+      },
+      "half": "calibration",
+      "left": "seed2026110361_J-R_fixed6000",
+      "native_confusion_delta": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "native_per_class_f1_delta": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "right": "A08_s0_original_B3",
+      "seed": 2026110361,
+      "table": "a60_confirmation",
+      "undefined_bootstrap_replicates": {
+        "boundary_precision_multi": 0,
+        "boundary_precision_pairs": 0,
+        "boundary_recall_multi": 0,
+        "boundary_recall_pairs": 0,
+        "multi_frame_accuracy": 0,
+        "native_accuracy": 0,
+        "native_frame_accuracy": 0,
+        "native_frame_errors": 0,
+        "native_internal_cuts_per_clip": 0,
+        "native_macro_f1": 0,
+        "pairs_short_spurious_segments_10samples": 0,
+        "pairs_short_spurious_segments_16samples": 0,
+        "pairs_short_true_unmatched_10samples": 0,
+        "pairs_short_true_unmatched_16samples": 0,
+        "same_class_cut_rate_multi": 0,
+        "segment_f1_50_multi": 0,
+        "segment_f1_50_pairs": 0,
+        "short_spurious_segments_10samples": 0,
+        "short_spurious_segments_16samples": 0,
+        "short_true_unmatched_10samples": 0,
+        "short_true_unmatched_16samples": 0
+      }
+    }
+  ],
+  "coordination_tool_CPU_unmetered_not_worker_receipt": true,
+  "epoch": 1793764462.560822,
+  "passed": true
+}
