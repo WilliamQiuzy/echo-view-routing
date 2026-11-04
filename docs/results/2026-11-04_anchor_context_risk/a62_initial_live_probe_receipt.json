@@ -1,0 +1,68 @@
+{
+  "stage": "initial_live_readonly_qualification",
+  "observed_worker_exit_code": 0,
+  "started_epoch": 1793830543.077492,
+  "finished_epoch": 1793830545.602514,
+  "full_process_wall_seconds": 2.525022029876709,
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": null,
+  "measured_CPU_core_seconds": 0.14574099999999998,
+  "local_SELF_plus_waited_SSH_CPU_seconds": 0.018723999999999998,
+  "remote_readonly_probe_CPU_included_if_observed": true,
+  "scope": "one bounded SSH liveprobe; localSELF+waitedSSH plus disjoint remoteSELF+waitednvidia; final JSON/tool tails unknown",
+  "stdout": {
+    "epoch": 1793830544.7515037,
+    "boot_id": "09960950-5572-4f17-8b8f-8200fc394bd9",
+    "uptime": "26022.32",
+    "A62_namespace_exists": false,
+    "namespace_status": {
+      "a57_jepa_target_sequence_v1": {
+        "exists": false
+      },
+      "a58_structured_duration_v1": {
+        "exists": false
+      },
+      "a59_anchor_edits_v1": {
+        "exists": true,
+        "active": null,
+        "pending_count": 0,
+        "locks": {
+          "exclusive_supervisor.lock": "available_readonly_probe"
+        }
+      },
+      "a60_jepa_proposals_v1": {
+        "exists": true,
+        "active": null,
+        "pending_count": 0,
+        "locks": {
+          "exclusive_supervisor.lock": "available_readonly_probe"
+        }
+      },
+      "a61_action_safety_ranking_v1": {
+        "exists": true,
+        "active": null,
+        "pending_count": 0,
+        "locks": {
+          "exclusive_supervisor.lock": "available_readonly_probe"
+        }
+      },
+      "a62_anchor_context_risk_v1": {
+        "exists": false
+      }
+    },
+    "GPU_state": "NVIDIA L40S, 0 MiB, 46068 MiB, 0 %",
+    "visible_project_or_GPU_processes": [],
+    "GPU_compute_rows": [],
+    "A61_closed_pins": {
+      "resources.json": "e62c092a2951ea207c7d07cb0d555cfb434f320b798a17fdb82a1cc1342bec62",
+      "terminal_exit_receipt.json": "59f7447a58fe68987ff9cf0d2e7329b5c79a6b1e5d49af1aea0df96e47454088",
+      "collector_OS_exit_receipt.json": "36318950a6c4da0d2c3eebfc707f1bdeb010bcd5796b8e83f175fe0328f6e1e8"
+    },
+    "A61_collector_observed_OS": 0,
+    "remote_SELF_plus_waited_probe_CPU_seconds": 0.127017,
+    "scope": "one bounded readonly live qualification; process visibility incomplete if OS denies; no model/source/stage launch"
+  },
+  "stderr": "",
+  "GPU_job": false,
+  "CUDA_context_occupied": false
+}
