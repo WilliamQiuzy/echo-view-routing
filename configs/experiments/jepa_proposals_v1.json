@@ -1,0 +1,244 @@
+{
+  "run_id": "A60",
+  "namespace": "runs/a60_jepa_proposals_v1",
+  "card": {
+    "path": "docs/superpowers/plans/2026-11-03-a60-jepa-proposals.md",
+    "sha256": "ebca3a1a1fc6daa76dfa440e73812be4395d3af2688d812d95828a845a50bb0a"
+  },
+  "source": {
+    "a08": {
+      "path": "models_frozen/video_within_view_v1/all_s0/final.pt",
+      "sha256": "9b144925f32fac7d725d13231a132abeb6635fa44b6fe0dbcec7f5b59d035bbc",
+      "original_choices": "docs/results/2026-10-16_video_within_view/choices.json",
+      "original_choices_sha256": "b2a731e5f4393187ee9954f710821ac04938652f0a7d00e0381ad0b8b21cf27e",
+      "stride": 5,
+      "window": 16,
+      "slots": 16,
+      "slot_order": "identity",
+      "marker": "middle_original_target_slot",
+      "preprocess": "gammaLUT_then_bilinear_shortside256_centercrop224_RGBuint8_EchoPrime_0to255_meanstd",
+      "precision": "FP32_TF32off_eval",
+      "original_B3": {
+        "half_window": 7,
+        "threshold": 0.19660949291632382,
+        "nms_radius": 5,
+        "threshold_quantile": 0.999
+      }
+    },
+    "jepa": {
+      "path": "runs/a57_dense_sequence_v1/seed2026110257/J-high/step6000.pt",
+      "sha256": "2fa26f2b3ffbffd4d8481c6ac1ff2190572f18648e13f13dbf37333a17bdd985",
+      "model_manifest": "docs/results/2026-11-02_dense_target_sequence/models_manifest.json",
+      "model_manifest_sha256": "a5d6c70cc9796f0cf8319bda7c6fa54526c383c80f012e7ec5399a6289d2bb87",
+      "source_manifest": "docs/results/2026-11-02_dense_target_sequence/source.json",
+      "source_manifest_sha256": "dbe6b45ef274e434a0ab526885dc6c74589394abb92b601307a50c761c3e4e1b",
+      "precision": "BF16encoder_FP32head_eval",
+      "chunk": 64,
+      "stride": 32,
+      "stitch": "positive_triangle_probabilities",
+      "features": "final_fiveclass_probabilities_only"
+    }
+  },
+  "data": {
+    "input_manifest": "docs/results/2026-11-02_dense_target_sequence/input_metadata.json",
+    "input_manifest_sha256": "1e684c35051e0d35e9e18035e7237b95d1977aed4ca8658129ac3d82940888d2",
+    "roles": {
+      "fit": {
+        "path": "runs/a57_dense_sequence_v1/fit_sequences.private.npy",
+        "sha256": "950930864fd27a8da5a05ff9f3c3d5e572006123b3c03ee350484a5159b04b68"
+      },
+      "inner_cal": {
+        "path": "runs/a57_dense_sequence_v1/inner_cal_sequences.private.npy",
+        "sha256": "92d8fe980b52ebb8eba0317522e8a24615cbff61b400b996f643534d90c4e1a7"
+      }
+    },
+    "old_outer_metadata": "runs/a57_dense_sequence_v1/outer_metadata.private.npy",
+    "old_outer_metadata_sha256": "4e67f3499889ad11f98662d93e3f49a63e51e4c6d3fd646bebcb98535cb0fa9a",
+    "outer_inputs": "docs/results/2026-11-02_dense_target_sequence/outer_inputs.json",
+    "outer_inputs_sha256": "c452cb1bae5b0eab6dea351831285c52020228de03eb61223b64bd3971909b9f",
+    "frame_metadata_columns": [
+      "video_id",
+      "frames_dir"
+    ],
+    "new_head_training_only": "FIT2736native+new1500constructed;inner628native+new300constructednevertrained",
+    "old_A08_inner_exposure": "notOOF_or_independent_validation",
+    "old_A57_roles_are_native_group_sources_only": true,
+    "new_joined_context_never_spliced": true,
+    "old_A58_pins": {
+      "input_manifest.json": {
+        "path": "docs/results/2026-11-03_structured_evidence/input_manifest.json",
+        "sha256": "5a0e0f26a9faa4ee708047254896eeea2713769549d2f3d129b3c96fbb46e2d5"
+      },
+      "cache_fit_manifest.json": {
+        "path": "docs/results/2026-11-03_structured_evidence/cache_fit_manifest.json",
+        "sha256": "fad55a6b6394354f8c9d9204ee7c1b5ab6f05f14a8dbaa53a26b558a3a9041a2"
+      },
+      "cache_outer_manifest.json": {
+        "path": "docs/results/2026-11-03_structured_evidence/cache_outer_manifest.json",
+        "sha256": "c694b2933d9148a8d502c766106d50510d729dc40894a4b0710d9c0fdf95404b"
+      },
+      "producer_identity.json": {
+        "path": "docs/results/2026-11-03_structured_evidence/producer_identity.json",
+        "sha256": "d2d018d9f07e3606538b732a1431f971a85aecabac377dc0f21c446be415a1c7"
+      },
+      "resources.json": {
+        "path": "docs/results/2026-11-03_structured_evidence/resources.json",
+        "sha256": "c168adad5be442fd495add455f2effa6ce91e10183a14f9ac7345da70b3b1780"
+      },
+      "terminal_exit_receipt.json": {
+        "path": "docs/results/2026-11-03_structured_evidence/terminal_exit_receipt.json",
+        "sha256": "8bb7c76503dd1cff7ef9e71840f40c3833c1b93eae410e09a40344e56e1982cc"
+      }
+    },
+    "A08_FIT_inner_cache_route": "fresh_full_original_stride5_for_all_native_and_new_constructed;no_partialA31reuse"
+  },
+  "prior_A59": {
+    "input_manifest.json": {
+      "path": "docs/results/2026-11-03_anchor_edits/input_manifest.json",
+      "sha256": "376def8aa6f6a81660b13212a248c91aefa111cb88bb57f99d59deff3cdc407c"
+    },
+    "cache_fit_manifest.json": {
+      "path": "docs/results/2026-11-03_anchor_edits/cache_fit_manifest.json",
+      "sha256": "10461416a75d374e2bacfa2cd8dc5c44b9e75b1034c52f0e80a050d148e88bba"
+    },
+    "cache_outer_manifest.json": {
+      "path": "docs/results/2026-11-03_anchor_edits/cache_outer_manifest.json",
+      "sha256": "8259d0271c317f6e4c27ebcc8f32439526ced43617758128f1f49e5cc61d7383"
+    },
+    "producer_identity.json": {
+      "path": "docs/results/2026-11-03_anchor_edits/producer_identity.json",
+      "sha256": "1365c89653abb54a83197762d807931544bda7bda142ef1ed4132b0d1e28eecb"
+    },
+    "resources_final.json": {
+      "path": "docs/results/2026-11-03_anchor_edits/resources_final.json",
+      "sha256": "e04d513c2c67ef62abc3caccab50e2c3fa3165b9e4528facc56cb9e87399b8eb"
+    },
+    "terminal_exit_receipt_final.json": {
+      "path": "docs/results/2026-11-03_anchor_edits/terminal_exit_receipt_final.json",
+      "sha256": "c70a3612a2d74619560e84073ad84c35c2ee4a7aab52d44d94d08cc93557d6d5"
+    }
+  },
+  "channel_mapping": {
+    "version": "family5_v1",
+    "classes": [
+      "PLAX",
+      "PSAX",
+      "A4C",
+      "A5C",
+      "SC4C"
+    ],
+    "ontology": {
+      "path": "configs/labels.yaml",
+      "sha256": "4c200c57a9ebd86603db5c45f8441d489e89ce4be9ea95d40abe88c7f38d566c"
+    },
+    "training_index_mapping": "models_frozen/e1_echoviewclip_probe/v1/feature_manifest.json",
+    "training_index_mapping_sha256": "56f59166ba3f1b428867e4ec9a7e6dfd800cb5bccd79db8191d3c916421f17c3",
+    "source_chain": "A08 train_video_within_view->A07/vso TrainingData;JEPA prepare_dense_sequence->prepare_video_feature_temporal.TrainingData;both index.label_index family5_v1;no channel permutation"
+  },
+  "banks": {
+    "seed": 2026110360,
+    "RNG_domains": {
+      "selection": [
+        2026110360,
+        60,
+        2
+      ],
+      "calibration": [
+        2026110360,
+        60,
+        3
+      ]
+    },
+    "streams_each_half": 120,
+    "fragment_support": [
+      4,
+      80
+    ],
+    "n_fragments": [
+      4,
+      8
+    ],
+    "gamma090_prob": 0.5,
+    "p_same_next": 0.35
+  },
+  "model": {
+    "layers": [
+      109,
+      32,
+      3
+    ],
+    "parameters": 3619,
+    "output_initialization": "zero"
+  },
+  "training": {
+    "arms": [
+      "A",
+      "J"
+    ],
+    "seeds": [
+      2026110360,
+      2026110361
+    ],
+    "updates_each": 6000,
+    "physical_models": 4,
+    "total_formal_updates": 24000,
+    "AdamW": {
+      "lr": 0.001,
+      "weight_decay": 0.01,
+      "betas": [
+        0.9,
+        0.999
+      ],
+      "eps": 1e-08
+    },
+    "warmup": 100,
+    "cosine_total": 6000,
+    "clip": 1.0,
+    "precision": "FP32",
+    "kind_candidate_batch": [
+      32,
+      32
+    ],
+    "sampling": "uniformreplacement_from_complete_kind_candidate_lists",
+    "draw_RNG_domains": "[seed,60,kind]",
+    "loss": "equal_nonemptykind_mean_of_equal_threeoutput_MSE;targets_divide_sharedFIT_RMS_floor1_no_center",
+    "F_fit": "Base_pooled_multi_segmentF1_new1500FITbank",
+    "native_utility": "samecountcost_stabilityproxy_not_nativeMacroF1_surrogate",
+    "milestones": [
+      2000,
+      4000,
+      6000
+    ],
+    "latest_every": 100,
+    "inner_selection": false,
+    "CUDA_VISIBLE_DEVICES": ""
+  },
+  "budget": {
+    "origin_worktree_birth_epoch": 1793737172.3905008,
+    "original_origin": 1793648044.1596537,
+    "GPUjob_h": 24,
+    "CPUaccounting_h": 72,
+    "tracked_peak_upper_bytes": 40000000000,
+    "deadline": 1793820844.1596537,
+    "closure_GPUreserve_h": 2,
+    "prior_GPUjob_h": 18.3349858850903,
+    "prior_summed_measured_CPUreceipt_h": 18.253671176388888,
+    "prior_completed_CPU_allowance_h": 0.75,
+    "prior_tracked_storage_upper_bytes": 34541577626,
+    "prior_legacy_overlap_and_orphan_uncertainties_retained": true
+  },
+  "policies": [
+    "O",
+    "E",
+    "R"
+  ],
+  "target_names": [
+    "utility",
+    "delta_wrong_positions",
+    "delta_short16_FP"
+  ],
+  "target_scale": "shared FIT RMS floor1;no centering",
+  "majority_guard": "all sequences,bincount5argmax",
+  "candidate_contract": "oldA08components+allmaxconstantJruns;trimonlyends;dedupcompleteactionkey;maxone;strictutility>0",
+  "inference_truth_kind_or_ID_inputs": false
+}
