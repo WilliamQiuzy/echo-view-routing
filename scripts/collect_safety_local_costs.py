@@ -22,7 +22,7 @@ def main():
         if all(k in v for k in required):row={k:v[k] for k in required};row.update(measurement_host=v.get('measurement_host'),model_pid=v.get('model_pid'),supervisor_pid=v.get('supervisor_pid'))
         elif p.name=='initial_live_probe.json':row={'started_epoch':v['started_epoch'],'finished_epoch':v['ended_epoch'],'full_process_wall_seconds':v['ended_epoch']-v['started_epoch'],'measured_CPU_core_seconds':v['CPU_seconds'],'observed_worker_exit_code':v['observed_SSH_OS_exit'],'measurement_host':v['measurement_host'],'model_pid':v['supervisor_PID'],'supervisor_pid':None}
         else:
-            key=next((k for k in ['self_plus_waitedchildren_cpu_seconds_through_sample','rusage_self_plus_waited_children_total_cpu_seconds'] if k in v),None)
+            key=next((k for k in ['self_plus_waitedchildren_cpu_seconds_through_sample','rusage_self_plus_waited_children_total_cpu_seconds','rusage_self_plus_waited_children_cpu_seconds_through_sample'] if k in v),None)
             if key is not None:row={'started_epoch':start,'finished_epoch':start,'full_process_wall_seconds':0.,'measured_CPU_core_seconds':v[key],'observed_worker_exit_code':None,'measurement_host':None,'model_pid':None,'supervisor_pid':None,'interval_scope':'actual CPU from read process through sample; missing exact process interval/PID retained, administrative event timestamp only'}
         if row is None:continue
         digest=sha(p);key='external:'+digest

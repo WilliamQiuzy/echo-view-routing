@@ -53,8 +53,9 @@ def main():
             weights=[len(data['groups'][i])**2 for i in pool] if role=='utility' else np.diff(data['position_offsets'])[pool]
             local=int(np.argmax(weights));worst['indices'][:20,block*32:(block+1)*32]=local;maxima.append(int(max(weights)))
         model=Utility(arm,seed) if role=='utility' else Risk(seed);opt=optimizer(model);mutable+=1
-        began=time.perf_counter();report=train_one(model,opt,data,worst,identity,RUN/'engineering'/('timed_'+role),stop=20,latest_every=10,milestones=(10,20));elapsed=time.perf_counter()-began;updates+=20
-        timings[role]={'twenty_updates_full_loop_IO_seconds':elapsed,'seconds_per_update_including_plan_batch_forward_backward_trace_and_full_checkpoint_IO':elapsed/20,'engineering_worst_block_C2_or_K':maxima,'report':report}
+        planpath=RUN/'engineering'/f'timed_{role}_plan.private.npy';save_array(planpath,worst);timedidentity={**identity,'draw_plan':sha(planpath)}
+        began=time.perf_counter();report=train_one(model,opt,data,worst,timedidentity,RUN/'engineering'/('timed_'+role),stop=20,latest_every=10,milestones=(10,20));elapsed=time.perf_counter()-began;updates+=20
+        timings[role]={'engineering_plan':array_pin(planpath),'identity':timedidentity,'twenty_updates_full_loop_IO_seconds':elapsed,'seconds_per_update_including_plan_batch_forward_backward_trace_and_full_checkpoint_IO':elapsed/20,'engineering_worst_block_C2_or_K':maxima,'report':report}
     # Probe all actual distinct worst T,C²,K-multiset and T*C source groups, not arbitrary32.
     c=np.asarray([len(g) for g in data['groups']]);K=np.diff(data['position_offsets']);tests=set()
     criteria={'max_T':np.asarray([len(x['labels']) for x in q]),'max_C2':c*c,'max_T_times_C':np.asarray([len(x['labels']) for x in q])*c,'max_changed_position_multiset':np.asarray([K[g].sum() for g in data['groups']])}

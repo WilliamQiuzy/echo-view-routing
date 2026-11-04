@@ -1,0 +1,31 @@
+{
+  "stage": "final_review_fee_schema_RED",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "tests/test_safety_local_costs.py"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 13940,
+  "supervisor_pid": 13929,
+  "started_epoch": 1793773857.325728,
+  "finished_epoch": 1793773857.854104,
+  "full_process_wall_seconds": 0.5283761024475098,
+  "observed_worker_exit_code": 1,
+  "stage_exit_code": 1,
+  "termination_reason": null,
+  "exception": null,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 0.38905399999999996,
+  "measured_supervisor_CPU_seconds": 0.0012180000000000003,
+  "measured_CPU_core_seconds": 0.39027199999999995,
+  "durable_claim_before_Popen": true,
+  "scope": "local synthetic checks;SELF region+waited CHILDREN;final JSON bookkeeping and wrapper imports separate metadata",
+  "output": "F                                                                        [100%]\n=================================== FAILURES ===================================\n_________________ test_final_plan_review_schema_collected_once _________________\ntests/test_safety_local_costs.py:12: in test_final_plan_review_schema_collected_once\n    assert len(rows)==1 and rows[0]['measured_CPU_core_seconds']==.059016\nE   assert (0 == 1)\nE    +  where 0 = len([])\n----------------------------- Captured stdout call -----------------------------\n{'local_receipts': 2, 'measured_CPU_seconds': 0.05273599999999999}\n{'local_receipts': 3, 'measured_CPU_seconds': 0.052911000000000014}\n=========================== short test summary info ============================\nFAILED tests/test_safety_local_costs.py::test_final_plan_review_schema_collected_once\n",
+  "output_sha256": "e0545caee18e9db13131bcac848dcc768832d4bc23b52932da6c7c83adbc2126"
+}
