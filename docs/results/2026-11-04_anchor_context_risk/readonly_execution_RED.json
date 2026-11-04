@@ -1,0 +1,31 @@
+{
+  "stage": "readonly_execution_RED",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "tests/test_event_risk_execution.py"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 70212,
+  "supervisor_pid": 70201,
+  "started_epoch": 1793827560.622087,
+  "finished_epoch": 1793827563.668064,
+  "full_process_wall_seconds": 3.0459771156311035,
+  "observed_worker_exit_code": 1,
+  "stage_exit_code": 1,
+  "termination_reason": null,
+  "exception": null,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 2.278825,
+  "measured_supervisor_CPU_seconds": 0.0010840000000000034,
+  "measured_CPU_core_seconds": 2.279909,
+  "durable_claim_before_Popen": true,
+  "scope": "local synthetic checks;SELF region+waited CHILDREN;final JSON bookkeeping and wrapper imports separate metadata",
+  "output": "F                                                                        [100%]\n=================================== FAILURES ===================================\n_______ test_readonly_audit_score_loading_never_builds_or_forwards_heads _______\ntests/test_event_risk_execution.py:23: in test_readonly_audit_score_loading_never_builds_or_forwards_heads\n    values,info=m.score_values(2026110461,'CAL',readonly=True)\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nscripts/event_risk_execution.py:105: in score_values\n    stage=verify_freeze('calibration_freeze.json' if inner else 'readout_freeze.json');qs,pa,pj,base=bank(role);pairs=old_scores(seed,role);oldrefs=[r for _,r in pairs];inputs=read(PUB/'training_inputs.json');heads=event_heads(seed);norms=read(verify_pin(inputs['normalizers']));rows=[r for r in read(PUB/'model_audit.json')['models'] if r['seed']==seed];ident=digest({'model_pins':[{k:r[k] for k in ['arm','path','sha256']} for r in rows],'input':read(PUB/'input_manifest.json')['roles'][role]['sha256'],'old_reference_digest':digest(oldrefs),'normalizer':inputs['normalizers']['sha256'],'stage_source':stage['objects'],'raw_scores_only_before_strict_CAL_thresholds':inner});cache=EventCache(RUN/'q_scores'/f'seed{seed}'/role,ident,base,[p.argmax(1) for p in pa],[p.argmax(1) for p in pj],None,oldrefs,readonly=readonly);before=cache.cursor\n                                                                                                                                                                                                                       ^^^^^^^^^^^^^^^^^\ntests/test_event_risk_execution.py:17: in <lambda>\n    monkeypatch.setattr(m,'read',read);monkeypatch.setattr(m,'event_heads',lambda s:(_ for _ in ()).throw(AssertionError('readonly model construction')))\n                                                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/test_event_risk_execution.py:17: in <genexpr>\n    monkeypatch.setattr(m,'read',read);monkeypatch.setattr(m,'event_heads',lambda s:(_ for _ in ()).throw(AssertionError('readonly model construction')))\nE   AssertionError: readonly model construction\n=========================== short test summary info ============================\nFAILED tests/test_event_risk_execution.py::test_readonly_audit_score_loading_never_builds_or_forwards_heads\n",
+  "output_sha256": "b37342d95377f62aafcd5377a33da9a02a8c1d63960a22d7175dd78bde35c5b2"
+}

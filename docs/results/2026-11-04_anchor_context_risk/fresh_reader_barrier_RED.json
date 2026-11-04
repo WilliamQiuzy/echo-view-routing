@@ -1,0 +1,31 @@
+{
+  "stage": "fresh_reader_barrier_RED",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "tests/test_event_risk_execution.py::test_fresh_outer_head_reader_refuses_before_readonly_adoption"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 95030,
+  "supervisor_pid": 95019,
+  "started_epoch": 1793828357.2572422,
+  "finished_epoch": 1793828357.794816,
+  "full_process_wall_seconds": 0.5375738143920898,
+  "observed_worker_exit_code": 1,
+  "stage_exit_code": 1,
+  "termination_reason": null,
+  "exception": null,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 0.34486700000000003,
+  "measured_supervisor_CPU_seconds": 0.0010519999999999974,
+  "measured_CPU_core_seconds": 0.34591900000000003,
+  "durable_claim_before_Popen": true,
+  "scope": "local synthetic checks;SELF region+waited CHILDREN;final JSON bookkeeping and wrapper imports separate metadata",
+  "output": "F                                                                        [100%]\n=================================== FAILURES ===================================\n________ test_fresh_outer_head_reader_refuses_before_readonly_adoption _________\ntests/test_event_risk_execution.py:39: in test_fresh_outer_head_reader_refuses_before_readonly_adoption\n    with pytest.raises(ValueError,match='adoption'):m.probability_reader('a08',role)\n                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nscripts/event_risk_common.py:82: in probability_reader\n    return ProbabilityCache(folder,row['identity'],[len(q['refs']) for q in sequences(role)],readonly=True)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/test_event_risk_execution.py:38: in <lambda>\n    monkeypatch.setattr(m,'read',read);monkeypatch.setattr(m,'ProbabilityCache',lambda *a,**k:(_ for _ in ()).throw(AssertionError('reader opened before adoption')))\n                                                                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/test_event_risk_execution.py:38: in <genexpr>\n    monkeypatch.setattr(m,'read',read);monkeypatch.setattr(m,'ProbabilityCache',lambda *a,**k:(_ for _ in ()).throw(AssertionError('reader opened before adoption')))\nE   AssertionError: reader opened before adoption\n=========================== short test summary info ============================\nFAILED tests/test_event_risk_execution.py::test_fresh_outer_head_reader_refuses_before_readonly_adoption\n",
+  "output_sha256": "892cb71a47c4cf339e9d8c3af27d8aefd7ffcb9afd0311b78b9ed24717566f13"
+}

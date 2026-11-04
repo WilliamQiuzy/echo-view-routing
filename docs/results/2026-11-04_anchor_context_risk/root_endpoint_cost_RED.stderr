@@ -1,0 +1,20 @@
+test_endpoint_only_JSD_matches_original_full_axis_bits_without_scanning_all_scores (test_event_risk_features.EndpointCostEquivalenceTests) ... FAIL
+test_R1_duplicate_and_R2_FIT_only_normalization_are_matched_205 (test_event_risk_features.EventContextFeaturesTests) ... ok
+test_normalizer_floor_and_empty_cache_contract (test_event_risk_features.EventContextFeaturesTests) ... ok
+test_observation_validation_and_no_reference_label_argument (test_event_risk_features.EventContextFeaturesTests) ... ok
+test_run_merge_counts_endpoints_and_unchanged_interior (test_event_risk_features.EventContextFeaturesTests) ... ok
+test_short_axis_empty_bins_are_zero_and_endpoints_are_finite (test_event_risk_features.EventContextFeaturesTests) ... ok
+test_whole_anchor_run_ordered_probability_bins_and_geometry (test_event_risk_features.EventContextFeaturesTests) ... ok
+
+======================================================================
+FAIL: test_endpoint_only_JSD_matches_original_full_axis_bits_without_scanning_all_scores (test_event_risk_features.EndpointCostEquivalenceTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/williamqiu/.config/superpowers/worktrees/echo-view-routing/a62-anchor-context-risk/tests/test_event_risk_features.py", line 146, in test_endpoint_only_JSD_matches_original_full_axis_bits_without_scanning_all_scores
+    self.assertLessEqual(len(calls),2,'computing every B3 score per candidate violates endpoint-only cost contract')
+AssertionError: 7 not less than or equal to 2 : computing every B3 score per candidate violates endpoint-only cost contract
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.041s
+
+FAILED (failures=1)

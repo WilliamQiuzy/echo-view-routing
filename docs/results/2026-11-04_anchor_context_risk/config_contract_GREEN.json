@@ -1,0 +1,31 @@
+{
+  "stage": "config_contract_GREEN",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "tests/test_event_risk_execution.py"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 81183,
+  "supervisor_pid": 81172,
+  "started_epoch": 1793827912.61308,
+  "finished_epoch": 1793827915.714529,
+  "full_process_wall_seconds": 3.1014490127563477,
+  "observed_worker_exit_code": 1,
+  "stage_exit_code": 1,
+  "termination_reason": null,
+  "exception": null,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 2.206085,
+  "measured_supervisor_CPU_seconds": 0.0011580000000000045,
+  "measured_CPU_core_seconds": 2.207243,
+  "durable_claim_before_Popen": true,
+  "scope": "local synthetic checks;SELF region+waited CHILDREN;final JSON bookkeeping and wrapper imports separate metadata",
+  "output": "F.                                                                       [100%]\n=================================== FAILURES ===================================\n_______ test_readonly_audit_score_loading_never_builds_or_forwards_heads _______\ntests/test_event_risk_execution.py:23: in test_readonly_audit_score_loading_never_builds_or_forwards_heads\n    values,info=m.score_values(2026110461,'CAL',readonly=True)\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nscripts/event_risk_execution.py:109: in score_values\n    values=[cache.load(i) for i in range(len(qs))];info={'seed':seed,'role':role,'path':str(cache.path.relative_to(ROOT)),'identity':ident,'journal_sha256':sha(cache.journal),'sequences':len(qs),'new_event_MLP_forwards_this_process':2*sum(bool(values[i]['actions']) for i in range(before,len(qs))),'candidate_vectors':sum(len(v['actions']) for v in values),'raw_q_cache_does_not_fabricate_CAL_thresholds':True};QINFO.append(info);return values,info\n                                                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../../../../../.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/pathlib.py:682: in relative_to\n    raise ValueError(f\"{str(self)!r} is not in the subpath of {str(other)!r}\")\nE   ValueError: '/private/var/folders/4l/s1hqgvzj2l10_dff3pw5m97m0000gn/T/pytest-of-williamqiu/pytest-374/test_readonly_audit_score_load0' is not in the subpath of '/Users/williamqiu/.config/superpowers/worktrees/echo-view-routing/a62-anchor-context-risk'\n=========================== short test summary info ============================\nFAILED tests/test_event_risk_execution.py::test_readonly_audit_score_loading_never_builds_or_forwards_heads\n",
+  "output_sha256": "c615ed49360d218df311c10cc2223d3f0c880afdbc3e22287827a47790ce4ef4"
+}

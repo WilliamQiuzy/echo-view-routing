@@ -120,3 +120,29 @@ class EventContextFeaturesTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+class EndpointCostEquivalenceTests(unittest.TestCase):
+    def test_endpoint_only_JSD_matches_original_full_axis_bits_without_scanning_all_scores(self):
+        import importlib
+        from unittest.mock import patch
+        from echo_routing.temporal.proposal_actions import canonical
+        from echo_routing.temporal.baselines import b3_js_divergence as b3
+        m=importlib.import_module('echo_routing.temporal.event_risk_features')
+        rng=np.random.default_rng(62);original_js=b3.js_divergence
+        for n in [1,2,3,8,17,64,701,1024]:
+            a=rng.uniform(.01,1,(n,5));a/=a.sum(1,keepdims=True);j=a[:,::-1].copy();base=np.arange(n)%5
+            original=b3.boundary_scores(a,7)
+            ends=sorted({0,min(1,n),n//2,max(0,n-1),n})
+            for s in ends:
+                for e in ends:
+                    if s>=e:continue
+                    action=canonical(base,s,e,((base[s:e]+1)%5).tolist(),jepa=True)
+                    calls=[]
+                    def tracked(*args):calls.append(1);return original_js(*args)
+                    with patch.object(b3,'js_divergence',side_effect=tracked),patch.object(m,'js_divergence',side_effect=tracked,create=True):
+                        actual=m.context_features(a,j,base,action)[95]
+                    expected=max(float(original[p]) if 0<p<n else 0. for p in [s,e])
+                    self.assertEqual(np.float64(actual).tobytes(),np.float64(expected).tobytes())
+                    self.assertLessEqual(len(calls),2,'computing every B3 score per candidate violates endpoint-only cost contract')
+
+if __name__=='__main__':unittest.main()

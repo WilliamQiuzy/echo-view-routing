@@ -1,0 +1,31 @@
+{
+  "stage": "analysis_RED",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "tests/test_event_risk_analysis.py"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 53388,
+  "supervisor_pid": 53377,
+  "started_epoch": 1793827045.5046961,
+  "finished_epoch": 1793827046.049472,
+  "full_process_wall_seconds": 0.5447759628295898,
+  "observed_worker_exit_code": 1,
+  "stage_exit_code": 1,
+  "termination_reason": null,
+  "exception": null,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 0.349492,
+  "measured_supervisor_CPU_seconds": 0.0009499999999999995,
+  "measured_CPU_core_seconds": 0.35044200000000003,
+  "durable_claim_before_Popen": true,
+  "scope": "local synthetic checks;SELF region+waited CHILDREN;final JSON bookkeeping and wrapper imports separate metadata",
+  "output": "F                                                                        [100%]\n=================================== FAILURES ===================================\n______ test_fewer_cuts_can_lose_shortunit_and_unsafe_event_stays_visible _______\ntests/test_event_risk_analysis.py:7: in test_fewer_cuts_can_lose_shortunit_and_unsafe_event_stays_visible\n    m=importlib.import_module('echo_routing.temporal.event_risk_analysis');b=np.r_[np.zeros(30,int),np.ones(10,int),np.zeros(30,int)];a=canonical(b,30,40,np.zeros(10,int),jepa=True);old=np.array([[1,0,10,0,.01,.01]]);q=np.array([[.1,.2]]);v={**decode(b,[a],old,q[:,0],q[:,1],{k:.5 for k in ['L0','M0','R1','R2']}),'actions':[a],'all_actions':[a],'G_rejected':[],'old_scores':old,'q':q}\n      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../../../../../.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n<frozen importlib._bootstrap>:1387: in _gcd_import\n    ???\n<frozen importlib._bootstrap>:1360: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1324: in _find_and_load_unlocked\n    ???\nE   ModuleNotFoundError: No module named 'echo_routing.temporal.event_risk_analysis'\n=========================== short test summary info ============================\nFAILED tests/test_event_risk_analysis.py::test_fewer_cuts_can_lose_shortunit_and_unsafe_event_stays_visible\n",
+  "output_sha256": "5887d185b83fa11b151758d332c636ff3376a864c159b419ef398c7b97811244"
+}

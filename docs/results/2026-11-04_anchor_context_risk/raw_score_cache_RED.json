@@ -1,0 +1,31 @@
+{
+  "stage": "raw_score_cache_RED",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "tests/test_event_risk_cache.py::test_precalibration_raw_q_cache_has_no_fabricated_C_threshold_or_labels"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 64982,
+  "supervisor_pid": 64911,
+  "started_epoch": 1793827392.483846,
+  "finished_epoch": 1793827393.020822,
+  "full_process_wall_seconds": 0.5369760990142822,
+  "observed_worker_exit_code": 1,
+  "stage_exit_code": 1,
+  "termination_reason": null,
+  "exception": null,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 0.395453,
+  "measured_supervisor_CPU_seconds": 0.001166000000000002,
+  "measured_CPU_core_seconds": 0.396619,
+  "durable_claim_before_Popen": true,
+  "scope": "local synthetic checks;SELF region+waited CHILDREN;final JSON bookkeeping and wrapper imports separate metadata",
+  "output": "F                                                                        [100%]\n=================================== FAILURES ===================================\n___ test_precalibration_raw_q_cache_has_no_fabricated_C_threshold_or_labels ____\ntests/test_event_risk_cache.py:39: in test_precalibration_raw_q_cache_has_no_fabricated_C_threshold_or_labels\n    m=importlib.import_module('echo_routing.temporal.event_risk_cache');b=np.zeros(4,int);ref={'source':'frozen','sha256':'a'*64,'scores_sha256':hashlib.sha256(np.empty((0,6),np.float64).tobytes()).hexdigest()};c=m.EventCache(tmp_path/'raw','identity',[b],[b],[b],None,[ref]);c.run_one(0,lambda:{'old_scores':np.empty((0,6)),'q':np.empty((0,2)),'old_reference':ref,'seconds':0.})\n                                                                                                                                                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\necho_routing/temporal/event_risk_cache.py:14: in __init__\n    self.bases,self.raw_a,self.raw_j,self.taus,self.old_references=bases,raw_a,raw_j,dict(taus),old_references\n                                                                                     ^^^^^^^^^^\nE   TypeError: 'NoneType' object is not iterable\n=========================== short test summary info ============================\nFAILED tests/test_event_risk_cache.py::test_precalibration_raw_q_cache_has_no_fabricated_C_threshold_or_labels\n",
+  "output_sha256": "5cb4c31edb6d5233baa24ac9d05fe4254970b7c6ef80ef8e399291f059c49f1f"
+}

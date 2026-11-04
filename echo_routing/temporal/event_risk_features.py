@@ -9,7 +9,7 @@ from echo_routing.temporal.anchor_edits import labels
 from echo_routing.temporal.anchor_features import probabilities
 from echo_routing.temporal.proposal_actions import apply
 from echo_routing.temporal.proposal_features import normalize
-from echo_routing.temporal.baselines.b3_js_divergence import boundary_scores
+from echo_routing.temporal.baselines.b3_js_divergence import js_divergence
 from echo_routing.temporal.segments import labels_to_segments
 
 
@@ -81,8 +81,19 @@ def context_features(prob_a, prob_j, base, action):
         mean = a[run.start:run.end].mean(0)
         margins.append(float(mean[run.label] - np.delete(mean, run.label).max()))
     margins = np.asarray(margins)
-    scores = boundary_scores(a, 7)
-    endpoint_score = max(float(scores[p]) if 0 < p < len(base) else 0. for p in (action.start, action.end))
+    # Identical original B3 prefix arithmetic, evaluated only at the two used
+    # endpoints. Do not recompute all T Python JSD scores for every candidate.
+    cs = np.cumsum(np.pad(a, ((1, 0), (0, 0))), axis=0)
+    endpoint_values = []
+    for p in (action.start, action.end):
+        if not 0 < p < len(base):
+            endpoint_values.append(0.)
+            continue
+        lo, hi = max(0, p - 7), min(len(base), p + 7)
+        left_mean = (cs[p] - cs[lo]) / (p - lo)
+        right_mean = (cs[hi] - cs[p]) / (hi - p)
+        endpoint_values.append(float(js_divergence(left_mean, right_mean)))
+    endpoint_score = max(endpoint_values)
     k = int(np.count_nonzero(edited != base))
     length = action.end - action.start
     result.extend([
