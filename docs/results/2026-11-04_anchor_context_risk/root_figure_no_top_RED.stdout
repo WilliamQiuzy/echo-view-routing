@@ -1,0 +1,44 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+____ test_six_aggregate_families_immutable_artifacts_and_fixture_watermark _____
+
+tmp_path = PosixPath('/private/var/folders/4l/s1hqgvzj2l10_dff3pw5m97m0000gn/T/pytest-of-williamqiu/pytest-379/test_six_aggregate_families_im0')
+
+    def test_six_aggregate_families_immutable_artifacts_and_fixture_watermark(tmp_path):
+     spec=importlib.util.spec_from_file_location('acceptancetoy',str(Path(__file__).with_name('test_event_risk_acceptance.py')));m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m);rows,comparisons,info=m.EventRiskAcceptanceTests().fixture()
+     inner=[]
+     for r in plan()['inner_rows']:
+      inner.append({**r,'action_statistics_full_task':{'accepted_actions':3,'N_admitted_tops':30},'risk_diagnostics':{arm:{'N_top':risk_summary([.1,.3,.9],[False,True,True])} for arm in ['R1','R2']}})
+     cal={'thresholds':[{'seed':s,'policy':p,'tau':.3} for s in [2026110461,2026110462] for p in ['M0','R1','R2']],'legacy_thresholds':[{'seed':s,'policy':'L0','tau':.01} for s in [2026110461,2026110462]]}
+     reg=[{**r,'accepted':r['policy']=='L0','gate_score':.2 if r['policy']=='L0' else .4,'tau':.3,'H':40 if r['axis']=='Case_A' else 9,'R':0 if r['axis']=='Case_A' else 2,'short16_lost':0 if r['axis']=='Case_A' else 2,'context_summary':{'minimum_overlap_over_full_run':.2,'minimum_full_Base_run_A08_margin':.8}} for r in plan()['regression_records']]
+     curves=[{'seed':s,'arm':a,'update':u,'loss':.7-u/20000} for s in [2026110461,2026110462] for a in ['R1','R2'] for u in [1,2000,4000,6000]]
+     for r in reg:
+      if r['axis']=='Case_A' and r['seed']==2026110462:
+       r.update(accepted=False,gate_score=None,H=None,R=None,short16_lost=None,context_summary=None)
+     pub=tmp_path/'synthetic';pub.mkdir()
+     resources={'incremental_GPU_seconds':100,'incremental_CPU_seconds':200,'incremental_tracked_storage_upper_bytes':1000000}
+>    result=render(pub,rows,comparisons,inner,cal,reg,curves,resources,synthetic_fixture=True)
+
+tests/test_event_risk_figures.py:21: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+echo_routing/temporal/event_risk_figures.py:118: in render
+    picked=[r for r in ordered if r['policy']=='R2'];x=np.arange(4);harm.bar(x-.16,[_number(r['H']) for r in picked],.32,label='candidate H',color='#a31621');harm.bar(x+.16,[_number(r['R']) for r in picked],.32,label='candidate R',color='#176b87');harm.set_title('Same frozen top candidate, before event veto');harm.set_xticks(x);harm.set_xticklabels([r['axis'].replace('Case_','')+'/'+str(r['seed'])[-3:] for r in picked]);harm.legend(fontsize=8)
+echo_routing/temporal/event_risk_figures.py:118: in <listcomp>
+    picked=[r for r in ordered if r['policy']=='R2'];x=np.arange(4);harm.bar(x-.16,[_number(r['H']) for r in picked],.32,label='candidate H',color='#a31621');harm.bar(x+.16,[_number(r['R']) for r in picked],.32,label='candidate R',color='#176b87');harm.set_title('Same frozen top candidate, before event veto');harm.set_xticks(x);harm.set_xticklabels([r['axis'].replace('Case_','')+'/'+str(r['seed'])[-3:] for r in picked]);harm.legend(fontsize=8)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+v = None
+
+    def _number(v):
+>       if isinstance(v,(bool,np.bool_)) or not isinstance(v,(int,float,np.number)) or not math.isfinite(v):raise ValueError('finite actual aggregate required')
+E       ValueError: finite actual aggregate required
+
+echo_routing/temporal/event_risk_figures.py:16: ValueError
+=============================== warnings summary ===============================
+tests/test_event_risk_figures.py::test_six_aggregate_families_immutable_artifacts_and_fixture_watermark
+  /Users/williamqiu/opt/anaconda3/lib/python3.9/site-packages/fontTools/misc/py23.py:11: DeprecationWarning: The py23 module has been deprecated and will be removed in a future release. Please update your code.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_event_risk_figures.py::test_six_aggregate_families_immutable_artifacts_and_fixture_watermark

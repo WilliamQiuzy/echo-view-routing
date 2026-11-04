@@ -115,11 +115,11 @@ def render(pub,rows,comparisons,inner_rows,calibration,regression,curves,resourc
             gate.scatter([margin],[i],color='#176b87' if r['accepted'] else '#a31621',marker='o' if r['accepted'] else 'x',s=35)
             records.append({k:r[k] for k in ['axis','seed','policy','accepted','gate_score','tau','H','R','short16_lost']})
         gate.set_yticks(range(16));gate.set_yticklabels([r['axis'].replace('Case_','')+' / '+str(r['seed'])[-3:]+' / '+r['policy'] for r in ordered]);gate.invert_yaxis();gate.axvline(0,color='#64748b',lw=1);gate.set_xlabel('Gate score - tau (r and q have different meanings)');gate.set_title('Accepted: circle; refused: cross; None: no score')
-        picked=[r for r in ordered if r['policy']=='R2'];x=np.arange(4);harm.bar(x-.16,[_number(r['H']) for r in picked],.32,label='candidate H',color='#a31621');harm.bar(x+.16,[_number(r['R']) for r in picked],.32,label='candidate R',color='#176b87');harm.set_title('Same frozen top candidate, before event veto');harm.set_xticks(x);harm.set_xticklabels([r['axis'].replace('Case_','')+'/'+str(r['seed'])[-3:] for r in picked]);harm.legend(fontsize=8)
+        picked=[r for r in ordered if r['policy']=='R2'];x=np.arange(4);harm.bar(x-.16,[np.nan if r['H'] is None else _number(r['H']) for r in picked],.32,label='candidate H',color='#a31621');harm.bar(x+.16,[np.nan if r['R'] is None else _number(r['R']) for r in picked],.32,label='candidate R',color='#176b87');harm.set_title('Frozen top per seed, before veto; gap = no top');harm.set_xticks(x);harm.set_xticklabels([r['axis'].replace('Case_','')+'/'+str(r['seed'])[-3:] for r in picked]);harm.legend(fontsize=8)
         fields=['minimum_overlap_over_full_run','minimum_full_Base_run_A08_margin']
         for i,key in enumerate(fields):
-            values=[_number(r['context_summary'][key]) for r in picked];context.plot(x,values,'o-',label=key.replace('minimum_','min ').replace('_',' '));
-            for r,value in zip(picked,values):records.append({'axis':r['axis'],'seed':r['seed'],'policy':'R2','context_observable':key,'value':value})
+            observed=[None if r['context_summary'] is None else r['context_summary'][key] for r in picked];values=[np.nan if v is None else _number(v) for v in observed];context.plot(x,values,'o-',label=key.replace('minimum_','min ').replace('_',' '));
+            for r,value in zip(picked,observed):records.append({'axis':r['axis'],'seed':r['seed'],'policy':'R2','context_observable':key,'value':value})
         context.set_xticks(x);context.set_xticklabels([r['axis'].replace('Case_','')+'/'+str(r['seed'])[-3:] for r in picked]);context.axhline(0,color='#94a3b8',lw=1);context.set_title('Label-free full-anchor observables');context.legend(fontsize=7)
         finish(FAMILIES[4],fig,'Anchor context and anonymous development regressions',records,'Exactly two previously inspected axes, not 16 independent cases. Candidate harm and actual acceptance remain distinct.')
 
