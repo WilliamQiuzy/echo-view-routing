@@ -29,7 +29,9 @@ def main():
                 except subprocess.TimeoutExpired:p.kill();code=p.wait()
     except BaseException as e:
         exception=repr(e)
-        if p is not None and p.poll() is None:p.kill();code=p.wait()
+        if p is not None:
+            if p.poll() is None:p.kill()
+            code=p.wait()
     after=resource.getrusage(resource.RUSAGE_CHILDREN);own=resource.getrusage(resource.RUSAGE_SELF);childCPU=after.ru_utime+after.ru_stime-before.ru_utime-before.ru_stime;parentCPU=own.ru_utime+own.ru_stime;snapshot=None
     if p is not None and (PUB/'resources.json').exists():
         snapshot=read(PUB/'resources.json')

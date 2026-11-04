@@ -19,3 +19,18 @@ cpu=a.ru_utime+a.ru_stime
     assert r['total_incremental_CPU_seconds_after_resource_snapshot']==pytest.approx(r['collector_postsnapshot_CPU_seconds']+r['caller_SELF_CPU_seconds_through_sample'])
     assert r['collector_postsnapshot_CPU_seconds']>=0 and not r['overall_complete']
     with pytest.raises(ValueError):m.main()
+
+
+def test_exited_child_status_retained_after_pid_binding_write_failure(tmp_path,monkeypatch):
+    from scripts import call_action_safety_collector as m
+    import time
+    run=tmp_path/'run';pub=tmp_path/'pub';run.mkdir();pub.mkdir();scripts=tmp_path/'scripts';scripts.mkdir()
+    (scripts/'close_action_safety.py').write_text("import os,json,resource,pathlib\np=pathlib.Path(__file__).resolve().parents[1]/'pub'\na=resource.getrusage(resource.RUSAGE_SELF)\n(p/'resources.json').write_text(json.dumps({'passed':True,'collector':{'model_pid':os.getpid(),'CPU_seconds_through_snapshot':a.ru_utime+a.ru_stime}}))\n(p/'terminal_exit_receipt.json').write_text(json.dumps({'passed':True}))\n")
+    monkeypatch.setattr(m,'ROOT',tmp_path);monkeypatch.setattr(m,'RUN',run);monkeypatch.setattr(m,'PUB',pub);monkeypatch.setattr(m,'verify_freeze',lambda _:True);monkeypatch.setattr(m,'DEADLINE_EPOCH',10**12);original=m.write
+    def write(path,value):
+        if Path(path).name=='collector_launch_intent.json' and value.get('state')=='collector_PID_bound':
+            time.sleep(.15);raise OSError('injected postlaunch PID-binding I/O failure')
+        return original(path,value)
+    monkeypatch.setattr(m,'write',write)
+    assert m.main()==1
+    r=json.loads((pub/'collector_OS_exit_receipt.json').read_text());assert r['observed_collector_OS_exit_code']==0 and r['collector_exit_directly_waited'] and r['exception'] and not r['passed']

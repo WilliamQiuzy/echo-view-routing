@@ -1,0 +1,31 @@
+{
+  "stage": "collector_caller_race_RED",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "tests/test_safety_collector_caller.py::test_exited_child_status_retained_after_pid_binding_write_failure"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 92250,
+  "supervisor_pid": 92239,
+  "started_epoch": 1793816848.9144661,
+  "finished_epoch": 1793816849.4919748,
+  "full_process_wall_seconds": 0.5775086879730225,
+  "observed_worker_exit_code": 1,
+  "stage_exit_code": 1,
+  "termination_reason": null,
+  "exception": null,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 0.379309,
+  "measured_supervisor_CPU_seconds": 0.0011869999999999988,
+  "measured_CPU_core_seconds": 0.380496,
+  "durable_claim_before_Popen": true,
+  "scope": "local synthetic checks;SELF region+waited CHILDREN;final JSON bookkeeping and wrapper imports separate metadata",
+  "output": "F                                                                        [100%]\n=================================== FAILURES ===================================\n______ test_exited_child_status_retained_after_pid_binding_write_failure _______\ntests/test_safety_collector_caller.py:36: in test_exited_child_status_retained_after_pid_binding_write_failure\n    r=json.loads((pub/'collector_OS_exit_receipt.json').read_text());assert r['observed_collector_OS_exit_code']==0 and r['collector_exit_directly_waited'] and r['exception'] and not r['passed']\n                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   assert (None == 0)\n----------------------------- Captured stdout call -----------------------------\n{'passed': False, 'collector_pid': 92251, 'caller_pid': 92250, 'measurement_host': 'MacBook-Air-9.local', 'started_epoch': 1793816849.249401, 'finished_epoch': 1793816849.412064, 'observed_collector_OS_exit_code': None, 'collector_exit_directly_waited': True, 'collector_OS_inferred_from_files_or_disappearance': False, 'parent_SELF_OS_exit_code': None, 'collector_total_waited_CPU_seconds': 0.015753999999999997, 'collector_CPU_already_in_resource_snapshot': 0.013996999999999999, 'collector_postsnapshot_CPU_seconds': 0.0017569999999999981, 'caller_SELF_CPU_seconds_through_sample': 0.28504, 'total_incremental_CPU_seconds_after_resource_snapshot': 0.286797, 'caller_final_record_write_exit_CPU_not_measured': True, 'termination_reason': None, 'exception': \"OSError('injected postlaunch PID-binding I/O failure')\", 'resource_receipt_sha256': '8b4a9f172b09bdd914e46aa4a865d6a8ddb59be7abe1257d015529ff9a7aaba2', 'terminal_receipt_sha256': '748eda8085f7e3c82149775d9542083427f0f8a955173c4a0ed18c85c69c5c09', 'no_new_NN_or_optimizer_updates': True, 'overall_complete': False, 'protected_root_public_integration_pending': True}\n=========================== short test summary info ============================\nFAILED tests/test_safety_collector_caller.py::test_exited_child_status_retained_after_pid_binding_write_failure\n",
+  "output_sha256": "e042d4e46e13d68fa9f8151734df6ed348dcce76d24d5ce86967f1465d132d02"
+}
