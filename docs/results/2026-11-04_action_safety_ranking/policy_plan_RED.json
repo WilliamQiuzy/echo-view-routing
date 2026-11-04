@@ -1,0 +1,31 @@
+{
+  "stage": "policy_plan_RED",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "tests/test_safety_policy_plan.py"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 86964,
+  "supervisor_pid": 86893,
+  "started_epoch": 1793773013.947947,
+  "finished_epoch": 1793773014.513624,
+  "full_process_wall_seconds": 0.5656769275665283,
+  "observed_worker_exit_code": 1,
+  "stage_exit_code": 1,
+  "termination_reason": null,
+  "exception": null,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 0.36721,
+  "measured_supervisor_CPU_seconds": 0.0020529999999999975,
+  "measured_CPU_core_seconds": 0.36926299999999995,
+  "durable_claim_before_Popen": true,
+  "scope": "local synthetic checks;SELF region+waited CHILDREN;final JSON bookkeeping and wrapper imports separate metadata",
+  "output": "FFF                                                                      [100%]\n=================================== FAILURES ===================================\n______ test_same_top_first_no_fallback_empty_and_strict_probability_gates ______\ntests/test_safety_policy_plan.py:11: in test_same_top_first_no_fallback_empty_and_strict_probability_gates\n    m=api('policy');b=np.zeros(20,int);actions=[Action(2,3,(1,)),Action(5,6,(1,))]\n      ^^^^^^^^^^^^^\ntests/test_safety_policy_plan.py:7: in api\n    def api(name):return importlib.import_module('echo_routing.temporal.safety_'+name)\n                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../../../../../.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n<frozen importlib._bootstrap>:1387: in _gcd_import\n    ???\n<frozen importlib._bootstrap>:1360: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1324: in _find_and_load_unlocked\n    ???\nE   ModuleNotFoundError: No module named 'echo_routing.temporal.safety_policy'\n_________ test_first_unsafe_calibration_ties_no_accept_and_saturation __________\ntests/test_safety_policy_plan.py:27: in test_first_unsafe_calibration_ties_no_accept_and_saturation\n    m=api('policy');rows=[{'N_admitted':True,'r':r,'H':h,'dFP':f} for r,h,f in [(.2,0,0),(.4,1,0),(.4,0,1),(.6,0,0)]]\n      ^^^^^^^^^^^^^\ntests/test_safety_policy_plan.py:7: in api\n    def api(name):return importlib.import_module('echo_routing.temporal.safety_'+name)\n                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../../../../../.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n<frozen importlib._bootstrap>:1387: in _gcd_import\n    ???\n<frozen importlib._bootstrap>:1360: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1324: in _find_and_load_unlocked\n    ???\nE   ModuleNotFoundError: No module named 'echo_routing.temporal.safety_policy'\n_ test_exact314_240_60_56_graph_no_checkpoint_selection_and_historical_seed_mapping _\ntests/test_safety_policy_plan.py:36: in test_exact314_240_60_56_graph_no_checkpoint_selection_and_historical_seed_mapping\n    m=api('readout_plan');p=m.plan()\n      ^^^^^^^^^^^^^^^^^^^\ntests/test_safety_policy_plan.py:7: in api\n    def api(name):return importlib.import_module('echo_routing.temporal.safety_'+name)\n                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../../../../../.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n<frozen importlib._bootstrap>:1387: in _gcd_import\n    ???\n<frozen importlib._bootstrap>:1360: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1324: in _find_and_load_unlocked\n    ???\nE   ModuleNotFoundError: No module named 'echo_routing.temporal.safety_readout_plan'\n=========================== short test summary info ============================\nFAILED tests/test_safety_policy_plan.py::test_same_top_first_no_fallback_empty_and_strict_probability_gates\nFAILED tests/test_safety_policy_plan.py::test_first_unsafe_calibration_ties_no_accept_and_saturation\nFAILED tests/test_safety_policy_plan.py::test_exact314_240_60_56_graph_no_checkpoint_selection_and_historical_seed_mapping\n",
+  "output_sha256": "1362349060fb1b7070090bad80e54d0c35ab4978cc97d9fe75c7e21316ed0c2c"
+}
