@@ -52,7 +52,7 @@ For each G-eligible action compute complete-axis truth-assisted targets on the s
 
 Target scales are `max(sqrt(mean(target_k**2)),1)` across all G-eligible FIT candidates, one shared vector for A/J, with **no centering**. Divide targets by these scales, equal mean MSE over three outputs. Inverse-scale before decoding/reporting, preserving zero/sign. No coefficient/scale-floor/threshold search. MLP109→32 GELU→3, **3619 parameters**, output layer zero initialized, same initial full weights per seed across arms. Four models: A/J × seeds2026110360 and2026110361, each6000 steps. AdamW lr1e-3, betas(.9,.999), eps1e-8, wd.01; warm100/cos6000, FP32 clip1. Batch64 candidate draws =32native+32constructed. Reuse A59's declared empty-kind fallback only if one eligible pool is empty; if both are empty, report structural impossibility, do not invent data. Shared deterministic plan per seed, arm-independent canonical candidate indices and identical exposure. FIT candidate rows are never duplicated under a new statistical identity.
 
-latest every100 includes full model/optimizer/moments/RNG/normalizer/scales/plan/cursor/actual update counters, durable atomic file+directory fsync. Weight-only2000/4000/6000. At these steps run all inner G policies for diagnosis only (12 checkpoint records ×3policy metrics=36 sets), no selection/early stop. Fixed6000 is the sole primary checkpoint. Formal24000 and all engineering updates are separate physical counters. Freeze code/input/config/data identities before actual model work, weights+inner+fixed endpoints in actual Git before outer outputs.
+latest every100 includes full model/optimizer/moments/RNG/normalizer/scales/plan/cursor/actual update counters, durable atomic file+directory fsync. Weight-only2000/4000/6000. At these steps run all inner G policies for diagnosis only (12 checkpoint records ×3policy metrics=36 sets), no selection/early stop. Fixed6000 is the sole primary checkpoint. Formal24000 and all engineering updates are separate physical counters. Freeze code/input/config/data identities before actual model work, SHA-bound manifests for weights, aggregate inner results and fixed endpoints in actual Git before outer outputs. Binary weights, optimizer states and private per-case inner results remain server-side; Git stores their hashes and aggregate evidence only.
 
 ## 5. Same-weight inference controls and full endpoints
 
@@ -124,7 +124,7 @@ Reuse frozen pure `anchor_features` region summaries, `anchor_edits` label/count
 ### Task 5: Complete training audit and freeze before outer
 
 - [ ] Finish all four fixed6000 and12innerdiagnostics/36policymetricsets. Independently recount actual trace/optimizer/RNG/exposure/common init and inner stored-label metrics, bind all milestone weights/normalizers/scales/plans.
-- [ ] Commit complete weights/inner/model manifest and124/144/32 endpoint plan **before** new outer outputs. Check root actual Git object and serverSHA identity once for this new stage, no broad repeated library audit.
+- [ ] Commit complete SHA-bound weight/aggregate-inner/model manifests and124/144/32 endpoint plan **before** new outer outputs; binary weights, optimizer states and private per-case outputs stay server-side. Check root actual Git object and serverSHA identity once for this new stage, no broad repeated library audit.
 
 ### Task 6: Fixed full readout, paired intervals and oracle
 
