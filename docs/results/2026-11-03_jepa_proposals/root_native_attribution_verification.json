@@ -1,0 +1,1784 @@
+{
+  "passed": true,
+  "scope": "independent24cell publicjoint5cube marginals/grosssameposition transition/groupcost/gate arithmetic;not new modelforward or private prediction rerun",
+  "native_attribution_sha256": "71b14c4e6ea74697a6d838084b8dea2b8fda347afd0fb8c13a87dd7e5ee46bf1",
+  "source_outer_metrics_sha256": "b21b323069691a6491ae80958d1480718d07d1dc3e5d5eb8260d54850a86fa83",
+  "all24_native_cells_unique": true,
+  "all_Base_and_system_positionconfusion_marginals_match": true,
+  "all_observable_G_and_predicted_R_gates_verified": true,
+  "all_gross_harm_minus_repair_and_group_cost_cuts_match_sealed_outputs": true,
+  "selected_J_R_cells": [
+    {
+      "half": "selection",
+      "seed": 2026110360,
+      "changed_native_clips": 4,
+      "Base_correct_to_wrong": 45,
+      "Base_wrong_to_correct": 20,
+      "frame_error_delta": 25,
+      "class_provenance_groups": [
+        {
+          "accepted_actions": 1,
+          "added_cuts": {
+            "count": 1,
+            "max": 1.0,
+            "median": 1.0,
+            "min": 1.0,
+            "q10_q90": [
+              1.0,
+              1.0
+            ],
+            "sum": 1.0
+          },
+          "changed_over_T": {
+            "count": 1,
+            "max": 0.23529411764705882,
+            "median": 0.23529411764705882,
+            "min": 0.23529411764705882,
+            "q10_q90": [
+              0.23529411764705882,
+              0.23529411764705882
+            ],
+            "sum": 0.23529411764705882
+          },
+          "changed_positions": {
+            "count": 1,
+            "max": 20.0,
+            "median": 20.0,
+            "min": 20.0,
+            "q10_q90": [
+              20.0,
+              20.0
+            ],
+            "sum": 20.0
+          },
+          "dE": {
+            "count": 1,
+            "max": 20.0,
+            "median": 20.0,
+            "min": 20.0,
+            "q10_q90": [
+              20.0,
+              20.0
+            ],
+            "sum": 20.0
+          },
+          "dFP16": {
+            "count": 1,
+            "max": 1.0,
+            "median": 1.0,
+            "min": 1.0,
+            "q10_q90": [
+              1.0,
+              1.0
+            ],
+            "sum": 1.0
+          },
+          "delta_M": {
+            "count": 1,
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q10_q90": [
+              0.0,
+              0.0
+            ],
+            "sum": 0.0
+          },
+          "delta_P": {
+            "count": 1,
+            "max": 1.0,
+            "median": 1.0,
+            "min": 1.0,
+            "q10_q90": [
+              1.0,
+              1.0
+            ],
+            "sum": 1.0
+          },
+          "frame_harm_M_P_unchanged": 0,
+          "frame_harm_actions": 1,
+          "frame_harm_crossing_short16_to_long": 0,
+          "frame_harm_extending_old_wrong_run": 0,
+          "frame_harm_new_cut": 1,
+          "frame_harm_u_zero_but_predpositive": 0,
+          "frame_harm_with_predicted_dE_nonpositive": 1,
+          "frame_harm_without_short16_FP_increase": 0,
+          "frame_repair_actions": 0,
+          "interval_length": {
+            "count": 1,
+            "max": 20.0,
+            "median": 20.0,
+            "min": 20.0,
+            "q10_q90": [
+              20.0,
+              20.0
+            ],
+            "sum": 20.0
+          },
+          "interval_over_T": {
+            "count": 1,
+            "max": 0.23529411764705882,
+            "median": 0.23529411764705882,
+            "min": 0.23529411764705882,
+            "q10_q90": [
+              0.23529411764705882,
+              0.23529411764705882
+            ],
+            "sum": 0.23529411764705882
+          },
+          "newly_wrong_positions_extending_old_wrong_run": {
+            "count": 1,
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q10_q90": [
+              0.0,
+              0.0
+            ],
+            "sum": 0.0
+          },
+          "newly_wrong_positions_in_long_wrong_segments": {
+            "count": 1,
+            "max": 20.0,
+            "median": 20.0,
+            "min": 20.0,
+            "q10_q90": [
+              20.0,
+              20.0
+            ],
+            "sum": 20.0
+          },
+          "newly_wrong_positions_new_wrong_segment": {
+            "count": 1,
+            "max": 20.0,
+            "median": 20.0,
+            "min": 20.0,
+            "q10_q90": [
+              20.0,
+              20.0
+            ],
+            "sum": 20.0
+          },
+          "pred_dE": {
+            "count": 1,
+            "max": -9.92805651323605,
+            "median": -9.92805651323605,
+            "min": -9.92805651323605,
+            "q10_q90": [
+              -9.92805651323605,
+              -9.92805651323605
+            ],
+            "sum": -9.92805651323605
+          },
+          "pred_dFP16": {
+            "count": 1,
+            "max": -0.05738985538482666,
+            "median": -0.05738985538482666,
+            "min": -0.05738985538482666,
+            "q10_q90": [
+              -0.05738985538482666,
+              -0.05738985538482666
+            ],
+            "sum": -0.05738985538482666
+          },
+          "pred_u": {
+            "count": 1,
+            "max": 0.7142851535104743,
+            "median": 0.7142851535104743,
+            "min": 0.7142851535104743,
+            "q10_q90": [
+              0.7142851535104743,
+              0.7142851535104743
+            ],
+            "sum": 0.7142851535104743
+          },
+          "provenance": "old_only",
+          "replacement_family_indices": "1",
+          "represented_whole_axis_actions": 0,
+          "true_family_index": 0,
+          "u": {
+            "count": 1,
+            "max": -0.8917446116307443,
+            "median": -0.8917446116307443,
+            "min": -0.8917446116307443,
+            "q10_q90": [
+              -0.8917446116307443,
+              -0.8917446116307443
+            ],
+            "sum": -0.8917446116307443
+          }
+        },
+        {
+          "accepted_actions": 2,
+          "added_cuts": {
+            "count": 2,
+            "max": 0.0,
+            "median": -0.5,
+            "min": -1.0,
+            "q10_q90": [
+              -0.9,
+              -0.09999999999999998
+            ],
+            "sum": -1.0
+          },
+          "changed_over_T": {
+            "count": 2,
+            "max": 0.4166666666666667,
+            "median": 0.21189966714217784,
+            "min": 0.007132667617689016,
+            "q10_q90": [
+              0.04808606752258678,
+              0.3757132667617689
+            ],
+            "sum": 0.4237993342843557
+          },
+          "changed_positions": {
+            "count": 2,
+            "max": 15.0,
+            "median": 10.0,
+            "min": 5.0,
+            "q10_q90": [
+              6.0,
+              14.0
+            ],
+            "sum": 20.0
+          },
+          "dE": {
+            "count": 2,
+            "max": -5.0,
+            "median": -10.0,
+            "min": -15.0,
+            "q10_q90": [
+              -14.0,
+              -6.0
+            ],
+            "sum": -20.0
+          },
+          "dFP16": {
+            "count": 2,
+            "max": 1.0,
+            "median": 0.0,
+            "min": -1.0,
+            "q10_q90": [
+              -0.8,
+              0.8
+            ],
+            "sum": 0.0
+          },
+          "delta_M": {
+            "count": 2,
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q10_q90": [
+              0.0,
+              0.0
+            ],
+            "sum": 0.0
+          },
+          "delta_P": {
+            "count": 2,
+            "max": 0.0,
+            "median": -0.5,
+            "min": -1.0,
+            "q10_q90": [
+              -0.9,
+              -0.09999999999999998
+            ],
+            "sum": -1.0
+          },
+          "frame_harm_M_P_unchanged": 0,
+          "frame_harm_actions": 0,
+          "frame_harm_crossing_short16_to_long": 0,
+          "frame_harm_extending_old_wrong_run": 0,
+          "frame_harm_new_cut": 0,
+          "frame_harm_u_zero_but_predpositive": 0,
+          "frame_harm_with_predicted_dE_nonpositive": 0,
+          "frame_harm_without_short16_FP_increase": 0,
+          "frame_repair_actions": 2,
+          "interval_length": {
+            "count": 2,
+            "max": 15.0,
+            "median": 10.0,
+            "min": 5.0,
+            "q10_q90": [
+              6.0,
+              14.0
+            ],
+            "sum": 20.0
+          },
+          "interval_over_T": {
+            "count": 2,
+            "max": 0.4166666666666667,
+            "median": 0.21189966714217784,
+            "min": 0.007132667617689016,
+            "q10_q90": [
+              0.04808606752258678,
+              0.3757132667617689
+            ],
+            "sum": 0.4237993342843557
+          },
+          "newly_wrong_positions_extending_old_wrong_run": {
+            "count": 2,
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q10_q90": [
+              0.0,
+              0.0
+            ],
+            "sum": 0.0
+          },
+          "newly_wrong_positions_in_long_wrong_segments": {
+            "count": 2,
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q10_q90": [
+              0.0,
+              0.0
+            ],
+            "sum": 0.0
+          },
+          "newly_wrong_positions_new_wrong_segment": {
+            "count": 2,
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q10_q90": [
+              0.0,
+              0.0
+            ],
+            "sum": 0.0
+          },
+          "pred_dE": {
+            "count": 2,
+            "max": -4.329739294944456,
+            "median": -10.296850599514713,
+            "min": -16.26396190408497,
+            "q10_q90": [
+              -15.070539643170918,
+              -5.523161555858508
+            ],
+            "sum": -20.593701199029425
+          },
+          "pred_dFP16": {
+            "count": 2,
+            "max": -0.28346046805381775,
+            "median": -0.5577996522188187,
+            "min": -0.8321388363838196,
+            "q10_q90": [
+              -0.7772709995508194,
+              -0.3383283048868179
+            ],
+            "sum": -1.1155993044376373
+          },
+          "pred_u": {
+            "count": 2,
+            "max": 1.2014129083540515,
+            "median": 0.7921596619355039,
+            "min": 0.38290641551695637,
+            "q10_q90": [
+              0.46475706480066586,
+              1.119562259070342
+            ],
+            "sum": 1.5843193238710078
+          },
+          "provenance": "JEPA_only",
+          "replacement_family_indices": "2",
+          "represented_whole_axis_actions": 0,
+          "true_family_index": 2,
+          "u": {
+            "count": 2,
+            "max": 0.8917446116307443,
+            "median": 0.4458723058153721,
+            "min": 0.0,
+            "q10_q90": [
+              0.08917446116307443,
+              0.8025701504676699
+            ],
+            "sum": 0.8917446116307443
+          }
+        },
+        {
+          "accepted_actions": 1,
+          "added_cuts": {
+            "count": 1,
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q10_q90": [
+              0.0,
+              0.0
+            ],
+            "sum": 0.0
+          },
+          "changed_over_T": {
+            "count": 1,
+            "max": 0.2403846153846154,
+            "median": 0.2403846153846154,
+            "min": 0.2403846153846154,
+            "q10_q90": [
+              0.2403846153846154,
+              0.2403846153846154
+            ],
+            "sum": 0.2403846153846154
+          },
+          "changed_positions": {
+            "count": 1,
+            "max": 25.0,
+            "median": 25.0,
+            "min": 25.0,
+            "q10_q90": [
+              25.0,
+              25.0
+            ],
+            "sum": 25.0
+          },
+          "dE": {
+            "count": 1,
+            "max": 25.0,
+            "median": 25.0,
+            "min": 25.0,
+            "q10_q90": [
+              25.0,
+              25.0
+            ],
+            "sum": 25.0
+          },
+          "dFP16": {
+            "count": 1,
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q10_q90": [
+              0.0,
+              0.0
+            ],
+            "sum": 0.0
+          },
+          "delta_M": {
+            "count": 1,
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q10_q90": [
+              0.0,
+              0.0
+            ],
+            "sum": 0.0
+          },
+          "delta_P": {
+            "count": 1,
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q10_q90": [
+              0.0,
+              0.0
+            ],
+            "sum": 0.0
+          },
+          "frame_harm_M_P_unchanged": 1,
+          "frame_harm_actions": 1,
+          "frame_harm_crossing_short16_to_long": 0,
+          "frame_harm_extending_old_wrong_run": 1,
+          "frame_harm_new_cut": 0,
+          "frame_harm_u_zero_but_predpositive": 1,
+          "frame_harm_with_predicted_dE_nonpositive": 1,
+          "frame_harm_without_short16_FP_increase": 1,
+          "frame_repair_actions": 0,
+          "interval_length": {
+            "count": 1,
+            "max": 25.0,
+            "median": 25.0,
+            "min": 25.0,
+            "q10_q90": [
+              25.0,
+              25.0
+            ],
+            "sum": 25.0
+          },
+          "interval_over_T": {
+            "count": 1,
+            "max": 0.2403846153846154,
+            "median": 0.2403846153846154,
+            "min": 0.2403846153846154,
+            "q10_q90": [
+              0.2403846153846154,
+              0.2403846153846154
+            ],
+            "sum": 0.2403846153846154
+          },
+          "newly_wrong_positions_extending_old_wrong_run": {
+            "count": 1,
+            "max": 25.0,
+            "median": 25.0,
+            "min": 25.0,
+            "q10_q90": [
+              25.0,
+              25.0
+            ],
+            "sum": 25.0
+          },
+          "newly_wrong_positions_in_long_wrong_segments": {
+            "count": 1,
+            "max": 25.0,
+            "median": 25.0,
+            "min": 25.0,
+            "q10_q90": [
+              25.0,
+              25.0
+            ],
+            "sum": 25.0
+          },
+          "newly_wrong_positions_new_wrong_segment": {
+            "count": 1,
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q10_q90": [
+              0.0,
+              0.0
+            ],
+            "sum": 0.0
+          },
+          "pred_dE": {
+            "count": 1,
+            "max": -26.27191403043151,
+            "median": -26.27191403043151,
+            "min": -26.27191403043151,
+            "q10_q90": [
+              -26.27191403043151,
+              -26.27191403043151
+            ],
+            "sum": -26.27191403043151
+          },
+          "pred_dFP16": {
+            "count": 1,
+            "max": -0.04323439300060272,
+            "median": -0.04323439300060272,
+            "min": -0.04323439300060272,
+            "q10_q90": [
+              -0.04323439300060272,
+              -0.04323439300060272
+            ],
+            "sum": -0.04323439300060272
+          },
+          "pred_u": {
+            "count": 1,
+            "max": 0.8008824447814473,
+            "median": 0.8008824447814473,
+            "min": 0.8008824447814473,
+            "q10_q90": [
+              0.8008824447814473,
+              0.8008824447814473
+            ],
+            "sum": 0.8008824447814473
+          },
+          "provenance": "JEPA_only",
+          "replacement_family_indices": "2",
+          "represented_whole_axis_actions": 0,
+          "true_family_index": 3,
+          "u": {
+            "count": 1,
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q10_q90": [
+              0.0,
+              0.0
+            ],
+            "sum": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "half": "calibration",
+      "seed": 2026110360,
+      "changed_native_clips": 2,
+      "Base_correct_to_wrong": 21,
+      "Base_wrong_to_correct": 0,
+      "frame_error_delta": 21,
+      "class_provenance_groups": [
+        {
+          "accepted_actions": 1,
+          "added_cuts": {
+            "count": 1,
+            "max": 1.0,
+            "median": 1.0,
+            "min": 1.0,
+            "q10_q90": [
+              1.0,
+              1.0
+            ],
+            "sum": 1.0
+          },
+          "changed_over_T": {
+            "count": 1,
+            "max": 0.010309278350515464,
+            "median": 0.010309278350515464,
+            "min": 0.010309278350515464,
+            "q10_q90": [
+              0.010309278350515464,
+              0.010309278350515464
+            ],
+            "sum": 0.010309278350515464
+          },
+          "changed_positions": {
+            "count": 1,
+            "max": 3.0,
+            "median": 3.0,
+            "min": 3.0,
+            "q10_q90": [
+              3.0,
+              3.0
+            ],
+            "sum": 3.0
+          },
+          "dE": {
+            "count": 1,
+            "max": 3.0,
+            "median": 3.0,
+            "min": 3.0,
+            "q10_q90": [
+              3.0,
+              3.0
+            ],
+            "sum": 3.0
+          },
+          "dFP16": {
+            "count": 1,
+            "max": 1.0,
+            "median": 1.0,
+            "min": 1.0,
+            "q10_q90": [
+              1.0,
+              1.0
+            ],
+            "sum": 1.0
+          },
+          "delta_M": {
+            "count": 1,
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q10_q90": [
+              0.0,
+              0.0
+            ],
+            "sum": 0.0
+          },
+          "delta_P": {
+            "count": 1,
+            "max": 1.0,
+            "median": 1.0,
+            "min": 1.0,
+            "q10_q90": [
+              1.0,
+              1.0
+            ],
+            "sum": 1.0
+          },
+          "frame_harm_M_P_unchanged": 0,
+          "frame_harm_actions": 1,
+          "frame_harm_crossing_short16_to_long": 0,
+          "frame_harm_extending_old_wrong_run": 0,
+          "frame_harm_new_cut": 1,
+          "frame_harm_u_zero_but_predpositive": 0,
+          "frame_harm_with_predicted_dE_nonpositive": 1,
+          "frame_harm_without_short16_FP_increase": 0,
+          "frame_repair_actions": 0,
+          "interval_length": {
+            "count": 1,
+            "max": 3.0,
+            "median": 3.0,
+            "min": 3.0,
+            "q10_q90": [
+              3.0,
+              3.0
+            ],
+            "sum": 3.0
+          },
+          "interval_over_T": {
+            "count": 1,
+            "max": 0.010309278350515464,
+            "median": 0.010309278350515464,
+            "min": 0.010309278350515464,
+            "q10_q90": [
+              0.010309278350515464,
+              0.010309278350515464
+            ],
+            "sum": 0.010309278350515464
+          },
+          "newly_wrong_positions_extending_old_wrong_run": {
+            "count": 1,
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q10_q90": [
+              0.0,
+              0.0
+            ],
+            "sum": 0.0
+          },
+          "newly_wrong_positions_in_long_wrong_segments": {
+            "count": 1,
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q10_q90": [
+              0.0,
+              0.0
+            ],
+            "sum": 0.0
+          },
+          "newly_wrong_positions_new_wrong_segment": {
+            "count": 1,
+            "max": 3.0,
+            "median": 3.0,
+            "min": 3.0,
+            "q10_q90": [
+              3.0,
+              3.0
+            ],
+            "sum": 3.0
+          },
+          "pred_dE": {
+            "count": 1,
+            "max": -0.7626627918597834,
+            "median": -0.7626627918597834,
+            "min": -0.7626627918597834,
+            "q10_q90": [
+              -0.7626627918597834,
+              -0.7626627918597834
+            ],
+            "sum": -0.7626627918597834
+          },
+          "pred_dFP16": {
+            "count": 1,
+            "max": -0.09178909659385681,
+            "median": -0.09178909659385681,
+            "min": -0.09178909659385681,
+            "q10_q90": [
+              -0.09178909659385681,
+              -0.09178909659385681
+            ],
+            "sum": -0.09178909659385681
+          },
+          "pred_u": {
+            "count": 1,
+            "max": 1.146318779354479,
+            "median": 1.146318779354479,
+            "min": 1.146318779354479,
+            "q10_q90": [
+              1.146318779354479,
+              1.146318779354479
+            ],
+            "sum": 1.146318779354479
+          },
+          "provenance": "JEPA_only",
+          "replacement_family_indices": "1",
+          "represented_whole_axis_actions": 0,
+          "true_family_index": 0,
+          "u": {
+            "count": 1,
+            "max": -0.8917446116307443,
+            "median": -0.8917446116307443,
+            "min": -0.8917446116307443,
+            "q10_q90": [
+              -0.8917446116307443,
+              -0.8917446116307443
+            ],
+            "sum": -0.8917446116307443
+          }
+        },
+        {
+          "accepted_actions": 1,
+          "added_cuts": {
+            "count": 1,
+            "max": -1.0,
+            "median": -1.0,
+            "min": -1.0,
+            "q10_q90": [
+              -1.0,
+              -1.0
+            ],
+            "sum": -1.0
+          },
+          "changed_over_T": {
+            "count": 1,
+            "max": 0.1836734693877551,
+            "median": 0.1836734693877551,
+            "min": 0.1836734693877551,
+            "q10_q90": [
+              0.1836734693877551,
+              0.1836734693877551
+            ],
+            "sum": 0.1836734693877551
+          },
+          "changed_positions": {
+            "count": 1,
+            "max": 18.0,
+            "median": 18.0,
+            "min": 18.0,
+            "q10_q90": [
+              18.0,
+              18.0
+            ],
+            "sum": 18.0
+          },
+          "dE": {
+            "count": 1,
+            "max": 18.0,
+            "median": 18.0,
+            "min": 18.0,
+            "q10_q90": [
+              18.0,
+              18.0
+            ],
+            "sum": 18.0
+          },
+          "dFP16": {
+            "count": 1,
+            "max": -1.0,
+            "median": -1.0,
+            "min": -1.0,
+            "q10_q90": [
+              -1.0,
+              -1.0
+            ],
+            "sum": -1.0
+          },
+          "delta_M": {
+            "count": 1,
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q10_q90": [
+              0.0,
+              0.0
+            ],
+            "sum": 0.0
+          },
+          "delta_P": {
+            "count": 1,
+            "max": -1.0,
+            "median": -1.0,
+            "min": -1.0,
+            "q10_q90": [
+              -1.0,
+              -1.0
+            ],
+            "sum": -1.0
+          },
+          "frame_harm_M_P_unchanged": 0,
+          "frame_harm_actions": 1,
+          "frame_harm_crossing_short16_to_long": 0,
+          "frame_harm_extending_old_wrong_run": 1,
+          "frame_harm_new_cut": 0,
+          "frame_harm_u_zero_but_predpositive": 0,
+          "frame_harm_with_predicted_dE_nonpositive": 1,
+          "frame_harm_without_short16_FP_increase": 1,
+          "frame_repair_actions": 0,
+          "interval_length": {
+            "count": 1,
+            "max": 48.0,
+            "median": 48.0,
+            "min": 48.0,
+            "q10_q90": [
+              48.0,
+              48.0
+            ],
+            "sum": 48.0
+          },
+          "interval_over_T": {
+            "count": 1,
+            "max": 0.4897959183673469,
+            "median": 0.4897959183673469,
+            "min": 0.4897959183673469,
+            "q10_q90": [
+              0.4897959183673469,
+              0.4897959183673469
+            ],
+            "sum": 0.4897959183673469
+          },
+          "newly_wrong_positions_extending_old_wrong_run": {
+            "count": 1,
+            "max": 18.0,
+            "median": 18.0,
+            "min": 18.0,
+            "q10_q90": [
+              18.0,
+              18.0
+            ],
+            "sum": 18.0
+          },
+          "newly_wrong_positions_in_long_wrong_segments": {
+            "count": 1,
+            "max": 18.0,
+            "median": 18.0,
+            "min": 18.0,
+            "q10_q90": [
+              18.0,
+              18.0
+            ],
+            "sum": 18.0
+          },
+          "newly_wrong_positions_new_wrong_segment": {
+            "count": 1,
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q10_q90": [
+              0.0,
+              0.0
+            ],
+            "sum": 0.0
+          },
+          "pred_dE": {
+            "count": 1,
+            "max": -18.41088292770101,
+            "median": -18.41088292770101,
+            "min": -18.41088292770101,
+            "q10_q90": [
+              -18.41088292770101,
+              -18.41088292770101
+            ],
+            "sum": -18.41088292770101
+          },
+          "pred_dFP16": {
+            "count": 1,
+            "max": -0.7624149322509766,
+            "median": -0.7624149322509766,
+            "min": -0.7624149322509766,
+            "q10_q90": [
+              -0.7624149322509766,
+              -0.7624149322509766
+            ],
+            "sum": -0.7624149322509766
+          },
+          "pred_u": {
+            "count": 1,
+            "max": 2.641749062224968,
+            "median": 2.641749062224968,
+            "min": 2.641749062224968,
+            "q10_q90": [
+              2.641749062224968,
+              2.641749062224968
+            ],
+            "sum": 2.641749062224968
+          },
+          "provenance": "JEPA_only",
+          "replacement_family_indices": "2",
+          "represented_whole_axis_actions": 0,
+          "true_family_index": 3,
+          "u": {
+            "count": 1,
+            "max": 0.8917446116307443,
+            "median": 0.8917446116307443,
+            "min": 0.8917446116307443,
+            "q10_q90": [
+              0.8917446116307443,
+              0.8917446116307443
+            ],
+            "sum": 0.8917446116307443
+          }
+        }
+      ]
+    },
+    {
+      "half": "selection",
+      "seed": 2026110361,
+      "changed_native_clips": 4,
+      "Base_correct_to_wrong": 52,
+      "Base_wrong_to_correct": 20,
+      "frame_error_delta": 32,
+      "class_provenance_groups": [
+        {
+          "accepted_actions": 1,
+          "added_cuts": {
+            "count": 1,
+            "max": 1.0,
+            "median": 1.0,
+            "min": 1.0,
+            "q10_q90": [
+              1.0,
+              1.0
+            ],
+            "sum": 1.0
+          },
+          "changed_over_T": {
+            "count": 1,
+            "max": 0.3176470588235294,
+            "median": 0.3176470588235294,
+            "min": 0.3176470588235294,
+            "q10_q90": [
+              0.3176470588235294,
+              0.3176470588235294
+            ],
+            "sum": 0.3176470588235294
+          },
+          "changed_positions": {
+            "count": 1,
+            "max": 27.0,
+            "median": 27.0,
+            "min": 27.0,
+            "q10_q90": [
+              27.0,
+              27.0
+            ],
+            "sum": 27.0
+          },
+          "dE": {
+            "count": 1,
+            "max": 27.0,
+            "median": 27.0,
+            "min": 27.0,
+            "q10_q90": [
+              27.0,
+              27.0
+            ],
+            "sum": 27.0
+          },
+          "dFP16": {
+            "count": 1,
+            "max": 1.0,
+            "median": 1.0,
+            "min": 1.0,
+            "q10_q90": [
+              1.0,
+              1.0
+            ],
+            "sum": 1.0
+          },
+          "delta_M": {
+            "count": 1,
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q10_q90": [
+              0.0,
+              0.0
+            ],
+            "sum": 0.0
+          },
+          "delta_P": {
+            "count": 1,
+            "max": 1.0,
+            "median": 1.0,
+            "min": 1.0,
+            "q10_q90": [
+              1.0,
+              1.0
+            ],
+            "sum": 1.0
+          },
+          "frame_harm_M_P_unchanged": 0,
+          "frame_harm_actions": 1,
+          "frame_harm_crossing_short16_to_long": 0,
+          "frame_harm_extending_old_wrong_run": 0,
+          "frame_harm_new_cut": 1,
+          "frame_harm_u_zero_but_predpositive": 0,
+          "frame_harm_with_predicted_dE_nonpositive": 1,
+          "frame_harm_without_short16_FP_increase": 0,
+          "frame_repair_actions": 0,
+          "interval_length": {
+            "count": 1,
+            "max": 27.0,
+            "median": 27.0,
+            "min": 27.0,
+            "q10_q90": [
+              27.0,
+              27.0
+            ],
+            "sum": 27.0
+          },
+          "interval_over_T": {
+            "count": 1,
+            "max": 0.3176470588235294,
+            "median": 0.3176470588235294,
+            "min": 0.3176470588235294,
+            "q10_q90": [
+              0.3176470588235294,
+              0.3176470588235294
+            ],
+            "sum": 0.3176470588235294
+          },
+          "newly_wrong_positions_extending_old_wrong_run": {
+            "count": 1,
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q10_q90": [
+              0.0,
+              0.0
+            ],
+            "sum": 0.0
+          },
+          "newly_wrong_positions_in_long_wrong_segments": {
+            "count": 1,
+            "max": 27.0,
+            "median": 27.0,
+            "min": 27.0,
+            "q10_q90": [
+              27.0,
+              27.0
+            ],
+            "sum": 27.0
+          },
+          "newly_wrong_positions_new_wrong_segment": {
+            "count": 1,
+            "max": 27.0,
+            "median": 27.0,
+            "min": 27.0,
+            "q10_q90": [
+              27.0,
+              27.0
+            ],
+            "sum": 27.0
+          },
+          "pred_dE": {
+            "count": 1,
+            "max": -21.894986388993672,
+            "median": -21.894986388993672,
+            "min": -21.894986388993672,
+            "q10_q90": [
+              -21.894986388993672,
+              -21.894986388993672
+            ],
+            "sum": -21.894986388993672
+          },
+          "pred_dFP16": {
+            "count": 1,
+            "max": -0.553217887878418,
+            "median": -0.553217887878418,
+            "min": -0.553217887878418,
+            "q10_q90": [
+              -0.553217887878418,
+              -0.553217887878418
+            ],
+            "sum": -0.553217887878418
+          },
+          "pred_u": {
+            "count": 1,
+            "max": 1.5730426151746972,
+            "median": 1.5730426151746972,
+            "min": 1.5730426151746972,
+            "q10_q90": [
+              1.5730426151746972,
+              1.5730426151746972
+            ],
+            "sum": 1.5730426151746972
+          },
+          "provenance": "JEPA_only",
+          "replacement_family_indices": "1",
+          "represented_whole_axis_actions": 0,
+          "true_family_index": 0,
+          "u": {
+            "count": 1,
+            "max": -0.8917446116307443,
+            "median": -0.8917446116307443,
+            "min": -0.8917446116307443,
+            "q10_q90": [
+              -0.8917446116307443,
+              -0.8917446116307443
+            ],
+            "sum": -0.8917446116307443
+          }
+        },
+        {
+          "accepted_actions": 2,
+          "added_cuts": {
+            "count": 2,
+            "max": 0.0,
+            "median": -0.5,
+            "min": -1.0,
+            "q10_q90": [
+              -0.9,
+              -0.09999999999999998
+            ],
+            "sum": -1.0
+          },
+          "changed_over_T": {
+            "count": 2,
+            "max": 0.4166666666666667,
+            "median": 0.21189966714217784,
+            "min": 0.007132667617689016,
+            "q10_q90": [
+              0.04808606752258678,
+              0.3757132667617689
+            ],
+            "sum": 0.4237993342843557
+          },
+          "changed_positions": {
+            "count": 2,
+            "max": 15.0,
+            "median": 10.0,
+            "min": 5.0,
+            "q10_q90": [
+              6.0,
+              14.0
+            ],
+            "sum": 20.0
+          },
+          "dE": {
+            "count": 2,
+            "max": -5.0,
+            "median": -10.0,
+            "min": -15.0,
+            "q10_q90": [
+              -14.0,
+              -6.0
+            ],
+            "sum": -20.0
+          },
+          "dFP16": {
+            "count": 2,
+            "max": 1.0,
+            "median": 0.0,
+            "min": -1.0,
+            "q10_q90": [
+              -0.8,
+              0.8
+            ],
+            "sum": 0.0
+          },
+          "delta_M": {
+            "count": 2,
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q10_q90": [
+              0.0,
+              0.0
+            ],
+            "sum": 0.0
+          },
+          "delta_P": {
+            "count": 2,
+            "max": 0.0,
+            "median": -0.5,
+            "min": -1.0,
+            "q10_q90": [
+              -0.9,
+              -0.09999999999999998
+            ],
+            "sum": -1.0
+          },
+          "frame_harm_M_P_unchanged": 0,
+          "frame_harm_actions": 0,
+          "frame_harm_crossing_short16_to_long": 0,
+          "frame_harm_extending_old_wrong_run": 0,
+          "frame_harm_new_cut": 0,
+          "frame_harm_u_zero_but_predpositive": 0,
+          "frame_harm_with_predicted_dE_nonpositive": 0,
+          "frame_harm_without_short16_FP_increase": 0,
+          "frame_repair_actions": 2,
+          "interval_length": {
+            "count": 2,
+            "max": 15.0,
+            "median": 10.0,
+            "min": 5.0,
+            "q10_q90": [
+              6.0,
+              14.0
+            ],
+            "sum": 20.0
+          },
+          "interval_over_T": {
+            "count": 2,
+            "max": 0.4166666666666667,
+            "median": 0.21189966714217784,
+            "min": 0.007132667617689016,
+            "q10_q90": [
+              0.04808606752258678,
+              0.3757132667617689
+            ],
+            "sum": 0.4237993342843557
+          },
+          "newly_wrong_positions_extending_old_wrong_run": {
+            "count": 2,
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q10_q90": [
+              0.0,
+              0.0
+            ],
+            "sum": 0.0
+          },
+          "newly_wrong_positions_in_long_wrong_segments": {
+            "count": 2,
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q10_q90": [
+              0.0,
+              0.0
+            ],
+            "sum": 0.0
+          },
+          "newly_wrong_positions_new_wrong_segment": {
+            "count": 2,
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q10_q90": [
+              0.0,
+              0.0
+            ],
+            "sum": 0.0
+          },
+          "pred_dE": {
+            "count": 2,
+            "max": -2.6276122959484876,
+            "median": -10.153075100351275,
+            "min": -17.678537904754062,
+            "q10_q90": [
+              -16.173445343873503,
+              -4.1327048568290445
+            ],
+            "sum": -20.30615020070255
+          },
+          "pred_dFP16": {
+            "count": 2,
+            "max": -0.29797497391700745,
+            "median": -0.5639223009347916,
+            "min": -0.8298696279525757,
+            "q10_q90": [
+              -0.7766801625490188,
+              -0.35116443932056424
+            ],
+            "sum": -1.1278446018695831
+          },
+          "pred_u": {
+            "count": 2,
+            "max": 1.2859549390274618,
+            "median": 0.7975589946316497,
+            "min": 0.30916305023583757,
+            "q10_q90": [
+              0.406842239115,
+              1.1882757501482994
+            ],
+            "sum": 1.5951179892632994
+          },
+          "provenance": "JEPA_only",
+          "replacement_family_indices": "2",
+          "represented_whole_axis_actions": 0,
+          "true_family_index": 2,
+          "u": {
+            "count": 2,
+            "max": 0.8917446116307443,
+            "median": 0.4458723058153721,
+            "min": 0.0,
+            "q10_q90": [
+              0.08917446116307443,
+              0.8025701504676699
+            ],
+            "sum": 0.8917446116307443
+          }
+        },
+        {
+          "accepted_actions": 1,
+          "added_cuts": {
+            "count": 1,
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q10_q90": [
+              0.0,
+              0.0
+            ],
+            "sum": 0.0
+          },
+          "changed_over_T": {
+            "count": 1,
+            "max": 0.2403846153846154,
+            "median": 0.2403846153846154,
+            "min": 0.2403846153846154,
+            "q10_q90": [
+              0.2403846153846154,
+              0.2403846153846154
+            ],
+            "sum": 0.2403846153846154
+          },
+          "changed_positions": {
+            "count": 1,
+            "max": 25.0,
+            "median": 25.0,
+            "min": 25.0,
+            "q10_q90": [
+              25.0,
+              25.0
+            ],
+            "sum": 25.0
+          },
+          "dE": {
+            "count": 1,
+            "max": 25.0,
+            "median": 25.0,
+            "min": 25.0,
+            "q10_q90": [
+              25.0,
+              25.0
+            ],
+            "sum": 25.0
+          },
+          "dFP16": {
+            "count": 1,
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q10_q90": [
+              0.0,
+              0.0
+            ],
+            "sum": 0.0
+          },
+          "delta_M": {
+            "count": 1,
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q10_q90": [
+              0.0,
+              0.0
+            ],
+            "sum": 0.0
+          },
+          "delta_P": {
+            "count": 1,
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q10_q90": [
+              0.0,
+              0.0
+            ],
+            "sum": 0.0
+          },
+          "frame_harm_M_P_unchanged": 1,
+          "frame_harm_actions": 1,
+          "frame_harm_crossing_short16_to_long": 0,
+          "frame_harm_extending_old_wrong_run": 1,
+          "frame_harm_new_cut": 0,
+          "frame_harm_u_zero_but_predpositive": 1,
+          "frame_harm_with_predicted_dE_nonpositive": 1,
+          "frame_harm_without_short16_FP_increase": 1,
+          "frame_repair_actions": 0,
+          "interval_length": {
+            "count": 1,
+            "max": 25.0,
+            "median": 25.0,
+            "min": 25.0,
+            "q10_q90": [
+              25.0,
+              25.0
+            ],
+            "sum": 25.0
+          },
+          "interval_over_T": {
+            "count": 1,
+            "max": 0.2403846153846154,
+            "median": 0.2403846153846154,
+            "min": 0.2403846153846154,
+            "q10_q90": [
+              0.2403846153846154,
+              0.2403846153846154
+            ],
+            "sum": 0.2403846153846154
+          },
+          "newly_wrong_positions_extending_old_wrong_run": {
+            "count": 1,
+            "max": 25.0,
+            "median": 25.0,
+            "min": 25.0,
+            "q10_q90": [
+              25.0,
+              25.0
+            ],
+            "sum": 25.0
+          },
+          "newly_wrong_positions_in_long_wrong_segments": {
+            "count": 1,
+            "max": 25.0,
+            "median": 25.0,
+            "min": 25.0,
+            "q10_q90": [
+              25.0,
+              25.0
+            ],
+            "sum": 25.0
+          },
+          "newly_wrong_positions_new_wrong_segment": {
+            "count": 1,
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q10_q90": [
+              0.0,
+              0.0
+            ],
+            "sum": 0.0
+          },
+          "pred_dE": {
+            "count": 1,
+            "max": -25.54913496661413,
+            "median": -25.54913496661413,
+            "min": -25.54913496661413,
+            "q10_q90": [
+              -25.54913496661413,
+              -25.54913496661413
+            ],
+            "sum": -25.54913496661413
+          },
+          "pred_dFP16": {
+            "count": 1,
+            "max": -0.20361319184303284,
+            "median": -0.20361319184303284,
+            "min": -0.20361319184303284,
+            "q10_q90": [
+              -0.20361319184303284,
+              -0.20361319184303284
+            ],
+            "sum": -0.20361319184303284
+          },
+          "pred_u": {
+            "count": 1,
+            "max": 0.9117381424037232,
+            "median": 0.9117381424037232,
+            "min": 0.9117381424037232,
+            "q10_q90": [
+              0.9117381424037232,
+              0.9117381424037232
+            ],
+            "sum": 0.9117381424037232
+          },
+          "provenance": "JEPA_only",
+          "replacement_family_indices": "2",
+          "represented_whole_axis_actions": 0,
+          "true_family_index": 3,
+          "u": {
+            "count": 1,
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q10_q90": [
+              0.0,
+              0.0
+            ],
+            "sum": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "half": "calibration",
+      "seed": 2026110361,
+      "changed_native_clips": 1,
+      "Base_correct_to_wrong": 18,
+      "Base_wrong_to_correct": 0,
+      "frame_error_delta": 18,
+      "class_provenance_groups": [
+        {
+          "accepted_actions": 1,
+          "added_cuts": {
+            "count": 1,
+            "max": -1.0,
+            "median": -1.0,
+            "min": -1.0,
+            "q10_q90": [
+              -1.0,
+              -1.0
+            ],
+            "sum": -1.0
+          },
+          "changed_over_T": {
+            "count": 1,
+            "max": 0.1836734693877551,
+            "median": 0.1836734693877551,
+            "min": 0.1836734693877551,
+            "q10_q90": [
+              0.1836734693877551,
+              0.1836734693877551
+            ],
+            "sum": 0.1836734693877551
+          },
+          "changed_positions": {
+            "count": 1,
+            "max": 18.0,
+            "median": 18.0,
+            "min": 18.0,
+            "q10_q90": [
+              18.0,
+              18.0
+            ],
+            "sum": 18.0
+          },
+          "dE": {
+            "count": 1,
+            "max": 18.0,
+            "median": 18.0,
+            "min": 18.0,
+            "q10_q90": [
+              18.0,
+              18.0
+            ],
+            "sum": 18.0
+          },
+          "dFP16": {
+            "count": 1,
+            "max": -1.0,
+            "median": -1.0,
+            "min": -1.0,
+            "q10_q90": [
+              -1.0,
+              -1.0
+            ],
+            "sum": -1.0
+          },
+          "delta_M": {
+            "count": 1,
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q10_q90": [
+              0.0,
+              0.0
+            ],
+            "sum": 0.0
+          },
+          "delta_P": {
+            "count": 1,
+            "max": -1.0,
+            "median": -1.0,
+            "min": -1.0,
+            "q10_q90": [
+              -1.0,
+              -1.0
+            ],
+            "sum": -1.0
+          },
+          "frame_harm_M_P_unchanged": 0,
+          "frame_harm_actions": 1,
+          "frame_harm_crossing_short16_to_long": 0,
+          "frame_harm_extending_old_wrong_run": 1,
+          "frame_harm_new_cut": 0,
+          "frame_harm_u_zero_but_predpositive": 0,
+          "frame_harm_with_predicted_dE_nonpositive": 1,
+          "frame_harm_without_short16_FP_increase": 1,
+          "frame_repair_actions": 0,
+          "interval_length": {
+            "count": 1,
+            "max": 48.0,
+            "median": 48.0,
+            "min": 48.0,
+            "q10_q90": [
+              48.0,
+              48.0
+            ],
+            "sum": 48.0
+          },
+          "interval_over_T": {
+            "count": 1,
+            "max": 0.4897959183673469,
+            "median": 0.4897959183673469,
+            "min": 0.4897959183673469,
+            "q10_q90": [
+              0.4897959183673469,
+              0.4897959183673469
+            ],
+            "sum": 0.4897959183673469
+          },
+          "newly_wrong_positions_extending_old_wrong_run": {
+            "count": 1,
+            "max": 18.0,
+            "median": 18.0,
+            "min": 18.0,
+            "q10_q90": [
+              18.0,
+              18.0
+            ],
+            "sum": 18.0
+          },
+          "newly_wrong_positions_in_long_wrong_segments": {
+            "count": 1,
+            "max": 18.0,
+            "median": 18.0,
+            "min": 18.0,
+            "q10_q90": [
+              18.0,
+              18.0
+            ],
+            "sum": 18.0
+          },
+          "newly_wrong_positions_new_wrong_segment": {
+            "count": 1,
+            "max": 0.0,
+            "median": 0.0,
+            "min": 0.0,
+            "q10_q90": [
+              0.0,
+              0.0
+            ],
+            "sum": 0.0
+          },
+          "pred_dE": {
+            "count": 1,
+            "max": -14.772983067274813,
+            "median": -14.772983067274813,
+            "min": -14.772983067274813,
+            "q10_q90": [
+              -14.772983067274813,
+              -14.772983067274813
+            ],
+            "sum": -14.772983067274813
+          },
+          "pred_dFP16": {
+            "count": 1,
+            "max": -1.2548069953918457,
+            "median": -1.2548069953918457,
+            "min": -1.2548069953918457,
+            "q10_q90": [
+              -1.2548069953918457,
+              -1.2548069953918457
+            ],
+            "sum": -1.2548069953918457
+          },
+          "pred_u": {
+            "count": 1,
+            "max": 2.142275573743488,
+            "median": 2.142275573743488,
+            "min": 2.142275573743488,
+            "q10_q90": [
+              2.142275573743488,
+              2.142275573743488
+            ],
+            "sum": 2.142275573743488
+          },
+          "provenance": "JEPA_only",
+          "replacement_family_indices": "2",
+          "represented_whole_axis_actions": 0,
+          "true_family_index": 3,
+          "u": {
+            "count": 1,
+            "max": 0.8917446116307443,
+            "median": 0.8917446116307443,
+            "min": 0.8917446116307443,
+            "q10_q90": [
+              0.8917446116307443,
+              0.8917446116307443
+            ],
+            "sum": 0.8917446116307443
+          }
+        }
+      ]
+    }
+  ],
+  "cross16_is_hypothetical_not_observed_J_R": true,
+  "weak_reference_not_clinical_frame_adjudication": true,
+  "coordination_tool_CPU_unmetered_not_worker_receipt": true,
+  "epoch": 1793766142.5613341
+}
