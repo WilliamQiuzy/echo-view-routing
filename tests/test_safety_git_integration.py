@@ -72,3 +72,13 @@ def test_after_ref_commit_changed_HEAD_is_partial_without_hiding_target_branch_p
     with pytest.raises(m.IntegrationError) as e:m.integrate(repo,head,'refs/heads/main',files,'A61',apply=True,expected_index_sha256=plan['expected_index_sha256'])
     r=e.value.report;assert r['status']=='partial' and r['ref_published'] and git(repo,'rev-parse','refs/heads/main')==r['new_commit']
     assert git(repo,'symbolic-ref','HEAD')=='refs/heads/other' and (repo/'.git/index.lock').exists()
+
+
+def test_cli_unknown_post_entry_cleanup_failure_never_claims_apply_did_not_start(tmp_path,monkeypatch,capsys):
+    import sys
+    from scripts import commit_action_safety_paths as cli
+    repo,files,head=fixture(tmp_path);manifest=tmp_path/'paths.json';manifest.write_text(json.dumps(files))
+    def escaped(*args,**kwargs):raise RuntimeError('post-entry cleanup escaped classification')
+    monkeypatch.setattr(cli,'integrate',escaped);monkeypatch.setattr(sys,'argv',['tool','--repo',str(repo),'--expected-head',head,'--expected-branch','refs/heads/main','--paths-json',str(manifest),'--message','A61','--apply','--expected-index-sha256','0'*64])
+    assert cli.main()==2
+    value=json.loads(capsys.readouterr().out);assert value['status']=='partial' and value['publication_state_unknown'] and value['manual_reconciliation_required'] and not value['no_integration_apply_entered']
