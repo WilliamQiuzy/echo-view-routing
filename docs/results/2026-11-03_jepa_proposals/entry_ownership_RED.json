@@ -1,0 +1,31 @@
+{
+  "stage": "entry_ownership_RED",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "tests/test_proposal_resources.py::test_entry_complement_does_not_subtract_another_supervisor"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 10003,
+  "supervisor_pid": 9992,
+  "started_epoch": 1793761272.908651,
+  "finished_epoch": 1793761273.418595,
+  "full_process_wall_seconds": 0.509943962097168,
+  "observed_worker_exit_code": 1,
+  "stage_exit_code": 1,
+  "termination_reason": null,
+  "exception": null,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 0.35118,
+  "measured_supervisor_CPU_seconds": 0.0016390000000000033,
+  "measured_CPU_core_seconds": 0.352819,
+  "durable_claim_before_Popen": true,
+  "scope": "local synthetic checks;SELF region+waited CHILDREN;final JSON bookkeeping and wrapper imports separate metadata",
+  "output": "F                                                                        [100%]\n=================================== FAILURES ===================================\n__________ test_entry_complement_does_not_subtract_another_supervisor __________\ntests/test_proposal_resources.py:65: in test_entry_complement_does_not_subtract_another_supervisor\n    assert meter_entry(callback,run,pub)==0\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nscripts/supervise_jepa_proposals.py:229: in meter_entry\n    if cpu+1e-6<excluded:raise ValueError('entry CPU cannot undercut already measured stage CPU')\n                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   ValueError: entry CPU cannot undercut already measured stage CPU\n=========================== short test summary info ============================\nFAILED tests/test_proposal_resources.py::test_entry_complement_does_not_subtract_another_supervisor\n",
+  "output_sha256": "32074263eda499d5051d480add13cb04c763d436428b3ebb62948b4c80dae1f6"
+}

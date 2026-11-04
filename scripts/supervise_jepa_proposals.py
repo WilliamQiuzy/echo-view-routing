@@ -223,7 +223,7 @@ def meter_entry(callback, run, pub):
         error=repr(e);code=1
     end=time.time();aa=resource.getrusage(resource.RUSAGE_SELF);bb=resource.getrusage(resource.RUSAGE_CHILDREN)
     after=[json.loads(x) for x in ledger.read_text().splitlines()] if ledger.exists() else []
-    fresh=[r for r in after if r['receipt_id'] not in known]
+    fresh=[r for r in after if r['receipt_id'] not in known and r.get('measurement_host')==socket.gethostname() and r.get('supervisor_pid')==os.getpid()]
     cpu=aa.ru_utime+aa.ru_stime-a.ru_utime-a.ru_stime+bb.ru_utime+bb.ru_stime-b.ru_utime-b.ru_stime
     excluded=sum(r['measured_CPU_core_seconds'] for r in fresh)
     if cpu+1e-6<excluded:raise ValueError('entry CPU cannot undercut already measured stage CPU')

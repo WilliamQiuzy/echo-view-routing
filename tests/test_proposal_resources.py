@@ -54,3 +54,14 @@ def test_entry_failure_is_metered_without_inventing_child_exit(tmp_path):
     assert len(rows)==1 and rows[0]['measured_CPU_core_seconds']>=0
     assert rows[0]['observed_worker_exit_code'] is None and rows[0]['planned_CLI_exit_status']==2
     assert not rows[0]['new_worker_started']
+
+def test_entry_complement_does_not_subtract_another_supervisor(tmp_path):
+    import json,os,socket
+    from scripts.supervise_jepa_proposals import meter_entry
+    run=tmp_path/'run';run.mkdir();pub=tmp_path/'pub'
+    def callback():
+        (run/'processes.jsonl').write_text(json.dumps({'receipt_id':'foreign','measured_CPU_core_seconds':100,'model_pid':123,'supervisor_pid':os.getpid()+999,'measurement_host':socket.gethostname()})+'\n')
+        return 0
+    assert meter_entry(callback,run,pub)==0
+    value=json.loads(next(pub.glob('entry_CPU_*.json')).read_text())
+    assert value['already_charged_stage_CPU_seconds_subtracted']==0 and not value['new_worker_started']
