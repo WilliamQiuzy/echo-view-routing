@@ -1,0 +1,36 @@
+test_event_risk_scope (unittest.loader._FailedTest) ... ERROR
+
+======================================================================
+ERROR: test_event_risk_scope (unittest.loader._FailedTest)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_event_risk_scope
+Traceback (most recent call last):
+  File "/Users/williamqiu/opt/anaconda3/lib/python3.9/unittest/loader.py", line 436, in _find_test_path
+    module = self._get_module_from_name(name)
+  File "/Users/williamqiu/opt/anaconda3/lib/python3.9/unittest/loader.py", line 377, in _get_module_from_name
+    __import__(name)
+  File "/Users/williamqiu/.config/superpowers/worktrees/echo-view-routing/a62-anchor-context-risk/tests/test_event_risk_scope.py", line 7, in <module>
+    from echo_routing.temporal.event_risk_metrics import plan, support, risk_summary, primary_intervals
+  File "/Users/williamqiu/.config/superpowers/worktrees/echo-view-routing/a62-anchor-context-risk/echo_routing/temporal/event_risk_metrics.py", line 11, in <module>
+    from echo_routing.temporal.safety_metrics import evaluate, prepare_system
+  File "/Users/williamqiu/.config/superpowers/worktrees/echo-view-routing/a62-anchor-context-risk/echo_routing/temporal/safety_metrics.py", line 3, in <module>
+    from echo_routing.temporal.proposal_metrics import evaluate as historical_evaluate,paired as historical_paired,describe,distribution
+  File "/Users/williamqiu/.config/superpowers/worktrees/echo-view-routing/a62-anchor-context-risk/echo_routing/temporal/proposal_metrics.py", line 3, in <module>
+    from echo_routing.temporal.anchor_metrics import evaluate as inherited_evaluate,paired as inherited_paired
+  File "/Users/williamqiu/.config/superpowers/worktrees/echo-view-routing/a62-anchor-context-risk/echo_routing/temporal/anchor_metrics.py", line 4, in <module>
+    from echo_routing.temporal.structured_metrics import evaluate as historical_evaluate
+  File "/Users/williamqiu/.config/superpowers/worktrees/echo-view-routing/a62-anchor-context-risk/echo_routing/temporal/structured_metrics.py", line 4, in <module>
+    from echo_routing.evaluate.dev_metrics import evaluate_predictions
+  File "/Users/williamqiu/.config/superpowers/worktrees/echo-view-routing/a62-anchor-context-risk/echo_routing/evaluate/dev_metrics.py", line 18, in <module>
+    from echo_routing.evaluate.ladder import _fragment_rows
+  File "/Users/williamqiu/.config/superpowers/worktrees/echo-view-routing/a62-anchor-context-risk/echo_routing/evaluate/ladder.py", line 17, in <module>
+    from echo_routing.temporal.baselines.registry import decode_with_prob, evidence_prob, evidence_source
+  File "/Users/williamqiu/.config/superpowers/worktrees/echo-view-routing/a62-anchor-context-risk/echo_routing/temporal/baselines/registry.py", line 16, in <module>
+    Decoder = Callable[[np.ndarray, np.ndarray | None, dict[str, Any]], tuple[np.ndarray, np.ndarray]]
+TypeError: unsupported operand type(s) for |: 'type' and 'NoneType'
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+FAILED (errors=1)

@@ -1,0 +1,20 @@
+test_complete_unique_endpoints_and_exact_matched_primary_family (test_event_risk_scope.EventRiskScopeTests) ... ok
+test_event_risk_bins_include_one_and_saturated_infinite_BCE_is_explicit (test_event_risk_scope.EventRiskScopeTests) ... ok
+test_exact_noop_tie_and_no_N_or_positive_top_never_fallback (test_event_risk_scope.EventRiskScopeTests) ... ok
+test_pooled_objective_excludes_native_pair_and_reports_unknown_empty_ratio (test_event_risk_scope.EventRiskScopeTests) ... ok
+test_same_bootstrap_samples_primary_quantiles_and_null_ratios (test_event_risk_scope.EventRiskScopeTests) ... ok
+test_support_cannot_choose_beneficial_second_candidate_and_separates_short_loss (test_event_risk_scope.EventRiskScopeTests) ... ok
+test_once_generated_whole_units_match_literal_pooled_resampling (test_event_risk_scope.PairedSampleTests) ... ERROR
+
+======================================================================
+ERROR: test_once_generated_whole_units_match_literal_pooled_resampling (test_event_risk_scope.PairedSampleTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/williamqiu/.config/superpowers/worktrees/echo-view-routing/a62-anchor-context-risk/tests/test_event_risk_scope.py", line 123, in test_once_generated_whole_units_match_literal_pooled_resampling
+    from echo_routing.temporal.event_risk_metrics import paired
+ImportError: cannot import name 'paired' from 'echo_routing.temporal.event_risk_metrics' (/Users/williamqiu/.config/superpowers/worktrees/echo-view-routing/a62-anchor-context-risk/echo_routing/temporal/event_risk_metrics.py)
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.018s
+
+FAILED (errors=1)

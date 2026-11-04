@@ -1,0 +1,32 @@
+{
+  "stage": "task3_cache_loop_RED",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "tests/test_event_risk_cache.py",
+    "tests/test_event_risk_loop.py"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 6951,
+  "supervisor_pid": 6938,
+  "started_epoch": 1793825632.000059,
+  "finished_epoch": 1793825632.881731,
+  "full_process_wall_seconds": 0.8816721439361572,
+  "observed_worker_exit_code": 1,
+  "stage_exit_code": 1,
+  "termination_reason": null,
+  "exception": null,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 0.740017,
+  "measured_supervisor_CPU_seconds": 0.0012919999999999997,
+  "measured_CPU_core_seconds": 0.741309,
+  "durable_claim_before_Popen": true,
+  "scope": "local synthetic checks;SELF region+waited CHILDREN;final JSON bookkeeping and wrapper imports separate metadata",
+  "output": "FFF                                                                      [100%]\n=================================== FAILURES ===================================\n__________ test_new_joint_q_cache_empty_prefix_and_pending_no_replay ___________\ntests/test_event_risk_cache.py:6: in test_new_joint_q_cache_empty_prefix_and_pending_no_replay\n    m=importlib.import_module('echo_routing.temporal.event_risk_cache');b=np.zeros(5,int);taus={k:.5 for k in ['L0','M0','R1','R2']};refs=[{'source':'frozen','sha256':'a'*64}]\n      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../../../../../.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n<frozen importlib._bootstrap>:1387: in _gcd_import\n    ???\n<frozen importlib._bootstrap>:1360: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1324: in _find_and_load_unlocked\n    ???\nE   ModuleNotFoundError: No module named 'echo_routing.temporal.event_risk_cache'\n_ test_complete_headless_adoption_checks_every_expected_payload_and_production_time _\ntests/test_event_risk_cache.py:17: in test_complete_headless_adoption_checks_every_expected_payload_and_production_time\n    m=importlib.import_module('echo_routing.temporal.event_risk_cache')\n      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../../../../../.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n<frozen importlib._bootstrap>:1387: in _gcd_import\n    ???\n<frozen importlib._bootstrap>:1360: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1324: in _find_and_load_unlocked\n    ???\nE   ModuleNotFoundError: No module named 'echo_routing.temporal.event_risk_cache'\n______ test_fixed_draw_physical_updates_and_pending_checkpoint_rejection _______\ntests/test_event_risk_loop.py:7: in test_fixed_draw_physical_updates_and_pending_checkpoint_rejection\n    m=importlib.import_module('echo_routing.temporal.event_risk_loop')\n      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../../../../../.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n<frozen importlib._bootstrap>:1387: in _gcd_import\n    ???\n<frozen importlib._bootstrap>:1360: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1324: in _find_and_load_unlocked\n    ???\nE   ModuleNotFoundError: No module named 'echo_routing.temporal.event_risk_loop'\n=========================== short test summary info ============================\nFAILED tests/test_event_risk_cache.py::test_new_joint_q_cache_empty_prefix_and_pending_no_replay\nFAILED tests/test_event_risk_cache.py::test_complete_headless_adoption_checks_every_expected_payload_and_production_time\nFAILED tests/test_event_risk_loop.py::test_fixed_draw_physical_updates_and_pending_checkpoint_rejection\n",
+  "output_sha256": "21dc28ce0980a2b52bd54fe50e2cabac190673188d3b371e73779d8b8040fb5a"
+}

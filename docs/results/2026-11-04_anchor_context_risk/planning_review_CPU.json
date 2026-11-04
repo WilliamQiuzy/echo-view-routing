@@ -1,0 +1,33 @@
+{
+  "known_measured_tool_CPU_seconds": 0.492041,
+  "scope": "four planning document-review partial tool CPU; not in prior A61/posthoc baseline; aggregate once, do not separately recharge component reviews",
+  "basis_path": "docs/superpowers/plans/2026-11-04-a62-anchor-context-risk.basis.json",
+  "basis_sha256": "57d5f20c57f75148db85d145e29038560b5c9cbe81cb6cf69602ff3ccefb8b19",
+  "raw_reviews": [
+    {
+      "path": "docs/superpowers/plans/2026-11-04-a62-anchor-context-risk.review-v1.json",
+      "sha256": "3c04586f8e626708854f245fd77654bbd6363008a0d397511b56f5413c96edbd",
+      "scope": "partial measured tool CPU only; model reasoning/receipt/exit tails unmetered; no experiments",
+      "measured_tool_CPU_seconds": 0.07639
+    },
+    {
+      "path": "docs/superpowers/plans/2026-11-04-a62-anchor-context-risk.review-v2.json",
+      "sha256": "b41248fa077a1702e549671afdd6e070b8d98e6e9fa5cdfe39619921fd6de567",
+      "scope": "partial measured local Python SELF only; model reasoning/tool/exit unmetered; document review not launch approval",
+      "measured_tool_CPU_seconds": 0.297414
+    },
+    {
+      "path": "docs/superpowers/plans/2026-11-04-a62-anchor-context-risk.review-tie.json",
+      "sha256": "a27d2366b443ccbc05bd930b063998375ae7ef349a715daebb12dd0d95071ebf",
+      "scope": "narrow document clarification and hash acknowledgement; not runtime/launch approval; measured local tool CPU partial only",
+      "measured_tool_CPU_seconds": 0.062307
+    },
+    {
+      "path": "docs/superpowers/plans/2026-11-04-a62-anchor-context-risk.review-dependency.json",
+      "sha256": "a7a04870776fd3d99a5909b717ca82bbef3754c9d1ab0e0266047ad85da634b4",
+      "scope": "narrow document clarification and hash acknowledgement; not runtime/launch approval; measured local tool CPU partial only",
+      "measured_tool_CPU_seconds": 0.05593
+    }
+  ],
+  "unmetered_reasoning_and_tool_tail_separate": true
+}

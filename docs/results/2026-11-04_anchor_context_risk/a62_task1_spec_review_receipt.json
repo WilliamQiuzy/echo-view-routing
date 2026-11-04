@@ -1,0 +1,49 @@
+{
+  "reviewer": "a62_card_review",
+  "status": "Issues Found",
+  "review_kind": "Task1 narrow static SPEC",
+  "snapshot": "f2316e23f668f05982ed08e442ed2671463f1a68",
+  "issues": [
+    {
+      "file": "echo_routing/temporal/event_risk_policy.py",
+      "lines": [
+        24,
+        25
+      ],
+      "issue": "No-top CAL axes have no top r/q scores, but all rows currently require finite scores. Define and implement the no-top representation without dropping axes or fabricating observed scores; keep finite checks for admitted N tops."
+    },
+    {
+      "file": "configs/experiments/anchor_context_risk_v1.json",
+      "lines": [
+        47,
+        47
+      ],
+      "issue": "partition_prefix JSON is an escaped display backslash-zero while the implementation hashes an actual NUL byte. Freeze a byte-exact executable encoding or explicitly non-executable display representation before metadata integration."
+    }
+  ],
+  "static_read_receipts": [
+    {
+      "path": "/tmp/a62_task1_spec_inventory_receipt.json",
+      "CPU_seconds": 0.07370899999999998
+    },
+    {
+      "path": "/tmp/a62_task1_spec_data_read_receipt.json",
+      "CPU_seconds": 0.082493
+    },
+    {
+      "path": "/tmp/a62_task1_spec_policy_read_receipt.json",
+      "CPU_seconds": 0.08578199999999998
+    },
+    {
+      "path": "/tmp/a62_task1_spec_budget_config_runner_read_receipt.json",
+      "CPU_seconds": 0.125965
+    }
+  ],
+  "charge_scope": "Use this aggregate once OR the referenced disjoint receipts, never both. No earlier plan-review CPU is added.",
+  "no_tests_SSH_NN": true,
+  "no_uncommitted_model_or_feature_read": true,
+  "unmetered_tail": "Each prior process final output/write/exit, shell/tool service overhead, this final JSON serialization/write/exit and model reasoning are unmetered. Partial tool CPU only, not total model CPU.",
+  "created_at_utc": "2026-11-04T20:48:16Z",
+  "aggregate_receipt_prepare_SELF_CPU_seconds_to_snapshot": 0.063335,
+  "known_measured_tool_CPU_seconds": 0.431284
+}

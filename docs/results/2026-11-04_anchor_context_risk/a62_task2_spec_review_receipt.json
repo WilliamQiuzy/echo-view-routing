@@ -1,0 +1,34 @@
+{
+  "reviewer": "a62_card_review",
+  "status": "Approved",
+  "review_kind": "Task2 narrow static SPEC",
+  "snapshot": "99f788dd1d673b32f4a1bfb008fe9a049324d237",
+  "blocking_issues": [],
+  "scope": [
+    "echo_routing/temporal/event_risk_model.py",
+    "tests/test_event_risk_model.py",
+    "echo_routing/temporal/event_risk_features.py",
+    "tests/test_event_risk_features.py"
+  ],
+  "dependency_clarification": "Executor supplied existing qualified proposal_training.lr_factor lines45-47 contract: rejects update outside0<=update<6000. step calls lr_factor(update) before zero_grad/backward/opt.step, so final checkpoint cursor6000 remains legal while extra training update fails closed. Imported dependency source not independently reopened in this four-file review.",
+  "limitations": [
+    "Static SPEC only, not QUALITY approval or fresh test verification.",
+    "Full FIT72 repeat/resume and24000 formal updates are future stages; toy updates are separate engineering costs.",
+    "No loop/cache/CLI/server, uncommitted code, tests, SSH or NN execution accessed."
+  ],
+  "static_read_receipts": [
+    {
+      "path": "/tmp/a62_task2_spec_model_read_receipt.json",
+      "CPU_seconds": 0.081293
+    },
+    {
+      "path": "/tmp/a62_task2_spec_features_read_receipt.json",
+      "CPU_seconds": 0.07930599999999999
+    }
+  ],
+  "charge_scope": "Use this aggregate once OR the two referenced disjoint receipts, never both. No Task1 or earlier plan-review costs added.",
+  "unmetered_tail": "Prior read receipt/output/exit tails, shell/tool service overhead, this JSON serialization/write/exit, subsequent tools and model reasoning are unmetered. Partial tool CPU only, not total model CPU.",
+  "created_at_utc": "2026-11-04T20:52:30Z",
+  "aggregate_receipt_prepare_SELF_CPU_seconds_to_snapshot": 0.060665,
+  "known_measured_tool_CPU_seconds": 0.221264
+}
