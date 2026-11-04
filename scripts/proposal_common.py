@@ -60,3 +60,13 @@ def save_array(path, value):
 
 def array_pin(path):
     return {'path': str(Path(path).relative_to(ROOT)), 'sha256': sha(path)}
+
+
+def actual_receipts():
+    records = [json.loads(x) for x in (RUN/'processes.jsonl').read_text().splitlines()] if (RUN/'processes.jsonl').exists() else []
+    external = read(PUB/'local_cpu_receipts.json')
+    for path,expected in external['file_pins'].items():
+        if sha(ROOT/path)!=expected:raise ValueError('raw external measured CPU receipt changed')
+    records += external['receipts']
+    records += [read(p) for p in PUB.glob('entry_CPU_*.json')]
+    return records

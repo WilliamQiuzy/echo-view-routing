@@ -1,0 +1,31 @@
+{
+  "stage": "entry_meter_RED",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "tests/test_proposal_resources.py::test_entry_failure_is_metered_without_inventing_child_exit"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 91993,
+  "supervisor_pid": 91982,
+  "started_epoch": 1793760715.051718,
+  "finished_epoch": 1793760715.536143,
+  "full_process_wall_seconds": 0.48442506790161133,
+  "observed_worker_exit_code": 1,
+  "stage_exit_code": 1,
+  "termination_reason": null,
+  "exception": null,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 0.344667,
+  "measured_supervisor_CPU_seconds": 0.001039,
+  "measured_CPU_core_seconds": 0.345706,
+  "durable_claim_before_Popen": true,
+  "scope": "local synthetic checks;SELF region+waited CHILDREN;final JSON bookkeeping and wrapper imports separate metadata",
+  "output": "F                                                                        [100%]\n=================================== FAILURES ===================================\n__________ test_entry_failure_is_metered_without_inventing_child_exit __________\ntests/test_proposal_resources.py:49: in test_entry_failure_is_metered_without_inventing_child_exit\n    from scripts.supervise_jepa_proposals import meter_entry\nE   ImportError: cannot import name 'meter_entry' from 'scripts.supervise_jepa_proposals' (/Users/williamqiu/.config/superpowers/worktrees/echo-view-routing/a60-jepa-proposals/scripts/supervise_jepa_proposals.py)\n=========================== short test summary info ============================\nFAILED tests/test_proposal_resources.py::test_entry_failure_is_metered_without_inventing_child_exit\n",
+  "output_sha256": "89b218a08529a5ffdaac26e4257a49153a386847a3926dc3320a617564a218dd"
+}

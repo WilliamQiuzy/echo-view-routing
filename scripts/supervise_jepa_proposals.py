@@ -68,6 +68,7 @@ def execute(stage, command, run, pub, spent, declared_wall_seconds, GPU_job,
         external = pub / 'local_cpu_receipts.json'
         if external.exists():
             locked_rows += json.loads(external.read_text())['receipts']
+        locked_rows += [json.loads(p.read_text()) for p in pub.glob('entry_CPU_*.json')]
         for row in locked_rows:
             key = row['receipt_id']
             if key in merged and merged[key] != row:
@@ -207,5 +208,36 @@ def main():
     return stage_exit_status(row)
 
 
+def meter_entry(callback, run, pub):
+    """Meter prelaunch rejection and metadata outside execute's already charged region."""
+    run,pub=Path(run),Path(pub)
+    start=time.time();a=resource.getrusage(resource.RUSAGE_SELF);b=resource.getrusage(resource.RUSAGE_CHILDREN)
+    ledger=run/'processes.jsonl'
+    before=[json.loads(x) for x in ledger.read_text().splitlines()] if ledger.exists() else []
+    known={r['receipt_id'] for r in before};code=1;error=None
+    try:
+        code=callback()
+    except SystemExit as e:
+        code=int(e.code) if isinstance(e.code,int) else 1
+    except BaseException as e:
+        error=repr(e);code=1
+    end=time.time();aa=resource.getrusage(resource.RUSAGE_SELF);bb=resource.getrusage(resource.RUSAGE_CHILDREN)
+    after=[json.loads(x) for x in ledger.read_text().splitlines()] if ledger.exists() else []
+    fresh=[r for r in after if r['receipt_id'] not in known]
+    cpu=aa.ru_utime+aa.ru_stime-a.ru_utime-a.ru_stime+bb.ru_utime+bb.ru_stime-b.ru_utime-b.ru_stime
+    excluded=sum(r['measured_CPU_core_seconds'] for r in fresh)
+    if cpu+1e-6<excluded:raise ValueError('entry CPU cannot undercut already measured stage CPU')
+    durable_directory(pub)
+    value={'receipt_id':f'entry:{socket.gethostname()}:{os.getpid()}:{start}',
+       'stage':'supervisor_entry_metadata','measurement_host':socket.gethostname(),'model_pid':os.getpid(),
+       'supervisor_pid':None,'started_epoch':start,'finished_epoch':end,'full_process_wall_seconds':end-start,
+       'measured_CPU_core_seconds':max(0.,cpu-excluded),'total_entry_SELF_waited_CHILDREN_CPU_seconds':cpu,
+       'already_charged_stage_CPU_seconds_subtracted':excluded,'GPU_job':False,'CUDA_context_occupied':False,
+       'observed_worker_exit_code':None,'planned_CLI_exit_status':code,'entry_exception':error,
+       'new_worker_started':any(r['model_pid'] is not None for r in fresh),
+       'scope':'SELF+waited CHILDREN complement outside execute stages;no doublecharge;SELF final OS not directly observable;imports/final JSON bookkeeping coordination overhead separate'}
+    write_json(pub/f'entry_CPU_{os.getpid()}_{int(start*1e6)}.json',value)
+    return code
+
 if __name__ == '__main__':
-    raise SystemExit(main())
+    raise SystemExit(meter_entry(main,ROOT/'runs/a60_jepa_proposals_v1',ROOT/'docs/results/2026-11-03_jepa_proposals'))

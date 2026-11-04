@@ -13,7 +13,7 @@ def main():
     for p in sorted(PUB.glob('*.json')):
         if p.name=='local_cpu_receipts.json':continue
         value=json.loads(p.read_text());required=['started_epoch','finished_epoch','full_process_wall_seconds','measured_CPU_core_seconds','observed_worker_exit_code']
-        if not all(k in value for k in required) or p.name.startswith('process_'):continue
+        if not all(k in value for k in required) or p.name.startswith(('process_','entry_CPU_')):continue
         digest=hashlib.sha256(p.read_bytes()).hexdigest();relative=str(p.relative_to(ROOT));key='external:'+digest
         if key in records:continue
         records[key]={'stage':value.get('stage',p.stem),'receipt_id':key,**{k:value[k] for k in required},'measurement_host':value.get('measurement_host'),'model_pid':value.get('model_pid'),'supervisor_pid':value.get('supervisor_pid'),'GPU_job':False,'CUDA_context_occupied':False,'source_receipt':relative,'source_receipt_sha256':digest,'CPU_scope':value.get('scope',value.get('CPU_scope','measured source receipt'))}

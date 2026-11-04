@@ -44,3 +44,13 @@ def test_CPU_supervisor_bounds_use_CPU_and_original_deadline(tmp_path):
     r=execute('CPU_bounds',[sys.executable,'-c','pass'],tmp_path/'run',tmp_path/'pub',totals([]),14400,False,GPU_probe=lambda:[],storage_probe=lambda:0)
     assert r['effective_stage_wall_limit_seconds']==14400
     assert r['limits_at_launch']['stage_wall_seconds']>r['limits_at_launch']['remaining_GPU_seconds_before_reserve']
+
+def test_entry_failure_is_metered_without_inventing_child_exit(tmp_path):
+    from scripts.supervise_jepa_proposals import meter_entry
+    import json
+    def reject():raise SystemExit(2)
+    assert meter_entry(reject,tmp_path/'run',tmp_path/'pub')==2
+    rows=[json.loads(p.read_text()) for p in (tmp_path/'pub').glob('entry_CPU_*.json')]
+    assert len(rows)==1 and rows[0]['measured_CPU_core_seconds']>=0
+    assert rows[0]['observed_worker_exit_code'] is None and rows[0]['planned_CLI_exit_status']==2
+    assert not rows[0]['new_worker_started']
