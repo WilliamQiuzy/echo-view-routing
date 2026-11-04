@@ -41,6 +41,12 @@ def profile_value(b,ra,rj):
     return {'actions':actions,'old':old,'q':q,'value':{**decode(b,actions,old,q[:,0],q[:,1],taus),'old_scores':old,'q':q,'actions':actions,'all_actions':propose(b,ra,rj),'G_rejected':rejected},'sequences':[{'id':'cost_only_synthetic_axis','kind':'multi','labels':truth}]}
 
 
+def solver_pools(streams,options_each):
+    # All integer counts are synthetic, with fixed eight-run truth per stream.
+    # No private prediction/truth or trained score enters this cost backend.
+    return [[{'M':(i+k)%9,'P':8+(k*7+i)%max(1,options_each),'T':8,'span':None if k==0 else (k,k+1)} for k in range(options_each+1)] for i in range(streams)]
+
+
 def benchmark(T,name,folder):
     from echo_routing.temporal.event_risk_cost_bounds import observed_geometry
     b,ra,rj=synthetic_axis(T,name);v=profile_value(b,ra,rj);pa=np.eye(5)[ra]*.9+.02;pj=np.eye(5)[rj]*.9+.02
@@ -79,8 +85,11 @@ def main():
     T=max(r['max_length'] for r in m['roles'].values());folder=RUN/'cost_refinement_v1';folder.mkdir(exist_ok=False);profiles=[]
     for name in ['empty','envelope','legal_RLE','long_K']:
         profiles.append(benchmark(T,name,folder/name));print({'cost_profile_completed':name,'profiles':len(profiles)},flush=True)
+    from echo_routing.temporal.anchor_oracle import fractional_oracle
+    from echo_routing.temporal.event_risk_cost_bounds import axis_bounds
+    options_each=axis_bounds(T)['C'];pools=solver_pools(150,options_each);t=time.perf_counter();fractional_oracle(pools);solver=time.perf_counter()-t
     if torch.cuda.is_initialized():raise ValueError('CPU-only probe initialized CUDA')
-    write(PUB/'cost_refinement_profile.json',{'passed':True,'geometry':geometry,'future_structural_bounds':future,'profiles':profiles,'input_manifest_sha256':sha(PUB/'input_manifest.json'),'original_cost_profile_sha256':sha(PUB/'cost_profile.json'),'engineering_freeze_git':freeze['git_commit'],'synthetic_MLP_module_forward_calls':sum(p['synthetic_MLP_module_forward_calls'] for p in profiles),'optimizer_updates':0,'teacher_forwards':0,'actual_trained_head_outcomes_or_GT_values_used':False,'metadata_labels_transient_parse_not_benchmark_truth':True,'prospective_only_not_admission':True});return 0
+    write(PUB/'cost_refinement_profile.json',{'passed':True,'geometry':geometry,'future_structural_bounds':future,'profiles':profiles,'integer_solver':{'streams':150,'options_each_excluding_noop':options_each,'seconds':solver},'input_manifest_sha256':sha(PUB/'input_manifest.json'),'original_cost_profile_sha256':sha(PUB/'cost_profile.json'),'engineering_freeze_git':freeze['git_commit'],'synthetic_MLP_module_forward_calls':sum(p['synthetic_MLP_module_forward_calls'] for p in profiles),'optimizer_updates':0,'teacher_forwards':0,'actual_trained_head_outcomes_or_GT_values_used':False,'metadata_labels_transient_parse_not_benchmark_truth':True,'prospective_only_not_admission':True});return 0
 
 
 if __name__=='__main__':raise SystemExit(main())

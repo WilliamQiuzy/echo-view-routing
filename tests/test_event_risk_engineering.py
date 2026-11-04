@@ -26,3 +26,12 @@ def test_profiles_include_long_envelope_and_synthetic_truth_only(tmp_path):
     b,a,j=synthetic_axis(37,'envelope')
     assert np.unique(b).size==1
     assert len(profile_value(b,a,j)['actions'])>10
+
+
+def test_complete_integer_solver_pool_is_synthetic_and_fixed_truth():
+    from scripts.probe_event_risk_refinement import solver_pools
+    from echo_routing.temporal.anchor_oracle import fractional_oracle
+    pools=solver_pools(3,7)
+    assert len(pools)==3 and all(len(p)==8 for p in pools)
+    assert all(p[0]['span'] is None and {v['T'] for v in p}=={8} for p in pools)
+    assert fractional_oracle(pools)['T']==24
