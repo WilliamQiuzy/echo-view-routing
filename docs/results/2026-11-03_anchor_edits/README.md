@@ -33,6 +33,8 @@ G域主任务上限仅比Base高约0.215/0.195个百分点。新构造calibratio
 
 这些都是重复使用的OPEN开发数据与构造流。新确认bank只是在已使用来源上事先冻结的新抽样；session不是已确认患者，A08历史暴露inner，clip标签传播不等于独立逐帧可见性标注。bootstrap对整session/固定流/pair重采样，来源共享，区间不是独立患者或临床验证；多重比较未转为确证性显著性结论。用户暂无人工标注资源。本轮尚未建立可支撑所期望性能增益和独立泛化主张的论文级证据，完整负结果与动作域限制可用于后续研究论证。
 
+卡44的已接受长度/T占比已从冻结缓存补齐：[48个policy cell长度审计](action_length_audit.csv)分别报告source-role与完整evaluation context，stress原生/pair仅复用main。原70/96/12、模型与分数完全未改。全部观测候选/已接受修复的最大长度/T分别为.393939/.387755，故各cell整轴修改次数均为0；这是本轮观测，规则本身没有长度上限。[独立算术与整轴事件核验](root_action_length_verification.json)保留证明。初次收尾遗漏该报告项的notice、旧资源原件及追加费用修订链均保留。
+
 原生五类混淆、A4C/A5C双向错误、边界P/R、pair与multi短段FN/FP、恢复/损害、候选长度/接受/veto、曲线/资源完整数据见[结构化统计](summary.json)、[全部70行](metrics.csv)、[动作域诊断](action_space_oracle.csv)。[配对效应图](paired_effects.png)与[训练曲线](training_curves.png)均有同名PDF；图中所有seed/半部及三表保留，G/U共享模型和评分，缓存head延迟不冒充整个A08+JEPA系统成本。
 
 预算不重置，继承原24GPU-job小时/72实际worker CPU-core小时/40GB tracked上界与原更早deadline，历史费用和不确定性均保留；未花费的2小时收尾储备不算实耗。最终实际费用/退出证明在resources与terminal记录完成后补齐。模型、原始数据和per-case标签留服务器；不改网页、不push，主目录8个已暂存理论文件及其他用户修改继续保护。
