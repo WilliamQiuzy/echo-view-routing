@@ -60,7 +60,7 @@
       "video_id",
       "frames_dir"
     ],
-    "new_head_training_only": "FIT2736native+new1500constructed;inner628native+new300constructednevertrained",
+    "new_head_training_only": "FIT2736native+reused_A59fixed1500constructed;inner628native+reused_A59fixed300constructednevertrained",
     "old_A08_inner_exposure": "notOOF_or_independent_validation",
     "old_A57_roles_are_native_group_sources_only": true,
     "new_joined_context_never_spliced": true,
@@ -90,7 +90,7 @@
         "sha256": "8bb7c76503dd1cff7ef9e71840f40c3833c1b93eae410e09a40344e56e1982cc"
       }
     },
-    "A08_FIT_inner_cache_route": "fresh_full_original_stride5_for_all_native_and_new_constructed;no_partialA31reuse"
+    "A08_FIT_inner_cache_route": "strict_readonly_reuse_of_complete_A59_original_stride5_allcontext_cache;no_new_FIT_or_inner_neuralforward"
   },
   "prior_A59": {
     "input_manifest.json": {
@@ -214,7 +214,7 @@
     "CUDA_VISIBLE_DEVICES": ""
   },
   "budget": {
-    "origin_worktree_birth_epoch": 1793737172.3905008,
+    "origin_worktree_birth_epoch": 1793758193.4228241,
     "original_origin": 1793648044.1596537,
     "GPUjob_h": 24,
     "CPUaccounting_h": 72,
