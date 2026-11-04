@@ -12,7 +12,7 @@ def main():
     with ExclusiveQueue(RUN/'exclusive_supervisor.lock'):
         names=['fullFIT_check_freeze.json','formal_admission_freeze.json',
                'formal_freeze.json','audit_freeze.json','outer_admission_freeze.json','outer_freeze.json','readout_freeze.json','aggregate_freeze.json',
-               'oracle_freeze.json','package_freeze.json','terminal_freeze.json']
+               'oracle_freeze.json','package_freeze.json','native_attribution_freeze.json','terminal_freeze.json']
         contracts={name:verify_freeze(name) for name in names}
         if (RUN/'active_process.json').exists():raise ValueError('active queue claim prevents terminal closure')
         records=[json.loads(line) for line in (RUN/'processes.jsonl').read_text().splitlines()]
@@ -30,9 +30,9 @@ def main():
         if gpu:raise ValueError('GPU owner still present')
         pending=list(RUN.rglob('*pending*.json'))
         if pending:raise ValueError('ambiguous update/readout claim still present')
-        summary=read(PUB/'summary.json');oracle=read(PUB/'action_space_diagnostic.json');models=read(PUB/'models_manifest.json')
+        summary=read(PUB/'summary.json');oracle=read(PUB/'action_space_diagnostic.json');models=read(PUB/'models_manifest.json');native=read(PUB/'native_attribution.json')
         if (summary['formal_models']!=4 or summary['formal_optimizer_updates']!=24000 or summary['metric_rows']!=124
-            or summary['paired_comparison_count']!=144 or oracle['domain_count']!=32 or oracle['overlapping_old_A59_oracles_exactly_reproduced']!=12 or not models['passed']):
+            or summary['paired_comparison_count']!=144 or oracle['domain_count']!=32 or oracle['overlapping_old_A59_oracles_exactly_reproduced']!=12 or not models['passed'] or not native['passed'] or native['cell_count']!=24 or native['source_outer_metrics_sha256']!=sha(PUB/'outer_metrics.json')):
             raise ValueError('all authorized scientific stages must complete')
         cfg=read(CFG);pins=[cfg['source']['a08'],cfg['source']['jepa']]+[
               {'path':m['path'],'sha256':m['sha256']} for row in models['models'] for m in row['milestones']]
@@ -50,7 +50,7 @@ def main():
             raise ValueError('inherited cumulative caps exceeded')
         value={'passed':True,'all_authorized_A60_stages_complete':True,'no_remaining_authorized_model_training_or_readout':True,
             'scientific_summary_sha256':sha(PUB/'summary.json'),'action_space_diagnostic_sha256':sha(PUB/'action_space_diagnostic.json'),
-            'models_manifest_sha256':sha(PUB/'models_manifest.json'),'source_frozen_objects_verified':len(contracts['outer_freeze.json']['objects']),
+            'models_manifest_sha256':sha(PUB/'models_manifest.json'),'native_attribution_sha256':sha(PUB/'native_attribution.json'),'source_frozen_objects_verified':len(contracts['outer_freeze.json']['objects']),
             'all_current_contracts_verified':names,'historical_preparation_source_versions_verified_against_actual_Git_receipt':read(PUB/'historical_source_version_verification.json'),'source_and_all12milestone_weight_files_verified':len(pins),
             'new_GPU_job_hours':actual['new_GPU_wall_seconds']/3600,'cumulative_GPU_job_hours':cumulativeGPU,
             'new_summed_measured_CPU_receipt_hours_including_collector':(actual['new_measured_CPU_seconds']+cpu)/3600,
