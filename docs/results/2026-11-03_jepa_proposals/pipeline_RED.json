@@ -1,0 +1,31 @@
+{
+  "stage": "pipeline_RED",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "tests/test_proposal_pipeline.py"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 96354,
+  "supervisor_pid": 96341,
+  "started_epoch": 1793760854.832931,
+  "finished_epoch": 1793760856.223341,
+  "full_process_wall_seconds": 1.3904099464416504,
+  "observed_worker_exit_code": 2,
+  "stage_exit_code": 1,
+  "termination_reason": null,
+  "exception": null,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 0.916876,
+  "measured_supervisor_CPU_seconds": 0.0010690000000000005,
+  "measured_CPU_core_seconds": 0.917945,
+  "durable_claim_before_Popen": true,
+  "scope": "local synthetic checks;SELF region+waited CHILDREN;final JSON bookkeeping and wrapper imports separate metadata",
+  "output": "\n==================================== ERRORS ====================================\n_______________ ERROR collecting tests/test_proposal_pipeline.py _______________\nImportError while importing test module '/Users/williamqiu/.config/superpowers/worktrees/echo-view-routing/a60-jepa-proposals/tests/test_proposal_pipeline.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n../../../../../.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/test_proposal_pipeline.py:7: in <module>\n    from echo_routing.temporal.proposal_policy_cache import PolicyCache\nE   ModuleNotFoundError: No module named 'echo_routing.temporal.proposal_policy_cache'\n=========================== short test summary info ============================\nERROR tests/test_proposal_pipeline.py\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n",
+  "output_sha256": "5ca4529061a82f4c7faa0f79bf8580d23ec4ee815cc0a90441d528f68be93fda"
+}
