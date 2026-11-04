@@ -14,6 +14,7 @@ from scripts.safety_common import *
 from echo_routing.temporal.safety_readout_plan import TABLES,HALVES,SEEDS,ARMS,BASE,system,historical
 from echo_routing.temporal.structured_inputs import windows
 from echo_routing.temporal.dense_sequence import chunk_starts
+from echo_routing.temporal.safety_package import source_costs
 
 
 def main():
@@ -27,7 +28,7 @@ def main():
         plt.close(fig)
     def footer(fig,lines,y=.10,spacing=.025):
         for i,line in enumerate(lines):fig.text(.04,y-i*spacing,line,fontsize=8.5)
-    contrasts=[('S-L-C',BASE,'Complete system: S-L-C − A08','#a14848','s'),('S-L-C','A60-J-R','Prior policy: S-L-C − A60 J-R','#476d95','o'),('S-L-C','S-P-C','Pairwise ranking: S-L-C − S-P-C','#39806f','^'),('S-L-C','S-L-N','Calibration: S-L-C − S-L-N','#aa8640','D')]
+    contrasts=[('S-L-C',BASE,'Complete system: S-L-C − A08','#a14848','s'),('S-L-C','A60-J-R','Prior policy: S-L-C − A60 J-R','#476d95','o'),('S-L-C','S-P-C','Ranking + calibration response: S-L-C − S-P-C','#39806f','^'),('S-L-C','S-L-N','Calibration: S-L-C − S-L-N','#aa8640','D')]
     ci={(r['table'],r['half'],r['seed'],r['left'],r['right']):r for r in s['paired_comparisons']}
     keys=[('segment_f1_50_multi','Multi segment F1 difference (pp)',100),('short_true_unmatched_16samples','True short misses: difference',1),('short_spurious_segments_16samples','False short units: difference',1),('native_new_wrong_reference_positions','New wrong native positions: difference',1)]
     fig,axes=plt.subplots(4,2,figsize=(17,18))
@@ -130,12 +131,13 @@ def main():
     if len(inner_scores)!=928:raise ValueError('complete inner928 score axes required for physical forward counts')
     inner_nonempty=sum(len(v)>0 for v in inner_scores)
     write(PUB/'inner_physical_costs.json',{'fixed_source_sequences':928,'nonempty_G_sequences':inner_nonempty,'milestone_inner_readouts':24,'inner_utility_module_forwards':24*inner_nonempty,'inner_risk_module_forwards':48*inner_nonempty,'eight_final_calibrations_reuse_cached_scores_with_zero_new_neural_forward':True,'same_shapes_and_complete_coverage_verified_by_independent_model_audit':True,'new_source_producer_forwards':0,'inner_calibration_is_not_independent_validation':True})
-    cache=read(PUB/'cache_outer_manifest.json');units={'a08':0,'jepa':0};calls={'a08':0,'jepa':0}
+    cache=read(PUB/'cache_outer_manifest.json');geometry={}
     for r in cache['records']:
         qs=sequences(r['role']);counts=[len(windows(len(q['refs']),5)['centre']) if r['source']=='a08' else len(chunk_starts(len(q['refs']))) for q in qs]
-        if sum(counts)!=r['new_neural_units']:raise ValueError('new source neural geometry/count differs from actual journal')
-        batch=32 if r['source']=='a08' else 2;units[r['source']]+=sum(counts);calls[r['source']]+=sum((n+batch-1)//batch for n in counts)
-    write(PUB/'source_physical_costs.json',{'new_source_neural_units':units,'source_python_model_forward_calls':calls,'new240_genuine_joined_streams_only':True,'old20source_role_caches_reused_with_zero_neural_forward_this_round':True,'source_cache_GPU_jobwall_seconds':read(PUB/'process_cache_outer_1.json')['full_process_wall_seconds'],'source_cache_CPU_seconds':read(PUB/'process_cache_outer_1.json')['measured_CPU_core_seconds'],'formal_physical_models':10,'formal_utility_optimizer_updates':48000,'formal_risk_optimizer_updates':12000,'formal_backward_calls':60000,'formal_utility_module_forward_calls':48000,'formal_risk_module_forward_calls':24000,'engineering_optimizer_updates':130,'engineering_mutable_models':22,'cost_only_structural_module_forwards':18,'cost_only_optimizer_updates':0,'outer_utility_module_forwards':read(PUB/'outer_metrics.json')['actual_utility_MLP_forwards'],'outer_localrisk_module_forwards':read(PUB/'outer_metrics.json')['actual_localrisk_MLP_forwards'],'outer_historical_newrole_module_forwards':read(PUB/'outer_metrics.json')['actual_historical_newrole_MLP_forwards'],'all_policies_operationally_require_full_A08_and_JEPA_producers':True,'cached_head_runtime_is_not_standalone_system_inference_latency':True,'standalone_end_to_end_latency_measured':False,'shared_caches_and_scores_charged_physically_once_not_perlogicalpolicy':True,'local_synthetic_software_tests_can_execute_additional_MLP_steps_separate_from130_engineering_and60000_formal':True,'global_manifest_ID_path_columns_transiently_parsed':True,'protected_media_forwards':0,'protected_labels_used_for_training_or_selection':False,'fresh_labels_created_for_prespecified_construction_only':True})
+        geometry[(r['source'],r['role'])]=counts
+    if set(geometry)!={(source,'a61_confirmation_'+half) for source in ['a08','jepa'] for half in HALVES}:raise ValueError('exactfour new source-role cells required')
+    source_report=source_costs(cache['records'],geometry,[json.loads(line) for line in (RUN/'processes.jsonl').read_text().splitlines()])
+    write(PUB/'source_physical_costs.json',{**source_report,'new240_genuine_joined_streams_only':True,'old20source_role_caches_reused_with_zero_neural_forward_this_round':True,'formal_physical_models':10,'formal_utility_optimizer_updates':48000,'formal_risk_optimizer_updates':12000,'formal_backward_calls':60000,'formal_utility_module_forward_calls':48000,'formal_risk_module_forward_calls':24000,'engineering_optimizer_updates':130,'engineering_mutable_models':22,'cost_only_structural_module_forwards':18,'cost_only_optimizer_updates':0,'outer_utility_module_forwards':read(PUB/'outer_metrics.json')['actual_utility_MLP_forwards'],'outer_localrisk_module_forwards':read(PUB/'outer_metrics.json')['actual_localrisk_MLP_forwards'],'outer_historical_newrole_module_forwards':read(PUB/'outer_metrics.json')['actual_historical_newrole_MLP_forwards'],'all_policies_operationally_require_full_A08_and_JEPA_producers':True,'cached_head_runtime_is_not_standalone_system_inference_latency':True,'standalone_end_to_end_latency_measured':False,'shared_caches_and_scores_charged_physically_once_not_perlogicalpolicy':True,'local_synthetic_software_tests_can_execute_additional_MLP_steps_separate_from130_engineering_and60000_formal':True,'global_manifest_ID_path_columns_transiently_parsed':True,'protected_media_forwards':0,'protected_labels_used_for_training_or_selection':False,'fresh_labels_created_for_prespecified_construction_only':True})
     write(PUB/'figure_receipt.json',{'passed':True,'summary_sha256':sha(PUB/'summary.json'),'action_space_diagnostic_sha256':sha(PUB/'action_space_diagnostic.json'),'native_attribution_sha256':sha(PUB/'native_attribution.json'),'figures':{str(p.relative_to(ROOT)):sha(p) for p in figures},'package_freeze_git':freeze['git_commit'],'aggregate_only_no_threshold_model_metric_or_endpoint_changes':True,'PNG_visual_QA_still_required':True,'epoch':time.time()})
     print({'figures':len(figures),'metric_rows':314,'inner_sets':56},flush=True)
 if __name__=='__main__':main()
