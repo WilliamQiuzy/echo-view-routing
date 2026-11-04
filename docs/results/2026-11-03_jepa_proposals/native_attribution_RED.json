@@ -1,0 +1,31 @@
+{
+  "stage": "native_attribution_RED",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "tests/test_proposal_native_attribution.py"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 43179,
+  "supervisor_pid": 43168,
+  "started_epoch": 1793765385.640505,
+  "finished_epoch": 1793765385.985934,
+  "full_process_wall_seconds": 0.3454289436340332,
+  "observed_worker_exit_code": 2,
+  "stage_exit_code": 1,
+  "termination_reason": null,
+  "exception": null,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 0.22399599999999997,
+  "measured_supervisor_CPU_seconds": 0.0014659999999999986,
+  "measured_CPU_core_seconds": 0.22546199999999997,
+  "durable_claim_before_Popen": true,
+  "scope": "local synthetic checks;SELF region+waited CHILDREN;final JSON bookkeeping and wrapper imports separate metadata",
+  "output": "\n==================================== ERRORS ====================================\n__________ ERROR collecting tests/test_proposal_native_attribution.py __________\nImportError while importing test module '/Users/williamqiu/.config/superpowers/worktrees/echo-view-routing/a60-jepa-proposals/tests/test_proposal_native_attribution.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n../../../../../.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/test_proposal_native_attribution.py:2: in <module>\n    from echo_routing.temporal.proposal_native_attribution import joint_counts,effects\nE   ModuleNotFoundError: No module named 'echo_routing.temporal.proposal_native_attribution'\n=========================== short test summary info ============================\nERROR tests/test_proposal_native_attribution.py\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n",
+  "output_sha256": "0ae67e03f1db9f1579ef993e74d7a7b283efc43da6ce7c9dbdad29845aa9d958"
+}
