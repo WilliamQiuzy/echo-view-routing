@@ -81,7 +81,7 @@ def main():
     ax.axvline(0,c='.5',lw=.8);ax.set_yticks(yt,yl);ax.invert_yaxis();ax.grid(axis='x',alpha=.2);ax.set_xlabel('Exact oracle multi F1 − A08 anchor (percentage points)');ax.set_title('Action-domain capability ceiling, label assisted and not deployable',loc='left',fontsize=15)
     handles=[plt.Line2D([0],[0],ls='',marker=['o','s'][gi],color=['#286c9c','#be5c2e'][di],label=d+' / '+g) for di,d in enumerate(['old','expanded']) for gi,g in enumerate(['U','G'])];fig.legend(handles=handles,loc='lower center',bbox_to_anchor=(.6,.13),ncol=4,frameon=False)
     fig.text(.06,.075,'Max ONE canonical action + no-op per stream. Objective includes multi streams only; native/pair metrics are excluded. U/G vary the observable majority guard.',fontsize=9)
-    fig.text(.06,.035,'Union recovery is not jointly attainable. These are domain-limited ceilings, not upper bounds on all JEPA information. All 12 overlapping old domains reproduce A59.',fontsize=9)
+    fig.text(.06,.035,'No actual dE/dFP16 safety constraints in these ceilings; the gap to E/R is not pure ranking loss. Old 12 domains reproduce A59; not an all-JEPA upper bound.',fontsize=9)
     fig.subplots_adjust(left=.30,right=.98,top=.90,bottom=.24);save(fig,'action_domain_ceiling')
     pd.json_normalize(rows).to_csv(PUB/'metrics.csv',index=False)
     pd.DataFrame(o['oracle_domains']).to_csv(PUB/'action_space_oracle.csv',index=False)
