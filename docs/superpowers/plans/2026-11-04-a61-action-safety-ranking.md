@@ -84,7 +84,7 @@ All eight utility models run6000 optimizer steps =48,000 utility updates. Same A
 For each changed position t only, train a mutually exclusive label:
 H if B[t]==y[t]; R if edited[t]==y[t]; otherwise neutral. Because t is changed, H/R cannot both hold. Original-axis labels only; no padded/sampled-interpolation truth.
 
-47 observable features per changed position, in this fixed order:
+Let T be the full unpadded original-axis position count; [s,e) the canonical action interval, action_length=e−s; K=count(edited!=B) over that complete axis (changed-position count, excluding unchanged interior positions). K is neither candidate count C nor run count. For each action K>0. 47 observable features per changed position, in this fixed order:
 
 1. pA[t]5, pJ[t]5, B[t] onehot5, proposed[t] onehot5 =20.
 2. pA means over `[max(0,t−16),t)` and `(t,min(T,t+17))`; same pJ means =20 more. Empty flank means are zero; append two flank-availability flags =42.
