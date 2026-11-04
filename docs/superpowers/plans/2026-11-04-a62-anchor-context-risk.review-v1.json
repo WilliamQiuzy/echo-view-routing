@@ -1,0 +1,61 @@
+{
+  "reviewer": "a62_card_review",
+  "created_at_utc": "2026-11-04T19:55:30Z",
+  "mode": "read_only_plan_review",
+  "launch_authorized": false,
+  "measurements": [
+    {
+      "step": "skill_and_memory_read",
+      "python_self_cpu_s": 0.005973000000000006,
+      "child_cpu_s": 0.0057399999999999994
+    },
+    {
+      "step": "plan_and_reviewer_instructions_read",
+      "python_self_cpu_s": 0.0017149999999999943,
+      "child_cpu_s": 0.0
+    },
+    {
+      "step": "detailed_features_basis_spec_read",
+      "python_self_cpu_s": 0.0006390000000000007,
+      "child_cpu_s": 0.0
+    },
+    {
+      "step": "read_only_policy_B3_contract_read",
+      "python_self_cpu_s": 0.00040599999999999664,
+      "child_cpu_s": 0.0
+    },
+    {
+      "step": "review_receipt_prepare_through_prewrite_snapshot",
+      "python_self_cpu_s": 0.061917,
+      "child_cpu_s": 0.0,
+      "window": "process startup through prewrite snapshot"
+    }
+  ],
+  "cpu_scope": "Partial measured CPU only: earlier Python post-import read windows and the rg child, plus final receipt-preparation process startup through prewrite snapshot. No nested double count.",
+  "unmetered_tail": "Earlier command Python import/setup/exit, shell/tool service overhead, this final JSON serialization/write/exit and subsequent tools, assistant model reasoning and final response are unmetered; unknown is not zero.",
+  "review_status": "Issues Found",
+  "blocking_issues": [
+    {
+      "plan_lines": [
+        172,
+        181,
+        182
+      ],
+      "issue": "Missing fixed-N-top reachable-safe support diagnostic; full candidate oracle can select an action unavailable to R1/R2 veto policies.",
+      "fix": "Add predeclared 24 table-half-seed support cells over {no-op, identical original-N-admitted S-L top}, distinguish event-safe from stricter short-loss-free acceptance support, report attainable recovery and pooled F1 without adapting models or acceptance targets."
+    }
+  ],
+  "reviewed_files": [
+    "docs/superpowers/plans/2026-11-04-a62-anchor-context-risk.md",
+    "docs/superpowers/plans/2026-11-04-a62-anchor-context-risk.basis.json",
+    "docs/results/2026-11-04_a61_residual_case_analysis/NEXT_ROUND_PROPOSAL.md",
+    "docs/results/2026-11-04_a61_residual_case_analysis/README.md",
+    "echo_routing/temporal/safety_policy.py",
+    "echo_routing/temporal/baselines/b3_js_divergence.py"
+  ],
+  "known_measured_tool_cpu_seconds": 0.07639,
+  "structural_check_rerun": false,
+  "experiment_or_test_execution": false,
+  "SSH_or_NN_or_recipe_or_partition_or_training_execution": false,
+  "finished_at_utc": "2026-11-04T19:57:29Z"
+}

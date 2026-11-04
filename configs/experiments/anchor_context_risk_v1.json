@@ -1,0 +1,215 @@
+{
+  "authorization": {
+    "path": "docs/results/2026-11-04_anchor_context_risk/execution_authorization.json",
+    "sha256": "171cbecf92f6b9cb92faa8f0069e8f19e7b14326b5e85a287fa629f8c167166f"
+  },
+  "basis": {
+    "path": "docs/superpowers/plans/2026-11-04-a62-anchor-context-risk.basis.json",
+    "sha256": "57d5f20c57f75148db85d145e29038560b5c9cbe81cb6cf69602ff3ccefb8b19"
+  },
+  "budget": {
+    "CPU_closure_reserve_within_increment_seconds": 3600,
+    "CPU_forecast_uncertainty_buffer_seconds": 900,
+    "GPU_closing_reserve_seconds": 7200,
+    "T0_epoch": 1793824361.0,
+    "cumulative_CPU_accounting_hours_cap": 72,
+    "cumulative_GPU_job_hours_cap": 24,
+    "cumulative_tracked_storage_upper_bytes_cap": 40000000000,
+    "deadline_epoch": 1793867561.0,
+    "incremental_CPU_accounting_seconds_cap": 21600,
+    "incremental_GPU_job_seconds_cap": 1800,
+    "incremental_tracked_storage_upper_bytes_cap": 1250000000,
+    "storage_forecast_reserve_bytes": 500000000
+  },
+  "card": {
+    "path": "docs/superpowers/plans/2026-11-04-a62-anchor-context-risk.md",
+    "sha256": "1f01eb3b9ad83df0b91f783c37d6ada70386384722090442d0c200b37335f5eb"
+  },
+  "channel_mapping": {
+    "classes": [
+      "PLAX",
+      "PSAX",
+      "A4C",
+      "A5C",
+      "SC4C"
+    ],
+    "ontology": {
+      "path": "configs/labels.yaml",
+      "sha256": "4c200c57a9ebd86603db5c45f8441d489e89ce4be9ea95d40abe88c7f38d566c"
+    },
+    "source_chain": "A08 train_video_within_view->A07/vso TrainingData;JEPA prepare_dense_sequence->prepare_video_feature_temporal.TrainingData;both index.label_index family5_v1;no channel permutation",
+    "training_index_mapping": "models_frozen/e1_echoviewclip_probe/v1/feature_manifest.json",
+    "training_index_mapping_sha256": "56f59166ba3f1b428867e4ec9a7e6dfd800cb5bccd79db8191d3c916421f17c3",
+    "version": "family5_v1"
+  },
+  "data": {
+    "old_inner_mixed_for_new_thresholds": false,
+    "partition_prefix": "A62-inner-v1\\0",
+    "partition_sessions": [
+      50,
+      50
+    ],
+    "recipe_counts": [
+      150,
+      150,
+      120,
+      120
+    ],
+    "recipe_domains": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "recipe_roles": [
+      "CAL_mixed",
+      "AUDIT_mixed",
+      "a62_confirmation_selection",
+      "a62_confirmation_calibration"
+    ],
+    "recipe_seed": 2026110463,
+    "source_role_natives": [
+      "inner_cal",
+      "selection",
+      "calibration"
+    ]
+  },
+  "legacy_SL_tau": {
+    "2026110461": 0.007963286712765694,
+    "2026110462": 0.006616456434130669
+  },
+  "prior_bookkeeping": {
+    "CPU_accounting_hours_through_A61_root_publication": 19.781859436944444,
+    "CPU_unmetered_administration_and_historical_gaps_retained": true,
+    "GPU_job_hours": 18.488818130029575,
+    "known_CPU_accounting_hours_including_listed_posthoc": 19.78341831,
+    "original_deadline_epoch": 1793820844.1596537,
+    "original_deadline_has_expired": true,
+    "separate_posthoc_measured_CPU_seconds": 5.611943,
+    "tracked_server_storage_upper_bytes": 37904365798
+  },
+  "prior_scientific_git": "0aeb8527423d491920c0f9e9e578a8496592cf85",
+  "prior_source_pins": {
+    "docs/results/2026-11-04_a61_residual_case_analysis/analysis_manifest.json": "bd6e650e35c7eb71112b62b0fbf6bce460020197effe84e118d0fc6acd028732",
+    "docs/results/2026-11-04_a61_residual_case_analysis/case_clarification.anonymous.json": "db030d08cb040122e8f632a06b01c9c78879082eb741125bbdd665d3ae4dea88",
+    "docs/results/2026-11-04_a61_residual_case_analysis/case_evidence.anonymous.json": "a441f5384101ee547f294cbe0ce8f0ca29be17b13a5299a9ad8c21532fcafe29",
+    "docs/results/2026-11-04_action_safety_ranking/calibration.json": "2e7a56d7d441be74ced0a8270034711372cc0721e4267c79737757c4e2091b51",
+    "docs/results/2026-11-04_action_safety_ranking/input_manifest.json": "d599cd48bdf23e599e16dc02db6888c7e5f1f2616f5dff9eea57a05e13a60a8b",
+    "docs/results/2026-11-04_action_safety_ranking/models_manifest.json": "ed20ecdf41d05cdc9b1b8c74adf9ced90f5533f936c297ce2653ebcd1d640e20",
+    "docs/results/2026-11-04_action_safety_ranking/public_source_manifest.json": "0c8d4a74d80ba282008e08735ca4649fa4493604296510ecfc231d32906c1e8a",
+    "docs/results/2026-11-04_action_safety_ranking/readout_plan.json": "a86312f4576d1c36df7111dab6fec37d43871d21facf5b3be89facf2fe69d302",
+    "docs/results/2026-11-04_action_safety_ranking/resources.json": "e62c092a2951ea207c7d07cb0d555cfb434f320b798a17fdb82a1cc1342bec62",
+    "docs/results/2026-11-04_action_safety_ranking/training_inputs.json": "a708fbcb97af208d72b9080da0de9ef2821c98c4eddb3ade308b472b90ceeb29"
+  },
+  "readonly_code_pins": {
+    "echo_routing/temporal/anchor_oracle.py": "c80f58ef345748b0f0b0af8525cedc20f1f9ab3d04125ba6a447c9796db603e6",
+    "echo_routing/temporal/baselines/b3_js_divergence.py": "8419851384c624d1b95eaf703178fe38955e25b2d9657037ffa94ebf3d2ce854",
+    "echo_routing/temporal/proposal_actions.py": "48f3b6db4d5b39482ed108bf3087aea873f25bdd71777577cfd4d8c4a47b0017",
+    "echo_routing/temporal/proposal_features.py": "bc031823805646c4712392adefc507331ab5d03e66522368b71593e364bae45b",
+    "echo_routing/temporal/safety_features.py": "b3bc18ec7c11aaa667c0b6bbe73f0644a086b805f19b53a869ba922b83a1c973",
+    "echo_routing/temporal/safety_policy.py": "198f7d5738515c41ce248c56ff72743a00f87ac675b44e39cb18f831491f4679",
+    "echo_routing/temporal/safety_runtime.py": "dfa17e864c17659de8268d2df6c3ffa14bda28acc6a42905480d982a3c4baf4e",
+    "echo_routing/temporal/safety_training.py": "a067b03fefdc0677d57529ac4fb27d738a4df769f5e923fa408346ba2eb2b2f3"
+  },
+  "run_id": "a62_anchor_context_risk_v1",
+  "scope": {
+    "base_native_references": 2,
+    "bootstrap_replicates_each": 5000,
+    "dual_source_payloads": 1080,
+    "formal_updates_each": 6000,
+    "formal_updates_total": 24000,
+    "frozen_N_top_reachable_support_cells": 24,
+    "inner_CAL_AUDIT_metric_rows": 26,
+    "new_event_models": 4,
+    "new_full_candidate_oracle_cells": 6,
+    "new_fullstate_milestone_plus_latest_records": 16,
+    "new_inner_source_streams": 300,
+    "new_outer_source_streams": 240,
+    "new_source_streams_total": 540,
+    "new_thresholds": 6,
+    "outer_metric_rows": 156,
+    "paired_comparisons": 240,
+    "policy_native_cubes": 24,
+    "reachable_support_filters_per_cell": 2,
+    "reachable_support_records": 48,
+    "regression_C_policy_records": 16,
+    "reused_full_candidate_oracle_cells": 30,
+    "reused_legacy_thresholds": 2
+  },
+  "source": {
+    "a08": {
+      "marker": "middle_original_target_slot",
+      "original_B3": {
+        "half_window": 7,
+        "nms_radius": 5,
+        "threshold": 0.19660949291632382,
+        "threshold_quantile": 0.999
+      },
+      "original_choices": "docs/results/2026-10-16_video_within_view/choices.json",
+      "original_choices_sha256": "b2a731e5f4393187ee9954f710821ac04938652f0a7d00e0381ad0b8b21cf27e",
+      "path": "models_frozen/video_within_view_v1/all_s0/final.pt",
+      "precision": "FP32_TF32off_eval",
+      "preprocess": "gammaLUT_then_bilinear_shortside256_centercrop224_RGBuint8_EchoPrime_0to255_meanstd",
+      "sha256": "9b144925f32fac7d725d13231a132abeb6635fa44b6fe0dbcec7f5b59d035bbc",
+      "slot_order": "identity",
+      "slots": 16,
+      "stride": 5,
+      "window": 16
+    },
+    "jepa": {
+      "chunk": 64,
+      "features": "final_fiveclass_probabilities_only",
+      "model_manifest": "docs/results/2026-11-02_dense_target_sequence/models_manifest.json",
+      "model_manifest_sha256": "a5d6c70cc9796f0cf8319bda7c6fa54526c383c80f012e7ec5399a6289d2bb87",
+      "path": "runs/a57_dense_sequence_v1/seed2026110257/J-high/step6000.pt",
+      "precision": "BF16encoder_FP32head_eval",
+      "sha256": "2fa26f2b3ffbffd4d8481c6ac1ff2190572f18648e13f13dbf37333a17bdd985",
+      "source_manifest": "docs/results/2026-11-02_dense_target_sequence/source.json",
+      "source_manifest_sha256": "dbe6b45ef274e434a0ab526885dc6c74589394abb92b601307a50c761c3e4e1b",
+      "stitch": "positive_triangle_probabilities",
+      "stride": 32
+    }
+  },
+  "training": {
+    "AdamW": {
+      "betas": [
+        0.9,
+        0.999
+      ],
+      "eps": 1e-08,
+      "lr": 0.001,
+      "weight_decay": 0.01
+    },
+    "BCE_weights": "unweighted",
+    "arms": [
+      "R1",
+      "R2"
+    ],
+    "batch_candidate_kinds": [
+      32,
+      32
+    ],
+    "clip_norm": 1.0,
+    "engineering_updates": 72,
+    "formal_steps_each": 6000,
+    "formal_updates": 24000,
+    "latest_every": 100,
+    "milestones": [
+      2000,
+      4000,
+      6000
+    ],
+    "model_dims": [
+      205,
+      32,
+      1
+    ],
+    "old_draw_role": "risk",
+    "parameters_each": 6625,
+    "seeds": [
+      2026110461,
+      2026110462
+    ],
+    "warmup": 100
+  }
+}

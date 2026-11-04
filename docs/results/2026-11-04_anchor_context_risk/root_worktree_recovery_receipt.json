@@ -1,0 +1,31 @@
+{
+  "stage": "root_owned_worktree_no_checkout_recovery",
+  "commands": [
+    {
+      "args": [
+        "worktree",
+        "add",
+        "--no-checkout",
+        "/Users/williamqiu/.config/superpowers/worktrees/echo-view-routing/a62-anchor-context-risk",
+        "a62-anchor-context-risk"
+      ],
+      "OS": 0,
+      "stdout": "",
+      "stderr": "Preparing worktree (checking out 'a62-anchor-context-risk')\n"
+    },
+    {
+      "args": [
+        "read-tree",
+        "--reset",
+        "HEAD"
+      ],
+      "OS": 128,
+      "stdout": "",
+      "stderr": "fatal: cannot use /Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.git/info/exclude as an exclude file\n"
+    }
+  ],
+  "measured_SELF_plus_waited_children_CPU_seconds": 0.029664999999999997,
+  "wall_seconds": 0.04918193817138672,
+  "shared_exclude_config_main_index_modified": false,
+  "T0_reset": false
+}

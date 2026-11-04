@@ -1,0 +1,21 @@
+test_event_risk_features (unittest.loader._FailedTest.test_event_risk_features) ... ERROR
+
+======================================================================
+ERROR: test_event_risk_features (unittest.loader._FailedTest.test_event_risk_features)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_event_risk_features
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.5/Frameworks/Python.framework/Versions/3.14/lib/python3.14/unittest/loader.py", line 426, in _find_test_path
+    module = self._get_module_from_name(name)
+  File "/opt/homebrew/Cellar/python@3.14/3.14.5/Frameworks/Python.framework/Versions/3.14/lib/python3.14/unittest/loader.py", line 367, in _get_module_from_name
+    __import__(name)
+    ~~~~~~~~~~^^^^^^
+  File "/Users/williamqiu/.config/superpowers/worktrees/echo-view-routing/a62-anchor-context-risk/tests/test_event_risk_features.py", line 3, in <module>
+    import numpy as np
+ModuleNotFoundError: No module named 'numpy'
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+FAILED (errors=1)

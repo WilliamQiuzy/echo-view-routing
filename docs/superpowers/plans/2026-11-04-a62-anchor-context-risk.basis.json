@@ -1,0 +1,140 @@
+{
+  "status": "DRAFT_FOR_USER_REVIEW",
+  "execution_authorized": false,
+  "training_started": false,
+  "server_probe_performed_for_this_card": false,
+  "source_worktree_seal": "0aeb8527423d491920c0f9e9e578a8496592cf85",
+  "main_integration_commit_historical": "31b04d61d816a4762c428b670bdffa6f4e725bc3",
+  "fixed_heads": [
+    {
+      "role": "risk",
+      "arm": "risk",
+      "seed": 2026110461,
+      "path": "runs/a61_action_safety_ranking_v1/models/seed2026110461/risk/step6000.pt",
+      "sha256": "313c7995c9189a4b527f8324dd8b37e75719524a0d021d9864014d8665af2311"
+    },
+    {
+      "role": "risk",
+      "arm": "risk",
+      "seed": 2026110462,
+      "path": "runs/a61_action_safety_ranking_v1/models/seed2026110462/risk/step6000.pt",
+      "sha256": "f82c28f3f091644233d8f2c6cd83e68e9daf06bff2c9ab8d934cc3f746797432"
+    },
+    {
+      "role": "utility",
+      "arm": "S-L",
+      "seed": 2026110461,
+      "path": "runs/a61_action_safety_ranking_v1/models/seed2026110461/S-L/step6000.pt",
+      "sha256": "039bbec11f6be5b1379e50b9334934c09250ab7ef035bcf630014bb38f0c1a80"
+    },
+    {
+      "role": "utility",
+      "arm": "S-L",
+      "seed": 2026110462,
+      "path": "runs/a61_action_safety_ranking_v1/models/seed2026110462/S-L/step6000.pt",
+      "sha256": "b3eaf1bdf3a33a0d98928ba834d05d5b6f945d6065db9d25e241468af51b8af2"
+    }
+  ],
+  "source_pins": {
+    "docs/results/2026-11-04_action_safety_ranking/models_manifest.json": "ed20ecdf41d05cdc9b1b8c74adf9ced90f5533f936c297ce2653ebcd1d640e20",
+    "docs/results/2026-11-04_action_safety_ranking/calibration.json": "2e7a56d7d441be74ced0a8270034711372cc0721e4267c79737757c4e2091b51",
+    "docs/results/2026-11-04_action_safety_ranking/readout_plan.json": "a86312f4576d1c36df7111dab6fec37d43871d21facf5b3be89facf2fe69d302",
+    "docs/results/2026-11-04_action_safety_ranking/training_inputs.json": "a708fbcb97af208d72b9080da0de9ef2821c98c4eddb3ade308b472b90ceeb29",
+    "docs/results/2026-11-04_action_safety_ranking/input_manifest.json": "d599cd48bdf23e599e16dc02db6888c7e5f1f2616f5dff9eea57a05e13a60a8b",
+    "docs/results/2026-11-04_action_safety_ranking/resources.json": "e62c092a2951ea207c7d07cb0d555cfb434f320b798a17fdb82a1cc1342bec62",
+    "docs/results/2026-11-04_action_safety_ranking/public_source_manifest.json": "0c8d4a74d80ba282008e08735ca4649fa4493604296510ecfc231d32906c1e8a",
+    "docs/results/2026-11-04_a61_residual_case_analysis/case_evidence.anonymous.json": "a441f5384101ee547f294cbe0ce8f0ca29be17b13a5299a9ad8c21532fcafe29",
+    "docs/results/2026-11-04_a61_residual_case_analysis/case_clarification.anonymous.json": "db030d08cb040122e8f632a06b01c9c78879082eb741125bbdd665d3ae4dea88",
+    "docs/results/2026-11-04_a61_residual_case_analysis/analysis_manifest.json": "bd6e650e35c7eb71112b62b0fbf6bce460020197effe84e118d0fc6acd028732"
+  },
+  "readonly_code_pins": {
+    "echo_routing/temporal/proposal_actions.py": "48f3b6db4d5b39482ed108bf3087aea873f25bdd71777577cfd4d8c4a47b0017",
+    "echo_routing/temporal/proposal_features.py": "bc031823805646c4712392adefc507331ab5d03e66522368b71593e364bae45b",
+    "echo_routing/temporal/safety_features.py": "b3bc18ec7c11aaa667c0b6bbe73f0644a086b805f19b53a869ba922b83a1c973",
+    "echo_routing/temporal/safety_training.py": "a067b03fefdc0677d57529ac4fb27d738a4df769f5e923fa408346ba2eb2b2f3",
+    "echo_routing/temporal/safety_runtime.py": "dfa17e864c17659de8268d2df6c3ffa14bda28acc6a42905480d982a3c4baf4e",
+    "echo_routing/temporal/safety_policy.py": "198f7d5738515c41ce248c56ff72743a00f87ac675b44e39cb18f831491f4679",
+    "echo_routing/temporal/baselines/b3_js_divergence.py": "8419851384c624d1b95eaf703178fe38955e25b2d9657037ffa94ebf3d2ce854",
+    "echo_routing/temporal/anchor_oracle.py": "c80f58ef345748b0f0b0af8525cedc20f1f9ab3d04125ba6a447c9796db603e6"
+  },
+  "bookkeeping_basis": {
+    "GPU_job_hours": 18.488818130029575,
+    "CPU_accounting_hours_through_A61_root_publication": 19.781859436944444,
+    "separate_posthoc_measured_CPU_seconds": 5.611943,
+    "known_CPU_accounting_hours_including_listed_posthoc": 19.78341831,
+    "tracked_server_storage_upper_bytes": 37904365798,
+    "CPU_unmetered_administration_and_historical_gaps_retained": true,
+    "original_deadline_epoch": 1793820844.1596537,
+    "original_deadline_has_expired": true
+  },
+  "proposed_incremental_caps_not_actual_spend": {
+    "GPU_job_seconds": 1800,
+    "CPU_accounting_seconds": 21600,
+    "tracked_storage_upper_increment_bytes": 1250000000,
+    "new_wall_window_hours_after_explicit_execution_approval": 12,
+    "retained_GPU_closing_reserve_seconds": 7200,
+    "CPU_closure_reserve_within_increment_seconds": 3600,
+    "separate_CPU_forecast_uncertainty_buffer_seconds": 900,
+    "remaining_storage_forecast_reserve_bytes": 500000000
+  },
+  "fixed_endpoint_counts": {
+    "new_event_models": 4,
+    "formal_updates_each": 6000,
+    "formal_updates_total": 24000,
+    "new_fullstate_milestone_plus_latest_records": 16,
+    "new_thresholds": 6,
+    "reused_legacy_thresholds": 2,
+    "new_inner_source_streams": 300,
+    "new_outer_source_streams": 240,
+    "new_source_streams_total": 540,
+    "dual_source_payloads": 1080,
+    "outer_metric_rows": 156,
+    "inner_CAL_AUDIT_metric_rows": 26,
+    "paired_comparisons": 240,
+    "bootstrap_replicates_each": 5000,
+    "policy_native_cubes": 24,
+    "base_native_references": 2,
+    "regression_C_policy_records": 16,
+    "new_full_candidate_oracle_cells": 6,
+    "reused_full_candidate_oracle_cells": 30,
+    "frozen_N_top_reachable_support_cells": 24,
+    "reachable_support_filters_per_cell": 2,
+    "reachable_support_records": 48
+  },
+  "planning_review_is_not_launch_authorization": true,
+  "planning_review_receipts": [
+    {
+      "path": "docs/superpowers/plans/2026-11-04-a62-anchor-context-risk.review-v1.json",
+      "sha256": "3c04586f8e626708854f245fd77654bbd6363008a0d397511b56f5413c96edbd",
+      "scope": "partial measured tool CPU only; model reasoning/receipt/exit tails unmetered; no experiments",
+      "measured_tool_CPU_seconds": 0.07639
+    },
+    {
+      "path": "docs/superpowers/plans/2026-11-04-a62-anchor-context-risk.review-v2.json",
+      "sha256": "b41248fa077a1702e549671afdd6e070b8d98e6e9fa5cdfe39619921fd6de567",
+      "scope": "partial measured local Python SELF only; model reasoning/tool/exit unmetered; document review not launch approval",
+      "measured_tool_CPU_seconds": 0.297414
+    },
+    {
+      "path": "docs/superpowers/plans/2026-11-04-a62-anchor-context-risk.review-tie.json",
+      "sha256": "a27d2366b443ccbc05bd930b063998375ae7ef349a715daebb12dd0d95071ebf",
+      "scope": "narrow document clarification and hash acknowledgement; not runtime/launch approval; measured local tool CPU partial only",
+      "measured_tool_CPU_seconds": 0.062307
+    },
+    {
+      "path": "docs/superpowers/plans/2026-11-04-a62-anchor-context-risk.review-dependency.json",
+      "sha256": "a7a04870776fd3d99a5909b717ca82bbef3754c9d1ab0e0266047ad85da634b4",
+      "scope": "narrow document clarification and hash acknowledgement; not runtime/launch approval; measured local tool CPU partial only",
+      "measured_tool_CPU_seconds": 0.05593
+    }
+  ],
+  "document_review": {
+    "status": "Approved_for_document_completeness_only",
+    "final_plan_sha256": "1f01eb3b9ad83df0b91f783c37d6ada70386384722090442d0c200b37335f5eb",
+    "execution_authorized": false,
+    "original_issue": "full candidate oracle could not identify fixed-N-top support limitation",
+    "resolved": "24 N-top support cells x2filters,48records; included in scope/budget; label-assisted only after outerseal",
+    "last_clarifications": "existing exact oracle tie rule and implementation-before-runtime dependency explicitly acknowledged"
+  },
+  "planning_measured_review_tool_CPU_seconds_partial": 0.492041
+}

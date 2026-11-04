@@ -1,0 +1,41 @@
+{
+  "reviewer": "a62_card_review",
+  "review_iteration": 2,
+  "review_status": "Approved",
+  "plan_sha256": "24129090b20e5a4dcab3dd61d3f2465a7adfe6638ef842b06f6e8e00c862085f",
+  "mode": "whole_card_read_only_document_review",
+  "execution_authorized": false,
+  "blocking_issues": [],
+  "prior_issue_resolution": "The card now declares 24 frozen-N-top cells with event-safe and acceptance-safe filters, producing 48 separate support records after outer readout sealing; multi-only pooled F1 and actual joint recovery are separated from native/pair counts and full-candidate oracles. Budget, basis, tasks and future commands include them.",
+  "limitations": [
+    "Plan-document approval only; no launch authority or runtime feasibility verification.",
+    "Historical OPEN sources, propagated reference labels, two fixed seeds, and per-axis label-assisted support oracles retain their stated inference limitations.",
+    "No server, source-code, test, NN, recipe, partition or training action performed; no structural or endpoint arithmetic check rerun."
+  ],
+  "measurements": [
+    {
+      "step": "whole_plan_lines_1_100_read_and_plan_identity",
+      "python_self_cpu_to_snapshot_s": 0.059413999999999995
+    },
+    {
+      "step": "whole_plan_lines_101_200_read",
+      "python_self_cpu_to_snapshot_s": 0.057026999999999994
+    },
+    {
+      "step": "whole_plan_lines_201_end_read",
+      "python_self_cpu_to_snapshot_s": 0.059949
+    },
+    {
+      "step": "basis_full_document_read",
+      "python_self_cpu_to_snapshot_s": 0.060593999999999995
+    },
+    {
+      "step": "fix_review_receipt_preparation",
+      "python_self_cpu_to_snapshot_s": 0.06043
+    }
+  ],
+  "cpu_scope": "Measured local Python SELF CPU only: each distinct process startup through its prewrite read snapshot, plus this receipt-preparation process through its prewrite snapshot. Processes were independent; no nested double count.",
+  "unmetered_tail": "Each process final receipt-output/exit tail, shell and tool service overhead, this JSON serialization/write/exit, subsequent tool calls, assistant model reasoning and final response are unmetered; unknown is not zero.",
+  "created_at_utc": "2026-11-04T20:00:50Z",
+  "known_measured_tool_CPU_seconds": 0.29741399999999996
+}
