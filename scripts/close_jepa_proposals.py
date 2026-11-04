@@ -18,6 +18,8 @@ def main():
         historical=read(PUB/'historical_source_version_verification.json');oldidentity=read(PUB/'preparation_identity_v3.json')
         divergences=[p for p,h in oldidentity['objects'].items() if sha(ROOT/p)!=h]
         validate_history(historical,oldidentity,sha(PUB/'preparation_identity_v3.json'),digest(oldidentity['objects']),divergences)
+        for name in ['preparation_freeze.json','training_prepare_freeze.json']:
+            if sha(RUN/name)!=sha(PUB/'preparation_identity_v3.json'):raise ValueError('historical server freeze itself changed')
         if (RUN/'active_process.json').exists():raise ValueError('active queue claim prevents terminal closure')
         records=[json.loads(line) for line in (RUN/'processes.jsonl').read_text().splitlines()]
         local=read(PUB/'local_cpu_receipts.json')
