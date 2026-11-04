@@ -3,16 +3,24 @@ import numpy as np
 import pytest
 
 
-def test_complete_models_taus_and_actual_seal_are_required_before_outer():
-    m=importlib.import_module('echo_routing.temporal.safety_barrier');from echo_routing.temporal.safety_training import SEEDS,ARMS
-    rows=[{'seed':s,'arm':a,'sha256':'a'*64,'path':f'seed{s}/{a}.pt'} for s in SEEDS for a in ['risk',*ARMS]]
-    inner=[{'seed':s,'arm':a,'step':k} for s in SEEDS for a in ARMS for k in [2000,4000,6000]]
-    taus=[{'seed':s,'arm':a,'tau':.2} for s in SEEDS for a in ARMS]
-    models={'passed':True,'formal_optimizer_updates':60000,'physical_models':10,'all10finals24inner8taus56sets_frozen':True,'inner_policy_sets':56,'models':rows,'inner_records':inner,'thresholds':taus,'calibration_sha256':'c'*64}
-    seal={'models_manifest_sha256':'m'*64,'calibration_sha256':'c'*64,'readout_plan_sha256':'p'*64,'all_final_checkpoints':[{'path':r['path'],'sha256':r['sha256']} for r in rows]}
-    assert m.validate(models,seal,'m'*64,'c'*64,'p'*64)
-    with pytest.raises(ValueError):m.validate({**models,'models':rows[:-1]},seal,'m'*64,'c'*64,'p'*64)
-    with pytest.raises(ValueError):m.validate(models,{**seal,'models_manifest_sha256':'x'*64},'m'*64,'c'*64,'p'*64)
+def test_complete_models_taus_and_actual_seal_are_required_before_outer(tmp_path):
+    import json,hashlib,subprocess,copy
+    m=importlib.import_module('echo_routing.temporal.safety_barrier');g=importlib.import_module('echo_routing.temporal.safety_git')
+    models,seal=barrier_fixture();prefix='docs/results/2026-11-04_action_safety_ranking/';folder=tmp_path/prefix;folder.mkdir(parents=True)
+    payload={'calibration.json':{'thresholds':models['thresholds']},'readout_plan.json':{'count':314}}
+    h=lambda b:hashlib.sha256(b).hexdigest()
+    for name,value in payload.items():(folder/name).write_text(json.dumps(value,sort_keys=True))
+    cal=h((folder/'calibration.json').read_bytes());plan=h((folder/'readout_plan.json').read_bytes());models.update(calibration_sha256=cal,readout_plan_sha256=plan)
+    (folder/'models_manifest.json').write_text(json.dumps(models,sort_keys=True));model=h((folder/'models_manifest.json').read_bytes())
+    subprocess.run(['git','init','-q',str(tmp_path)],check=True)
+    subprocess.run(['git','-C',str(tmp_path),'add','docs'],check=True)
+    subprocess.run(['git','-C',str(tmp_path),'-c','user.name=A61Fixture','-c','user.email=fixture@example.invalid','-c','commit.gpgsign=false','-c','core.hooksPath=/dev/null','commit','-qm','public fixture'],check=True)
+    commit=subprocess.check_output(['git','-C',str(tmp_path),'rev-parse','HEAD'],text=True).strip();proof=g.build(tmp_path,commit,[prefix+n for n in ['models_manifest.json','calibration.json','readout_plan.json']])
+    seal.update(git_commit=commit,models_manifest_sha256=model,calibration_sha256=cal,readout_plan_sha256=plan)
+    assert m.validate(models,seal,model,cal,plan,proof)
+    with pytest.raises(ValueError):m.validate({**models,'models':models['models'][:-1]},seal,model,cal,plan,proof)
+    damaged=copy.deepcopy(proof);key=next(iter(damaged['objects']));damaged['objects'][key]='AAAA'
+    with pytest.raises(ValueError):m.validate(models,seal,model,cal,plan,damaged)
 
 
 def test_joint_cache_prefix_resume_empty_and_ambiguous_callback_no_extra_forward(tmp_path):
@@ -32,3 +40,21 @@ def test_joint_cache_prefix_resume_empty_and_ambiguous_callback_no_extra_forward
     def failure():raise RuntimeError('interrupted after durable claim')
     with pytest.raises(RuntimeError):e.run_one(0,failure)
     with pytest.raises(ValueError):m.SafetyCache(other,'b'*64,b,a,j,.4)
+
+
+def barrier_fixture():
+    from echo_routing.temporal.safety_training import SEEDS,ARMS
+    rows=[{'seed':s,'arm':a,'sha256':'a'*64,'path':f'seed{s}/{a}.pt'} for s in SEEDS for a in ['risk',*ARMS]]
+    models={'passed':True,'formal_optimizer_updates':60000,'physical_models':10,'all10finals24inner8taus56sets_frozen':True,'inner_policy_sets':56,'models':rows,'inner_records':[{'seed':s,'arm':a,'step':k} for s in SEEDS for a in ARMS for k in [2000,4000,6000]],'thresholds':[{'seed':s,'arm':a,'tau':.2} for s in SEEDS for a in ARMS],'calibration_sha256':'c'*64,'readout_plan_sha256':'d'*64}
+    seal={'models_manifest_sha256':'b'*64,'calibration_sha256':'c'*64,'readout_plan_sha256':'d'*64,'all_final_checkpoints':[{'path':r['path'],'sha256':r['sha256']} for r in rows]}
+    return models,seal
+
+
+def test_changed_plan_after_audit_cannot_be_resealed():
+    m=importlib.import_module('echo_routing.temporal.safety_barrier');models,seal=barrier_fixture()
+    with pytest.raises(ValueError):m.validate({**models,'readout_plan_sha256':'e'*64},seal,'b'*64,'c'*64,'d'*64)
+
+
+def test_loose_seal_without_actual_git_commit_objects_is_rejected():
+    m=importlib.import_module('echo_routing.temporal.safety_barrier');models,seal=barrier_fixture()
+    with pytest.raises(ValueError):m.validate(models,seal,'b'*64,'c'*64,'d'*64)

@@ -149,7 +149,7 @@ def cache():
     models=read(PUB/'models_manifest.json')
     if not models['passed'] or models['formal_optimizer_updates']!=60000 or not models['all10finals24inner8taus56sets_frozen']:raise ValueError('all10finals/24inner/8taus/56sets must freeze first')
     seal=read(PUB/'outer_identity.json')
-    validate_preouter(models,seal,sha(PUB/'models_manifest.json'),sha(PUB/'calibration.json'),sha(PUB/'readout_plan.json'))
+    validate_preouter(models,seal,sha(PUB/'models_manifest.json'),sha(PUB/'calibration.json'),sha(PUB/'readout_plan.json'),read(verify_pin(seal['actual_Git_object_proof'])))
     for row in models['models']:verify_pin({'path':row['path'],'sha256':row['sha256']})
     determinism();records=[]
     for source in ['a08','jepa']:
