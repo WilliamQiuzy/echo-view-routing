@@ -1,3 +1,5 @@
+> Historical planning document. Its final preparation/zero-update paragraph describes the state when the plan was written; current completed results and closure state are in [README.md](README.md). The original prospective scientific contract remains unchanged.
+
 # A61：把收益排序与新增错帧风险分开检验
 
 用户已授权在原剩余预算内继续A61，不等常规确认；A60已结题，旧模型和结果只读。本文是研究计划，不是新结果。完整可执行合同见[执行卡](../../superpowers/plans/2026-11-04-a61-action-safety-ranking.md)。

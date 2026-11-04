@@ -1,0 +1,496 @@
+{
+  "stage": "independent_resource_history_OS_preclose_review_14fbaab6",
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 69801,
+  "supervisor_pid": null,
+  "started_epoch": 1793816130.076997,
+  "finished_epoch": 1793816130.733811,
+  "full_process_wall_seconds": 0.6568138599395752,
+  "measured_CPU_core_seconds": 0.45877799999999996,
+  "measured_self_CPU_seconds": 0.42930799999999997,
+  "measured_waited_children_CPU_seconds": 0.029469999999999996,
+  "observed_worker_exit_code": null,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "scope": "read-only local metadata/proof/source-hash review; running SELF+waited Git children through sample; no remote/main/model/NN/stage; final report write/tool/model reasoning unmetered administrative tail separate",
+  "preclose_is_not_terminal_closure": true,
+  "caller_OS_and_protected_integration_still_pending": true,
+  "report": {
+    "scoped_source_matches_snapshot": true,
+    "collector_delta": "diff --git a/scripts/close_action_safety.py b/scripts/close_action_safety.py\nindex d037599..632e681 100644\n--- a/scripts/close_action_safety.py\n+++ b/scripts/close_action_safety.py\n@@ -23,7 +23,7 @@ def sample(pid):\n def main():\n     with ExclusiveQueue(RUN/'exclusive_supervisor.lock'):\n         if (PUB/'resources.json').exists() or (PUB/'terminal_exit_receipt.json').exists():raise ValueError('terminal evidence exists; no overwrite/repeated collector')\n-        names=['cost_probe_freeze.json','formal_admission_freeze.json','producer_precache_admission_freeze.json','producer_precache_freeze.json','role_cost_freeze.json','formal_measured_admission_freeze.json','formal_freeze.json','audit_freeze.json','outer_measured_admission_freeze.json','outer_freeze.json','readout_freeze.json','aggregate_freeze.json','oracle_freeze.json','native_freeze.json','package_freeze.json','terminal_freeze.json']\n+        names=['cost_probe_freeze.json','formal_admission_freeze.json','producer_precache_admission_freeze.json','producer_precache_freeze.json','role_cost_freeze.json','formal_measured_admission_freeze.json','formal_freeze.json','audit_freeze.json','outer_measured_admission_freeze.json','outer_freeze.json','readout_freeze.json','aggregate_freeze.json','oracle_freeze.json','native_freeze.json','package_freeze.json','figure_repair_freeze.json','terminal_freeze.json']\n         contracts={n:verify_freeze(n) for n in names}\n         history_pin=read(PUB/'historical_Git_proof_identity.json');proof=read(verify_pin(history_pin));raw={n:(PUB/(n+'.json')).read_bytes() for n in EXPECTED}\n         for n in EXPECTED:\n@@ -59,7 +59,7 @@ def main():\n         storage=max(read(PUB/'formal_admission.json')['incremental_tracked_path_peak_upper_bytes'],read(PUB/'outer_admission.json')['incremental_tracked_path_peak_upper_bytes'],max(apparent,allocated)+largest+codebytes+115_000_000)\n         own=resource.getrusage(resource.RUSAGE_SELF);children=resource.getrusage(resource.RUSAGE_CHILDREN);cpu=own.ru_utime+own.ru_stime+children.ru_utime+children.ru_stime;now=time.time();cpuaccount=actual['cumulative_CPU_accounting_hours']+cpu/3600\n         if actual['cumulative_GPU_hours']>24 or cpuaccount>72 or PRIOR_STORAGE_UPPER_BYTES+storage>40e9 or now>DEADLINE_EPOCH:raise ValueError('inherited cumulative caps/deadline exceeded')\n-        value={'passed':True,**collector_state(),'no_remaining_authorized_model_training_or_readout':True,'scientific_summary_sha256':sha(PUB/'summary.json'),'action_space_diagnostic_sha256':sha(PUB/'action_space_diagnostic.json'),'models_manifest_sha256':sha(PUB/'models_manifest.json'),'native_attribution_sha256':sha(PUB/'native_attribution.json'),'all_current_contracts_verified':names,'historical_source_versions':historical,'executed_engineering_source_versions':engineering,'source_and_all40_model_state_weight_files_verified':len(pins),'new_GPU_job_hours':actual['new_GPU_wall_seconds']/3600,'cumulative_GPU_job_hours':actual['cumulative_GPU_hours'],'new_summed_measured_CPU_receipt_hours_including_collector':(actual['new_measured_CPU_seconds']+cpu)/3600,'cumulative_summed_measured_CPU_receipt_hours':actual['cumulative_measured_CPU_hours']+cpu/3600,'prior_completed_CPU_allowance_hours':actual['prior_CPU_allowance_hours'],'new_CPU_allowance_hours':0,'cumulative_CPU_receipt_plus_accounting_allowances_hours':cpuaccount,'retained_tracked_paths_apparent_bytes':apparent,'retained_tracked_paths_allocated_bytes':allocated,'new_source_code_and_test_file_bytes':codebytes,'largest_atomic_checkpoint_bytes':largest,'new_tracked_storage_upper_bytes':storage,'prior_tracked_storage_upper_bytes':PRIOR_STORAGE_UPPER_BYTES,'cumulative_tracked_storage_upper_bytes':PRIOR_STORAGE_UPPER_BYTES+storage,'storage_scope':'conservative tracked-path component forecast/currentretained+atomic/reportmargin;not whole-filesystem peak','actual_totals':{k:v for k,v in actual.items() if k!='receipt_records'},'local_cpu_receipts_sha256':sha(PUB/'local_cpu_receipts.json'),'process_ledger_sha256':sha(RUN/'processes.jsonl'),'recorded_process_identity_checks':processes,'all_recorded_owned_model_and_supervisor_processes_absent':True,'GPU_compute_processes_absent':not bool(gpu),'foreign_GPU_processes_may_remain_and_are_not_A61_cost':gpu,'A61_GPU_contexts_absent':True,'pending_claims':0,'same_queue_lock_held_through_checks_and_writes':True,**status,'server_failed_or_terminated_stage_count':sum(r.get('observed_worker_exit_code') not in [0,None] or bool(r.get('termination_reason')) for r in records),'local_nonzero_software_check_receipts_including_expected_RED':sum(r['observed_worker_exit_code'] not in [0,None] for r in local['receipts']),'CPU_scope':'summed measured SELF+waitedCHILDREN+entrycomplements;inherited allowance/provenance/overlap and knownpre-entrysetup gaps retained;not unique wholehost CPU','known_unmetered_setup_metadata_gaps':read(PUB/'predeployment_metadata_failure.json'),'prior_A60_admin_tail_and_all_review_receipts_kept_once':True,'all_inherited_caps_passed':True,'earlier_deadline_epoch':DEADLINE_EPOCH,'closure_epoch':now,'collector':{'measurement_host':socket.gethostname(),'model_pid':os.getpid(),'started_epoch':_START,'CPU_SELF_seconds':own.ru_utime+own.ru_stime,'CPU_waited_CHILDREN_seconds':children.ru_utime+children.ru_stime,'CPU_seconds_through_snapshot':cpu,'observed_worker_exit_code':None,'scope':'running SELF+waited probes;actual final OS from caller receipt;postsampleJSON/admin tail separate'},'root_final_integration_coordination_tail_separate':True}\n+        value={'passed':True,**collector_state(),'no_remaining_authorized_model_training_or_readout':True,'scientific_summary_sha256':sha(PUB/'summary.json'),'action_space_diagnostic_sha256':sha(PUB/'action_space_diagnostic.json'),'models_manifest_sha256':sha(PUB/'models_manifest.json'),'native_attribution_sha256':sha(PUB/'native_attribution.json'),'all_current_contracts_verified':names,'historical_source_versions':historical,'executed_engineering_source_versions':engineering,'source_and_all40_model_state_weight_files_verified':len(pins),'new_GPU_job_hours':actual['new_GPU_wall_seconds']/3600,'cumulative_GPU_job_hours':actual['cumulative_GPU_hours'],'new_summed_measured_CPU_receipt_hours_including_collector':(actual['new_measured_CPU_seconds']+cpu)/3600,'cumulative_summed_measured_CPU_receipt_hours':actual['cumulative_measured_CPU_hours']+cpu/3600,'prior_completed_CPU_allowance_hours':actual['prior_CPU_allowance_hours'],'new_CPU_allowance_hours':0,'cumulative_CPU_receipt_plus_accounting_allowances_hours':cpuaccount,'retained_tracked_paths_apparent_bytes':apparent,'retained_tracked_paths_allocated_bytes':allocated,'new_source_code_and_test_file_bytes':codebytes,'largest_atomic_checkpoint_bytes':largest,'new_tracked_storage_upper_bytes':storage,'prior_tracked_storage_upper_bytes':PRIOR_STORAGE_UPPER_BYTES,'cumulative_tracked_storage_upper_bytes':PRIOR_STORAGE_UPPER_BYTES+storage,'storage_scope':'conservative tracked-path component forecast/currentretained+atomic/reportmargin;not whole-filesystem peak','actual_totals':{k:v for k,v in actual.items() if k!='receipt_records'},'local_cpu_receipts_sha256':sha(PUB/'local_cpu_receipts.json'),'process_ledger_sha256':sha(RUN/'processes.jsonl'),'recorded_process_identity_checks':processes,'all_recorded_owned_model_and_supervisor_processes_absent':True,'GPU_compute_processes_absent':not bool(gpu),'foreign_GPU_processes_may_remain_and_are_not_A61_cost':gpu,'A61_GPU_contexts_absent':True,'pending_claims':0,'same_queue_lock_held_through_checks_and_writes':True,**status,'server_failed_or_terminated_stage_count':sum(r.get('observed_worker_exit_code') not in [0,None] or bool(r.get('termination_reason')) for r in records),'local_nonzero_software_check_receipts_including_expected_RED':sum(r['observed_worker_exit_code'] not in [0,None] for r in local['receipts']),'CPU_scope':'summed measured SELF+waitedCHILDREN+entrycomplements;inherited allowance/provenance/overlap and knownpre-entrysetup gaps retained;not unique wholehost CPU','known_unmetered_setup_metadata_gaps':read(PUB/'predeployment_metadata_failure.json'),'additional_unmetered_administrative_metadata_gaps':read(PUB/'late_administrative_extract_failure.json'),'prior_A60_admin_tail_and_all_review_receipts_kept_once':True,'all_inherited_caps_passed':True,'earlier_deadline_epoch':DEADLINE_EPOCH,'closure_epoch':now,'collector':{'measurement_host':socket.gethostname(),'model_pid':os.getpid(),'started_epoch':_START,'CPU_SELF_seconds':own.ru_utime+own.ru_stime,'CPU_waited_CHILDREN_seconds':children.ru_utime+children.ru_stime,'CPU_seconds_through_snapshot':cpu,'observed_worker_exit_code':None,'scope':'running SELF+waited probes;actual final OS from caller receipt;postsampleJSON/admin tail separate'},'root_final_integration_coordination_tail_separate':True}\n         write(PUB/'resources.json',value);write(PUB/'terminal_exit_receipt.json',{'passed':True,**collector_state(),'all_recorded_owned_workers_absent':True,'A61_GPU_contexts_absent':True,'whole_GPU_idle':not bool(gpu),'pending_claims':0,'same_queue_lock_held':True,'worker_OS_exit_statuses':[{'stage':r['stage'],'attempt':r['attempt'],'model_pid':r.get('model_pid'),'observed_worker_exit_code':r.get('observed_worker_exit_code'),'child_exit_code_directly_waited':r.get('child_exit_code_directly_waited'),'OS_status_inferred_from_manifest':r.get('OS_status_inferred_from_manifest',False)} for r in records],**status,'resource_receipt_sha256':sha(PUB/'resources.json'),'epoch':now})\n         write(RUN/'runtimecoordination.json',{**collector_state(),'model_pid':None,'formal_optimizer_updates':60000,'metric_rows':314,'paired_comparisons':240,'oracle_cells':60,'native_cells':56,'overall_root_integration_and_caller_OS_completion_still_required':True,'next_action':'root protected exactpublic integration and delete onlycapstone-a61;noautomaticA62','resource_receipt_sha256':sha(PUB/'resources.json'),'epoch':now})\n         print(json.dumps({'server_closed':True,'overall_complete':False,'cumulative_GPU_job_hours':actual['cumulative_GPU_hours'],'cumulative_CPU_accounting_hours':cpuaccount,'cumulative_tracked_storage_upper_bytes':PRIOR_STORAGE_UPPER_BYTES+storage}),flush=True)\n",
+    "receipt_totals": {
+      "new_GPU_wall_seconds": 271.6494734287262,
+      "new_measured_CPU_seconds": 2047.113761000001,
+      "cumulative_GPU_hours": 18.488818130029575,
+      "cumulative_measured_CPU_hours": 19.017158048611112,
+      "prior_CPU_allowance_hours": 0.75,
+      "cumulative_CPU_accounting_hours": 19.767158048611112,
+      "closed_receipts": 215,
+      "failed_stages": 34,
+      "unknown_observed_worker_OS_statuses": 101,
+      "GPU_intervals_disjoint": true,
+      "complete_host_PID_start_provenance": false,
+      "receipt_based_identity_count": 62,
+      "prior_CPU_overlap_uncertainty_retained": true,
+      "scope": "sum of measured receipts plus separate completed historical allowances; not unique whole-host CPU"
+    },
+    "local_fee_snapshot": {
+      "receipts": 173,
+      "file_pins": 163,
+      "sum_CPU_seconds": 99.213071,
+      "declared_measured_CPU_seconds": 99.213071,
+      "all_pins_verified_by_actual_receipts": true
+    },
+    "ledger": {
+      "records": 21,
+      "entry_complements": 21,
+      "all_worker_statuses_directly_waited": true,
+      "unknown_worker_statuses": 0,
+      "nonzero_or_terminated_stages": [
+        {
+          "stage": "formal_admission",
+          "attempt": 1,
+          "OS": 1,
+          "reason": null
+        }
+      ],
+      "GPU_or_context_stages": [
+        {
+          "stage": "producer_precache",
+          "attempt": 1,
+          "wall_seconds": 271.6494734287262,
+          "CPU_seconds": 252.27397100000002,
+          "OS": 0,
+          "GPU_job": true,
+          "CUDA_context_occupied": true
+        }
+      ],
+      "last_stages": [
+        {
+          "stage": "audit",
+          "attempt": 1,
+          "OS": 0,
+          "waited": true,
+          "CPU_seconds": 22.829266,
+          "maximum_storage_sample_bytes": 378985536
+        },
+        {
+          "stage": "outer_admission_v2",
+          "attempt": 1,
+          "OS": 0,
+          "waited": true,
+          "CPU_seconds": 4.098190000000001,
+          "maximum_storage_sample_bytes": 379386944
+        },
+        {
+          "stage": "cache_outer",
+          "attempt": 1,
+          "OS": 0,
+          "waited": true,
+          "CPU_seconds": 4.319404,
+          "maximum_storage_sample_bytes": 379468864
+        },
+        {
+          "stage": "readout",
+          "attempt": 1,
+          "OS": 0,
+          "waited": true,
+          "CPU_seconds": 346.25993400000004,
+          "maximum_storage_sample_bytes": 461466688
+        },
+        {
+          "stage": "aggregate",
+          "attempt": 1,
+          "OS": 0,
+          "waited": true,
+          "CPU_seconds": 299.50884999999994,
+          "maximum_storage_sample_bytes": 555453504
+        },
+        {
+          "stage": "oracle",
+          "attempt": 1,
+          "OS": 0,
+          "waited": true,
+          "CPU_seconds": 34.403138,
+          "maximum_storage_sample_bytes": 561187904
+        },
+        {
+          "stage": "native",
+          "attempt": 1,
+          "OS": 0,
+          "waited": true,
+          "CPU_seconds": 30.837601,
+          "maximum_storage_sample_bytes": 561306688
+        },
+        {
+          "stage": "package",
+          "attempt": 1,
+          "OS": 0,
+          "waited": true,
+          "CPU_seconds": 14.941417,
+          "maximum_storage_sample_bytes": 563252288
+        },
+        {
+          "stage": "figure_repair",
+          "attempt": 1,
+          "OS": 0,
+          "waited": true,
+          "CPU_seconds": 3.0263920000000004,
+          "maximum_storage_sample_bytes": 564382784
+        }
+      ]
+    },
+    "entry_complement_arithmetic": {
+      "sum_measured_CPU_seconds": 0.42387900000008616,
+      "all_nonnegative": true,
+      "all_complements_match_entry_minus_owned_stage_CPU": true,
+      "SELF_OS_statuses_all_null": true
+    },
+    "original_three_history": {
+      "passed": true,
+      "contract_count": 3,
+      "historical_object_bindings": 260,
+      "contracts": [
+        {
+          "name": "preparation_identity",
+          "identity_sha256": "995e641f82a57fecc94268172e5016a41a48a3efe71439c1f6982619d64d3070",
+          "git_commit": "9fac9e26a2a39e3833b54f3883ebd89933928976",
+          "historical_objects": 84,
+          "all_actual_Git_commit_tree_blobs_verified": true,
+          "proof_object_count": 100,
+          "original_config_sha256": "af0f786f3a8d8415950fc79627e104493cf78c7590291a7f7da237678667fbb8",
+          "current_config_sha256": "8011b59df4f99a34783ef6b6b0310a86b13f53cf4f9fd91da59c23e739c5163d",
+          "current_divergence": [
+            "configs/experiments/action_safety_ranking_v1.json"
+          ],
+          "exact_projected_metadata_paths": [
+            "/training/F_fit",
+            "/training/draw_RNG_domains",
+            "/training/kind_candidate_batch",
+            "/training/sampling"
+          ]
+        },
+        {
+          "name": "training_prepare_identity",
+          "identity_sha256": "a01cbf2720454d94d86bce30c222a6341aeb58b1ba016e1b840615ddd1c233bc",
+          "git_commit": "a436e8bddfd6ea917e54536b30803c565cd038a0",
+          "historical_objects": 87,
+          "all_actual_Git_commit_tree_blobs_verified": true,
+          "proof_object_count": 104,
+          "original_config_sha256": "af0f786f3a8d8415950fc79627e104493cf78c7590291a7f7da237678667fbb8",
+          "current_config_sha256": "8011b59df4f99a34783ef6b6b0310a86b13f53cf4f9fd91da59c23e739c5163d",
+          "current_divergence": [
+            "configs/experiments/action_safety_ranking_v1.json"
+          ],
+          "exact_projected_metadata_paths": [
+            "/training/F_fit",
+            "/training/draw_RNG_domains",
+            "/training/kind_candidate_batch",
+            "/training/sampling"
+          ]
+        },
+        {
+          "name": "fullFIT_check_identity",
+          "identity_sha256": "3a20ea218cab7263cbd86e89906bbe837dababb1c5e6a4d0d74855d2ea551579",
+          "git_commit": "ed3f6b1833a3b0afe5ded57694085398f84ac239",
+          "historical_objects": 89,
+          "all_actual_Git_commit_tree_blobs_verified": true,
+          "proof_object_count": 106,
+          "original_config_sha256": "af0f786f3a8d8415950fc79627e104493cf78c7590291a7f7da237678667fbb8",
+          "current_config_sha256": "8011b59df4f99a34783ef6b6b0310a86b13f53cf4f9fd91da59c23e739c5163d",
+          "current_divergence": [
+            "configs/experiments/action_safety_ranking_v1.json"
+          ],
+          "exact_projected_metadata_paths": [
+            "/training/F_fit",
+            "/training/draw_RNG_domains",
+            "/training/kind_candidate_batch",
+            "/training/sampling"
+          ]
+        }
+      ],
+      "all_original_executed_objects_and_current_files_verified": true,
+      "config_projection_does_not_claim_all_numeric_metadata_unchanged": true,
+      "only_unused_batch_metadata_removed": true,
+      "no_model_forward_or_optimizer_update": true
+    },
+    "executed_engineering_history": {
+      "passed": true,
+      "contract_count": 2,
+      "historical_object_bindings": 252,
+      "contracts": [
+        {
+          "name": "component_cost_identity",
+          "identity_sha256": "8d43ce835676942918e67edb7de6c98ff77546a8a559ea46b294f8f9fdbcb98d",
+          "git_commit": "6c25459c95dbbcad4fffcc8f5ea4ba3525f7c53f",
+          "historical_objects": 121,
+          "all_actual_Git_objects_verified": true,
+          "proof_object_count": 138,
+          "current_divergence": [
+            "docs/results/2026-11-04_action_safety_ranking/COST_REFINEMENT.md"
+          ],
+          "old_cost_document_sha256": "00a613ffca562522369e62712abe88cf3b1dd08c8cf3e56c423ad690e85a2d1b",
+          "current_cost_document_sha256": "a239f32b6ee2505ebae6667aa26685e851d218ad9c76352ed770b6721a33b920"
+        },
+        {
+          "name": "rle_cost_identity",
+          "identity_sha256": "53ffa141e706938958ff7dc327803441fee29761f83f9ec53541694f7b138139",
+          "git_commit": "4a7b3869afc3970b910799dd7593e8485b49c6b3",
+          "historical_objects": 131,
+          "all_actual_Git_objects_verified": true,
+          "proof_object_count": 148,
+          "current_divergence": [
+            "docs/results/2026-11-04_action_safety_ranking/COST_REFINEMENT.md"
+          ],
+          "old_cost_document_sha256": "8ab6cc861a9ded0c1b51ed814ed41816c19fbc2a5b02bc514c7773d8cc790415",
+          "current_cost_document_sha256": "a239f32b6ee2505ebae6667aa26685e851d218ad9c76352ed770b6721a33b920"
+        }
+      ],
+      "only_cost_prose_revision_not_algorithm_exception": true,
+      "all_original_code_and_data_objects_current_exact": true,
+      "new_NN_or_optimizer_updates": 0
+    },
+    "collector_current_contracts": [
+      {
+        "name": "cost_probe_freeze.json",
+        "status": "verified_current",
+        "objects": 92
+      },
+      {
+        "name": "formal_admission_freeze.json",
+        "status": "verified_current",
+        "objects": 94
+      },
+      {
+        "name": "producer_precache_admission_freeze.json",
+        "status": "verified_current",
+        "objects": 98
+      },
+      {
+        "name": "producer_precache_freeze.json",
+        "status": "verified_current",
+        "objects": 99
+      },
+      {
+        "name": "role_cost_freeze.json",
+        "status": "verified_current",
+        "objects": 133
+      },
+      {
+        "name": "formal_measured_admission_freeze.json",
+        "status": "verified_current",
+        "objects": 138
+      },
+      {
+        "name": "formal_freeze.json",
+        "status": "verified_current",
+        "objects": 141
+      },
+      {
+        "name": "audit_freeze.json",
+        "status": "verified_current",
+        "objects": 176
+      },
+      {
+        "name": "outer_measured_admission_freeze.json",
+        "status": "verified_current",
+        "objects": 141
+      },
+      {
+        "name": "outer_freeze.json",
+        "status": "verified_current",
+        "objects": 181
+      },
+      {
+        "name": "readout_freeze.json",
+        "status": "verified_current",
+        "objects": 184
+      },
+      {
+        "name": "aggregate_freeze.json",
+        "status": "verified_current",
+        "objects": 186
+      },
+      {
+        "name": "oracle_freeze.json",
+        "status": "verified_current",
+        "objects": 188
+      },
+      {
+        "name": "native_freeze.json",
+        "status": "verified_current",
+        "objects": 190
+      },
+      {
+        "name": "package_freeze.json",
+        "status": "verified_current",
+        "objects": 193
+      },
+      {
+        "name": "figure_repair_freeze.json",
+        "status": "verified_current",
+        "objects": 195
+      },
+      {
+        "name": "terminal_freeze.json",
+        "status": "missing_pending"
+      }
+    ],
+    "scientific_completion_metadata": {
+      "summary.json": {
+        "metric_rows": 314,
+        "paired_comparison_count": 240,
+        "formal_models": 10,
+        "formal_optimizer_updates": 60000,
+        "all314_metrics_independently_recounted": true
+      },
+      "models_manifest.json": {
+        "passed": true,
+        "physical_models": 10,
+        "formal_optimizer_updates": 60000,
+        "inner_policy_sets": 56,
+        "all10finals24inner8taus56sets_frozen": true
+      },
+      "action_space_diagnostic.json": {
+        "domain_count": 60,
+        "overlapping_A60_G_oracles_exactly_reproduced": 16,
+        "all_maxone_G_and_noop": true
+      },
+      "native_attribution.json": {
+        "passed": true,
+        "cell_count": 56
+      },
+      "figure_receipt.json": {
+        "passed": true,
+        "summary_sha256": "b783f0a4be8e6995633afce14f2358eed5b7702fbd2662c9e82c8c1f44b26253",
+        "action_space_diagnostic_sha256": "4a28a1f8a821e599cfe6405726e83968695b128524e2b8dd43b4f37ce47c7200",
+        "native_attribution_sha256": "667faecf8b3624cf4a3cc679f0f4ccad36e3bd077afe585a323ae389ff60dddb",
+        "PNG_visual_QA_still_required": true,
+        "figure_files": 12,
+        "all_figure_pins_current": true
+      }
+    },
+    "admission_storage_and_caps": {
+      "formal_admission.json": {
+        "all_caps_fit": true,
+        "incremental_tracked_path_peak_upper_bytes": 2391349432,
+        "forecast_cumulative_tracked_path_storage_upper_bytes": 37724051686,
+        "forecast_cumulative_CPU_accounting_hours": 21.551933581804118,
+        "forecast_cumulative_GPU_hours_including_reserve": 20.488818130029575,
+        "forecast_end_epoch_including_closure_room": 1793820232.7728486
+      },
+      "outer_admission.json": {
+        "all_caps_fit": true,
+        "incremental_tracked_path_peak_upper_bytes": 2571663544,
+        "forecast_cumulative_tracked_path_storage_upper_bytes": 37904365798,
+        "forecast_cumulative_CPU_accounting_hours": 20.779800528792173,
+        "forecast_cumulative_GPU_hours_including_reserve": 20.488818130029575,
+        "forecast_end_epoch_including_closure_room": 1793818211.6874788
+      },
+      "producer_precache_admission.json": {
+        "all_caps_fit": true,
+        "incremental_tracked_path_peak_upper_bytes": 311213120,
+        "forecast_cumulative_tracked_path_storage_upper_bytes": 35643915374,
+        "forecast_cumulative_CPU_accounting_hours": 19.93989302888889,
+        "forecast_cumulative_GPU_hours_including_reserve": 20.74669327629937,
+        "forecast_end_epoch_including_closure_room": 1793810221.9484599
+      }
+    },
+    "maximum_closed_stage_storage_sample_bytes": 564382784,
+    "late_admin_metadata": {
+      "predeployment_metadata_failure.json": {
+        "sha256": "e1c060b058f6afaeba40590141e339c13c6886886508558f810af6cd794cc8c2",
+        "top_level_keys": [
+          "dependent_rsync_OS_exit",
+          "error",
+          "formal_updates",
+          "measured_CPU_seconds",
+          "new_model_forwards",
+          "observed_initial_python_OS_exit",
+          "recorded_epoch",
+          "scope",
+          "server_worker_launched",
+          "stage"
+        ],
+        "CPU_or_limit_fields": {
+          "measured_CPU_seconds": null,
+          "scope": "local administrative predeployment tool failure, not measured worker CPU; no fabricated zero charge; no oldnamespace mutation"
+        }
+      },
+      "late_administrative_extract_failure.json": {
+        "sha256": "bfdfefbf1bbb48983c405899d79a8e19e8e35e884798d6bcf3138bc09ecca2d1",
+        "top_level_keys": [
+          "CPU_measurement_unavailable_not_zero",
+          "CPU_seconds",
+          "additional_unmetered_administrative_failures",
+          "no_stage_or_results_modified",
+          "observed_OS_exit",
+          "reason",
+          "scope",
+          "tool_coordination_overhead_separately_unmetered"
+        ],
+        "CPU_or_limit_fields": {
+          "CPU_measurement_unavailable_not_zero": true,
+          "CPU_seconds": null,
+          "scope": "local public metric extraction launcher only;0NN/SGD/source;not model/experiment failure",
+          "tool_coordination_overhead_separately_unmetered": true
+        }
+      }
+    },
+    "remaining_before_collector_and_this_read_receipt": {
+      "GPU_hours_to_hard_cap": 5.511181869970425,
+      "CPU_accounting_hours_to_hard_cap": 52.23284195138889,
+      "seconds_to_original_deadline_at_sample": 4713.427147626877,
+      "baseline_storage_upper_bytes": 35332702254,
+      "storage_margin_using_max_admitted_peak_bytes": 2095634202
+    },
+    "local_mirror_claim_presence": {
+      "active_process_json": false,
+      "pending_json_count": 0,
+      "scope": "local metadata mirror only; not a fresh remote process/lock/GPU observation"
+    },
+    "extra_resource_metadata_files": [
+      "a61_admin_git_integration_spec_fix_resource_receipt.json",
+      "a61_admin_git_integration_spec_resource_receipt.json",
+      "a61_cost_component_probe_spec_api_resource_receipt.json",
+      "a61_cost_component_probe_spec_base_context_resource_receipt.json",
+      "a61_cost_component_probe_spec_evalset_api_resource_receipt.json",
+      "a61_cost_component_probe_spec_evaluator_resource_receipt.json",
+      "a61_cost_component_probe_spec_native_item_api_resource_receipt.json",
+      "a61_cost_component_probe_spec_resource_receipt.json",
+      "a61_cost_component_probe_spec_update_resource_receipt.json",
+      "a61_engineering_precache_amendment_spec_downstream_resource_receipt.json",
+      "a61_engineering_precache_amendment_spec_fix_resource_receipt.json",
+      "a61_engineering_precache_amendment_spec_plan_followup_resource_receipt.json",
+      "a61_engineering_precache_amendment_spec_resource_receipt.json",
+      "a61_measured_budget_spec_fix_resource_receipt.json",
+      "a61_measured_budget_spec_resource_receipt.json",
+      "a61_rle_cost_probe_spec_resource_receipt.json",
+      "a61_task6_integration_spec_legacy_schema_resource_receipt.json",
+      "a61_task6_integration_spec_resource_receipt.json",
+      "a61_task6_native_spec_resource_receipt.json",
+      "a61_task7_history_terminal_spec_fix_resource_receipt.json",
+      "a61_task7_history_terminal_spec_resource_receipt.json",
+      "a61_task7_package_spec_fix_resource_receipt.json",
+      "a61_task7_package_spec_resource_receipt.json",
+      "admin_git_allowlist_spec_resource_receipt.json",
+      "data_resources_GREEN.json",
+      "data_resources_RED.json",
+      "engineering_Git_builder_resource_receipt.json",
+      "engineering_history_terminal_spec_resource_receipt.json",
+      "figure_repair_identity.json",
+      "figure_repair_receipt.json",
+      "fullrole_cost_final_increment_spec_resource_receipt.json",
+      "fullrole_cost_fix_estimator_spec_resource_receipt.json",
+      "fullrole_cost_probe_spec_F_fit_resource_receipt.json",
+      "fullrole_cost_probe_spec_resource_receipt.json",
+      "history_Git_builder_resource_receipt.json",
+      "late_administrative_extract_failure.json",
+      "outer_Git_builder_resource_receipt.json",
+      "process_figure_repair_1.json",
+      "rle_budget_spec_resource_receipt.json",
+      "scientific_report_generation_resource_receipt.json"
+    ],
+    "errors": []
+  }
+}

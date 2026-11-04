@@ -1,0 +1,8 @@
+
+## A61 — anchored action safety and whole-query ranking (2026-11-04)
+
+Completed the fixed scientific scope: 10 CPU-trained heads ×6000 updates, 314 metric rows, 240 paired5000-bootstrap comparisons, 60 G-only oracle domains with16 exact A60 reproductions, and56 native attribution cells. Independent model/trace/inner/calibration audit passed. No seed/checkpoint/outer threshold selection, new patient validation, or automatic A62.
+
+The predeclared S-L-C has essentially no main-task segment gain: three cells exactly match A08; one calibration cell improves0.0977pp withCI including0. Native predictions remain position-identical. New A61 selection constructions show +1.0492/+0.5988pp and6/5 fewer short misses without extra short FP; the other half has uncertain smaller gains and one H=9 unsafe accepted action per seed. A reused-bank primary cell still has H40/R37 (net3 more errors) despite short FP−1. Ranking-isolating intervals all include0; calibrated C loses segment F1 versus N in15/20 fixed cells. True gross-safe oracle capacity remains above the learned policy, without implying learnable or clinical safety. The publication-quality generalization goal is not established.
+
+[Self-contained findings](results/2026-11-04_action_safety_ranking/FINDINGS.md) · [All controls and figures](results/2026-11-04_action_safety_ranking/README.md) · [Actual resources](results/2026-11-04_action_safety_ranking/resources.json) · [Direct collector OS/tail](results/2026-11-04_action_safety_ranking/collector_OS_exit_receipt.json). Public integration is recorded separately; this entry is appended by root without replacing existing Index bytes.
