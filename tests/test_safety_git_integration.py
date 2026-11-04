@@ -82,3 +82,13 @@ def test_cli_unknown_post_entry_cleanup_failure_never_claims_apply_did_not_start
     monkeypatch.setattr(cli,'integrate',escaped);monkeypatch.setattr(sys,'argv',['tool','--repo',str(repo),'--expected-head',head,'--expected-branch','refs/heads/main','--paths-json',str(manifest),'--message','A61','--apply','--expected-index-sha256','0'*64])
     assert cli.main()==2
     value=json.loads(capsys.readouterr().out);assert value['status']=='partial' and value['publication_state_unknown'] and value['manual_reconciliation_required'] and not value['no_integration_apply_entered']
+
+
+def test_only_exact_authorized_engineering_amendment_plan_is_added(tmp_path):
+    m=importlib.import_module('echo_routing.temporal.safety_git_integration')
+    path='docs/superpowers/plans/2026-11-04-a61-engineering-precache-amendment.md'
+    assert m.allowed(path)
+    assert not m.allowed('docs/superpowers/plans/2026-11-04-a61-other.md')
+    repo,files,head=fixture(tmp_path);p=repo/path;p.parent.mkdir(parents=True);p.write_text('approved engineering amendment\n');files.append({'path':path,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()})
+    plan=m.integrate(repo,head,'refs/heads/main',files,'literal approved amendment')
+    assert plan['status']=='dry_run' and git(repo,'rev-parse','HEAD')==head

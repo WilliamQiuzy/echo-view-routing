@@ -62,7 +62,7 @@ def seed_commit_index(tree):
 def allowed(path):
     if not isinstance(path,str) or not re.fullmatch(r'[A-Za-z0-9_./-]+',path) or str(PurePosixPath(path))!=path or any(x in ['.','..'] for x in path.split('/')):return False
     return (path.startswith('docs/results/2026-11-04_action_safety_ranking/')
-        or path in ['configs/experiments/action_safety_ranking_v1.json','docs/superpowers/plans/2026-11-04-a61-action-safety-ranking.md']
+        or path in ['configs/experiments/action_safety_ranking_v1.json','docs/superpowers/plans/2026-11-04-a61-action-safety-ranking.md','docs/superpowers/plans/2026-11-04-a61-engineering-precache-amendment.md']
         or re.fullmatch(r'echo_routing/temporal/safety[A-Za-z0-9_]*\.py',path) is not None
         or re.fullmatch(r'scripts/[A-Za-z0-9_]*safety[A-Za-z0-9_]*\.py',path) is not None
         or re.fullmatch(r'tests/test_safety[A-Za-z0-9_]*\.py',path) is not None)

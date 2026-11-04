@@ -1,0 +1,31 @@
+{
+  "stage": "admin_amendment_allowlist_RED",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "tests/test_safety_git_integration.py::test_only_exact_authorized_engineering_amendment_plan_is_added"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 47198,
+  "supervisor_pid": 46743,
+  "started_epoch": 1793815414.0078669,
+  "finished_epoch": 1793815414.244128,
+  "full_process_wall_seconds": 0.23626112937927246,
+  "observed_worker_exit_code": 1,
+  "stage_exit_code": 1,
+  "termination_reason": null,
+  "exception": null,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 0.16138799999999998,
+  "measured_supervisor_CPU_seconds": 0.0010469999999999959,
+  "measured_CPU_core_seconds": 0.16243499999999997,
+  "durable_claim_before_Popen": true,
+  "scope": "local synthetic checks;SELF region+waited CHILDREN;final JSON bookkeeping and wrapper imports separate metadata",
+  "output": "F                                                                        [100%]\n=================================== FAILURES ===================================\n________ test_only_exact_authorized_engineering_amendment_plan_is_added ________\ntests/test_safety_git_integration.py:90: in test_only_exact_authorized_engineering_amendment_plan_is_added\n    assert m.allowed(path)\nE   AssertionError: assert False\nE    +  where False = <function allowed at 0x1053ac7c0>('docs/superpowers/plans/2026-11-04-a61-engineering-precache-amendment.md')\nE    +    where <function allowed at 0x1053ac7c0> = <module 'echo_routing.temporal.safety_git_integration' from '/Users/williamqiu/.config/superpowers/worktrees/echo-view-routing/a61-action-safety-ranking/echo_routing/temporal/safety_git_integration.py'>.allowed\n=========================== short test summary info ============================\nFAILED tests/test_safety_git_integration.py::test_only_exact_authorized_engineering_amendment_plan_is_added\n",
+  "output_sha256": "6e62764094cbb9ddb3dd0fd3e7e8781d95d54be4050a758eb200a5dcce775a20"
+}
