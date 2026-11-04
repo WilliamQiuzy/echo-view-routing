@@ -183,14 +183,14 @@
     "cosine_total": 6000,
     "clip": 1.0,
     "precision": "FP32",
-    "kind_candidate_batch": [
-      32,
-      32
-    ],
-    "sampling": "uniformreplacement_from_complete_kind_candidate_lists",
-    "draw_RNG_domains": "[seed,61,utility_or_risk,kind]",
+    "sampling": "utility:uniform replacement32nonemptyqueries perkind/allcandidates;risk:uniformreplacement32candidates perkind/allchangedpositions",
+    "draw_RNG_domains": {
+      "utility": "[seed,61,0,blockkind]",
+      "risk": "[seed,61,1,blockkind]",
+      "blockkind": "0native/1constructed;fallback uses distinct planned blocks"
+    },
     "loss": "pointwise_group_MSE+all_unequal_pair_logistic_ifL;equal_kinds;risk_percandidate_meanpositionCE+candidateBCE",
-    "F_fit": "Base_pooled_multi_segmentF1_new1500FITbank",
+    "F_fit": "unchanged_A59_fixed1500_FIT_multi_Base_pooled_segmentF1",
     "native_utility": "samecountcost_stabilityproxy_not_nativeMacroF1_surrogate",
     "milestones": [
       2000,
