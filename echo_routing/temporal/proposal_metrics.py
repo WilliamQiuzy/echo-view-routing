@@ -1,6 +1,6 @@
 """Full task metrics plus explicit complete-axis proposal/acceptance/harm counts."""
 import numpy as np
-from echo_routing.temporal.anchor_metrics import evaluate,paired as inherited_paired
+from echo_routing.temporal.anchor_metrics import evaluate as inherited_evaluate,paired as inherited_paired
 from echo_routing.temporal.proposal_actions import apply
 from echo_routing.temporal.proposal_features import targets
 from echo_routing.temporal.anchor_edits import predicted_count
@@ -8,7 +8,20 @@ from echo_routing.temporal.segments import labels_to_segments
 from echo_routing.evaluate.failure_units import match_segments
 
 
-def paired(left,right,n_boot=5000,seed=2026110360):return inherited_paired(left,right,n_boot=n_boot,seed=seed)
+def evaluate(predictions,context):
+    result,tables=inherited_evaluate(predictions,context)
+    for kind,cm in result['decoded_position_confusion'].items():
+        cm=np.asarray(cm);result[kind+'_frame_errors']=int(cm.sum()-np.trace(cm))
+    return result,tables
+
+
+def paired(left,right,n_boot=5000,seed=2026110360):
+    result=inherited_paired(left,right,n_boot=n_boot,seed=seed)
+    from echo_routing.temporal.structured_uncertainty import _weights
+    rng=np.random.default_rng(seed);w=_weights(rng,len(left['session_order']),n_boot)
+    a=w@left['session_extra'];b=w@right['session_extra'];delta=(a[:,1]-a[:,2])-(b[:,1]-b[:,2])
+    result['delta95']['native_frame_errors']=np.quantile(delta,[.025,.975]).tolist();result['undefined_bootstrap_replicates']['native_frame_errors']=0
+    return result
 
 def distribution(values):
     v=np.asarray(values,float)
