@@ -129,6 +129,14 @@ def original_a08(half, qs, seed, cfg):
 
 
 
+def require_precache_head_binding():
+    path=PUB/'cache_outer_manifest.json'
+    if not path.exists():raise ValueError('early producer caches are not available to A61 head reader before final read-only adoption')
+    bound=read(path);produced=read(PUB/'producer_precache_manifest.json')
+    if not bound.get('read_only_early_producer_cache_adopted') or bound['records']!=produced['records'] or bound['formal_updates_at_production']!=0 or bound['formal_updates_at_readonly_binding']!=60000 or bound['models_manifest_sha256_at_binding']!=sha(PUB/'models_manifest.json') or bound['actual_Git_headseal_sha256_at_binding']!=sha(PUB/'outer_identity.json'):raise ValueError('early source production must stay distinct from final head binding')
+    verify_freeze('outer_freeze.json');models=read(PUB/'models_manifest.json');seal=read(PUB/'outer_identity.json');validate_preouter(models,seal,sha(PUB/'models_manifest.json'),sha(PUB/'calibration.json'),sha(PUB/'readout_plan.json'),read(verify_pin(seal['actual_Git_object_proof'])))
+
+
 def reader(source,role,readonly=True):
     manifest=read(PUB/'input_manifest.json');qs=sequences(role)
     row=manifest['source_cache_roles'].get(role,{}).get(source)
@@ -138,12 +146,18 @@ def reader(source,role,readonly=True):
         if sha(folder/'committed.jsonl')!=row['journal_sha256']:raise ValueError('frozen prior posterior journal changed')
         return ProbabilityCache(folder,row['identity'],[len(q['refs']) for q in qs],readonly=True)
     if role not in ['a61_confirmation_selection','a61_confirmation_calibration']:raise ValueError('new posterior role is not prospective confirmation')
+    if (RUN/'producer_precache_v1').exists() and not (PUB/'producer_precache_manifest.json').exists():raise ValueError('partial early production cannot fall back to a second source cache')
+    if (PUB/'producer_precache_manifest.json').exists():
+        if not readonly:raise ValueError('early frozen producer caches are immutable; explicit read-only adoption only')
+        require_precache_head_binding()
+        from scripts.precache_action_safety_geometry import probability_reader
+        return probability_reader(source,role)
     freeze=verify_freeze('outer_freeze.json')
     cfg=read(CFG);identity=digest({'source':source,'source_contract':cfg['source'][source],'input':manifest['roles'][role]['sha256'],'objects':freeze['objects']})
     return ProbabilityCache(RUN/'cache'/source/role,identity,[len(q['refs']) for q in qs],readonly=readonly)
 
 
-def cache():
+def cache(adopt_precache=False):
     verify_freeze('outer_freeze.json');cfg=read(CFG)
     if not read(PUB/'outer_admission.json')['all_caps_fit']:raise ValueError('fresh joined contexts require complete admission')
     models=read(PUB/'models_manifest.json')
@@ -151,6 +165,18 @@ def cache():
     seal=read(PUB/'outer_identity.json')
     validate_preouter(models,seal,sha(PUB/'models_manifest.json'),sha(PUB/'calibration.json'),sha(PUB/'readout_plan.json'),read(verify_pin(seal['actual_Git_object_proof'])))
     for row in models['models']:verify_pin({'path':row['path'],'sha256':row['sha256']})
+    if (RUN/'producer_precache_v1').exists() and not (PUB/'producer_precache_manifest.json').exists():raise ValueError('partial early production must remain fail-closed;no duplicate forward route')
+    if (PUB/'producer_precache_manifest.json').exists():
+        if not adopt_precache:raise ValueError('early source cache requires explicit --adopt-precache after final head seal; no duplicate source forwards')
+        from scripts.precache_action_safety_geometry import verify_source_manifest,probability_reader
+        from echo_routing.temporal.safety_precache import binding
+        records=verify_source_manifest()
+        for (source,role),row in records.items():
+            target=probability_reader(source,role)
+            for i in range(target.total):target.load(i)
+        value=binding(read(PUB/'producer_precache_manifest.json'),sha(PUB/'models_manifest.json'),sha(PUB/'outer_identity.json'),60000);value['all4_journals_and480_N5_payloads_verified_readonly']=True;value['old_source_roles_reused_read_only']=20;write(PUB/'cache_outer_manifest.json',value)
+        print({'source_cache_readonly_adopted':True,'production_formal_updates':0,'binding_formal_updates':60000,'new_source_forwards':0},flush=True);return
+    if adopt_precache:raise ValueError('no complete early producer manifest to adopt')
     determinism();records=[]
     for source in ['a08','jepa']:
         model=build_source(source,cfg,'cuda')
@@ -164,4 +190,6 @@ def cache():
         del model;torch.cuda.empty_cache()
     write(PUB/'cache_outer_manifest.json',{'passed':True,'records':records,'old_source_roles_reused_read_only':20,'formal_optimizer_updates':60000,'new_protected_media_forwards':0})
 
-if __name__=='__main__':cache()
+if __name__=='__main__':
+    import argparse
+    parser=argparse.ArgumentParser();parser.add_argument('--adopt-precache',action='store_true');cache(parser.parse_args().adopt_precache)
