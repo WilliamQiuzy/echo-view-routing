@@ -1,0 +1,53 @@
+{
+  "epoch": 1793780843.710887,
+  "scope": "root read-only actualGit JSON-diff verification of pre-formal metadata correction;not training/source qualification;coordinationCPU unmetered separately",
+  "passed": true,
+  "old_config_Git_revision": "6e3d5e95942cb81904a24b6d6b1deb1e5e9bd184",
+  "old_raw_SHA256": "af0f786f3a8d8415950fc79627e104493cf78c7590291a7f7da237678667fbb8",
+  "new_raw_SHA256": "8011b59df4f99a34783ef6b6b0310a86b13f53cf4f9fd91da59c23e739c5163d",
+  "changed_metadata_paths": [
+    {
+      "JSON_path": "/training/F_fit",
+      "before": "Base_pooled_multi_segmentF1_new1500FITbank",
+      "after": "unchanged_A59_fixed1500_FIT_multi_Base_pooled_segmentF1",
+      "before_present": true,
+      "after_present": true
+    },
+    {
+      "JSON_path": "/training/draw_RNG_domains",
+      "before": "[seed,61,utility_or_risk,kind]",
+      "after": {
+        "utility": "[seed,61,0,blockkind]",
+        "risk": "[seed,61,1,blockkind]",
+        "blockkind": "0native/1constructed;fallback uses distinct planned blocks"
+      },
+      "before_present": true,
+      "after_present": true
+    },
+    {
+      "JSON_path": "/training/kind_candidate_batch",
+      "before": [
+        32,
+        32
+      ],
+      "after": null,
+      "before_present": true,
+      "after_present": false
+    },
+    {
+      "JSON_path": "/training/sampling",
+      "before": "uniformreplacement_from_complete_kind_candidate_lists",
+      "after": "utility:uniform replacement32nonemptyqueries perkind/allcandidates;risk:uniformreplacement32candidates perkind/allchangedpositions",
+      "before_present": true,
+      "after_present": true
+    }
+  ],
+  "all_other_JSON_fields_deep_equal": true,
+  "literal_execution_code_uses_of_four_descriptive_config_keys_found": false,
+  "code_search_scope": "A61 scripts, pure safety modules and tests; F_fit execution reads training_inputs rather than the descriptive config training/F_fit string",
+  "numeric_batch_metadata_field_was_removed": "unused kind_candidate_batch=[32,32]; this is disclosed, not described as byte-identical numeric metadata",
+  "completed_engineering_identity_rewritten": false,
+  "formal_models_at_correction": 0,
+  "required_future_closure": "verify original completed stage config Git objects/SHA and exact whitelist projection; do not omit config or accept only embedded passed marker",
+  "cost_probe_to_deploy": "cost_probe_identity_v2 (eef7cbc), not superseded unexecuted v1"
+}

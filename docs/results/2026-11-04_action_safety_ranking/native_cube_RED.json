@@ -1,0 +1,31 @@
+{
+  "stage": "native_cube_RED",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "tests/test_safety_native.py"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 34094,
+  "supervisor_pid": 34082,
+  "started_epoch": 1793780796.968592,
+  "finished_epoch": 1793780798.7084868,
+  "full_process_wall_seconds": 1.7398948669433594,
+  "observed_worker_exit_code": 1,
+  "stage_exit_code": 1,
+  "termination_reason": null,
+  "exception": null,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 1.093257,
+  "measured_supervisor_CPU_seconds": 0.0021399999999999995,
+  "measured_CPU_core_seconds": 1.095397,
+  "durable_claim_before_Popen": true,
+  "scope": "local synthetic checks;SELF region+waited CHILDREN;final JSON bookkeeping and wrapper imports separate metadata",
+  "output": "F                                                                        [100%]\n=================================== FAILURES ===================================\n____ test_native_cube_gross_cost_and_predicted_gate_are_independently_bound ____\ntests/test_safety_native.py:8: in test_native_cube_gross_cost_and_predicted_gate_are_independently_bound\n    m=importlib.import_module('echo_routing.temporal.safety_native');b=np.r_[np.full(20,2),np.full(18,3)];q={'id':'synthetic','kind':'native','labels':np.full(38,3)};a=Action(20,38,tuple([2]*18),jepa=True);score=np.array([[1.,.1,17.8,.1,.01,.05]])\n      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../../../../../.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n<frozen importlib._bootstrap>:1387: in _gcd_import\n    ???\n<frozen importlib._bootstrap>:1360: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1324: in _find_and_load_unlocked\n    ???\nE   ModuleNotFoundError: No module named 'echo_routing.temporal.safety_native'\n=========================== short test summary info ============================\nFAILED tests/test_safety_native.py::test_native_cube_gross_cost_and_predicted_gate_are_independently_bound\n",
+  "output_sha256": "fb115f824849ebdba7cd17975bfac078fcfacbdad6d44bc54c5f6697216c98e9"
+}
