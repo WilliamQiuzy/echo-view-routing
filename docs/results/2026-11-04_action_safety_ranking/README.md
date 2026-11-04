@@ -1,6 +1,6 @@
 # A61: action ranking and local frame risk
 
-Status: planning/new-graph preparation. No A61 training, source forward or performance result has occurred. A60 is closed and read-only. The user authorized A61 continuation without ordinary confirmation; no automatic A62.
+Status: whole-plan independent review Approved at5533871; new-graph implementation/TDD is active under the sole execution worker. No A61 training, source forward or performance result has occurred. A60 is closed and read-only. The user authorized A61 continuation without ordinary confirmation; no automatic A62.
 
 Question: can explicit gross frame-harm supervision, a safety-shaped action value and within-sequence ranking preserve the A08 anchor while retaining JEPA's genuine short-segment increment? [Research rationale](RESEARCH_REPLAN.md), [complete execution contract](../../superpowers/plans/2026-11-04-a61-action-safety-ranking.md), [closed A60 bottleneck evidence](../2026-11-03_jepa_proposals/BOTTLENECK_ANALYSIS.md).
 
