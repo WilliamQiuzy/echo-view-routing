@@ -60,3 +60,4 @@ def test_complete_remaining_scope_and_floors_are_retained():
     assert v['phases']['six_figures_PDF_QA_report']==600
     assert v['factors']=={'synthetic_backends':2,'formal_update':1.5}
     assert v['original_caps_and_deadline_unchanged']
+    assert v['measured_backend_units']=={'new_full_oracle_endpoints':6,'safety_domains_per_measured_unit':3,'role_passes_per_half_including_independent_recount':2,'Ntop_support_endpoints':48,'additional_pooled_solves':54,'group_summary_passes_for_support_native_regression':4}

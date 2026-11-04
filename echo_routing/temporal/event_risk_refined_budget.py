@@ -60,10 +60,11 @@ def remaining(original,refined,manifest,fit_checks=None,sources_done=False,forma
     phases['fixed_old_heads_new540']=6*sum(cost(g,'fixed_inference_seconds') for g in new)
     phases['action_descriptors_recounts']=8*sum(cost(g,'six_gate_summary_seconds') for g in groups)
     # Three safety domains are already inside each measured oracle backend.
-    # Retain the prior conservative logical-pass multiplicities plus all54
-    # pooled integer solves (6 new full ceilings and48 N-top support records).
-    phases['oracles_support_native_regression']=12*sum(cost(refined['future_structural_bounds'][r],'three_oracle_options_coverage_solve_seconds') for r in ROLES[2:])+4*sum(cost(g,'six_gate_summary_seconds') for g in groups)+2*54*solver['seconds']
+    # Two passes per half cover actual execution and one independent recount;
+    # the measured backend already includes all THREE safety domains. Retain
+    # separate support/native/regression work and all54 pooled integer solves.
+    phases['oracles_support_native_regression']=2*sum(cost(refined['future_structural_bounds'][r],'three_oracle_options_coverage_solve_seconds') for r in ROLES[2:])+4*sum(cost(g,'six_gate_summary_seconds') for g in groups)+2*54*solver['seconds']
     phases['raw_joint_cache_IO']=4*sum(cost(g,'raw_cache_init_write_read_seconds') for g in groups)
-    cpu=sum(v for k,v in phases.items() if k!='teacher_GPU_wall');value.update(CPU_seconds=cpu,remaining_wall_seconds=cpu+value['GPU_seconds']+300,phases=phases,factorized_coefficients=coef,measured_profile_domination=True,original_volume_terms_retained=list(KEYS),N1_alias_not_doublecharged=True,estimator_version='legal_source_geometry_v2',actual_spend_is_separate_from_forecast=True)
+    cpu=sum(v for k,v in phases.items() if k!='teacher_GPU_wall');value.update(CPU_seconds=cpu,remaining_wall_seconds=cpu+value['GPU_seconds']+300,phases=phases,factorized_coefficients=coef,measured_profile_domination=True,original_volume_terms_retained=list(KEYS),N1_alias_not_doublecharged=True,estimator_version='legal_source_geometry_v2',actual_spend_is_separate_from_forecast=True,measured_backend_units={'new_full_oracle_endpoints':6,'safety_domains_per_measured_unit':3,'role_passes_per_half_including_independent_recount':2,'Ntop_support_endpoints':48,'additional_pooled_solves':54,'group_summary_passes_for_support_native_regression':4})
     if not all(math.isfinite(x) and x>=0 for x in [cpu,value['remaining_wall_seconds']]):raise ValueError('invalid complete revised forecast')
     return value
