@@ -63,6 +63,9 @@ def authorize(args):
 
 def verify_freeze(name):
     contract=read(RUN/name)
+    from echo_routing.temporal.event_risk_contracts import validate_coverage
+    cfg=read(CFG);base=[str(CFG.relative_to(ROOT)),cfg['card']['path'],cfg['authorization']['path'],cfg['basis']['path']]
+    validate_coverage(ROOT,name,contract['objects'],base)
     for path,h in contract['objects'].items():
         if sha(ROOT/path)!=h:raise ValueError('current stage object changed: '+path)
     proof=read(verify_pin(contract['actual_Git_object_proof']))
