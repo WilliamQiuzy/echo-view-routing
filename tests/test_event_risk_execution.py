@@ -37,3 +37,22 @@ def test_fresh_outer_head_reader_refuses_before_readonly_adoption(tmp_path,monke
  def read(p):return {'source_cache_roles':{},'roles':{role:{'sha256':'a'*64}}} if Path(p).name=='input_manifest.json' else {'complete':True,'new_event_updates_at_production':0,'records':[row]}
  monkeypatch.setattr(m,'read',read);monkeypatch.setattr(m,'ProbabilityCache',lambda *a,**k:(_ for _ in ()).throw(AssertionError('reader opened before adoption')))
  with pytest.raises(ValueError,match='adoption'):m.probability_reader('a08',role)
+
+def test_actual_old_scores_readonly_prefix_rejects_before_old_heads(tmp_path,monkeypatch):
+ import pytest
+ m=importlib.import_module('scripts.event_risk_execution');m.OLD_SCORES.clear();b=np.zeros(3,int);p=np.ones((3,5))/5
+ monkeypatch.setattr(m,'bank',lambda role:([{'id':'toy','labels':b}],[p],[p],[b]));monkeypatch.setattr(m,'old_records',lambda:{'outer_metrics.json':{'rows':[]}});monkeypatch.setattr(m,'read',lambda p:{'roles':{'CAL_mixed':{'sha256':'a'*64}},'legacy_SL_tau':{'2026110461':.1},'readonly_code_pins':{}});monkeypatch.setattr(m,'sha',lambda p:'a'*64)
+ class Prefix:
+  cursor=0
+  def __init__(self,*a,**k):assert k['readonly']
+ monkeypatch.setattr(m,'SafetyCache',Prefix);monkeypatch.setattr(m,'_fixed',lambda s:(_ for _ in ()).throw(AssertionError('readonly instantiated old head')))
+ with pytest.raises(ValueError,match='incomplete'):m.old_scores(2026110461,'CAL_mixed',readonly=True)
+
+
+def test_model_audit_expected_identity_does_not_trust_completion():
+ import pytest
+ m=importlib.import_module('scripts.audit_event_risk');inputs={'dataset':{'sha256':'a'*64},'plans':{'2026110461':{'sha256':'b'*64}},'normalizers':{'sha256':'c'*64}}
+ formal={'objects':{'fixed':'d'*64}};expected=importlib.import_module('scripts.check_event_risk').identity(inputs,2026110461,formal)
+ assert m.independent_identity({'seed':2026110461,'identity':expected},inputs,formal)==expected
+ altered={**expected,'input':'e'*64}
+ with pytest.raises(ValueError,match='independent'):m.independent_identity({'seed':2026110461,'identity':altered},inputs,formal)

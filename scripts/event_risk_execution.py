@@ -80,6 +80,7 @@ def old_scores(seed,role,readonly=False):
             if role.startswith('a62_confirmation_'):preouter()
             if role not in ['CAL_mixed','AUDIT_mixed','a62_confirmation_selection','a62_confirmation_calibration']:raise ValueError('new fixed heads only on four declared new roles')
             weights=[dict(r) for r in FIXED_A61 if r['seed']==seed];identity=digest({'old_fixed_weights':weights,'input':read(PUB/'input_manifest.json')['roles'][role]['sha256'],'producer_manifest':sha(PUB/'producer_manifest.json'),'old_pure_code':read(CFG)['readonly_code_pins']});folder=RUN/'fixed_scores'/f'seed{seed}'/role;cache=SafetyCache(folder,identity,base,[p.argmax(1) for p in pa],[p.argmax(1) for p in pj],read(CFG)['legacy_SL_tau'][str(seed)],readonly=readonly);before=cache.cursor
+            if readonly and cache.cursor!=len(qs):raise ValueError('incomplete readonly fixed C6 cache cannot instantiate heads or forward')
             if cache.cursor<len(qs):heads,norms,scale=_fixed(seed)
             for i in range(cache.cursor,len(qs)):cache.run_one(i,lambda i=i:old_infer(heads['S-L'],heads['risk'],norms,scale,pa[i],pj[i],base[i],read(CFG)['legacy_SL_tau'][str(seed)]))
             FIXED_INFO.append({'seed':seed,'role':role,'new_fixed_MLP_module_calls':3*sum(bool(cache.load(i)['actions']) for i in range(before,len(qs))),'path':str(folder.relative_to(ROOT)),'journal_sha256':sha(cache.journal)})

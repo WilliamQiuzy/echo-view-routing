@@ -11,14 +11,22 @@ from echo_routing.temporal.event_risk_audit import audit_trace,validate_fullstat
 from echo_routing.temporal.event_risk_model import EventRisk,optimizer
 
 
+def independent_identity(row,inputs,formal):
+    from scripts.check_event_risk import identity
+    expected=identity(inputs,row['seed'],formal)
+    if row['identity']!=expected:raise ValueError('completion identity differs from independently pinned formal source/config/input/draw/norm contract')
+    return expected
+
+
 def models():
-    freeze=verify_freeze('model_audit_freeze.json');completion=read(PUB/'formal_completion.json');inputs=read(PUB/'training_inputs.json');data=np.load(verify_pin(inputs['dataset']),allow_pickle=True).item();rows=completion['models'];states_all=[];records=[]
+    freeze=verify_freeze('model_audit_freeze.json');completion=read(PUB/'formal_completion.json');inputs=read(PUB/'training_inputs.json');data=np.load(verify_pin(inputs['dataset']),allow_pickle=True).item();rows=completion['models'];states_all=[];records=[];formal=verify_freeze('formal_freeze.json')
     if len(rows)!=4 or {(r['seed'],r['arm']) for r in rows}!={(s,a) for s in [2026110461,2026110462] for a in ['R1','R2']} or completion['formal_optimizer_updates']!=24000:raise ValueError('completefourfinal matrix required')
     for r in rows:
-        model=EventRisk(r['arm'],r['seed']);initial=copy.deepcopy(model.state_dict());opt=optimizer(model);folder=ROOT/r['path'];folder=folder.parent;plan=np.load(verify_pin(inputs['plans'][str(r['seed'])]),allow_pickle=True).item();trace=folder/'physical_updates.jsonl';physical=[json.loads(x) for x in trace.read_text().splitlines()];report=audit_trace(physical,plan,data['kind_indices'],data['unsafe'],r['seed'],r['identity']);states={}
+        expected_identity=independent_identity(r,inputs,formal)
+        model=EventRisk(r['arm'],r['seed']);initial=copy.deepcopy(model.state_dict());opt=optimizer(model);folder=ROOT/r['path'];folder=folder.parent;plan=np.load(verify_pin(inputs['plans'][str(r['seed'])]),allow_pickle=True).item();trace=folder/'physical_updates.jsonl';physical=[json.loads(x) for x in trace.read_text().splitlines()];report=audit_trace(physical,plan,data['kind_indices'],data['unsafe'],r['seed'],expected_identity);states={}
         for cursor in [2000,4000,6000,'latest']:
             p=folder/('latest.pt' if cursor=='latest' else f'step{cursor}.pt');states[cursor]=torch.load(p,weights_only=True,map_location='cpu');states_all.append({'seed':r['seed'],'arm':r['arm'],'step':6000 if cursor=='latest' else cursor,'kind':'latest' if cursor=='latest' else 'milestone',**pin(p)})
-        full=validate_fullstates(model,opt,states,r['identity'],data['normalizers'],initial)
+        full=validate_fullstates(model,opt,states,expected_identity,data['normalizers'],initial)
         if sha(verify_pin(r))!=r['sha256'] or r['result']['journal_sha256']!=sha(trace):raise ValueError('final/full physicaltrace changed')
         records.append({**r,'independent_trace_audit':report,'independent_fullstates_audit':full})
     if len(states_all)!=16:raise ValueError('12milestones+4latest required')

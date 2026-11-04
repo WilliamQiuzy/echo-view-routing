@@ -1,0 +1,31 @@
+{
+  "stage": "lifecycle_audit_binding_RED",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "tests/test_event_risk_execution.py"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 37753,
+  "supervisor_pid": 37742,
+  "started_epoch": 1793829689.711573,
+  "finished_epoch": 1793829692.8439791,
+  "full_process_wall_seconds": 3.132406234741211,
+  "observed_worker_exit_code": 1,
+  "stage_exit_code": 1,
+  "termination_reason": null,
+  "exception": null,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 2.194398,
+  "measured_supervisor_CPU_seconds": 0.0010380000000000007,
+  "measured_CPU_core_seconds": 2.195436,
+  "durable_claim_before_Popen": true,
+  "scope": "local synthetic checks;SELF region+waited CHILDREN;final JSON bookkeeping and wrapper imports separate metadata",
+  "output": "...FF                                                                    [100%]\n=================================== FAILURES ===================================\n_______ test_actual_old_scores_readonly_prefix_rejects_before_old_heads ________\ntests/test_event_risk_execution.py:49: in test_actual_old_scores_readonly_prefix_rejects_before_old_heads\n    with pytest.raises(ValueError,match='incomplete'):m.old_scores(2026110461,'CAL_mixed',readonly=True)\n                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nscripts/event_risk_execution.py:83: in old_scores\n    if cache.cursor<len(qs):heads,norms,scale=_fixed(seed)\n                                              ^^^^^^^^^^^^\ntests/test_event_risk_execution.py:48: in <lambda>\n    monkeypatch.setattr(m,'SafetyCache',Prefix);monkeypatch.setattr(m,'_fixed',lambda s:(_ for _ in ()).throw(AssertionError('readonly instantiated old head')))\n                                                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntests/test_event_risk_execution.py:48: in <genexpr>\n    monkeypatch.setattr(m,'SafetyCache',Prefix);monkeypatch.setattr(m,'_fixed',lambda s:(_ for _ in ()).throw(AssertionError('readonly instantiated old head')))\nE   AssertionError: readonly instantiated old head\n_________ test_model_audit_expected_identity_does_not_trust_completion _________\ntests/test_event_risk_execution.py:56: in test_model_audit_expected_identity_does_not_trust_completion\n    assert m.independent_identity({'seed':2026110461,'identity':expected},inputs,formal)==expected\n           ^^^^^^^^^^^^^^^^^^^^^^\nE   AttributeError: module 'scripts.audit_event_risk' has no attribute 'independent_identity'\n=========================== short test summary info ============================\nFAILED tests/test_event_risk_execution.py::test_actual_old_scores_readonly_prefix_rejects_before_old_heads\nFAILED tests/test_event_risk_execution.py::test_model_audit_expected_identity_does_not_trust_completion\n",
+  "output_sha256": "0d15caf89b337511e2ecd0fcb46ade085424903f580f049d91eb12dd8cf711a7"
+}
