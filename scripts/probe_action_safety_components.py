@@ -18,6 +18,8 @@ from echo_routing.temporal.anchor_oracle import fractional_oracle
 from echo_routing.temporal.proposal_actions import propose,partition,apply
 from echo_routing.temporal.safety_audit import validate_trace
 from echo_routing.temporal.safety_training import lr_factor
+from echo_routing.temporal.anchor_cache import ProbabilityCache
+from echo_routing.temporal.safety_native import diagnose as native_diagnose
 
 
 def timed(fn):
@@ -64,6 +66,7 @@ def trace_rows(data,plan,role,n_updates=6000):
 
 def main():
     freeze=verify_freeze('component_cost_freeze.json');folder=RUN/'cost_refinement';folder.mkdir(parents=True,exist_ok=False);result={};torch.set_num_threads(1)
+    q,b,a,j,v,g=case(16,False);b=np.zeros(16,np.int64);v={**policies(b,[],np.empty((0,6)),.8),'actions':[],'all_actions':[],'G_rejected':[],'score_matrix':np.empty((0,6))};elapsed,_=timed(lambda:action_summary([q],[b],[v],'C','S-L',.8917446116307443));result['empty_descriptor']={'N':1,'seconds':elapsed}
     for T in [16,701]:
         qs,b,p,ctx=task(T);times=[];prepared=[]
         for pred in [b,p]:
@@ -82,6 +85,9 @@ def main():
                     pool=options(b,a,j,truth,domain,safety);coverage(b,a,j,truth,domain,safety);solve([pool],domain,safety)
                 elapsed,_=timed(oracle_work);oracle_times.append(elapsed)
         result[name]={**g,'descriptor_max_seconds':max(ds),'cache_write_seconds':write_seconds,'cache_read_seconds':read_seconds,'oracle_max_seconds':max(oracle_times)}
+    for T in [16,701]:
+        b=np.zeros(T,np.int64);b[3*T//4:]=1+np.arange(T-3*T//4)%2;a=b.copy();a[:T//4]=1+np.arange(T//4)%2;j=b.copy();acts,rejected=partition(b,propose(b,a,j));K=np.array([np.count_nonzero(apply(b,x)!=b) for x in acts]);scores=np.column_stack([np.ones(len(acts)),.1*K,.2*K,.7*K,np.full(len(acts),.2),np.full(len(acts),.2)]);v={**policies(b,acts,scores,.8),'actions':acts,'all_actions':propose(b,a,j),'G_rejected':rejected,'score_matrix':scores,'tau':.8};q={'id':'cost_native_adversarial_0','kind':'native','labels':np.zeros(T,np.int64)};elapsed,_=timed(lambda:native_diagnose([q],[b],[v],'C','S-L',.8917446116307443));result['native_'+str(T)]={'T':T,'N':1,'seconds':elapsed}
+    rng=np.random.default_rng(2026110461);prob=rng.dirichlet(np.ones(5),701).astype(np.float32);pc=ProbabilityCache(folder/'source_probability_IO','synthetic_probability_cost',[701]*16);elapsed,_=timed(lambda:[pc.run_one(i,lambda:prob.copy()) for i in range(16)]);elapsed2,_=timed(lambda:[pc.load(i) for i in range(16)]);result['probability_IO']={'T':701,'N':16,'write_seconds':elapsed,'read_seconds':elapsed2}
     rng=np.random.default_rng(2026110461);pools=[]
     for k in range(120):
         pool=[{'M':0,'P':8,'T':8,'span':None}]
