@@ -1,0 +1,31 @@
+{
+  "stage": "git_integration_v2_GREEN",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "tests/test_safety_git_integration.py"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 53932,
+  "supervisor_pid": 53922,
+  "started_epoch": 1793784525.9782631,
+  "finished_epoch": 1793784527.108305,
+  "full_process_wall_seconds": 1.1300418376922607,
+  "observed_worker_exit_code": 1,
+  "stage_exit_code": 1,
+  "termination_reason": null,
+  "exception": null,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 1.015245,
+  "measured_supervisor_CPU_seconds": 0.0013170000000000005,
+  "measured_CPU_core_seconds": 1.016562,
+  "durable_claim_before_Popen": true,
+  "scope": "local synthetic checks;SELF region+waited CHILDREN;final JSON bookkeeping and wrapper imports separate metadata",
+  "output": "FF.F                                                                     [100%]\n=================================== FAILURES ===================================\n_ test_dryrun_then_commit_only_new_A61_files_preserves_user_stage_and_worktree _\necho_routing/temporal/safety_git_integration.py:195: in integrate\n    report['dryrun_real_index_ref_and_object_store_unchanged']=False;promote(objects,objectdir);transaction=prepare_transaction(repo,expected_branch,commit,expected_head)\n                                                                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\necho_routing/temporal/safety_git_integration.py:104: in prepare_transaction\n    p.stdin.write(f'start\\nsymref-verify HEAD {branch}\\nupdate {branch} {new} {old}\\nprepare\\n'.encode());p.stdin.flush();expect_output(p,b'start: ok\\nprepare: ok\\n');return p\n                                                                                                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\necho_routing/temporal/safety_git_integration.py:97: in expect_output\n    if not part:raise RuntimeError('Git transaction closed before acknowledgement')\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   RuntimeError: Git transaction closed before acknowledgement\n\nThe above exception was the direct cause of the following exception:\ntests/test_safety_git_integration.py:23: in test_dryrun_then_commit_only_new_A61_files_preserves_user_stage_and_worktree\n    result=m.integrate(repo,head,'refs/heads/main',files,'A61 public integration',apply=True,expected_index_sha256=plan['expected_index_sha256'])\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\necho_routing/temporal/safety_git_integration.py:218: in integrate\n    raise IntegrationError(str(error),report) from error\nE   echo_routing.temporal.safety_git_integration.IntegrationError: Git transaction closed before acknowledgement\n__________ test_plumbing_operates_when_exclude_is_not_a_readable_file __________\necho_routing/temporal/safety_git_integration.py:195: in integrate\n    report['dryrun_real_index_ref_and_object_store_unchanged']=False;promote(objects,objectdir);transaction=prepare_transaction(repo,expected_branch,commit,expected_head)\n                                                                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\necho_routing/temporal/safety_git_integration.py:104: in prepare_transaction\n    p.stdin.write(f'start\\nsymref-verify HEAD {branch}\\nupdate {branch} {new} {old}\\nprepare\\n'.encode());p.stdin.flush();expect_output(p,b'start: ok\\nprepare: ok\\n');return p\n                                                                                                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\necho_routing/temporal/safety_git_integration.py:97: in expect_output\n    if not part:raise RuntimeError('Git transaction closed before acknowledgement')\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   RuntimeError: Git transaction closed before acknowledgement\n\nThe above exception was the direct cause of the following exception:\ntests/test_safety_git_integration.py:35: in test_plumbing_operates_when_exclude_is_not_a_readable_file\n    assert m.integrate(repo,head,'refs/heads/main',files,'A61 despite unrelated exclude I/O',apply=True,expected_index_sha256=plan['expected_index_sha256'])['status']=='applied'\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\necho_routing/temporal/safety_git_integration.py:218: in integrate\n    raise IntegrationError(str(error),report) from error\nE   echo_routing.temporal.safety_git_integration.IntegrationError: Git transaction closed before acknowledgement\n_____ test_failure_after_index_publish_retains_partial_evidence_and_locks ______\ntests/test_safety_git_integration.py:58: in test_failure_after_index_publish_retains_partial_evidence_and_locks\n    r=e.value.report;assert r['status']=='partial' and git(repo,'rev-parse','HEAD')==head and r['index_published'] and not r['ref_published']\n                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   AssertionError: assert ('rejected' == 'partial'\nE     \nE     - partial\nE     + rejected)\n=========================== short test summary info ============================\nFAILED tests/test_safety_git_integration.py::test_dryrun_then_commit_only_new_A61_files_preserves_user_stage_and_worktree\nFAILED tests/test_safety_git_integration.py::test_plumbing_operates_when_exclude_is_not_a_readable_file\nFAILED tests/test_safety_git_integration.py::test_failure_after_index_publish_retains_partial_evidence_and_locks\n",
+  "output_sha256": "57b567e72ad738a7fef9d94cfb122f435df9d5e5c1cb75ae96cd6194893ccb92"
+}

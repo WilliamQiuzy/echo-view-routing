@@ -1,0 +1,31 @@
+{
+  "stage": "git_integration_GREEN",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "tests/test_safety_git_integration.py"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 48544,
+  "supervisor_pid": 48534,
+  "started_epoch": 1793784357.877818,
+  "finished_epoch": 1793784359.219572,
+  "full_process_wall_seconds": 1.3417539596557617,
+  "observed_worker_exit_code": 1,
+  "stage_exit_code": 1,
+  "termination_reason": null,
+  "exception": null,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 0.968785,
+  "measured_supervisor_CPU_seconds": 0.0014220000000000014,
+  "measured_CPU_core_seconds": 0.970207,
+  "durable_claim_before_Popen": true,
+  "scope": "local synthetic checks;SELF region+waited CHILDREN;final JSON bookkeeping and wrapper imports separate metadata",
+  "output": "FF.F                                                                     [100%]\n=================================== FAILURES ===================================\n_ test_dryrun_then_commit_only_new_A61_files_preserves_user_stage_and_worktree _\necho_routing/temporal/safety_git_integration.py:185: in integrate\n    promote(objects,objectdir);transaction=prepare_transaction(repo,expected_branch,commit,expected_head)\n                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\necho_routing/temporal/safety_git_integration.py:94: in prepare_transaction\n    p.stdin.write(f'start\\nupdate {branch} {new} {old}\\nprepare\\n'.encode());p.stdin.flush();expect_output(p,b'start: ok\\nprepare: ok\\n');return p\n                                                                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\necho_routing/temporal/safety_git_integration.py:87: in expect_output\n    if not part:raise RuntimeError('Git transaction closed before acknowledgement')\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   RuntimeError: Git transaction closed before acknowledgement\n\nThe above exception was the direct cause of the following exception:\ntests/test_safety_git_integration.py:23: in test_dryrun_then_commit_only_new_A61_files_preserves_user_stage_and_worktree\n    result=m.integrate(repo,head,'refs/heads/main',files,'A61 public integration',apply=True,expected_index_sha256=plan['expected_index_sha256'])\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\necho_routing/temporal/safety_git_integration.py:208: in integrate\n    raise IntegrationError(str(error),report) from error\nE   echo_routing.temporal.safety_git_integration.IntegrationError: Git transaction closed before acknowledgement\n__________ test_plumbing_operates_when_exclude_is_not_a_readable_file __________\necho_routing/temporal/safety_git_integration.py:170: in integrate\n    command(repo,'read-tree',expected_head,env=commit_env)\necho_routing/temporal/safety_git_integration.py:26: in command\n    if p.returncode:raise RuntimeError('Git plumbing rejected: '+p.stderr.decode(errors='replace')[:1000])\n                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   RuntimeError: Git plumbing rejected: fatal: cannot use .git/info/exclude as an exclude file\n\nThe above exception was the direct cause of the following exception:\ntests/test_safety_git_integration.py:34: in test_plumbing_operates_when_exclude_is_not_a_readable_file\n    plan=m.integrate(repo,head,'refs/heads/main',files,'A61 despite unrelated exclude I/O')\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\necho_routing/temporal/safety_git_integration.py:208: in integrate\n    raise IntegrationError(str(error),report) from error\nE   echo_routing.temporal.safety_git_integration.IntegrationError: Git plumbing rejected: fatal: cannot use .git/info/exclude as an exclude file\n_____ test_failure_after_index_publish_retains_partial_evidence_and_locks ______\ntests/test_safety_git_integration.py:56: in test_failure_after_index_publish_retains_partial_evidence_and_locks\n    r=e.value.report;assert r['status']=='partial' and git(repo,'rev-parse','HEAD')==head and r['index_published'] and not r['ref_published']\n                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   AssertionError: assert ('rejected' == 'partial'\nE     \nE     - partial\nE     + rejected)\n=========================== short test summary info ============================\nFAILED tests/test_safety_git_integration.py::test_dryrun_then_commit_only_new_A61_files_preserves_user_stage_and_worktree\nFAILED tests/test_safety_git_integration.py::test_plumbing_operates_when_exclude_is_not_a_readable_file\nFAILED tests/test_safety_git_integration.py::test_failure_after_index_publish_retains_partial_evidence_and_locks\n",
+  "output_sha256": "f12adaa8f756d159820c6853e59ed9d88ec2d15ec4aebb41733aed8a998dea93"
+}

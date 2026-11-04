@@ -1,0 +1,31 @@
+{
+  "stage": "git_integration_RED",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "tests/test_safety_git_integration.py"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 44633,
+  "supervisor_pid": 44623,
+  "started_epoch": 1793784233.9300532,
+  "finished_epoch": 1793784234.1818812,
+  "full_process_wall_seconds": 0.2518279552459717,
+  "observed_worker_exit_code": 1,
+  "stage_exit_code": 1,
+  "termination_reason": null,
+  "exception": null,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 0.171416,
+  "measured_supervisor_CPU_seconds": 0.0016339999999999966,
+  "measured_CPU_core_seconds": 0.17305,
+  "durable_claim_before_Popen": true,
+  "scope": "local synthetic checks;SELF region+waited CHILDREN;final JSON bookkeeping and wrapper imports separate metadata",
+  "output": "FFFF                                                                     [100%]\n=================================== FAILURES ===================================\n_ test_dryrun_then_commit_only_new_A61_files_preserves_user_stage_and_worktree _\ntests/test_safety_git_integration.py:19: in test_dryrun_then_commit_only_new_A61_files_preserves_user_stage_and_worktree\n    m=importlib.import_module('echo_routing.temporal.safety_git_integration');repo,files,head=fixture(tmp_path);index=repo/'.git/index';before=index.read_bytes();objects=sorted(str(p.relative_to(repo/'.git/objects')) for p in (repo/'.git/objects').rglob('*') if p.is_file())\n      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../../../../../.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n<frozen importlib._bootstrap>:1387: in _gcd_import\n    ???\n<frozen importlib._bootstrap>:1360: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1324: in _find_and_load_unlocked\n    ???\nE   ModuleNotFoundError: No module named 'echo_routing.temporal.safety_git_integration'\n__________ test_plumbing_operates_when_exclude_is_not_a_readable_file __________\ntests/test_safety_git_integration.py:32: in test_plumbing_operates_when_exclude_is_not_a_readable_file\n    m=importlib.import_module('echo_routing.temporal.safety_git_integration');repo,files,head=fixture(tmp_path);exclude=repo/'.git/info/exclude';exclude.unlink();exclude.mkdir()\n      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../../../../../.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n<frozen importlib._bootstrap>:1387: in _gcd_import\n    ???\n<frozen importlib._bootstrap>:1360: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1324: in _find_and_load_unlocked\n    ???\nE   ModuleNotFoundError: No module named 'echo_routing.temporal.safety_git_integration'\n___________ test_lock_changed_HEAD_or_changed_index_never_publishes ____________\ntests/test_safety_git_integration.py:40: in test_lock_changed_HEAD_or_changed_index_never_publishes\n    m=importlib.import_module('echo_routing.temporal.safety_git_integration');repo,files,head=fixture(tmp_path);plan=m.integrate(repo,head,'refs/heads/main',files,'A61');lock=repo/'.git/index.lock';lock.write_text('another owner')\n      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../../../../../.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n<frozen importlib._bootstrap>:1387: in _gcd_import\n    ???\n<frozen importlib._bootstrap>:1360: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1324: in _find_and_load_unlocked\n    ???\nE   ModuleNotFoundError: No module named 'echo_routing.temporal.safety_git_integration'\n_____ test_failure_after_index_publish_retains_partial_evidence_and_locks ______\ntests/test_safety_git_integration.py:52: in test_failure_after_index_publish_retains_partial_evidence_and_locks\n    m=importlib.import_module('echo_routing.temporal.safety_git_integration');repo,files,head=fixture(tmp_path);plan=m.integrate(repo,head,'refs/heads/main',files,'A61')\n      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../../../../../.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n<frozen importlib._bootstrap>:1387: in _gcd_import\n    ???\n<frozen importlib._bootstrap>:1360: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1324: in _find_and_load_unlocked\n    ???\nE   ModuleNotFoundError: No module named 'echo_routing.temporal.safety_git_integration'\n=========================== short test summary info ============================\nFAILED tests/test_safety_git_integration.py::test_dryrun_then_commit_only_new_A61_files_preserves_user_stage_and_worktree\nFAILED tests/test_safety_git_integration.py::test_plumbing_operates_when_exclude_is_not_a_readable_file\nFAILED tests/test_safety_git_integration.py::test_lock_changed_HEAD_or_changed_index_never_publishes\nFAILED tests/test_safety_git_integration.py::test_failure_after_index_publish_retains_partial_evidence_and_locks\n",
+  "output_sha256": "1132e7790fa1dc18d4091233194eaf96f8ae252eb4ec4b8b882109b5ca46f9f6"
+}
