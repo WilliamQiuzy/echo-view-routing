@@ -21,6 +21,14 @@ def test_complete_models_taus_and_actual_seal_are_required_before_outer(tmp_path
     with pytest.raises(ValueError):m.validate({**models,'models':models['models'][:-1]},seal,model,cal,plan,proof)
     damaged=copy.deepcopy(proof);key=next(iter(damaged['objects']));damaged['objects'][key]='AAAA'
     with pytest.raises(ValueError):m.validate(models,seal,model,cal,plan,damaged)
+    # A genuinely committed new plan with the unchanged audited model manifest:
+    # all object proofs remain valid; only the audited-plan binding can reject it.
+    (folder/'readout_plan.json').write_text('{"count":315}')
+    subprocess.run(['git','-C',str(tmp_path),'add','docs'],check=True)
+    subprocess.run(['git','-C',str(tmp_path),'-c','user.name=A61Fixture','-c','user.email=fixture@example.invalid','-c','commit.gpgsign=false','-c','core.hooksPath=/dev/null','commit','-qm','changed plan after audit'],check=True)
+    nextcommit=subprocess.check_output(['git','-C',str(tmp_path),'rev-parse','HEAD'],text=True).strip();nextproof=g.build(tmp_path,nextcommit,[prefix+n for n in ['models_manifest.json','calibration.json','readout_plan.json']]);nextplan=h((folder/'readout_plan.json').read_bytes())
+    g.verify(nextproof,nextcommit,{prefix+'models_manifest.json':model,prefix+'calibration.json':cal,prefix+'readout_plan.json':nextplan})
+    with pytest.raises(ValueError):m.validate(models,{**seal,'git_commit':nextcommit,'readout_plan_sha256':nextplan},model,cal,nextplan,nextproof)
 
 
 def test_joint_cache_prefix_resume_empty_and_ambiguous_callback_no_extra_forward(tmp_path):
