@@ -1,0 +1,31 @@
+{
+  "stage": "operational_prior_pins_RED",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "tests/test_event_risk_execution.py::test_operational_prior_pin_alias_cannot_drift_from_basis"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 41496,
+  "supervisor_pid": 41485,
+  "started_epoch": 1793829809.670149,
+  "finished_epoch": 1793829810.089945,
+  "full_process_wall_seconds": 0.4197959899902344,
+  "observed_worker_exit_code": 1,
+  "stage_exit_code": 1,
+  "termination_reason": null,
+  "exception": null,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 0.33839199999999997,
+  "measured_supervisor_CPU_seconds": 0.001085000000000001,
+  "measured_CPU_core_seconds": 0.339477,
+  "durable_claim_before_Popen": true,
+  "scope": "local synthetic checks;SELF region+waited CHILDREN;final JSON bookkeeping and wrapper imports separate metadata",
+  "output": "F                                                                        [100%]\n=================================== FAILURES ===================================\n___________ test_operational_prior_pin_alias_cannot_drift_from_basis ___________\ntests/test_event_risk_execution.py:63: in test_operational_prior_pin_alias_cannot_drift_from_basis\n    with pytest.raises(ValueError,match='prior_A61'):m.validate_config(bad)\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   Failed: DID NOT RAISE ValueError\n=========================== short test summary info ============================\nFAILED tests/test_event_risk_execution.py::test_operational_prior_pin_alias_cannot_drift_from_basis\n",
+  "output_sha256": "d3368c8fea624b6026e04f2e2412f2f56f0649377a4c98a174f34b852a9b7531"
+}

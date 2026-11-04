@@ -10,6 +10,8 @@ PUB=ROOT/'docs/results/2026-11-04_anchor_context_risk'
 CFG=ROOT/'configs/experiments/anchor_context_risk_v1.json'
 CARD_SHA='1f01eb3b9ad83df0b91f783c37d6ada70386384722090442d0c200b37335f5eb'
 AUTH_SHA='171cbecf92f6b9cb92faa8f0069e8f19e7b14326b5e85a287fa629f8c167166f'
+PRIOR_A61_EXTRA_PINS={'FIT_checks': {'path': 'docs/results/2026-11-04_action_safety_ranking/FIT_checks.json', 'sha256': '0e4caf13a0d979a8957ce1ac14a64e5df8b2426facc15ae1a64d77c0e2db95ba'}, 'action_space_diagnostic.json': {'path': 'docs/results/2026-11-04_action_safety_ranking/action_space_diagnostic.json', 'sha256': '4a28a1f8a821e599cfe6405726e83968695b128524e2b8dd43b4f37ce47c7200'}, 'cache_outer_manifest.json': {'path': 'docs/results/2026-11-04_action_safety_ranking/cache_outer_manifest.json', 'sha256': 'dc57f7e9e630eb0f19ff93bf515a62dbf3c58d146a30377cc9e2a83994f6207d'}, 'collector_OS_exit_receipt.json': {'path': 'docs/results/2026-11-04_action_safety_ranking/collector_OS_exit_receipt.json', 'sha256': '36318950a6c4da0d2c3eebfc707f1bdeb010bcd5796b8e83f175fe0328f6e1e8'}, 'config': {'path': 'configs/experiments/action_safety_ranking_v1.json', 'sha256': '8011b59df4f99a34783ef6b6b0310a86b13f53cf4f9fd91da59c23e739c5163d'}, 'outer_metrics.json': {'path': 'docs/results/2026-11-04_action_safety_ranking/outer_metrics.json', 'sha256': 'e7fe25abedf227b79f7b9995fb9f1bdeca856ea42b8ce34a526d1c3c93aef835'}, 'producer_manifest': {'path': 'docs/results/2026-11-04_action_safety_ranking/producer_precache_manifest.json', 'sha256': '62602926dff217cedeb003e09611785695a20fae0e32d5145a5215952762978e'}}
+
 
 
 def read(path):return json.loads(Path(path).read_text())
@@ -43,7 +45,10 @@ def validate_config(cfg):
     training={'seeds':[2026110461,2026110462],'arms':['R1','R2'],'model_dims':[205,32,1],'parameters_each':6625,'formal_steps_each':6000,'formal_updates':24000,'batch_candidate_kinds':[32,32],'old_draw_role':'risk','BCE_weights':'unweighted','AdamW':{'lr':.001,'weight_decay':.01,'betas':[.9,.999],'eps':1e-8},'warmup':100,'clip_norm':1.,'milestones':[2000,4000,6000],'latest_every':100,'engineering_updates':72}
     data={'partition_prefix':'A62-inner-v1\0','partition_sessions':[50,50],'recipe_seed':2026110463,'recipe_roles':['CAL_mixed','AUDIT_mixed','a62_confirmation_selection','a62_confirmation_calibration'],'recipe_counts':[150,150,120,120],'recipe_domains':[0,1,2,3],'source_role_natives':['inner_cal','selection','calibration'],'old_inner_mixed_for_new_thresholds':False}
     if cfg['training']!=training or cfg['data']!=data or cfg['legacy_SL_tau']!={'2026110461':.007963286712765694,'2026110462':.006616456434130669}:raise ValueError('training/data/gates differ from fixed card or contain unused fields')
-    basis=read(verify_pin(cfg['basis']));old=read(verify_pin(cfg['prior_A61']['config']));auth=read(verify_pin(cfg['authorization']))
+    basis=read(verify_pin(cfg['basis']));expected_prior={Path(p).name:{'path':p,'sha256':h} for p,h in basis['source_pins'].items() if p.startswith('docs/results/2026-11-04_action_safety_ranking/') and Path(p).name not in ['public_source_manifest.json']}
+    expected_prior.update(PRIOR_A61_EXTRA_PINS)
+    if cfg['prior_A61']!=expected_prior:raise ValueError('operational prior_A61 pins must exactly bind approved basis plus literal extra prior receipts/config')
+    old=read(verify_pin(cfg['prior_A61']['config']));auth=read(verify_pin(cfg['authorization']))
     budget={k:auth[k] for k in ['T0_epoch','deadline_epoch','incremental_GPU_job_seconds_cap','incremental_CPU_accounting_seconds_cap','incremental_tracked_storage_upper_bytes_cap','cumulative_GPU_job_hours_cap','cumulative_CPU_accounting_hours_cap','cumulative_tracked_storage_upper_bytes_cap','GPU_closing_reserve_seconds','CPU_closure_reserve_within_increment_seconds','CPU_forecast_uncertainty_buffer_seconds','storage_forecast_reserve_bytes']}
     if cfg['scope']!=basis['fixed_endpoint_counts'] or cfg['readonly_code_pins']!=basis['readonly_code_pins'] or cfg['prior_source_pins']!=basis['source_pins'] or cfg['prior_bookkeeping']!=basis['bookkeeping_basis'] or cfg['source']!=old['source'] or cfg['channel_mapping']!=old['channel_mapping'] or cfg['budget']!=budget:raise ValueError('frozen basis/source/channel/budget contract differs')
     return True
@@ -89,3 +94,9 @@ def probability_reader(source,role,purpose='head'):
     folder=ROOT/row['path']
     if sha(folder/'committed.jsonl')!=row['journal_sha256'] or row['input_sha256']!=m['roles'][role]['sha256']:raise ValueError('complete context/journal/input identity changed')
     return ProbabilityCache(folder,row['identity'],[len(q['refs']) for q in sequences(role)],readonly=True)
+
+
+def verify_prior_science():
+    cfg=read(CFG);binding=read(PUB/'prior_science_binding.json');expected={p:sha(ROOT/p) for p in sorted(set([v['path'] for v in cfg['prior_A61'].values()]+list(cfg['readonly_code_pins'])))}
+    if binding['git_commit']!=cfg['prior_scientific_git'] or binding['objects']!=expected:raise ValueError('exact original scientific commit/current prior pin coverage required')
+    return verify_Git(read(verify_pin(binding['actual_Git_object_proof'])),binding['git_commit'],expected)

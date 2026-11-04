@@ -56,3 +56,10 @@ def test_model_audit_expected_identity_does_not_trust_completion():
  assert m.independent_identity({'seed':2026110461,'identity':expected},inputs,formal)==expected
  altered={**expected,'input':'e'*64}
  with pytest.raises(ValueError,match='independent'):m.independent_identity({'seed':2026110461,'identity':altered},inputs,formal)
+
+def test_operational_prior_pin_alias_cannot_drift_from_basis():
+ import copy,json,pytest
+ m=importlib.import_module('scripts.event_risk_common');cfg=json.loads(m.CFG.read_text());bad=copy.deepcopy(cfg);bad['prior_A61']['models_manifest.json']['sha256']='0'*64
+ with pytest.raises(ValueError,match='prior_A61'):m.validate_config(bad)
+ bad=copy.deepcopy(cfg);bad['prior_A61']['unused']={'path':'somewhere','sha256':'0'*64}
+ with pytest.raises(ValueError,match='prior_A61'):m.validate_config(bad)

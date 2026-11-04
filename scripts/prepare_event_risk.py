@@ -19,12 +19,14 @@ from echo_routing.temporal.baselines.registry import decode_with_prob
 def prior():return {k:read(verify_pin(v)) for k,v in read(CFG)['prior_A61'].items()}
 
 def metadata():
-    freeze=verify_freeze('metadata_freeze.json');cfg=read(CFG);old=prior()
+    freeze=verify_freeze('metadata_freeze.json');verify_prior_science();cfg=read(CFG);old=prior()
     if (PUB/'input_manifest.json').exists():raise ValueError('metadata immutable; do not redraw/repartition')
     for path,h in cfg['readonly_code_pins'].items():
         if sha(ROOT/path)!=h:raise ValueError('unchanged qualified scientific source code required')
     if old['collector_OS_exit_receipt.json']['observed_collector_OS_exit_code']!=0 or not old['resources.json']['server_scientific_and_resource_collection_complete']:raise ValueError('completed prior A61 receipt required, not stale running flag')
-    previous=old['input_manifest.json'];roles=dict(previous['roles']);source={k:dict(v) for k,v in previous['source_cache_roles'].items()}
+    previous=old['input_manifest.json']
+    if previous['class_order']!=['PLAX','PSAX','A4C','A5C','SC4C'] or not previous['A08_J_Base_truth_channel_semantics_unchanged']:raise ValueError('five-channel teacher/Base/label class semantics qualification required for JEPA replacement use')
+    roles=dict(previous['roles']);source={k:dict(v) for k,v in previous['source_cache_roles'].items()}
     for r in old['cache_outer_manifest.json']['records']:source.setdefault(r['role'],{})[r['source']]=dict(r)
     qs={r:np.load(verify_pin(p),allow_pickle=True).tolist() for r,p in roles.items()};natives={r:[q for q in qs[r] if q['kind']=='native'] for r in ['fit','inner_cal','selection','calibration']};isolation=verify_native_groups(natives)
     cal,audit,part=partition_inner(natives['inner_cal']);groups={'CAL_native':cal,'AUDIT_native':audit};recipes={};summaries={};sources={'CAL_mixed':cal,'AUDIT_mixed':audit,'a62_confirmation_selection':natives['selection'],'a62_confirmation_calibration':natives['calibration']}
