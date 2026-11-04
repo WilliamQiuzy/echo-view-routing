@@ -29,3 +29,16 @@ def densities(t, report):
     def oracle(v):
         return 2*(t['dense_16']['oracle_max_seconds']*v['N']+low['oracle_max_seconds']*(v['C']/low['C']+v['TC']/low['TC'])+high['oracle_max_seconds']*v['CR']/high['CR']+long['oracle_max_seconds']*(v['K']/long['K']+v['T']/long['T']))
     return descriptor,oracle
+
+
+def role_costs(roles,report):
+    expected={*OUTER_ROLES,'inner_cal'}
+    if not report['passed'] or report['new_optimizer_updates'] or report['new_NN_forwards'] or report['A61_outer_head_outcomes_used'] or report['actual_GT_values_used'] or set(report['roles'])!=expected:raise ValueError('complete synthetic role timing matrix required')
+    for r,v in report['roles'].items():
+        if v['N']!=roles[r]['sequences'] or v['T']!=roles[r]['positions'] or v['input_sha256']!=roles[r]['sha256'] or v['synthetic_truth_max_runs']!=8 or not v['synthetic_score_matrix_no_heads']:raise ValueError('whole-role frozen geometry/source binding changed')
+        for k in ['descriptor_max_seconds','cache_write_seconds','cache_read_seconds','oracle_max_seconds','geometry_and_dummy_policy_seconds']:
+            if not math.isfinite(v[k]) or v[k]<0:raise ValueError('finite nonnegative actual role timings required')
+        for label in ['descriptor','oracle']:
+            a=v['all6_'+label+'_seconds']
+            if len(a)!=6 or any(not math.isfinite(x) or x<0 for x in a) or max(a)!=v[label+'_max_seconds']:raise ValueError('all6 actual paths and conservative max required')
+    return report['roles']

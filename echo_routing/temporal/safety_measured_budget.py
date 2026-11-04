@@ -15,7 +15,7 @@ def future(pin):
     return {'N':n,'T':P,'C':C,'C2':C*maxC,'TC':1.5*P*T+P,'all_C':C,'all_TC':1.5*P*T+P,'K':2*P,'native_N':0,'native_T':0,'native_T2':0}
 
 
-def complete_measured(roles,checks,costs,measurement,retained_bytes,formal_pending=True,rle=None,source_complete=False):
+def complete_measured(roles,checks,costs,measurement,retained_bytes,formal_pending=True,rle=None,source_complete=False,role_measurement=None):
     if set(roles)!=set(EXPECTED_ROLES) or not measurement['passed'] or measurement['new_optimizer_updates']!=0 or measurement['new_neural_forwards']!=0 or measurement['A61_outer_head_outcomes_used'] or measurement['outer_label_values_used']:raise ValueError('complete cost-only measurement with unchanged full role matrix required')
     t=measurement['timings'];required=['task_16','task_701','dense_16','dense_701','long_701','native_16','native_701','empty_descriptor','probability_IO','integer_solver','trace_utility','trace_risk','state40','six_figures']
     if not set(required)<=set(t):raise ValueError('all fixed evaluator/cache/descriptor/oracle/audit/plot component measurements required')
@@ -61,6 +61,21 @@ def complete_measured(roles,checks,costs,measurement,retained_bytes,formal_pendi
         v=g[h];native+=28*2*(t['native_16']['seconds']*v['native_N']+t['native_701']['seconds']*(v['native_T']/701+v['native_T2']/701**2))
     bootstrap=240*2*max(t['task_16']['paired5000_seconds'],t['task_701']['paired5000_seconds'])+60
     oracles=6*sum(oracle(v) for v in g.values())+60*2*t['integer_solver']['seconds']
+    if role_measurement is not None:
+        from echo_routing.temporal.safety_rle_budget import role_costs
+        if rle is None or not source_complete:raise ValueError('actual geometry/source RLE binding required before role costs')
+        rc=role_costs(roles,role_measurement);high=rle['retained_high_RLE_dense'];pk=rle['all_unequal_pair_kernel']
+        def whole_descriptor(r):
+            # Full actual T/C/TC/K geometry is timed, plus unequal-pair and
+            # retained high-RLE run work. Reference fragment count is <=8.
+            v=g[r]
+            return 2*(rc[r]['descriptor_max_seconds']+pk['seconds']*v['C2']/pk['C2']+high['descriptor_max_seconds']*v['CR']/high['CR'])
+        def whole_IO(r):return 2*(rc[r]['cache_write_seconds']+rc[r]['cache_read_seconds'])
+        def whole_oracle(r):return 2*(rc[r]['oracle_max_seconds']+high['oracle_max_seconds']*g[r]['CR']/high['CR'])
+        descriptors=4*28*sum(whole_descriptor(r)+(0 if r in HALVES else whole_descriptor('selection' if r.endswith('selection') else 'calibration')) for r in OUTER_ROLES)
+        caches=36*sum(whole_IO(r) for r in OUTER_ROLES)
+        inner_work=(64*inference(ig)+112*evaluation(ig)+24*whole_IO('inner_cal')) if formal_pending else 0.
+        oracles=6*sum(whole_oracle(r) for r in OUTER_ROLES)+60*2*t['integer_solver']['seconds']
     audits=3*(8*t['trace_utility']['generation_IO_and_audit_seconds']+2*t['trace_risk']['generation_IO_and_audit_seconds'])+2*t['state40']['seconds']
     package=3*t['six_figures']['seconds']+300
     phases={'risk_and_utility_training_including_durable_IO':base['phase_CPU_forecasts_seconds']['risk_and_utility_training_including_durable_IO'],'all24inner_8calibration_and_full_inner_audit':inner_work,'all314_metrics_and_preparation':metrics,'all280_policy_historical_fullaxis_descriptors_and_recount':descriptors,'all80joint_20historical_cache_IO_source_IO_and_inference':heads+caches+source_read,'all240paired5000':bootstrap,'all60oracle_16reproduction':oracles,'all56native_cubes':native,'all10model_fullstate_and60000trace_audits_curve_IO':audits,'six_figures_tables_final_review_CPU_room':package,'fresh240_dualproducer_CPU':base['phase_CPU_forecasts_seconds']['fresh240_dualproducer_CPU']}
@@ -70,5 +85,5 @@ def complete_measured(roles,checks,costs,measurement,retained_bytes,formal_pendi
         base['remaining_GPU_seconds']=0.
         base['source_producer_remaining_neural_units']=0
         base['source_production_already_spent_not_erased']=True
-    base.update(remaining_CPU_seconds=sum(phases.values()),remaining_serial_wall_seconds=sum(phases.values())+base['remaining_GPU_seconds']+1200,phase_CPU_forecasts_seconds=phases,whole_workflow_closure_integration_wall_room_seconds=1200,superseded_original_phase_forecast_not_deleted=True,all_original_fresh_candidate_geometry_bounds_preserved=True,RLE_factorization_used=rle is not None,basis='actual new synthetic full-component timings;nonnegative N/T/C/C2/TC/K volume scaling with >=2 factors;fixed training×1.5/source×2 unchanged;all endpoints intact;forecast not a proven runtime bound and not spent charges')
+    base.update(remaining_CPU_seconds=sum(phases.values()),remaining_serial_wall_seconds=sum(phases.values())+base['remaining_GPU_seconds']+1200,phase_CPU_forecasts_seconds=phases,whole_workflow_closure_integration_wall_room_seconds=1200,superseded_original_phase_forecast_not_deleted=True,all_original_fresh_candidate_geometry_bounds_preserved=True,whole_role_synthetic_timing_used=role_measurement is not None,RLE_factorization_used=rle is not None,basis='actual new synthetic full-component timings;nonnegative N/T/C/C2/TC/K volume scaling with >=2 factors;fixed training×1.5/source×2 unchanged;all endpoints intact;forecast not a proven runtime bound and not spent charges')
     return base

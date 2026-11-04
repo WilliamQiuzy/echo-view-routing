@@ -29,3 +29,16 @@ def test_rle_factorization_retains_pair_run_and_volume_costs():
     assert o({**v,'CR':80})>o(v)
     bad=copy.deepcopy(rle);bad['low_RLE_dense']['descriptor_max_seconds']=float('nan')
     with pytest.raises(ValueError):m.densities(timing,bad)
+
+
+def test_whole_role_cost_requires_exact_axes_and_cannot_hide_missing_costs():
+    roles={r:{'sequences':1,'positions':10,'sha256':r} for r in [*m.OUTER_ROLES,'inner_cal']}
+    costs={r:{'N':1,'T':10,'input_sha256':r,'synthetic_truth_max_runs':8,'synthetic_score_matrix_no_heads':True,'descriptor_max_seconds':.2,'all6_descriptor_seconds':[.1]*5+[.2],'cache_write_seconds':.1,'cache_read_seconds':.1,'oracle_max_seconds':.3,'all6_oracle_seconds':[.1]*5+[.3],'geometry_and_dummy_policy_seconds':.1} for r in roles}
+    report={'passed':True,'roles':costs,'new_optimizer_updates':0,'new_NN_forwards':0,'A61_outer_head_outcomes_used':False,'actual_GT_values_used':False}
+    assert m.role_costs(roles,report)['inner_cal']['cache_write_seconds']==.1
+    bad=copy.deepcopy(report);bad['roles'].pop('inner_cal')
+    with pytest.raises(ValueError):m.role_costs(roles,bad)
+    bad=copy.deepcopy(report);bad['roles']['selection']['T']=11
+    with pytest.raises(ValueError):m.role_costs(roles,bad)
+    bad=copy.deepcopy(report);bad['roles']['selection']['descriptor_max_seconds']=.01
+    with pytest.raises(ValueError):m.role_costs(roles,bad)
