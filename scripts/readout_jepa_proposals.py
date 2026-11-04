@@ -33,7 +33,7 @@ def contexts(cfg):
 
 def validate_source_banks(outer,banks):
     manifest=read(PUB/'input_manifest.json');fresh={(r['source'],r['role']):r for r in outer['records']}
-    if set(fresh)!={(s,'a60_confirmation_'+h) for s in ['a08','jepa'] for h in HALVES}:raise ValueError('exact4 new source-role cells required')
+    if len(outer['records'])!=4 or set(fresh)!={(s,'a60_confirmation_'+h) for s in ['a08','jepa'] for h in HALVES}:raise ValueError('exact4 new source-role cells required')
     count=0
     for role,(qs,a,j,b,identities) in banks.items():
         if not len(qs)==len(a)==len(j)==len(b):raise ValueError('whole source axes changed')
