@@ -1,0 +1,26 @@
+{
+  "stage": "wrapper_collision_RED",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "tests/test_proposal_test_receipts.py"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 48903,
+  "supervisor_pid": 48892,
+  "started_epoch": 1793759400.1567402,
+  "finished_epoch": 1793759400.6256902,
+  "full_process_wall_seconds": 0.4689500331878662,
+  "observed_worker_exit_code": 1,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 0.398856,
+  "measured_supervisor_CPU_seconds": 0.0008580000000000011,
+  "measured_CPU_core_seconds": 0.399714,
+  "scope": "local CPU synthetic software checks; no media or formal experiment updates",
+  "output": "F                                                                        [100%]\n=================================== FAILURES ===================================\n___ test_existing_stage_cannot_execute_child_again_and_claim_precedes_Popen ____\n\ntmp_path = PosixPath('/private/var/folders/4l/s1hqgvzj2l10_dff3pw5m97m0000gn/T/pytest-of-williamqiu/pytest-278/test_existing_stage_cannot_exe0')\nmonkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x105af6750>\n\n    def test_existing_stage_cannot_execute_child_again_and_claim_precedes_Popen(tmp_path,monkeypatch):\n        m=importlib.import_module('scripts.run_proposal_tests');root=tmp_path/'project';(root/'scripts').mkdir(parents=True)\n        child=root/'test_probe.py';marker=root/'physical_child_marker'\n        child.write_text(f\"from pathlib import Path\\ndef test_probe():\\n p=Path({str(marker)!r});p.write_text(p.read_text()+'x' if p.exists() else 'x')\\n\")\n        monkeypatch.setattr(m,'__file__',str(root/'scripts/run_proposal_tests.py'))\n        monkeypatch.setattr(sys,'argv',['runner','same_stage',str(child)])\n        assert m.main()==0 and marker.read_text()=='x'\n        with pytest.raises((ValueError,FileExistsError)):m.main()\n>       assert marker.read_text()=='x'\nE       AssertionError: assert 'xx' == 'x'\nE         \nE         - x\nE         + xx\n\ntests/test_proposal_test_receipts.py:15: AssertionError\n----------------------------- Captured stdout call -----------------------------\n.                                                                        [100%]\n1 passed in 0.00s\n\n{\"stage\": \"same_stage\", \"command\": [\"/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python\", \"-m\", \"pytest\", \"-q\", \"/private/var/folders/4l/s1hqgvzj2l10_dff3pw5m97m0000gn/T/pytest-of-williamqiu/pytest-278/test_existing_stage_cannot_exe0/project/test_probe.py\"], \"measurement_host\": \"MacBook-Air-9.local\", \"model_pid\": 48904, \"supervisor_pid\": 48903, \"started_epoch\": 1793759400.3564942, \"finished_epoch\": 1793759400.476067, \"full_process_wall_seconds\": 0.11957287788391113, \"observed_worker_exit_code\": 0, \"GPU_job\": false, \"CUDA_context_occupied\": false, \"CUDA_visibility_hidden_before_child_import\": true, \"measured_child_CPU_seconds\": 0.11534, \"measured_supervisor_CPU_seconds\": 0.0012059999999999987, \"measured_CPU_core_seconds\": 0.116546, \"scope\": \"local CPU synthetic software checks; no media or formal experiment updates\", \"output_sha256\": \"bea5a77cc68582c0c66ca0fc860c9b8f449e679bec8d6a9178605ee7b7dc69a3\"}\n=========================== short test summary info ============================\nFAILED tests/test_proposal_test_receipts.py::test_existing_stage_cannot_execute_child_again_and_claim_precedes_Popen\n",
+  "output_sha256": "8c41a49e991ff4f3ca57c8c04e8173f1de1098dd31177c4752f71e87ed57e40d"
+}
