@@ -17,6 +17,7 @@ from echo_routing.temporal.event_risk_metrics import paired
 from echo_routing.temporal.event_risk_cache import EventCache
 from echo_routing.temporal.event_risk_runtime import C6_sha
 from echo_routing.evaluate.failure_units import session_of
+from echo_routing.temporal.event_risk_kind import canonical_kind
 
 
 def benchmark(T,pattern,folder):
@@ -63,8 +64,7 @@ def main():
         qs=sequences(role);a=probability_reader('a08',role,purpose='geometry');j=probability_reader('jepa',role,purpose='geometry');N=totT=C=TC=K=0;maxC=pieces=0;kinds={k:0 for k in ['native','multi','pair']};sessions=set()
         for i,q in enumerate(qs):
             if role=='inner_cal' and q['kind']!='native':continue
-            if q['kind'] not in kinds:raise ValueError('unexpected old kind requires explicit pinned qualification, never arbitrary mapping')
-            kinds[q['kind']]+=1
+            kind=canonical_kind(q['kind']);kinds[kind]+=1
             if q['kind']=='native':sessions.add(session_of(q['id']))
             T=len(q['refs']);source_runs=1+sum(q['refs'][z][0]!=q['refs'][z-1][0] for z in range(1,T));limit=1 if q['kind']=='native' else 8 if q['kind']=='multi' else 2
             if source_runs>limit:raise ValueError('structural GT-run ceiling not supported by source-reference grammar; no label-values inspected')

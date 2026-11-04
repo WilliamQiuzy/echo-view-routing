@@ -7,7 +7,8 @@ from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 from scripts.event_risk_common import *
 from scripts.event_risk_execution import bank,role_for,score_values,decoded,old_records,contexts
-from echo_routing.temporal.event_risk_metrics import plan,SEEDS,support
+from echo_routing.temporal.event_risk_metrics import plan,SEEDS
+from echo_routing.temporal.event_risk_kind import support
 from echo_routing.temporal.safety_tasks import compose
 from echo_routing.temporal.safety_oracle import options,coverage,solve
 
