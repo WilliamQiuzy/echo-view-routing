@@ -1,0 +1,31 @@
+{
+  "stage": "role_cost_contract_RED",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "tests/test_safety_role_costs.py::test_fixed_fit_numeric_and_structural_truth_run_ceiling"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 79966,
+  "supervisor_pid": 79955,
+  "started_epoch": 1793810290.598617,
+  "finished_epoch": 1793810293.758847,
+  "full_process_wall_seconds": 3.1602299213409424,
+  "observed_worker_exit_code": 1,
+  "stage_exit_code": 1,
+  "termination_reason": null,
+  "exception": null,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 2.224048,
+  "measured_supervisor_CPU_seconds": 0.0013989999999999992,
+  "measured_CPU_core_seconds": 2.225447,
+  "durable_claim_before_Popen": true,
+  "scope": "local synthetic checks;SELF region+waited CHILDREN;final JSON bookkeeping and wrapper imports separate metadata",
+  "output": "F                                                                        [100%]\n=================================== FAILURES ===================================\n___________ test_fixed_fit_numeric_and_structural_truth_run_ceiling ____________\ntests/test_safety_role_costs.py:18: in test_fixed_fit_numeric_and_structural_truth_run_ceiling\n    from scripts.probe_action_safety_role_costs import operating_point,truth_run_bound\nE   ImportError: cannot import name 'operating_point' from 'scripts.probe_action_safety_role_costs' (/Users/williamqiu/.config/superpowers/worktrees/echo-view-routing/a61-action-safety-ranking/scripts/probe_action_safety_role_costs.py)\n=========================== short test summary info ============================\nFAILED tests/test_safety_role_costs.py::test_fixed_fit_numeric_and_structural_truth_run_ceiling\n",
+  "output_sha256": "8bc84bf4079a14359738713f8ddba47dcabfc2d61747dd99a1e42d0a82770f7e"
+}
