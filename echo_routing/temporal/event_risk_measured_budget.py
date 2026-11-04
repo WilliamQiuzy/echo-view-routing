@@ -39,7 +39,7 @@ def remaining(profile,manifest,fit_checks=None,sources_done=False,formal_done=Fa
     oracle=12*sum(cost(upper(manifest['roles'][r]),'six_gate_summary_seconds') for r in ROLES[2:])+4*sum(cost(g,'six_gate_summary_seconds') for g in groups)
     cache=4*sum(cost(g,'raw_cache_init_write_read_seconds') for g in groups)
     unit=profile['synthetic_CI_unit_upper'];maxnative=max(manifest['roles'].get(r,{}).get('native',unit['native_sessions']*3) for r in ['selection','calibration'])
-    if unit!={'native_sessions':100,'multi_streams':150,'pair_streams':300} or maxnative>300:raise ValueError('synthetic complete CI units do not dominate actual native role; separately qualify larger units')
+    if unit!={'native_sessions':100,'multi_streams':150,'pair_streams':300} or maxnative>300 or any(any(r[k]>unit[k] for k in unit) for r in profile['actual_CI_units_by_half'].values()):raise ValueError('synthetic complete CI units do not dominate actual native role; separately qualify larger units')
     evaluate=2*(156*2+26)*profile['synthetic_fulltask_metric_seconds']
     ci=2*240*profile['synthetic_CI5000_seconds']
     if fit_checks is None:update=max(.01,40*profile['max_64candidate_forward_seconds']);disk=.02

@@ -1,0 +1,32 @@
+{
+  "stage": "terminal_scope_fixes_GREEN",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "tests/test_event_risk_terminal.py",
+    "tests/test_event_risk_freeze.py"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 90923,
+  "supervisor_pid": 90911,
+  "started_epoch": 1793831368.930639,
+  "finished_epoch": 1793831372.4280581,
+  "full_process_wall_seconds": 3.4974191188812256,
+  "observed_worker_exit_code": 1,
+  "stage_exit_code": 1,
+  "termination_reason": null,
+  "exception": null,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 2.486894,
+  "measured_supervisor_CPU_seconds": 0.0015239999999999993,
+  "measured_CPU_core_seconds": 2.488418,
+  "durable_claim_before_Popen": true,
+  "scope": "local synthetic checks;SELF region+waited CHILDREN;final JSON bookkeeping and wrapper imports separate metadata",
+  "output": "FF.......                                                                [100%]\n=================================== FAILURES ===================================\n_________________ test_actual_fake_child_wait_and_self_status __________________\ntests/test_event_risk_terminal.py:14: in test_actual_fake_child_wait_and_self_status\n    m,r,p,c=setup(tmp_path,monkeypatch);assert m.run([sys.executable,str(c)])==0;row=json.loads((p/'collector_OS_exit_receipt.json').read_text())\n                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nscripts/wait_event_risk_collector.py:40: in run\n    publish_once(PUB/'collector_OS_exit_receipt.json',value);print(value,flush=True);return 0 if passed else 1\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nscripts/wait_event_risk_collector.py:18: in publish_once\n    path=checked_output(path);temporary=path.with_name(path.name+'.'+str(os.getpid())+'.tmp')\n         ^^^^^^^^^^^^^^^^^^^^\nscripts/event_risk_common.py:27: in checked_output\n    if not any(p.is_relative_to(root.resolve()) for root in [RUN,PUB]):raise ValueError('A62 writes restricted to its new RUN/PUB')\n                                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   ValueError: A62 writes restricted to its new RUN/PUB\n_______ test_already_exited_child_exception_still_directly_waits_true_OS _______\ntests/test_event_risk_terminal.py:31: in test_already_exited_child_exception_still_directly_waits_true_OS\n    assert m.run([sys.executable,str(c)])==1\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nscripts/wait_event_risk_collector.py:40: in run\n    publish_once(PUB/'collector_OS_exit_receipt.json',value);print(value,flush=True);return 0 if passed else 1\n    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nscripts/wait_event_risk_collector.py:18: in publish_once\n    path=checked_output(path);temporary=path.with_name(path.name+'.'+str(os.getpid())+'.tmp')\n         ^^^^^^^^^^^^^^^^^^^^\nscripts/event_risk_common.py:27: in checked_output\n    if not any(p.is_relative_to(root.resolve()) for root in [RUN,PUB]):raise ValueError('A62 writes restricted to its new RUN/PUB')\n                                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   ValueError: A62 writes restricted to its new RUN/PUB\n=========================== short test summary info ============================\nFAILED tests/test_event_risk_terminal.py::test_actual_fake_child_wait_and_self_status\nFAILED tests/test_event_risk_terminal.py::test_already_exited_child_exception_still_directly_waits_true_OS\n",
+  "output_sha256": "68fd98b13729418e2eb08566e9b89ba923282db903d4443e35b67ad16871c528"
+}

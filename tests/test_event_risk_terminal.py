@@ -6,7 +6,7 @@ def setup(tmp_path,monkeypatch):
  import scripts.wait_event_risk_collector as m
  run=tmp_path/'run';pub=tmp_path/'pub';run.mkdir();pub.mkdir()
  for k,v in [('RUN',run),('PUB',pub),('ROOT',tmp_path)]:monkeypatch.setattr(m,k,v)
- monkeypatch.setattr(m,'write',atomic_json)
+ monkeypatch.setattr(m,'write',atomic_json);monkeypatch.setattr(m,'checked_output',lambda p:Path(p))
  child=tmp_path/'fake_child.py';child.write_text('import os,json,pathlib\np=pathlib.Path('+repr(str(pub))+')\nx={"collector_pid":os.getpid(),"collector_CPU_seconds_through_snapshot":0.0}\n(p/"resources.json").write_text(json.dumps(x))\nimport hashlib\n(p/"terminal_exit_receipt.json").write_text(json.dumps({"resources_sha256":hashlib.sha256((p/"resources.json").read_bytes()).hexdigest()}))\n')
  return m,run,pub,child
 
@@ -40,3 +40,30 @@ def test_source_attempt_costs_and_closure_pending():
  rows.append({**rows[0],'receipt_id':'sources:2','observed_worker_exit_code':None})
  assert source_costs(producer,rows)['actual_forward_units_across_all_attempts'] is None
  assert not completion_state()['overall_complete']
+
+def test_exclusive_caller_claim_and_partial_status(tmp_path):
+ import pytest
+ from scripts.wait_event_risk_collector import reserve_intent
+ from scripts.close_event_risk import completion_state
+ p=tmp_path/'claim.json';reserve_intent(p,{'caller_pid':1});before=p.read_bytes()
+ with pytest.raises(FileExistsError):reserve_intent(p,{'caller_pid':2})
+ assert p.read_bytes()==before
+ state=completion_state(False)
+ assert not state['server_scientific_collection_complete'] and not state['overall_complete'] and state['scientific_incomplete']
+
+def test_bad_attempt_refuses_before_freeze_or_mkdir(monkeypatch):
+ import pytest
+ import scripts.package_event_risk as m
+ monkeypatch.setattr(m,'authorize',lambda a:True);monkeypatch.setattr(m,'verify_freeze',lambda n:(_ for _ in ()).throw(AssertionError('bad attempt reached freeze')))
+ for a in ['/tmp/escape','../escape']:
+  monkeypatch.setattr(sys,'argv',['package','--execute','--attempt',a])
+  with pytest.raises(ValueError,match='attempt'):m.main()
+
+
+def test_complete_report_cannot_be_written_from_partial_counts(monkeypatch):
+ import pytest
+ import scripts.report_event_risk as m
+ monkeypatch.setattr(m,'verify_freeze',lambda n:{})
+ values={'summary.json':{'paired_comparisons':[]},'outer_metrics.json':{'rows':[]},'inner_metrics.json':{'rows':[]},'model_audit.json':{'formal_optimizer_updates':0,'models':[],'fullstates':[]},'calibration.json':{'thresholds':[]},'action_space_diagnostic.json':{'new_full_oracle_count':0,'readonly_old_oracle_count':0,'support_count':0},'native_attribution.json':{'cell_count':0,'base_reference_count':0},'regression_summary.json':{'record_count':0},'figure_receipt.json':{'artifacts':[]}}
+ monkeypatch.setattr(m,'read',lambda p:values[Path(p).name])
+ with pytest.raises(ValueError,match='complete'):m.report()

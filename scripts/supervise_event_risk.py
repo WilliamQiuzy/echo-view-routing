@@ -90,7 +90,8 @@ def execute(stage, command, run, pub, spent, declared_wall_seconds, GPU_job,
         start = time.time()
         child, code, reason, exception, start_ticks = None, None, None, None, None
         context_occupied, max_storage = False, 0
-        environment = {**os.environ, 'OMP_NUM_THREADS': '1', 'OPENBLAS_NUM_THREADS': '1'}
+        durable_directory(run/'tmp')
+        environment = {**os.environ, 'OMP_NUM_THREADS': '1', 'OPENBLAS_NUM_THREADS': '1','PYTHONDONTWRITEBYTECODE':'1','TMPDIR':str((run/'tmp').resolve()),'MPLCONFIGDIR':str((run/'tmp/matplotlib').resolve())}
         if not GPU_job:
             environment['CUDA_VISIBLE_DEVICES'] = ''
         def child_limit():

@@ -1,0 +1,31 @@
+{
+  "stage": "terminal_exclusive_partial_RED",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "tests/test_event_risk_terminal.py::test_exclusive_caller_claim_and_partial_status"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 87123,
+  "supervisor_pid": 87112,
+  "started_epoch": 1793831246.763146,
+  "finished_epoch": 1793831247.3768818,
+  "full_process_wall_seconds": 0.6137359142303467,
+  "observed_worker_exit_code": 1,
+  "stage_exit_code": 1,
+  "termination_reason": null,
+  "exception": null,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 0.387157,
+  "measured_supervisor_CPU_seconds": 0.0011139999999999987,
+  "measured_CPU_core_seconds": 0.388271,
+  "durable_claim_before_Popen": true,
+  "scope": "local synthetic checks;SELF region+waited CHILDREN;final JSON bookkeeping and wrapper imports separate metadata",
+  "output": "F                                                                        [100%]\n=================================== FAILURES ===================================\n________________ test_exclusive_caller_claim_and_partial_status ________________\ntests/test_event_risk_terminal.py:46: in test_exclusive_caller_claim_and_partial_status\n    from scripts.wait_event_risk_collector import reserve_intent\nE   ImportError: cannot import name 'reserve_intent' from 'scripts.wait_event_risk_collector' (/Users/williamqiu/.config/superpowers/worktrees/echo-view-routing/a62-anchor-context-risk/scripts/wait_event_risk_collector.py)\n=========================== short test summary info ============================\nFAILED tests/test_event_risk_terminal.py::test_exclusive_caller_claim_and_partial_status\n",
+  "output_sha256": "ae8f3e0aec99dd519b95beed0964eb3617bb92918c2a4271c4cc808fa8f60386"
+}

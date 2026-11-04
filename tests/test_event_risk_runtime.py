@@ -1,3 +1,4 @@
+from pathlib import Path
 import importlib,json,sys
 import pytest
 
@@ -6,6 +7,7 @@ def test_A62_claim_before_child_direct_wait_and_foreign_CPU_allowed(tmp_path,mon
  def check(*a,**k):
   assert json.loads((tmp_path/'run/active_process.json').read_text())['state']=='durable_launch_intent'
   assert k['env']['CUDA_VISIBLE_DEVICES']==''
+  assert k['env']['PYTHONDONTWRITEBYTECODE']=='1' and Path(k['env']['TMPDIR']).is_relative_to(tmp_path/'run') and Path(k['env']['MPLCONFIGDIR']).is_relative_to(tmp_path/'run')
   return orig(*a,**k)
  monkeypatch.setattr(m.subprocess,'Popen',check)
  row=m.execute('toy',[sys.executable,'-c','raise SystemExit(7)'],tmp_path/'run',tmp_path/'pub',b.totals([]),4,False,storage_probe=lambda:0,GPU_probe=lambda:[999999])

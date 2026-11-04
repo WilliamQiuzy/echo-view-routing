@@ -4,6 +4,7 @@ from pathlib import Path
 PUB='docs/results/2026-11-04_anchor_context_risk/'
 CONFIG='configs/experiments/anchor_context_risk_v1.json'
 SPECS={
+ 'incomplete_terminal':(['close_event_risk','wait_event_risk_collector'],['local_cpu_receipts.json']),
  'metadata':(['prepare_event_risk'],['prior_science_binding.json']),
  'cost':(['probe_event_risk_cost'],['input_manifest.json']),
  'producer':(['cache_event_risk'],['input_manifest.json','sources_admission.json','cost_profile.json']),
