@@ -4,7 +4,8 @@ import os,sys,time,json,resource,socket,subprocess
 _START=time.time()
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT))
-from scripts.proposal_common import RUN,PUB,CFG,read,write,sha,verify_freeze,verify_pin,actual_receipts
+from scripts.proposal_common import RUN,PUB,CFG,read,write,sha,verify_freeze,verify_pin,actual_receipts,digest
+from echo_routing.temporal.proposal_terminal import validate_history
 from echo_routing.temporal.proposal_resources import ExclusiveQueue,totals,PRIOR_STORAGE_UPPER_BYTES,DEADLINE_EPOCH
 
 
@@ -14,6 +15,9 @@ def main():
                'formal_freeze.json','audit_freeze.json','outer_admission_freeze.json','outer_freeze.json','readout_freeze.json','aggregate_freeze.json',
                'oracle_freeze.json','package_freeze.json','native_attribution_freeze.json','terminal_freeze.json']
         contracts={name:verify_freeze(name) for name in names}
+        historical=read(PUB/'historical_source_version_verification.json');oldidentity=read(PUB/'preparation_identity_v3.json')
+        divergences=[p for p,h in oldidentity['objects'].items() if sha(ROOT/p)!=h]
+        validate_history(historical,oldidentity,sha(PUB/'preparation_identity_v3.json'),digest(oldidentity['objects']),divergences)
         if (RUN/'active_process.json').exists():raise ValueError('active queue claim prevents terminal closure')
         records=[json.loads(line) for line in (RUN/'processes.jsonl').read_text().splitlines()]
         local=read(PUB/'local_cpu_receipts.json')
@@ -51,7 +55,7 @@ def main():
         value={'passed':True,'all_authorized_A60_stages_complete':True,'no_remaining_authorized_model_training_or_readout':True,
             'scientific_summary_sha256':sha(PUB/'summary.json'),'action_space_diagnostic_sha256':sha(PUB/'action_space_diagnostic.json'),
             'models_manifest_sha256':sha(PUB/'models_manifest.json'),'native_attribution_sha256':sha(PUB/'native_attribution.json'),'source_frozen_objects_verified':len(contracts['outer_freeze.json']['objects']),
-            'all_current_contracts_verified':names,'historical_preparation_source_versions_verified_against_actual_Git_receipt':read(PUB/'historical_source_version_verification.json'),'source_and_all12milestone_weight_files_verified':len(pins),
+            'all_current_contracts_verified':names,'historical_preparation_source_versions_verified_against_actual_Git_receipt':historical,'source_and_all12milestone_weight_files_verified':len(pins),
             'new_GPU_job_hours':actual['new_GPU_wall_seconds']/3600,'cumulative_GPU_job_hours':cumulativeGPU,
             'new_summed_measured_CPU_receipt_hours_including_collector':(actual['new_measured_CPU_seconds']+cpu)/3600,
             'cumulative_summed_measured_CPU_receipt_hours':actual['cumulative_measured_CPU_hours']+cpu/3600,
