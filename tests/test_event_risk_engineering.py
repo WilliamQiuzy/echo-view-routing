@@ -35,3 +35,10 @@ def test_complete_integer_solver_pool_is_synthetic_and_fixed_truth():
     assert len(pools)==3 and all(len(p)==8 for p in pools)
     assert all(p[0]['span'] is None and {v['T'] for v in p}=={8} for p in pools)
     assert fractional_oracle(pools)['T']==24
+
+
+def test_probe_local_storage_and_cpu_checks_fail_closed():
+    from scripts.probe_event_risk_refinement import validate_stage_usage
+    validate_stage_usage(10.,1000,2000)
+    with pytest.raises(ValueError):validate_stage_usage(880.,1000,2000)
+    with pytest.raises(ValueError):validate_stage_usage(10.,1000,64001001)

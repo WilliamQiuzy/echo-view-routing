@@ -2,7 +2,7 @@
 """Bounded cost-only legal-RLE/long-envelope/long-K measurement, no teacher/SGD."""
 import os
 os.environ['CUDA_VISIBLE_DEVICES']='';os.environ.setdefault('OMP_NUM_THREADS','1');os.environ.setdefault('OPENBLAS_NUM_THREADS','1')
-import sys,time
+import sys,time,resource
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 import numpy as np,torch
@@ -47,6 +47,15 @@ def solver_pools(streams,options_each):
     return [[{'M':(i+k)%9,'P':8+(k*7+i)%max(1,options_each),'T':8,'span':None if k==0 else (k,k+1)} for k in range(options_each+1)] for i in range(streams)]
 
 
+def validate_stage_usage(cpu,initial_upper,current_upper):
+    if cpu>=880 or current_upper>initial_upper+64000000:raise ValueError('bounded cost stage CPU/storage allowance reached; retain prefixes and actual costs')
+
+
+def check_stage_usage(initial_upper):
+    a=resource.getrusage(resource.RUSAGE_SELF);b=resource.getrusage(resource.RUSAGE_CHILDREN)
+    validate_stage_usage(a.ru_utime+a.ru_stime+b.ru_utime+b.ru_stime,initial_upper,storage_bytes([RUN,PUB]))
+
+
 def benchmark(T,name,folder):
     from echo_routing.temporal.event_risk_cost_bounds import observed_geometry
     b,ra,rj=synthetic_axis(T,name);v=profile_value(b,ra,rj);pa=np.eye(5)[ra]*.9+.02;pj=np.eye(5)[rj]*.9+.02
@@ -66,11 +75,12 @@ def benchmark(T,name,folder):
 def main():
     args=execution_parser(__doc__).parse_args()
     if not authorize(args):return 0
-    freeze=verify('refinement_probe_freeze.json');m=read(PUB/'input_manifest.json');spent=totals(actual_receipts());upper=storage_bytes([RUN,PUB])+64000000;now=time.time();admit=forecast(spent,0.,4500.,upper,now,1500.)
+    freeze=verify('refinement_probe_freeze.json');m=read(PUB/'input_manifest.json');spent=totals(actual_receipts());initial_upper=storage_bytes([RUN,PUB]);upper=initial_upper+64000000;now=time.time();admit=forecast(spent,0.,4500.,upper,now,4800.)
     path=PUB/'refinement_probe_admission.json'
     if path.exists():raise ValueError('one prospective refinement attempt only; retain earlier evidence')
     write(path,{**admit,'scope':'independent CPU-only cost stage900CPU/64MB plus existing closure; NOT complete-source/formal admission','stage_CPU_upper_seconds':900,'additional_storage_upper_bytes':64000000,'actual_source_forwards':0,'input_manifest_sha256':sha(PUB/'input_manifest.json'),'engineering_freeze_git':freeze['git_commit']})
     if not admit['all_caps_fit']:return 1
+    check_stage_usage(initial_upper)
     torch.set_num_threads(1);torch.use_deterministic_algorithms(True)
     from echo_routing.temporal.event_risk_cost_bounds import observed_geometry,aggregate_bounds
     from echo_routing.temporal.baselines.registry import decode_with_prob
@@ -81,13 +91,16 @@ def main():
             if role=='inner_cal' and q['kind']!='native':continue
             pa,pj=a.load(i),j.load(i);base=decode_with_prob('b3',pa,{'decode':{'b3':params}})[0];records.append(observed_geometry(base,pa.argmax(1),pj.argmax(1)))
         geometry[role]={k:sum(v[k] for v in records) for k in records[0] if isinstance(records[0][k],(int,float))};geometry[role].update(input_sha256=m['roles'][role]['sha256'],max_C=max(v['all_C'] for v in records),max_T=max(v['T'] for v in records))
+        check_stage_usage(initial_upper)
     future={role:aggregate_bounds([len(q['refs']) for q in sequences(role)]) for role in ['CAL_mixed','AUDIT_mixed','a62_confirmation_selection','a62_confirmation_calibration']}
     T=max(r['max_length'] for r in m['roles'].values());folder=RUN/'cost_refinement_v1';folder.mkdir(exist_ok=False);profiles=[]
     for name in ['empty','envelope','legal_RLE','long_K']:
         profiles.append(benchmark(T,name,folder/name));print({'cost_profile_completed':name,'profiles':len(profiles)},flush=True)
+        check_stage_usage(initial_upper)
     from echo_routing.temporal.anchor_oracle import fractional_oracle
     from echo_routing.temporal.event_risk_cost_bounds import axis_bounds
     options_each=axis_bounds(T)['C'];pools=solver_pools(150,options_each);t=time.perf_counter();fractional_oracle(pools);solver=time.perf_counter()-t
+    check_stage_usage(initial_upper)
     if torch.cuda.is_initialized():raise ValueError('CPU-only probe initialized CUDA')
     write(PUB/'cost_refinement_profile.json',{'passed':True,'geometry':geometry,'future_structural_bounds':future,'profiles':profiles,'integer_solver':{'streams':150,'options_each_excluding_noop':options_each,'seconds':solver},'input_manifest_sha256':sha(PUB/'input_manifest.json'),'original_cost_profile_sha256':sha(PUB/'cost_profile.json'),'engineering_freeze_git':freeze['git_commit'],'synthetic_MLP_module_forward_calls':sum(p['synthetic_MLP_module_forward_calls'] for p in profiles),'optimizer_updates':0,'teacher_forwards':0,'actual_trained_head_outcomes_or_GT_values_used':False,'metadata_labels_transient_parse_not_benchmark_truth':True,'prospective_only_not_admission':True});return 0
 
