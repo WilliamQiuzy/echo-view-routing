@@ -1,0 +1,31 @@
+{
+  "stage": "measured_budget_RED",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "tests/test_safety_measured_budget.py"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 48516,
+  "supervisor_pid": 48506,
+  "started_epoch": 1793806374.6357172,
+  "finished_epoch": 1793806374.967071,
+  "full_process_wall_seconds": 0.33135390281677246,
+  "observed_worker_exit_code": 1,
+  "stage_exit_code": 1,
+  "termination_reason": null,
+  "exception": null,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 0.24407099999999998,
+  "measured_supervisor_CPU_seconds": 0.0013409999999999984,
+  "measured_CPU_core_seconds": 0.245412,
+  "durable_claim_before_Popen": true,
+  "scope": "local synthetic checks;SELF region+waited CHILDREN;final JSON bookkeeping and wrapper imports separate metadata",
+  "output": "F                                                                        [100%]\n=================================== FAILURES ===================================\n____ test_measured_forecast_requires_complete_probe_and_keeps_fullworkload _____\ntests/test_safety_measured_budget.py:6: in test_measured_forecast_requires_complete_probe_and_keeps_fullworkload\n    m=importlib.import_module('echo_routing.temporal.safety_measured_budget');roles={r:{'sequences':120,'positions':2400,'max_length':20,'a08_stride5_windows':600,'jepa_chunks':120} for r in m.EXPECTED_ROLES};roles['selection'].update(sequences=541,native=284);roles['calibration'].update(sequences=472,native=237)\n      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n../../../../../.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n<frozen importlib._bootstrap>:1387: in _gcd_import\n    ???\n<frozen importlib._bootstrap>:1360: in _find_and_load\n    ???\n<frozen importlib._bootstrap>:1324: in _find_and_load_unlocked\n    ???\nE   ModuleNotFoundError: No module named 'echo_routing.temporal.safety_measured_budget'\n=========================== short test summary info ============================\nFAILED tests/test_safety_measured_budget.py::test_measured_forecast_requires_complete_probe_and_keeps_fullworkload\n",
+  "output_sha256": "4c405120c0a17c433edb62986839aa00284978599a20c2dd934b6d5be8dc7b4c"
+}
