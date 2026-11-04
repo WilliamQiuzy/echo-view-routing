@@ -16,3 +16,15 @@ def test_stage_freeze_requires_actual_committed_bytes_and_blocks_old_cli(tmp_pat
  with pytest.raises(ValueError,match='commit every'):m.make('changed_freeze.json',['scripts/new_event_risk.py'],[])
  (root/'scripts/new_event_risk.py').write_text('from scripts.readout_action_safety import main\n')
  with pytest.raises(ValueError,match='old writing CLI'):m.source_closure(['scripts/new_event_risk.py'])
+
+def test_package_and_relative_import_aliases_bind_actual_modules_and_oldCLI_guard(tmp_path,monkeypatch):
+ import scripts.freeze_event_risk as m
+ monkeypatch.setattr(m,'ROOT',tmp_path)
+ for folder in ['scripts','echo_routing','echo_routing/vit','echo_routing/temporal']:
+  p=tmp_path/folder;p.mkdir(exist_ok=True);(p/'__init__.py').write_text('')
+ (tmp_path/'echo_routing/vit/target_mvit.py').write_text('x=1\n');(tmp_path/'echo_routing/temporal/jepa21_source.py').write_text('x=2\n');(tmp_path/'scripts/new_event_risk.py').write_text('from echo_routing.vit import target_mvit\nfrom echo_routing.temporal import jepa21_source\n');(tmp_path/'scripts/old_cli.py').write_text('')
+ paths=m.source_closure(['scripts/new_event_risk.py'])
+ assert {'echo_routing/vit/target_mvit.py','echo_routing/vit/__init__.py','echo_routing/temporal/jepa21_source.py','echo_routing/temporal/__init__.py'}<=set(paths)
+ for statement in ['from scripts import old_cli\n','from . import old_cli\n']:
+  (tmp_path/'scripts/new_event_risk.py').write_text(statement)
+  with pytest.raises(ValueError,match='old writing CLI'):m.source_closure(['scripts/new_event_risk.py'])

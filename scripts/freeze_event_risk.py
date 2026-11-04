@@ -10,27 +10,34 @@ from echo_routing.temporal.safety_git import build,verify
 
 
 def source_closure(paths):
+    from importlib.util import resolve_name
     pending=list(paths);seen=set()
+    def module(name):
+        if not name.startswith(('echo_routing','scripts')):return
+        if name.startswith('scripts.') and 'event_risk' not in name.split('.')[-1]:raise ValueError('old writing CLI import is forbidden: '+name)
+        parts=Path(*name.split('.'));candidates=[parts.with_suffix('.py'),parts/'__init__.py']
+        for q in candidates:
+            if (ROOT/q).is_file():pending.append(str(q))
+        for parent in [parts,*parts.parents]:
+            init=parent/'__init__.py'
+            if str(parent)!='.' and (ROOT/init).is_file():pending.append(str(init))
     while pending:
         path=pending.pop()
         if path in seen:continue
         seen.add(path);p=ROOT/path
         if p.suffix!='.py':continue
-        tree=ast.parse(p.read_text())
-        for node in ast.walk(tree):
-            names=[node.module] if isinstance(node,ast.ImportFrom) and node.module else [a.name for a in node.names] if isinstance(node,ast.Import) else []
-            for name in names:
-                if isinstance(node,ast.ImportFrom) and node.level:
-                    from importlib.util import resolve_name
-                    name=resolve_name('.'*node.level+name,'.'.join(Path(path).parent.parts))
-                if name.startswith('scripts.') and 'event_risk' not in name.split('.')[-1]:raise ValueError('old writing CLI import is forbidden: '+name)
-                if name.startswith(('echo_routing.','scripts.')):
-                    q=Path(*name.split('.')).with_suffix('.py')
-                    if (ROOT/q).is_file():pending.append(str(q))
-                    # Include package initializers too: runtime import semantics.
-                    for parent in q.parents:
-                        init=parent/'__init__.py'
-                        if str(parent)!='.' and (ROOT/init).is_file():pending.append(str(init))
+        package='.'.join(Path(path).parent.parts)
+        for node in ast.walk(ast.parse(p.read_text())):
+            if isinstance(node,ast.Import):
+                for alias in node.names:module(alias.name)
+            elif isinstance(node,ast.ImportFrom):
+                base=resolve_name('.'*node.level+(node.module or ''),package) if node.level else node.module
+                if not base:continue
+                module(base)
+                for alias in node.names:
+                    if alias.name!='*':
+                        name=base+'.'+alias.name;candidate=Path(*name.split('.'))
+                        if (ROOT/candidate.with_suffix('.py')).is_file() or (ROOT/candidate/'__init__.py').is_file():module(name)
     return sorted(seen)
 
 

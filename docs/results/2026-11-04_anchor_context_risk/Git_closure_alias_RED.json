@@ -1,0 +1,31 @@
+{
+  "stage": "Git_closure_alias_RED",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "tests/test_event_risk_freeze.py::test_package_and_relative_import_aliases_bind_actual_modules_and_oldCLI_guard"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 56875,
+  "supervisor_pid": 56864,
+  "started_epoch": 1793830284.993359,
+  "finished_epoch": 1793830285.5063748,
+  "full_process_wall_seconds": 0.5130157470703125,
+  "observed_worker_exit_code": 1,
+  "stage_exit_code": 1,
+  "termination_reason": null,
+  "exception": null,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 0.350678,
+  "measured_supervisor_CPU_seconds": 0.0012080000000000025,
+  "measured_CPU_core_seconds": 0.351886,
+  "durable_claim_before_Popen": true,
+  "scope": "local synthetic checks;SELF region+waited CHILDREN;final JSON bookkeeping and wrapper imports separate metadata",
+  "output": "F                                                                        [100%]\n=================================== FAILURES ===================================\n_ test_package_and_relative_import_aliases_bind_actual_modules_and_oldCLI_guard _\ntests/test_event_risk_freeze.py:27: in test_package_and_relative_import_aliases_bind_actual_modules_and_oldCLI_guard\n    assert {'echo_routing/vit/target_mvit.py','echo_routing/vit/__init__.py','echo_routing/temporal/jepa21_source.py','echo_routing/temporal/__init__.py'}<=set(paths)\nE   AssertionError: assert {'echo_routin...rget_mvit.py'} <= {'echo_routin...vent_risk.py'}\nE     \nE     Extra items in the left set:\nE     'echo_routing/vit/__init__.py'\nE     'echo_routing/temporal/__init__.py'\nE     'echo_routing/vit/target_mvit.py'\nE     'echo_routing/temporal/jepa21_source.py'\n=========================== short test summary info ============================\nFAILED tests/test_event_risk_freeze.py::test_package_and_relative_import_aliases_bind_actual_modules_and_oldCLI_guard\n",
+  "output_sha256": "86e4006d9ddb63c06a523096723e38d288abdd633c91e71ea372e0672140dfba"
+}
