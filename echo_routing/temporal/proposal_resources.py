@@ -71,9 +71,8 @@ def forecast(spent, GPU_seconds, CPU_seconds, incremental_peak_bytes, now, remai
     gpu = spent['cumulative_GPU_hours'] + GPU_seconds / 3600 + CLOSURE_GPU_RESERVE_HOURS
     cpu = spent['cumulative_CPU_accounting_hours'] + CPU_seconds / 3600
     storage = PRIOR_STORAGE_UPPER_BYTES + incremental_peak_bytes
-    # The remaining-wall forecast includes actual closure work. Reserve a further
-    # two hours of wall room, without charging unused reserve as spent resources.
-    projected_end = now + remaining_wall_seconds + CLOSURE_GPU_RESERVE_HOURS * 3600
+    # Complete remaining wall includes actual closure; GPU reserve is not a shorter CPU deadline.
+    projected_end = now + remaining_wall_seconds
     return {'all_caps_fit': gpu <= 24 and cpu <= 72 and storage <= 40000000000 and projected_end <= DEADLINE_EPOCH,
             'forecast_cumulative_GPU_hours_including_reserve': gpu,
             'forecast_cumulative_CPU_accounting_hours': cpu,
@@ -88,7 +87,7 @@ def remaining_limits(spent, now, potential_GPU_context=True, closing=False):
     reserve = 0. if closing else CLOSURE_GPU_RESERVE_HOURS
     gpu_seconds = (24 - spent['cumulative_GPU_hours'] - reserve) * 3600
     cpu_seconds = (72 - spent['cumulative_CPU_accounting_hours']) * 3600
-    deadline_seconds = DEADLINE_EPOCH - now - reserve * 3600
+    deadline_seconds = DEADLINE_EPOCH - now
     wall = min(cpu_seconds, deadline_seconds, gpu_seconds if potential_GPU_context else float('inf'))
     return {'stage_wall_seconds': max(0., wall), 'remaining_CPU_seconds': max(0., cpu_seconds),
             'remaining_GPU_seconds_before_reserve': max(0., gpu_seconds),

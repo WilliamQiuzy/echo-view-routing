@@ -20,3 +20,9 @@ def test_namespace_supervisor_refuses_stale_external_cost_and_pending_before_lau
     (pub/'local_cpu_receipts.json').write_text(json.dumps({'receipts':[{'receipt_id':'bad'}]}))
     with pytest.raises((ValueError,KeyError)):execute('fixture',[sys.executable,'-c','raise AssertionError()'],run,pub,totals([]),2,False,GPU_probe=lambda:[],storage_probe=lambda:0)
     assert not p.exists()
+
+def test_GPU_reserve_does_not_invent_shorter_CPU_wall_deadline():
+    from echo_routing.temporal.proposal_resources import remaining_limits,DEADLINE_EPOCH
+    t=totals([]);now=DEADLINE_EPOCH-3600
+    assert forecast(t,0,10,0,now,100)['all_caps_fit']
+    assert remaining_limits(t,now,potential_GPU_context=False)['stage_wall_seconds']==3600
