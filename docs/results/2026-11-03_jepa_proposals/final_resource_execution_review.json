@@ -1,0 +1,38 @@
+{
+  "reviewer": "a60_final_review",
+  "status": "Approved",
+  "scope": "sealed resources and terminal execution closure; integration excluded",
+  "epoch_recorded": 1793767411.5325792,
+  "resource_sha256": "38a826a32c4de34bd92c411ef31d92c3e0bf6e1dc0a26bdfb9182d4f47c28103",
+  "terminal_sha256": "ab68028ef887fcbb27944ba086aeae9995d953d3a57e1bcc7be5423d9103c172",
+  "collector_OS_receipt_sha256": "e4ee51bde7602cefa4b9e32e9da13ebde840cbe620205e722d601d1d12a47146",
+  "measured_CPU_seconds": {
+    "server": 667.224674,
+    "entry_complements": 0.2668039999999451,
+    "local": 30.925561,
+    "collector_through_snapshot": 3.02194,
+    "new_total_through_snapshot": 701.438979
+  },
+  "cumulative_measured_CPU_hours": 18.448515337222222,
+  "cumulative_CPU_accounting_hours": 19.198515337222222,
+  "cumulative_GPU_hours": 18.41335994296604,
+  "tracked_storage_upper_bytes": 35332702254,
+  "all_inherited_caps_deadline_and_2GPUhour_reserve_passed": true,
+  "server_worker_statuses_directly_waited": 15,
+  "null_status_scope": "15 entry SELF snapshots and10 local SELF snapshots; no unwaited server model worker",
+  "collector_observed_OS_exit_code": 0,
+  "collector_status_directly_waited": true,
+  "administrative_tail_separate": {
+    "collector_post_snapshot_waited_CPU_seconds": 0.050352000000000174,
+    "parent_SELF_CPU_seconds": 0.002127000000000004,
+    "review_root_integration_tool_CPU": "unmetered administrative coordination, not relabelled workerCPU"
+  },
+  "limitations_retained": [
+    "historical CPU overlap/provenance uncertainty",
+    "known pre-entry setup CPU measurement gaps",
+    "tracked-path storage upper, not whole-filesystem peak",
+    "unknown historical OS statuses not inferred from manifests"
+  ],
+  "new_experiments_or_tests": 0,
+  "material_issues": []
+}
