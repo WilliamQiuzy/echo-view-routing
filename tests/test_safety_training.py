@@ -52,7 +52,8 @@ def test_real_steps_repeat6_diskresume3plus3_exact_optimizer_identity(tmp_path):
         for i in range(6):m.step(full,opt,ub if role=='utility' else rb,i,role)
         saved=m.checkpoint(full,opt,6,identity,norms,2.)
         broken=dict(saved);broken['update']=5
-        with pytest.raises(ValueError):m.restore(model(),m.optimizer(model()),broken,identity,norms,2.)
+        fresh=model();fresh_opt=m.optimizer(fresh)
+        with pytest.raises(ValueError,match='cursor|schedule|Adam'):m.restore(fresh,fresh_opt,broken,identity,norms,2.)
         partial=model();po=m.optimizer(partial)
         journal=m.UpdateJournal(tmp_path/role,identity)
         for i in range(3):
