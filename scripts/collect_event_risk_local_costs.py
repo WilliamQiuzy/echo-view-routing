@@ -16,7 +16,10 @@ def collect(pub=PUB,root=ROOT):
         if sha(root/p)!=h:raise ValueError('raw immutable measured receipt changed')
     for p in sorted(pub.glob('*.json')):
         if p.name=='local_cpu_receipts.json' or p.name.startswith(('process_','entry_CPU_')):continue
-        v=json.loads(p.read_text());key=next((k for k in KEYS if k in v),None)
+        v=json.loads(p.read_text())
+        approved_type=(p.name in ['planning_review_CPU.json','execution_authorization.json'] or p.name.startswith(('root_','review_')) or p.name.startswith('a62_') and p.name.endswith('receipt.json') or v.get('durable_claim_before_Popen') is True and isinstance(v.get('command'),list) and 'pytest' in v['command'])
+        if not approved_type:continue
+        key=next((k for k in KEYS if k in v),None)
         if key is None:continue
         cpu=v[key]
         if isinstance(cpu,bool) or not isinstance(cpu,(int,float)) or not math.isfinite(cpu) or cpu<0:raise ValueError('real finite CPU receipt value required')

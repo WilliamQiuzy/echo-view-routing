@@ -244,4 +244,5 @@ def meter_entry(callback, run, pub):
     return code
 
 if __name__ == '__main__':
+    if '--execute' not in sys.argv:raise SystemExit(main())
     raise SystemExit(meter_entry(main,ROOT/'runs/a62_anchor_context_risk_v1',ROOT/'docs/results/2026-11-04_anchor_context_risk'))

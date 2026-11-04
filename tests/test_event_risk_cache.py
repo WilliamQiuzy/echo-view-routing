@@ -33,3 +33,9 @@ def test_nonempty_C6_cannot_be_swapped_under_unchanged_old_reference(tmp_path):
  import hashlib
  m=importlib.import_module('echo_routing.temporal.event_risk_cache');b=np.zeros(5,int);raw=b.copy();raw[1]=1;old=np.array([[.2,.1,.9,0.,.1,.1]],np.float64);ref={'source':'frozen_sha_verified','sha256':'a'*64,'scores_sha256':hashlib.sha256(old.tobytes()).hexdigest()};taus={k:.5 for k in ['L0','M0','R1','R2']};c=m.EventCache(tmp_path/'cache','identity',[b],[raw],[b],taus,[ref]);changed=old.copy();changed[0,0]=3
  with pytest.raises(ValueError):c._check({'old_scores':changed,'q':np.array([[.1,.2]]),'old_reference':ref,'seconds':0.},0)
+
+def test_precalibration_raw_q_cache_has_no_fabricated_C_threshold_or_labels(tmp_path):
+ import hashlib
+ m=importlib.import_module('echo_routing.temporal.event_risk_cache');b=np.zeros(4,int);ref={'source':'frozen','sha256':'a'*64,'scores_sha256':hashlib.sha256(np.empty((0,6),np.float64).tobytes()).hexdigest()};c=m.EventCache(tmp_path/'raw','identity',[b],[b],[b],None,[ref]);c.run_one(0,lambda:{'old_scores':np.empty((0,6)),'q':np.empty((0,2)),'old_reference':ref,'seconds':0.})
+ v=m.EventCache(tmp_path/'raw','identity',[b],[b],[b],None,[ref],readonly=True).load(0);assert 'R1' not in v and v['q'].shape==(0,2)
+ with np.load(c.file(0)) as z:assert not any(k.startswith('labels_') for k in z.files)
