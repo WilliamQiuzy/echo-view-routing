@@ -1,0 +1,31 @@
+{
+  "stage": "engineering_closure_RED",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "tests/test_event_risk_engineering_audit.py"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 63744,
+  "supervisor_pid": 63734,
+  "started_epoch": 1793836784.4481611,
+  "finished_epoch": 1793836784.660479,
+  "full_process_wall_seconds": 0.21231794357299805,
+  "observed_worker_exit_code": 1,
+  "stage_exit_code": 1,
+  "termination_reason": null,
+  "exception": null,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 0.17243999999999998,
+  "measured_supervisor_CPU_seconds": 0.0012199999999999971,
+  "measured_CPU_core_seconds": 0.17365999999999998,
+  "durable_claim_before_Popen": true,
+  "scope": "local synthetic checks;SELF region+waited CHILDREN;final JSON bookkeeping and wrapper imports separate metadata",
+  "output": "FF                                                                       [100%]\n=================================== FAILURES ===================================\n_____ test_engineering_close_requires_exact_production_admission_bindings ______\ntests/test_event_risk_engineering_audit.py:7: in test_engineering_close_requires_exact_production_admission_bindings\n    from echo_routing.temporal.event_risk_engineering_audit import validate_bindings\nE   ModuleNotFoundError: No module named 'echo_routing.temporal.event_risk_engineering_audit'\n____________ test_engineering_close_rejects_changed_measurement_pin ____________\ntests/test_event_risk_engineering_audit.py:23: in test_engineering_close_rejects_changed_measurement_pin\n    from echo_routing.temporal.event_risk_engineering_audit import validate_bindings\nE   ModuleNotFoundError: No module named 'echo_routing.temporal.event_risk_engineering_audit'\n=========================== short test summary info ============================\nFAILED tests/test_event_risk_engineering_audit.py::test_engineering_close_requires_exact_production_admission_bindings\nFAILED tests/test_event_risk_engineering_audit.py::test_engineering_close_rejects_changed_measurement_pin\n",
+  "output_sha256": "f45dfc0a65642fe4911c7e9a1b970546d12ff3401ab429d9e6f9334a690ba428"
+}

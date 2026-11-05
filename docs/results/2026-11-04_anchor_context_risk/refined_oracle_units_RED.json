@@ -1,0 +1,31 @@
+{
+  "stage": "refined_oracle_units_RED",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "tests/test_event_risk_refined_budget.py::test_complete_remaining_scope_and_floors_are_retained"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 55064,
+  "supervisor_pid": 55054,
+  "started_epoch": 1793836507.712468,
+  "finished_epoch": 1793836510.356769,
+  "full_process_wall_seconds": 2.644301176071167,
+  "observed_worker_exit_code": 1,
+  "stage_exit_code": 1,
+  "termination_reason": null,
+  "exception": null,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 1.8119269999999998,
+  "measured_supervisor_CPU_seconds": 0.001192000000000002,
+  "measured_CPU_core_seconds": 1.813119,
+  "durable_claim_before_Popen": true,
+  "scope": "local synthetic checks;SELF region+waited CHILDREN;final JSON bookkeeping and wrapper imports separate metadata",
+  "output": "F                                                                        [100%]\n=================================== FAILURES ===================================\n____________ test_complete_remaining_scope_and_floors_are_retained _____________\ntests/test_event_risk_refined_budget.py:63: in test_complete_remaining_scope_and_floors_are_retained\n    assert v['measured_backend_units']=={'new_full_oracle_endpoints':6,'safety_domains_per_measured_unit':3,'role_passes_per_half_including_independent_recount':2,'Ntop_support_endpoints':48,'additional_pooled_solves':54,'group_summary_passes_for_support_native_regression':4}\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   KeyError: 'measured_backend_units'\n=========================== short test summary info ============================\nFAILED tests/test_event_risk_refined_budget.py::test_complete_remaining_scope_and_floors_are_retained\n",
+  "output_sha256": "23610dfb19a93c6b8b2f1ea5e65e9686f78a2846d48be4b88512e92cc5490ec5"
+}
