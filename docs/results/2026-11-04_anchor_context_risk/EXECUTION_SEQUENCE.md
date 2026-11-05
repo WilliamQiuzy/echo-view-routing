@@ -18,6 +18,10 @@ The sole supervisor invocation has options BEFORE its positional stage (because 
 
 The actual shared CPU/deadline/closure bounds further reduce this maximum. CPU stages hide CUDA before child import; unexpected context fails closed and is fully charged. Child TMPDIR/MPLCONFIGDIR are under new RUN/tmp; bytecode is disabled. The synthetic cost probe is independently bounded900s; source has the explicit1800s incremental GPU cap. No smaller arbitrary formal-training deadline replaces the original authorization.
 
+For this actual execution, the first cost profile and original formula preview remain immutable; the reviewed [cost-only refinement](COST_REFINEMENT.md) adds `RUN/engineering_contracts/refinement_probe_freeze.json` and `probe_event_risk_refinement.py` under the same supervisor (`--seconds890 cost_refinement`). The actual complete admission route uses `sources|formal|outer_refined_admission_v1_freeze.json` in that engineering subdirectory and `admit_event_risk_refined.py --stage sources|formal|outer --version 1`. The older admission rows below describe the original unexecuted formula route; they must not overwrite any independent executed engineering contract. Every refined admission still covers all original work and the same caps/deadline.
+
+The real teacher supervisor label is `producer` (logical source phase `sources`). Preserve both via [SOURCE_STAGE_BINDING.md](SOURCE_STAGE_BINDING.md); after its real direct OS receipt, run the reviewed local `bind_event_risk_source_stage.py`. The future **package freezer additionally requires `--input docs/results/2026-11-04_anchor_context_risk/source_stage_binding.json`**. Its consumer checks this exact frozen alias before any rendering and charges actual `producer` attempts once. No source rerun or raw ledger renaming is allowed.
+
 | Actual stage | Immutable freeze name | Child / flags | Complete obligation |
 |---|---|---|---|
 | Prior proof (local) | `prior_science_binding.json` | `freeze_event_risk.py --prior-science` | Original scientific commit/current prior13+readonly code proof |
