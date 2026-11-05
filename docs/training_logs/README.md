@@ -44,7 +44,6 @@ print([(row['updates'], round(row['loss'], 3)) for row in rows])
 - **Runs on Pediatric data.** Their 15 logs are left out because the Pediatric reports are not public either.
 - **Engineering checks and smoke runs.** They are short tests of the code, not training.
 - **Checksum records such as `committed.jsonl`.** They are not training logs.
-- **EX3.** Its logs will be added when that round closes.
 - **Rounds without training.** Diagnostic rounds have no training log.
 
 These files come from development data and repeatedly used evaluation sets. A good curve here is not evidence on new patients.

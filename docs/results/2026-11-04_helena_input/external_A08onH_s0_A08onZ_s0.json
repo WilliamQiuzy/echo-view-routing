@@ -1,0 +1,337 @@
+{
+ "a08_open_set_parity_worst": 0.0,
+ "tags": {
+  "A08onH_s0": {
+   "endpoints": {
+    "camus_4ch_a4c": {
+     "a": 0.85,
+     "b": 0.806,
+     "ci95": [
+      0.014,
+      0.074
+     ],
+     "clusters": 500,
+     "delta": 0.04399999999999993,
+     "n": 500
+    },
+    "camus_4ch_apical": {
+     "a": 0.938,
+     "b": 0.904,
+     "ci95": [
+      0.012,
+      0.056
+     ],
+     "clusters": 500,
+     "delta": 0.03399999999999992,
+     "n": 500
+    },
+    "dynamic_a4c": {
+     "a": 0.94,
+     "b": 0.9475,
+     "ci95": [
+      -0.0225,
+      0.0075
+     ],
+     "clusters": 400,
+     "delta": -0.007500000000000062,
+     "n": 400
+    },
+    "lvh_plax": {
+     "a": 0.9067055393586005,
+     "b": 0.9212827988338192,
+     "ci95": [
+      -0.03498542274052478,
+      0.0029154518950437317
+     ],
+     "clusters": 343,
+     "delta": -0.014577259475218707,
+     "n": 343
+    }
+   },
+   "open_set": [
+    {
+     "accept": {
+      "camus_2ch": 0.004,
+      "camus_4ch": 0.092,
+      "dev_calibration": 0.9578059071729957,
+      "dev_selection": 0.9436619718309859,
+      "dynamic": 0.82,
+      "lvh": 0.3294460641399417,
+      "out_of_scope": 0.9347826086956522
+     },
+     "auroc": 0.784012,
+     "camus_2ch_accept": 0.004,
+     "camus_4ch_retain": 0.092,
+     "dynamic_retain": 0.82,
+     "lvh_retain": 0.3294460641399417,
+     "method": "msp",
+     "threshold": 0.8387446043875018
+    },
+    {
+     "accept": {
+      "camus_2ch": 0.0,
+      "camus_4ch": 0.0,
+      "dev_calibration": 0.9493670886075949,
+      "dev_selection": 0.9507042253521126,
+      "dynamic": 0.5925,
+      "lvh": 0.04664723032069971,
+      "out_of_scope": 0.7391304347826086
+     },
+     "auroc": 0.768604,
+     "camus_2ch_accept": 0.0,
+     "camus_4ch_retain": 0.0,
+     "dynamic_retain": 0.5925,
+     "lvh_retain": 0.04664723032069971,
+     "method": "energy",
+     "threshold": 3.207062741932222
+    },
+    {
+     "accept": {
+      "camus_2ch": 0.0,
+      "camus_4ch": 0.0,
+      "dev_calibration": 0.9578059071729957,
+      "dev_selection": 0.9436619718309859,
+      "dynamic": 0.455,
+      "lvh": 0.014577259475218658,
+      "out_of_scope": 0.7608695652173914
+     },
+     "auroc": 0.755264,
+     "camus_2ch_accept": 0.0,
+     "camus_4ch_retain": 0.0,
+     "dynamic_retain": 0.455,
+     "lvh_retain": 0.014577259475218658,
+     "method": "knn",
+     "threshold": -0.44131932028563936
+    },
+    {
+     "accept": {
+      "camus_2ch": 0.0,
+      "camus_4ch": 0.0,
+      "dev_calibration": 0.9367088607594937,
+      "dev_selection": 0.9612676056338029,
+      "dynamic": 0.2675,
+      "lvh": 0.0,
+      "out_of_scope": 0.782608695652174
+     },
+     "auroc": 0.680852,
+     "camus_2ch_accept": 0.0,
+     "camus_4ch_retain": 0.0,
+     "dynamic_retain": 0.2675,
+     "lvh_retain": 0.0,
+     "method": "mahalanobis",
+     "threshold": -173.74061956357409
+    }
+   ],
+   "routes": {
+    "camus_2ch": [
+     0,
+     122,
+     327,
+     40,
+     11
+    ],
+    "camus_4ch": [
+     0,
+     28,
+     425,
+     44,
+     3
+    ],
+    "dynamic": [
+     0,
+     0,
+     376,
+     23,
+     1
+    ],
+    "lvh": [
+     311,
+     4,
+     7,
+     16,
+     5
+    ],
+    "out_of_scope": [
+     0,
+     46,
+     0,
+     0,
+     0
+    ]
+   },
+   "seed": 0,
+   "usable_this_seed": {
+    "energy": false,
+    "knn": false,
+    "mahalanobis": false,
+    "msp": false
+   }
+  },
+  "A08onZ_s0": {
+   "endpoints": {
+    "camus_4ch_a4c": {
+     "a": 0.826,
+     "b": 0.806,
+     "ci95": [
+      -0.004,
+      0.044
+     ],
+     "clusters": 500,
+     "delta": 0.019999999999999907,
+     "n": 500
+    },
+    "camus_4ch_apical": {
+     "a": 0.914,
+     "b": 0.904,
+     "ci95": [
+      -0.012,
+      0.032
+     ],
+     "clusters": 500,
+     "delta": 0.010000000000000009,
+     "n": 500
+    },
+    "dynamic_a4c": {
+     "a": 0.945,
+     "b": 0.9475,
+     "ci95": [
+      -0.0125,
+      0.0075
+     ],
+     "clusters": 400,
+     "delta": -0.0025000000000000577,
+     "n": 400
+    },
+    "lvh_plax": {
+     "a": 0.9212827988338192,
+     "b": 0.9212827988338192,
+     "ci95": [
+      -0.01749271137026239,
+      0.014577259475218658
+     ],
+     "clusters": 343,
+     "delta": 0.0,
+     "n": 343
+    }
+   },
+   "open_set": [
+    {
+     "accept": {
+      "camus_2ch": 0.002,
+      "camus_4ch": 0.08,
+      "dev_calibration": 0.9578059071729957,
+      "dev_selection": 0.9436619718309859,
+      "dynamic": 0.8025,
+      "lvh": 0.48104956268221577,
+      "out_of_scope": 0.9130434782608695
+     },
+     "auroc": 0.800484,
+     "camus_2ch_accept": 0.002,
+     "camus_4ch_retain": 0.08,
+     "dynamic_retain": 0.8025,
+     "lvh_retain": 0.48104956268221577,
+     "method": "msp",
+     "threshold": 0.8482866756893476
+    },
+    {
+     "accept": {
+      "camus_2ch": 0.0,
+      "camus_4ch": 0.0,
+      "dev_calibration": 0.9535864978902954,
+      "dev_selection": 0.9471830985915493,
+      "dynamic": 0.5675,
+      "lvh": 0.14868804664723032,
+      "out_of_scope": 0.7391304347826086
+     },
+     "auroc": 0.749744,
+     "camus_2ch_accept": 0.0,
+     "camus_4ch_retain": 0.0,
+     "dynamic_retain": 0.5675,
+     "lvh_retain": 0.14868804664723032,
+     "method": "energy",
+     "threshold": 3.3058308685492515
+    },
+    {
+     "accept": {
+      "camus_2ch": 0.0,
+      "camus_4ch": 0.0,
+      "dev_calibration": 0.9704641350210971,
+      "dev_selection": 0.9330985915492958,
+      "dynamic": 0.5575,
+      "lvh": 0.08163265306122448,
+      "out_of_scope": 0.7391304347826086
+     },
+     "auroc": 0.82694,
+     "camus_2ch_accept": 0.0,
+     "camus_4ch_retain": 0.0,
+     "dynamic_retain": 0.5575,
+     "lvh_retain": 0.08163265306122448,
+     "method": "knn",
+     "threshold": -0.4651521202241374
+    },
+    {
+     "accept": {
+      "camus_2ch": 0.0,
+      "camus_4ch": 0.0,
+      "dev_calibration": 0.9409282700421941,
+      "dev_selection": 0.9577464788732394,
+      "dynamic": 0.145,
+      "lvh": 0.0029154518950437317,
+      "out_of_scope": 0.6956521739130435
+     },
+     "auroc": 0.766972,
+     "camus_2ch_accept": 0.0,
+     "camus_4ch_retain": 0.0,
+     "dynamic_retain": 0.145,
+     "lvh_retain": 0.0029154518950437317,
+     "method": "mahalanobis",
+     "threshold": -182.55530623172302
+    }
+   ],
+   "routes": {
+    "camus_2ch": [
+     1,
+     49,
+     278,
+     75,
+     97
+    ],
+    "camus_4ch": [
+     0,
+     22,
+     413,
+     44,
+     21
+    ],
+    "dynamic": [
+     1,
+     1,
+     378,
+     20,
+     0
+    ],
+    "lvh": [
+     316,
+     3,
+     6,
+     13,
+     5
+    ],
+    "out_of_scope": [
+     0,
+     46,
+     0,
+     0,
+     0
+    ]
+   },
+   "seed": 0,
+   "usable_this_seed": {
+    "energy": false,
+    "knn": false,
+    "mahalanobis": false,
+    "msp": false
+   }
+  }
+ }
+}
