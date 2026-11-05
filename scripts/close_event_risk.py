@@ -57,6 +57,9 @@ def main():
         except Exception as e:
             if not a.incomplete:raise
             contract_errors.append({'path':str(p.relative_to(ROOT)),'error':repr(e)})
+    from echo_routing.temporal.event_risk_engineering_audit import collect as collect_engineering
+    engineering_contracts,engineering_errors=collect_engineering(full=not a.incomplete)
+    contracts+=engineering_contracts;contract_errors+=engineering_errors
     missing=[]
     if not a.incomplete:
         verify_prior_science();preouter();validate_science(PUB);visual=read(PUB/'root_figure_visual_QA.json');science=read(PUB/'independent_scientific_review.json')
