@@ -73,12 +73,12 @@ def camus_section():
             'agreement_on_4ch': {'z_by_a08_seed': agreement, 'within_arm_pairs_01_02_12': within}}
 
 
-def stored_probs(half_data, seed):
-    path = data.RUN / 'evaluation' / half_data.half / f'Z_s{seed}.npz'
-    identity = f'Z|{seed}|{sha256_file(data.final_weights("Z", seed))}|{data.input_fingerprint("Z")}'
+def stored_probs(half_data, seed, arm='Z'):
+    path = data.RUN / 'evaluation' / half_data.half / f'{arm}_s{seed}.npz'
+    identity = f'{arm}|{seed}|{sha256_file(data.final_weights(arm, seed))}|{data.input_fingerprint(arm)}'
     logits, _ = rr.cached_logits(path, identity, half_data.W, half_data.orders, half_data.seqs)
     if logits is None:
-        raise SystemExit(f'Z s{seed}: stored outputs do not match their identity')
+        raise SystemExit(f'{arm} s{seed}: stored outputs do not match their identity')
     return rr.per_sample(half_data.W, logits, half_data.seqs)
 
 
@@ -116,9 +116,9 @@ def overlap(sets):
     return {'by_seed': [len(s) for s in sets], 'in_all_seeds': len(every)}
 
 
-def b3_section(a8, halves, choices):
+def b3_section(a8, halves, choices, arm='Z'):
     settings, floors, grid_rows, errors = {}, {}, {}, {half: {} for half in halves}
-    probs = {half: {seed: stored_probs(halves[half], seed) for seed in io.SEEDS} for half in halves}
+    probs = {half: {seed: stored_probs(halves[half], seed, arm) for seed in io.SEEDS} for half in halves}
     out = {half: {} for half in halves}
     for seed in io.SEEDS:
         a08_params = choices[f'all_s{seed}']['params']
@@ -128,9 +128,9 @@ def b3_section(a8, halves, choices):
         grid_rows[seed] = [{'shape': shape(r['params']), 'f1': r['segment_f1_50_multi'], 'native_macro_f1': r['native_macro_f1'], 'boundary_recall': r['boundary_recall_multi']} for r in pick['grid']]
         for half, half_data in halves.items():
             out[half][seed] = {name: against_a08(a8, half_data, seed, params, probs[half][seed]) for name, params in settings[seed].items() if name != 'a08'}
-            errors[half][seed] = {'Z': native_errors(half_data, rso.row_of(a8.cfg, decode(settings[seed]['rule'], probs[half][seed]), half_data.ev)['preds']),
+            errors[half][seed] = {arm: native_errors(half_data, rso.row_of(a8.cfg, decode(settings[seed]['rule'], probs[half][seed]), half_data.ev)['preds']),
                                   'A08': native_errors(half_data, rso.row_of(a8.cfg, decode(halves[half].a08[seed]['params'], halves[half].a08[seed]['probs']), half_data.ev)['preds'])}
-    native = {half: {'Z': overlap([errors[half][s]['Z'] for s in io.SEEDS]), 'Z_errors_also_wrong_in_any_a08_seed': len(set.intersection(*[errors[half][s]['Z'] for s in io.SEEDS]) & set.union(*[errors[half][s]['A08'] for s in io.SEEDS])), 'A08': overlap([errors[half][s]['A08'] for s in io.SEEDS])} for half in halves}
+    native = {half: {arm: overlap([errors[half][s][arm] for s in io.SEEDS]), f'{arm}_errors_also_wrong_in_any_a08_seed': len(set.intersection(*[errors[half][s][arm] for s in io.SEEDS]) & set.union(*[errors[half][s]['A08'] for s in io.SEEDS])), 'A08': overlap([errors[half][s]['A08'] for s in io.SEEDS])} for half in halves}
     return {'settings': settings, 'floors': floors, 'calibration_grid': grid_rows, 'against_a08': out, 'native_errors': native}
 
 

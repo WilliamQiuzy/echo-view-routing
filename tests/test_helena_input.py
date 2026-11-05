@@ -276,6 +276,13 @@ class TestDevResultName:
     def test_one_arm_is_named(self):
         assert data.dev_result_name('trained', ['Z'], [1, 2]) == 'dev_trained_Z_s1_s2.json'
 
+    def test_h_extension_writes_the_name_its_launcher_reads(self):
+        assert data.dev_result_name('trained', ['H'], [1, 2]) == 'dev_trained_H_s1_s2.json'
+
+
+def test_each_budget_raise_is_recorded_and_larger():
+    assert data.GPU_HOURS_ORIGINAL < data.GPU_HOURS_Z_EXTENSION < data.GPU_HOURS_MAX == 17.
+
 
 class TestPairedRecall:
     def test_identical_systems_have_zero_difference(self):

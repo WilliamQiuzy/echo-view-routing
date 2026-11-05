@@ -22,7 +22,8 @@ V01_CONFIG = 'configs/experiments/raw_video_context_v1.yaml'
 ARMS = ('H', 'Z')
 GPU_FRACTION = .4
 GPU_HOURS_ORIGINAL = 10.
-GPU_HOURS_MAX = 13.
+GPU_HOURS_Z_EXTENSION = 13.
+GPU_HOURS_MAX = 17.
 CACHE_BYTES_MAX = 45e9
 PIXEL_CODE = ('geometry.py', 'pixels.py', 'external.py', 'forward.py')
 
