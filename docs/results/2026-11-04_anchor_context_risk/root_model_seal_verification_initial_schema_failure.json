@@ -1,0 +1,12 @@
+{
+  "passed": false,
+  "observed_local_checker_exit_code": 1,
+  "stage": "root_actual_model_seal_checker_initial_schema",
+  "scope": "root local public-inventory checker; not model, training, remote audit or source failure",
+  "exception": "TypeError: object of type int has no len()",
+  "cause": "checker used len(plan.primary_comparisons) but schema declares integer8, while comparisons is the actual240-record list",
+  "script_path": "/tmp/a62_verify_actual_head_seal.py",
+  "actual_CPU_seconds": null,
+  "CPU_scope": "not sampled before checker exception; unmetered administrative interval retained, never booked as0 or as remote workerCPU",
+  "NN_or_SGD": 0
+}
