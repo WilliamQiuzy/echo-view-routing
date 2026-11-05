@@ -1,0 +1,31 @@
+{
+  "stage": "source_stage_both_paths_RED",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "tests/test_event_risk_source_stage_binding.py::test_binding_rejects_changed_units_journal_and_double_stage_accounting"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 97107,
+  "supervisor_pid": 97097,
+  "started_epoch": 1793837838.026262,
+  "finished_epoch": 1793837838.5607,
+  "full_process_wall_seconds": 0.534437894821167,
+  "observed_worker_exit_code": 1,
+  "stage_exit_code": 1,
+  "termination_reason": null,
+  "exception": null,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 0.35312499999999997,
+  "measured_supervisor_CPU_seconds": 0.0009439999999999969,
+  "measured_CPU_core_seconds": 0.35406899999999997,
+  "durable_claim_before_Popen": true,
+  "scope": "local synthetic checks;SELF region+waited CHILDREN;final JSON bookkeeping and wrapper imports separate metadata",
+  "output": "F                                                                        [100%]\n=================================== FAILURES ===================================\n____ test_binding_rejects_changed_units_journal_and_double_stage_accounting ____\ntests/test_event_risk_source_stage_binding.py:36: in test_binding_rejects_changed_units_journal_and_double_stage_accounting\n    with pytest.raises(ValueError):source_costs(p,rows+[extra])\n         ^^^^^^^^^^^^^^^^^^^^^^^^^\nE   Failed: DID NOT RAISE ValueError\n=========================== short test summary info ============================\nFAILED tests/test_event_risk_source_stage_binding.py::test_binding_rejects_changed_units_journal_and_double_stage_accounting\n",
+  "output_sha256": "dc3c82dc4c9a4d0edd5b223da5ab4ff8be8d0756836ec4b4b3e9140662931bfe"
+}
