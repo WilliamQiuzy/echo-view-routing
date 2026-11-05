@@ -1,0 +1,21 @@
+{
+  "round": "EX1",
+  "scope": "Separate line beside A60. It uses no A59/A60 lock, queue or namespace, and it is not in A60's shared ledger.",
+  "self_limits": {"gpu_hours": 0.5, "cpu_core_hours": 6, "storage_gb": 1},
+  "gpu": {
+    "first_forward_wall_seconds": 1372.6746470928192,
+    "second_forward_wall_seconds": 354.686687707901,
+    "total_wall_seconds": 1727.3613347928192,
+    "total_hours": 0.47982259299800534,
+    "max_gpu_bytes": 9177439744,
+    "note": "Plan section 8 item 8 expected about 0.55 to 0.6 hours. The measured total stayed below the 0.5 hour self-limit."
+  },
+  "cpu": {
+    "forward_process_seconds": 1670.966,
+    "readouts": "prepare, three readouts and two post-hoc scripts were not separately receipted. Each finished within about two minutes of wall time.",
+    "within_limit": true
+  },
+  "storage": {"run_folder": "18M", "within_limit": true},
+  "lost_time": "The first waiter matched its own command in pgrep and never ended. About 52 minutes passed with the GPU idle before the next step started. This cost no compute.",
+  "shared_ledger_note": "A59 closed the shared ledger at 18.334986/24 GPU hours and A60 inherits it. Whether to add these 0.48 hours is the lead's decision."
+}

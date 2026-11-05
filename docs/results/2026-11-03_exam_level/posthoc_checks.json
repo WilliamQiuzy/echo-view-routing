@@ -1,0 +1,1091 @@
+{
+ "constructed_joins": {
+  "calibration": {
+   "cross_session": 573,
+   "same_session": 26,
+   "same_session_a4c_a5c": 3,
+   "source_changes": 599
+  },
+  "selection": {
+   "cross_session": 581,
+   "same_session": 31,
+   "same_session_a4c_a5c": 1,
+   "source_changes": 612
+  }
+ },
+ "d1": {
+  "O0_minus_B_without_fallback": {
+   "clips": 3306,
+   "macro_f1": {
+    "ci95": [
+     -0.0017817862907935993,
+     0.020686348158328254
+    ],
+    "delta": 0.008679343318064525,
+    "n_clusters": 345,
+    "undefined_replicates": 0
+   },
+   "net": {
+    "ci95": [
+     -16.0,
+     16.0
+    ],
+    "delta": 0.0,
+    "n_clusters": 345,
+    "undefined_replicates": 0
+   }
+  },
+  "OT_minus_B_without_fallback": {
+   "clips": 3306,
+   "macro_f1": {
+    "ci95": [
+     -0.0005736298493159125,
+     0.022061435147207615
+    ],
+    "delta": 0.009980128944795275,
+    "n_clusters": 345,
+    "undefined_replicates": 0
+   },
+   "net": {
+    "ci95": [
+     -13.0,
+     19.0
+    ],
+    "delta": 3.0,
+    "n_clusters": 345,
+    "undefined_replicates": 0
+   }
+  },
+  "O_minus_B_without_fallback": {
+   "clips": 3306,
+   "macro_f1": {
+    "ci95": [
+     -0.0021795680691430006,
+     0.020882854415100384
+    ],
+    "delta": 0.008718751076733589,
+    "n_clusters": 345,
+    "undefined_replicates": 0
+   },
+   "net": {
+    "ci95": [
+     -15.0,
+     17.0
+    ],
+    "delta": 1.0,
+    "n_clusters": 345,
+    "undefined_replicates": 0
+   }
+  },
+  "T_no_marginal_minus_B": {
+   "macro_f1": {
+    "ci95": [
+     -0.01188481257691445,
+     0.001511613341569584
+    ],
+    "delta": -0.004672409649385645,
+    "n_clusters": 346,
+    "undefined_replicates": 0
+   },
+   "net": {
+    "ci95": [
+     -19.0,
+     2.0
+    ],
+    "delta": -8.0,
+    "n_clusters": 346,
+    "undefined_replicates": 0
+   }
+  },
+  "T_no_marginal_minus_T": {
+   "macro_f1": {
+    "ci95": [
+     0.01217086638980562,
+     0.03161460192200484
+    ],
+    "delta": 0.02160848562557771,
+    "n_clusters": 346,
+    "undefined_replicates": 0
+   },
+   "net": {
+    "ci95": [
+     9.0,
+     34.0
+    ],
+    "delta": 22.0,
+    "n_clusters": 346,
+    "undefined_replicates": 0
+   }
+  }
+ },
+ "error_timestamps": [
+  {
+   "draws_without_any_error": 0.1342,
+   "half": "selection",
+   "seed": 0,
+   "timestamps": 25,
+   "timestamps_with_errors": 2,
+   "total_errors": 15
+  },
+  {
+   "draws_without_any_error": 0.013,
+   "half": "selection",
+   "seed": 1,
+   "timestamps": 25,
+   "timestamps_with_errors": 4,
+   "total_errors": 18
+  },
+  {
+   "draws_without_any_error": 0.001,
+   "half": "selection",
+   "seed": 2,
+   "timestamps": 25,
+   "timestamps_with_errors": 6,
+   "total_errors": 15
+  },
+  {
+   "draws_without_any_error": 0.0012,
+   "half": "calibration",
+   "seed": 0,
+   "timestamps": 31,
+   "timestamps_with_errors": 6,
+   "total_errors": 14
+  },
+  {
+   "draws_without_any_error": 0.0008,
+   "half": "calibration",
+   "seed": 1,
+   "timestamps": 31,
+   "timestamps_with_errors": 6,
+   "total_errors": 15
+  },
+  {
+   "draws_without_any_error": 0.0,
+   "half": "calibration",
+   "seed": 2,
+   "timestamps": 31,
+   "timestamps_with_errors": 9,
+   "total_errors": 22
+  }
+ ],
+ "exam_joins_spanning_excluded": {
+  "calibration": {
+   "joins": 201,
+   "spanning_excluded_clip": 14
+  },
+  "selection": {
+   "joins": 248,
+   "spanning_excluded_clip": 19
+  }
+ },
+ "external_hindsight": [
+  {
+   "auroc_correct_over_wrong": 0.8735955759077146,
+   "clips": 1277,
+   "dataset": "dynamic",
+   "errors_without_rejection": 66,
+   "levels": [
+    {
+     "coverage": 0.9835552075176194,
+     "errors": 59,
+     "level": 0.5,
+     "risk": 0.046974522292993634
+    },
+    {
+     "coverage": 0.9122944400939702,
+     "errors": 35,
+     "level": 0.7,
+     "risk": 0.030042918454935622
+    },
+    {
+     "coverage": 0.8692247454972593,
+     "errors": 28,
+     "level": 0.8,
+     "risk": 0.025225225225225224
+    },
+    {
+     "coverage": 0.7204385277995301,
+     "errors": 10,
+     "level": 0.9,
+     "risk": 0.010869565217391304
+    },
+    {
+     "coverage": 0.5035238841033672,
+     "errors": 0,
+     "level": 0.95,
+     "risk": 0.0
+    },
+    {
+     "coverage": 0.0,
+     "errors": 0,
+     "level": 0.99,
+     "risk": null
+    }
+   ],
+   "seed": 0,
+   "space": "five_class"
+  },
+  {
+   "auroc_correct_over_wrong": 0.9733333333333334,
+   "clips": 1277,
+   "dataset": "dynamic",
+   "errors_without_rejection": 2,
+   "levels": [
+    {
+     "coverage": 0.995301487862177,
+     "errors": 1,
+     "level": 0.5,
+     "risk": 0.0007867820613690008
+    },
+    {
+     "coverage": 0.9796397807361003,
+     "errors": 1,
+     "level": 0.7,
+     "risk": 0.0007993605115907274
+    },
+    {
+     "coverage": 0.9592795614722005,
+     "errors": 1,
+     "level": 0.8,
+     "risk": 0.0008163265306122449
+    },
+    {
+     "coverage": 0.9060297572435395,
+     "errors": 0,
+     "level": 0.9,
+     "risk": 0.0
+    },
+    {
+     "coverage": 0.7744714173844949,
+     "errors": 0,
+     "level": 0.95,
+     "risk": 0.0
+    },
+    {
+     "coverage": 0.030540328895849646,
+     "errors": 0,
+     "level": 0.99,
+     "risk": 0.0
+    }
+   ],
+   "seed": 0,
+   "space": "merged_apical"
+  },
+  {
+   "auroc_correct_over_wrong": 0.9485466479137366,
+   "clips": 343,
+   "dataset": "lvh",
+   "errors_without_rejection": 27,
+   "levels": [
+    {
+     "coverage": 0.9067055393586005,
+     "errors": 9,
+     "level": 0.5,
+     "risk": 0.028938906752411574
+    },
+    {
+     "coverage": 0.717201166180758,
+     "errors": 1,
+     "level": 0.7,
+     "risk": 0.0040650406504065045
+    },
+    {
+     "coverage": 0.5801749271137027,
+     "errors": 0,
+     "level": 0.8,
+     "risk": 0.0
+    },
+    {
+     "coverage": 0.3236151603498542,
+     "errors": 0,
+     "level": 0.9,
+     "risk": 0.0
+    },
+    {
+     "coverage": 0.0641399416909621,
+     "errors": 0,
+     "level": 0.95,
+     "risk": 0.0
+    },
+    {
+     "coverage": 0.0,
+     "errors": 0,
+     "level": 0.99,
+     "risk": null
+    }
+   ],
+   "seed": 0,
+   "space": "five_class"
+  },
+  {
+   "auroc_correct_over_wrong": 0.9272796497239673,
+   "clips": 343,
+   "dataset": "lvh",
+   "errors_without_rejection": 34,
+   "levels": [
+    {
+     "coverage": 0.9358600583090378,
+     "errors": 19,
+     "level": 0.5,
+     "risk": 0.059190031152647975
+    },
+    {
+     "coverage": 0.7259475218658892,
+     "errors": 4,
+     "level": 0.7,
+     "risk": 0.01606425702811245
+    },
+    {
+     "coverage": 0.5801749271137027,
+     "errors": 0,
+     "level": 0.8,
+     "risk": 0.0
+    },
+    {
+     "coverage": 0.3236151603498542,
+     "errors": 0,
+     "level": 0.9,
+     "risk": 0.0
+    },
+    {
+     "coverage": 0.0641399416909621,
+     "errors": 0,
+     "level": 0.95,
+     "risk": 0.0
+    },
+    {
+     "coverage": 0.0,
+     "errors": 0,
+     "level": 0.99,
+     "risk": null
+    }
+   ],
+   "seed": 0,
+   "space": "merged_apical"
+  },
+  {
+   "auroc_correct_over_wrong": 0.89,
+   "clips": 50,
+   "dataset": "camus",
+   "errors_without_rejection": 10,
+   "levels": [
+    {
+     "coverage": 0.62,
+     "errors": 1,
+     "level": 0.5,
+     "risk": 0.03225806451612903
+    },
+    {
+     "coverage": 0.3,
+     "errors": 0,
+     "level": 0.7,
+     "risk": 0.0
+    },
+    {
+     "coverage": 0.14,
+     "errors": 0,
+     "level": 0.8,
+     "risk": 0.0
+    },
+    {
+     "coverage": 0.04,
+     "errors": 0,
+     "level": 0.9,
+     "risk": 0.0
+    },
+    {
+     "coverage": 0.0,
+     "errors": 0,
+     "level": 0.95,
+     "risk": null
+    },
+    {
+     "coverage": 0.0,
+     "errors": 0,
+     "level": 0.99,
+     "risk": null
+    }
+   ],
+   "seed": 0,
+   "space": "five_class"
+  },
+  {
+   "auroc_correct_over_wrong": 0.875,
+   "clips": 50,
+   "dataset": "camus",
+   "errors_without_rejection": 2,
+   "levels": [
+    {
+     "coverage": 0.9,
+     "errors": 1,
+     "level": 0.5,
+     "risk": 0.022222222222222223
+    },
+    {
+     "coverage": 0.62,
+     "errors": 0,
+     "level": 0.7,
+     "risk": 0.0
+    },
+    {
+     "coverage": 0.4,
+     "errors": 0,
+     "level": 0.8,
+     "risk": 0.0
+    },
+    {
+     "coverage": 0.08,
+     "errors": 0,
+     "level": 0.9,
+     "risk": 0.0
+    },
+    {
+     "coverage": 0.0,
+     "errors": 0,
+     "level": 0.95,
+     "risk": null
+    },
+    {
+     "coverage": 0.0,
+     "errors": 0,
+     "level": 0.99,
+     "risk": null
+    }
+   ],
+   "seed": 0,
+   "space": "merged_apical"
+  },
+  {
+   "auroc_correct_over_wrong": 0.9007277661280375,
+   "clips": 1277,
+   "dataset": "dynamic",
+   "errors_without_rejection": 67,
+   "levels": [
+    {
+     "coverage": 0.9733750978856696,
+     "errors": 56,
+     "level": 0.5,
+     "risk": 0.04505229283990346
+    },
+    {
+     "coverage": 0.8809710258418167,
+     "errors": 29,
+     "level": 0.7,
+     "risk": 0.025777777777777778
+    },
+    {
+     "coverage": 0.8120595144870791,
+     "errors": 16,
+     "level": 0.8,
+     "risk": 0.015429122468659595
+    },
+    {
+     "coverage": 0.6687548942834769,
+     "errors": 3,
+     "level": 0.9,
+     "risk": 0.00351288056206089
+    },
+    {
+     "coverage": 0.44792482380579485,
+     "errors": 0,
+     "level": 0.95,
+     "risk": 0.0
+    },
+    {
+     "coverage": 0.0,
+     "errors": 0,
+     "level": 0.99,
+     "risk": null
+    }
+   ],
+   "seed": 1,
+   "space": "five_class"
+  },
+  {
+   "auroc_correct_over_wrong": 0.9856096284667714,
+   "clips": 1277,
+   "dataset": "dynamic",
+   "errors_without_rejection": 3,
+   "levels": [
+    {
+     "coverage": 0.995301487862177,
+     "errors": 2,
+     "level": 0.5,
+     "risk": 0.0015735641227380016
+    },
+    {
+     "coverage": 0.9678935003915426,
+     "errors": 1,
+     "level": 0.7,
+     "risk": 0.0008090614886731392
+    },
+    {
+     "coverage": 0.9381362568519969,
+     "errors": 0,
+     "level": 0.8,
+     "risk": 0.0
+    },
+    {
+     "coverage": 0.855912294440094,
+     "errors": 0,
+     "level": 0.9,
+     "risk": 0.0
+    },
+    {
+     "coverage": 0.7055599060297573,
+     "errors": 0,
+     "level": 0.95,
+     "risk": 0.0
+    },
+    {
+     "coverage": 0.0015661707126076742,
+     "errors": 0,
+     "level": 0.99,
+     "risk": 0.0
+    }
+   ],
+   "seed": 1,
+   "space": "merged_apical"
+  },
+  {
+   "auroc_correct_over_wrong": 0.9559701492537314,
+   "clips": 343,
+   "dataset": "lvh",
+   "errors_without_rejection": 8,
+   "levels": [
+    {
+     "coverage": 0.9212827988338192,
+     "errors": 2,
+     "level": 0.5,
+     "risk": 0.006329113924050633
+    },
+    {
+     "coverage": 0.7084548104956269,
+     "errors": 0,
+     "level": 0.7,
+     "risk": 0.0
+    },
+    {
+     "coverage": 0.5189504373177842,
+     "errors": 0,
+     "level": 0.8,
+     "risk": 0.0
+    },
+    {
+     "coverage": 0.2303206997084548,
+     "errors": 0,
+     "level": 0.9,
+     "risk": 0.0
+    },
+    {
+     "coverage": 0.061224489795918366,
+     "errors": 0,
+     "level": 0.95,
+     "risk": 0.0
+    },
+    {
+     "coverage": 0.0,
+     "errors": 0,
+     "level": 0.99,
+     "risk": null
+    }
+   ],
+   "seed": 1,
+   "space": "five_class"
+  },
+  {
+   "auroc_correct_over_wrong": 0.9763623240707325,
+   "clips": 343,
+   "dataset": "lvh",
+   "errors_without_rejection": 17,
+   "levels": [
+    {
+     "coverage": 0.9212827988338192,
+     "errors": 2,
+     "level": 0.5,
+     "risk": 0.006329113924050633
+    },
+    {
+     "coverage": 0.7084548104956269,
+     "errors": 0,
+     "level": 0.7,
+     "risk": 0.0
+    },
+    {
+     "coverage": 0.5189504373177842,
+     "errors": 0,
+     "level": 0.8,
+     "risk": 0.0
+    },
+    {
+     "coverage": 0.2303206997084548,
+     "errors": 0,
+     "level": 0.9,
+     "risk": 0.0
+    },
+    {
+     "coverage": 0.061224489795918366,
+     "errors": 0,
+     "level": 0.95,
+     "risk": 0.0
+    },
+    {
+     "coverage": 0.0,
+     "errors": 0,
+     "level": 0.99,
+     "risk": null
+    }
+   ],
+   "seed": 1,
+   "space": "merged_apical"
+  },
+  {
+   "auroc_correct_over_wrong": 0.7951388888888888,
+   "clips": 50,
+   "dataset": "camus",
+   "errors_without_rejection": 18,
+   "levels": [
+    {
+     "coverage": 0.42,
+     "errors": 2,
+     "level": 0.5,
+     "risk": 0.09523809523809523
+    },
+    {
+     "coverage": 0.06,
+     "errors": 0,
+     "level": 0.7,
+     "risk": 0.0
+    },
+    {
+     "coverage": 0.0,
+     "errors": 0,
+     "level": 0.8,
+     "risk": null
+    },
+    {
+     "coverage": 0.0,
+     "errors": 0,
+     "level": 0.9,
+     "risk": null
+    },
+    {
+     "coverage": 0.0,
+     "errors": 0,
+     "level": 0.95,
+     "risk": null
+    },
+    {
+     "coverage": 0.0,
+     "errors": 0,
+     "level": 0.99,
+     "risk": null
+    }
+   ],
+   "seed": 1,
+   "space": "five_class"
+  },
+  {
+   "auroc_correct_over_wrong": null,
+   "clips": 50,
+   "dataset": "camus",
+   "errors_without_rejection": 0,
+   "levels": [
+    {
+     "coverage": 0.88,
+     "errors": 0,
+     "level": 0.5,
+     "risk": 0.0
+    },
+    {
+     "coverage": 0.6,
+     "errors": 0,
+     "level": 0.7,
+     "risk": 0.0
+    },
+    {
+     "coverage": 0.3,
+     "errors": 0,
+     "level": 0.8,
+     "risk": 0.0
+    },
+    {
+     "coverage": 0.0,
+     "errors": 0,
+     "level": 0.9,
+     "risk": null
+    },
+    {
+     "coverage": 0.0,
+     "errors": 0,
+     "level": 0.95,
+     "risk": null
+    },
+    {
+     "coverage": 0.0,
+     "errors": 0,
+     "level": 0.99,
+     "risk": null
+    }
+   ],
+   "seed": 1,
+   "space": "merged_apical"
+  },
+  {
+   "auroc_correct_over_wrong": 0.8683282035883192,
+   "clips": 1277,
+   "dataset": "dynamic",
+   "errors_without_rejection": 66,
+   "levels": [
+    {
+     "coverage": 0.9819890368050117,
+     "errors": 59,
+     "level": 0.5,
+     "risk": 0.04704944178628389
+    },
+    {
+     "coverage": 0.9193422083007048,
+     "errors": 39,
+     "level": 0.7,
+     "risk": 0.03321976149914821
+    },
+    {
+     "coverage": 0.870007830853563,
+     "errors": 27,
+     "level": 0.8,
+     "risk": 0.024302430243024302
+    },
+    {
+     "coverage": 0.7392325763508223,
+     "errors": 11,
+     "level": 0.9,
+     "risk": 0.011652542372881356
+    },
+    {
+     "coverage": 0.5364134690681285,
+     "errors": 3,
+     "level": 0.95,
+     "risk": 0.004379562043795621
+    },
+    {
+     "coverage": 0.0,
+     "errors": 0,
+     "level": 0.99,
+     "risk": null
+    }
+   ],
+   "seed": 2,
+   "space": "five_class"
+  },
+  {
+   "auroc_correct_over_wrong": 0.9864066193853428,
+   "clips": 1277,
+   "dataset": "dynamic",
+   "errors_without_rejection": 8,
+   "levels": [
+    {
+     "coverage": 0.9945184025058731,
+     "errors": 5,
+     "level": 0.5,
+     "risk": 0.003937007874015748
+    },
+    {
+     "coverage": 0.9788566953797964,
+     "errors": 2,
+     "level": 0.7,
+     "risk": 0.0016
+    },
+    {
+     "coverage": 0.9592795614722005,
+     "errors": 1,
+     "level": 0.8,
+     "risk": 0.0008163265306122449
+    },
+    {
+     "coverage": 0.8903680501174628,
+     "errors": 0,
+     "level": 0.9,
+     "risk": 0.0
+    },
+    {
+     "coverage": 0.7478465152701644,
+     "errors": 0,
+     "level": 0.95,
+     "risk": 0.0
+    },
+    {
+     "coverage": 0.0015661707126076742,
+     "errors": 0,
+     "level": 0.99,
+     "risk": 0.0
+    }
+   ],
+   "seed": 2,
+   "space": "merged_apical"
+  },
+  {
+   "auroc_correct_over_wrong": 0.9345345345345345,
+   "clips": 343,
+   "dataset": "lvh",
+   "errors_without_rejection": 10,
+   "levels": [
+    {
+     "coverage": 0.9475218658892128,
+     "errors": 3,
+     "level": 0.5,
+     "risk": 0.009230769230769232
+    },
+    {
+     "coverage": 0.8046647230320699,
+     "errors": 1,
+     "level": 0.7,
+     "risk": 0.0036231884057971015
+    },
+    {
+     "coverage": 0.7026239067055393,
+     "errors": 1,
+     "level": 0.8,
+     "risk": 0.004149377593360996
+    },
+    {
+     "coverage": 0.40524781341107874,
+     "errors": 0,
+     "level": 0.9,
+     "risk": 0.0
+    },
+    {
+     "coverage": 0.08454810495626822,
+     "errors": 0,
+     "level": 0.95,
+     "risk": 0.0
+    },
+    {
+     "coverage": 0.0,
+     "errors": 0,
+     "level": 0.99,
+     "risk": null
+    }
+   ],
+   "seed": 2,
+   "space": "five_class"
+  },
+  {
+   "auroc_correct_over_wrong": 0.9086247086247087,
+   "clips": 343,
+   "dataset": "lvh",
+   "errors_without_rejection": 13,
+   "levels": [
+    {
+     "coverage": 0.967930029154519,
+     "errors": 10,
+     "level": 0.5,
+     "risk": 0.030120481927710843
+    },
+    {
+     "coverage": 0.8046647230320699,
+     "errors": 1,
+     "level": 0.7,
+     "risk": 0.0036231884057971015
+    },
+    {
+     "coverage": 0.7026239067055393,
+     "errors": 1,
+     "level": 0.8,
+     "risk": 0.004149377593360996
+    },
+    {
+     "coverage": 0.40816326530612246,
+     "errors": 1,
+     "level": 0.9,
+     "risk": 0.007142857142857143
+    },
+    {
+     "coverage": 0.08454810495626822,
+     "errors": 0,
+     "level": 0.95,
+     "risk": 0.0
+    },
+    {
+     "coverage": 0.0,
+     "errors": 0,
+     "level": 0.99,
+     "risk": null
+    }
+   ],
+   "seed": 2,
+   "space": "merged_apical"
+  },
+  {
+   "auroc_correct_over_wrong": 0.8969298245614035,
+   "clips": 50,
+   "dataset": "camus",
+   "errors_without_rejection": 12,
+   "levels": [
+    {
+     "coverage": 0.56,
+     "errors": 1,
+     "level": 0.5,
+     "risk": 0.03571428571428571
+    },
+    {
+     "coverage": 0.16,
+     "errors": 0,
+     "level": 0.7,
+     "risk": 0.0
+    },
+    {
+     "coverage": 0.0,
+     "errors": 0,
+     "level": 0.8,
+     "risk": null
+    },
+    {
+     "coverage": 0.0,
+     "errors": 0,
+     "level": 0.9,
+     "risk": null
+    },
+    {
+     "coverage": 0.0,
+     "errors": 0,
+     "level": 0.95,
+     "risk": null
+    },
+    {
+     "coverage": 0.0,
+     "errors": 0,
+     "level": 0.99,
+     "risk": null
+    }
+   ],
+   "seed": 2,
+   "space": "five_class"
+  },
+  {
+   "auroc_correct_over_wrong": 0.8478260869565217,
+   "clips": 50,
+   "dataset": "camus",
+   "errors_without_rejection": 4,
+   "levels": [
+    {
+     "coverage": 0.72,
+     "errors": 1,
+     "level": 0.5,
+     "risk": 0.027777777777777776
+    },
+    {
+     "coverage": 0.26,
+     "errors": 0,
+     "level": 0.7,
+     "risk": 0.0
+    },
+    {
+     "coverage": 0.04,
+     "errors": 0,
+     "level": 0.8,
+     "risk": 0.0
+    },
+    {
+     "coverage": 0.0,
+     "errors": 0,
+     "level": 0.9,
+     "risk": null
+    },
+    {
+     "coverage": 0.0,
+     "errors": 0,
+     "level": 0.95,
+     "risk": null
+    },
+    {
+     "coverage": 0.0,
+     "errors": 0,
+     "level": 0.99,
+     "risk": null
+    }
+   ],
+   "seed": 2,
+   "space": "merged_apical"
+  }
+ ],
+ "frame_accuracy_mix": [
+  {
+   "class_recalls": [
+    0.9872955607476636,
+    0.9825021872265967,
+    0.9618790912591452,
+    0.9437652811735942,
+    0.9668874172185431
+   ],
+   "exam_at_constructed_mix": 0.9685830444378551,
+   "exam_frame_accuracy": 0.9763751127141569,
+   "half": "selection",
+   "seed": 0
+  },
+  {
+   "class_recalls": [
+    0.9833528037383178,
+    0.9848352289297171,
+    0.9728532922603004,
+    0.941320293398533,
+    0.9748344370860927
+   ],
+   "exam_at_constructed_mix": 0.9710504020639813,
+   "exam_frame_accuracy": 0.9789600240456868,
+   "half": "selection",
+   "seed": 1
+  },
+  {
+   "class_recalls": [
+    0.9871495327102804,
+    0.9801691455234762,
+    0.9638043896804005,
+    0.9095354523227384,
+    0.9788079470198675
+   ],
+   "exam_at_constructed_mix": 0.9630701831463677,
+   "exam_frame_accuracy": 0.9761346558461076,
+   "half": "selection",
+   "seed": 2
+  },
+  {
+   "class_recalls": [
+    0.9953573205106947,
+    0.9876485667676532,
+    0.9334803381109886,
+    0.8082051282051282,
+    1.0
+   ],
+   "exam_at_constructed_mix": 0.9465768470172338,
+   "exam_frame_accuracy": 0.9686518187530545,
+   "half": "calibration",
+   "seed": 0
+  },
+  {
+   "class_recalls": [
+    0.9953573205106947,
+    0.9902120717781403,
+    0.9533259830944506,
+    0.6943589743589743,
+    1.0
+   ],
+   "exam_at_constructed_mix": 0.9300378778146181,
+   "exam_frame_accuracy": 0.9654402010751938,
+   "half": "calibration",
+   "seed": 1
+  },
+  {
+   "class_recalls": [
+    0.9854087216050407,
+    0.9892798881379632,
+    0.9125321572951121,
+    0.6964102564102564,
+    1.0
+   ],
+   "exam_at_constructed_mix": 0.9197389832455751,
+   "exam_frame_accuracy": 0.953361725895413,
+   "half": "calibration",
+   "seed": 2
+  }
+ ]
+}
