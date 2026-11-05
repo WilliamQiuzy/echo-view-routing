@@ -11,6 +11,12 @@ and distinguish **semantic view changes** (A4C → PLAX) from **nuisance discont
 (same-view joins across patients, brightness edits). See `docs/ARCHITECTURE.md` for the design and
 `docs/RUNBOOK.md` for the exact commands.
 
+## Results and training logs
+
+- **[Experiment index](docs/EXPERIMENT_INDEX.md):** every round, its status and a link to its report. Start here.
+- **[Result reports](docs/results/):** one folder per round, with its tables and figures.
+- **[Training logs](docs/training_logs/):** the training curves of the trained runs.
+
 ## Layout (short)
 
 | Path | Purpose |
