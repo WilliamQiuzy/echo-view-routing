@@ -22,6 +22,9 @@ def export(path,rows):
 
 def source_costs(producer,receipts,binding=None,manifest_sha=None,identity=None,identity_sha=None,attempt_pins=None):
     logical=producer['source_production_stage'];stage=logical
+    has_sources=any(r['stage']=='sources' for r in receipts);has_producer=any(r['stage']=='producer' for r in receipts)
+    if has_sources and has_producer:raise ValueError('mixed logical/physical source attempts reject before any accounting branch')
+    if logical=='sources' and has_producer and binding is None:raise ValueError('producer-to-sources mapping requires exact frozen sidecar; no fallback')
     if binding is not None:
         from echo_routing.temporal.event_risk_source_stage import validate
         validate(binding,producer,manifest_sha,identity,identity_sha,receipts,attempt_pins);stage=binding['actual_supervisor_stage']

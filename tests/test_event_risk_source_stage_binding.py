@@ -32,3 +32,5 @@ def test_binding_rejects_changed_units_journal_and_double_stage_accounting():
         with pytest.raises(ValueError):validate(b,changed,'manifestbytes',i,'identitybytes',rows,pins)
     extra={**rows[0],'stage':'sources','receipt_id':'sources:1'}
     with pytest.raises(ValueError):build(p,'manifestbytes',i,'identitybytes',rows+[extra],pins)
+    from scripts.package_event_risk import source_costs
+    with pytest.raises(ValueError):source_costs(p,rows+[extra])
