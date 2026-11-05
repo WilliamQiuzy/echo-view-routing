@@ -1,0 +1,20 @@
+{
+  "round": "EX2",
+  "scope": "Separate line after EX1 and A60. It uses no A60 lock, queue or namespace, and it is not in A60's shared ledger.",
+  "self_limits": {"gpu_hours": 1.2, "cpu_core_hours": 10, "storage_gb": 3},
+  "gpu": {
+    "main_forward_wall_seconds": 2412.1690878868103,
+    "short_input_check_wall_seconds": 59,
+    "total_hours": 0.6864358577463362,
+    "max_gpu_bytes": 9201622016,
+    "failed_starts": "One short-input start stopped within five seconds because an import hid the GPU. It did no work."
+  },
+  "cpu": {
+    "forward_process_seconds": 2603.1419191210002,
+    "readouts": "Audit, retune, reading build, scoring, colour and readout scripts were not separately receipted. Each finished within about 25 minutes of wall time.",
+    "within_limit": true
+  },
+  "storage": {"run_folder": "34M", "within_limit": true},
+  "helpers": "One pre-result code reviewer, two blind readers and one independent fact-checker.",
+  "shared_ledger_note": "Whether to add these GPU hours to the shared ledger is the lead's decision."
+}
