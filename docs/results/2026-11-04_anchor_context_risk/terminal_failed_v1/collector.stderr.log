@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "/home/william/echo-view-routing/scripts/close_event_risk.py", line 87, in <module>
+    if __name__=='__main__':raise SystemExit(main())
+                                             ^^^^^^
+  File "/home/william/echo-view-routing/scripts/close_event_risk.py", line 51, in main
+    retained_failure=has_retained_failure(stages,admissions,active_claim,pending)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/william/echo-view-routing/scripts/close_event_risk.py", line 29, in has_retained_failure
+    return any(r['observed_worker_exit_code'] not in [None,0] or r.get('termination_reason') or r.get('guardian_exception') for r in stages) or any(not r['all_caps_fit'] for r in admissions) or bool(active_claim) or bool(pending)
+                                                                                                                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/william/echo-view-routing/scripts/close_event_risk.py", line 29, in <genexpr>
+    return any(r['observed_worker_exit_code'] not in [None,0] or r.get('termination_reason') or r.get('guardian_exception') for r in stages) or any(not r['all_caps_fit'] for r in admissions) or bool(active_claim) or bool(pending)
+                                                                                                                                                        ~^^^^^^^^^^^^^^^^
+KeyError: 'all_caps_fit'

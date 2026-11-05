@@ -1,0 +1,31 @@
+{
+  "stage": "terminal_recovery_RED",
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "tests/test_event_risk_terminal_recovery.py"
+  ],
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": 46175,
+  "supervisor_pid": 46164,
+  "started_epoch": 1793842476.825789,
+  "finished_epoch": 1793842477.048262,
+  "full_process_wall_seconds": 0.2224729061126709,
+  "observed_worker_exit_code": 1,
+  "stage_exit_code": 1,
+  "termination_reason": null,
+  "exception": null,
+  "GPU_job": false,
+  "CUDA_context_occupied": false,
+  "CUDA_visibility_hidden_before_child_import": true,
+  "measured_child_CPU_seconds": 0.145553,
+  "measured_supervisor_CPU_seconds": 0.0010269999999999984,
+  "measured_CPU_core_seconds": 0.14658,
+  "durable_claim_before_Popen": true,
+  "scope": "local synthetic checks;SELF region+waited CHILDREN;final JSON bookkeeping and wrapper imports separate metadata",
+  "output": "FFF                                                                      [100%]\n=================================== FAILURES ===================================\n________ test_admission_metadata_collision_and_actual_failure_retained _________\ntests/test_event_risk_terminal_recovery.py:6: in test_admission_metadata_collision_and_actual_failure_retained\n    from echo_routing.temporal.event_risk_terminal_recovery import admissions\nE   ModuleNotFoundError: No module named 'echo_routing.temporal.event_risk_terminal_recovery'\n___________ test_actual_admission_missing_or_mismatched_fields_fails ___________\ntests/test_event_risk_terminal_recovery.py:13: in test_actual_admission_missing_or_mismatched_fields_fails\n    from echo_routing.temporal.event_risk_terminal_recovery import admissions\nE   ModuleNotFoundError: No module named 'echo_routing.temporal.event_risk_terminal_recovery'\n_____ test_recovery_caller_keeps_old_receipt_and_uses_new_exclusive_paths ______\ntests/test_event_risk_terminal_recovery.py:22: in test_recovery_caller_keeps_old_receipt_and_uses_new_exclusive_paths\n    import scripts.wait_event_risk_terminal_recovery as m\nE   ModuleNotFoundError: No module named 'scripts.wait_event_risk_terminal_recovery'\n=========================== short test summary info ============================\nFAILED tests/test_event_risk_terminal_recovery.py::test_admission_metadata_collision_and_actual_failure_retained\nFAILED tests/test_event_risk_terminal_recovery.py::test_actual_admission_missing_or_mismatched_fields_fails\nFAILED tests/test_event_risk_terminal_recovery.py::test_recovery_caller_keeps_old_receipt_and_uses_new_exclusive_paths\n",
+  "output_sha256": "c3d060d5c5583991a372cdcb33762f8469cab2b1d2b4e6121dd5a530ead17624"
+}
