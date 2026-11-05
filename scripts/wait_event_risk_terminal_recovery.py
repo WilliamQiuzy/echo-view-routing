@@ -30,7 +30,9 @@ def run(command,timeout=600):
     started=time.time();s=resource.getrusage(resource.RUSAGE_SELF);c=resource.getrusage(resource.RUSAGE_CHILDREN);reserve_intent(intent,{'caller_pid':os.getpid(),'caller_start_ticks':ticks,'boot_id':boot,'nonce':nonce,'started_epoch':started,'state':'durable_launch_intent'});p=None;code=None;error=None;reason=None
     try:
         with (RUN/'terminal_recovery_v2.stdout.log').open('x') as out,(RUN/'terminal_recovery_v2.stderr.log').open('x') as err:
-            p=subprocess.Popen(command,cwd=ROOT,stdout=out,stderr=err,env={**os.environ,'CUDA_VISIBLE_DEVICES':''});write(intent,{'caller_pid':os.getpid(),'caller_start_ticks':ticks,'collector_pid':p.pid,'collector_start_ticks':(process_sample(p.pid) or {}).get('start_ticks'),'boot_id':boot,'nonce':nonce,'started_epoch':started,'state':'actual_PID_bound'})
+            p=subprocess.Popen(command,cwd=ROOT,stdout=out,stderr=err,env={**os.environ,'CUDA_VISIBLE_DEVICES':''})
+            if read(intent).get('nonce')!=nonce or read(intent).get('caller_pid')!=os.getpid():raise ValueError('owned recovery intent changed; preserve concurrent evidence')
+            write(intent,{'caller_pid':os.getpid(),'caller_start_ticks':ticks,'collector_pid':p.pid,'collector_start_ticks':(process_sample(p.pid) or {}).get('start_ticks'),'boot_id':boot,'nonce':nonce,'started_epoch':started,'state':'actual_PID_bound'})
             try:code=p.wait(timeout=timeout)
             except subprocess.TimeoutExpired:reason='collector_timeout';p.kill();code=p.wait()
     except BaseException as e:
