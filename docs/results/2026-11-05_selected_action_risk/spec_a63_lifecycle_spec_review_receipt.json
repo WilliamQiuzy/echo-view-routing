@@ -1,0 +1,106 @@
+{
+  "reviewer": "a62_card_review",
+  "status": "Issues Found",
+  "snapshot": "be6b7a032b0bc14edd99366e374bec6be8871b50",
+  "scope": "Task4 prepare/freeze/supervise/cache selected-risk CLIs, selected_risk_policy/source.py, lifecycle+policy fixtures, common/config delta and baseline.source_refs.v2 only",
+  "issues": [
+    {
+      "priority": "P2",
+      "location": "cache_selected_risk.py15-17 + source_CONFIRM mandatory input registry",
+      "finding": "CONFIRM reads aux_model_audit.json for actual48000/8/32 eligibility, but that file is absent from source_CONFIRM required inputs. Freezer only inserts registry/base inputs, so the audit consumed by the producer need not be bound by the actual source_CONFIRM Git contract.",
+      "fix": "Require and bind aux audit plus its actual identity/manifest inputs as needed; verify the producer uses the exact pinned audit/identity, not just mutable passed/counts."
+    },
+    {
+      "priority": "P2",
+      "location": "supervise_selected_risk.py68-75,118,219-232",
+      "finding": "Unvalidated stage is interpolated directly into open(...,w) log paths. Absolute or parent-traversal stage can write outside the new RUN before Popen; run/pub ancestor symlinks are not rejected before lock/log writes.",
+      "fix": "Reject unsafe stage names and confine/validate output ancestor paths before any directory/queue/log mutation; add pure/temp-path refusal fixtures."
+    },
+    {
+      "priority": "P2",
+      "location": "supervise_selected_risk.py99-125,134-184,187-216",
+      "finding": "No pre-Popen actual storage-cap check. A child exiting before .05sec bypasses polling; final storage probe records an over-cap upper but never checks it, so stage_exit_status can return0 and another stage can launch after the hard limit. Late actual CPU/wall/GPU amounts similarly need final postcondition checks.",
+      "fix": "Under queue lock, enforce current storage upper before launch; after directly waited final probes and exact CPU/wall sampling, evaluate actual applicable resource/deadline caps and retain a failing raw record if violated."
+    }
+  ],
+  "otherwise_reviewed": "Fixed2736/402 source partition and4 recipe domains are prepared before auxiliary output, FIT/CONFIRM counter axes and both-seed coverage phase rules, strict same-original-top/empty/CAL handling, source body and actual-Git builder, literal3 extra dependency SHA plus old86/6alias unchanged and8 historical proof overlay are statically aligned.",
+  "limits": "No actual metadata/recipes/partitions/source/freeze/GPU/aux/formal stages, tests, project imports, process observation, network/SSH/private data or unlisted aux/cost/closure/root WIP were run/read. Approval of future repaired producer code will still not be actual GPU or full-forecast admission.",
+  "known_measured_tool_CPU_seconds_to_snapshot": 0.572108,
+  "component_measured_CPU_seconds": 0.507319,
+  "aggregate_process_CPU_seconds_to_snapshot": 0.064789,
+  "components": [
+    {
+      "path": "/tmp/a63_lifecycle_spec_read1.json",
+      "sha256": "8552c8e79bce8adbee670e6af166f58b913f1f90a8c60e0d4c1cba791b8e56c1",
+      "receipt": {
+        "snapshot": "be6b7a032b0bc14edd99366e374bec6be8871b50",
+        "scope": "Task4 scoped file inventory/size and only common/config/source_refs versioned delta; no WIP/runtime/test/NN/server",
+        "known_measured_tool_CPU_seconds_to_snapshot": 0.123963,
+        "self_user": 0.044721,
+        "self_system": 0.035288,
+        "children_user": 0.021542,
+        "children_system": 0.022411999999999998,
+        "unmetered_tail": "Final receipt/output/write/exit, tool/service/model reasoning tails excluded; partial tool CPU"
+      }
+    },
+    {
+      "path": "/tmp/a63_lifecycle_spec_read2.json",
+      "sha256": "57d7d75139d3749661db7255b88ac5b830567e68a159d141e089a28b3327fac2",
+      "receipt": {
+        "snapshot": "be6b7a032b0bc14edd99366e374bec6be8871b50",
+        "scope": "Task4 only committed metadata/phase-cache/new policy/source bodies static read, no actual stages/data/NN/WIP",
+        "known_measured_tool_CPU_seconds_to_snapshot": 0.090208,
+        "self_user": 0.040456,
+        "self_system": 0.029893999999999997,
+        "children_user": 0.009562,
+        "children_system": 0.010296,
+        "unmetered_tail": "Final receipt/output/write/exit, tool/service/model reasoning tails excluded; partial tool CPU"
+      }
+    },
+    {
+      "path": "/tmp/a63_lifecycle_spec_read3.json",
+      "sha256": "dae1d86832f1191c9f31ee1510351c7cd65cdf1c7e340064ef2a3685dc743a50",
+      "receipt": {
+        "snapshot": "be6b7a032b0bc14edd99366e374bec6be8871b50",
+        "scope": "Task4 only committed freezer/lifecycle+policy fixtures and versioned source-reference delta static read; no actual freeze/tests/stages/WIP",
+        "known_measured_tool_CPU_seconds_to_snapshot": 0.113814,
+        "self_user": 0.045942,
+        "self_system": 0.038056,
+        "children_user": 0.013535,
+        "children_system": 0.016281,
+        "unmetered_tail": "Final receipt/output/write/exit, tool/service/model reasoning tails excluded; partial tool CPU"
+      }
+    },
+    {
+      "path": "/tmp/a63_lifecycle_spec_read4.json",
+      "sha256": "f599500d56f01a1e3acacd6f5cb8188ca61a8fb8f9350f6c27c501133e4858b0",
+      "receipt": {
+        "snapshot": "be6b7a032b0bc14edd99366e374bec6be8871b50",
+        "scope": "only committed Task4 supervisor lines1-155 static read; no actual process/GPU/network/stage/test",
+        "known_measured_tool_CPU_seconds_to_snapshot": 0.087695,
+        "self_user": 0.048999,
+        "self_system": 0.030705,
+        "children_user": 0.0030659999999999997,
+        "children_system": 0.004925,
+        "unmetered_tail": "Final receipt/output/write/exit, tool/service/model reasoning tails excluded; partial tool CPU"
+      }
+    },
+    {
+      "path": "/tmp/a63_lifecycle_spec_read5.json",
+      "sha256": "1b1d119914e185f921722a72671c4682ce0a68cd41e45a333334868fbef8f387",
+      "receipt": {
+        "snapshot": "be6b7a032b0bc14edd99366e374bec6be8871b50",
+        "scope": "only committed Task4 supervisor remainder static read; no collector/process/GPU/runtime/test/network",
+        "known_measured_tool_CPU_seconds_to_snapshot": 0.091639,
+        "self_user": 0.049239,
+        "self_system": 0.035178,
+        "children_user": 0.002598,
+        "children_system": 0.004624,
+        "unmetered_tail": "Final receipt/output/write/exit, tool/service/model reasoning tails excluded; partial tool CPU"
+      }
+    }
+  ],
+  "charge_once": "Charge THIS Task4 aggregate once only, not its5 components or metrics/Task3/earlier scope receipts.",
+  "unmetered_tail": "Final JSON serialization/write/output/exit, shell/tool/service and all model reasoning unmetered; partial measured local tool/process CPU only, not total model CPU or runtime closure.",
+  "created_at_utc": "2026-11-05T05:38:08.157816+00:00"
+}

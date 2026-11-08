@@ -1,0 +1,80 @@
+{
+  "NN_forward_calls": 0,
+  "SELF_OS_exit_code": null,
+  "actual_aux_source_admission_server_stages": 0,
+  "actual_test_child_OS_exit_code": 0,
+  "actual_test_child_pid": 496,
+  "direct_child_waited": true,
+  "error": null,
+  "fee_counting": "one aggregate read+test charge only; nested read parts not separate fees; prior independent SPEC charges excluded",
+  "measured_CPU_core_seconds": 1.8176629999999996,
+  "measured_until_epoch": 1793874200.85859,
+  "measurement_host": "MacBook-Air-9.local",
+  "measurement_limit": "SELF OS unobserved; final serialization/tool/reasoning/admin tails not claimed measured or zero",
+  "old_inputs_bytes_and_prior_SPEC_negative_receipts_untouched": true,
+  "optimizer_updates": 0,
+  "post_wait_scope_regular_bytes": 2,
+  "post_wait_scope_regular_file_count": 1,
+  "post_wait_scope_symlink_count": 3,
+  "read_CPU_SELF_seconds": 0.13630399999999998,
+  "read_parts": [
+    {
+      "SELF_OS": null,
+      "SELF_seconds": 0.074004,
+      "all_Git_OS": 0,
+      "line_counts": {
+        "echo_routing/temporal/selected_risk_aux_pipeline.py": 82,
+        "echo_routing/temporal/selected_risk_label_free_inputs.py": 32,
+        "tests/test_selected_risk_aux_pipeline.py": 69,
+        "tests/test_selected_risk_label_free_inputs.py": 21
+      },
+      "measured_until_epoch": 1793874124.345852,
+      "pins": {
+        "echo_routing/temporal/selected_risk_aux_pipeline.py": "f53b87c70c5b022dad8dca5c974e21fab89780973611f6d081f6db6a6bda56cf",
+        "echo_routing/temporal/selected_risk_label_free_inputs.py": "dcbc4ae620f22e8c54ae92320df95e9611adf356ec549c1f41c941d38073d363",
+        "tests/test_selected_risk_aux_pipeline.py": "125ebf548dc10dc8a5235cc078e7dfd7d8d6b5de813b3e245c4dae5a909c23c9",
+        "tests/test_selected_risk_label_free_inputs.py": "95f53d665bceba0cd10f36f88f0919b189a9bc91d740975a52c96d7f950a117f"
+      },
+      "snapshot": "654e293a1ac3a826f0c70eedac508b071ae5ce7d",
+      "waited_CHILDREN_seconds": 0.017566
+    },
+    {
+      "SELF_OS": null,
+      "SELF_seconds": 0.062299999999999994,
+      "measured_until_epoch": 1793874156.02157,
+      "scope": "two frozen aux/label-free test files",
+      "waited_CHILDREN_seconds": 0.0
+    }
+  ],
+  "read_waited_CHILDREN_seconds": 0.017566,
+  "review_kind": "independent QUALITY four frozen aux-pipeline and label-free-input files",
+  "review_verdict": "Approved",
+  "scope_limit": "10 fabricated fixtures once, full6000 synthetic integer predraw and TruthBomb/native refs only; not actual aux/currentcaps/sourceidentity approval. Future CLI inputs, complete audit/geometry and source/normalizer/identity actual binding remain mandatory",
+  "scope_retained_without_cleanup": true,
+  "snapshot": "654e293a1ac3a826f0c70eedac508b071ae5ce7d",
+  "source_pins": {
+    "echo_routing/temporal/selected_risk_aux_pipeline.py": "f53b87c70c5b022dad8dca5c974e21fab89780973611f6d081f6db6a6bda56cf",
+    "echo_routing/temporal/selected_risk_label_free_inputs.py": "dcbc4ae620f22e8c54ae92320df95e9611adf356ec549c1f41c941d38073d363",
+    "tests/test_selected_risk_aux_pipeline.py": "125ebf548dc10dc8a5235cc078e7dfd7d8d6b5de813b3e245c4dae5a909c23c9",
+    "tests/test_selected_risk_label_free_inputs.py": "95f53d665bceba0cd10f36f88f0919b189a9bc91d740975a52c96d7f950a117f"
+  },
+  "started_epoch": 1793874199.1876,
+  "test_basetemp": "/tmp/a63-review-aux-label-free-654e293-20261105a",
+  "test_command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "-p",
+    "no:cacheprovider",
+    "--basetemp=/tmp/a63-review-aux-label-free-654e293-20261105a",
+    "tests/test_selected_risk_aux_pipeline.py",
+    "tests/test_selected_risk_label_free_inputs.py"
+  ],
+  "test_output": "..........                                                               [100%]\n",
+  "test_output_sha256": "7040371af15613c02e821ec0eecc1d1330f691ace4cef93a41bfa358822c4103",
+  "wrapper_waited_CHILDREN_seconds": 1.5942609999999997,
+  "wrapper_whole_CPU_SELF_seconds": 0.069532,
+  "writer_pid": 495
+}

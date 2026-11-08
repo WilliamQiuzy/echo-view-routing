@@ -1,0 +1,41 @@
+{
+  "execution_authorized": true,
+  "user_approval_text": "A63执行卡通过，批准从现在起12小时的执行窗口，按卡开始实施和训练。先做源会话隔离供样与覆盖准入，通过后自动完成C0/C1全矩阵、独立核验和结题；不通过就停止并保留负结果。新增预算按卡上限，累计预算不重置，不自动启动A64。",
+  "approved_plan_SHA256": "191acbf1204cd6bf3fbdb6066800a3c6e7d6208ff7ccc15fe752c7964daead7a",
+  "approved_basis_SHA256": "78b4f913064d7300238577c561384cc559ba09f2c54be84bffa8d876f9bbacbf",
+  "T0_epoch": 1793853840.0,
+  "deadline_epoch": 1793897040.0,
+  "T0_UTC": "2026-11-05 04:44:00 UTC",
+  "deadline_UTC": "2026-11-05 16:44:00 UTC",
+  "time_anchor": "Conservative minute floor of first observed user approval; first clock observation04:44:25UTC; never extends12h from receipt",
+  "main_preservation_before": {
+    "HEAD": "db0d04c6543813e2bc3d3456d3a6ecdfd09f327e",
+    "branch": "refs/heads/frame-order-fix",
+    "raw_index_SHA256": "19dd2b444410211e2922fcf3497af4b7f10c71a2a13036686d297045e21a35cf",
+    "Experiment_Index_SHA256": "271c166792b24087664c255d1d78155052f6fd638d14d0d31a99caf7e5b6ff26"
+  },
+  "worktree": "/Users/williamqiu/.config/superpowers/worktrees/echo-view-routing/a63-selected-action-risk",
+  "parent_commit": "db0d04c6543813e2bc3d3456d3a6ecdfd09f327e",
+  "absolute_cumulative_GPU_h": 24,
+  "absolute_cumulative_CPU_accounting_h": 72,
+  "absolute_cumulative_tracked_bytes": 40000000000,
+  "new_limits": {
+    "GPU_seconds": 5400,
+    "CPU_accounting_seconds": 28800,
+    "tracked_increment_upper_bytes": 1000000000,
+    "wall_seconds_after_explicit_start": 43200,
+    "GPU_closing_reserve_hours_in_cumulative_admission": 2,
+    "CPU_closing_reserve_seconds_inside_increment": 3600,
+    "storage_closing_reserve_bytes_inside_increment": 128000000,
+    "wall_closing_reserve_seconds_inside_window": 7200,
+    "absolute_cumulative_GPU_hours": 24,
+    "absolute_cumulative_CPU_accounting_hours": 72,
+    "absolute_cumulative_tracked_upper_bytes": 40000000000
+  },
+  "stage_rule": "source-isolated supply then coverage; only pass may train C0/C1; fail closes negative",
+  "old_card_bytes_are_historical_draft_not_rewritten": true,
+  "no_automatic_A64": true,
+  "created_epoch": 1793853945.0692658,
+  "root_approval_preparation_measured_CPU_seconds": 0.106901,
+  "unknown_final_write_tool_modeltail_not_zero": true
+}

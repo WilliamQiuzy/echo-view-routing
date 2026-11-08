@@ -1,0 +1,62 @@
+{
+  "reviewer": "a62_card_review",
+  "status": "Issues Found",
+  "snapshot": "b7c9c9641effcc8f4e4c0c4d42be28003b172a59",
+  "scope": [
+    "echo_routing/temporal/selected_risk_metrics.py",
+    "tests/test_selected_risk_scope.py",
+    "exact approved card/basis SHA confirmation only"
+  ],
+  "issues": [
+    {
+      "priority": "P2",
+      "file": "echo_routing/temporal/selected_risk_metrics.py",
+      "lines": [
+        187,
+        240,
+        275,
+        283
+      ],
+      "finding": "Acceptance validates normalized multi_f1 but does not numerically bind comparison estimates to those rows. Comparisons need no observed point delta or data-only input identity; replacing C1 point F1 with a lower value while keeping positive CI maps can still yield supported H63.",
+      "required_fix": "Require observed delta[segment_f1_50_multi] and comparison input_identity; reconcile against exact table/half/seed/policy left-right normalized point difference and shared data identity. Explicitly record primary observed direction without changing the prespecified CI significance rule. Downstream independent aggregate audit must still recount all140 differences and actual CI-source provenance."
+    }
+  ],
+  "otherwise_consistent": "238outer/34inner/140paired/8primary/56support48reuse+8new/32native+2Base/32case/72000updates scope, C1 per-kind H/FP/shortloss protection, A61 seed retention6/5/4/3 and newJEPA>=1, separate hard/absolute/sampling outcomes, exact5000 same-input-vector95/99.375 quantiles with declared finite conditioning/null and nested interval validation.",
+  "limits": "Static source review only, no tests/project imports/NN/bootstrap/data/SSH/server/other WIP. Physical matrix/source/model/CI provenance belongs to future actual execution/audit, not this review.",
+  "known_measured_tool_CPU_seconds_to_snapshot": 0.2547,
+  "component_measured_CPU_seconds": 0.18658999999999998,
+  "aggregate_process_CPU_seconds_to_snapshot": 0.06810999999999999,
+  "components": [
+    {
+      "path": "/tmp/a63_metrics_spec_read1.json",
+      "sha256": "70086e816d1905e5e55abe61c1d86d4fe8133bd5f4a6ceae5108e83819e1cb5e",
+      "receipt": {
+        "snapshot": "b7c9c9641effcc8f4e4c0c4d42be28003b172a59",
+        "scope": "scoped root metrics module first part and approved card/basis SHA confirmation; static read only",
+        "known_measured_tool_CPU_seconds_to_snapshot": 0.10481499999999999,
+        "self_user": 0.050830999999999994,
+        "self_system": 0.034584,
+        "children_user": 0.009071,
+        "children_system": 0.010329,
+        "unmetered_tail": "Final receipt/output/write/exit, tool/service/model reasoning tails excluded; partial tool CPU"
+      }
+    },
+    {
+      "path": "/tmp/a63_metrics_spec_read2.json",
+      "sha256": "10af1c3d068bc80489d1700856a34e7c830d9d5f83e2808fac2d4bdbdc8c836e",
+      "receipt": {
+        "snapshot": "b7c9c9641effcc8f4e4c0c4d42be28003b172a59",
+        "scope": "root metrics remaining source and complete scope fixture committed static read only; no test/bootstrap/data/NN/server/WIP",
+        "known_measured_tool_CPU_seconds_to_snapshot": 0.081775,
+        "self_user": 0.046264,
+        "self_system": 0.025204999999999998,
+        "children_user": 0.004907,
+        "children_system": 0.005399,
+        "unmetered_tail": "Final receipt/output/write/exit, tool/service/model reasoning tails excluded; partial tool CPU"
+      }
+    }
+  ],
+  "charge_once": "Charge THIS aggregate once only, not its2 components or previous Task1/Task2/card review fees.",
+  "unmetered_tail": "Final JSON serialization/write/output/exit, shell/tool/service and all model-reasoning tails unmetered; partial measured local tool/process CPU only, not total model CPU or runtime evidence.",
+  "created_at_utc": "2026-11-05T05:23:08.676914+00:00"
+}

@@ -1,0 +1,52 @@
+{
+  "status": "Approved",
+  "snapshot": "3d4bb0ecb8388a5e5bac26a1d3b7333d26b980ef",
+  "scope": [
+    "scripts/a63_selected_risk_FIT_v2_contract.py",
+    "tests/test_selected_risk_FIT_v2_contract.py",
+    "scripts/a63_cache_selected_risk_FIT_v2.py",
+    "scripts/a63_freeze_selected_risk_FIT_v2.py",
+    "scripts/a63_supervise_selected_risk_FIT_v2.py",
+    "tests/test_selected_risk_FIT_v2_entry.py"
+  ],
+  "issues": [],
+  "advisory": [
+    {
+      "location": "a63_freeze_selected_risk_FIT_v2.py make, before first proof/contract write",
+      "text": "Call verify_admission before preparing any immutable new artifact, or enforce this explicitly as a caller pre-prepare gate. Current final verification rejects stale/mismatched/false canonical admission before producer execution, but can leave an unusable immutable prepared_v2 contract after such validation failure. Retain final verify as well."
+    }
+  ],
+  "assessment": [
+    "One literal source_FIT_v2 stage and FIT-only entry; original source_FIT is not an alias and no old contract is overwritten. Mandatory set includes original source_FIT source/input closure, all eight historical paths and new entry/freezer/guardian/verifier plus both actual v3/canonical admission files.",
+    "Canonical admission bytes must exactly equal immutable v3; all_caps true, source/FIT/version3/input/deadline and actual f558 admission-freeze commit are checked. Metadata pool/current file hashes/8 exact historical identities/currentGit proof and original T0/deadline are bound before source operations.",
+    "Source/input paths reject absolute/traversal and symlink components. Current prior86 and exact8 historical overlays are independently rechecked against original qualified source refs.",
+    "Read-only text diff confirms original producer operations are unchanged except FIT guard/new verifier call/actual stage label and FIT-only argparse choices. Original real joined teacher/caches/units/production counters/NN definitions remain identical.",
+    "New GPU guardian permits CUDA_VISIBLE_DEVICES exactly0 and occupied seconds<=4500, exact entry with final phaseFIT arguments, then uses original execute/meter_entry/queue/direct-wait engine with GPU_job true; no nested queue or new training worker."
+  ],
+  "limits": [
+    "Static local source/test/diff review only; no tests, current runtime Git freeze, source/model/tensor construction, actual metadata/private payloads, actual caps/OS/ledger/GPU-owner checks, SSH/server or execution.",
+    "Actual v3 OS0/true result was not independently mirrored or runtime-validated by reviewer. Historical v3 passed JSON is not permanent launch eligibility.",
+    "Fresh actual-spent FULL remaining caps/deadline/GPU-owner/queue and old-prepared-v1-not-executed checks remain separate mandatory prelaunch gates. Approval does not itself authorize launch or prove source/aux/formal progress.",
+    "The advisory prevents an additional failed prepared contract, not a bypass of current source fail-closed verification. All prior postteacher actual-geometry/full byte admission and aux audit/archival ordering requirements remain unchanged."
+  ],
+  "known_measured_tool_CPU_seconds_to_snapshot": 0.36394299999999996,
+  "component_measured_CPU_seconds": 0.30449499999999996,
+  "aggregate_process_CPU_seconds_to_snapshot": 0.059447999999999994,
+  "components": [
+    {
+      "path": "/Users/williamqiu/.config/superpowers/worktrees/echo-view-routing/a63-selected-action-risk/docs/results/2026-11-05_selected_action_risk/review_3d4bb0e_FIT_v2_SPEC_raw_1.json",
+      "measured_CPU_seconds_to_snapshot": 0.12528899999999998
+    },
+    {
+      "path": "/Users/williamqiu/.config/superpowers/worktrees/echo-view-routing/a63-selected-action-risk/docs/results/2026-11-05_selected_action_risk/review_3d4bb0e_FIT_v2_SPEC_raw_2.json",
+      "measured_CPU_seconds_to_snapshot": 0.09531199999999998
+    },
+    {
+      "path": "/Users/williamqiu/.config/superpowers/worktrees/echo-view-routing/a63-selected-action-risk/docs/results/2026-11-05_selected_action_risk/review_3d4bb0e_FIT_v2_SPEC_raw_3.json",
+      "measured_CPU_seconds_to_snapshot": 0.08389399999999998
+    }
+  ],
+  "charge_once": "Charge this new disjoint aggregate once OR raw components once, not both. No prior API/science/cost scope included.",
+  "unmetered_tail": "Partial local read/check SELF+waited CHILDREN CPU including imports to snapshot only. Final write/output/exit, tool/service/shell/model reasoning tails unmetered, not zero.",
+  "created_at_utc": "2026-11-05T10:27:43.184354+00:00"
+}

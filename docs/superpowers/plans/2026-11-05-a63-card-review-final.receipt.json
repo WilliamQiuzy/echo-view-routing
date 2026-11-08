@@ -1,0 +1,83 @@
+{
+  "reviewer": "a62_card_review",
+  "scope": "final A63 clarification paragraphs + exact plan/basis hashes only; prior whole-card Approved not rerun",
+  "plan_sha256": "191acbf1204cd6bf3fbdb6066800a3c6e7d6208ff7ccc15fe752c7964daead7a",
+  "basis_sha256": "78b4f913064d7300238577c561384cc559ba09f2c54be84bffa8d876f9bbacbf",
+  "expected_plan_sha256": "191acbf1204cd6bf3fbdb6066800a3c6e7d6208ff7ccc15fe752c7964daead7a",
+  "expected_basis_sha256": "78b4f913064d7300238577c561384cc559ba09f2c54be84bffa8d876f9bbacbf",
+  "selected_paragraphs": [
+    {
+      "line": 21,
+      "text": "- POST-A62：FIT4183唯一候选、unsafe1806，但原 N-top 危险仅13/980、9/995，原生危险 N-top均0；这些危险动作只占384000 draw的633/405次。R2 N-top AUC在FIT为.9656/.9528，在CAL为.6343/.6667。CAL首个危险q8.94e−8/2.57e−7导致大量安全动作被拒；新确认四cells仍有12/13/15/15个安全JEPA收益 N-top动作。"
+    },
+    {
+      "line": 29,
+      "text": "基准 main HEAD `db0d04c6543813e2bc3d3456d3a6ecdfd09f327e`；A62 source HEAD `dda29a526bd1ac1d9611b7edabd81974a683811d`；A62模型manifest SHA `2421febaf3acbf47e0651fa09058813b7db30f215ba2f709d1aabb58f638e4a4`。执行前用 actual Git 对象与实际文件SHA核basis，不能信嵌入的passed。"
+    },
+    {
+      "line": 61,
+      "text": "    (sha256(b'A63-supply-v1\\0' + s.encode()).digest(), s))"
+    },
+    {
+      "line": 68,
+      "text": "每组新建**1500条**mixed，总3000条；每条4–8个不同source clip、片段长度4–80、`gamma090`概率.5、`reuse=True,p_same_next=.35`，调用原A62 recipe构造器。RNG `default_rng([2026110563,63,d])`，d=0/1分别F0/F1。同轴不重复source，所有refs必须落本组；不为危险数调长度/类别/recipe、不追加“更难”的流。先冻全部recipe/source refs/SHA/actualGit，再有任何辅助头输出。变换不改变五类或真边界规则。"
+    },
+    {
+      "line": 108,
+      "text": "**准入全部按去重signature或责任session计；动作数仅作描述。** 对每seed的危险D/X_only分别构造去重集合S_D、S_X；signature的责任session集合必须在全部成员间一致，否则审计失败。C1危险抽样各4个槽，故对任一session s：`p_D(s)=|{e∈S_D:s∈responsible(e)}|/|S_D|`，`p_X(s)`同理，实际危险增强槽的来源参与概率`p_mix(s)=.5*p_D(s)+.5*p_X(s)`。三者的最大值各须≤.20；不能用candidate轴数、gamma复本数或整个流的session数作分母。跨D/X的同一signature在union只计1，两个membership的概率分别如实计算。"
+    },
+    {
+      "line": 121,
+      "text": "| 来源集中度 | max p_D(s)、max p_X(s)、max p_mix(s) 各≤20%，按上述实际signature抽样概率 |"
+    },
+    {
+      "line": 134,
+      "text": "**Pass不是开训充分条件：** 还须用实际spend、空间、全部后续24000步/校准/238行/140paired/56supports/34native/图QA/独立审计/closure预测重新完成全caps准入，并冻结coverage证据、draw、数据与actualGit。"
+    },
+    {
+      "line": 152,
+      "text": "C1选中部分：先在对应membership内均匀抽signature，再在signature内均匀抽canonical动作，可有放回；同一signature全部成员的责任session集合须一致，故§4的p_D/p_X/.5混合概率正是实际来源参与概率。每候选保留全池非零曝光概率；75% batch属于全候选replay。C0的mixed后16也有放回。C1的label平衡/去重层级是采样包的一部分，不能声称“只改变了N-top标志、其他梯度分布完全一致”。"
+    },
+    {
+      "line": 160,
+      "text": "**不重洗已暴露的100个inner source sessions。** 逐pin复用A62 `partition_mapping.private.json`（SHA`2e42c56d376d75d8e064df9e7d00cfd0b8622a2810337b6f3c09a1c1f61332d3`）："
+    },
+    {
+      "line": 179,
+      "text": "两新确认半的recipe先冻、teacher可以coverage后geometry-only precache；此时不加载A63事件头、不读GT效果，不算u/H/F1；构造器瞬时label parse例外明确记录。独立producer identity/journal不含finalheadseal；最终屏障后逐payload只读adoption绑定24000，保留两个独立训练计数轴：FIT producer为aux=0/formal=0；coverage后CONFIRM producer为aux=48000/formal=0；final adoption为aux=48000/formal=24000。formal=0绝不代表全轮0训练；保留时点和费用，不覆写journal或重NN。未adopt/partial cache一律拒绝，禁止fallback forward。"
+    },
+    {
+      "line": 189,
+      "text": "| outer rows | 7×2×(1 Base＋2seed×8policy)=**238**（56新C0/C1＋168冻结policy参考＋14Base） |"
+    },
+    {
+      "line": 194,
+      "text": "| 固定D_N容量 | **56 support记录**：A62旧48条精确只读复用，新确认2半×2seed×event-safe/acceptance-safe＝8个新solve；见下文 |"
+    },
+    {
+      "line": 197,
+      "text": "| 回归 | CaseA/B×2seed×8policy＝32潜在/实际效果记录；其中新C0/C1共8，旧L0/M0/R1/R2原16条只读复用，E/N另8条从冻结C6与原case证据只读派生、0新参考NN；不是新确认 |"
+    },
+    {
+      "line": 201,
+      "text": "不重跑已完成的A61/A62全域oracle或collector。本轮用逐候选effects与冻结D_N的可达容量诊断，旧oracle只读引用；不把safe-only oracle gap当纯ranking gap。旧48条support来自A62 `N_top_support.csv`（SHA `c4ccbe57409510ff80b4c7c0fd024b5b7aee432f2fb00e262ea2ff8d8ac5969d`），以原axis/input/D_N/action/effect pins核定后精确复用，不重solve。新确认8条必须在全部readout实际Git封存之后，求解仅{noop,原D_N}的精确pooled multi F1选择；event-safe为H=0/ΔFP≤0，acceptance-safe另加short16_lost=0，严格noop-first并列。native/pair可用数及source-role效果分开报告。它们是标签辅助可达容量，不保证任何单q阈值实现、不冒充模型输出，不新增全候选域joint oracle。所有5类混淆、native accuracy/macroF1、frame H/R/ΔE、cuts、short10/16 FN/FP/gross recovered/lost、A4C↔A5C、边界、same-class joins、长度/覆盖分层与资源均保留。"
+    },
+    {
+      "line": 248,
+      "text": "每次长阶段先完整forecast到收尾，包含48000辅助＋24000formal、所有small-head inference、238/34/140×5000/56supports/34native/图与独立审计/真实parentwait/保护main集成。只可通过新的cost-only测量＋窄工程审查/Git修正错误估计，保留失败原件；不能无证据降floor、删端点或改阈值。"
+    },
+    {
+      "line": 264,
+      "text": "| T7 seal/readout | `scripts/audit_selected_action_risk.py`; `scripts/evaluate_selected_action_risk.py` | 4τ/34inner/actualGit/adoption屏障；238outer、140paired、56supports（仅8新solve）、34native及风险/32回归 |"
+    }
+  ],
+  "known_measured_tool_CPU_seconds_to_snapshot": 0.056844,
+  "self_user": 0.039768,
+  "self_system": 0.017076,
+  "waited_children_user": 0.0,
+  "waited_children_system": 0.0,
+  "charge_once": "one new disjoint clarification read receipt only; prior whole-card/v1 review fees excluded; charge once",
+  "no_edits_tests_project_script_server_SSH_data_partition_recipe_supply_or_training": true,
+  "unmetered_tail": "Final JSON serialization/write/output/exit, shell/tool/service and all model-reasoning tails unmetered; measured partial local CPU only, not total model CPU or execution permission",
+  "created_at_utc": "2026-11-05T04:20:57.455947+00:00"
+}

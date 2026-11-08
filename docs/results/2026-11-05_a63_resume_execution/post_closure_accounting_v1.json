@@ -1,0 +1,373 @@
+{
+  "schema": "A63_post_closure_accounting_v1",
+  "baseline_resource_cutoff": {
+    "path": "docs/results/2026-11-05_a63_resume_execution/incomplete_resource_plot_cutoff_v1.json",
+    "sha256": "eb8374e45bd4146587706aad25954c04348039210a4e41e9dbea8e4729c7c223"
+  },
+  "baseline_inherited_once": true,
+  "baseline_A63_measured_CPU_seconds": 7508.862050999998,
+  "baseline_A63_CPU_accounting_seconds": 7971.862050999997,
+  "baseline_cumulative_CPU_accounting_hours": 22.44561198011111,
+  "baseline_cumulative_GPU_hours": 19.650867308853396,
+  "post_cutoff_known_CPU_seconds": 33.253921000000005,
+  "post_cutoff_additional_CPU_accounting_allowance_seconds": 8.0,
+  "post_cutoff_GPU_seconds": 0.0,
+  "A63_measured_CPU_seconds_to_cutoff": 7542.115971999999,
+  "A63_CPU_accounting_seconds_to_cutoff": 8013.115971999998,
+  "cumulative_CPU_accounting_hours_to_cutoff": 22.45707140261111,
+  "A63_GPU_occupied_seconds": 3574.902433872223,
+  "cumulative_GPU_hours": 19.650867308853396,
+  "inherited_GPU_reserve_hours_not_measured_use": 2.0,
+  "measured_records_exactly_once": [
+    {
+      "source_pin": {
+        "path": "docs/results/2026-11-05_a63_resume_preparation/negative_prepare_wrapper_v1.json",
+        "sha256": "23ced6899a6c27277756385a2782d294c13c21f861cbed32f38879fd657ca77c"
+      },
+      "CPU_field": "CPU_SELF_plus_waitedchildren_seconds",
+      "measured_CPU_core_seconds": 0.118782,
+      "scope": "disjoint administrative partial CPU; original raw scope and unmeasured tails retained",
+      "covered_raw_sha256_not_additional_charges": []
+    },
+    {
+      "source_pin": {
+        "path": "docs/results/2026-11-05_a63_resume_preparation/negative_freeze_CPU_v1.json",
+        "sha256": "4f87f7c42200b57d04bc3390c0f998f2c1d157447baacc67b3a7c9119ceb266d"
+      },
+      "CPU_field": "CPU_SELF_plus_waitedchildren_seconds",
+      "measured_CPU_core_seconds": 5.43103,
+      "scope": "disjoint administrative partial CPU; original raw scope and unmeasured tails retained",
+      "covered_raw_sha256_not_additional_charges": []
+    },
+    {
+      "source_pin": {
+        "path": "docs/results/2026-11-05_a63_resume_preparation/negative_deployment_v1_local_CPU.json",
+        "sha256": "c1cddac639b7fb5a921316f293ce851d6b6d2763339dbf48080a2c7ade90fb8a"
+      },
+      "CPU_field": "CPU_SELF_plus_waitedchildren_seconds",
+      "measured_CPU_core_seconds": 6.062656,
+      "scope": "disjoint administrative partial CPU; original raw scope and unmeasured tails retained",
+      "covered_raw_sha256_not_additional_charges": []
+    },
+    {
+      "source_pin": {
+        "path": "docs/results/2026-11-05_a63_resume_preparation/close_negative_resource_stopped_actual_v1_local_CPU.json",
+        "sha256": "ceec3f3b33dc64d9201a91831f07343e18e64ffcf6111ab3dbfad16238ce3127"
+      },
+      "CPU_field": "CPU_SELF_plus_waitedchildren_seconds",
+      "measured_CPU_core_seconds": 0.063268,
+      "scope": "disjoint administrative partial CPU; original raw scope and unmeasured tails retained",
+      "covered_raw_sha256_not_additional_charges": []
+    },
+    {
+      "source_pin": {
+        "path": "docs/results/2026-11-05_a63_resume_preparation/negative_resource_stopped_boundary_v1_remote_CPU.json",
+        "sha256": "eb1ffc92ed75153614429d4fbf17ee24e5315f0cdac3e707e6b54e089a960dbb"
+      },
+      "CPU_field": "CPU_SELF_plus_waitedchildren_seconds",
+      "measured_CPU_core_seconds": 0.050376,
+      "scope": "disjoint administrative partial CPU; original raw scope and unmeasured tails retained",
+      "covered_raw_sha256_not_additional_charges": []
+    },
+    {
+      "source_pin": {
+        "path": "docs/results/2026-11-05_a63_resume_preparation/negative_resource_stopped_boundary_v1_local_CPU.json",
+        "sha256": "550be724851a55d5f9d3f4ad8271d2eb167d809cae00405ef88a490ee55b836b"
+      },
+      "CPU_field": "CPU_SELF_plus_waitedchildren_seconds",
+      "measured_CPU_core_seconds": 0.17405199999999998,
+      "scope": "disjoint administrative partial CPU; original raw scope and unmeasured tails retained",
+      "covered_raw_sha256_not_additional_charges": []
+    },
+    {
+      "source_pin": {
+        "path": "docs/results/2026-11-05_a63_resume_preparation/incomplete_renderer_exact_copy_v1.json",
+        "sha256": "5caaaf73886e792f0c92a5cbd8e9699d3fbedc1bdcf27d51567fb6b223eb2956"
+      },
+      "CPU_field": "CPU_SELF_plus_waitedchildren_seconds",
+      "measured_CPU_core_seconds": 0.030286,
+      "scope": "disjoint administrative partial CPU; original raw scope and unmeasured tails retained",
+      "covered_raw_sha256_not_additional_charges": []
+    },
+    {
+      "source_pin": {
+        "path": "docs/results/2026-11-05_a63_resume_preparation/incomplete_render_source_proof_CPU_v1.json",
+        "sha256": "0d35177439074e913328ebafc1e6699021afa35e0b65b37bd37675779707f9d3"
+      },
+      "CPU_field": "CPU_SELF_plus_waitedchildren_seconds",
+      "measured_CPU_core_seconds": 0.179476,
+      "scope": "disjoint administrative partial CPU; original raw scope and unmeasured tails retained",
+      "covered_raw_sha256_not_additional_charges": []
+    },
+    {
+      "source_pin": {
+        "path": "docs/results/2026-11-05_a63_resume_preparation/incomplete_render_source_proof_CPU_v2.json",
+        "sha256": "e8f98e4b29f45e220ca2344899b2eb0d5a61cc1ab29b2a0b52e09f27e6b779e1"
+      },
+      "CPU_field": "CPU_SELF_plus_waitedchildren_seconds",
+      "measured_CPU_core_seconds": 0.105683,
+      "scope": "disjoint administrative partial CPU; original raw scope and unmeasured tails retained",
+      "covered_raw_sha256_not_additional_charges": []
+    },
+    {
+      "source_pin": {
+        "path": "docs/results/2026-11-05_a63_resume_preparation/incomplete_render_actual_v1_local_CPU.json",
+        "sha256": "1dc4dbc5ec55071f0e11f8d03c6b33783740f65a8bb6d0bde9b6710f02d90b2f"
+      },
+      "CPU_field": "CPU_SELF_plus_waitedchildren_seconds",
+      "measured_CPU_core_seconds": 0.075789,
+      "scope": "disjoint administrative partial CPU; original raw scope and unmeasured tails retained",
+      "covered_raw_sha256_not_additional_charges": []
+    },
+    {
+      "source_pin": {
+        "path": "docs/results/2026-11-05_a63_resume_preparation/incomplete_render_actual_v2_local_CPU.json",
+        "sha256": "4d8adea902de65127af5d36e3766a7aa7e7480bd2caa7b4f5a6cd3c69de5cc95"
+      },
+      "CPU_field": "CPU_SELF_plus_waitedchildren_seconds",
+      "measured_CPU_core_seconds": 0.069097,
+      "scope": "disjoint administrative partial CPU; original raw scope and unmeasured tails retained",
+      "covered_raw_sha256_not_additional_charges": []
+    },
+    {
+      "source_pin": {
+        "path": "docs/results/2026-11-05_a63_resume_preparation/incomplete_render_boundary_v2_remote_CPU.json",
+        "sha256": "9eefb6503e19264f4a83f05808d1b2be79f8dd275acedf8fdb269bddce5bf415"
+      },
+      "CPU_field": "CPU_SELF_plus_waitedchildren_seconds",
+      "measured_CPU_core_seconds": 0.070605,
+      "scope": "disjoint administrative partial CPU; original raw scope and unmeasured tails retained",
+      "covered_raw_sha256_not_additional_charges": []
+    },
+    {
+      "source_pin": {
+        "path": "docs/results/2026-11-05_a63_resume_preparation/incomplete_render_boundary_v2_local_CPU.json",
+        "sha256": "9301b600431a7e0417ec5beb1025590855e1fc0f5ac1937457b2db3b31c84241"
+      },
+      "CPU_field": "CPU_SELF_plus_waitedchildren_seconds",
+      "measured_CPU_core_seconds": 0.282358,
+      "scope": "disjoint administrative partial CPU; original raw scope and unmeasured tails retained",
+      "covered_raw_sha256_not_additional_charges": []
+    },
+    {
+      "source_pin": {
+        "path": "docs/results/2026-11-05_a63_resume_preparation/publication_helper_v2_exact_copy_v1.json",
+        "sha256": "ca23ec6a83c6bd1f22e830a7685755c09326fe448989423b9d990332523a360c"
+      },
+      "CPU_field": "CPU_SELF_plus_waitedchildren_seconds",
+      "measured_CPU_core_seconds": 0.052359,
+      "scope": "disjoint administrative partial CPU; original raw scope and unmeasured tails retained",
+      "covered_raw_sha256_not_additional_charges": []
+    },
+    {
+      "source_pin": {
+        "path": "docs/results/2026-11-05_a63_resume_preparation/root_actual_fullcaps_refusal_verification_v1.json",
+        "sha256": "4aa8d7fabdfb876097997dce41579150e3089afced5f52ca74ca0cb9d5bc5efe"
+      },
+      "CPU_field": "CPU_SELF_plus_waitedchildren_seconds",
+      "measured_CPU_core_seconds": 0.024575999999999997,
+      "scope": "disjoint administrative partial CPU; original raw scope and unmeasured tails retained",
+      "covered_raw_sha256_not_additional_charges": []
+    },
+    {
+      "source_pin": {
+        "path": "docs/results/2026-11-05_a63_resume_preparation/root_resource_stop_ledger_cutoff_materialization_v1.json",
+        "sha256": "1d9f0692c74e19c9585b5a3db44eb2e7df9caf0efc9a4e96e0d51b5839fb0590"
+      },
+      "CPU_field": "CPU_SELF_plus_waitedchildren_seconds",
+      "measured_CPU_core_seconds": 0.025821999999999998,
+      "scope": "disjoint administrative partial CPU; original raw scope and unmeasured tails retained",
+      "covered_raw_sha256_not_additional_charges": []
+    },
+    {
+      "source_pin": {
+        "path": "docs/results/2026-11-05_a63_resume_preparation/final_report_writer_CPU_v1.json",
+        "sha256": "1174f2134cb43dddfb3e3504f8aef2d7f38f1432d2dfcb69058affb5f3177441"
+      },
+      "CPU_field": "CPU_SELF_plus_waitedchildren_seconds",
+      "measured_CPU_core_seconds": 0.042957999999999996,
+      "scope": "disjoint administrative partial CPU; original raw scope and unmeasured tails retained",
+      "covered_raw_sha256_not_additional_charges": []
+    },
+    {
+      "source_pin": {
+        "path": "docs/results/2026-11-05_a63_resume_preparation/negative_deployment_v1.stdout",
+        "sha256": "95682c786c4690d7b68df8bb56dabc1462a3bc1d06f17d3415267f4bcd41fcfd"
+      },
+      "CPU_field": "CPU_SELF_plus_waitedchildren_seconds_to_snapshot",
+      "measured_CPU_core_seconds": 1.681868,
+      "scope": "remote exactdeployment SELF partial once; not remote worker CPU",
+      "covered_raw_sha256_not_additional_charges": []
+    },
+    {
+      "source_pin": {
+        "path": "docs/results/2026-11-05_a63_resume_preparation/incomplete_presentation_quality_approved_v1.json",
+        "sha256": "072408dcad73491b89d12064e63bda411d9093e86bf65cbbe71e63d03509b1d5"
+      },
+      "CPU_field": "partial_measured_cpu_seconds",
+      "measured_CPU_core_seconds": 0.555767,
+      "scope": "independent software-only review aggregate; covered components not recharged",
+      "covered_raw_sha256_not_additional_charges": [
+        "16a340b8c3c4c26447375ca789d4254a368e34aa552bebc9a29631b5d03aedbc",
+        "1ed1669bf1b8715c6b643c0370d74289c3ca0001aca2695b38bf26c29aacb785",
+        "b90f041c0967be30431e6820fc0ebc733c3d858a1cbe50dae9a4f777d9eabb4a",
+        "fe5e3a3193b766f91af10aea7984d6ff34ee946c03fb5e868af08e053c0021ed"
+      ]
+    },
+    {
+      "source_pin": {
+        "path": "docs/results/2026-11-05_a63_resume_preparation/root_actual_incomplete_visual_QA_v1.json",
+        "sha256": "44c80c7edd52072fca40a74c643a65d5d76cdca758926937fba2510fad515e01"
+      },
+      "CPU_field": "partial_measured_cpu_seconds",
+      "measured_CPU_core_seconds": 0.47175199999999995,
+      "scope": "independent software-only review aggregate; covered components not recharged",
+      "covered_raw_sha256_not_additional_charges": []
+    },
+    {
+      "source_pin": {
+        "path": "docs/results/2026-11-05_a63_resume_preparation/incomplete_renderer_preparation_v1.json",
+        "sha256": "344b75482eb78499a558e4712388ed1413a6c514f06e572328ac4ccdb672bce9"
+      },
+      "CPU_field": "known_partial_CPU_seconds",
+      "measured_CPU_core_seconds": 0.5513699999999999,
+      "scope": "renderer preparation aggregate only; prior implementation excluded in fix",
+      "covered_raw_sha256_not_additional_charges": []
+    },
+    {
+      "source_pin": {
+        "path": "docs/results/2026-11-05_a63_resume_preparation/incomplete_renderer_causality_fix_preparation_v1.json",
+        "sha256": "3deced273bb5197ae59e02f4d0d66f0e65e804bbcb7471d3f17d40ccf77f5650"
+      },
+      "CPU_field": "known_partial_CPU_seconds",
+      "measured_CPU_core_seconds": 0.8373959999999999,
+      "scope": "renderer preparation aggregate only; prior implementation excluded in fix",
+      "covered_raw_sha256_not_additional_charges": []
+    },
+    {
+      "source_pin": {
+        "path": "docs/results/2026-11-05_a63_resume_preparation/publication_helper_v2_preparation_v1.json",
+        "sha256": "71ab917c5688de879515b29836774d38bc8f0c979ff74f7312c3fd3cbf699051"
+      },
+      "CPU_field": "measured_CPU_SELF_plus_waitedchildren_seconds",
+      "measured_CPU_core_seconds": 0.429695,
+      "scope": "independent publication-helper preparation, no actual main apply",
+      "covered_raw_sha256_not_additional_charges": [
+        "27700c12571472352514a817f14988ac1c12e2982df7484fe89958e9894c72f4",
+        "2eb1980490f5107e3b1a3d69d263008b5500c18812bb7f0e0abce6a46fc7d7a0",
+        "4da0fee9b16aab39b9793130ee3b294bb091ee5e564edf95c6e387f151d4bb84",
+        "4e8261470316b48b6453de9ac8c35f0f14b1072349dc5eb8a831741d300af840",
+        "647ec83857f049648fc64bf78be4dc02200907558d65bce600cd617346b92af1"
+      ]
+    },
+    {
+      "source_pin": {
+        "path": "docs/results/2026-11-05_a63_resume_execution/incomplete_render_parent_v2.json",
+        "sha256": "79d661901c6abc91e76773f75dfc283e7bb905fc76841411b169cb0e7394ef2c"
+      },
+      "CPU_field": "measured_CPU_core_seconds",
+      "measured_CPU_core_seconds": 14.684343000000002,
+      "scope": "remote absolute parent SELF plus all actually waited CHILDREN after real complete child exit; nested renderer work not added again",
+      "covered_raw_sha256_not_additional_charges": []
+    },
+    {
+      "source_pin": {
+        "path": "docs/results/2026-11-05_a63_resume_preparation/post_closure_fee_sources/raw_e24524e804e99f0c172f9f08901911d0cc754d470f7304c1613c76e7bf21d955.json",
+        "sha256": "e24524e804e99f0c172f9f08901911d0cc754d470f7304c1613c76e7bf21d955"
+      },
+      "CPU_field": "CPU_SELF_plus_waitedchildren_seconds",
+      "measured_CPU_core_seconds": 0.108682,
+      "scope": "worktree-only actualGit sealing process SELF+waited Git children once",
+      "covered_raw_sha256_not_additional_charges": []
+    },
+    {
+      "source_pin": {
+        "path": "docs/results/2026-11-05_a63_resume_preparation/post_closure_fee_sources/raw_36ab314a40760acee1e9230688e0029ea2e601826e900f5b746263f734b693a0.json",
+        "sha256": "36ab314a40760acee1e9230688e0029ea2e601826e900f5b746263f734b693a0"
+      },
+      "CPU_field": "CPU_SELF_plus_waitedchildren_seconds",
+      "measured_CPU_core_seconds": 0.4627,
+      "scope": "worktree-only actualGit sealing process SELF+waited Git children once",
+      "covered_raw_sha256_not_additional_charges": []
+    },
+    {
+      "source_pin": {
+        "path": "docs/results/2026-11-05_a63_resume_preparation/post_closure_fee_sources/raw_e6e2e57ac58fccecdcc04d52205fd3a22934056922716909dfbef03946040296.json",
+        "sha256": "e6e2e57ac58fccecdcc04d52205fd3a22934056922716909dfbef03946040296"
+      },
+      "CPU_field": "CPU_SELF_plus_waitedchildren_seconds",
+      "measured_CPU_core_seconds": 0.611175,
+      "scope": "worktree-only actualGit sealing process SELF+waited Git children once",
+      "covered_raw_sha256_not_additional_charges": []
+    }
+  ],
+  "unmeasured_administrative_components": [
+    {
+      "source_pin": {
+        "path": "docs/results/2026-11-05_a63_resume_preparation/final_accounting_initial_compiler_failure_v1.json",
+        "sha256": "de46fc59c91f84944e53daebc63e4a0b45293df0e5871cf7d497f555c4aafdae"
+      },
+      "scope": "local accounting compiler rejected a wrong CPU field name before writing final ledger; no worker or server effect",
+      "measured_CPU_core_seconds": null,
+      "CPU_accounting_allowance_seconds": 1.0,
+      "actual_OS_exit_code": 1
+    },
+    {
+      "source_pins": [
+        {
+          "path": "docs/results/2026-11-05_a63_resume_preparation/incomplete_render_actual_v1.stderr",
+          "sha256": "eba0b595756c0766e55d2b5d5fc4f0f18525f607f31139b5357845e9be03c0d2"
+        },
+        {
+          "path": "docs/results/2026-11-05_a63_resume_preparation/incomplete_render_actual_v1_local_CPU.json",
+          "sha256": "1dc4dbc5ec55071f0e11f8d03c6b33783740f65a8bb6d0bde9b6710f02d90b2f"
+        }
+      ],
+      "scope": "remote renderer consumer v1 preflight TypeError before intent/child; unmeasured remote process CPU",
+      "measured_CPU_core_seconds": null,
+      "CPU_accounting_allowance_seconds": 5.0,
+      "actual_OS_exit_code": 1
+    },
+    {
+      "source_pin": {
+        "path": "docs/results/2026-11-05_a63_resume_preparation/publication_helper_v2_exact_copy_v1.json",
+        "sha256": "ca23ec6a83c6bd1f22e830a7685755c09326fe448989423b9d990332523a360c"
+      },
+      "scope": "local exact helper copy partial prior process ended on missing private receipt filename; CPU unmeasured",
+      "measured_CPU_core_seconds": null,
+      "CPU_accounting_allowance_seconds": 1.0,
+      "actual_OS_exit_code": 1
+    },
+    {
+      "source_pin": {
+        "path": "docs/results/2026-11-05_a63_resume_execution/incomplete_render_parent_v2.json",
+        "sha256": "79d661901c6abc91e76773f75dfc283e7bb905fc76841411b169cb0e7394ef2c"
+      },
+      "scope": "remote render parent final receipt/write/exit beyond SELF sample; no claim of a physical upper for all tool/model tails",
+      "measured_CPU_core_seconds": null,
+      "CPU_accounting_allowance_seconds": 1.0,
+      "actual_OS_exit_code": null
+    }
+  ],
+  "old_CPU_GPU_caps_and_usage_not_reset": true,
+  "original_CPU28800_GPU5400_global40GB_unchanged": true,
+  "approved_storage_cap_bytes": 1300000000,
+  "no_scientific_stage_after_final_fullcaps_refusal": true,
+  "scientific_updates": {
+    "committed_teacher_payloads": 6000,
+    "aux_optimizer_updates": 48000,
+    "formal_optimizer_updates": 0,
+    "C0_C1_instances": 0,
+    "coverage": null,
+    "all_attempt_teacher_forward_units": null
+  },
+  "raw_canonical_remote_process_ledger_pin": {
+    "path": "runs/a63_selected_action_risk_resume_v1/processes.jsonl",
+    "sha256": "676c15daa5900ee046f92e097cc959e1c0909b95b3c3db2fb8690a89f8975202"
+  },
+  "cutoff_epoch": 1793943058.005207,
+  "current_compiler_SELF_write_exit_and_subsequent_review_main_publication_not_included": true,
+  "unknown_tool_model_OS_and_CPU_tails_remain_unknown_not_zero": true,
+  "final_publication_addendum_pending": true,
+  "overall_complete": false
+}

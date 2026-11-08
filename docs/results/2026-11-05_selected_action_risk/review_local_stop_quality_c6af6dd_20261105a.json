@@ -1,0 +1,84 @@
+{
+  "NN_forward_calls": 0,
+  "SELF_OS_exit_code": null,
+  "actual_collector_remote_main_Git_builder_source_stages": 0,
+  "actual_test_child_OS_exit_code": 0,
+  "actual_test_child_PID": 71775,
+  "direct_child_waited": true,
+  "error": null,
+  "fee_counting": "one aggregate read+test charge; independent SPEC and nested read components excluded from additional billing",
+  "issues": [
+    {
+      "detail": "Exclusive intent fsyncs file content but not parent directory before Popen43. Newly created directory entry is not durable across power loss, so noReplay intent can disappear. Fsync intent.parent after file close and before child creation; test ordering without real collector.",
+      "line": 38,
+      "path": "scripts/a63_wait_selected_risk_stop.py",
+      "priority": 2
+    }
+  ],
+  "measured_CPU_core_seconds": 0.5925119999999999,
+  "measured_until_epoch": 1793876395.844501,
+  "measurement_host": "MacBook-Air-9.local",
+  "measurement_limit": "SELF OS null; serialization/tool/agent/admin tails not claimed measured or zero",
+  "optimizer_updates": 0,
+  "post_wait_regular_bytes": 6626,
+  "post_wait_regular_file_count": 18,
+  "post_wait_symlink_count": 1,
+  "read_CPU_SELF_seconds": 0.126269,
+  "read_parts": [
+    {
+      "SELF_OS": null,
+      "SELF_seconds": 0.063798,
+      "all_Git_OS": 0,
+      "line_counts": {
+        "scripts/a63_collect_selected_risk_stop.py": 135,
+        "scripts/a63_wait_selected_risk_stop.py": 76,
+        "tests/test_selected_risk_stop_collection.py": 71
+      },
+      "measured_until_epoch": 1793876277.231734,
+      "pins": {
+        "scripts/a63_collect_selected_risk_stop.py": "8444be305b7534725dbae6990d84086454edb75326fd5270d34193d051c0a594",
+        "scripts/a63_wait_selected_risk_stop.py": "8448eb6c84177f4b0a045e6953b54a965ace17b9ad2f4ecc8e2efd05d5d9f305",
+        "tests/test_selected_risk_stop_collection.py": "a0d3f1130790882632efc406d16c9ef7936bb43131762060a8ff7824a17dad30"
+      },
+      "snapshot": "c6af6dd044047a176cd90347e26a6999508c89dc",
+      "waited_CHILDREN_seconds": 0.013384
+    },
+    {
+      "SELF_OS": null,
+      "SELF_seconds": 0.062471,
+      "measured_until_epoch": 1793876297.170018,
+      "scope": "frozen direct waiter and6 fake/pure fixtures",
+      "waited_CHILDREN_seconds": 0.0
+    }
+  ],
+  "read_waited_CHILDREN_seconds": 0.013384,
+  "retained_without_cleanup": true,
+  "review_kind": "independent QUALITY local-only resource-stop closure3paths",
+  "review_verdict": "IssuesFound",
+  "scope": "6fake/pure fixtures only. Fake child actualOS0/7 are expected tests, not actual collector outcomes. Root resource-stopped/coverageNone/science0 remains; forecast not remote actualcap certificate",
+  "snapshot": "c6af6dd044047a176cd90347e26a6999508c89dc",
+  "software_fixture_passed": true,
+  "source_pins": {
+    "scripts/a63_collect_selected_risk_stop.py": "8444be305b7534725dbae6990d84086454edb75326fd5270d34193d051c0a594",
+    "scripts/a63_wait_selected_risk_stop.py": "8448eb6c84177f4b0a045e6953b54a965ace17b9ad2f4ecc8e2efd05d5d9f305",
+    "tests/test_selected_risk_stop_collection.py": "a0d3f1130790882632efc406d16c9ef7936bb43131762060a8ff7824a17dad30"
+  },
+  "started_epoch": 1793876395.235015,
+  "test_basetemp": "/tmp/a63-review-local-stop-c6af6dd-20261105a",
+  "test_command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "-p",
+    "no:cacheprovider",
+    "--basetemp=/tmp/a63-review-local-stop-c6af6dd-20261105a",
+    "tests/test_selected_risk_stop_collection.py"
+  ],
+  "test_output": "......                                                                   [100%]\n",
+  "test_output_sha256": "700bc0322b00f8e8db3ce495047983b54ab27ab59ed1fedac05f3aeba47dae24",
+  "wrapper_waited_CHILDREN_seconds": 0.378052,
+  "wrapper_whole_CPU_SELF_seconds": 0.074807,
+  "writer_pid": 71774
+}

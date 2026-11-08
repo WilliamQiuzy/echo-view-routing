@@ -1,0 +1,18 @@
+{
+  "scope": "whole fresh local software wrapper SELF plus directly waited child; no server/data/source",
+  "CPU_SELF_seconds": 0.034630999999999995,
+  "CPU_waitedchildren_seconds": 1.563381,
+  "CPU_SELF_plus_waitedchildren_seconds": 1.598012,
+  "actual_child_OS_exit_code": 0,
+  "actual_child_directly_waited": true,
+  "SELF_OS_exit_code": null,
+  "started_epoch": 1793862455.658219,
+  "sampled_epoch": 1793862458.12764,
+  "wall_seconds": 2.469420909881592,
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-c",
+    "import tempfile; from pathlib import Path; from scripts.probe_selected_risk import benchmark_backend; r=benchmark_backend(24,\"long_K\",Path(tempfile.mkdtemp(prefix=\"a63-cost-backend-smoke-\"))/\"joint\"); assert r[\"MLP_module_forwards\"]==3 and r[\"payload_bytes\"]>0; print(r)"
+  ],
+  "tail_tool_model_CPU_unknown": true
+}

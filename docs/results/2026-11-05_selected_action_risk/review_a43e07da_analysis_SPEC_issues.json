@@ -1,0 +1,44 @@
+{
+  "snapshot": "a43e07da92ff9b2857a5913cf3eccc32aafb77fa",
+  "reviewer": "a62_card_review",
+  "created_at_utc": "2026-11-05T10:10:46.840763+00:00",
+  "unmetered_tail": "Partial measured local read/check CPU only. Final writes/output/exit, shell/tool/service overhead and model reasoning tails unmetered, not zero.",
+  "charge_once": "Charge each disjoint scope aggregate OR its listed raw components once, not both. No previous scope included.",
+  "status": "Issues Found",
+  "scope": [
+    "echo_routing/temporal/selected_risk_analysis.py",
+    "tests/test_selected_risk_analysis.py"
+  ],
+  "issues": [
+    {
+      "location": "selected_risk_analysis.py:114-115 and220",
+      "issue": "Canonical JEPA_short16_recovered includes native/pair recovery but is used for A61/newA63 confirmation-role JEPA retention/effectiveness acceptance. Reused native or pair repair can be substituted for confirmation multi recovery.",
+      "fix": "Keep canonical endpoint JEPA recovery strictly multi/source-role; retain full by-kind recovery diagnostics. Add native/pair-only repair fixtures proving canonical multi count remains0."
+    },
+    {
+      "location": "selected_risk_analysis.py:176-220",
+      "issue": "normalize_endpoint accepts an arbitrary new input_identity and table/half/seed/policy labels without required comparable provenance on rich metrics or safety summary. Matching gross/native counts do not bind F1 to the original source/prediction artifact, allowing cross-half/seed/policy relabeling.",
+      "fix": "Bind independently produced/pinned input and prediction provenance at rich and safety production, require exact same data-only input identity and table/half/seed/policy/artifact source on normalization, and add wrong-rich/wrong-summary provenance rejection fixtures. Do not fill missing observed provenance from requested labels inside normalization."
+    }
+  ],
+  "passed_assessment": [
+    "Full-axis H/R/dE and changed-position partitions, class/position/native confusion denominators, short gross FP/lost/recovered matching, no-op/action equality and pair alias preservation are otherwise represented.",
+    "Numeric rich gross/native/position counts and qualified F1 range are checked; missing source provenance and JEPA domain remain the blockers."
+  ],
+  "limits": [
+    "Static source/tests plus approved card7 and qualified endpoint consumer reading only. No old-algorithm execution, tests, bootstrap, data/private outputs, NN or SSH.",
+    "No source/model closure or actual caller identity is inferred. Only the two analysis paths need fix-only followup; terminal/helper approval is independent."
+  ],
+  "known_measured_tool_CPU_seconds_to_snapshot": 0.178963,
+  "components": [
+    {
+      "path": "/Users/williamqiu/.config/superpowers/worktrees/echo-view-routing/a63-selected-action-risk/docs/results/2026-11-05_selected_action_risk/review_a43e07da_terminal_integration_analysis_spec_raw_3.json",
+      "measured_CPU_seconds_to_snapshot": 0.08372900000000001
+    },
+    {
+      "path": "/Users/williamqiu/.config/superpowers/worktrees/echo-view-routing/a63-selected-action-risk/docs/results/2026-11-05_selected_action_risk/review_a43e07da_terminal_integration_analysis_spec_raw_4.json",
+      "measured_CPU_seconds_to_snapshot": 0.095234
+    }
+  ],
+  "reporter_allocation": "Shared reporter measured CPU is entirely charged to terminal/helper raw above; analysis serialization/write remains unmetered, not asserted zero."
+}

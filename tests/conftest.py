@@ -19,3 +19,16 @@ def tiny_raw_dir(tmp_path: Path) -> Path:
     (tmp_path / "validation_labeled.txt").write_text("vid_d PMASA\n")
     (tmp_path / "test_labeled.txt").write_text("vid_e SC4C\nvid_f A5C\n")
     return tmp_path
+
+
+@pytest.fixture
+def synthetic_resource_window(monkeypatch):
+    """Give synthetic children a test window without changing frozen production deadlines."""
+    import importlib
+    import time
+
+    def set_window(module_name):
+        module = importlib.import_module(module_name)
+        monkeypatch.setattr(module, "DEADLINE_EPOCH", time.time() + 3 * 24 * 3600)
+
+    return set_window

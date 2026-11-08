@@ -1,0 +1,36 @@
+{
+  "status": "Approved",
+  "snapshot": "5773b770a224d9a488e59e7d30a13b8cb00659de",
+  "scope": [
+    "echo_routing/temporal/selected_risk_forecast.py verify_cost_inputs delta",
+    "tests/test_selected_risk_forecast.py new offline fixture only",
+    "docs/results/2026-11-05_selected_action_risk/cost_input_actual_Git_proof.json"
+  ],
+  "issues": [],
+  "assessment": [
+    "Runtime verify_cost_inputs imports only qualified pure verify, not build; current three old-file SHA values are still independently checked.",
+    "Literal new proof path and SHA4fb8ac23766e403d036b3dcfda725f4c1a8811e9f31241616b9282f38a9108ca bind the exact public proof; JSON metadata has expected db0d04c6543813e2bc3d3456d3a6ecdfd09f327e commit and the three unchanged cost-input paths/SHA pins.",
+    "New fixture builds in isolated source Git before copying payload/proof to a no-.git runtime and replaces build with a throwing stub; static inspection covers intended regression."
+  ],
+  "limits": [
+    "Static local read only; fixture/proof verifier was not executed, no new project import, test, probe, NN, data, SSH or actual stage.",
+    "Relies on previously qualified safety_git.verify pure Merkle verification interface; old algorithms and whole cost graph not rerun.",
+    "Original full-scope engineering forecast approval and its future actual-volume/caps/source admission limitations remain unchanged."
+  ],
+  "known_measured_tool_CPU_seconds_to_snapshot": 0.216813,
+  "component_measured_CPU_seconds": 0.160223,
+  "aggregate_process_CPU_seconds_to_snapshot": 0.056589999999999994,
+  "components": [
+    {
+      "path": "/tmp/a63_forecast_offline_proof_spec_read1.json",
+      "measured_CPU_seconds_to_snapshot": 0.08640999999999999
+    },
+    {
+      "path": "/tmp/a63_forecast_offline_proof_spec_read2.json",
+      "measured_CPU_seconds_to_snapshot": 0.073813
+    }
+  ],
+  "charge_once": "Charge this new aggregate OR its components once, never both. No earlier review receipt included.",
+  "unmetered_tail": "Partial local read/check SELF+waited CHILDREN CPU including imports to snapshot. Final write/output/exit, shell/tool/service overhead and model reasoning tails unmetered, not zero.",
+  "created_at_utc": "2026-11-05T07:26:28.249746+00:00"
+}

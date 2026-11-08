@@ -1,0 +1,30 @@
+{
+  "schema": "A63_explicit_user_storage_window_approval_v1",
+  "source": "current user send_user_message_question_reply",
+  "question_item_id": "[\"request_user_input_async\",\"call_cd14cb7000464d849f3165edcee10adc\",0]",
+  "question": "服务器已恢复；当前完整预估需1.207GB，超过原A63执行卡的1GB空间上限，原12小时窗口也已结束。是否批准这份窄修订：A63存储总上限增至1.3GB（追加300MB，已用量不重置），并在正式执行流程激活时冻结新的固定12小时窗口？CPU/GPU和累计40GB上限不变；先供样与覆盖，通过才继续C0/C1。修订卡：/Users/williamqiu/.config/superpowers/worktrees/echo-view-routing/a63-selected-action-risk/docs/superpowers/plans/2026-11-05-a63-storage-window-amendment.md。此次需要确认仅因为超出了原执行卡批准的空间及时间额度。",
+  "answer": "批准这项窄修订，按条件继续",
+  "amendment": {
+    "path": "docs/superpowers/plans/2026-11-05-a63-storage-window-amendment.md",
+    "sha256": "be8e892903892d91c7e1ef8d4c523671ec7d0b4e42e95482af3238c2aa64dc23"
+  },
+  "approved": true,
+  "authorized_incremental_lifecycle_storage_cap_bytes": 1300000000,
+  "additional_storage_bytes": 300000000,
+  "previous_storage_cap_bytes": 1000000000,
+  "GPU_seconds_cap": 5400,
+  "CPU_accounting_seconds_cap": 28800,
+  "cumulative_storage_cap_bytes": 40000000000,
+  "spent_budgets_reset": false,
+  "new_fixed_window_seconds": 43200,
+  "window_trigger": "actual formal execution workflow activation/frozen T0 including admission, source, auxiliary, formal, evaluation, audits and closure; not first SGD",
+  "runtime_T0_epoch": null,
+  "runtime_deadline_epoch": null,
+  "window_activated_by_this_record": false,
+  "source_coverage_first": true,
+  "C0_C1_requires_all_fixed_coverage_gates_and_fresh_full_caps": true,
+  "automatic_A64_authorized": false,
+  "observed_authorization_record_epoch": 1793909594.342772,
+  "known_partial_SELF_CPU_seconds": 0.024359,
+  "measurement_boundary": "local approval serialization/hash/sample only; model/tool/setup/finalwrite/exit unknown not zero"
+}

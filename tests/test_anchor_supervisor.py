@@ -13,7 +13,8 @@ def run(tmp_path, code, limit=5., storage=None):
                           storage_probe=storage or (lambda: 0), GPU_probe=lambda: [])
 
 
-def test_real_child_failure_is_waited_charged_and_shared_queue_released(tmp_path):
+def test_real_child_failure_is_waited_charged_and_shared_queue_released(tmp_path, synthetic_resource_window):
+    synthetic_resource_window("echo_routing.temporal.anchor_resources")
     module = importlib.import_module('scripts.supervise_anchor_edits')
     row = run(tmp_path, 'sum(i*i for i in range(10000)); raise SystemExit(3)')
     assert row['observed_worker_exit_code'] == 3 and module.stage_exit_status(row) == 1
@@ -28,7 +29,8 @@ def test_real_child_failure_is_waited_charged_and_shared_queue_released(tmp_path
 
 
 @pytest.mark.parametrize('fault', ['timeout', 'guard_exception'])
-def test_guard_timeout_or_exception_never_orphans_child_or_reports_success(tmp_path, fault):
+def test_guard_timeout_or_exception_never_orphans_child_or_reports_success(tmp_path, fault, synthetic_resource_window):
+    synthetic_resource_window("echo_routing.temporal.anchor_resources")
     module = importlib.import_module('scripts.supervise_anchor_edits')
     def failed_storage():
         raise RuntimeError('synthetic storage probe failure')
@@ -43,7 +45,8 @@ def test_guard_timeout_or_exception_never_orphans_child_or_reports_success(tmp_p
     assert not (tmp_path / 'run/active_process.json').exists()
 
 
-def test_locked_external_local_CPU_receipts_are_included_even_when_caller_is_old(tmp_path):
+def test_locked_external_local_CPU_receipts_are_included_even_when_caller_is_old(tmp_path, synthetic_resource_window):
+    synthetic_resource_window("echo_routing.temporal.anchor_resources")
     module = importlib.import_module('scripts.supervise_anchor_edits')
     pub = tmp_path / 'pub'
     pub.mkdir()

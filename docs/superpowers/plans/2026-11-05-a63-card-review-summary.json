@@ -1,0 +1,327 @@
+{
+  "status": "DESIGN_APPROVED_ONLY_USER_EXECUTION_APPROVAL_PENDING",
+  "execution_authorized": false,
+  "final_plan_sha256": "191acbf1204cd6bf3fbdb6066800a3c6e7d6208ff7ccc15fe752c7964daead7a",
+  "final_basis_sha256": "78b4f913064d7300238577c561384cc559ba09f2c54be84bffa8d876f9bbacbf",
+  "first_review": "IssuesFound: action-count concentration can be diluted by duplicated other-source events",
+  "fix": "All eligibility floors use distinct signatures/sessions; D/X and actual .5-mixture concentration use signature-first sampling probability; duplicate-invariance fixture; NUL bytes explicit",
+  "whole_plan_rereview": "Approved",
+  "final_interface_clarification": "Approved maintained: aux/formal dual counters,48 old+8 new supports,member probabilities",
+  "reviews": [
+    {
+      "path": "docs/superpowers/plans/2026-11-05-a63-card-review-1.receipt.json",
+      "sha256": "781540311c191f5b6e8cad1dade9e7fed5cf46a95715c1b1b432207c07090c96",
+      "receipt": {
+        "reviewer": "a62_card_review",
+        "review_type": "single complete A63 new plan-document review under writing-plans; no inherited terminal conclusions",
+        "status": "Issues Found",
+        "plan": "/Users/williamqiu/.config/superpowers/worktrees/echo-view-routing/a62-anchor-context-risk/docs/superpowers/plans/2026-11-05-a63-selected-action-risk.md",
+        "plan_sha256": "60f6efcb73aa5f96dc95ba755fbc92e5e57d69eb173970b9967ea819eaffb012",
+        "basis": "/Users/williamqiu/.config/superpowers/worktrees/echo-view-routing/a62-anchor-context-risk/docs/superpowers/plans/2026-11-05-a63-selected-action-risk.basis.json",
+        "basis_sha256": "653c3a8ef3ccc74aa783d2652afab19d9c6024ba242f198479fb9dfd864a57b3",
+        "reviewed_spec": [
+          "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/docs/results/2026-11-05_a62_frozen_score_diagnostic/README.md",
+          "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/docs/results/2026-11-05_a62_frozen_score_diagnostic/PUBLICATION_RECEIPT.json"
+        ],
+        "issues": [
+          {
+            "priority": "P2",
+            "plan_lines": [
+              102,
+              104,
+              110,
+              117,
+              148
+            ],
+            "basis_lines": [
+              247
+            ],
+            "finding": "Coverage source concentration uses canonical-action count although repeated axis/gamma variants of the same event have separate canonical actions, while C1 samples uniformly by event signature. Repeating non-dominant-source event variants can turn the <=20% action-share gate from fail to pass without adding any event signatures or responsible sessions, and without reducing the dominant-source probability under C1.",
+            "counterexample": "A pool with60 unique event signatures/actions,20 from sessionA and40 from other sessions initially fails20/60. Adding40 axis/gamma variants only of those other existing signatures makes20/100 pass, while A still represents20/60 signatures (and can dominate one D/X selected membership). Other predeclared count/type floors can stay unchanged.",
+            "concrete_fix": "Define source-concentration admission on deduplicated dangerous event signatures, or preferably the actual declared C1 D/X slot/signature/member sampling probabilities (with explicit membership scope); preserve raw action-share as descriptive only. Require that adding repetitions of existing event signatures without new responsible sources cannot rescue coverage admission. Mirror denominator/threshold in basis and add a structural fixture for this invariance."
+          }
+        ],
+        "advisory": [
+          {
+            "blocking": false,
+            "plan_line": 61,
+            "basis_line": 203,
+            "finding": "basis partition_prefix currently parses as a literal backslash and0 display suffix rather than the NUL byte shown in plan pseudocode; mark display-only with an explicit encoding contract or use JSON\\u0000 before any future config copies/encodes it.",
+            "observed_decoded_suffix_codepoints": [
+              92,
+              48
+            ]
+          }
+        ],
+        "nonblocking_checks": "Read entire297-line plan,340-line basis and complete specified diagnostic README/publication receipt. No other material gap found in source-disjoint cross-fitting, complement-only aux targets/norm/Adam/fresh init, frozenD vs OOFX, coverage failure zero formal heads, sharednative32/mixed16, exposed CAL/AUDIT disclosure,238/34/140x5000/34native/32case scope,48000aux+24000formal+3240flows/6480payload budgets, cumulative caps and pendingT0/noexecution.",
+        "component_measured_CPU_seconds": 0.29171899999999995,
+        "aggregate_process_CPU_seconds_to_snapshot": 0.053632,
+        "known_measured_tool_CPU_seconds_to_snapshot": 0.34535099999999996,
+        "aggregate_process_SELF_user_seconds": 0.038331,
+        "aggregate_process_SELF_system_seconds": 0.015300999999999999,
+        "aggregate_process_waited_children_user_seconds": 0.0,
+        "aggregate_process_waited_children_system_seconds": 0.0,
+        "components": [
+          {
+            "path": "/tmp/a63_card_review_read1.json",
+            "sha256": "a9ee49803da3a3a239a1a48a72713db033c8e61137af63c33206b4b18bf6ddc7",
+            "receipt": {
+              "scope": "writing-plans skill and specified A63 new card/basis and published diagnostic file metadata read only; no project scripts/server/partition/supply/NN/jobs",
+              "file_sha256": {
+                "/Users/williamqiu/.agents/skills/writing-plans/SKILL.md": "d936159ad11f2e79ba8ae8b8653f87bb924ddaf78ae11dc3a424b4032ad1bd23",
+                "/Users/williamqiu/.config/superpowers/worktrees/echo-view-routing/a62-anchor-context-risk/docs/superpowers/plans/2026-11-05-a63-selected-action-risk.md": "60f6efcb73aa5f96dc95ba755fbc92e5e57d69eb173970b9967ea819eaffb012",
+                "/Users/williamqiu/.config/superpowers/worktrees/echo-view-routing/a62-anchor-context-risk/docs/superpowers/plans/2026-11-05-a63-selected-action-risk.basis.json": "653c3a8ef3ccc74aa783d2652afab19d9c6024ba242f198479fb9dfd864a57b3",
+                "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/docs/results/2026-11-05_a62_frozen_score_diagnostic/README.md": "49fa9f90a56fbe819bf00cb8ebf72fe6d3a0fc37fd262749d8e4e0ea707bc946",
+                "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/docs/results/2026-11-05_a62_frozen_score_diagnostic/PUBLICATION_RECEIPT.json": "2b4e77ec5e8103fb5e972f5746650209dd45b8319bb55e86c7c2171732d26c0b"
+              },
+              "known_measured_tool_CPU_seconds_to_snapshot": 0.063283,
+              "self_user": 0.045077,
+              "self_system": 0.018206,
+              "children_user": 0.0,
+              "children_system": 0.0,
+              "unmetered_tail": "receipt/output/write/exit, tool/service and model reasoning tails excluded; measured partial CPU only"
+            }
+          },
+          {
+            "path": "/tmp/a63_card_review_read2.json",
+            "sha256": "95125f145b28c00aa865f46866586780332eea40440eb2533ef70b8625aa4360",
+            "receipt": {
+              "scope": "A63 plan lines1-160 read only; no project scripts/server/partition/supply/NN/jobs",
+              "known_measured_tool_CPU_seconds_to_snapshot": 0.050976999999999995,
+              "self_user": 0.036921999999999996,
+              "self_system": 0.014055,
+              "children_user": 0.0,
+              "children_system": 0.0,
+              "unmetered_tail": "receipt/output/write/exit, tool/service/model reasoning tails excluded; partial CPU only"
+            }
+          },
+          {
+            "path": "/tmp/a63_card_review_read3.json",
+            "sha256": "0468ba842ae473ca8f75714771fc81ae2c9b78f7b39c6e5d8d69a2c382304222",
+            "receipt": {
+              "scope": "A63 full plan remainder lines161-297 static read only; no scripts/server/partition/supply/NN/jobs",
+              "known_measured_tool_CPU_seconds_to_snapshot": 0.06665099999999999,
+              "self_user": 0.045817,
+              "self_system": 0.020834,
+              "children_user": 0.0,
+              "children_system": 0.0,
+              "unmetered_tail": "receipt/output/write/exit, tool/service/model reasoning tails excluded; partial CPU only"
+            }
+          },
+          {
+            "path": "/tmp/a63_card_review_read4.json",
+            "sha256": "05b238dfe2e9c8d1c2640fababe647858d0e7fc145ab2122b1d7eb7f3ae95e33",
+            "receipt": {
+              "scope": "specified published POST-A62 diagnostic README and publication receipt complete read only; no further historical/source/private/runtime material",
+              "known_measured_tool_CPU_seconds_to_snapshot": 0.05580299999999999,
+              "self_user": 0.038412999999999996,
+              "self_system": 0.01739,
+              "children_user": 0.0,
+              "children_system": 0.0,
+              "unmetered_tail": "receipt/output/write/exit, tool/service/model reasoning tails excluded; partial CPU only"
+            }
+          },
+          {
+            "path": "/tmp/a63_card_review_read5.json",
+            "sha256": "9d051f79d56418610c4039c11a28926a0cf10be4bfcba5311366a5bb330321e2",
+            "receipt": {
+              "scope": "specified A63 basis complete read only; no source/runtime/server/script/model/partition operation",
+              "known_measured_tool_CPU_seconds_to_snapshot": 0.055005,
+              "self_user": 0.036836,
+              "self_system": 0.018168999999999998,
+              "children_user": 0.0,
+              "children_system": 0.0,
+              "unmetered_tail": "receipt/output/write/exit, tool/service/model reasoning tails excluded; partial CPU only"
+            }
+          }
+        ],
+        "charge_once": "Charge this aggregate once only; do not add the5 embedded component receipts or previous A62 review fees again.",
+        "no_plan_or_spec_edits": true,
+        "no_project_script_server_training_partition_recipe_supply_queue_operation": true,
+        "unmetered_tail": "Final receipt serialization/write/output/exit, shell/tool/service tails and all model reasoning unmetered; measured partial local tool/process CPU only, not total model CPU or execution authorization.",
+        "created_at_utc": "2026-11-05T04:13:32.297252+00:00"
+      }
+    },
+    {
+      "path": "docs/superpowers/plans/2026-11-05-a63-card-review-2.receipt.json",
+      "sha256": "995f0a26f248801ccfd5bd53d4d4f7d4ef56496ae667364a4f5031ed4ef07696",
+      "receipt": {
+        "reviewer": "a62_card_review",
+        "status": "Approved",
+        "scope": "complete revised301-line A63 plan and337-line basis read-only design review; specified diagnostic evidence already fully read in v1, its unchanged byte hashes confirmed; no historical terminal conclusions reused",
+        "reviewed_plan_sha256": "bcc91f5d7c89b528aff79849559a43ca4f63825db1c0e7cdfa49f11818e2d815",
+        "reviewed_basis_sha256": "ac0751054040956019362222a22a1cc39ac1346514b33cf5221a133d9f2f3247",
+        "current_plan_sha256_at_receipt": "bcc91f5d7c89b528aff79849559a43ca4f63825db1c0e7cdfa49f11818e2d815",
+        "current_basis_sha256_at_receipt": "ac0751054040956019362222a22a1cc39ac1346514b33cf5221a133d9f2f3247",
+        "files_unchanged_during_review": true,
+        "issues": [],
+        "closed_issue": "Coverage floors now use deduplicated signatures/sessions; max p_D/max p_X/max .5 mixture each<=.20 follows actual signature-first selected-slot sampling, member responsibility sets must agree, repeated same-membership axis/gamma versions cannot rescue admission; exact NUL prefix and byteshex agree.",
+        "whole_plan_assessment": "Source-session CF uses fresh auxiliary init and complement-only targets/norm/Adam; original D and auxiliary OOF X are distinct; deployment S-L/candidates/N unchanged; native32 and mixed16 paired exposure fixed; CAL/AUDIT explicitly exposed development; fail-gate forbids formal C0/C1; full238/34/140x5000/34native/32case matrix,48000aux+24000formal,3240streams/6480payload and cumulative/pending-T0 budgets retained. No further material design issue found.",
+        "nonblocking_final_clarifications_recommended": [
+          {
+            "location": "producer/adoption lifecycle",
+            "text": "Keep separate aux/formal counters: FIT production0/0, CONFIRM production48000/0, final adoption48000/24000; formal0 never means all-round training0."
+          },
+          {
+            "location": "fixed-D_N capacity paragraph",
+            "text": "Make explicit old48 immutable records + new8=56 supports, pin original artifact, count8 new accept/noop solves in forecast, after frozen readout, label-assisted only and no single-q-threshold representability guarantee; no full-domain oracle rerun."
+          },
+          {
+            "location": "sampling probabilities",
+            "text": "Current signature-first/member-uniform rule already matches the probability formula because each signature has a consistent responsible-session set; optional final schema wording should preserve this."
+          }
+        ],
+        "NUL_prefix_bytes_hex_matches": true,
+        "execution_authorized_by_this_review": false,
+        "no_plan_or_spec_edits": true,
+        "no_project_code_tests_server_SSH_source_partition_recipe_supply_queue_or_training": true,
+        "known_measured_tool_CPU_seconds_to_snapshot": 0.23649599999999998,
+        "component_measured_CPU_seconds": 0.17348599999999997,
+        "aggregate_process_CPU_seconds_to_snapshot": 0.06301,
+        "aggregate_SELF_user_seconds": 0.044420999999999995,
+        "aggregate_SELF_system_seconds": 0.018588999999999998,
+        "aggregate_waited_children_user_seconds": 0.0,
+        "aggregate_waited_children_system_seconds": 0.0,
+        "components": [
+          {
+            "path": "/tmp/a63_card_review_2_read1.json",
+            "sha256": "7628116b73e2b58e3ad4318f44785396303f8371b28a426076d305ce0a035393",
+            "receipt": {
+              "scope": "whole-plan v2 rereview part1; current A63 plan lines1-175 and full file hash only; no project code/server/data/partition/training",
+              "plan_sha256": "bcc91f5d7c89b528aff79849559a43ca4f63825db1c0e7cdfa49f11818e2d815",
+              "known_measured_tool_CPU_seconds_to_snapshot": 0.055867999999999994,
+              "self_user": 0.038301999999999996,
+              "self_system": 0.017566,
+              "children_user": 0.0,
+              "children_system": 0.0,
+              "unmetered_tail": "receipt serialization/write/output/exit, tool/service and model reasoning tails excluded; partial tool CPU"
+            }
+          },
+          {
+            "path": "/tmp/a63_card_review_2_read2.json",
+            "sha256": "a13d8929b30d9ace4fc14f7dba74fd893deb7f3f531d6a3dc60bfce11fa93397",
+            "receipt": {
+              "scope": "whole-plan v2 rereview remainder lines176-end; read-only documentation, no project code/server/data/partition/training",
+              "plan_sha256": "bcc91f5d7c89b528aff79849559a43ca4f63825db1c0e7cdfa49f11818e2d815",
+              "known_measured_tool_CPU_seconds_to_snapshot": 0.057109,
+              "self_user": 0.038591,
+              "self_system": 0.018518,
+              "children_user": 0.0,
+              "children_system": 0.0,
+              "unmetered_tail": "receipt serialization/write/output/exit, tool/service and model reasoning tails excluded; partial tool CPU"
+            }
+          },
+          {
+            "path": "/tmp/a63_card_review_2_read3.json",
+            "sha256": "b74678e00f710bfdf945d62470a2b981a2c3456708e863ba40171fdab146cf43",
+            "receipt": {
+              "scope": "complete current A63 basis reread and unchanged specified evidence hash confirmation only; no project code/runtime/server/private/data generation",
+              "basis_sha256": "ac0751054040956019362222a22a1cc39ac1346514b33cf5221a133d9f2f3247",
+              "evidence_sha256": {
+                "README.md": "49fa9f90a56fbe819bf00cb8ebf72fe6d3a0fc37fd262749d8e4e0ea707bc946",
+                "PUBLICATION_RECEIPT.json": "2b4e77ec5e8103fb5e972f5746650209dd45b8319bb55e86c7c2171732d26c0b"
+              },
+              "known_measured_tool_CPU_seconds_to_snapshot": 0.06050899999999999,
+              "self_user": 0.041669,
+              "self_system": 0.01884,
+              "children_user": 0.0,
+              "children_system": 0.0,
+              "unmetered_tail": "receipt serialization/write/output/exit, tool/service and model reasoning tails excluded; partial tool CPU"
+            }
+          }
+        ],
+        "charge_once": "Charge THIS v2 aggregate once only; do not add its3 components or any v1/A62 review fees again.",
+        "unmetered_tail": "Final receipt serialization/write/output/exit, shell/tool/service tails and all model reasoning unmetered; measured partial local tool/process CPU, not total model CPU, runtime admission or execution authorization.",
+        "created_at_utc": "2026-11-05T04:20:03.869768+00:00"
+      }
+    },
+    {
+      "path": "docs/superpowers/plans/2026-11-05-a63-card-review-final.receipt.json",
+      "sha256": "581959802b3cd670107b3a38c11771ff22566dd07081877c25864ac74c5167b6",
+      "receipt": {
+        "reviewer": "a62_card_review",
+        "scope": "final A63 clarification paragraphs + exact plan/basis hashes only; prior whole-card Approved not rerun",
+        "plan_sha256": "191acbf1204cd6bf3fbdb6066800a3c6e7d6208ff7ccc15fe752c7964daead7a",
+        "basis_sha256": "78b4f913064d7300238577c561384cc559ba09f2c54be84bffa8d876f9bbacbf",
+        "expected_plan_sha256": "191acbf1204cd6bf3fbdb6066800a3c6e7d6208ff7ccc15fe752c7964daead7a",
+        "expected_basis_sha256": "78b4f913064d7300238577c561384cc559ba09f2c54be84bffa8d876f9bbacbf",
+        "selected_paragraphs": [
+          {
+            "line": 21,
+            "text": "- POST-A62：FIT4183唯一候选、unsafe1806，但原 N-top 危险仅13/980、9/995，原生危险 N-top均0；这些危险动作只占384000 draw的633/405次。R2 N-top AUC在FIT为.9656/.9528，在CAL为.6343/.6667。CAL首个危险q8.94e−8/2.57e−7导致大量安全动作被拒；新确认四cells仍有12/13/15/15个安全JEPA收益 N-top动作。"
+          },
+          {
+            "line": 29,
+            "text": "基准 main HEAD `db0d04c6543813e2bc3d3456d3a6ecdfd09f327e`；A62 source HEAD `dda29a526bd1ac1d9611b7edabd81974a683811d`；A62模型manifest SHA `2421febaf3acbf47e0651fa09058813b7db30f215ba2f709d1aabb58f638e4a4`。执行前用 actual Git 对象与实际文件SHA核basis，不能信嵌入的passed。"
+          },
+          {
+            "line": 61,
+            "text": "    (sha256(b'A63-supply-v1\\0' + s.encode()).digest(), s))"
+          },
+          {
+            "line": 68,
+            "text": "每组新建**1500条**mixed，总3000条；每条4–8个不同source clip、片段长度4–80、`gamma090`概率.5、`reuse=True,p_same_next=.35`，调用原A62 recipe构造器。RNG `default_rng([2026110563,63,d])`，d=0/1分别F0/F1。同轴不重复source，所有refs必须落本组；不为危险数调长度/类别/recipe、不追加“更难”的流。先冻全部recipe/source refs/SHA/actualGit，再有任何辅助头输出。变换不改变五类或真边界规则。"
+          },
+          {
+            "line": 108,
+            "text": "**准入全部按去重signature或责任session计；动作数仅作描述。** 对每seed的危险D/X_only分别构造去重集合S_D、S_X；signature的责任session集合必须在全部成员间一致，否则审计失败。C1危险抽样各4个槽，故对任一session s：`p_D(s)=|{e∈S_D:s∈responsible(e)}|/|S_D|`，`p_X(s)`同理，实际危险增强槽的来源参与概率`p_mix(s)=.5*p_D(s)+.5*p_X(s)`。三者的最大值各须≤.20；不能用candidate轴数、gamma复本数或整个流的session数作分母。跨D/X的同一signature在union只计1，两个membership的概率分别如实计算。"
+          },
+          {
+            "line": 121,
+            "text": "| 来源集中度 | max p_D(s)、max p_X(s)、max p_mix(s) 各≤20%，按上述实际signature抽样概率 |"
+          },
+          {
+            "line": 134,
+            "text": "**Pass不是开训充分条件：** 还须用实际spend、空间、全部后续24000步/校准/238行/140paired/56supports/34native/图QA/独立审计/closure预测重新完成全caps准入，并冻结coverage证据、draw、数据与actualGit。"
+          },
+          {
+            "line": 152,
+            "text": "C1选中部分：先在对应membership内均匀抽signature，再在signature内均匀抽canonical动作，可有放回；同一signature全部成员的责任session集合须一致，故§4的p_D/p_X/.5混合概率正是实际来源参与概率。每候选保留全池非零曝光概率；75% batch属于全候选replay。C0的mixed后16也有放回。C1的label平衡/去重层级是采样包的一部分，不能声称“只改变了N-top标志、其他梯度分布完全一致”。"
+          },
+          {
+            "line": 160,
+            "text": "**不重洗已暴露的100个inner source sessions。** 逐pin复用A62 `partition_mapping.private.json`（SHA`2e42c56d376d75d8e064df9e7d00cfd0b8622a2810337b6f3c09a1c1f61332d3`）："
+          },
+          {
+            "line": 179,
+            "text": "两新确认半的recipe先冻、teacher可以coverage后geometry-only precache；此时不加载A63事件头、不读GT效果，不算u/H/F1；构造器瞬时label parse例外明确记录。独立producer identity/journal不含finalheadseal；最终屏障后逐payload只读adoption绑定24000，保留两个独立训练计数轴：FIT producer为aux=0/formal=0；coverage后CONFIRM producer为aux=48000/formal=0；final adoption为aux=48000/formal=24000。formal=0绝不代表全轮0训练；保留时点和费用，不覆写journal或重NN。未adopt/partial cache一律拒绝，禁止fallback forward。"
+          },
+          {
+            "line": 189,
+            "text": "| outer rows | 7×2×(1 Base＋2seed×8policy)=**238**（56新C0/C1＋168冻结policy参考＋14Base） |"
+          },
+          {
+            "line": 194,
+            "text": "| 固定D_N容量 | **56 support记录**：A62旧48条精确只读复用，新确认2半×2seed×event-safe/acceptance-safe＝8个新solve；见下文 |"
+          },
+          {
+            "line": 197,
+            "text": "| 回归 | CaseA/B×2seed×8policy＝32潜在/实际效果记录；其中新C0/C1共8，旧L0/M0/R1/R2原16条只读复用，E/N另8条从冻结C6与原case证据只读派生、0新参考NN；不是新确认 |"
+          },
+          {
+            "line": 201,
+            "text": "不重跑已完成的A61/A62全域oracle或collector。本轮用逐候选effects与冻结D_N的可达容量诊断，旧oracle只读引用；不把safe-only oracle gap当纯ranking gap。旧48条support来自A62 `N_top_support.csv`（SHA `c4ccbe57409510ff80b4c7c0fd024b5b7aee432f2fb00e262ea2ff8d8ac5969d`），以原axis/input/D_N/action/effect pins核定后精确复用，不重solve。新确认8条必须在全部readout实际Git封存之后，求解仅{noop,原D_N}的精确pooled multi F1选择；event-safe为H=0/ΔFP≤0，acceptance-safe另加short16_lost=0，严格noop-first并列。native/pair可用数及source-role效果分开报告。它们是标签辅助可达容量，不保证任何单q阈值实现、不冒充模型输出，不新增全候选域joint oracle。所有5类混淆、native accuracy/macroF1、frame H/R/ΔE、cuts、short10/16 FN/FP/gross recovered/lost、A4C↔A5C、边界、same-class joins、长度/覆盖分层与资源均保留。"
+          },
+          {
+            "line": 248,
+            "text": "每次长阶段先完整forecast到收尾，包含48000辅助＋24000formal、所有small-head inference、238/34/140×5000/56supports/34native/图与独立审计/真实parentwait/保护main集成。只可通过新的cost-only测量＋窄工程审查/Git修正错误估计，保留失败原件；不能无证据降floor、删端点或改阈值。"
+          },
+          {
+            "line": 264,
+            "text": "| T7 seal/readout | `scripts/audit_selected_action_risk.py`; `scripts/evaluate_selected_action_risk.py` | 4τ/34inner/actualGit/adoption屏障；238outer、140paired、56supports（仅8新solve）、34native及风险/32回归 |"
+          }
+        ],
+        "known_measured_tool_CPU_seconds_to_snapshot": 0.056844,
+        "self_user": 0.039768,
+        "self_system": 0.017076,
+        "waited_children_user": 0.0,
+        "waited_children_system": 0.0,
+        "charge_once": "one new disjoint clarification read receipt only; prior whole-card/v1 review fees excluded; charge once",
+        "no_edits_tests_project_script_server_SSH_data_partition_recipe_supply_or_training": true,
+        "unmetered_tail": "Final JSON serialization/write/output/exit, shell/tool/service and all model-reasoning tails unmetered; measured partial local CPU only, not total model CPU or execution permission",
+        "created_at_utc": "2026-11-05T04:20:57.455947+00:00"
+      }
+    }
+  ],
+  "no_server_data_or_training_operations": true
+}

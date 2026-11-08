@@ -1,0 +1,32 @@
+{
+  "status": "Approved",
+  "snapshot": "e015392a091966422316773042711aeaa06dae52",
+  "scope": [
+    "scripts/a63_wait_selected_risk_stop.py durability/ordering delta",
+    "tests/test_selected_risk_stop_collection.py new syscall-order fixture"
+  ],
+  "issues": [],
+  "assessment": [
+    "Exclusive claim file is flushed/fsynced/closed, then its parent directory fsynced before closing_prelaunch and before any Popen. A concurrent duplicate cannot refresh the prospective pointer before acquiring durable exclusive intent.",
+    "closing_prelaunch is now inside the existing try so a failed local budget gate yields retained failed caller receipt without starting a child.",
+    "Final no-clobber hardlinked OS receipt is followed by parent-directory fsync; partial file/intent remain as evidence.",
+    "New static fixture observes intent directory fsync before intercepted Popen and publication directory fsync afterward, with deliberately0child/0NN. Production order directly places directory fsync after os.link."
+  ],
+  "whole_scope_status": "Previous local-only stop closure SPEC Approved remains with this final durability delta included.",
+  "limits": [
+    "Narrow static source/fixture diff only; no fixture, collector, child process, fsync operation, localfreeze, SSH/server, NN/training or main integration executed by reviewer.",
+    "Scientific queues remain stopped; coverage remains unassessed and current remote inventory/actualcaps unknown. This is implementation approval, not actual local/remote or overall closure.",
+    "Actual fresh mandatory ledger/input commit and local Git proof, direct OS wait, exactonce costs/tails and root protected publication remain separate gates."
+  ],
+  "known_measured_tool_CPU_seconds_to_snapshot": 0.151739,
+  "components": [
+    {
+      "path": "/Users/williamqiu/.config/superpowers/worktrees/echo-view-routing/a63-selected-action-risk/docs/results/2026-11-05_selected_action_risk/review_e015392_local_stop_fsync_SPEC_raw.json",
+      "measured_CPU_seconds_to_snapshot": 0.088071
+    }
+  ],
+  "aggregate_process_CPU_seconds_to_snapshot": 0.063668,
+  "charge_once": "Charge this new disjoint aggregate OR its raw once, not both. Previous closure/QUALITY scope costs excluded.",
+  "unmetered_tail": "Partial local SELF+waited CHILDREN read/check CPU including imports to snapshot only. Final serialization/write/output/exit, shell/tool/service/model tails unmetered, not zero.",
+  "created_at_utc": "2026-11-05T11:02:37.373456+00:00"
+}

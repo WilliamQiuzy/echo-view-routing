@@ -1,0 +1,18 @@
+{
+  "scope": "whole fresh local software wrapper SELF plus directly waited child; no server/data/source",
+  "CPU_SELF_seconds": 0.031886,
+  "CPU_waitedchildren_seconds": 0.087451,
+  "CPU_SELF_plus_waitedchildren_seconds": 0.119337,
+  "actual_child_OS_exit_code": 0,
+  "actual_child_directly_waited": true,
+  "SELF_OS_exit_code": null,
+  "started_epoch": 1793863505.3481941,
+  "sampled_epoch": 1793863505.452318,
+  "wall_seconds": 0.10412383079528809,
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-c",
+    "import json; from pathlib import Path; from echo_routing.temporal.selected_risk_forecast import COST_INPUTS,COST_INPUT_GIT; from echo_routing.temporal.safety_git import build,verify; p=build(Path.cwd(),COST_INPUT_GIT,COST_INPUTS); verify(p,COST_INPUT_GIT,COST_INPUTS); f=Path(\"docs/results/2026-11-05_selected_action_risk/cost_input_actual_Git_proof.json\"); assert not f.exists(); f.write_text(json.dumps(p,sort_keys=True)+\"\\n\"); print({\"objects\":len(p[\"files\"]),\"oldcommit\":COST_INPUT_GIT})"
+  ],
+  "tail_tool_model_CPU_unknown": true
+}

@@ -1,0 +1,70 @@
+{
+  "reviewer": "a62_card_review",
+  "status": "Approved",
+  "initial_snapshot": "652875ecdd89332a52a200fccc968d2bef240f39",
+  "final_scoped_delta": "23d7096539156ea8c334c6a7b5e1bd35d7b162af",
+  "intermediate_draw_storage_delta": "61d00f9c4477accdcf71bb600fc7cc62596e1327",
+  "scope": [
+    "echo_routing/temporal/selected_risk_forecast.py",
+    "tests/test_selected_risk_forecast.py",
+    "scripts/probe_selected_risk.py",
+    "tests/test_selected_risk_probe.py",
+    "scripts/admit_selected_risk.py",
+    "docs/results/2026-11-05_selected_action_risk/COST_FORECAST_BASIS.md"
+  ],
+  "issues": [],
+  "resolved_issues": [
+    {
+      "location": "scripts/probe_selected_risk.py original line 110",
+      "issue": "Cost-only admission omitted separate 128000000-byte closing reserve; forecast does not automatically add it.",
+      "resolution": "23d70965 stage_storage_upper explicitly adds admin300MB + probe64MB + closing128MB, and main uses it; narrow boundary fixture read, not run."
+    }
+  ],
+  "assessment": [
+    "Old FIT native/mixed observables only; four synthetic profile domains and nonnegative terms preserve whole-envelope and changed-position units; no new actual GT or head results used for current forecast.",
+    "A08 windows and JEPA chunks use separate unit ratios against pinned closed whole occupied wall; max of ratios, fixed1.25 and100/50 startup margins.",
+    "Synthetic engineering15 optimizer updates use fresh old Utility/Risk/R2 models; no C0/C1 instances and no substitution for authorized72000 physical training updates.",
+    "Full pass counts48000aux+24000formal,238outer/34inner/140x5000/56support/34native/32regression,48retained states and latestIO, independent audits/figures/closure retained.",
+    "Raw109/47/96/cache/event copies, teacher payloads/atomic room,72000 full-index trace forecast,12 retained draws plus one atomic temp, selected digest rows and independent128MB storage reserve are explicit.",
+    "Actual-spent and cumulative caps/deadline retained; completed FIT reduces only its forecast teacher wall/CPU while actual expenses remain charged; aux/formal/readout remain conservatively complete."
+  ],
+  "limits": [
+    "Static local source/fixture review only; no project imports, tests, NN, SGD, data generation, teacher/private payload access, SSH, server or actual stage executed by reviewer.",
+    "No actual probe timing, source admission, current hardware throughput, storage fit or successful full workflow asserted. Empirical density2 forecast is expressly not a grammar or cap guarantee.",
+    "Postteacher observable scan, actual full draw/trace/cache byte bounds and complete remaining caps before large persistent cache/aux execution remain future caller obligations. Formal/outer entry must not substitute this initial empirical forecast for that gate.",
+    "Selected digest record forecast assumes append-only rows <=4096B and no expanded source/H/FP tuples; future encoder/caller must enforce the stated layout.",
+    "Engineering closure/actualGit source/input proof must be freshly built and verified at actual execution; static reading of proof code is not actual proof or user authorization."
+  ],
+  "known_measured_tool_CPU_seconds_to_snapshot": 0.61791,
+  "component_measured_CPU_seconds": 0.5546399999999999,
+  "aggregate_process_CPU_seconds_to_snapshot": 0.06326999999999999,
+  "components": [
+    {
+      "path": "/tmp/a63_forecast_spec_read1.json",
+      "measured_CPU_seconds_to_snapshot": 0.10628499999999999
+    },
+    {
+      "path": "/tmp/a63_forecast_spec_read2.json",
+      "measured_CPU_seconds_to_snapshot": 0.09346399999999999
+    },
+    {
+      "path": "/tmp/a63_forecast_spec_read3.json",
+      "measured_CPU_seconds_to_snapshot": 0.09301999999999999
+    },
+    {
+      "path": "/tmp/a63_forecast_spec_read4.json",
+      "measured_CPU_seconds_to_snapshot": 0.08616099999999999
+    },
+    {
+      "path": "/tmp/a63_forecast_spec_read5.json",
+      "measured_CPU_seconds_to_snapshot": 0.07544700000000001
+    },
+    {
+      "path": "/tmp/a63_forecast_spec_read6.json",
+      "measured_CPU_seconds_to_snapshot": 0.10026299999999999
+    }
+  ],
+  "charge_once": "Charge this aggregate once OR its disjoint components once; do not add both. No prior review scope included.",
+  "unmetered_tail": "This is partial local read/check process SELF+waited CHILDREN CPU including Python imports to snapshot. Final serialization/write/output/exit, shell/tool/service overhead, any later receipt check and model reasoning are unmetered, not zero.",
+  "created_at_utc": "2026-11-05T07:21:14.638512+00:00"
+}

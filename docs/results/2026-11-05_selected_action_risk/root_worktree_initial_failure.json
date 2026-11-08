@@ -1,0 +1,62 @@
+{
+  "passed": false,
+  "scope": "Only authorized isolated A63 worktree creation; no SSH/NN/training or user index writes",
+  "worktree": "/Users/williamqiu/.config/superpowers/worktrees/echo-view-routing/a63-selected-action-risk",
+  "parent": "db0d04c6543813e2bc3d3456d3a6ecdfd09f327e",
+  "started_epoch": 1793854067.6455848,
+  "snapshot_epoch": 1793854067.740302,
+  "birth_epoch": 1793854067.7201252,
+  "commands": [
+    {
+      "args": [
+        "git",
+        "-C",
+        "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing",
+        "rev-parse",
+        "--absolute-git-dir"
+      ],
+      "PID": 51099,
+      "OS_exit": 0,
+      "stdout": "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.git\n",
+      "stderr": "",
+      "wall": 0.013776779174804688
+    },
+    {
+      "args": [
+        "git",
+        "-C",
+        "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing",
+        "worktree",
+        "add",
+        "--no-checkout",
+        "-b",
+        "a63-selected-action-risk",
+        "/Users/williamqiu/.config/superpowers/worktrees/echo-view-routing/a63-selected-action-risk",
+        "db0d04c6543813e2bc3d3456d3a6ecdfd09f327e"
+      ],
+      "PID": 51101,
+      "OS_exit": 0,
+      "stdout": "",
+      "stderr": "Preparing worktree (new branch 'a63-selected-action-risk')\n",
+      "wall": 0.04014897346496582
+    },
+    {
+      "args": [
+        "git",
+        "-C",
+        "/Users/williamqiu/.config/superpowers/worktrees/echo-view-routing/a63-selected-action-risk",
+        "read-tree",
+        "db0d04c6543813e2bc3d3456d3a6ecdfd09f327e"
+      ],
+      "PID": 51103,
+      "OS_exit": 128,
+      "stdout": "",
+      "stderr": "fatal: cannot use /Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.git/info/exclude as an exclude file\n",
+      "wall": 0.011135101318359375
+    }
+  ],
+  "hooks_active": [],
+  "no_existing_user_hook_bypassed": true,
+  "CPU_SELF_plus_waitedchildren_seconds": 0.12043599999999999,
+  "unknown_final_write_tool_modeltail_not_zero": true
+}

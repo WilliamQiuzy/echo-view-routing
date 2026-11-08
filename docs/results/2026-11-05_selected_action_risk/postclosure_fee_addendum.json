@@ -1,0 +1,69 @@
+{
+  "scope": "disjoint measured CPU after immutable ledger/collector cutoff, no re-collection or mutation of resources",
+  "closed_resources_sha256": "78313fb4c2db2de6b71543453d52e6432fbb35ace023b9215868df078855aa4b",
+  "closed_local_ledger_version": "local_cpu_receipts_v11.json",
+  "closed_ledger_sha256": "fb9b3d5194ba9014b6403a70621c5739ca5df1e4598a50dc31cd2ad2bdb182af",
+  "entries": [
+    {
+      "source_receipt": "docs/results/2026-11-05_selected_action_risk/admin_source_commit_38d8c9447d.json",
+      "sha256": "88b048bcb6c84c1f92619c35750806f7cc3424844597c15792d39572a4037d54",
+      "CPU_field": "CPU_SELF_plus_waitedchildren_seconds",
+      "measured_CPU_seconds": 0.221743,
+      "charge_group": "admin_source_commit_38d8c9447d.json",
+      "not_in_closed_ledger_or_collector_snapshot": true
+    },
+    {
+      "source_receipt": "docs/results/2026-11-05_selected_action_risk/admin_local_stop_freeze_build.json",
+      "sha256": "543fcd6e4b718a07de4e6e108f2eac645096929cec753d5dc20b731d78b4c75c",
+      "CPU_field": "CPU_SELF_plus_waitedchildren_seconds",
+      "measured_CPU_seconds": 3.1589869999999998,
+      "charge_group": "admin_local_stop_freeze_build.json",
+      "not_in_closed_ledger_or_collector_snapshot": true
+    },
+    {
+      "source_receipt": "docs/results/2026-11-05_selected_action_risk/local_resource_stop_OS_receipt.json",
+      "sha256": "d165e74eafb5c8e262ceea064296d71c729bfa7a310c0c8de0740feca5d5e0b6",
+      "CPU_field": "separate_CPU_increment_outside_collector_snapshot",
+      "measured_CPU_seconds": 0.8498440000000005,
+      "charge_group": "local_resource_stop_OS_receipt.json",
+      "not_in_closed_ledger_or_collector_snapshot": true
+    },
+    {
+      "source_receipt": "docs/results/2026-11-05_selected_action_risk/admin_local_stop_outer_complement.json",
+      "sha256": "8b60ac43129a927a7ce199402620a5437f5f52cd305ccd5bb13b3fc9e7ae8dc0",
+      "CPU_field": "CPU_SELF_plus_waitedchildren_seconds",
+      "measured_CPU_seconds": 0.056929999999999925,
+      "charge_group": "admin_local_stop_outer_complement.json",
+      "not_in_closed_ledger_or_collector_snapshot": true
+    },
+    {
+      "source_receipt": "docs/results/2026-11-05_selected_action_risk/admin_source_commit_9158754594.json",
+      "sha256": "5fc71bfaf5d2e5ef5f26026a455a01d443b0aca25b20b0b2a8e5446688cdc044",
+      "CPU_field": "CPU_SELF_plus_waitedchildren_seconds",
+      "measured_CPU_seconds": 0.24995799999999999,
+      "charge_group": "admin_source_commit_9158754594.json",
+      "not_in_closed_ledger_or_collector_snapshot": true
+    },
+    {
+      "source_receipt": "docs/results/2026-11-05_selected_action_risk/review_9158754_independent_final_accuracy.json",
+      "sha256": "e571f08422723069eb4a4be738b42c3651816eae439936ccd2446a21add43d74",
+      "CPU_field": "known_measured_tool_CPU_seconds_to_snapshot",
+      "measured_CPU_seconds": 0.548935,
+      "charge_group": "review_9158754_independent_final_accuracy.json",
+      "not_in_closed_ledger_or_collector_snapshot": true
+    }
+  ],
+  "additional_measured_CPU_seconds": 5.086397000000001,
+  "known_new_measured_CPU_seconds_through_addendum": 274.39423499999987,
+  "explicit_admin_allowance_seconds": 127.0,
+  "new_CPU_accounting_seconds_through_addendum": 401.39423499999987,
+  "cumulative_CPU_accounting_hours_through_addendum": 20.342704253444445,
+  "new_GPU_occupied_seconds": 0.0,
+  "cumulative_GPU_hours": 18.657838855,
+  "raw_outer_total_3_403273_not_added_again": true,
+  "nested_final_review_components_not_added_again": true,
+  "final_source_publication_commit_manifest_build_and_root_main_publication_costs_follow_in_private_handoff_receipts": true,
+  "unmeasured_code_write_serialization_exit_tool_model_reasoning_tail_not_claimed_zero": true,
+  "allowances_are_accounting_assumptions_not_measured_or_proved_CPU_upper_bounds": true,
+  "overall_complete": false
+}

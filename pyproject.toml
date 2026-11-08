@@ -27,7 +27,7 @@ train = ["torch>=2.2", "torchvision>=0.17", "av>=12.0", "opencv-python-headless>
 dev = ["pytest>=8.0", "pytest-cov>=5.0", "ruff>=0.5"]
 
 [tool.setuptools.packages.find]
-include = ["echo_routing*"]
+include = ["echo_routing*", "helena_input*", "exam_level*", "open_routing*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

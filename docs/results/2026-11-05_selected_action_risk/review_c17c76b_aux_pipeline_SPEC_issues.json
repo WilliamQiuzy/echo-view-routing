@@ -1,0 +1,47 @@
+{
+  "status": "Issues Found",
+  "snapshot": "c17c76b12ba50ca1fe55e20095d5a2c4e1f68547",
+  "scope": [
+    "echo_routing/temporal/selected_risk_aux_pipeline.py",
+    "tests/test_selected_risk_aux_pipeline.py"
+  ],
+  "issues": [
+    {
+      "location": "selected_risk_aux_pipeline.py:24",
+      "issue": "Guard checks physical_updates.archive.json, but qualified archive_trace(physical_updates.jsonl) emits physical_updates.jsonl.archive.json. A receipt-only ambiguous archive prefix is not guarded as claimed.",
+      "fix": "Check the actual codec receipt filename and reject archive/completion/pending marker symlinks as well as existing files. Add a receipt-only fixture."
+    },
+    {
+      "location": "selected_risk_aux_pipeline.py:54-55 and71",
+      "issue": "Offset monotonicity uses np.diff before canonical range validation. Unsigned descending offsets can wrap to huge positive differences, and signed negative/extreme values can overflow; summed changed-position counts then need not be exact.",
+      "fix": "Validate one-dimensional integer offsets in0..INT64_MAX, initial0 and strictly increasing adjacent original values before casting/diff; then canonical signed64 differences. Bind final offset to the qualified actual position-feature/label length where provided, or explicitly require that independent upstream total-length contract. Add unsigned descent/out-of-range and negative signed rejection fixtures."
+    }
+  ],
+  "passed_assessment": [
+    "Seven lowercase64 SHA input set is wrapped with declared seed/held/trainfold/role/6000; actual independent input/Git derivation remains outside this pure API.",
+    "Predraw iterates all6000 native32/mixed32 selections and expands complete selected utility queries, counting actual candidate/query indices and their exact JSON list byte lengths rather than mean C/K.",
+    "Necessary qualified safety_training initializer/step and UpdateJournal.finish formatting were read statically; parameter names and trace field set match _fixed_row, whose finite float representation24-character bound and conservative signed64 scalar lengths cover qualified actual trace formatting.",
+    "Measured native9/86/1081 and mixed16/383/383 domains are separate and not substituted for whole backend terms. Actual geometry proof and pool/source integrity remain future caller obligations."
+  ],
+  "limits": [
+    "Static source/test and necessary qualified pure trace-format interface read only. No tests/project imports, tensor/model/NN/SGD, actual data, old suite, SSH/server or filesystem journal operation performed.",
+    "No WIP sourceFIT_v2/caller/estimator read. Actual dataset/pool/source binding, currentGit, actual6000 execution/trace and full remaining caps are not established.",
+    "Raw read receipts retained; no code modified. Fix-only followup is sufficient for these two blockers."
+  ],
+  "known_measured_tool_CPU_seconds_to_snapshot": 0.22957299999999997,
+  "component_measured_CPU_seconds": 0.16647999999999996,
+  "aggregate_process_CPU_seconds_to_snapshot": 0.063093,
+  "components": [
+    {
+      "path": "/Users/williamqiu/.config/superpowers/worktrees/echo-view-routing/a63-selected-action-risk/docs/results/2026-11-05_selected_action_risk/review_c17c76b_aux_pipeline_SPEC_raw.json",
+      "measured_CPU_seconds_to_snapshot": 0.08052799999999997
+    },
+    {
+      "path": "/Users/williamqiu/.config/superpowers/worktrees/echo-view-routing/a63-selected-action-risk/docs/results/2026-11-05_selected_action_risk/review_c17c76b_aux_pipeline_SPEC_raw_2.json",
+      "measured_CPU_seconds_to_snapshot": 0.085952
+    }
+  ],
+  "charge_once": "Charge this new aggregate once OR its components once, not both. No prior review scope or costunitv9 fee included.",
+  "unmetered_tail": "Partial local read/check SELF+waited CHILDREN CPU including Python imports to snapshot. Final serialization/write/output/exit, shell/tool/service overhead and model reasoning tails unmetered, not zero.",
+  "created_at_utc": "2026-11-05T10:16:18.002576+00:00"
+}

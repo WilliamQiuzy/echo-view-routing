@@ -32,7 +32,8 @@ def test_inherited_A60_costs_and_CPU_deadline_not_GPU_reserve():
     assert m.forecast(spent,0,1,100,m.DEADLINE_EPOCH-100,20)['all_caps_fit']
 
 
-def test_supervisor_durable_claim_precedes_child_and_actual_failure_lock(tmp_path,monkeypatch):
+def test_supervisor_durable_claim_precedes_child_and_actual_failure_lock(tmp_path,monkeypatch, synthetic_resource_window):
+    synthetic_resource_window("echo_routing.temporal.safety_resources")
     m=importlib.import_module('scripts.supervise_action_safety');r=api('resources')
     original=m.subprocess.Popen
     def checked(*a,**k):

@@ -1,0 +1,130 @@
+{
+  "reviewer": "a62_card_review",
+  "review_type": "single complete A63 new plan-document review under writing-plans; no inherited terminal conclusions",
+  "status": "Issues Found",
+  "plan": "/Users/williamqiu/.config/superpowers/worktrees/echo-view-routing/a62-anchor-context-risk/docs/superpowers/plans/2026-11-05-a63-selected-action-risk.md",
+  "plan_sha256": "60f6efcb73aa5f96dc95ba755fbc92e5e57d69eb173970b9967ea819eaffb012",
+  "basis": "/Users/williamqiu/.config/superpowers/worktrees/echo-view-routing/a62-anchor-context-risk/docs/superpowers/plans/2026-11-05-a63-selected-action-risk.basis.json",
+  "basis_sha256": "653c3a8ef3ccc74aa783d2652afab19d9c6024ba242f198479fb9dfd864a57b3",
+  "reviewed_spec": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/docs/results/2026-11-05_a62_frozen_score_diagnostic/README.md",
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/docs/results/2026-11-05_a62_frozen_score_diagnostic/PUBLICATION_RECEIPT.json"
+  ],
+  "issues": [
+    {
+      "priority": "P2",
+      "plan_lines": [
+        102,
+        104,
+        110,
+        117,
+        148
+      ],
+      "basis_lines": [
+        247
+      ],
+      "finding": "Coverage source concentration uses canonical-action count although repeated axis/gamma variants of the same event have separate canonical actions, while C1 samples uniformly by event signature. Repeating non-dominant-source event variants can turn the <=20% action-share gate from fail to pass without adding any event signatures or responsible sessions, and without reducing the dominant-source probability under C1.",
+      "counterexample": "A pool with60 unique event signatures/actions,20 from sessionA and40 from other sessions initially fails20/60. Adding40 axis/gamma variants only of those other existing signatures makes20/100 pass, while A still represents20/60 signatures (and can dominate one D/X selected membership). Other predeclared count/type floors can stay unchanged.",
+      "concrete_fix": "Define source-concentration admission on deduplicated dangerous event signatures, or preferably the actual declared C1 D/X slot/signature/member sampling probabilities (with explicit membership scope); preserve raw action-share as descriptive only. Require that adding repetitions of existing event signatures without new responsible sources cannot rescue coverage admission. Mirror denominator/threshold in basis and add a structural fixture for this invariance."
+    }
+  ],
+  "advisory": [
+    {
+      "blocking": false,
+      "plan_line": 61,
+      "basis_line": 203,
+      "finding": "basis partition_prefix currently parses as a literal backslash and0 display suffix rather than the NUL byte shown in plan pseudocode; mark display-only with an explicit encoding contract or use JSON\\u0000 before any future config copies/encodes it.",
+      "observed_decoded_suffix_codepoints": [
+        92,
+        48
+      ]
+    }
+  ],
+  "nonblocking_checks": "Read entire297-line plan,340-line basis and complete specified diagnostic README/publication receipt. No other material gap found in source-disjoint cross-fitting, complement-only aux targets/norm/Adam/fresh init, frozenD vs OOFX, coverage failure zero formal heads, sharednative32/mixed16, exposed CAL/AUDIT disclosure,238/34/140x5000/34native/32case scope,48000aux+24000formal+3240flows/6480payload budgets, cumulative caps and pendingT0/noexecution.",
+  "component_measured_CPU_seconds": 0.29171899999999995,
+  "aggregate_process_CPU_seconds_to_snapshot": 0.053632,
+  "known_measured_tool_CPU_seconds_to_snapshot": 0.34535099999999996,
+  "aggregate_process_SELF_user_seconds": 0.038331,
+  "aggregate_process_SELF_system_seconds": 0.015300999999999999,
+  "aggregate_process_waited_children_user_seconds": 0.0,
+  "aggregate_process_waited_children_system_seconds": 0.0,
+  "components": [
+    {
+      "path": "/tmp/a63_card_review_read1.json",
+      "sha256": "a9ee49803da3a3a239a1a48a72713db033c8e61137af63c33206b4b18bf6ddc7",
+      "receipt": {
+        "scope": "writing-plans skill and specified A63 new card/basis and published diagnostic file metadata read only; no project scripts/server/partition/supply/NN/jobs",
+        "file_sha256": {
+          "/Users/williamqiu/.agents/skills/writing-plans/SKILL.md": "d936159ad11f2e79ba8ae8b8653f87bb924ddaf78ae11dc3a424b4032ad1bd23",
+          "/Users/williamqiu/.config/superpowers/worktrees/echo-view-routing/a62-anchor-context-risk/docs/superpowers/plans/2026-11-05-a63-selected-action-risk.md": "60f6efcb73aa5f96dc95ba755fbc92e5e57d69eb173970b9967ea819eaffb012",
+          "/Users/williamqiu/.config/superpowers/worktrees/echo-view-routing/a62-anchor-context-risk/docs/superpowers/plans/2026-11-05-a63-selected-action-risk.basis.json": "653c3a8ef3ccc74aa783d2652afab19d9c6024ba242f198479fb9dfd864a57b3",
+          "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/docs/results/2026-11-05_a62_frozen_score_diagnostic/README.md": "49fa9f90a56fbe819bf00cb8ebf72fe6d3a0fc37fd262749d8e4e0ea707bc946",
+          "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/docs/results/2026-11-05_a62_frozen_score_diagnostic/PUBLICATION_RECEIPT.json": "2b4e77ec5e8103fb5e972f5746650209dd45b8319bb55e86c7c2171732d26c0b"
+        },
+        "known_measured_tool_CPU_seconds_to_snapshot": 0.063283,
+        "self_user": 0.045077,
+        "self_system": 0.018206,
+        "children_user": 0.0,
+        "children_system": 0.0,
+        "unmetered_tail": "receipt/output/write/exit, tool/service and model reasoning tails excluded; measured partial CPU only"
+      }
+    },
+    {
+      "path": "/tmp/a63_card_review_read2.json",
+      "sha256": "95125f145b28c00aa865f46866586780332eea40440eb2533ef70b8625aa4360",
+      "receipt": {
+        "scope": "A63 plan lines1-160 read only; no project scripts/server/partition/supply/NN/jobs",
+        "known_measured_tool_CPU_seconds_to_snapshot": 0.050976999999999995,
+        "self_user": 0.036921999999999996,
+        "self_system": 0.014055,
+        "children_user": 0.0,
+        "children_system": 0.0,
+        "unmetered_tail": "receipt/output/write/exit, tool/service/model reasoning tails excluded; partial CPU only"
+      }
+    },
+    {
+      "path": "/tmp/a63_card_review_read3.json",
+      "sha256": "0468ba842ae473ca8f75714771fc81ae2c9b78f7b39c6e5d8d69a2c382304222",
+      "receipt": {
+        "scope": "A63 full plan remainder lines161-297 static read only; no scripts/server/partition/supply/NN/jobs",
+        "known_measured_tool_CPU_seconds_to_snapshot": 0.06665099999999999,
+        "self_user": 0.045817,
+        "self_system": 0.020834,
+        "children_user": 0.0,
+        "children_system": 0.0,
+        "unmetered_tail": "receipt/output/write/exit, tool/service/model reasoning tails excluded; partial CPU only"
+      }
+    },
+    {
+      "path": "/tmp/a63_card_review_read4.json",
+      "sha256": "05b238dfe2e9c8d1c2640fababe647858d0e7fc145ab2122b1d7eb7f3ae95e33",
+      "receipt": {
+        "scope": "specified published POST-A62 diagnostic README and publication receipt complete read only; no further historical/source/private/runtime material",
+        "known_measured_tool_CPU_seconds_to_snapshot": 0.05580299999999999,
+        "self_user": 0.038412999999999996,
+        "self_system": 0.01739,
+        "children_user": 0.0,
+        "children_system": 0.0,
+        "unmetered_tail": "receipt/output/write/exit, tool/service/model reasoning tails excluded; partial CPU only"
+      }
+    },
+    {
+      "path": "/tmp/a63_card_review_read5.json",
+      "sha256": "9d051f79d56418610c4039c11a28926a0cf10be4bfcba5311366a5bb330321e2",
+      "receipt": {
+        "scope": "specified A63 basis complete read only; no source/runtime/server/script/model/partition operation",
+        "known_measured_tool_CPU_seconds_to_snapshot": 0.055005,
+        "self_user": 0.036836,
+        "self_system": 0.018168999999999998,
+        "children_user": 0.0,
+        "children_system": 0.0,
+        "unmetered_tail": "receipt/output/write/exit, tool/service/model reasoning tails excluded; partial CPU only"
+      }
+    }
+  ],
+  "charge_once": "Charge this aggregate once only; do not add the5 embedded component receipts or previous A62 review fees again.",
+  "no_plan_or_spec_edits": true,
+  "no_project_script_server_training_partition_recipe_supply_queue_operation": true,
+  "unmetered_tail": "Final receipt serialization/write/output/exit, shell/tool/service tails and all model reasoning unmetered; measured partial local tool/process CPU only, not total model CPU or execution authorization.",
+  "created_at_utc": "2026-11-05T04:13:32.297252+00:00"
+}

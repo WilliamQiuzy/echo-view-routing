@@ -1,0 +1,66 @@
+{
+  "NN_forward_calls": 0,
+  "SELF_OS_exit_code": null,
+  "actual_collector_remote_main_Git_builder_source_stages": 0,
+  "actual_test_child_OS_exit_code": 0,
+  "actual_test_child_PID": 79342,
+  "base_IssuesFound_CPU_retained_separately": 0.592512,
+  "base_IssuesFound_receipt": "docs/results/2026-11-05_selected_action_risk/review_local_stop_quality_c6af6dd_20261105a.json",
+  "base_IssuesFound_receipt_sha256": "4c3b2521d73926151fecb12e960faca9235066cc37e101cb65466eaed0473b55",
+  "direct_child_waited": true,
+  "error": null,
+  "fee_counting": "new delta read+singlefixture CPU once; base .592512 and independent SPEC retained separately, not included again",
+  "fixture_actual_Popen_collector_children": 0,
+  "measured_CPU_core_seconds": 0.48908299999999993,
+  "measured_until_epoch": 1793876634.8100019,
+  "measurement_host": "MacBook-Air-9.local",
+  "measurement_limit": "SELF OS null; serialization/tool/agent/admin tails not claimed measured or zero",
+  "optimizer_updates": 0,
+  "post_wait_regular_bytes": 2029,
+  "post_wait_regular_file_count": 5,
+  "post_wait_symlink_count": 1,
+  "read_CPU_SELF_seconds": 0.07864399999999999,
+  "read_part": {
+    "SELF_OS": null,
+    "SELF_seconds": 0.07864399999999999,
+    "all_Git_OS": 0,
+    "measured_until_epoch": 1793876593.420393,
+    "snapshot": "e015392a091966422316773042711aeaa06dae52",
+    "source_pins": {
+      "scripts/a63_wait_selected_risk_stop.py": "aa973d6f718eb6dc4582866fb1f833d39d223ee05982797623d1d77dda8bb396",
+      "tests/test_selected_risk_stop_collection.py": "b0d6bbf74e16a8597375c7a960162b600325aa37427b35c0635d709ce1c096ec"
+    },
+    "waited_CHILDREN_seconds": 0.01554
+  },
+  "read_waited_CHILDREN_seconds": 0.01554,
+  "retained_without_cleanup": true,
+  "review_kind": "independent QUALITY local-stop fsync/order fix-only",
+  "review_verdict": "Approved",
+  "scope": "one syscall-order fixture only; mocked Popen raises before creating a child. Original6 not repeated. Entire3path scope through c6af+e015 now passes software QUALITY; actual local-only closure remains separate future execution; science queues remain stopped",
+  "snapshot": "e015392a091966422316773042711aeaa06dae52",
+  "source_pins": {
+    "scripts/a63_wait_selected_risk_stop.py": "aa973d6f718eb6dc4582866fb1f833d39d223ee05982797623d1d77dda8bb396",
+    "tests/test_selected_risk_stop_collection.py": "b0d6bbf74e16a8597375c7a960162b600325aa37427b35c0635d709ce1c096ec"
+  },
+  "started_epoch": 1793876634.267627,
+  "test_basetemp": "/tmp/a63-review-stop-fsync-e015392-20261105a",
+  "test_command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "-p",
+    "no:cacheprovider",
+    "--basetemp=/tmp/a63-review-stop-fsync-e015392-20261105a",
+    "tests/test_selected_risk_stop_collection.py::test_intent_directory_is_durable_before_Popen_and_OS_publication_directory_after_link"
+  ],
+  "test_output": ".                                                                        [100%]\n",
+  "test_output_sha256": "423b1d0e014eb1eab96f4420f7b344c2615be505dd574b756ac884826ca74f2d",
+  "unchanged_base_collector_pin": {
+    "scripts/a63_collect_selected_risk_stop.py": "8444be305b7534725dbae6990d84086454edb75326fd5270d34193d051c0a594"
+  },
+  "wrapper_waited_CHILDREN_seconds": 0.323744,
+  "wrapper_whole_CPU_SELF_seconds": 0.071155,
+  "writer_PID": 79341
+}

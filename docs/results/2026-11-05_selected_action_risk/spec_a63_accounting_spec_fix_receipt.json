@@ -1,0 +1,55 @@
+{
+  "reviewer": "a62_card_review",
+  "status": "Issues Found",
+  "snapshot": "b48ecc6fb0dbda173115efa9744ec37ebaffd431",
+  "scope": "fix-only accounting module/collector and corresponding fixture diffs; no unchanged budget/null-allowance re-review",
+  "closed_original_issues": [
+    "Prior rawrows/filepins retained monotonically and checked against immutable bytes; collector compares canonical to highest existing immutable version before refresh.",
+    "Only direct newA63 PUB/exactA63 plan receipts eligible; expected rawSHA and charge_group required; closed namespaces/context aliases reject.",
+    "Same-raw aliases, direct aggregate-child in either order and duplicate chargegroup reject; owncollector auto registration includes SHA/group."
+  ],
+  "remaining_issue": {
+    "priority": "P2",
+    "location": "selected_risk_accounting.py register_identity",
+    "finding": "Distinct aggregates with distinct groups may both cover the same child hash because only covers-intersection-seen is checked; previously covered child-only hashes are not in seen, so covers-intersection-covered is missed.",
+    "fix": "Reject overlap between incoming declared covered-raw set and existing covered set (including preserved prior rows); require covers rawSHA canonical lowercase hex64 so semantically same raw cannot escape comparisons by case/invalid form. Add tiny shared-child-two-aggregates refusal fixture."
+  },
+  "explicit_lineage_limit": "Coverage relationships remain explicit declarations from a registration compiler/reviewer, not inferred from arbitrary JSON references; this limit is correctly documented and unchanged.",
+  "known_measured_tool_CPU_seconds_to_snapshot": 0.20982399999999998,
+  "component_measured_CPU_seconds": 0.14179799999999998,
+  "aggregate_process_CPU_seconds_to_snapshot": 0.068026,
+  "components": [
+    {
+      "path": "/tmp/a63_accounting_fix_read1.json",
+      "sha256": "766cd62b9a71326deaa283aebd91ccd3c78e39f621d6f70c15767ee658c83abc",
+      "receipt": {
+        "snapshot": "b48ecc6fb0dbda173115efa9744ec37ebaffd431",
+        "scope": "accounting fix-only module and collector committed diffs, no actual collection/tests/NN/server/WIP",
+        "known_measured_tool_CPU_seconds_to_snapshot": 0.08007399999999999,
+        "self_user": 0.046075,
+        "self_system": 0.024152,
+        "children_user": 0.004607,
+        "children_system": 0.00524,
+        "unmetered_tail": "Final receipt/output/write/exit, tool/service/model reasoning tails excluded; partial tool CPU"
+      }
+    },
+    {
+      "path": "/tmp/a63_accounting_fix_read2.json",
+      "sha256": "e4bb35c3baad3a34fe8ed5a826d34136d74cce9ee8bd22510cf8cba3433d9620",
+      "receipt": {
+        "snapshot": "b48ecc6fb0dbda173115efa9744ec37ebaffd431",
+        "scope": "accounting fix-only corresponding pure fixture diff; no parser/test/collection/NN/server/WIP execution",
+        "known_measured_tool_CPU_seconds_to_snapshot": 0.061723999999999994,
+        "self_user": 0.036378,
+        "self_system": 0.018845999999999998,
+        "children_user": 0.0027099999999999997,
+        "children_system": 0.00379,
+        "unmetered_tail": "Final receipt/output/write/exit, tool/service/model reasoning tails excluded; partial tool CPU"
+      }
+    }
+  ],
+  "no_collection_tests_project_imports_NN_server_or_WIP": true,
+  "charge_once": "Charge THIS disjoint accounting-fix aggregate once only; exclude its2 components and initial .237494 accounting / other scope fees.",
+  "unmetered_tail": "Final receipt serialization/write/output/exit, shell/tool/service and all model reasoning unmetered; partial measured local tool/process CPU only, not total model CPU or resource closure.",
+  "created_at_utc": "2026-11-05T06:07:08.213964+00:00"
+}

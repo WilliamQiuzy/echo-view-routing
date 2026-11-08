@@ -1,0 +1,109 @@
+{
+  "NN_forward_calls": 0,
+  "SELF_OS_exit_code": null,
+  "actual_FIT_CF_source_server_stages": 0,
+  "actual_test_child_OS_exit_code": 0,
+  "actual_test_child_pid": 45135,
+  "child_directly_waited": true,
+  "error": null,
+  "fee_counting": "one aggregate charge; read parts and test-wrapper CPU are disjoint; do not charge nested parts again",
+  "fixture_files": [
+    "tests/test_selected_risk_fit.py",
+    "tests/test_selected_risk_effects.py",
+    "tests/test_selected_risk_cache.py",
+    "tests/test_selected_risk_figures.py"
+  ],
+  "measured_CPU_core_seconds": 12.081688,
+  "measured_until_epoch": 1793863226.781364,
+  "measurement_host": "MacBook-Air-9.local",
+  "measurement_limit": "SELF OS is unobserved in-process; receipt serialization, tool and agent reasoning tails are not claimed measured or zero",
+  "metadata_finalization": {
+    "measured_CPU_unchanged": true,
+    "post_measurement_admin_CPU_seconds": null,
+    "prior_bytes_retained_at": "/tmp/a63_review_stageS_1b5707b_pre_metadata_finalization.json",
+    "prior_receipt_sha256": "b635e6ec426da543422da642ea7f895a06641a433e08c4cdcfac3b98206f08c9",
+    "reason": "correct fixture list slice to all four actually executed files; record externally observed tool OS0 after actual wait"
+  },
+  "negative_evidence_preserved": true,
+  "observed_case_count": 14,
+  "observed_tool_OS_exit_code": 0,
+  "optimizer_updates": 0,
+  "passed_software_fixtures": true,
+  "physical_scope": "local fabricated software fixtures; four watermarked synthetic PNG/PDF/CSV families; not actual figure QA or scientific coverage",
+  "post_wait_scope_regular_bytes": 1188217,
+  "post_wait_scope_regular_file_count": 21,
+  "post_wait_scope_symlink_count": 4,
+  "read_CPU_SELF_seconds": 0.03249200000000001,
+  "read_CPU_waited_Git_CHILDREN_seconds": 0.072614,
+  "read_measurements": {
+    "additional_visible_reads": [
+      {
+        "Git_OS": 0,
+        "SELF_seconds": 0.012767000000000004,
+        "scope": "fit/effects frozen read",
+        "waited_CHILDREN_seconds": 0.018615
+      },
+      {
+        "Git_OS": 0,
+        "SELF_seconds": 0.0062329999999999955,
+        "scope": "cache frozen read",
+        "waited_CHILDREN_seconds": 0.010355
+      },
+      {
+        "Git_OS": 0,
+        "SELF_seconds": 0.003420000000000003,
+        "scope": "figures frozen read 1-210",
+        "waited_CHILDREN_seconds": 0.005707
+      },
+      {
+        "Git_OS": 0,
+        "SELF_seconds": 0.005759000000000004,
+        "scope": "figures frozen read 211-end plus tests",
+        "waited_CHILDREN_seconds": 0.009566999999999999
+      }
+    ],
+    "initial_complete_blob_read": {
+      "CPU_SELF_seconds": 0.004312999999999999,
+      "CPU_waited_Git_CHILDREN_seconds": 0.02837,
+      "SELF_OS_exit_code": null,
+      "all_Git_children_OS0": true,
+      "finished_epoch": 1793862957.883685,
+      "measurement_host": "MacBook-Air-9.local",
+      "read_output_sha256": "610d6bfd5e251dcfb849be321e0f3059172dd4775d65bc2d6831f11bcfde254a",
+      "read_pid": 37050,
+      "snapshot": "1b5707b633cc77b0e44b31a83514a11a9b5c3d5f",
+      "source_pins": {
+        "echo_routing/temporal/selected_risk_cache.py": "19692700c31b1f2eaf36a1948429948091f400923df4703bec1923a916f68600",
+        "echo_routing/temporal/selected_risk_effects.py": "32f1de80f9478a3d55fd66d38a201763f1174d1d7e265e6bc640ccc0dfc7273d",
+        "echo_routing/temporal/selected_risk_figures.py": "bb3cdef7de262bf97e08b11376af1ab7b69da6b50dcdb7eec8293df9e5ae8e9e",
+        "echo_routing/temporal/selected_risk_fit.py": "04bebaba613307fc4f335dc4f2bf135dc8c89eb47ffd0f68bb75e6fd1a10c82b",
+        "tests/test_selected_risk_cache.py": "3c9e02ddb4f727aad6811c4f1076a24f1d21d040316a476a0203c0b35cb2fb6a",
+        "tests/test_selected_risk_effects.py": "0603b201242c97a19f2af15714d88ea84e71f3fe0429014db8c8b0c49f3fd28a",
+        "tests/test_selected_risk_figures.py": "a9444e2f98d5e7408b15fa391e60ad9f04fe1949a9646a064470376eae9610ee",
+        "tests/test_selected_risk_fit.py": "51e242853a0209af1278a40d6bfbaa9070c755d05048ab0d051bdfd6506fe6de"
+      },
+      "started_epoch": 1793862957.847471
+    }
+  },
+  "review_kind": "independent QUALITY, frozen 8-file Stage-S pure scope",
+  "review_verdict": "Approved",
+  "scope_retained_without_cleanup": true,
+  "snapshot": "1b5707b633cc77b0e44b31a83514a11a9b5c3d5f",
+  "source_pins": {
+    "echo_routing/temporal/selected_risk_cache.py": "19692700c31b1f2eaf36a1948429948091f400923df4703bec1923a916f68600",
+    "echo_routing/temporal/selected_risk_effects.py": "32f1de80f9478a3d55fd66d38a201763f1174d1d7e265e6bc640ccc0dfc7273d",
+    "echo_routing/temporal/selected_risk_figures.py": "bb3cdef7de262bf97e08b11376af1ab7b69da6b50dcdb7eec8293df9e5ae8e9e",
+    "echo_routing/temporal/selected_risk_fit.py": "04bebaba613307fc4f335dc4f2bf135dc8c89eb47ffd0f68bb75e6fd1a10c82b",
+    "tests/test_selected_risk_cache.py": "3c9e02ddb4f727aad6811c4f1076a24f1d21d040316a476a0203c0b35cb2fb6a",
+    "tests/test_selected_risk_effects.py": "0603b201242c97a19f2af15714d88ea84e71f3fe0429014db8c8b0c49f3fd28a",
+    "tests/test_selected_risk_figures.py": "a9444e2f98d5e7408b15fa391e60ad9f04fe1949a9646a064470376eae9610ee",
+    "tests/test_selected_risk_fit.py": "51e242853a0209af1278a40d6bfbaa9070c755d05048ab0d051bdfd6506fe6de"
+  },
+  "started_epoch": 1793863213.3794339,
+  "test_basetemp": "/tmp/a63-review-stageS-1b5707b-20261105a",
+  "test_output": "..............                                                           [100%]\n",
+  "test_output_sha256": "fe9dca0451129aaabdd76ea13e310b61a52091a146a1f9fe5b72b851eb33547f",
+  "test_wrapper_waited_CHILDREN_including_Git_seconds": 11.859785,
+  "test_wrapper_whole_CPU_SELF_seconds": 0.116797,
+  "writer_pid": 45126
+}

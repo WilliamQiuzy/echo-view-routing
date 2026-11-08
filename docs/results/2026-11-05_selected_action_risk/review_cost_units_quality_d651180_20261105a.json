@@ -1,0 +1,92 @@
+{
+  "NN_forward_calls": 0,
+  "SELF_OS_exit_code": null,
+  "actual_benchmark_admission_data_source_server_stages": 0,
+  "actual_test_child_OS_exit_code": 0,
+  "actual_test_child_pid": 20763,
+  "direct_child_waited": true,
+  "error": null,
+  "fee_counting": "one aggregate read+test charge; nested parts not extra fees",
+  "measured_CPU_core_seconds": 0.41466,
+  "measured_until_epoch": 1793871762.9845,
+  "measurement_host": "MacBook-Air-9.local",
+  "measurement_limit": "SELF OS unobserved; final serialization/tool/reasoning/admin tails not claimed measured or zero",
+  "old_wide_profile_OS1_and_old_executed_contract_bytes_preserved": true,
+  "optimizer_updates": 0,
+  "post_wait_basetemp_exists": false,
+  "post_wait_scope_regular_bytes": 0,
+  "post_wait_scope_regular_file_count": 0,
+  "post_wait_scope_symlink_count": 0,
+  "public_engineering_profile_input_pin": {
+    "docs/results/2026-11-05_selected_action_risk/cost_profile.json": "797a7455578477318fff6b8663745e35889edea642c68ccf51730564845c7e37"
+  },
+  "read_CPU_SELF_seconds": 0.133747,
+  "read_parts": [
+    {
+      "SELF_OS": null,
+      "SELF_seconds": 0.08205599999999999,
+      "all_Git_OS": 0,
+      "line_counts": {
+        "docs/results/2026-11-05_selected_action_risk/COST_UNITS_V3.md": 23,
+        "echo_routing/temporal/selected_risk_cost_units.py": 33,
+        "scripts/a63_admit_selected_risk_units.py": 43,
+        "scripts/a63_freeze_selected_risk_units.py": 32,
+        "scripts/a63_selected_risk_costunit_contract.py": 24,
+        "scripts/a63_supervise_selected_risk_units.py": 20,
+        "tests/test_selected_risk_cost_units.py": 30
+      },
+      "measured_until_epoch": 1793871686.416756,
+      "pins": {
+        "docs/results/2026-11-05_selected_action_risk/COST_UNITS_V3.md": "a75167581163da48ccc7fd0fbe5938db1beaab42e32558551c4494a12ffa1d7f",
+        "echo_routing/temporal/selected_risk_cost_units.py": "d28a95223f2b79dcff11c3820e4ffc7b7a7c6133d555f967923ab8318dbe917c",
+        "scripts/a63_admit_selected_risk_units.py": "5c2836fb0712713f80397412f1b8da049472542576a9786da67e62711b7b05e9",
+        "scripts/a63_freeze_selected_risk_units.py": "22783691c8dd273d5231b5e17f0466106ad7b0107d55cc7d559b7b2abfad9559",
+        "scripts/a63_selected_risk_costunit_contract.py": "6a74e4ab5a58800daf4141453f72b32edf52409dc635e1f76f2be762ccb61fe6",
+        "scripts/a63_supervise_selected_risk_units.py": "ed1a007323055986897184806c384017f3ce17fca62de388555cced3cd907f01",
+        "tests/test_selected_risk_cost_units.py": "26856aaf91a07eb76a618383a02b6799f5a53683dc302a3695ceb0f872fb0266"
+      },
+      "snapshot": "d651180f246ebe26fad681b85baf753cf8168161",
+      "waited_CHILDREN_seconds": 0.030579000000000002
+    },
+    {
+      "SELF_OS": null,
+      "SELF_seconds": 0.051691,
+      "measured_until_epoch": 1793871698.717115,
+      "scope": "remaining5 frozen costunit contracts/freezer/supervisor/admit/prose",
+      "waited_CHILDREN_seconds": 0.0
+    }
+  ],
+  "read_waited_CHILDREN_seconds": 0.030579000000000002,
+  "review_kind": "independent QUALITY seven frozen cost-unit-v3 paths",
+  "review_verdict": "Approved",
+  "scope_limit": "3 pure fixtures once incl4 public engineering profile recounts. Empirical profile domination is not a physical global bound or held-profile validation. Full scope/caps/admission and postteacher actual geometry/predraw/layout gates remain mandatory; no actual admission performed",
+  "scope_retained_without_cleanup": true,
+  "snapshot": "d651180f246ebe26fad681b85baf753cf8168161",
+  "source_pins": {
+    "docs/results/2026-11-05_selected_action_risk/COST_UNITS_V3.md": "a75167581163da48ccc7fd0fbe5938db1beaab42e32558551c4494a12ffa1d7f",
+    "echo_routing/temporal/selected_risk_cost_units.py": "d28a95223f2b79dcff11c3820e4ffc7b7a7c6133d555f967923ab8318dbe917c",
+    "scripts/a63_admit_selected_risk_units.py": "5c2836fb0712713f80397412f1b8da049472542576a9786da67e62711b7b05e9",
+    "scripts/a63_freeze_selected_risk_units.py": "22783691c8dd273d5231b5e17f0466106ad7b0107d55cc7d559b7b2abfad9559",
+    "scripts/a63_selected_risk_costunit_contract.py": "6a74e4ab5a58800daf4141453f72b32edf52409dc635e1f76f2be762ccb61fe6",
+    "scripts/a63_supervise_selected_risk_units.py": "ed1a007323055986897184806c384017f3ce17fca62de388555cced3cd907f01",
+    "tests/test_selected_risk_cost_units.py": "26856aaf91a07eb76a618383a02b6799f5a53683dc302a3695ceb0f872fb0266"
+  },
+  "started_epoch": 1793871762.693245,
+  "test_basetemp": "/tmp/a63-review-cost-units-d651180-20261105a",
+  "test_command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "-p",
+    "no:cacheprovider",
+    "--basetemp=/tmp/a63-review-cost-units-d651180-20261105a",
+    "tests/test_selected_risk_cost_units.py"
+  ],
+  "test_output": "...                                                                      [100%]\n",
+  "test_output_sha256": "cf426ab35f3b06fccef8290fde5325d90af130a79da1d1752031518df77c4236",
+  "wrapper_waited_CHILDREN_seconds": 0.171842,
+  "wrapper_whole_CPU_SELF_seconds": 0.07849199999999999,
+  "writer_pid": 20761
+}

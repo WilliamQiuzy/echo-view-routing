@@ -2,8 +2,19 @@ import importlib,sys,json,os
 import pytest
 from scripts import supervise_structured_v2 as supervisor
 
-def test_actual_closed_failed_worker_cost_and_host_provenance_are_retained(tmp_path):
-    m=importlib.import_module('scripts.supervise_structured_evidence');r=m.execute('synthetic_failure',[sys.executable,'-c','sum(range(20000));raise SystemExit(3)'],False,10,tmp_path)
+def test_actual_closed_failed_worker_cost_and_host_provenance_are_retained(tmp_path, monkeypatch):
+    import copy, time
+    m = importlib.import_module('scripts.supervise_structured_evidence')
+    original_read = m.read
+    def synthetic_config(path):
+        value = original_read(path)
+        if path == m.CFG:
+            value = copy.deepcopy(value)
+            value['budget']['new_deadline'] = time.time() + 3 * 24 * 3600
+            value['budget']['cumulative_deadline'] = value['budget']['new_deadline']
+        return value
+    monkeypatch.setattr(m, 'read', synthetic_config)
+    r=m.execute('synthetic_failure',[sys.executable,'-c','sum(range(20000));raise SystemExit(3)'],False,10,tmp_path)
     assert r['exit_code']==3 and r['process_CPU_seconds']>=0 and r['end_epoch']>=r['start_epoch'] and r['measurement_host'] and isinstance(r['model_pid'],int)
     assert json.loads((tmp_path/'processes.jsonl').read_text())==r and not (tmp_path/'active_process.json').exists()
 

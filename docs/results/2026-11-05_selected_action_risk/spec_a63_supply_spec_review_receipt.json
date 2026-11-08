@@ -1,0 +1,80 @@
+{
+  "reviewer": "a62_card_review",
+  "status": "Issues Found",
+  "snapshot": "e47b6e87e6257489ab3bb4876ef7deaa77942ff7",
+  "scope": [
+    "echo_routing/temporal/selected_risk_supply.py",
+    "tests/test_selected_risk_supply.py",
+    "locally copied exact Approved A63 card191acbf1204cd6bf3fbdb6066800a3c6e7d6208ff7ccc15fe752c7964daead7a and basis78b4f913064d7300238577c561384cc559ba09f2c54be84bffa8d876f9bbacbf supply/draw contract"
+  ],
+  "issues": [
+    {
+      "priority": "P2",
+      "file": "echo_routing/temporal/selected_risk_supply.py",
+      "lines": [
+        132,
+        140
+      ],
+      "finding": "draws accepts selected members outside the mixed bank, including native members (explicitly present in current fixture) and arbitrary out-of-bank indices. C1 last16 can therefore change native32/mixed32 exposure and confound the selected-mixed intervention.",
+      "fix": "Validate one-dimensional unique nonnegative integral non-bool native/mixed index banks before casting, disjoint roles, and all selected pool members subset of mixed. Keep signature/member uniqueness. Use valid mixed-only positive fixture plus rejection fixtures for native/out-of-bank/fractional or invalid index inputs."
+    }
+  ],
+  "safe_useful_membership_interpretation": "Consistent with card: per-action useful eligibility is filtered within selected D/X membership, conflicting original effects remain audited and in full candidate replay, safe-J quota checks ALL original selected signature members.",
+  "limits": "Static pure helper review only. No tests, imports of project modules, recipes, actual partitions/data/aux/NN/source/stage/server/SSH or other WIP; future orchestrator must bind actual source/matcher/model/candidate identities and enforce both seeds coverage/authorization.",
+  "documentation_lookup_failure_retained": {
+    "operation": "first metadata-read process git-show approved card in e47b6e87",
+    "observed_exit_code": 128,
+    "cause": "Card and basis exist locally but were not in frozen code Git tree; local docs subsequently read only after exact approved SHA confirmation.",
+    "known_measured_CPU_seconds": null,
+    "CPU_unknown_not_zero": true,
+    "initial_process_failed_before_rusage_snapshot": true
+  },
+  "known_measured_tool_CPU_seconds_to_snapshot": 0.19816499999999998,
+  "known_measured_CPU_is_partial_lower_bound": true,
+  "component_measured_CPU_seconds": 0.135646,
+  "aggregate_process_CPU_seconds_to_snapshot": 0.06251899999999999,
+  "components": [
+    {
+      "path": "/tmp/a63_supply_spec_read1.json",
+      "sha256": "a947955e34252804183b72e276c940feb9e7eaa1156f9750166f32042bb28ca5",
+      "receipt": {
+        "snapshot": "e47b6e87e6257489ab3bb4876ef7deaa77942ff7",
+        "scope": "local approved card/basis contract after pinned Git tree lacks planning docs; read only",
+        "failure_history": [
+          {
+            "operation": "initial git-show plan lookup",
+            "observed_exit_code": 128,
+            "error": "Plan exists on disk but is not in e47b6e87 Git tree; initial process aborted before rusage snapshot",
+            "measured_CPU_seconds": null,
+            "unknown_CPU_not_zero": true
+          }
+        ],
+        "plan_sha256": "191acbf1204cd6bf3fbdb6066800a3c6e7d6208ff7ccc15fe752c7964daead7a",
+        "basis_sha256": "78b4f913064d7300238577c561384cc559ba09f2c54be84bffa8d876f9bbacbf",
+        "known_measured_tool_CPU_seconds_to_snapshot": 0.053798,
+        "self_user": 0.038141999999999995,
+        "self_system": 0.015656,
+        "children_user": 0.0,
+        "children_system": 0.0,
+        "unmetered_tail": "Final receipt/output/write/exit and tool/service/model reasoning tails excluded; initial failed read CPU unknown separately, not zero; partial tool CPU only"
+      }
+    },
+    {
+      "path": "/tmp/a63_supply_spec_read2.json",
+      "sha256": "357c0931c4477d43fda770ba131d787497a0a6903f1e71466462960cb804d1da",
+      "receipt": {
+        "snapshot": "e47b6e87e6257489ab3bb4876ef7deaa77942ff7",
+        "scope": "only two frozen new supply module/fixture files static read; no imports/test/data/SSH/WIP",
+        "known_measured_tool_CPU_seconds_to_snapshot": 0.08184799999999999,
+        "self_user": 0.043819,
+        "self_system": 0.026209,
+        "children_user": 0.005428,
+        "children_system": 0.006392,
+        "unmetered_tail": "Final receipt/output/write/exit and tool/service/model reasoning tails excluded; partial tool CPU only"
+      }
+    }
+  ],
+  "charge_once": "Charge THIS known partial aggregate once; do not add its2 components or prior card/scientific/SPEC fees again. Initial failed-read CPU remains unknown and is not silently assigned0.",
+  "unmetered_tail": "Final receipt serialization/write/output/exit, shell/tool/service and model reasoning tails unmetered; measured partial local tool CPU, not total model CPU or resource closure.",
+  "created_at_utc": "2026-11-05T05:05:18.553823+00:00"
+}

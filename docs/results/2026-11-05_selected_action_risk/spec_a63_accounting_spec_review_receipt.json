@@ -1,0 +1,64 @@
+{
+  "reviewer": "a62_card_review",
+  "status": "Issues Found",
+  "snapshot": "ed3c3f04ca22ed2a81ad08c7c83706b81fef6a31",
+  "scope": "new selected_risk_accounting.py, collect_selected_risk_costs.py, selected_risk_budget allowance delta and corresponding accounting/budget fixtures only",
+  "issues": [
+    {
+      "priority": "P2",
+      "location": "scripts/collect_selected_risk_costs.py21-25",
+      "finding": "Refreshing from current registrations can drop previously charged local receipt rows/file pins; only own fee-collection receipts auto-return. Versioned old snapshots survive but the canonical ledger consumed by budgets loses prior failure/review/admin costs.",
+      "fix": "Preserve or independently enforce monotonic prior receipt/file-pin history; reject omitted/changed prior charges absent an explicit audited correction protocol."
+    },
+    {
+      "priority": "P2",
+      "location": "echo_routing/temporal/selected_risk_accounting.py15-19",
+      "finding": "Filename prefix eligibility does not confine fee provenance. Explicit registration can point to a closed oldA62/POST root_/review_ file and charge it again on top of the fixed predecessor baseline while reporting baseline_not_recharged=True.",
+      "fix": "Constrain to exact new A63 receipt provenance/allowed roots or an explicit approved new-scope registration manifest; reject closed namespaces and pin expected raw SHA so registered originals cannot silently change."
+    },
+    {
+      "priority": "P2",
+      "location": "echo_routing/temporal/selected_risk_accounting.py33-37",
+      "finding": "Exact-once enforcement only detects equal raw hashes/different CPU fields. An aggregate raw file and a separate included child/component raw file have different hashes and can both be charged despite the declared aggregate/child nonduplication scope.",
+      "fix": "Explicit covered-raw/alias or charge-group lineage must reject intersecting measured scopes across distinct registered raws; same-hash field dedup alone is insufficient."
+    }
+  ],
+  "otherwise_consistent": "Known measured CPU, null administrative CPU and separately disclosed allowances stay distinct; totals cumulativeCPU/forecast/remaining budget debit CPU_accounting including allowances, and actual server stage CPU cannot be replaced by allowance.",
+  "limits": "Static review only; no test/parser execution/actual fee collection, project imports, data/NN/SSH/runtime or unlisted WIP. No scientific result or numeric output edited.",
+  "known_measured_tool_CPU_seconds_to_snapshot": 0.237494,
+  "component_measured_CPU_seconds": 0.177549,
+  "aggregate_process_CPU_seconds_to_snapshot": 0.059945,
+  "components": [
+    {
+      "path": "/tmp/a63_accounting_spec_read1.json",
+      "sha256": "c9e503b3c3169f7d82351a0073165cb8194a1fb59781cb4c9fc9b00e45c895ca",
+      "receipt": {
+        "snapshot": "ed3c3f04ca22ed2a81ad08c7c83706b81fef6a31",
+        "scope": "new accounting module/collector plus budget delta static read only; no actual cost collection/runtime/data/NN/WIP",
+        "known_measured_tool_CPU_seconds_to_snapshot": 0.092489,
+        "self_user": 0.040468,
+        "self_system": 0.031664,
+        "children_user": 0.007574,
+        "children_system": 0.012783,
+        "unmetered_tail": "Final receipt/output/write/exit, tool/service/model reasoning tails excluded; partial tool CPU"
+      }
+    },
+    {
+      "path": "/tmp/a63_accounting_spec_read2.json",
+      "sha256": "9494c2d1380e20f2303ee7d6a1bf06345416912935278c7a343b62fedb49c4b5",
+      "receipt": {
+        "snapshot": "ed3c3f04ca22ed2a81ad08c7c83706b81fef6a31",
+        "scope": "only new accounting fixtures and budget-allowance fixture static read; no parser collection/tests/source/WIP",
+        "known_measured_tool_CPU_seconds_to_snapshot": 0.08506,
+        "self_user": 0.048628,
+        "self_system": 0.026203999999999998,
+        "children_user": 0.00453,
+        "children_system": 0.005698,
+        "unmetered_tail": "Final receipt/output/write/exit, tool/service/model reasoning tails excluded; partial tool CPU"
+      }
+    }
+  ],
+  "charge_once": "Charge THIS accounting aggregate once only, not its2 components, Task4fix or prior review receipts.",
+  "unmetered_tail": "Final JSON serialization/write/output/exit, shell/tool/service and all model reasoning unmetered; partial measured local tool/process CPU only, not total model CPU or cumulative closure.",
+  "created_at_utc": "2026-11-05T05:57:50.684272+00:00"
+}

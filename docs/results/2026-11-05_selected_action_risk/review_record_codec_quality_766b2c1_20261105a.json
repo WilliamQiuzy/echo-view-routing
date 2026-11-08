@@ -1,0 +1,72 @@
+{
+  "NN_forward_calls": 0,
+  "SELF_OS_exit_code": null,
+  "actual_data_codec_adoption_source_server_stages": 0,
+  "actual_test_child_OS_exit_code": 0,
+  "actual_test_child_pid": 56439,
+  "direct_child_waited": true,
+  "error": null,
+  "fee_counting": "one aggregate read+test CPU charge; nested read parts not separately billed",
+  "measured_CPU_core_seconds": 0.5462469999999999,
+  "measured_until_epoch": 1793866612.5608141,
+  "measurement_host": "MacBook-Air-9.local",
+  "measurement_limit": "SELF OS unobserved; final serialization/tool/reasoning/admin tails not claimed measured or zero",
+  "optimizer_updates": 0,
+  "post_wait_scope_regular_bytes": 12356,
+  "post_wait_scope_regular_file_count": 2,
+  "post_wait_scope_symlink_count": 2,
+  "read_CPU_SELF_seconds": 0.126242,
+  "read_parts": [
+    {
+      "SELF_OS": null,
+      "SELF_seconds": 0.06473999999999999,
+      "all_Git_OS": 0,
+      "line_counts": {
+        "echo_routing/temporal/selected_risk_record_storage.py": 245,
+        "tests/test_selected_risk_record_storage.py": 122
+      },
+      "measured_until_epoch": 1793866507.833523,
+      "pins": {
+        "echo_routing/temporal/selected_risk_record_storage.py": "f1ccc7028beb50bcdd7f5c5eedb396b4feaa6d544dc3bca71bbe20833f360641",
+        "tests/test_selected_risk_record_storage.py": "0cb180482b67eaa57d239b6f264787e567d4cc007a044f3384a8cdb1a3a9a7c6"
+      },
+      "snapshot": "766b2c1430adf432de1361fb36d26a3078b2d183",
+      "waited_CHILDREN_seconds": 0.009838
+    },
+    {
+      "SELF_OS": null,
+      "SELF_seconds": 0.061501999999999994,
+      "measured_until_epoch": 1793866539.245558,
+      "scope": "frozen record codec test read",
+      "waited_CHILDREN_seconds": 0.0
+    }
+  ],
+  "read_waited_CHILDREN_seconds": 0.009838,
+  "review_kind": "independent QUALITY two frozen record-codec files",
+  "review_verdict": "Approved",
+  "scope_limit": "18 fabricated software fixtures once; no actual data/table adoption. Byte bound must use actual frozen402 dictionary; RUN namespace and actual storage admission remain caller duties; original sources admission false unchanged",
+  "scope_retained_without_cleanup": true,
+  "snapshot": "766b2c1430adf432de1361fb36d26a3078b2d183",
+  "source_pins": {
+    "echo_routing/temporal/selected_risk_record_storage.py": "f1ccc7028beb50bcdd7f5c5eedb396b4feaa6d544dc3bca71bbe20833f360641",
+    "tests/test_selected_risk_record_storage.py": "0cb180482b67eaa57d239b6f264787e567d4cc007a044f3384a8cdb1a3a9a7c6"
+  },
+  "started_epoch": 1793866612.056274,
+  "test_basetemp": "/tmp/a63-review-record-codec-766b2c1-20261105a",
+  "test_command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "-p",
+    "no:cacheprovider",
+    "--basetemp=/tmp/a63-review-record-codec-766b2c1-20261105a",
+    "tests/test_selected_risk_record_storage.py"
+  ],
+  "test_output": "..................                                                       [100%]\n",
+  "test_output_sha256": "341d5dca33250b815baddbafb6001e174c20bf1716bb74f3d612e77777db8938",
+  "wrapper_waited_CHILDREN_seconds": 0.33469099999999996,
+  "wrapper_whole_CPU_SELF_seconds": 0.07547599999999999,
+  "writer_pid": 56438
+}

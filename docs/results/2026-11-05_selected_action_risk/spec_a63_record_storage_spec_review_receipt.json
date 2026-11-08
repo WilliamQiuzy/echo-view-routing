@@ -1,0 +1,35 @@
+{
+  "status": "Approved",
+  "snapshot": "766b2c1430adf432de1361fb36d26a3078b2d183",
+  "scope": [
+    "echo_routing/temporal/selected_risk_record_storage.py",
+    "tests/test_selected_risk_record_storage.py"
+  ],
+  "issues": [],
+  "assessment": [
+    "All28 qualified effects.record fields have explicit fixed representation; integer signed64 range/type tags, finite float16/32/64/Python-float values, bool types, None-event flag, canonical hash fields, original key permutation and duplicate rows are preserved. Narrow/unknown/overflow inputs fail rather than silently cast.",
+    "Responsible-session sequence, including observable order/duplicates, is retained against the complete independently supplied402-session dictionary. Qualified sorted unique5x5 harm-pair sets have exact bitmask representation.",
+    "Decoder re-encodes byte-for-byte, rejecting noncanonical unused payload, invalid tags/masks/indices/order and values not exactly representable under claimed original scalar type.",
+    "Reader requires external immutable SHA and exact independently supplied session dictionary before returning records; validates uncompressed nonobject bounded NPY/NPZ headers and never enables pickle.",
+    "storage_bound serializes actual dictionary/headers with uncompressed fixed rows; file length is independent of record values and includes conservative2x atomic coexistence. Reported synthetic3,962,146B/fullpool result was not rerun or asserted for a different real dictionary.",
+    "Writer uses a same-directory private temp, fsync and atomic no-clobber hardlink; existing paths are not overwritten and owned partial evidence is retained on IO failure."
+  ],
+  "limits": [
+    "Static local source/test reading only; no project imports, encode/decode or storage-bound execution, tests, actual402 private dictionary/data, NN, training, SSH, server or old-path writes.",
+    "No estimator WIP read. Codec approval does not show actual adoption, full-pass storage fit, source admission or scientific success; original failed admission remains unaffected.",
+    "Future caller must enforce new RUN namespace and independent full storage admission, bind actual dictionary/input/file SHA, and handle the explicitly non-atomic cross-file manifest handoff and retained partials.",
+    "Losslessness is for the supported qualified finite scalar/schema domain; unknown types, nonfinite values and out-of-range integers are explicitly rejected, not preserved by coercion."
+  ],
+  "known_measured_tool_CPU_seconds_to_snapshot": 0.146986,
+  "component_measured_CPU_seconds": 0.08189999999999999,
+  "aggregate_process_CPU_seconds_to_snapshot": 0.065086,
+  "components": [
+    {
+      "path": "/tmp/a63_record_storage_spec_read1.json",
+      "measured_CPU_seconds_to_snapshot": 0.08189999999999999
+    }
+  ],
+  "charge_once": "Charge this disjoint new aggregate once OR its component once; not both and no prior scopes included.",
+  "unmetered_tail": "Partial local read/check SELF+waited CHILDREN CPU including Python imports to snapshot. Final serialization/write/output/exit, shell/tool/service overhead and model reasoning tails unmetered, not zero.",
+  "created_at_utc": "2026-11-05T08:13:52.829179+00:00"
+}

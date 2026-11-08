@@ -1,0 +1,57 @@
+{
+  "CUDA_context_occupied": false,
+  "GPU_job": false,
+  "SELF_OS_exit_code": null,
+  "actual_children": [
+    {
+      "child_exit_code_directly_waited": true,
+      "finished_epoch": 1793857305.514882,
+      "model_pid": 56703,
+      "name": "existing18",
+      "observed_worker_exit_code": 0,
+      "output": "..................                                                       [100%]\n",
+      "started_epoch": 1793857305.153036
+    },
+    {
+      "child_exit_code_directly_waited": true,
+      "finished_epoch": 1793857305.609973,
+      "model_pid": 56764,
+      "name": "impossible_F1_CI_probe",
+      "observed_worker_exit_code": 1,
+      "output": "{\"impossible_F1_delta_CI_accepted\": true, \"hard_protection_pass\": true, \"joint_objective_pass\": true, \"H63_claim_supported\": true}\n",
+      "started_epoch": 1793857305.5148969
+    }
+  ],
+  "command": [
+    "/Users/williamqiu/Desktop/Harvard/Capstone/echo-view-routing/.venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "tests/test_selected_risk_scope.py"
+  ],
+  "durable_claim_before_Popen": true,
+  "exception": null,
+  "finished_epoch": 1793857305.609976,
+  "full_process_wall_seconds": 0.4569399356842041,
+  "measured_CPU_core_seconds": 0.350222,
+  "measured_child_CPU_seconds": 0.348246,
+  "measured_supervisor_CPU_seconds": 0.0019760000000000003,
+  "measurement_host": "MacBook-Air-9.local",
+  "model_pid": null,
+  "observed_worker_exit_code": 1,
+  "output": "existing18\n..................                                                       [100%]\n\nimpossible_F1_CI_probe\n{\"impossible_F1_delta_CI_accepted\": true, \"hard_protection_pass\": true, \"joint_objective_pass\": true, \"H63_claim_supported\": true}\n",
+  "output_sha256": "4c43d5a821687c84e8ddddb1211bfe25ed82fc5406030a82989898b2493e937e",
+  "review_kind": "QUALITY",
+  "review_snapshot": "5706c7380e69a63956278c54177fb6702736805c",
+  "scope": "A63 metrics-only18 pure fixtures once plus necessary synthetic impossible-F1-CI probe;0NN/SGD/SSH/actualoutputs/WIP/oldchecks;SELF region+waited CHILDREN, both actual OS retained;sourcepin/import/tool/reasoning/finalwrite/exit tails separate",
+  "source_pins": {
+    "echo_routing/temporal/selected_risk_metrics.py": "31ea4d4bee5f8619eb2bf194bae8a29640d75a882a0cc4b9dedb5d868016e992",
+    "tests/test_selected_risk_scope.py": "a3ae9f273581313e3d37deb0dd2b65ae78fdab09feb3e43170f9b13f67682a35"
+  },
+  "stage": "review_metrics_quality_5706c73_20261105a",
+  "stage_exit_code": 1,
+  "started_epoch": 1793857305.153036,
+  "supervisor_pid": 56691,
+  "termination_reason": null
+}

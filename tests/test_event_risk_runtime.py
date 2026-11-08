@@ -2,7 +2,8 @@ from pathlib import Path
 import importlib,json,sys
 import pytest
 
-def test_A62_claim_before_child_direct_wait_and_foreign_CPU_allowed(tmp_path,monkeypatch):
+def test_A62_claim_before_child_direct_wait_and_foreign_CPU_allowed(tmp_path,monkeypatch, synthetic_resource_window):
+ synthetic_resource_window("echo_routing.temporal.event_risk_budget")
  m=importlib.import_module('scripts.supervise_event_risk');b=importlib.import_module('echo_routing.temporal.event_risk_budget');orig=m.subprocess.Popen
  def check(*a,**k):
   assert json.loads((tmp_path/'run/active_process.json').read_text())['state']=='durable_launch_intent'
