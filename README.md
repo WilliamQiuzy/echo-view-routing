@@ -15,7 +15,7 @@ and distinguish **semantic view changes** (A4C → PLAX) from **nuisance discont
 
 New experiments use **Helena's preprocessing**, the H input studied in EX3. The model retained after EX6 is EX3 H/H0; the preprocessing decision is about input cleanliness and does not imply a measured performance gain over A08. Legacy A08 results keep their original input and remain historical comparisons.
 
-This release contains the **committed EX7/Helena line**, including `helena_input/`, `exam_level/`, `open_routing/`, the later risk-analysis code, and their CPU tests. The separate, uncommitted migration that routes every legacy loader through a single default-input module is still being developed and is not included here. Historical entry points retain their recorded preprocessing; use the H-specific pipeline for new H work.
+This release contains the **committed EX7/Helena line**, including `helena_input/`, `exam_level/`, `open_routing/`, the later risk-analysis code, and their CPU tests. The separate migration that routes every legacy loader through a single default-input module was uncommitted at the selected source cutoff and is excluded from this release. Historical entry points retain their recorded preprocessing; use the H-specific pipeline for new H work.
 
 - `helena_input/pixels.py`: `HelenaPixels` reads the prepared H frame cache, applies gamma afterwards, and retains EX3's recorded fallback when provider output is unavailable.
 - `scripts/ex3_prepare.py` and `scripts/ex3_h_cache.py`: H input preparation and cache-identity/pixel-parity checks. They require separately provisioned provider output, dataset access, and the frozen reference artifacts; they are not demo commands that download these resources automatically.

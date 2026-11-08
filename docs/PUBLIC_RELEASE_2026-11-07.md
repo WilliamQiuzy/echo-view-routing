@@ -1,8 +1,8 @@
 # Public code release — 2026-11-07
 
-The owner requested publication of the latest committed mainline and explicitly chose to defer the still-uncommitted full-loader migration. Source snapshot: `29858620d501adff95cb481c697311db73d73fc1` (`helena-default-code`), which includes the committed EX7/Helena input line and EX1–EX3 integration. The public parent is `fa38246e9a73275f523fce9c5a7d2917bdf07f60`.
+The owner requested publication of the latest committed mainline and explicitly chose to defer the then-uncommitted full-loader migration. Source snapshot: `29858620d501adff95cb481c697311db73d73fc1` (`helena-default-code`), which includes the committed EX7/Helena input line and EX1–EX3 integration. The public parent is `fa38246e9a73275f523fce9c5a7d2917bdf07f60`.
 
-This is a new public commit based on public history, not a merge or push of private development history. Source working directories, their staged and unstaged changes, and server jobs are not modified. The uncommitted `echo_routing/input/` migration is excluded from this release.
+This is a new public commit based on public history, not a merge or push of private development history. Source working directories, their staged and unstaged changes, and server jobs are not modified. The later `echo_routing/input/` migration is outside this selected source snapshot and is excluded from this release.
 
 The update carries committed library, experiment-script, configuration and test files, the EX5–EX7 result summaries and their pre-result plans. Public-only training-log export functionality and existing website files are preserved. The public experiment index receives the committed Helena decision/EX5–EX7 update without replacing its historical body.
 
@@ -17,3 +17,7 @@ The source snapshot also needs its committed public protocol/approval documents 
 Synthetic child-process tests use a test-only future window. Production budget/deadline constants and every historical experiment gate remain unchanged. The public mirror's existing skip for a historical code object that is absent after history rewriting is retained; private development history is not imported merely to satisfy that test. The complete CPU suite, wheel import check and static publication scan are recorded in the local release receipts.
 
 The historical A63 graph test is brought up to date with the already-committed read-only FIT adoption and FIT score stages, while retaining exact stage membership and the coverage/calibration dependency barriers. This changes the stale test expectation, not the production graph or accepted scientific matrix.
+
+## Local release checks
+
+A clean clone containing only public ancestry passed **2,427 CPU tests**, with 46 skips, using `pytest -m "not gpu and not data"`. GPU and dataset execution are outside this verification. The built wheel imported independently, and all 332 packaged Python source files matched the frozen release candidate. This final follow-up changes only documentation wording about the selected source cutoff; code, configurations, tests and the CI recipe are unchanged from the tested candidate.
