@@ -49,6 +49,19 @@ def test_the_encoder_rests_during_warm_up():
     assert 0 < encoder < 1e-9 and 0 < new < 1e-8
 
 
+# The learning rates at the last update of every tenth of the published stage-1 run of seed 0 (its train_log.jsonl).
+PUBLISHED_RATES = {375: (0.0, 0.0001), 750: (9.700052902196541e-06, 9.700052902196541e-05), 1125: (8.833212225163124e-06, 8.833212225163124e-05),
+                   1500: (7.5040295815877e-06, 7.5040295815877e-05), 1875: (5.8728240149320505e-06, 5.8728240149320505e-05),
+                   2250: (4.136342990565055e-06, 4.1363429905650545e-05), 2625: (2.504031747755862e-06, 2.5040317477558617e-05),
+                   3000: (1.1727711127355118e-06, 1.1727711127355118e-05), 3375: (3.0313076540193e-07, 3.0313076540192998e-06),
+                   3750: (2.1661681620654963e-12, 2.1661681620654962e-11)}
+
+
+def test_the_schedule_gives_the_learning_rates_of_the_published_log_to_the_last_digit():
+    for done, rates in PUBLISHED_RATES.items():
+        assert staged.schedule(done - 1, 375, 3750, 1e-5, 1e-4) == rates, done
+
+
 @pytest.fixture()
 def tiny(tmp_path) -> tuple[Path, Path]:
     """Two recordings of 30 frames whose grey level is 100 * recording + frame, and a plan of two updates of four

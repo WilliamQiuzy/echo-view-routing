@@ -8,9 +8,10 @@ plan's gamma on some fragments and no other change. Stage 1 minimises the cross-
 adds the smoothing penalty between the four neighbouring windows of a group (`within_view`). During the first tenth
 of the updates only the marker stem and the five-class head train; then the encoder joins.
 
-Everything is plain float32 with deterministic GPU kernels, and one seed fixes the model's dropout. On the machine and
-software of the published runs this loop gives their training log number for number (docs/TRAINING.md says how that
-was checked). On other hardware the numbers differ in the last digits.
+Everything is plain float32 with deterministic GPU kernels where PyTorch has them, and one seed fixes the model's
+dropout. The loop feeds the model the pixels of the published runs and follows their schedule. Its numbers are still
+not theirs bit for bit, and two runs of it on one machine differ as well: PyTorch has no deterministic backward pass
+for the 3-D max pooling of the encoder. docs/TRAINING.md gives the measured sizes.
 """
 from __future__ import annotations
 
@@ -20,6 +21,7 @@ os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")  # deterministic cuB
 
 import argparse
 import json
+import math
 import sys
 import time
 from importlib import resources
@@ -33,7 +35,7 @@ from torch.utils.data import DataLoader, Dataset
 from ..evaluation.ev9v import DataError, folders_by_key, load_frame
 from ..model import N_SLOTS, WindowModel, marker_planes, normalise, read_state
 from . import recipe
-from .train import initial_model, lr_factor
+from .train import initial_model
 
 GROUP = 4  # neighbouring windows in one group of the within_view objective
 TRUNCATION = 16.0
@@ -138,6 +140,17 @@ def within_view_loss(logits: torch.Tensor, target: torch.Tensor, penalty: float,
 
 
 # ------------------------------------------------------------------------------------------------ the loop
+def lr_factor(update: int, warmup: int, total: int) -> float:
+    """Linear warm-up, then a cosine to zero.
+
+    The fraction of the cosine is formed first and then multiplied by pi, as the published runs of stages 1 and 2 did.
+    Stage 3 (train.lr_factor) multiplies first; the two differ in the last binary digit at some updates.
+    """
+    if update < warmup:
+        return (update + 1) / warmup
+    return 0.5 * (1.0 + math.cos(math.pi * min(1.0, (update - warmup) / max(1, total - warmup))))
+
+
 def schedule(update: int, warmup: int, total: int, lr_enc: float, lr_new: float) -> tuple[float, float]:
     """(encoder rate, rate of the new parameters) of one update; the encoder rests during warm-up."""
     factor = lr_factor(int(update), int(warmup), int(total))
