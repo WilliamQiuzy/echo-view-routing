@@ -11,12 +11,16 @@ number uses) and ema.pt (their moving average). A CUDA GPU is needed; the refere
 Only EV9V training recordings are read. A run is reproducible in what it samples: the windows follow from the seed,
 and so do the random input changes on the same GPU model. It is not reproducible bit for bit: GPU kernels and compiled
 code differ between machines and between runs.
+
+On a machine that can be switched off, `--checkpoint-every N` writes checkpoint.pt every N updates and `--resume`
+continues from it: weights, optimiser, moving average and every random stream go on where they stopped.
 """
 from __future__ import annotations
 
 import argparse
 import json
 import math
+import os
 import queue
 import sys
 import threading
@@ -41,8 +45,10 @@ DEFAULTS = {
     "updates": 3000, "batch": 64, "lr_enc": 3e-5, "lr_new": 3e-4, "warmup": 300, "freeze": 1, "weight_decay": 1e-4,
     "strength": 1.0, "geometry": 1.0, "levels": 1.0, "degrade": 1.0, "shared": 0.5, "native_share": 0.5,
     "label_smoothing": 0.0, "ema": 0.998, "amp": 1, "objective": "ce", "penalty": 0.15, "frames": "gpu", "compile": 0,
-    "log_every": 50,
+    "log_every": 50, "checkpoint_every": 0,
 }
+CHECKPOINT = "checkpoint.pt"
+NOT_THE_RECIPE = ("checkpoint_every",)  # may change between the parts of one run
 
 
 def lr_factor(update: int, warmup: int, total: int) -> float:
@@ -94,15 +100,21 @@ def build_model(init: str | Path, encoder: str | Path | None, seed: int) -> Wind
     return model
 
 
-def check_start(args: argparse.Namespace) -> None:
-    """Mistakes that would otherwise show only after the frame cache has been loaded."""
+def check_start(args: argparse.Namespace, continuing: bool = False) -> None:
+    """Mistakes that would otherwise show only after the frame cache has been loaded. A run that continues from a
+    checkpoint does not read its start weights again, so they need not be there."""
     if args.objective in GROUPED and args.batch % plans.GROUP:
         raise SystemExit(f"--batch {args.batch}: the within_view objective needs whole groups of {plans.GROUP} windows")
-    if str(args.init) == "encoder":
+    if continuing:
+        pass
+    elif str(args.init) == "encoder":
         if not args.encoder or not Path(args.encoder).is_file():
             raise SystemExit("--init encoder needs --encoder, the file with the pretrained encoder's state")
     elif str(args.init) != "stage2" and not Path(args.init).is_file():
         raise SystemExit(f"{args.init}: no such start file (a checkpoint of the window model, or one of the words stage2 and encoder)")
+    if args.checkpoint_every and args.checkpoint_every % args.log_every:
+        raise SystemExit(f"--checkpoint-every {args.checkpoint_every} must be a multiple of --log-every {args.log_every}: "
+                         "a checkpoint is written together with a log record")
 
 
 class Feeder(threading.Thread):
@@ -154,11 +166,118 @@ def run_config(args: argparse.Namespace, strength: augment.Strength, pool) -> di
             "torch": torch.__version__}
 
 
+# ------------------------------------------------------------------------------- stopping and going on
+PARTS = ("updates_done", "identity", "model", "optimiser", "average", "generator", "torch_rng", "cuda_rng", "seen", "elapsed_s")
+
+
+def write_whole(path: Path, write) -> None:
+    """Writes a file beside its place, forces it to disk and swaps it in: switching the machine off leaves the old
+    file or the new one, never half of one. `write` receives the open binary file."""
+    part = path.with_name(path.name + ".tmp")
+    with part.open("wb") as handle:
+        write(handle)
+        handle.flush()
+        os.fsync(handle.fileno())
+    os.replace(part, path)
+
+
+def file_name(path: object) -> str:
+    """A file by its name alone: the same file reached by another path (a new machine, another mount) is the same."""
+    return Path(str(path)).name
+
+
+def run_identity(args: argparse.Namespace) -> dict:
+    """The options that make two parts one run: the recipe, the seed, the start weights and the plans."""
+    identity = {key: getattr(args, key) for key in sorted(DEFAULTS) if key not in NOT_THE_RECIPE}
+    return {**identity, "seed": int(args.seed), "init": file_name(args.init),
+            "plans": [file_name(path) for path in args.plans] if args.plans else None}
+
+
+def same_run(stored: dict, now: dict, path: Path) -> None:
+    differing = sorted(key for key in set(stored) | set(now) if stored.get(key) != now.get(key))
+    if differing:
+        changes = "; ".join(f"{key}: {stored.get(key)} -> {now.get(key)}" for key in differing)
+        raise SystemExit(f"{path} belongs to a run with other options ({changes}). Give the options of that run to continue it, "
+                         "or use another folder for the new run.")
+
+
+def resume_note(state: dict | None, args: argparse.Namespace, out: Path) -> str:
+    """One line that says where a run started with --resume begins."""
+    if state is not None:
+        return f"{out}: continuing after update {int(state['updates_done'])} of {args.updates}"
+    note = f"{out}: no checkpoint, starting at the first update"
+    if not args.checkpoint_every:
+        note += " (without --checkpoint-every this run writes no checkpoint to continue from)"
+    return note
+
+
+def skip_draws(pool, rng: np.random.Generator, updates: int, batch: int, native_share: float) -> None:
+    """Lets the sampler draw again what `updates` finished updates drew, so that the next draw is the next update's."""
+    for _ in range(updates):
+        pool.batch(rng, batch, native_share)
+
+
+def keep_log_until(log: Path, done: int) -> None:
+    """Drops the records a cut run wrote after its last checkpoint, and a half-written last line."""
+    kept = []
+    if log.is_file():
+        for line in log.read_text().splitlines():
+            try:
+                record = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if int(record.get("update", 0)) <= done:
+                kept.append(line)
+    write_whole(log, lambda handle: handle.write("".join(line + "\n" for line in kept).encode()))
+
+
+def save_checkpoint(out: Path, done: int, identity: dict, model: WindowModel, optimiser: torch.optim.Optimizer, average: Average,
+                    generator: torch.Generator, seen: int, elapsed: float, device: torch.device) -> None:
+    """Everything the loop needs to go on after update `done`: the weights, the optimiser, the moving average and
+    the random streams (the input changes' own, and the ones dropout draws from on the CPU and on the training GPU)."""
+    state = {"updates_done": int(done), "identity": identity, "model": model.state_dict(), "optimiser": optimiser.state_dict(),
+             "average": average.state(), "generator": generator.get_state(), "torch_rng": torch.get_rng_state(),
+             "cuda_rng": torch.cuda.get_rng_state(device) if device.type == "cuda" else None, "seen": int(seen), "elapsed_s": float(elapsed)}
+    write_whole(out / CHECKPOINT, lambda handle: torch.save(state, handle))
+
+
+def load_checkpoint(path: Path) -> dict:
+    try:
+        state = torch.load(path, map_location="cpu", weights_only=True)
+    except Exception as error:
+        raise SystemExit(f"{path} cannot be read: {type(error).__name__}: {str(error)[:300]}. If the file is damaged, move it away: "
+                         "the run then starts again at its first update.") from error
+    missing = [part for part in PARTS if not isinstance(state, dict) or part not in state]
+    if missing:
+        raise SystemExit(f"{path} is not a checkpoint of this program (it lacks {', '.join(missing)})")
+    return state
+
+
+def leave_finished(out: Path, identity: dict) -> None:
+    """A folder with done.json holds a finished run. It is left alone when it is this run and refused when it is another."""
+    try:
+        finished = json.loads((out / "done.json").read_text())
+    except (OSError, json.JSONDecodeError) as error:
+        raise SystemExit(f"{out / 'done.json'} cannot be read ({error}); the folder holds a finished run that cannot be identified") from error
+    same_run(finished.get("identity", identity), identity, out / "done.json")
+    (out / CHECKPOINT).unlink(missing_ok=True)
+    print(f"{out} holds this run, finished: nothing to do", file=sys.stderr)
+
+
 def train(args: argparse.Namespace) -> Path:
     """Runs the updates and returns the folder with the results."""
-    check_start(args)
     out = Path(args.out)
+    identity = run_identity(args)
+    if args.resume and (out / "done.json").is_file():
+        leave_finished(out, identity)
+        return out
+    state = load_checkpoint(out / CHECKPOINT) if args.resume and (out / CHECKPOINT).is_file() else None
+    if state is not None:
+        same_run(state["identity"], identity, out / CHECKPOINT)
+    check_start(args, continuing=state is not None)
     out.mkdir(parents=True, exist_ok=True)
+    if args.resume:
+        print(resume_note(state, args, out), file=sys.stderr)
     torch.backends.cuda.matmul.allow_tf32 = True
     torch.backends.cudnn.allow_tf32 = True
     torch.backends.cudnn.benchmark = True
@@ -175,21 +294,34 @@ def train(args: argparse.Namespace) -> Path:
     torch.manual_seed(args.seed)
     if on_gpu:
         torch.cuda.manual_seed_all(args.seed)
-    model = build_model(args.init, args.encoder, args.seed).to(device).train()
+    model = initial_model(None, args.seed) if state is not None else build_model(args.init, args.encoder, args.seed)  # a checkpoint holds every weight
+    model = model.to(device).train()
     optimiser = torch.optim.AdamW([{"params": list(model.encoder.parameters()), "lr": 0.0}, {"params": model.new_parameters(), "lr": 0.0}],
                                   betas=(0.9, 0.999), eps=1e-8, weight_decay=args.weight_decay, fused=on_gpu)
     forward = torch.compile(Direct(model)) if args.compile else Direct(model)
     rng = np.random.default_rng([SAMPLING_STREAM, args.seed])
     generator = torch.Generator(device).manual_seed(SAMPLING_STREAM + args.seed)
     average = Average(model)
+    began = last = time.time()
+    done = seen = correct = 0
+    if state is not None:  # go on after the last checkpoint: the weights, the averages and every random stream
+        done, seen, began = int(state["updates_done"]), int(state["seen"]), began - float(state["elapsed_s"])
+        model.load_state_dict(state["model"], strict=True)
+        optimiser.load_state_dict(state["optimiser"])
+        average.load(state["average"])
+        skip_draws(pool, rng, done, args.batch, args.native_share)
+        generator.set_state(state["generator"])
+        torch.set_rng_state(state["torch_rng"])
+        if on_gpu and state["cuda_rng"] is not None:
+            torch.cuda.set_rng_state(state["cuda_rng"], device)
+    if args.resume:
+        keep_log_until(out / "train_log.jsonl", done)
     feeder = Feeder(pool, rng, args.batch, args.native_share, cache.frames if args.frames == "host" else None)
     feeder.start()
     frozen = None
-    began = last = time.time()
-    seen = correct = 0
     running = 0.0
     with (out / "train_log.jsonl").open("a") as log:
-        for update in range(args.updates):
+        for update in range(done, args.updates):
             want_frozen = bool(args.freeze) and update < args.warmup
             if want_frozen != frozen:
                 model.set_encoder_trainable(not want_frozen)
@@ -227,10 +359,23 @@ def train(args: argparse.Namespace) -> Path:
                 log.flush()
                 print(json.dumps({k: (float(f"{v:.4g}") if isinstance(v, float) else v) for k, v in record.items()}), flush=True)
                 last, correct, running = now, 0, 0.0
-    torch.save(model.state_dict(), out / "final.pt")
-    torch.save(average.state_dict(model), out / "ema.pt")
-    (out / "done.json").write_text(json.dumps({"updates": args.updates, "windows": seen, "seconds": time.time() - began}) + "\n")
+            if args.checkpoint_every and (update + 1) % args.checkpoint_every == 0 and update + 1 < args.updates:
+                os.fsync(log.fileno())  # the log's records up to here are on disk before the checkpoint that counts on them
+                save_checkpoint(out, update + 1, identity, model, optimiser, average, generator, seen, time.time() - began, device)
+    # the weights first and whole, then done.json, which says the run is finished, then the checkpoint goes
+    write_whole(out / "final.pt", lambda handle: torch.save(model.state_dict(), handle))
+    write_whole(out / "ema.pt", lambda handle: torch.save(average.state_dict(model), handle))
+    finished = {"updates": args.updates, "windows": seen, "seconds": time.time() - began, "identity": identity}
+    write_whole(out / "done.json", lambda handle: handle.write((json.dumps(finished) + "\n").encode()))
+    (out / CHECKPOINT).unlink(missing_ok=True)
     return out
+
+
+def count(text: str) -> int:
+    value = int(text)
+    if value < 0:
+        raise argparse.ArgumentTypeError("a count cannot be negative")
+    return value
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -270,6 +415,8 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--frames", choices=("gpu", "host"), help="where the frame array lives; host lets several runs share it")
     parser.add_argument("--compile", type=int, help="1: torch.compile the forward pass")
     parser.add_argument("--log-every", type=int)
+    parser.add_argument("--checkpoint-every", type=count, help="write checkpoint.pt every this many updates (a multiple of --log-every; 0: never)")
+    parser.add_argument("--resume", action="store_true", help="continue from checkpoint.pt in --out when there is one; leave a finished run alone")
     parser.set_defaults(**DEFAULTS)
     return parser.parse_args([*recipe.arguments(known.config, set(DEFAULTS)), *argv])
 

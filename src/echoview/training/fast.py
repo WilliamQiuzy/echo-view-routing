@@ -52,6 +52,18 @@ class Average:
         else:
             torch._foreach_lerp_(self.mean, [p.detach() for p in self.live], 1.0 - decay)
 
+    def state(self) -> list[torch.Tensor]:
+        """A copy of the averages, in the order of the model's parameters (for a checkpoint)."""
+        return [mean.detach().clone() for mean in self.mean]
+
+    @torch.no_grad()
+    def load(self, means: list[torch.Tensor]) -> None:
+        """Takes the averages a checkpoint stored."""
+        if len(means) != len(self.mean):
+            raise ValueError(f"the stored average holds {len(means)} tensors, the model {len(self.mean)}")
+        for mean, stored in zip(self.mean, means):
+            mean.copy_(stored)
+
     def state_dict(self, model: nn.Module) -> dict:
         state = {k: v.detach().clone() for k, v in model.state_dict().items()}
         for name, mean in zip(self.names, self.mean):

@@ -248,33 +248,6 @@ def test_the_shipped_plans_resolve_against_the_shipped_list_of_recordings():
     assert len(singles.rows) == 45000 and [len(table) for table in singles.by_class] == [1120, 974, 858, 217, 195]
 
 
-NAMES = ("rec_a", "rec_b", "rec_c")
-
-
-@pytest.fixture()
-def tiny_training(tmp_path) -> tuple[Path, Path, Path]:
-    """A frame cache of three recordings (two for training) and a plan of groups over the training ones."""
-    images = tmp_path / "Images"
-    items = []
-    for r, (name, split) in enumerate(zip(NAMES, ("train", "train", "selection"))):
-        (images / name).mkdir(parents=True)
-        for k in range(20):
-            Image.fromarray(np.full((240, 320, 3), 60 * r + k, np.uint8)).save(images / name / f"{3 * k}.jpg", quality=95)
-        items.append({"key": recording_key(name), "split": split, "label": r % 2, "n_frames": 60})
-    cache.build(images, tmp_path / "cache", workers=1, items=items)
-    vid = np.zeros((4, 8, 16), np.int32)
-    vid[:, 4:, 8:] = 1
-    target = np.zeros((4, 8), np.int8)
-    target[:, 4:] = 1
-    plan = tmp_path / "plan.npz"
-    np.savez_compressed(plan, recordings=np.array([recording_key(n) for n in NAMES[:2]]), vid=vid, frame=np.tile(np.arange(16, dtype=np.int32) * 3, (4, 8, 1)),
-                        gamma=np.ones((4, 8, 16), np.float32), marker=np.full((4, 8), 8, np.int8), target=target, kind=(vid.max(-1) > 0).astype(np.int8))
-    start = tmp_path / "start.pt"
-    torch.manual_seed(3)
-    torch.save(train.initial_model(None, 0).state_dict(), start)
-    return tmp_path / "cache", plan, start
-
-
 def test_the_fast_loop_runs_two_updates_on_the_cpu_and_writes_its_files(tiny_training, tmp_path):
     folder, plan, start = tiny_training
     argv = ["--config", str(REPOSITORY / "configs" / "stage3.json"), "--cache", str(folder), "--plans", str(plan), "--init", str(start),
