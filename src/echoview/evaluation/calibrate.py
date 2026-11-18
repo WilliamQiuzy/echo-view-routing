@@ -37,9 +37,10 @@ def grid(native_probabilities: list[np.ndarray]) -> list[dict]:
     return out
 
 
-def decode_all(setting: Mapping, probabilities: Mapping[str, np.ndarray]) -> dict[str, np.ndarray]:
-    return {key: decoder.decode(p, int(setting["half_window"]), float(setting["threshold"]), int(setting["nms_radius"]))
-            for key, p in probabilities.items()}
+def decode_all(setting: Mapping, probabilities: Mapping[str, np.ndarray], scores: Mapping[str, np.ndarray] | None = None) -> dict[str, np.ndarray]:
+    """Every stream decoded at one setting. `scores` may hold the streams' boundary scores at the setting's half window."""
+    half_window, threshold, radius = int(setting["half_window"]), float(setting["threshold"]), int(setting["nms_radius"])
+    return {key: decoder.decode(p, half_window, threshold, radius, None if scores is None else scores[key]) for key, p in probabilities.items()}
 
 
 def select_setting(records: list[dict], native_floor: float = NATIVE_FLOOR, recall_floor: float = RECALL_FLOOR) -> dict:
@@ -56,9 +57,13 @@ def choose(probabilities: Mapping[str, np.ndarray], sequences: tuple[Sequence, .
     """The decoder setting for one system from its per-sample probabilities on the calibration half."""
     settings = grid([probabilities[s.id] for s in of_kind(sequences, "native")])
     records = []
+    scored_window, scores = None, {}
     for order, setting in enumerate(settings):
-        scores = metrics.evaluate(decode_all(setting, probabilities), sequences)
-        records.append({"order": order, "params": setting, **{key: scores[key] for key in REPORTED}})
+        if setting["half_window"] != scored_window:  # the eight thresholds of one half window share its scores
+            scored_window = setting["half_window"]
+            scores = {key: decoder.boundary_scores(p, scored_window) for key, p in probabilities.items()}
+        result = metrics.evaluate(decode_all(setting, probabilities, scores), sequences)
+        records.append({"order": order, "params": setting, **{key: result[key] for key in REPORTED}})
     chosen = select_setting(records)
     if chosen["chosen"] is None:
         fallback = next(r for r in records if r["params"]["half_window"] == DIAGNOSTIC[0]

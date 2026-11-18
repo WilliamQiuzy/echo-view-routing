@@ -93,3 +93,17 @@ def test_the_rule_takes_the_best_feasible_setting_and_the_earlier_one_on_a_tie()
 def test_the_rule_says_when_nothing_is_feasible():
     chosen = calibrate.select_setting([record(0, 0.99, native=0.9), record(1, 0.9, recall=None)])
     assert chosen == {"status": "infeasible", "chosen": None, "n_feasible": 0, "n_settings": 2}
+
+
+def test_the_rule_scores_every_stream_once_per_half_window(halves, monkeypatch):
+    """Eight thresholds share one half window, so they share its scores: 5 passes over the streams instead of 40."""
+    from echoview import decoder
+
+    sequences = tuple(s for s in halves["calibration"] if s.kind != "exam")[::12]
+    rng = np.random.default_rng(0)
+    probabilities = {s.id: rng.dirichlet(np.ones(5), len(s)) for s in sequences}
+    real, calls = decoder.boundary_scores, []
+    monkeypatch.setattr(decoder, "boundary_scores", lambda prob, half_window: (calls.append(half_window), real(prob, half_window))[1])
+    calibrate.choose(probabilities, sequences)
+    natives = sum(s.kind == "native" for s in sequences)
+    assert len(calls) == len(calibrate.HALF_WINDOWS) * (len(sequences) + natives)

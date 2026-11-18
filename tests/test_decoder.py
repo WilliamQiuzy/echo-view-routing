@@ -1,5 +1,6 @@
 """The change-point decoder must give the research code's labels on the stored cases."""
 import numpy as np
+import pytest
 
 from echoview import decoder
 
@@ -47,3 +48,21 @@ def test_weaker_peaks_inside_the_radius_are_dropped():
 
 def test_segments_of_an_empty_label_sequence():
     assert decoder.segments(np.array([], int)) == []
+
+
+def test_scores_computed_beforehand_give_the_same_labels():
+    rng = np.random.default_rng(3)
+    prob = rng.dirichlet(np.ones(5) * 0.3, 120)
+    prob[40:80] = rng.dirichlet(np.array([8.0, 0.2, 0.2, 0.2, 0.2]), 40)
+    for half_window, threshold in ((5, 0.05), (7, 0.2), (15, 0.4)):
+        scores = decoder.boundary_scores(prob, half_window)
+        plain = decoder.decode(prob, half_window, threshold, 5)
+        assert np.array_equal(decoder.decode(prob, half_window, threshold, 5, scores=scores), plain)
+        assert np.array_equal(decoder.detect_boundaries(prob, half_window, threshold, 5, scores=scores),
+                              decoder.detect_boundaries(prob, half_window, threshold, 5))
+
+
+def test_scores_of_another_stream_are_refused():
+    prob = np.full((30, 5), 0.2)
+    with pytest.raises(ValueError, match="scores"):
+        decoder.decode(prob, 5, 0.1, 5, scores=np.zeros(29))

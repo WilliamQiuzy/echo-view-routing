@@ -46,9 +46,14 @@ def non_max_suppression(scores: np.ndarray, threshold: float, radius: int) -> np
     return np.array(sorted(kept), dtype=int)
 
 
-def detect_boundaries(prob: np.ndarray, half_window: int, threshold: float, nms_radius: int) -> np.ndarray:
+def detect_boundaries(prob: np.ndarray, half_window: int, threshold: float, nms_radius: int, scores: np.ndarray | None = None) -> np.ndarray:
+    """The cuts. `scores` may hold boundary_scores(prob, half_window) from an earlier call, to try several thresholds."""
     prob = np.asarray(prob, float)
-    peaks = non_max_suppression(boundary_scores(prob, half_window), threshold, nms_radius)
+    if scores is None:
+        scores = boundary_scores(prob, half_window)
+    elif np.shape(scores) != (prob.shape[0],):
+        raise ValueError(f"scores for {np.shape(scores)[0] if np.ndim(scores) else 0} samples were given for a stream of {prob.shape[0]}")
+    peaks = non_max_suppression(scores, threshold, nms_radius)
     kept = []
     for i in peaks:
         lo, hi = max(0, i - half_window), min(prob.shape[0], i + half_window)
@@ -57,11 +62,11 @@ def detect_boundaries(prob: np.ndarray, half_window: int, threshold: float, nms_
     return np.array(kept, dtype=int)
 
 
-def decode(prob: np.ndarray, half_window: int, threshold: float, nms_radius: int) -> np.ndarray:
-    """Per-sample probabilities (N, classes) -> per-sample view indices (N,)."""
+def decode(prob: np.ndarray, half_window: int, threshold: float, nms_radius: int, scores: np.ndarray | None = None) -> np.ndarray:
+    """Per-sample probabilities (N, classes) -> per-sample view indices (N,). `scores` as in detect_boundaries."""
     prob = np.asarray(prob, float)
     n = prob.shape[0]
-    cuts = np.concatenate([[0], detect_boundaries(prob, half_window, threshold, nms_radius), [n]]).astype(int)
+    cuts = np.concatenate([[0], detect_boundaries(prob, half_window, threshold, nms_radius, scores), [n]]).astype(int)
     labels = np.empty(n, dtype=int)
     for start, end in zip(cuts[:-1], cuts[1:]):
         if end > start:
