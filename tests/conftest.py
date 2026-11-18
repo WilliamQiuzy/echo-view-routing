@@ -13,6 +13,20 @@ from echoview.model import MEAN, STD
 FIXTURES = Path(__file__).parent / "fixtures"
 
 
+@pytest.fixture(autouse=True)
+def no_download_outside_weights_tests(request, monkeypatch):
+    """A test of the default suite must pass on a machine without access to the weights repository. Any download it
+    tries fails loudly here, instead of passing on the one machine whose cache happens to hold the files."""
+    if "weights" in request.keywords:
+        return
+    import huggingface_hub
+
+    def refuse(**_kwargs):
+        raise AssertionError("this test tried to download from the Hub: give it a stand-in model, or mark it `weights`")
+
+    monkeypatch.setattr(huggingface_hub, "snapshot_download", refuse)
+
+
 @pytest.fixture(scope="session")
 def parity() -> dict:
     """Inputs and outputs of the research code's window and decoder functions (see fixtures/make_fixtures_from_research_code.py)."""

@@ -105,6 +105,7 @@ def test_a_perfect_model_scores_perfectly_on_every_system(tiny):
     assert len(run.headline(report)) == 4
 
 
-def test_the_evaluate_command_needs_the_dataset(tmp_path):
+def test_the_evaluate_command_needs_the_dataset(tmp_path, monkeypatch):
+    monkeypatch.setattr(cli, "build", lambda args, verify=True: Ensemble.from_models([BrightnessModel()], B3, device="cpu"))
     with pytest.raises(SystemExit, match="not a folder"):
         cli.main(["evaluate", "--images", str(tmp_path / "nowhere")])
