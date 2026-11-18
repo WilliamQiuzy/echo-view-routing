@@ -1,0 +1,38 @@
+name: Bug report
+description: Something does not work as the documentation says
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please do not attach recordings, frames or identifiers of restricted datasets (MIMIC-IV-Echo, EchoNet) or of patients.
+        Describe a file that cannot be read (vendor, compression, bit depth) instead of attaching it.
+  - type: textarea
+    id: command
+    attributes:
+      label: What you ran
+      description: The command or the code, as you ran it.
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: textarea
+    id: happened
+    attributes:
+      label: What happened
+      description: The full output or error message.
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Operating system, Python and PyTorch versions, GPU if any, and the output of `echoview weights`.
+    validations:
+      required: true

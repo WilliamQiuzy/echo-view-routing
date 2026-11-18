@@ -1,0 +1,72 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "echo-view-routing"
+version = "1.0.0rc1"
+description = "Echocardiography view recognition and view segmentation for video streams: a five-view window model, a change-point decoder, and the code to train and evaluate them"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+keywords = ["echocardiography", "view classification", "temporal segmentation", "medical imaging", "video"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Science/Research",
+  "Programming Language :: Python :: 3",
+  "Topic :: Scientific/Engineering :: Medical Science Apps.",
+]
+dependencies = [
+  "torch>=2.1",
+  "torchvision>=0.16",
+  "numpy>=1.23",
+  "numpy<2; platform_system == 'Darwin' and platform_machine == 'x86_64'",
+  "pillow>=9.1",
+  "pydicom>=2.3",
+  "opencv-python-headless>=4.7",
+  "safetensors>=0.4",
+  "huggingface_hub>=0.23",
+]
+
+[project.optional-dependencies]
+evaluation = ["scipy>=1.11"]
+dev = ["pytest>=8.0", "pytest-cov>=5.0", "ruff>=0.5", "scipy>=1.11"]
+
+[project.scripts]
+echoview = "echoview.cli:main"
+echoview-cache = "echoview.training.cache:main"
+echoview-train = "echoview.training.train:main"
+
+[project.urls]
+Repository = "https://github.com/WilliamQiuzy/echo-view-routing"
+Weights = "https://huggingface.co/WilliamQiu123/echo-view-routing"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+echoview = ["data/*.json.gz", "data/plans/*.npz"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q -m 'not weights and not gpu and not ev9v'"
+markers = [
+  "weights: needs the published weights (set ECHOVIEW_WEIGHTS or log in to the Hugging Face Hub)",
+  "gpu: needs a CUDA GPU",
+  "ev9v: needs the EV9V dataset on disk (set ECHOVIEW_EV9V)",
+]
+
+[tool.coverage.run]
+source = ["echoview"]
+
+[tool.ruff]
+line-length = 160
+target-version = "py310"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "RUF"]
+# E731: small lambdas are used as local helpers. B905 and RUF007: the zips are kept as they are in the code that
+# produced the published numbers; none of them relies on a silent cut.
+ignore = ["E731", "B905", "RUF007"]

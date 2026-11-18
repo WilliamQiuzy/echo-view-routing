@@ -1,0 +1,17 @@
+{
+ "description": "Stage 3, the recipe of the published C2 seeds: 1,500 updates from a stage-2 model with the stage-2 objective and input augmentation at full strength.",
+ "objective": "within_view",
+ "penalty": 0.15,
+ "updates": 1500,
+ "batch": 32,
+ "lr_enc": 1e-05,
+ "lr_new": 0.0001,
+ "warmup": 100,
+ "freeze": 0,
+ "weight_decay": 0.0001,
+ "strength": 1.0,
+ "ema": 0.998,
+ "amp": 1,
+ "compile": 1,
+ "frames": "host"
+}

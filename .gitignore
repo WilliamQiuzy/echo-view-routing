@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Weights and data never go into git: weights are on the Hugging Face Hub, datasets stay with their providers.
+/weights/
+*.pt
+*.safetensors
+*.npy
+*.npz
+/data/
+/runs/
+/cache/
+# Small definition files that are part of the package and of the tests
+!src/echoview/data/plans/*.npz
+!tests/fixtures/*.npz
+
+# Local files
+.env
+.DS_Store
+._*

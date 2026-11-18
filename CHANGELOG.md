@@ -1,0 +1,21 @@
+# Changelog
+
+Notable changes to this project. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the versions follow [Semantic Versioning](https://semver.org/).
+
+## [1.0.0rc1] - 2026-11-17
+
+The repository becomes a package. The research log that was here before is kept on the branch `research-archive`.
+
+### Added
+
+- `echoview`: inference with the published ensemble `C2_ens_v1`. Commands `selfcheck`, `classify`, `segment`, `weights` and `mimic-table`, and a Python API.
+- Weights on the Hugging Face Hub in safetensors, checked against their SHA-256 on every load.
+- `echoview evaluate`: the EV9V development evaluation. It reproduces the research code's numbers exactly.
+- `echoview-cache` and `echoview-train`: the frame cache and training stage 3.
+- Definition files that name EV9V recordings by a hash of their folder name: the development benchmark, the list of recordings and the sampling plans.
+- Parity tests against stored outputs of the research code: windows, decoder, metrics, scorecard and decoder rule.
+
+### Not yet in this release
+
+- Training stages 1 and 2, the EV9V test benchmark and the MIMIC-IV-Echo evaluations.
+- An end-to-end rehearsal of training stage 3 with this package.
