@@ -1,0 +1,13 @@
+{
+ "description": "Stage 2: continue the stage-1 model of the same seed. 3,750 updates of two groups of four neighbouring windows by the seed's plan, cross-entropy plus 0.15 times the smoothing penalty between neighbours.",
+ "loop": "plan",
+ "plan": "groups",
+ "objective": "within_view",
+ "penalty": 0.15,
+ "updates": 3750,
+ "warmup": 375,
+ "lr_enc": 1e-05,
+ "lr_new": 0.0001,
+ "weight_decay": 0.0001,
+ "grad_clip": 1.0
+}

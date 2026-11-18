@@ -20,8 +20,7 @@ recording ──► 10 frames per second, grey, 224 × 224
 |---|---|
 | Inference (`echoview classify`, `segment`, Python API) | ready, checked against the research code |
 | EV9V development evaluation (`echoview evaluate`) | ready, reproduces the research numbers exactly |
-| Training, stage 3 (`echoview-train`) | code and tests are here; the end-to-end rehearsal on a GPU is still to run |
-| Training, stages 1 and 2 | not ported yet; the stage-2 models are provided as start weights |
+| Training, stages 1 to 3 (`echoview-train`) | code and tests are here; the runs on a GPU that compare them with the published training are still to finish |
 | EV9V test benchmark and MIMIC-IV-Echo evaluation | not ported yet; the numbers below come from the research code |
 | Weights | private on the Hugging Face Hub, see [Licence](#licence-and-acknowledgements) |
 
@@ -101,7 +100,7 @@ It prints one line per system. The line of the ensemble must read `selection F1@
 
 ## Train
 
-Stage 3 is the stage that produced the published seeds. It continues a stage-2 model for 1,500 updates with input augmentation.
+The model was trained in three stages, each with its recipe in `configs/`. Stage 3 is the stage that produced the published seeds. It continues a stage-2 model for 1,500 updates with input augmentation.
 
 ```bash
 echoview-cache --images /data/EV9V/Images --out /data/ev9v_cache           # 18 GB, once
@@ -109,7 +108,7 @@ echoview-train --config configs/stage3.json --seed 0 --cache /data/ev9v_cache \
     --init /path/to/weights/training/stage2_s0.pt --out runs/C2_s0
 ```
 
-One run needs a GPU with 32 GB of memory. See [docs/TRAINING.md](docs/TRAINING.md) for the three stages and what a rerun can and cannot reproduce.
+Stage 3 needs a GPU with 32 GB of memory. See [docs/TRAINING.md](docs/TRAINING.md) for all three stages and what a rerun can and cannot reproduce.
 
 ## Repository layout
 

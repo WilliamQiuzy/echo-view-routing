@@ -4,9 +4,9 @@ The published model was trained in three stages. Every stage reads EV9V training
 
 | Stage | Starts from | Updates | Objective | Input changes | In this package |
 |---|---|---|---|---|---|
-| 1 | the EchoPrime video encoder | 3,750 × 8 windows | cross-entropy at the marked frame | a gamma of 0.9 on some fragments | not ported yet |
-| 2 | stage 1 | 3,750 × 8 windows | cross-entropy plus a smoothing penalty between neighbouring windows | as stage 1 | not ported yet; its models are provided |
-| 3 | stage 2 | 1,500 × 32 windows | as stage 2 | zoom, shift, rotation, grey maps, gain, gamma, blur, noise, borders | `echoview-train` |
+| 1 | the EchoPrime video encoder | 3,750 × 8 windows | cross-entropy at the marked frame | a gamma of 0.9 on some fragments | `configs/stage1.json` |
+| 2 | stage 1 | 3,750 × 8 windows | cross-entropy plus a smoothing penalty between neighbouring windows | as stage 1 | `configs/stage2.json`; its models are also provided |
+| 3 | stage 2 | 1,500 × 32 windows | as stage 2 | zoom, shift, rotation, grey maps, gain, gamma, blur, noise, borders | `configs/stage3.json` |
 
 Stage 3 made the published seeds. It is what makes the model usable on another vendor's recordings. On EV9V itself, stage 2 and stage 3 show no consistent difference.
 
@@ -52,6 +52,20 @@ How far reruns scatter is known from the project. The three published seeds reac
 
 ## Stages 1 and 2
 
-Their code is in the research archive of this repository (branch `research-archive`, `scripts/train_raw_video_context.py` and `scripts/train_video_within_view.py`). Their sampling plans are already here (`plans/windows_s*.npz` for stage 1, `plans/groups_s*.npz` for stage 2), so the port needs the training loops only.
+```bash
+# stage 1: from the pretrained encoder
+echoview-train --config configs/stage1.json --seed 0 --images /data/EV9V/Images \
+    --encoder /path/to/echo_prime_encoder.pt --out runs/stage1_s0
 
-The EchoPrime encoder that stage 1 starts from is distributed by its authors (github.com/echonet/EchoPrime) under their Academic Software License. It is not redistributed here.
+# stage 2: continue the stage-1 model of the same seed
+echoview-train --config configs/stage2.json --seed 0 --images /data/EV9V/Images \
+    --init runs/stage1_s0/final.pt --out runs/stage2_s0
+```
+
+- **The encoder.** Stage 1 starts from the EchoPrime video encoder, `echo_prime_encoder.pt`. Its authors distribute it (github.com/echonet/EchoPrime) under their Academic Software License. It is not redistributed here.
+- **The loop.** Update `u` reads the eight windows of row `u` of the seed's sampling plan: `plans/windows_s*.npz` for stage 1, `plans/groups_s*.npz` for stage 2. The frames are decoded from the JPEG files in colour, with the plan's gamma on some fragments. There is no other input change. For the first 375 updates only the marker stem and the head train. Then the encoder joins.
+- **Numerics.** Plain float32 with deterministic GPU kernels. One seed fixes the dropout of the network.
+- **Hardware.** Eight windows per update need about 8 GB of GPU memory. A stage took 28 minutes per seed on an L40S during the project.
+- **What a rerun reproduces.** On the machine and software of the published runs, this loop is meant to give their training log number for number. **That comparison has not finished yet.** On other hardware the numbers differ in the last digits.
+
+The code of the original runs is in the research archive of this repository (branch `research-archive`, `scripts/train_raw_video_context.py` and `scripts/train_video_within_view.py`).

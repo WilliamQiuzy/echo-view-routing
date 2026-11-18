@@ -216,7 +216,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     first.add_argument("--config", default="")
     known, _ = first.parse_known_args(argv)
     recipe = {**DEFAULTS, **(json.loads(Path(known.config).read_text()) if known.config else {})}
-    unknown = sorted(set(recipe) - set(DEFAULTS) - {"description"})
+    unknown = sorted(set(recipe) - set(DEFAULTS) - {"description", "loop"})
     if unknown:
         raise SystemExit(f"{known.config}: unknown options {unknown}")
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -248,7 +248,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--frames", choices=("gpu", "host"), help="where the frame array lives; host lets several runs share it")
     parser.add_argument("--compile", type=int, help="1: torch.compile the forward pass")
     parser.add_argument("--log-every", type=int)
-    parser.set_defaults(**{key: value for key, value in recipe.items() if key != "description"})
+    parser.set_defaults(**{key: value for key, value in recipe.items() if key not in ("description", "loop")})
     return parser.parse_args(argv)
 
 

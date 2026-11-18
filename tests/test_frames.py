@@ -131,13 +131,15 @@ def test_files_that_are_not_images_are_read_errors(tmp_path):
 
 # ------------------------------------------------------------------------------------------ video and folders
 def test_a_video_is_read_on_the_10_hz_grid(tmp_path):
-    clip = write_video(tmp_path / "clip.mp4", [4 * k for k in range(50)], fps=25.0)
+    # Neighbouring source frames are 60 grey levels apart, so a sample taken one frame off shows, whatever the codec does.
+    source = [40 + 60 * (i % 3) for i in range(50)]
+    clip = write_video(tmp_path / "clip.mp4", source, fps=25.0)
     recording = fr.read_recording(clip)
     assert recording.reader == "video, decoded by OpenCV"
     assert recording.fps == 25.0 and recording.n_source_frames == 50 and len(recording.frames) == 20
     assert recording.frames.shape[1:] == (224, 224, 3) and recording.frames.dtype == np.uint8
-    levels = [centre_level(recording, k) for k in range(20)]
-    assert all(abs(level - 4 * round(k * 2.5)) <= 3 for k, level in enumerate(levels))  # the nearest source frame
+    wanted = [source[int(np.rint(k * 25.0 / fr.HZ))] for k in range(20)]  # the nearest source frame of every 0.1 s
+    assert all(abs(centre_level(recording, k) - level) <= 20 for k, level in enumerate(wanted))
     assert np.array_equal(recording.frames[..., 0], recording.frames[..., 1])  # grey in all channels
 
 
