@@ -20,7 +20,7 @@ recording ──► 10 frames per second, grey, 224 × 224
 |---|---|
 | Inference (`echoview classify`, `segment`, Python API) | ready, checked against the research code |
 | EV9V development evaluation (`echoview evaluate`) | ready, reproduces the research numbers exactly |
-| Training, stages 1 to 3 (`echoview-train`) | code and tests are here; the runs on a GPU that compare them with the published training are still to finish |
+| Training, stages 1 to 3 (`echoview-train`) | ready; stage 3 matches the research trainer over 100 updates, stages 1 and 2 follow the published training logs over 750 updates; a full rerun of stage 3 is still to finish |
 | EV9V test benchmark and MIMIC-IV-Echo evaluation | not ported yet; the numbers below come from the research code |
 | Weights | private on the Hugging Face Hub, see [Licence](#licence-and-acknowledgements) |
 
@@ -109,7 +109,7 @@ echoview-train --config configs/stage3.json --seed 0 --cache /data/ev9v_cache --
 
 `--init stage2` downloads the stage-2 model of the seed from the weights repository and checks it.
 
-Stage 3 needs a GPU with 32 GB of memory. See [docs/TRAINING.md](docs/TRAINING.md) for all three stages and what a rerun can and cannot reproduce.
+Stage 3 needs a GPU with 32 GB of memory. On a machine that can be switched off, add `--checkpoint-every 100 --resume`: the run then continues from its last checkpoint. See [docs/TRAINING.md](docs/TRAINING.md) for all three stages and what a rerun can and cannot reproduce.
 
 ## Repository layout
 

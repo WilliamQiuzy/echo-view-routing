@@ -29,6 +29,21 @@ echoview evaluate --images /data/EV9V/Images --weights mine --unverified --out m
 - **Hardware.** One run uses 31 GB of GPU memory at batch 32 and took 14 to 18 minutes on an L40S. With `"frames": "host"` the frame cache stays in host memory; with `"gpu"` it is copied to the GPU and needs 16 GB more.
 - **Outputs.** `final.pt` holds the last weights. Every published number uses them. `ema.pt` holds their moving average, `train_log.jsonl` the loss and accuracy every 50 updates, `config.json` every option of the run.
 
+### On a machine that can be switched off
+
+A preemptible GPU can disappear in the middle of a run. Two options let stage 3 go on where it stopped.
+
+```bash
+echoview-train --config configs/stage3.json --seed 0 --cache /data/ev9v_cache --init stage2 --out runs/C2_s0 \
+    --checkpoint-every 100 --resume
+```
+
+- `--checkpoint-every 100` writes `checkpoint.pt` into the output folder every 100 updates. The number must be a multiple of `--log-every`.
+- `--resume` continues from that file when it is there. Without a checkpoint the run starts at its first update. A folder that holds the finished run is left alone. Give the same command every time the machine comes back.
+- **What a checkpoint holds.** The weights, the optimiser's state, the moving average, and the position of every random stream: the windows drawn, the input changes and dropout. The file is about 0.6 GB. It is deleted when the run finishes.
+- **How close a continued run comes.** A run that was cut and continued ends where an uncut run ends, up to the difference between two uncut runs. A test cuts a small run on the CPU and measures this: the weights differ by 2e-8 of their length, as two uncut runs do. The same test fails when any part of the checkpoint is left out.
+- **Other options are refused.** A checkpoint belongs to one recipe, seed, start file and set of plans. `--resume` with other values stops with a message that names them.
+
 ### The recipe
 
 `configs/stage3.json` holds the options of the published seeds.
@@ -44,7 +59,17 @@ A rerun draws the same windows as the published run of the same seed. On the sam
 
 How far reruns scatter is known from the project. The three published seeds reach a segment F1@50 of 0.948 to 0.958 on the selection half and 0.978 to 0.986 on the calibration half. The recipe was also repeated nine times with other sampling seeds. Taken three at a time and decoded at one fixed setting, the three-seed means lay between 0.952 and 0.960 on the selection half and between 0.980 and 0.984 on the calibration half.
 
-**This package's stage 3 has not been rehearsed end to end yet.** Its code is the research trainer with the options removed that the published recipe never used, and its parts are covered by tests. The comparison of a full rerun with the published seeds is still to run.
+**Checked against the research trainer.** This package's stage 3 is the research trainer with the options removed that the published recipe never used. On 2026-11-18 both ran 100 updates of seed 0 from the same stage-2 model on one L40S, without compilation. The research trainer ran twice, to show how far two runs of one program differ.
+
+| Compared | Largest loss difference | Accuracy at the ten logged steps | Final weights, difference as a share of their length |
+|---|---|---|---|
+| research trainer, run 1 and run 2 | 0.0006 | identical | 1.9e-5 |
+| this package and research run 1 | 0.0003 | identical | 1.9e-5 |
+| this package and research run 2 | 0.0005 | identical | 2.1e-5 |
+
+The package differs from the research trainer no more than the research trainer differs from itself. For scale: the 100 updates move the weights by 7.4e-4 of their length.
+
+**Still open.** A full rerun of the three seeds with this package, evaluated as the published seeds are, has not finished.
 
 ## Recipes of your own
 
@@ -65,7 +90,31 @@ echoview-train --config configs/stage2.json --seed 0 --images /data/EV9V/Images 
 - **The encoder.** Stage 1 starts from the EchoPrime video encoder, `echo_prime_encoder.pt`. Its authors distribute it (github.com/echonet/EchoPrime) under their Academic Software License. It is not redistributed here.
 - **The loop.** Update `u` reads the eight windows of row `u` of the seed's sampling plan: `plans/windows_s*.npz` for stage 1, `plans/groups_s*.npz` for stage 2. The frames are decoded from the JPEG files in colour, with the plan's gamma on some fragments. There is no other input change. For the first 375 updates only the marker stem and the head train. Then the encoder joins.
 - **Numerics.** Plain float32 with deterministic GPU kernels. One seed fixes the dropout of the network.
-- **Hardware.** Eight windows per update need about 8 GB of GPU memory. A stage took 28 minutes per seed on an L40S during the project.
-- **What a rerun reproduces.** On the machine and software of the published runs, this loop is meant to give their training log number for number. **That comparison has not finished yet.** On other hardware the numbers differ in the last digits.
+- **Hardware.** Eight windows per update need about 13 GB of GPU memory once the encoder trains. A stage took 28 minutes per seed on an L40S during the project.
+
+### What a rerun of stages 1 and 2 reproduces
+
+A rerun feeds the model the same pixels as the published run and follows the same schedule. It does not give the same numbers bit for bit, and two reruns on one machine differ as well: PyTorch has no deterministic GPU kernel for the backward pass of the encoder's 3-D max pooling, and says so in a warning.
+
+This was checked on 2026-11-18 on an L40S with the PyTorch, CUDA and cuDNN versions of the published runs, for seed 0.
+
+- **Inputs.** The sampling plans and the initial weights of all three seeds equal the research files. The research trainer stored a hash of every window's pixels. The frames this package decodes give the same hash for all 90,000 windows of the three stage-1 plans.
+- **The first 375 updates**, during which only the marker stem and the head train.
+
+  | Stage | Mean loss, published | Mean loss, two runs of this package | Training accuracy | Largest gradient norm |
+  |---|---|---|---|---|
+  | 1 | 1.6008545 | 1.6008544 and 1.6008540 | identical | identical to the last digit |
+  | 2 | 0.67501289 | 0.67501294 and 0.67501284 | identical | identical to the last digit |
+
+- **Updates 376 to 750**, the first in which the encoder trains.
+
+  | Stage | Mean loss, published | Mean loss, this package | Training accuracy |
+  |---|---|---|---|
+  | 1 | 0.725491 | 0.725463 | 2,201 and 2,200 of 3,000 windows right |
+  | 2 | 0.49662158 | 0.49662125 | identical |
+
+In the first 375 updates the gap to the published log is as large as the gap between two runs of this package.
+
+**Still open.** For updates 376 to 750 two runs of this package have not been compared with each other yet. That comparison was also made before the learning rates of stages 1 and 2 were corrected in their last binary digit (see the changelog), and it will be repeated with the corrected code. Whole reruns of stages 1 and 2 were not made: 750 of 3,750 updates were compared. The pixel hashes of the three stage-2 plans are still being checked.
 
 The code of the original runs is in the research archive of this repository (branch `research-archive`, `scripts/train_raw_video_context.py` and `scripts/train_video_within_view.py`).

@@ -16,7 +16,22 @@ The repository becomes a package. The research log that was here before is kept 
 - Parity tests against stored outputs of the research code: windows, decoder, metrics, scorecard and decoder rule.
 - Fixes from an independent review before the first push: a recipe file's values are checked like command-line values; a failed download always ends with advice instead of a traceback; `echoview evaluate` checks for SciPy and the weights before its long part; the frame cache file carries a checksum; the nearest-window table no longer grows with the square of the stream length; whether a system is the reference follows from the checksums alone.
 
+- `echoview-train --checkpoint-every N --resume` for stage 3: a run on a machine that can be switched off continues from its last checkpoint and ends where an uncut run ends, up to the difference between two uncut runs.
+- The decoder-setting search of `echoview evaluate` computes the decoder's scores once per half window instead of once per threshold. The scoring part is three times faster and every number is unchanged.
+
+### Checked on a GPU (L40S, 2026-11-18)
+
+- Stage 3 against the research trainer, 100 updates from the same start: the package differs from the research trainer no more than two runs of the research trainer differ.
+- Stages 1 and 2 against the published training logs of seed 0, 750 updates: the same pixels (hashes of 90,000 windows), the same accuracy up to one window in 3,000, losses equal in five to eight digits. Two runs of the loop differ by as much during warm-up.
+- `echoview evaluate` on the command line: 0.9594 and 0.9837 for the ensemble, as published.
+
+### Fixed
+
+- Stages 1 and 2 computed some learning rates with the last binary digit different from the published runs (the cosine's fraction was multiplied by pi in another order). A test now pins the rates stored in the published log.
+- The training document said a rerun of stages 1 and 2 gives the published log number for number. It does not, and cannot: one GPU kernel of the backward pass has no deterministic form. The document now gives the measured differences.
+
 ### Not yet in this release
 
 - The EV9V test benchmark and the MIMIC-IV-Echo evaluations.
-- The GPU runs that compare this package's training with the published training.
+- A full rerun of stage 3 with this package and its evaluation.
+- Checkpoints for stages 1 and 2.
