@@ -91,7 +91,7 @@ class FrameTable:
         images = Path(images)
         refs = cls.references(sequences)
         stored = Path(cache) / f"ev9v_frames_{cls.digest(refs)}.npy" if cache else None
-        if stored is not None and stored.is_file():
+        if stored is not None and cls._intact(stored):
             return cls(refs, np.load(stored))
         names = folders_by_key(images, {key for key, _, _ in refs})
         missing = next((frame_path(images, names[k], f) for k, f, _ in refs if not frame_path(images, names[k], f).is_file()), None)
@@ -109,7 +109,26 @@ class FrameTable:
             partial = stored.with_suffix(".partial.npy")
             np.save(partial, grey)
             partial.replace(stored)
+            cls._checksum_file(stored).write_text(cls._sha256(stored) + "\n")
         return cls(refs, grey)
+
+    @staticmethod
+    def _checksum_file(stored: Path) -> Path:
+        return stored.with_name(stored.name + ".sha256")
+
+    @staticmethod
+    def _sha256(path: Path) -> str:
+        digest = hashlib.sha256()
+        with path.open("rb") as handle:
+            for block in iter(lambda: handle.read(1 << 22), b""):
+                digest.update(block)
+        return digest.hexdigest()
+
+    @classmethod
+    def _intact(cls, stored: Path) -> bool:
+        """A cache file counts only with the checksum written beside it when it was made; anything else is rebuilt."""
+        note = cls._checksum_file(stored)
+        return stored.is_file() and note.is_file() and note.read_text().strip() == cls._sha256(stored)
 
     def frames(self, sequence: Sequence) -> np.ndarray:
         """The sequence as the model reads it: (samples, 224, 224, 3) uint8, grey in all three channels."""

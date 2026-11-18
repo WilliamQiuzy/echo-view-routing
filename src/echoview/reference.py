@@ -18,6 +18,13 @@ B3 = {"half_window": 7, "threshold": 0.1737918038235492, "nms_radius": 5}
 HUB_REPO = "WilliamQiu123/echo-view-routing"
 HUB_REVISION = "main"
 
+# SHA-256 of the start weights of training stage 3: the stage-2 model of every seed (`training/stage2_s<seed>.pt`).
+START_SHA256 = {
+    0: "9b144925f32fac7d725d13231a132abeb6635fa44b6fe0dbcec7f5b59d035bbc",
+    1: "c8b09ecaf286c7b66fc0eec69fdd102f98930aaa657a7604e3204c3845a8e172",
+    2: "f95fed7ba78cc0b5e2474c71a156356507b4588a4b324957fd5b53fe66ee8472",
+}
+
 # SHA-256 of every file that may serve as a seed's weights. `final.pt` is the frozen training output; `model.safetensors`
 # holds the same tensors in the safetensors format.
 WEIGHT_SHA256 = {

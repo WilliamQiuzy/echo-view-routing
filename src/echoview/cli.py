@@ -39,8 +39,8 @@ def parse_seeds(text: str) -> tuple[int, ...]:
         seeds = tuple(int(s) for s in text.split(","))
     except ValueError:
         raise SystemExit("--seeds takes numbers separated by commas, for example 0,1,2") from None
-    if not set(seeds) <= set(SEEDS):
-        raise SystemExit(f"--seeds names seeds among {', '.join(str(s) for s in SEEDS)}")
+    if not seeds or not set(seeds) <= set(SEEDS) or len(set(seeds)) != len(seeds):
+        raise SystemExit(f"--seeds names seeds among {', '.join(str(s) for s in SEEDS)}, each once")
     return seeds
 
 
@@ -53,6 +53,8 @@ def build(args: argparse.Namespace, verify: bool = True) -> Ensemble:
                           verify=verify and not args.unverified)
     except wt.WeightsError as error:
         raise SystemExit(str(error)) from None
+    except RuntimeError as error:  # PyTorch does not know the device, or cannot use it
+        raise SystemExit(f"--device {args.device}: {str(error).splitlines()[0]}") from None
     print(f"model {system.version} on {system.device}", file=sys.stderr)
     return system
 
@@ -139,7 +141,7 @@ def segment(args: argparse.Namespace) -> int:
     if args.out:
         write_csv(Path(args.out), SEGMENT_HEADER, rows)
     if args.samples:
-        sample_rows = [[i, f"{i / fr.HZ:.1f}", paths[int(source[i])].name, CLASSES[int(result.labels[i])],
+        sample_rows = [[i, f"{i / fr.HZ:.1f}", str(paths[int(source[i])]), CLASSES[int(result.labels[i])],
                         *[f"{p:.5f}" for p in result.probabilities[i]]] for i in range(len(stream))]
         write_csv(Path(args.samples), ["sample", "time_s", "file", "view", *[f"p_{c}" for c in CLASSES]], sample_rows)
     return 0
@@ -163,19 +165,23 @@ def show_weights(args: argparse.Namespace) -> int:
 # ------------------------------------------------------------------------------------------------ evaluate
 def evaluate(args: argparse.Namespace) -> int:
     """The EV9V development evaluation: each seed, the ensemble by the rule and the ensemble as published."""
+    import importlib.util
+
     import torch
 
     from .evaluation import benchmark, ev9v, run
 
+    if importlib.util.find_spec("scipy") is None:  # the stream scorecard needs it; say so before the long part
+        raise SystemExit('the evaluation needs SciPy: pip install "echo-view-routing[evaluation]" (or pip install scipy)')
     # Plain float32 arithmetic on the GPU, as in the published numbers: TF32 changes logits in the fourth decimal.
     torch.backends.cuda.matmul.allow_tf32 = False
     torch.backends.cudnn.allow_tf32 = False
     halves = benchmark.load()
+    system = build(args)  # before the frames are decoded: a problem with the weights shows at once
     try:
         tables = {half: ev9v.FrameTable.build(halves[half], args.images, args.workers, args.cache or None) for half in benchmark.HALVES}
     except ev9v.DataError as error:
         raise SystemExit(str(error)) from None
-    system = build(args)
     report = run.evaluate_reference(system, halves, tables)
     for line in run.headline(report):
         print(line)

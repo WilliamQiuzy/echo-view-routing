@@ -17,15 +17,15 @@ Stage 3 made the published seeds. It is what makes the model usable on another v
 echoview-cache --images /data/EV9V/Images --out /data/ev9v_cache
 
 # 2. one seed: 1,500 updates from the stage-2 model of the same seed
-echoview-train --config configs/stage3.json --seed 0 --cache /data/ev9v_cache \
-    --init <weights>/training/stage2_s0.pt --out runs/C2_s0
+echoview-train --config configs/stage3.json --seed 0 --cache /data/ev9v_cache --init stage2 --out runs/C2_s0
 
 # 3. evaluate your three seeds as the published ones are evaluated
+pip install -e ".[evaluation]"
 mkdir -p mine/C2_s0 && cp runs/C2_s0/final.pt mine/C2_s0/      # and the same for seeds 1 and 2
 echoview evaluate --images /data/EV9V/Images --weights mine --unverified --out mine/report.json
 ```
 
-- **Start weights.** `training/stage2_s0.pt`, `stage2_s1.pt` and `stage2_s2.pt` are in the weights repository on the Hugging Face Hub.
+- **Start weights.** `--init stage2` takes the published stage-2 model of the seed: `training/stage2_s<seed>.pt` in the weights repository on the Hugging Face Hub. It is downloaded and checked against its SHA-256. `--init <file>` starts from a checkpoint of your own, for example a stage-2 model you trained yourself.
 - **Hardware.** One run uses 31 GB of GPU memory at batch 32 and took 14 to 18 minutes on an L40S. With `"frames": "host"` the frame cache stays in host memory; with `"gpu"` it is copied to the GPU and needs 16 GB more.
 - **Outputs.** `final.pt` holds the last weights. Every published number uses them. `ema.pt` holds their moving average, `train_log.jsonl` the loss and accuracy every 50 updates, `config.json` every option of the run.
 
@@ -40,7 +40,7 @@ echoview evaluate --images /data/EV9V/Images --weights mine --unverified --out m
 
 ### What a rerun reproduces
 
-A rerun draws the same windows and the same random input changes as the published run of the same seed. It does not give the same weights bit for bit: GPU kernels and compiled code differ between machines and between runs.
+A rerun draws the same windows as the published run of the same seed. On the same GPU model it also draws the same random input changes; on another GPU the random numbers can differ. It does not give the same weights bit for bit: GPU kernels and compiled code differ between machines and between runs.
 
 How far reruns scatter is known from the project. The three published seeds reach a segment F1@50 of 0.948 to 0.958 on the selection half and 0.978 to 0.986 on the calibration half. The recipe was also repeated nine times with other sampling seeds. Taken three at a time and decoded at one fixed setting, the three-seed means lay between 0.952 and 0.960 on the selection half and between 0.980 and 0.984 on the calibration half.
 

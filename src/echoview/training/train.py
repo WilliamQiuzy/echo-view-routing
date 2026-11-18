@@ -8,8 +8,9 @@ smoothing penalty between the four neighbouring windows of a group. Learning rat
 cosine to zero. The run writes config.json, train_log.jsonl, final.pt (the last weights, the ones every published
 number uses) and ema.pt (their moving average). A CUDA GPU is needed; the reference recipe uses 31 GB at batch 32.
 
-Only EV9V training recordings are read. A run is reproducible in what it samples (the windows and the random input
-changes follow from the seed) but not bit for bit: GPU kernels and compiled code differ between machines.
+Only EV9V training recordings are read. A run is reproducible in what it samples: the windows follow from the seed,
+and so do the random input changes on the same GPU model. It is not reproducible bit for bit: GPU kernels and compiled
+code differ between machines and between runs.
 """
 from __future__ import annotations
 
@@ -17,6 +18,7 @@ import argparse
 import json
 import math
 import queue
+import sys
 import threading
 import time
 from dataclasses import asdict
@@ -27,8 +29,9 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 
+from .. import weights
 from ..model import EMBED_DIM, WindowModel, marker_planes, read_state
-from . import augment, plans
+from . import augment, plans, recipe
 from .cache import Cache
 from .fast import Average, Direct
 
@@ -76,14 +79,30 @@ def initial_model(encoder: str | Path | None, seed: int) -> WindowModel:
 
 
 def build_model(init: str | Path, encoder: str | Path | None, seed: int) -> WindowModel:
-    """`init` is a checkpoint of the whole window model, or the word `encoder` to start from the pretrained encoder."""
+    """`init` is a checkpoint of the whole window model, the word `stage2` (the published stage-2 model of the seed,
+    downloaded and checked) or the word `encoder` to start from the pretrained encoder."""
     if str(init) == "encoder":
-        if encoder is None:
+        if not encoder:
             raise SystemExit("--init encoder needs --encoder, the file with the pretrained encoder's state")
         return initial_model(encoder, seed)
+    try:
+        start = weights.start_weights(seed) if str(init) == "stage2" else init
+    except weights.WeightsError as error:
+        raise SystemExit(str(error)) from None
     model = initial_model(None, seed)
-    model.load_state_dict(read_state(init), strict=True)
+    model.load_state_dict(read_state(start), strict=True)
     return model
+
+
+def check_start(args: argparse.Namespace) -> None:
+    """Mistakes that would otherwise show only after the frame cache has been loaded."""
+    if args.objective in GROUPED and args.batch % plans.GROUP:
+        raise SystemExit(f"--batch {args.batch}: the within_view objective needs whole groups of {plans.GROUP} windows")
+    if str(args.init) == "encoder":
+        if not args.encoder or not Path(args.encoder).is_file():
+            raise SystemExit("--init encoder needs --encoder, the file with the pretrained encoder's state")
+    elif str(args.init) != "stage2" and not Path(args.init).is_file():
+        raise SystemExit(f"{args.init}: no such start file (a checkpoint of the window model, or one of the words stage2 and encoder)")
 
 
 class Feeder(threading.Thread):
@@ -137,12 +156,14 @@ def run_config(args: argparse.Namespace, strength: augment.Strength, pool) -> di
 
 def train(args: argparse.Namespace) -> Path:
     """Runs the updates and returns the folder with the results."""
+    check_start(args)
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
     torch.backends.cuda.matmul.allow_tf32 = True
     torch.backends.cudnn.allow_tf32 = True
     torch.backends.cudnn.benchmark = True
-    device = torch.device("cuda")
+    device = torch.device(args.device)
+    on_gpu = device.type == "cuda"  # the CPU runs a few updates for a look or a test, without autocast and fused steps
     cache = Cache(args.cache)
     grouped = args.objective in GROUPED
     args.plans = [Path(path) for path in args.plans] if args.plans else packaged_plans(args.objective)
@@ -152,10 +173,11 @@ def train(args: argparse.Namespace) -> Path:
     (out / "config.json").write_text(json.dumps(run_config(args, strength, pool), indent=1) + "\n")
     frames = torch.from_numpy(np.ascontiguousarray(cache.frames[:pool.train_end])).to(device) if args.frames == "gpu" else None
     torch.manual_seed(args.seed)
-    torch.cuda.manual_seed_all(args.seed)
+    if on_gpu:
+        torch.cuda.manual_seed_all(args.seed)
     model = build_model(args.init, args.encoder, args.seed).to(device).train()
     optimiser = torch.optim.AdamW([{"params": list(model.encoder.parameters()), "lr": 0.0}, {"params": model.new_parameters(), "lr": 0.0}],
-                                  betas=(0.9, 0.999), eps=1e-8, weight_decay=args.weight_decay, fused=True)
+                                  betas=(0.9, 0.999), eps=1e-8, weight_decay=args.weight_decay, fused=on_gpu)
     forward = torch.compile(Direct(model)) if args.compile else Direct(model)
     rng = np.random.default_rng([SAMPLING_STREAM, args.seed])
     generator = torch.Generator(device).manual_seed(SAMPLING_STREAM + args.seed)
@@ -182,7 +204,7 @@ def train(args: argparse.Namespace) -> Path:
                 source = frames[torch.from_numpy(rows).to(device)] if source is None else source.to(device, non_blocking=True)
                 rgb = augment.augment(source, torch.from_numpy(fragment).to(device), strength, generator, plans.GROUP if grouped else 1)
             labels = torch.from_numpy(target).to(device)
-            with torch.autocast("cuda", dtype=torch.bfloat16, enabled=bool(args.amp)):
+            with torch.autocast(device.type, dtype=torch.bfloat16, enabled=bool(args.amp) and on_gpu):
                 logits = forward(rgb, planes)
             loss = F.cross_entropy(logits.float(), labels, label_smoothing=args.label_smoothing)
             if grouped:
@@ -199,7 +221,8 @@ def train(args: argparse.Namespace) -> Path:
                 now = time.time()
                 record = {"update": update + 1, "loss": running / args.log_every, "accuracy": correct / (args.log_every * args.batch),
                           "windows_per_s": args.log_every * args.batch / (now - last), "lr_enc": optimiser.param_groups[0]["lr"],
-                          "lr_new": optimiser.param_groups[1]["lr"], "gpu_gb": torch.cuda.max_memory_allocated() / 1e9, "elapsed_s": now - began}
+                          "lr_new": optimiser.param_groups[1]["lr"], "gpu_gb": torch.cuda.max_memory_allocated() / 1e9 if on_gpu else 0.0,
+                          "elapsed_s": now - began}
                 log.write(json.dumps(record) + "\n")
                 log.flush()
                 print(json.dumps({k: (float(f"{v:.4g}") if isinstance(v, float) else v) for k, v in record.items()}), flush=True)
@@ -211,20 +234,19 @@ def train(args: argparse.Namespace) -> Path:
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
-    """Options from a recipe file (--config) with the command line on top."""
+    """Options from a recipe file (--config) with the command line on top; both are checked in the same way."""
+    argv = sys.argv[1:] if argv is None else list(argv)
     first = argparse.ArgumentParser(add_help=False)
     first.add_argument("--config", default="")
     known, _ = first.parse_known_args(argv)
-    recipe = {**DEFAULTS, **(json.loads(Path(known.config).read_text()) if known.config else {})}
-    unknown = sorted(set(recipe) - set(DEFAULTS) - {"description", "loop"})
-    if unknown:
-        raise SystemExit(f"{known.config}: unknown options {unknown}")
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--config", default="", help="a recipe file (JSON) with any of the options below; the command line wins")
     parser.add_argument("--cache", required=True, help="the frame cache folder (python -m echoview.training.cache)")
     parser.add_argument("--plans", nargs="+", default=None, help="plan files of your own (default: the plans that ship with the package)")
     parser.add_argument("--out", required=True, help="folder for the results")
-    parser.add_argument("--init", required=True, help="a checkpoint of the window model, or the word `encoder`")
+    parser.add_argument("--init", required=True,
+                        help="a checkpoint of the window model; `stage2` for the published stage-2 model of the seed; or `encoder`")
+    parser.add_argument("--device", default="cuda", help="cuda; cpu runs a few updates for a look, without autocast")
     parser.add_argument("--encoder", default=None, help="with --init encoder: the pretrained encoder's state")
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--updates", type=int)
@@ -248,14 +270,14 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--frames", choices=("gpu", "host"), help="where the frame array lives; host lets several runs share it")
     parser.add_argument("--compile", type=int, help="1: torch.compile the forward pass")
     parser.add_argument("--log-every", type=int)
-    parser.set_defaults(**{key: value for key, value in recipe.items() if key not in ("description", "loop")})
-    return parser.parse_args(argv)
+    parser.set_defaults(**DEFAULTS)
+    return parser.parse_args([*recipe.arguments(known.config, set(DEFAULTS)), *argv])
 
 
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
-    if not torch.cuda.is_available():
-        raise SystemExit("training needs a CUDA GPU")
+    if args.device.startswith("cuda") and not torch.cuda.is_available():
+        raise SystemExit("training needs a CUDA GPU (--device cpu runs, but only for a look at a few updates)")
     out = train(args)
     print(f"wrote {out / 'final.pt'}")
     return 0

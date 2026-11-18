@@ -38,5 +38,13 @@ def window_plan(n_samples: int) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
 
 
 def nearest_centre(n_samples: int, centres: np.ndarray) -> np.ndarray:
-    """For every sample, the index of the window whose centre is nearest (the earlier one on a tie)."""
-    return np.abs(np.arange(n_samples)[:, None] - np.asarray(centres)[None, :]).argmin(1)
+    """For every sample, the index of the window whose centre is nearest (the earlier one on a tie).
+
+    `centres` must rise, as window_centres gives them. A sample belongs to the first centre whose midpoint to the next
+    centre is not before it, which is the nearest centre without a table of all distances.
+    """
+    centres = np.asarray(centres)
+    if centres.size == 0:
+        raise ValueError("no window centre to assign samples to")
+    midpoints = (centres[:-1] + centres[1:]) / 2.0
+    return np.searchsorted(midpoints, np.arange(n_samples), side="left")

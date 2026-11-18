@@ -20,6 +20,7 @@ os.environ.setdefault("CUBLAS_WORKSPACE_CONFIG", ":4096:8")  # deterministic cuB
 
 import argparse
 import json
+import sys
 import time
 from importlib import resources
 from pathlib import Path
@@ -31,6 +32,7 @@ from torch.utils.data import DataLoader, Dataset
 
 from ..evaluation.ev9v import DataError, folders_by_key, load_frame
 from ..model import N_SLOTS, WindowModel, marker_planes, normalise, read_state
+from . import recipe
 from .train import initial_model, lr_factor
 
 GROUP = 4  # neighbouring windows in one group of the within_view objective
@@ -221,14 +223,11 @@ def train(args: argparse.Namespace) -> Path:
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
-    """Options from a recipe file (--config) with the command line on top."""
+    """Options from a recipe file (--config) with the command line on top; both are checked in the same way."""
+    argv = sys.argv[1:] if argv is None else list(argv)
     first = argparse.ArgumentParser(add_help=False)
     first.add_argument("--config", default="")
     known, _ = first.parse_known_args(argv)
-    recipe = {**DEFAULTS, **(json.loads(Path(known.config).read_text()) if known.config else {})}
-    unknown = sorted(set(recipe) - set(DEFAULTS) - {"description", "loop"})
-    if unknown:
-        raise SystemExit(f"{known.config}: unknown options {unknown}")
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--config", default="", help="a recipe file (JSON); the command line wins")
     parser.add_argument("--images", required=True, help="the Images folder of EV9V")
@@ -250,8 +249,8 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--workers", type=int, help="processes that decode frames")
     parser.add_argument("--stop-after", type=int, default=0, help="stop after this many updates while the schedule still spans --updates (checks)")
     parser.add_argument("--device", default="cuda")
-    parser.set_defaults(**{key: value for key, value in recipe.items() if key not in ("description", "loop")})
-    return parser.parse_args(argv)
+    parser.set_defaults(**DEFAULTS)
+    return parser.parse_args([*recipe.arguments(known.config, set(DEFAULTS)), *argv])
 
 
 def main(argv: list[str] | None = None) -> int:

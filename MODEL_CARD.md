@@ -55,7 +55,7 @@ The code checks every weight file against its SHA-256 before it calls the result
 
 - **Data.** The training split of the public EV9V dataset only: 3,364 recordings from one hospital, made on Philips machines.
 - **Three stages.** The encoder started from the released EchoPrime video encoder. Stage 1 trained the window model on EV9V with cross-entropy. Stage 2 continued with an added smoothing penalty between neighbouring windows (the truncated log-probability smoothing of MS-TCN, weight 0.15). Stage 3 continued for 1,500 updates with the same objective and strong input augmentation: zoom, shift, rotation, grey-level maps, gain, blur, noise and borders. Stage 3 is what makes the model usable on another vendor's recordings.
-- **No MIMIC training.** No MIMIC-IV-Echo recording, labelled or not, was used to train the network. MIMIC recordings of 372 patients were used, with another classifier's labels, to choose between training recipes.
+- **No MIMIC training.** No MIMIC-IV-Echo recording, labelled or not, was used to train the network. MIMIC recordings were used, with another classifier's labels, for two choices: those of 372 patients to choose between training recipes, and those of 866 further patients when the decision was made to run the three seeds as one ensemble.
 
 ## Results
 
@@ -74,7 +74,7 @@ Segment F1 at 50% overlap counts a predicted segment as right when it overlaps a
 How to read these numbers:
 
 - **The MIMIC rows are agreement between two models, not accuracy.** MIMIC-IV-Echo has no reader's view labels. The reference there is the output of another view classifier, which has no A5C and no SC4C class. When an A5C answer is counted as A4C, the stream F1 is 0.935 (0.925 to 0.943).
-- **The MIMIC patients of these two rows played no part in any choice.** They were read once, after the system and its decoder were fixed.
+- **The MIMIC patients of these two rows played no part in forming this system.** The system and its decoder were fixed before these patients were read, once. A larger ensemble of six models was read on the same patients as a second system and scored 0.009 higher on streams. The project kept the three-seed ensemble.
 - **The EV9V test benchmark is not untouched.** Earlier rounds of the project were evaluated on it.
 - **The augmentation of stage 3 is what the MIMIC agreement rests on.** On 8,033 recordings of 866 other MIMIC patients, the stage-2 model agreed with the other classifier on 84.7% and single stage-3 seeds on 94.6%. On the EV9V test benchmark the two show no consistent difference.
 - **What this code reproduces.** `echoview evaluate` reproduces the development row exactly. On 2026-11-17 it was run beside the research code on the same weights: the logits differed by less than 6e-6 and every metric was identical. The test-benchmark and MIMIC rows were produced by the research code and are not yet part of this package.

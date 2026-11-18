@@ -68,8 +68,9 @@ class Ensemble:
     """Window models on one device whose probabilities are averaged.
 
     `Ensemble()` is the reference system: seeds 0, 1 and 2 of the published weights with the published decoder
-    setting. `seeds` may name fewer (faster, and no longer the reference system). `Ensemble.from_models` wraps window
-    models of your own, with a decoder setting of your own.
+    setting. `seeds` may name fewer (faster, and no longer the reference system). Whether a system is the reference
+    follows from the checksums of its weight files alone; `verify=False` only allows other files to be loaded.
+    `Ensemble.from_models` wraps window models of your own, with a decoder setting of your own.
     """
 
     def __init__(self, weights_dir: str | Path | None = None, seeds: tuple = SEEDS, device: str = "auto", batch: int = 0,
@@ -79,11 +80,11 @@ class Ensemble:
             raise ValueError(f"name at least one seed among {SEEDS}, each once")
         self.weights_dir = weights.resolve(weights_dir, self.seeds)
         files = [weights.seed_file(self.weights_dir, seed) for seed in self.seeds]
-        self.published = all(weights.is_published(path, seed) for path, seed in zip(files, self.seeds)) if verify else False
+        self.published = all(weights.is_published(path, seed) for path, seed in zip(files, self.seeds))
         if verify and not self.published:
             raise weights.WeightsError(
                 f"a weight file in {self.weights_dir} is not a published file of this release (checksum differs). "
-                "Download the weights again, or pass verify=False to run files of your own."
+                "Download the weights again. To run files of your own, pass --unverified on the command line or verify=False in Python."
             )
         self.device = pick_device(device)
         self.batch = batch or (8 if self.device.type == "cuda" else 4)
@@ -101,6 +102,8 @@ class Ensemble:
         self.batch = batch or (8 if self.device.type == "cuda" else 4)
         self.models = [model.eval().to(self.device) for model in models]
         self.b3 = {key: b3[key] for key in ("half_window", "threshold", "nms_radius")}
+        if int(self.b3["half_window"]) < 1 or int(self.b3["nms_radius"]) < 0 or not np.isfinite(float(self.b3["threshold"])):
+            raise ValueError("a decoder setting needs half_window of 1 or more, nms_radius of 0 or more and a finite threshold")
         return self
 
     @property

@@ -23,19 +23,23 @@ SAMPLES_PER_CLIP = 30  # the first 3 s of every clip, so that the check also fin
 BOUNDARY_TOLERANCE_S = 0.2
 
 
-def clips_folder(given: str, weights_dir: Path | None) -> Path:
-    """--clips when given, else `examples/` beside the weights, else a download from the Hub."""
+def clips_folder(given: str, weights_dir: Path | None, writing: bool = False) -> Path:
+    """--clips when given, else `examples/` beside the weights, else a download from the Hub. The stored results must
+    be there, unless this run writes them."""
     try:
         folder = Path(given) if given else wt.examples_folder(weights_dir)
     except wt.WeightsError as error:
         raise SystemExit(str(error)) from None
-    if not (folder / "expected.json").is_file():
+    if not writing and not (folder / "expected.json").is_file():
         raise SystemExit(f"{folder} holds no sample clips: expected.json is missing")
     return folder
 
 
 def sample_clips(folder: Path) -> list[Path]:
-    return sorted(p for p in folder.glob("*.mp4") if not p.name.startswith("."))
+    clips = sorted(p for p in folder.glob("*.mp4") if not p.name.startswith("."))
+    if not clips:
+        raise SystemExit(f"{folder} holds no sample clip (*.mp4)")
+    return clips
 
 
 def run_samples(system: Ensemble, folder: Path) -> dict:
@@ -85,7 +89,7 @@ def run(args: argparse.Namespace) -> int:
     from .cli import build
 
     system = build(args, verify=False)
-    folder = clips_folder(args.clips, system.weights_dir)
+    folder = clips_folder(args.clips, system.weights_dir, writing=args.write_expected)
     problems = []
     for name, ok in wt.verify(system.weights_dir, system.seeds).items():
         print(f"{'ok  ' if ok else 'FAIL'} checksum {name}")

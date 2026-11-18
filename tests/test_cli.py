@@ -68,7 +68,7 @@ def test_segment_joins_the_inputs_in_the_given_order(tmp_path):
     assert [(r["start_s"], r["end_s"], r["view"]) for r in rows_of(pieces)] == [("0.0", "4.0", "SC4C"), ("4.0", "8.0", "PSAX")]
     sample_rows = rows_of(samples)
     assert len(sample_rows) == 80
-    assert sample_rows[39]["file"] == "a" and sample_rows[40]["file"] == "b" and sample_rows[40]["time_s"] == "4.0"
+    assert sample_rows[39]["file"] == str(a) and sample_rows[40]["file"] == str(b) and sample_rows[40]["time_s"] == "4.0"
 
 
 def test_segment_builds_no_stream_when_one_input_cannot_be_read(tmp_path):

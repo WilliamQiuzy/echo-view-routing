@@ -104,9 +104,10 @@ The model was trained in three stages, each with its recipe in `configs/`. Stage
 
 ```bash
 echoview-cache --images /data/EV9V/Images --out /data/ev9v_cache           # 18 GB, once
-echoview-train --config configs/stage3.json --seed 0 --cache /data/ev9v_cache \
-    --init /path/to/weights/training/stage2_s0.pt --out runs/C2_s0
+echoview-train --config configs/stage3.json --seed 0 --cache /data/ev9v_cache --init stage2 --out runs/C2_s0
 ```
+
+`--init stage2` downloads the stage-2 model of the seed from the weights repository and checks it.
 
 Stage 3 needs a GPU with 32 GB of memory. See [docs/TRAINING.md](docs/TRAINING.md) for all three stages and what a rerun can and cannot reproduce.
 

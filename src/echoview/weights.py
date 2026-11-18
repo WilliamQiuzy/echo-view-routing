@@ -14,11 +14,12 @@ import hashlib
 import os
 from pathlib import Path
 
-from .reference import HUB_REPO, HUB_REVISION, SEEDS, WEIGHT_SHA256
+from .reference import HUB_REPO, HUB_REVISION, SEEDS, START_SHA256, WEIGHT_SHA256
 
 ENVIRONMENT_VARIABLE = "ECHOVIEW_WEIGHTS"
 FILE_NAMES = ("model.safetensors", "final.pt")  # in the order of preference
 EXAMPLES = "examples"
+TRAINING = "training"
 
 
 class WeightsError(RuntimeError):
@@ -69,10 +70,11 @@ def _snapshot(patterns: list[str], repo: str, revision: str) -> Path:
         raise WeightsError("downloading from the Hub needs the package huggingface_hub: pip install huggingface_hub") from error
     try:
         return Path(snapshot_download(repo_id=repo, revision=revision, allow_patterns=patterns))
-    except HfHubHTTPError as error:
+    except (HfHubHTTPError, OSError, ValueError) as error:  # no access, no network, or offline without a cached copy
         raise WeightsError(
-            f"{', '.join(patterns)} could not be downloaded from {repo}: {type(error).__name__}. The repository may be private: "
-            f"log in with `hf auth login`, or point {ENVIRONMENT_VARIABLE} at a folder that holds the weights."
+            f"{', '.join(patterns)} could not be downloaded from {repo}: {type(error).__name__}. The repository may be private "
+            f"(log in with `hf auth login`), or this machine cannot reach the Hub. Or point {ENVIRONMENT_VARIABLE} at a folder "
+            "that holds the weights."
         ) from error
 
 
@@ -86,6 +88,18 @@ def examples_folder(weights_dir: str | Path | None = None, repo: str = HUB_REPO,
     if weights_dir is not None and (Path(weights_dir) / EXAMPLES / "expected.json").is_file():
         return Path(weights_dir) / EXAMPLES
     return _snapshot([f"{EXAMPLES}/*"], repo, revision) / EXAMPLES
+
+
+def start_weights(seed: int, weights_dir: str | Path | None = None, repo: str = HUB_REPO, revision: str = HUB_REVISION) -> Path:
+    """The stage-2 model of one seed, where training stage 3 starts: `training/stage2_s<seed>.pt` beside the weights,
+    else a download from the Hub. The file must be the published one."""
+    name = f"{TRAINING}/stage2_s{int(seed)}.pt"
+    local = Path(weights_dir) / name if weights_dir is not None else None
+    path = local if local is not None and local.is_file() else _snapshot([name], repo, revision) / name
+    expected = START_SHA256.get(int(seed), "")
+    if not path.is_file() or not expected or sha256(path) != expected:
+        raise WeightsError(f"{path} is not the published {name}: it is missing or its checksum differs")
+    return path
 
 
 def resolve(folder: str | Path | None = None, seeds: tuple[int, ...] = SEEDS) -> Path:
