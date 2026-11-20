@@ -1,6 +1,6 @@
 # The "uncertain" output
 
-**Status: the study has not run yet, and no rule is released.** Sections 1 to 6 are the plan. They were written, reviewed and committed before any result of the study existed. Sections 7 and 8 will hold the results, in the order they are produced.
+**Status: steps 1 and 2 of the study have run (section 7). Step 3 has not run yet, and no rule is released.** Sections 1 to 6 are the plan. They were written, reviewed and committed before any result of the study existed. Sections 7 and 8 hold the results, in the order they are produced.
 
 Words used here: a **piece** is a run of samples of the reference that come from one recording. A **segment** is a run of samples to which the system gives one view. A **cut** is a sample whose view, as the system gives it, differs from the view of the sample before it.
 
@@ -113,7 +113,40 @@ The report has two parts, one for each kind of output, by kind of sequence: sing
 
 ## 7. Step 1 and step 2: the choice on the calibration half
 
-Not run yet. This section is written when the first command has run.
+Run on 2026-11-20 with the code of commit `5c85d02`, on the window logits of the published ensemble for the 508 sequences of the calibration half. The output of the command is in this repository, unchanged: [`uncertain/choice.json`](uncertain/choice.json), SHA-256 `61cb9e90f857a63ddcc9df3f85ea97bca76f376a39338eb5ff81144325db6484`. It holds the counts of all 300 settings. The selection half was not read.
+
+**Step 1 gives `k = 3`.** The multi streams and the examination-order streams of the calibration half have 490 view changes. 484 of them are matched with a cut.
+
+| `k` | 2 | 3 | 4 |
+|---|---|---|---|
+| Matched changes at most `k` samples from their cut | 86.8% | 96.1% | 99.0% |
+
+The band is therefore the 0.3 s before every cut and the 0.3 s from the cut on. Section 6 expected this value.
+
+**Step 2 gives a candidate, and the candidate meets the bar.**
+
+| Setting | `f_low` | `f_high` | `m` | Seeds | `D_wrong` | `D_right` | `S` | Uncertain samples, of 48,539 |
+|---|---|---|---|---|---|---|---|---|
+| Candidate | 2 | 1.25 | 0.1 | off | 10 pieces from 6 recordings | 7 | 8.6 | 4,046 (8.3%) |
+| Band alone | 1 | 1 | 0 | off | 0 | 0 | 0 | 3,508 (7.2%) |
+
+- **The bar.** `S` is above 0, and the 10 wrong pieces come from 6 recordings. The bar asks for 4 pieces from 3 recordings. The candidate goes on to step 3.
+- **What it had to work with.** Beyond the band, the published system reads 19 pieces wrong at the middle and 1,355 right. The candidate declines 10 of the 19 and 7 of the 1,355.
+- **Ties.** `f_low = 3` gives the same counts as `f_low = 2`, and the earlier setting was taken. Six more settings reach 8.6, with 11 wrong and 12 right pieces. They mark more samples.
+- **Which test does the work.** The lower threshold alone (`f_low = 2`) declines 8 wrong pieces and 1 right one, which gives 7.8. The margin alone reaches 5.8 at most (`m = 0.5`, 10 wrong and 21 right). The seeds test alone declines 1 wrong piece and 4 right ones. A higher threshold alone scores below 0 from `f_high = 1.5` on, and at `f_high = 2` it declines 3 wrong pieces and 78 right ones. In the candidate, the higher threshold and the margin add 2 wrong pieces and 6 right ones to what the lower threshold declines.
+- **The other settings.** 177 of the 300 have `S` above 0.
+
+**The candidate on the calibration half.** These numbers come from the half on which the setting was chosen. They describe the choice and say little about how the rule does on other data.
+
+| All 508 sequences | Samples that keep a view | Wrong among them |
+|---|---|---|
+| Published output | 100% | 3.38% |
+| Band alone | 92.8% | 1.85% |
+| Candidate | 91.7% | 1.18% |
+| Low confidence, as many samples declined as by the candidate | 91.7% | 0.83% |
+
+- **The low-confidence reference is ahead here.** Declining the samples with the smallest largest-probability leaves fewer wrong samples than the candidate does at the same coverage. The same holds against the band alone (0.95% against 1.85%). Step 3 gives this comparison on the selection half with its interval. It is not part of the decision of section 4, and section 8 reports it whatever it shows.
+- **Pieces.** Read at the middle sample, 98.4% of the 1,423 pieces are right in the published output and 99.3% of those the candidate leaves labelled. 45 pieces have no labelled sample left, against 35 with the band alone.
 
 ## 8. Step 3: the selection half
 
