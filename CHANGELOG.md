@@ -2,7 +2,7 @@
 
 Notable changes to this project. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the versions follow [Semantic Versioning](https://semver.org/).
 
-## [1.0.0rc1] - 2026-11-17
+## [1.0.0] - 2026-11-20
 
 The repository becomes a package.
 

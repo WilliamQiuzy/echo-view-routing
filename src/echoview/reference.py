@@ -13,8 +13,7 @@ SEEDS = (0, 1, 2)
 # inside which a weaker peak is dropped.
 B3 = {"half_window": 7, "threshold": 0.1737918038235492, "nms_radius": 5}
 
-# Where the weights are published. The repository is private while the licence question of the encoder's
-# initialisation is open (see MODEL_CARD.md); a download needs a Hugging Face token with access to it.
+# Where the weights are published. MODEL_CARD.md says under which licence.
 HUB_REPO = "WilliamQiu123/echo-view-routing"
 HUB_REVISION = "main"
 
