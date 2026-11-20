@@ -145,6 +145,10 @@ def evaluate(preds: Mapping[str, np.ndarray], sequences: tuple[Sequence, ...], h
              tolerance_s: float = BOUNDARY_TOLERANCE_S, classes: int = CLASSES) -> dict:
     """All development metrics of one system on one half; `preds` maps a sequence id to its decoded sample labels."""
     natives, pairs, multi = (of_kind(sequences, kind) for kind in ("native", "pairs", "multi"))
+    for sequence in (*natives, *pairs, *multi):
+        labels = np.asarray(preds[sequence.id])
+        if labels.size and (labels.min() < 0 or labels.max() >= classes):
+            raise ValueError("every sample needs one of the views; labels with uncertain samples go to evaluation/selective.py")
     m, p = _pooled(multi, preds, tolerance_s * hz), _pooled(pairs, preds, tolerance_s * hz)
     return {
         **native_summary(natives, preds, hz, classes),

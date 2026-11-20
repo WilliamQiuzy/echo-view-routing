@@ -72,6 +72,8 @@ def stream_counts(truth: np.ndarray, piece: np.ndarray, pred: np.ndarray, classe
     """Counts of one stream; summing the dictionaries of many streams gives the pooled numbers."""
     truth, piece, pred = np.asarray(truth, int), np.asarray(piece, int), np.asarray(pred, int)
     n = len(truth)
+    if pred.size and (pred.min() < 0 or pred.max() >= classes):
+        raise ValueError("every sample needs one of the views; labels with uncertain samples go to evaluation/selective.py")
     piece_ok, segment_ok, piece_mid, segment_mid, pieces, segments = _midpoint_tables(truth, piece, pred, classes)
     wrong = pred != truth
     split = {"edge": int((wrong & piece_ok & segment_ok).sum()), "spurious": int((wrong & piece_ok & ~segment_ok).sum()),
