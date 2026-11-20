@@ -2,6 +2,13 @@
 
 Notable changes to this project. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the versions follow [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Checked on a GPU (L40S, 2026-11-20)
+
+- A full rerun of stage 3: the three seeds trained again with this package come out within 0.004 of the published seeds on both development halves, and their ensemble, decoded with the published setting, within 0.003. The rule's own choice of the decoder setting did not repeat for the retrained ensemble; `docs/TRAINING.md` gives the numbers and what follows from them.
+- The test that asserts the published development numbers on the real dataset and the published weights passes.
+
 ## [1.1.1] - 2026-11-20
 
 ### Security

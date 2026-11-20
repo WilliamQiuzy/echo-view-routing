@@ -70,7 +70,18 @@ How far reruns scatter is known from the project. The three published seeds reac
 
 The package differs from the research trainer no more than the research trainer differs from itself. For scale: the 100 updates move the weights by 7.4e-4 of their length.
 
-**Still open.** A full rerun of the three seeds with this package, evaluated as the published seeds are, has not finished.
+**A full rerun.** On 2026-11-20 all three seeds were trained again with this package on one L40S: 1,500 updates each, from the published stage-2 models, with the recipe as it is in `configs/stage3.json`. The machine was a preemptible one and was reclaimed during the run of seed 1, which continued from its checkpoints. The three new seeds were then evaluated as the published ones are (`echoview evaluate --weights <folder> --unverified`). Segment F1@50 on the two development halves, with the published seeds in brackets:
+
+| System | Selection half | Calibration half | Decoder half window |
+|---|---|---|---|
+| Seed 0 | 0.9573 (0.9584) | 0.9837 (0.9856) | 7 (7) |
+| Seed 1 | 0.9495 (0.9476) | 0.9865 (0.9827) | 5 (5) |
+| Seed 2 | 0.9505 (0.9483) | 0.9788 (0.9778) | 7 (5) |
+| Ensemble, decoded with the published setting | 0.9565 (0.9594) | 0.9846 (0.9837) | 7 (7) |
+| Ensemble, setting chosen again by the rule | 0.9432 (0.9594) | 0.9855 (0.9837) | 5 (7) |
+
+- **The seeds come out where reruns are known to come out.** Each new seed is within 0.004 of the published seed on both halves, and the ensemble decoded with the published setting is within 0.003.
+- **The rule's choice of the decoder setting did not repeat for the ensemble.** On the calibration half the rule found a half window of 5 better than the published 7 by 0.0009, which is about one segment. On the selection half that setting scores 0.943, against 0.957 with the published setting. A retrained ensemble should therefore be decoded with the published setting, or its setting should be checked on the selection half before it is used.
 
 ## Recipes of your own
 
