@@ -91,3 +91,12 @@ def test_a_rule_lets_the_segmentation_decline_samples_and_changes_nothing_else()
     assert [(start, end, view) for start, end, view, _ in marked.segments] == [(0.0, 3.7, "PLAX"), (3.7, 4.3, "uncertain"), (4.3, 8.0, "A4C")]
     assert all(0.0 <= probability <= 1.0 for *_, probability in marked.segments)
     assert np.array_equal(system(0.0, 5.0, -5.0).segment(frames, uncertain.Rule(seeds=True)).labels, plain.labels)  # the seeds agree here
+
+
+def test_a_segmentation_built_without_the_uncertain_mask_derives_it():
+    """Code written before the uncertain output existed builds a Segmentation from three values."""
+    from echoview import Segmentation
+
+    plain = Segmentation(labels=np.array([0, 0, 2, 2]), probabilities=np.zeros((4, 5)), segments=())
+    assert plain.uncertain.dtype == bool and not plain.uncertain.any()
+    assert Segmentation(np.array([0, -1, -1, 2]), np.zeros((4, 5)), ()).uncertain.tolist() == [False, True, True, False]

@@ -36,7 +36,11 @@ class Segmentation:
     labels: np.ndarray  # (samples,) view index of every 0.1 s sample; -1 where the system declines (uncertain)
     probabilities: np.ndarray  # (samples, 5) ensemble
     segments: tuple  # (start_s, end_s, view or "uncertain", mean probability of that view; uncertain: of the likeliest view)
-    uncertain: np.ndarray  # (samples,) True where the system declines; all False without a rule
+    uncertain: np.ndarray | None = None  # (samples,) True where the system declines; all False without a rule
+
+    def __post_init__(self) -> None:
+        if self.uncertain is None:  # a Segmentation built without it, as before the uncertain output existed
+            object.__setattr__(self, "uncertain", np.asarray(self.labels) < 0)
 
 
 def pick_device(name: str = "auto") -> torch.device:

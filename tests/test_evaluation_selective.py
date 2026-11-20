@@ -84,6 +84,9 @@ def test_single_recordings_and_joins_of_one_view():
     misread = selective.counts(native, np.full(40, 4), mask)
     assert (misread["recordings_wrong"], misread["recordings_wrong_uncertain"], misread["recordings_right"]) == (1, 1, 0)  # a catch
     assert selective.counts(native, np.ones(40, int), np.zeros(40, bool))["recordings_right_uncertain"] == 0
+    # a recording the decoder cuts is read by the majority of its samples, as in the scorecard: right at the middle is not enough
+    cut = selective.counts(sequence("native", ("a", 2, 40)), np.array([3] * 14 + [2] * 12 + [3] * 14), mask)
+    assert (cut["recordings_right"], cut["recordings_wrong"], cut["recordings_wrong_uncertain"], cut["piece_right_kept"]) == (0, 1, 1, 1)
     spliced = sequence("multi", ("a", 1, 20), ("b", 1, 20), ("c", 4, 20))  # a join of one view at 20, a view change at 40
     mask = np.zeros(60, bool)
     mask[24] = True  # 0.4 s after the join
@@ -146,10 +149,20 @@ def test_the_report_pools_by_kind_and_gives_intervals():
     assert multi["sequences"] == 12 and multi["counts"]["n"] == 720 and multi["counts"]["piece_wrong_kept"] == 4
     low, high = multi["intervals"]["error_labelled"]
     assert low <= multi["ratios"]["error_labelled"] <= high and low < high
-    assert set(multi["intervals"]) == set(selective.WITH_INTERVAL)
+    # every number about samples has an interval; the two about pieces get theirs over recordings, in piece_summary
+    assert set(multi["intervals"]) == (set(multi["ratios"]) - set(selective.PIECE_NUMBERS)) | {"error_low_confidence", "error_labelled_minus_low_confidence"}
+    assert len(multi["intervals"]["purity"]) == 5 and multi["intervals"]["purity"][1] is None  # no sample is given view 1
+    low, high = multi["intervals"]["purity"][2]
+    assert low <= multi["ratios"]["purity"][2] <= high and low < high
     assert multi["error_low_confidence"] < multi["ratios"]["error_labelled"]  # it declines only wrong samples here
+    assert multi["error_labelled_minus_low_confidence"] == pytest.approx(multi["ratios"]["error_labelled"] - multi["error_low_confidence"])
+    low, high = multi["intervals"]["error_labelled_minus_low_confidence"]
+    assert 0 < low <= multi["error_labelled_minus_low_confidence"] <= high  # in every draw the rule is worse than a confidence that knows
+    low, high = multi["intervals"]["error_low_confidence"]
+    assert low <= multi["error_low_confidence"] <= high
     assert report["all"]["counts"]["n"] == 750 and report["native"]["ratios"]["uncertain_share"] == 0.0
-    assert report["native"]["intervals"]["error_if_forced"] == [None, None]  # nothing was declined there
+    assert report["native"]["intervals"]["error_if_forced"] is None  # nothing was declined there: 0 of 0 has no interval
+    assert report["native"]["intervals"]["error_low_confidence"] is None and report["native"]["error_low_confidence"] == 0.0
     assert multi["interval_lengths"]["count"] == 12 and multi["interval_lengths"]["median_s"] > 0
     again = selective.report(tuple(sequences), decided, masks, bands, confidence, draws=200)
     assert again["multi"]["intervals"] == multi["intervals"]  # the same draws every time
@@ -162,10 +175,49 @@ def test_pieces_are_counted_by_recording_and_the_score_is_drawn_over_recordings(
         rows += [{"recording": name, "kind": "multi", "wrong": wrong, "declined": declined, "beyond_band": True, "empty": False}] * times
     rows.append({"recording": "r6", "kind": "multi", "wrong": True, "declined": True, "beyond_band": False, "empty": True})  # the band's own
     summary = selective.piece_summary(rows, draws=500)
-    assert (summary["pieces"], summary["recordings"], summary["empty_pieces"]) == (45, 6, 1)
+    assert (summary["pieces"], summary["recordings"], summary["empty_pieces"], summary["empty_recordings"]) == (45, 6, 1, 1)
+    assert summary["accuracy_published"] == pytest.approx(35 / 45) and summary["accuracy_labelled"] == pytest.approx(30 / 32)
+    for name in ("published", "labelled"):  # drawn over the six recordings
+        low, high = summary[f"accuracy_{name}_interval"]
+        assert low <= summary[f"accuracy_{name}"] <= high and low < high
     assert summary["all"]["wrong_declined"] == {"pieces": 8, "recordings": 3} and summary["beyond_band"]["wrong_declined"] == {"pieces": 7, "recordings": 2}
     assert summary["beyond_band"]["right_declined"] == {"pieces": 5, "recordings": 1} and summary["beyond_band"]["wrong_kept"] == {"pieces": 2, "recordings": 1}
     assert summary["score"] == pytest.approx(7 - 5 / 5)  # the piece the band declined does not count
     low, high = summary["score_p5_p95"]
     assert low < summary["score"] < high and low <= 0  # six of the seven catches are one recording: without it nothing is left
-    assert selective.piece_summary([], draws=10)["score"] == 0.0
+    nothing = selective.piece_summary([], draws=10)
+    assert nothing["score"] == 0.0 and nothing["accuracy_published"] is None and nothing["accuracy_published_interval"] is None
+
+
+def test_a_number_that_rests_on_five_or_fewer_has_no_interval():
+    """Twenty streams with two wrong samples between them, both declined: 2 of 2 is a count, not a share with an interval."""
+    sequences, decided, masks = [], {}, {}
+    for k in range(20):
+        seq = sequence("multi", (f"a{k}", 0, 30), (f"b{k}", 2, 30), name=f"m{k}")
+        labels, mask = seq.labels.copy(), np.zeros(60, bool)
+        if k < 2:
+            labels[30], mask[30] = 0, True  # the cut is one sample late, and that sample is declined
+        sequences.append(seq)
+        decided[seq.id], masks[seq.id] = labels, mask
+    multi = selective.report(tuple(sequences), decided, masks, draws=100)["multi"]
+    assert (multi["counts"]["wrong"], multi["counts"]["wrong_uncertain"]) == (2, 2) and multi["ratios"]["errors_declined"] == 1.0
+    assert multi["intervals"]["errors_declined"] is None and multi["intervals"]["error_if_forced"] is None
+    assert multi["intervals"]["error_labelled"] is None  # 0 wrong among the labelled
+    low, high = multi["intervals"]["coverage"]
+    assert low <= multi["ratios"]["coverage"] <= high
+
+
+def test_the_low_confidence_reference_in_a_draw_is_the_reference_of_the_drawn_sequences():
+    rng = np.random.default_rng(3)
+    sizes = (7, 4, 9, 5)
+    owner = np.concatenate([np.full(size, k) for k, size in enumerate(sizes)])
+    wrong, confidence = rng.random(owner.size) < 0.4, rng.random(owner.size).round(1)  # rounded: with ties
+    weights = np.array([[1, 1, 1, 1], [2, 0, 1, 1], [0, 3, 0, 1], [0, 0, 0, 4], [1, 2, 1, 0]], float)
+    declined = np.array([6, 9, 0, 30, 11], float)
+    drawn = selective.error_at_equal_coverage_drawn(wrong, confidence, owner, weights, declined)
+    assert drawn[0] == pytest.approx(selective.error_at_equal_coverage(wrong, confidence, 6))  # every sequence once: the plain reference
+    for d in (1, 2, 4):  # the same number from the samples written out as often as their sequence is drawn
+        copies = np.repeat(np.arange(owner.size), weights[d, owner].astype(int))
+        order = copies[np.argsort(confidence[copies], kind="stable")][int(declined[d]):]
+        assert drawn[d] == pytest.approx(wrong[order].mean())
+    assert np.isnan(drawn[3])  # more declined than there are samples in the draw

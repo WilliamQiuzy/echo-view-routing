@@ -15,6 +15,7 @@ the rule was chosen and how it is evaluated.
 """
 from __future__ import annotations
 
+import math
 from collections.abc import Mapping
 from dataclasses import dataclass
 
@@ -35,8 +36,11 @@ class Rule:
     seeds: bool = False
 
     def __post_init__(self) -> None:
-        if self.band < 0 or self.f_low < 1.0 or self.f_high < 1.0 or not 0.0 <= self.margin <= 1.0:
-            raise ValueError("a rule needs band of 0 or more, f_low and f_high of 1 or more and margin between 0 and 1")
+        whole = isinstance(self.band, (int, np.integer)) and not isinstance(self.band, bool)
+        factors = all(isinstance(f, (int, float, np.number)) and math.isfinite(f) and f >= 1.0 for f in (self.f_low, self.f_high))
+        if not whole or self.band < 0 or not factors or not 0.0 <= self.margin <= 1.0 or not isinstance(self.seeds, (bool, np.bool_)):
+            raise ValueError("a rule needs a whole band of 0 or more, finite f_low and f_high of 1 or more, margin between 0 and 1 "
+                             "and seeds on or off")
 
     @property
     def off(self) -> bool:
@@ -96,6 +100,8 @@ def margin_mask(prob: np.ndarray, labels: np.ndarray, margin: float) -> np.ndarr
 def seed_mask(seed_prob: np.ndarray, labels: np.ndarray) -> np.ndarray:
     """True for every sample of a segment that a seed names differently. `seed_prob` is (seeds, samples, views)."""
     seed_prob, labels = np.asarray(seed_prob, float), np.asarray(labels)
+    if seed_prob.ndim != 3 or seed_prob.shape[1] != labels.size:
+        raise ValueError(f"the seeds' probabilities must be (seeds, {labels.size} samples, views); got {seed_prob.shape}")
     mask = np.zeros(labels.size, bool)
     for start, end, view in decoder.segments(labels):
         mask[start:end] = bool((seed_prob[:, start:end].mean(1).argmax(-1) != view).any())

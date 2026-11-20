@@ -6,13 +6,15 @@ the EV9V development benchmark and then scored on the selection half, by two sep
 
 `dev_logits.npz` holds the window logits of every development sequence (`echoview evaluate --save-logits`). `choose`
 reads the calibration half only, `report` the selection half only. Both run on the CPU and write pooled numbers: no
-sequence and no recording appears in their output by itself.
+sequence and no recording appears in their output by itself. Neither replaces a file that exists, unless `--force`
+is given: the choice of the first command is what the second one has to follow.
 """
 from __future__ import annotations
 
 import argparse
 import itertools
 import json
+import zipfile
 from dataclasses import asdict
 from pathlib import Path
 
@@ -60,12 +62,27 @@ class Decoded:
 
     def mask(self, rule: uncertain.Rule) -> np.ndarray:
         """The mask uncertain.mark gives, from the parts computed once."""
+        on_grid(rule)
         mask = self.bands[rule.band] | self.low[rule.f_low] | self.high[rule.f_high] | self.margins[rule.margin]
         return uncertain.tidy(mask | self.seeds if rule.seeds else mask)
 
     def band(self, rule: uncertain.Rule) -> np.ndarray:
         """The mask of the band alone, tidied."""
+        on_grid(rule)
         return uncertain.tidy(self.bands[rule.band])
+
+
+def on_grid(rule: uncertain.Rule) -> None:
+    """The study computes the parts of the mask for its own settings only."""
+    if rule.band not in BANDS or rule.f_low not in FACTORS or rule.f_high not in FACTORS or rule.margin not in MARGINS:
+        raise ValueError(f"{rule} is not one of the study's settings: band {BANDS[0]} to {BANDS[-1]}, factors {FACTORS}, margins {MARGINS}")
+
+
+def row(rule: uncertain.Rule, wrong: int, wrong_recordings: int, right: int, samples: int) -> dict:
+    """One setting of step 2. `points` is the score times five, a whole number: settings are ordered by it, so that
+    two settings with the same score are a tie whatever floating point makes of `right / 5`."""
+    return {"rule": asdict(rule), "wrong_declined": wrong, "wrong_declined_recordings": wrong_recordings, "right_declined": right,
+            "points": selective.WORTH * wrong - right, "score": wrong - right / selective.WORTH, "uncertain_samples": samples}
 
 
 def band_for(half: list[Decoded]) -> dict:
@@ -87,8 +104,7 @@ def score(half: list[Decoded], rule: uncertain.Rule) -> dict:
         wrong += int((counted & d.piece_wrong).sum())
         right += int((counted & ~d.piece_wrong).sum())
         wrong_recordings.update(name for name, flag in zip(d.piece_recording, counted & d.piece_wrong) if flag)
-    return {"rule": asdict(rule), "wrong_declined": wrong, "wrong_declined_recordings": len(wrong_recordings), "right_declined": right,
-            "score": wrong - right / selective.WORTH, "uncertain_samples": samples}
+    return row(rule, wrong, len(wrong_recordings), right, samples)
 
 
 def choose(half: list[Decoded]) -> dict:
@@ -99,10 +115,10 @@ def choose(half: list[Decoded]) -> dict:
     grid = [uncertain.Rule(step1["band"], f_low, f_high, margin, seeds)
             for f_low, f_high, margin, seeds in itertools.product(FACTORS, FACTORS, MARGINS, SEEDS)]
     rows = [score(half, rule) for rule in grid]
-    best = max(range(len(rows)), key=lambda k: (rows[k]["score"], -rows[k]["uncertain_samples"], -k))
+    best = max(range(len(rows)), key=lambda k: (rows[k]["points"], -rows[k]["uncertain_samples"], -k))
     candidate = rows[best]
     reasons = []
-    if candidate["score"] <= 0:
+    if candidate["points"] <= 0:
         reasons.append("no setting has a score above 0")
     if candidate["wrong_declined"] < MIN_WRONG or candidate["wrong_declined_recordings"] < MIN_RECORDINGS:
         reasons.append(f"the best setting declines {candidate['wrong_declined']} wrong pieces from {candidate['wrong_declined_recordings']} "
@@ -179,13 +195,53 @@ def final(half: list[Decoded], choice: dict, draws: int) -> dict:
 
 def load(path: Path, half: str) -> list[Decoded]:
     sequences = benchmark.load()[half]
-    with np.load(path) as stored:
-        decoded = [Decoded.from_logits(s, stored[s.id]) for s in sequences]
+    try:
+        with np.load(path) as stored:
+            missing = [s.id for s in sequences if s.id not in stored.files]
+            if missing:
+                raise SystemExit(f"{path} lacks the logits of {len(missing)} of the {len(sequences)} sequences of the {half} half")
+            decoded = [Decoded.from_logits(s, stored[s.id]) for s in sequences]
+    except (OSError, ValueError, zipfile.BadZipFile) as error:
+        raise SystemExit(f"cannot read the logits file {path}: {error}") from error
     scored = tuple(d.sequence for d in decoded if d.sequence.kind != "exam")
     f1 = metrics.evaluate({d.sequence.id: d.decided for d in decoded}, scored)["segment_f1_50_multi"]
     if round(f1, 4) != PUBLISHED_F1[half]:
         raise SystemExit(f"{half}: these logits give a segment F1@50 of {f1:.4f}; the published system has {PUBLISHED_F1[half]}")
     return decoded
+
+
+def positive(text: str) -> int:
+    value = int(text)
+    if value < 1:
+        raise argparse.ArgumentTypeError("at least 1 draw is needed")
+    return value
+
+
+def read_choice(path: Path) -> dict:
+    """The file `choose` wrote, checked as far as `report` relies on it."""
+    try:
+        choice = json.loads(path.read_text())
+    except (OSError, ValueError) as error:
+        raise SystemExit(f"cannot read the choice file {path}: {error}") from error
+    if not isinstance(choice, dict) or "step1" not in choice:
+        raise SystemExit(f"{path} is not a file written by `choose`")
+    if "band" not in choice:
+        raise SystemExit("the choice file holds no band: step 1 stopped the study")
+    try:
+        on_grid(uncertain.Rule(band=choice["band"]))
+        if choice["goes_on"]:
+            on_grid(uncertain.Rule(**choice["candidate"]["rule"]))
+    except (KeyError, TypeError, ValueError) as error:
+        raise SystemExit(f"{path} does not hold a choice of this study: {error}") from error
+    return choice
+
+
+def write(out: Path, content: dict) -> None:
+    """Writes the whole file or nothing."""
+    out.parent.mkdir(parents=True, exist_ok=True)
+    partial = out.with_name(out.name + ".partial")
+    partial.write_text(json.dumps(content, indent=1) + "\n")
+    partial.replace(out)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -195,9 +251,15 @@ def main(argv: list[str] | None = None) -> int:
         p = commands.add_parser(name)
         p.add_argument("--logits", required=True, type=Path)
         p.add_argument("--out", required=True, type=Path)
-        p.add_argument("--draws", type=int, default=2000)
+        p.add_argument("--draws", type=positive, default=2000)
+        p.add_argument("--force", action="store_true", help="replace the output file if it exists")
     commands.choices["report"].add_argument("--choice", required=True, type=Path)
     args = parser.parse_args(argv)
+    inputs = [args.logits] + ([args.choice] if args.command == "report" else [])
+    if any(args.out.resolve() == path.resolve() for path in inputs):
+        raise SystemExit("--out names one of the input files")
+    if args.out.exists() and not args.force:
+        raise SystemExit(f"{args.out} exists; it is not replaced without --force")
     if args.command == "choose":
         half = load(args.logits, "calibration")
         out = choose(half)
@@ -208,13 +270,10 @@ def main(argv: list[str] | None = None) -> int:
                 out["calibration_report_chosen_here"]["candidate"] = evaluate(half, uncertain.Rule(**out["candidate"]["rule"]), args.draws)
         headline = {key: out.get(key) for key in ("band", "candidate", "goes_on", "why_not", "stopped")}
     else:
-        choice = json.loads(args.choice.read_text())
-        if "band" not in choice:
-            raise SystemExit("the choice file holds no band: step 1 stopped the study")
+        choice = read_choice(args.choice)
         out = final(load(args.logits, "selection"), choice, args.draws)
         headline = out["decision"]
-    args.out.parent.mkdir(parents=True, exist_ok=True)
-    args.out.write_text(json.dumps(out, indent=1) + "\n")
+    write(args.out, out)
     print(json.dumps(headline))
     return 0
 

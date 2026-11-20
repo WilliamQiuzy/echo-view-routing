@@ -106,3 +106,20 @@ def test_the_published_decoder_setting_is_what_mark_decodes_with():
     out = uncertain.mark(prob, B3, uncertain.Rule(band=2))
     assert np.array_equal(out.decided, decoder.decode(prob, B3["half_window"], B3["threshold"], B3["nms_radius"]))
     assert uncertain.segments(out.labels)[0][0] == 0 and {view for _, _, view in uncertain.segments(out.labels)} <= {-1, 0, 1, 2, 3, 4}
+
+
+def test_a_rule_with_values_that_mean_nothing_is_refused():
+    for bad in ({"band": -1}, {"band": 2.5}, {"band": True}, {"f_low": 0.5}, {"f_low": float("nan")}, {"f_high": float("inf")},
+                {"margin": 1.5}, {"margin": float("nan")}, {"seeds": 1}):
+        with pytest.raises(ValueError, match="a rule needs"):
+            uncertain.Rule(**bad)
+    assert uncertain.Rule(band=np.int64(3), f_low=2, margin=0.5, seeds=True).band == 3  # whole numbers of any kind pass
+
+
+def test_the_seeds_test_needs_the_probabilities_of_every_seed_for_every_sample():
+    labels = np.zeros(40, int)
+    one_seed = np.full((40, 5), 0.2)
+    with pytest.raises(ValueError, match="seeds, 40 samples, views"):
+        uncertain.seed_mask(one_seed, labels)  # (samples, views): the seeds are missing
+    with pytest.raises(ValueError, match="seeds, 40 samples, views"):
+        uncertain.seed_mask(np.stack([one_seed[:30]] * 3), labels)  # too short

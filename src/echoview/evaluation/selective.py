@@ -9,7 +9,8 @@ wrong ones first) and low confidence (the same number declined, least confident 
 Numbers about samples are ratios of counts that add up over sequences: `counts` gives the counts of one sequence,
 `ratios` turns summed counts into the numbers of the report, and their intervals come from a bootstrap over
 sequences. Numbers about pieces are counted per recording, because one recording is reused in many sequences: `pieces`
-lists the pieces of a sequence with their recording, and `piece_summary` draws whole recordings again.
+lists the pieces of a sequence with their recording, and `piece_summary` draws whole recordings again. A number whose
+numerator or denominator is SMALL or less has no interval: its counts are what there is to say.
 """
 from __future__ import annotations
 
@@ -24,8 +25,9 @@ NEAR = 5  # samples: "at a view change" and "at a join" mean within 0.5 s
 VIEWS = 5
 A4C, A5C = 2, 3
 ERROR_KINDS = scorecard.CATEGORIES  # edge, spurious, absorbed, misread
-WORTH = 5.0  # one wrong piece declined is worth this many right pieces declined (docs/UNCERTAIN.md, step 2)
-WITH_INTERVAL = ("coverage", "error_published", "error_labelled", "error_if_forced", "errors_declined", "price", "changes_located")
+WORTH = 5  # one wrong piece declined is worth this many right pieces declined (docs/UNCERTAIN.md, step 2)
+SMALL = 5  # a number resting on a count this small is given by its counts, without an interval
+PIECE_NUMBERS = ("piece_accuracy_published", "piece_accuracy_labelled")  # about pieces: their intervals are piece_summary's, over recordings
 
 
 def near(positions: np.ndarray, n: int) -> np.ndarray:
@@ -93,9 +95,11 @@ def counts(sequence: Sequence, decided: np.ndarray, mask: np.ndarray, band: np.n
              changes_located=sum(int(mask[position - 1] or mask[position]) for position in changes))
     same = [int(j) for j in sequence.joins if j not in set(changes.tolist())]
     c.update(same_joins=len(same), same_joins_uncertain=sum(int(mask[max(0, j - NEAR):j + NEAR].any()) for j in same))
-    # single recordings, by whether the published system reads them right at the middle
+    # single recordings, by whether the published system reads the recording right: the majority of its samples, as the scorecard has it
+    native = sequence.kind == "native" and n > 0
+    read_right = native and int(np.bincount(decided, minlength=VIEWS).argmax()) == int(truth[0])
     for answer in ("right", "wrong"):
-        mine = sequence.kind == "native" and rows[0]["wrong"] == (answer == "wrong")
+        mine = native and read_right == (answer == "right")
         c[f"recordings_{answer}"] = int(mine)
         c[f"recordings_{answer}_uncertain"] = int(mine and mask.any())
     # which of the published system's wrong samples are declined, by kind of error
@@ -119,44 +123,74 @@ def _share(a, b):
         return np.where(b != 0, a / np.where(b != 0, b, 1.0), np.nan)[()]
 
 
-def ratios(c: Mapping[str, float]) -> dict:
-    """The numbers of the report from summed counts."""
+def _parts(c: Mapping[str, float]) -> dict:
+    """(numerator, denominator) of every number of the report, from summed counts; a list of pairs for a number per view."""
+    n, wrong = np.asarray(c["n"], float), np.asarray(c["wrong"], float)
     kept_by_answer = [sum(c[f"kept_{view}_{answer}"] for view in range(VIEWS)) for answer in range(VIEWS)]
     out = {
         # part A: the labelled part
-        "coverage": _share(c["labelled"], c["n"]),
-        "error_published": _share(c["wrong"], c["n"]),  # also the error under chance
-        "error_labelled": _share(c["wrong_labelled"], c["labelled"]),
-        "error_ideal": _share(np.maximum(0.0, np.asarray(c["wrong"], float) - c["uncertain"]), c["labelled"]),
-        "purity": [_share(c[f"kept_{view}_{view}"], kept_by_answer[view]) for view in range(VIEWS)],
-        "recovery": [_share(c[f"kept_{view}_{view}"], c[f"reference_{view}"]) for view in range(VIEWS)],
-        "piece_accuracy_published": _share(c["piece_right_kept"] + c["piece_right_declined"], c["pieces"]),
-        "piece_accuracy_labelled": _share(c["piece_right_kept"], c["piece_right_kept"] + c["piece_wrong_kept"]),
-        "segment_accuracy": _share(c["segments_kept_right"], c["segments_kept"]),
+        "coverage": (c["labelled"], n),
+        "error_published": (wrong, n),  # also the error under chance
+        "error_labelled": (c["wrong_labelled"], c["labelled"]),
+        "error_ideal": (np.maximum(0.0, wrong - c["uncertain"]), c["labelled"]),
+        "purity": [(c[f"kept_{view}_{view}"], kept_by_answer[view]) for view in range(VIEWS)],
+        "recovery": [(c[f"kept_{view}_{view}"], c[f"reference_{view}"]) for view in range(VIEWS)],
+        "piece_accuracy_published": (c["piece_right_kept"] + c["piece_right_declined"], c["pieces"]),
+        "piece_accuracy_labelled": (c["piece_right_kept"], c["piece_right_kept"] + c["piece_wrong_kept"]),
+        "segment_accuracy": (c["segments_kept_right"], c["segments_kept"]),
         # part B: the uncertain part
-        "uncertain_share": _share(c["uncertain"], c["n"]),  # also the share of the errors chance would decline
-        "error_if_forced": _share(c["wrong_uncertain"], c["uncertain"]),
-        "errors_declined": _share(c["wrong_uncertain"], c["wrong"]),
-        "price": _share(c["right_uncertain"], np.asarray(c["n"], float) - c["wrong"]),
-        "uncertain_near_change": _share(c["uncertain_near_change"], c["uncertain"]),
-        "intervals_no_change": _share(c["intervals_no_change"], c["intervals"]),
-        "changes_located": _share(c["changes_located"], c["changes"]),
-        "same_joins_uncertain": _share(c["same_joins_uncertain"], c["same_joins"]),
-        "right_recordings_uncertain": _share(c["recordings_right_uncertain"], c["recordings_right"]),
-        "wrong_recordings_uncertain": _share(c["recordings_wrong_uncertain"], c["recordings_wrong"]),
-        "error_added": _share(c["added_wrong"], c["added"]),
-        "error_after_band": _share(c["after_band_wrong"], c["after_band_labelled"]),
+        "uncertain_share": (c["uncertain"], n),  # also the share of the errors chance would decline
+        "error_if_forced": (c["wrong_uncertain"], c["uncertain"]),
+        "errors_declined": (c["wrong_uncertain"], wrong),
+        "price": (c["right_uncertain"], n - wrong),
+        "uncertain_near_change": (c["uncertain_near_change"], c["uncertain"]),
+        "intervals_no_change": (c["intervals_no_change"], c["intervals"]),
+        "changes_located": (c["changes_located"], c["changes"]),
+        "same_joins_uncertain": (c["same_joins_uncertain"], c["same_joins"]),
+        "right_recordings_uncertain": (c["recordings_right_uncertain"], c["recordings_right"]),
+        "wrong_recordings_uncertain": (c["recordings_wrong_uncertain"], c["recordings_wrong"]),
+        "error_added": (c["added_wrong"], c["added"]),
+        "error_after_band": (c["after_band_wrong"], c["after_band_labelled"]),
     }
     for name in (*ERROR_KINDS, "a4c_a5c"):
-        out[f"{name}_declined"] = _share(c[f"{name}_declined"], c[name])
+        out[f"{name}_declined"] = (c[f"{name}_declined"], c[name])
     return out
+
+
+def ratios(c: Mapping[str, float]) -> dict:
+    """The numbers of the report from summed counts."""
+    return {name: [_share(*pair) for pair in parts] if isinstance(parts, list) else _share(*parts) for name, parts in _parts(c).items()}
+
+
+def _small(pair: tuple) -> bool:
+    """True when the number rests on a count of SMALL or less."""
+    return bool(min(float(pair[0]), float(pair[1])) <= SMALL)
+
+
+def _least_confident_kept(confidence: np.ndarray, declined: int) -> np.ndarray:
+    """The samples that are left when the `declined` least confident ones are declined; ties go by position."""
+    return np.argsort(np.asarray(confidence, float), kind="stable")[max(0, int(declined)):]
 
 
 def error_at_equal_coverage(wrong: np.ndarray, confidence: np.ndarray, declined: int) -> float:
     """The error among the samples that are left when the `declined` least confident samples are declined."""
-    wrong, confidence = np.asarray(wrong, bool), np.asarray(confidence, float)
-    kept = np.argsort(confidence, kind="stable")[int(declined):]
-    return float(wrong[kept].mean()) if kept.size else float("nan")
+    kept = _least_confident_kept(confidence, declined)
+    return float(np.asarray(wrong, bool)[kept].mean()) if kept.size else float("nan")
+
+
+def error_at_equal_coverage_drawn(wrong: np.ndarray, confidence: np.ndarray, owner: np.ndarray, weights: np.ndarray, declined: np.ndarray) -> np.ndarray:
+    """`error_at_equal_coverage` in every bootstrap draw. Sample i belongs to sequence `owner[i]` and counts
+    `weights[d, owner[i]]` times in draw d, of which the `declined[d]` least confident copies are declined."""
+    order = np.argsort(np.asarray(confidence, float), kind="stable")
+    wrong, owner = np.asarray(wrong, float)[order], np.asarray(owner, int)[order]
+    out = np.full(len(weights), np.nan)
+    for d, (row, gone) in enumerate(zip(np.asarray(weights, float), np.asarray(declined, float))):
+        copies = row[owner]
+        kept = np.clip(np.cumsum(copies) - gone, 0.0, copies)  # the copies of each sample that lie beyond the first `gone`
+        total = kept.sum()
+        if total > 0:
+            out[d] = float(kept @ wrong) / total
+    return out
 
 
 def _plain(value):
@@ -174,20 +208,28 @@ def _interval(drawn: np.ndarray, percentiles: tuple = (2.5, 97.5)) -> list:
     return [None, None] if drawn.size == 0 else np.percentile(drawn, percentiles).tolist()
 
 
-def _pooled(rows: list[dict[str, float]], lengths: list[int], generator: np.random.Generator, draws: int) -> dict:
+def _pooled(rows: list[dict[str, float]], lengths: list[int], weights: np.ndarray) -> tuple[dict, dict]:
+    """The pooled counts, numbers and intervals of some sequences, and the numbers in every draw of `weights`."""
     keys = list(rows[0])
     matrix = np.array([[row[key] for key in keys] for row in rows], float)
     total = dict(zip(keys, matrix.sum(0)))
-    point = ratios(total)
-    resampled = bootstrap.resampling_weights(generator, len(rows), draws) @ matrix  # (draws, keys)
+    resampled = weights @ matrix  # (draws, keys)
     drawn = ratios({key: resampled[:, k] for k, key in enumerate(keys)})
+    intervals = {}
+    for name, parts in _parts(total).items():
+        if name in PIECE_NUMBERS:
+            continue
+        if isinstance(parts, list):
+            intervals[name] = [None if _small(pair) else _interval(values) for pair, values in zip(parts, drawn[name])]
+        else:
+            intervals[name] = None if _small(parts) else _interval(drawn[name])
     longest = np.asarray(lengths, float)
     described = {"count": len(lengths), "median_s": _plain(np.median(longest) / 10.0) if lengths else None,
                  "p90_s": _plain(np.percentile(longest, 90) / 10.0) if lengths else None,
                  "longest_s": _plain(longest.max() / 10.0) if lengths else None}
     return {"sequences": len(rows), "counts": {key: int(value) for key, value in total.items()},
-            "ratios": {name: _plain(value) for name, value in point.items()},
-            "intervals": {name: _interval(drawn[name]) for name in WITH_INTERVAL}, "interval_lengths": described}
+            "ratios": {name: _plain(value) for name, value in ratios(total).items()},
+            "intervals": intervals, "interval_lengths": described}, drawn
 
 
 def report(sequences: tuple[Sequence, ...], decided: Mapping[str, np.ndarray], masks: Mapping[str, np.ndarray],
@@ -196,8 +238,9 @@ def report(sequences: tuple[Sequence, ...], decided: Mapping[str, np.ndarray], m
     """The report about samples by kind of sequence and for all sequences together.
 
     `bands` holds the mask of the band alone for every sequence (for "beyond the band"), `confidence` the largest
-    probability of every sample (for the low-confidence reference). The intervals are 95% percentile intervals of a
-    bootstrap over sequences; one generator serves the kinds in a fixed order, then all sequences.
+    probability of every sample (for the low-confidence reference: its error, and the rule's error minus its error).
+    The intervals are 95% percentile intervals of a bootstrap over sequences; one generator serves the kinds in a
+    fixed order, then all sequences. A number that rests on a count of SMALL or less has None for its interval.
     """
     generator = np.random.default_rng(seed)
     rows = {s.id: counts(s, decided[s.id], masks[s.id], None if bands is None else bands[s.id]) for s in sequences}
@@ -207,11 +250,24 @@ def report(sequences: tuple[Sequence, ...], decided: Mapping[str, np.ndarray], m
         members = [s for s in sequences if kind in (s.kind, "all")]
         if not members:
             continue
-        out[kind] = _pooled([rows[s.id] for s in members], [x for s in members for x in lengths[s.id]], generator, draws)
-        if confidence is not None:
-            wrong = np.concatenate([np.asarray(decided[s.id]) != s.labels for s in members])
-            sure = np.concatenate([np.asarray(confidence[s.id], float) for s in members])
-            out[kind]["error_low_confidence"] = _plain(error_at_equal_coverage(wrong, sure, out[kind]["counts"]["uncertain"]))
+        weights = bootstrap.resampling_weights(generator, len(members), draws)
+        out[kind], drawn = _pooled([rows[s.id] for s in members], [x for s in members for x in lengths[s.id]], weights)
+        if confidence is None:
+            continue
+        wrong = np.concatenate([np.asarray(decided[s.id]) != s.labels for s in members])
+        sure = np.concatenate([np.asarray(confidence[s.id], float) for s in members])
+        owner = np.concatenate([np.full(s.labels.size, k) for k, s in enumerate(members)])
+        declined = out[kind]["counts"]["uncertain"]
+        kept = _least_confident_kept(sure, declined)
+        low = float(wrong[kept].mean()) if kept.size else float("nan")
+        low_drawn = error_at_equal_coverage_drawn(wrong, sure, owner, weights, weights @ np.array([rows[s.id]["uncertain"] for s in members], float))
+        labelled = out[kind]["ratios"]["error_labelled"]
+        few = _small((wrong[kept].sum(), kept.size))
+        out[kind]["error_low_confidence"] = _plain(low)
+        out[kind]["error_labelled_minus_low_confidence"] = None if labelled is None else _plain(labelled - low)
+        out[kind]["intervals"]["error_low_confidence"] = None if few else _interval(low_drawn)
+        out[kind]["intervals"]["error_labelled_minus_low_confidence"] = (
+            None if few or out[kind]["intervals"]["error_labelled"] is None else _interval(drawn["error_labelled"] - low_drawn))
     return out
 
 
@@ -221,7 +277,7 @@ def piece_summary(rows: list[dict], draws: int = bootstrap.DRAWS, seed: int = bo
     The four counts (right or wrong by the published answer, kept or declined) are given for all pieces and for the
     pieces beyond the band, each with the number of different recordings behind it. The score is
     `wrong declined - right declined / worth` over the pieces beyond the band; its interval (5th and 95th percentile)
-    comes from a bootstrap that draws whole recordings again.
+    comes from a bootstrap that draws whole recordings again, and so do the 95% intervals of the two accuracies.
     """
     recordings = sorted({row["recording"] for row in rows})
     index = {name: k for k, name in enumerate(recordings)}
@@ -235,12 +291,21 @@ def piece_summary(rows: list[dict], draws: int = bootstrap.DRAWS, seed: int = bo
                 out[f"{answer}_{fate}"] = {"pieces": len(cell), "recordings": len({r["recording"] for r in cell})}
         return out
 
-    per_recording = np.zeros((len(recordings), 2))  # wrong declined, right declined, beyond the band
+    cells = np.zeros((len(recordings), 4))  # all pieces: right kept, right declined, wrong kept, wrong declined
+    beyond = np.zeros((len(recordings), 2))  # the pieces beyond the band: wrong declined, right declined
     for row in rows:
+        cells[index[row["recording"]], 2 * int(row["wrong"]) + int(row["declined"])] += 1
         if row["beyond_band"] and row["declined"]:
-            per_recording[index[row["recording"]], 0 if row["wrong"] else 1] += 1
+            beyond[index[row["recording"]], 0 if row["wrong"] else 1] += 1
     score = lambda sums: sums[..., 0] - sums[..., 1] / worth
-    drawn = score(bootstrap.resampling_weights(np.random.default_rng(seed), len(recordings), draws) @ per_recording) if recordings else np.array([])
-    return {"pieces": len(rows), "recordings": len(recordings), "empty_pieces": sum(row["empty"] for row in rows),
-            "all": table(False), "beyond_band": table(True),
-            "score": float(score(per_recording.sum(0))) if recordings else 0.0, "score_p5_p95": _interval(drawn, (5.0, 95.0)), "worth": worth}
+    accuracy = {"published": lambda sums: (sums[..., 0] + sums[..., 1], sums.sum(-1)), "labelled": lambda sums: (sums[..., 0], sums[..., 0] + sums[..., 2])}
+    weights = bootstrap.resampling_weights(np.random.default_rng(seed), len(recordings), draws) if recordings else np.zeros((0, 0))
+    empty = [row for row in rows if row["empty"]]
+    out = {"pieces": len(rows), "recordings": len(recordings), "empty_pieces": len(empty), "empty_recordings": len({row["recording"] for row in empty}),
+           "all": table(False), "beyond_band": table(True)}
+    for name, parts in accuracy.items():  # the share of pieces read right at the middle: of all pieces, and of those left labelled
+        out[f"accuracy_{name}"] = _plain(_share(*parts(cells.sum(0)))) if recordings else None
+        out[f"accuracy_{name}_interval"] = None if not recordings or _small(parts(cells.sum(0))) else _interval(_share(*parts(weights @ cells)))
+    out.update(score=float(score(beyond.sum(0))) if recordings else 0.0,
+               score_p5_p95=_interval(score(weights @ beyond) if recordings else np.array([]), (5.0, 95.0)), worth=worth)
+    return out

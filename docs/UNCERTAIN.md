@@ -103,6 +103,13 @@ The report has two parts, one for each kind of output, by kind of sequence: sing
 - Not known: any number about the three tests for whole pieces.
 - Not read for this study: the test benchmark and MIMIC-IV-Echo.
 - An independent review of this plan, made before any result, led to: the score and the bar of step 2 in place of "fewest wrong pieces", the counting of pieces beyond the band only, recordings as the unit for pieces, the low-confidence reference, and the removal of a summary number that could not tell a large uncertain part from a small one.
+- An independent review of the code, made on 2026-11-20 before either command had run, found places where the code did less than this plan says or where the plan left a choice open. They were settled as follows, and nothing else in the plan changed:
+  - A tie in `S` is decided on whole numbers, `5 × D_wrong − D_right`, so that rounding cannot break it.
+  - A single recording counts as read right when the majority of its samples have the right view. This is the scorecard's rule for a recording.
+  - Every number about samples has its interval. A number whose numerator or denominator is 5 or fewer has none.
+  - The low-confidence reference has an interval from the same draws, and so does the rule's error minus the reference's error.
+  - The share of pieces read right at the middle has its interval from the bootstrap over recordings.
+  - Neither command replaces a file that exists: the choice of the first command cannot be overwritten by running it again.
 
 ## 7. Step 1 and step 2: the choice on the calibration half
 
