@@ -16,7 +16,7 @@ from .pipeline import Classification, Ensemble, Segmentation
 from .reference import VERSION as MODEL_VERSION
 from .weights import WeightsError
 
-__version__ = "1.1.0"
+__version__ = "1.1.1"
 __all__ = ["CLASSES", "MODEL_VERSION", "Classification", "Ensemble", "ReadError", "Recording", "Segmentation", "WeightsError",
            "WindowModel", "find_recordings", "load", "read_recording"]
 

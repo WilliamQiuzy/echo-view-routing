@@ -17,7 +17,9 @@ else:  # pytest brings tomli on Python 3.10
 
 REPOSITORY = Path(__file__).resolve().parents[1]
 PROJECT = tomllib.loads((REPOSITORY / "pyproject.toml").read_text())["project"]
-LINUX = {"platform_system": "Linux", "platform_machine": "x86_64", "sys_platform": "linux"}  # where the pins were tested
+# where the pins were tested: Linux, Python 3.12
+LINUX = {"platform_system": "Linux", "platform_machine": "x86_64", "sys_platform": "linux", "python_version": "3.12",
+         "python_full_version": "3.12.0"}
 
 
 def pins(name: str) -> dict[str, Version]:
@@ -53,6 +55,18 @@ def test_requirements_pin_every_dependency_inside_its_allowed_range():
     for requirement in wanted:
         version = pinned[requirement.name.lower().replace("_", "-")]
         assert requirement.specifier.contains(version), f"{requirement} does not allow the pinned {version}"
+
+
+def test_pillow_is_a_version_without_the_known_decoder_vulnerabilities():
+    """Pillow before 13.0 has published vulnerabilities in decoders this package can reach with a file from outside."""
+    patched = Version("13.0.0")
+    assert pins("requirements.txt")["pillow"] >= patched
+    asked = [Requirement(text) for text in PROJECT["dependencies"] if Requirement(text).name.lower() == "pillow"]
+    newer = [r for r in asked if r.marker is None or r.marker.evaluate({**LINUX, "python_version": "3.11", "python_full_version": "3.11.0"})]
+    assert len(newer) == 1 and not newer[0].specifier.contains(Version("12.3.0")) and newer[0].specifier.contains(patched)
+    older = [r for r in asked if r.marker is not None and r.marker.evaluate({**LINUX, "python_version": "3.10", "python_full_version": "3.10.0"})]
+    assert len(older) == 1  # Pillow 13 does not exist for Python 3.10: the package still installs there
+    assert "Pillow" in (REPOSITORY / "SECURITY.md").read_text()
 
 
 def test_the_developer_requirements_add_the_tools_to_the_pinned_ones():

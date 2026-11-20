@@ -38,7 +38,7 @@ RUN pip install --no-deps .
 
 
 FROM base AS test
-COPY requirements-dev.txt CITATION.cff CHANGELOG.md Dockerfile .dockerignore ./
+COPY requirements-dev.txt CITATION.cff CHANGELOG.md SECURITY.md Dockerfile .dockerignore ./
 COPY configs ./configs
 COPY tools ./tools
 COPY tests ./tests

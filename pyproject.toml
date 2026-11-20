@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "echo-view-routing"
-version = "1.1.0"
+version = "1.1.1"
 description = "Echocardiography view recognition and view segmentation for video streams: a five-view window model, a change-point decoder, and the code to train and evaluate them"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -22,7 +22,8 @@ dependencies = [
   "torchvision>=0.16",
   "numpy>=1.23",
   "numpy<2; platform_system == 'Darwin' and platform_machine == 'x86_64'",
-  "pillow>=9.1",
+  "pillow>=13.0; python_version >= '3.11'",   # earlier versions have known vulnerabilities in their decoders
+  "pillow>=9.1; python_version < '3.11'",     # Pillow 13 does not exist for Python 3.10, see SECURITY.md
   "pydicom>=2.3",
   "opencv-python-headless>=4.7",
   "safetensors>=0.4",

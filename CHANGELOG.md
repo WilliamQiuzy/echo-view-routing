@@ -2,6 +2,13 @@
 
 Notable changes to this project. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the versions follow [Semantic Versioning](https://semver.org/).
 
+## [1.1.1] - 2026-11-20
+
+### Security
+
+- Pillow 13.0.0 instead of 12.3.0 in the pinned requirements and in the Docker images. Pillow before 13.0 has published vulnerabilities in several decoders. On Python 3.11 and newer the package now requires Pillow 13.0 or newer. `SECURITY.md` says what this means on Python 3.10, for which Pillow 13 does not exist.
+- The frames are the same: under 12.3.0 and 13.0.0 the package decodes 374 JPEG frames, with and without a gamma, to identical pixels.
+
 ## [1.1.0] - 2026-11-20
 
 ### Added
