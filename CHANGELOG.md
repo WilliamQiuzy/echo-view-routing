@@ -2,6 +2,24 @@
 
 Notable changes to this project. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the versions follow [Semantic Versioning](https://semver.org/).
 
+## [1.1.0] - 2026-11-20
+
+### Added
+
+- `echoview evaluate --benchmark test`: the project's frozen EV9V test benchmark, decoded once with the system's fixed setting, with 95% bootstrap intervals. Its definition file, `ev9v_test.json.gz`, names recordings by key, as the development file does.
+- `echoview evaluate --save-logits FILE` keeps the window logits of a run, so that its numbers can be looked into without running the models again.
+
+### Checked on a GPU (L40S, 2026-11-20)
+
+- The test evaluation with the published weights gives the row the research code stored for this system: 0.9089 on multi streams, 98.1% and 0.956 on recordings. Every number and both ends of every interval are equal to the last digit.
+- The frames this package decodes for the six sampling plans of stages 1 and 2 give the pixel hashes the research trainer stored, for all 180,000 windows.
+
+### Not yet in this release
+
+- The MIMIC-IV-Echo evaluations.
+- A full rerun of stage 3 with this package and its evaluation.
+- Checkpoints for stages 1 and 2.
+
 ## [1.0.0] - 2026-11-20
 
 The repository becomes a package.
