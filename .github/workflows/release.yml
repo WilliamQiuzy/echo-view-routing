@@ -1,0 +1,90 @@
+name: Release
+
+# Pushing a tag v1.2.3 publishes that version: the wheel and the source archive on a GitHub release, and the Docker
+# images on the GitHub Container Registry.
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    name: Wheel and source archive
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: The tag names the version of the package
+        run: |
+          version=$(python -c "import tomllib; print(tomllib.load(open('pyproject.toml', 'rb'))['project']['version'])")
+          test "v$version" = "$GITHUB_REF_NAME" || { echo "the tag is $GITHUB_REF_NAME, the package says $version"; exit 1; }
+      - name: Build and check
+        run: |
+          python -m pip install --upgrade build twine
+          python -m build
+          twine check --strict dist/*
+          (cd dist && sha256sum * > SHA256SUMS)
+      - name: Release notes from the changelog
+        run: |
+          awk -v version="${GITHUB_REF_NAME#v}" '
+            /^## \[/ { on = ($2 == "[" version "]"); next }
+            on' CHANGELOG.md > notes.md
+          test -s notes.md
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          case "$GITHUB_REF_NAME" in *rc*|*a*|*b*) early=--prerelease ;; *) early= ;; esac
+          gh release create "$GITHUB_REF_NAME" dist/* --title "$GITHUB_REF_NAME" --notes-file notes.md --verify-tag $early
+
+  image:
+    name: Docker image (${{ matrix.variant }})
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - variant: gpu        # PyTorch with its NVIDIA libraries on x86-64, the CPU build on ARM
+            suffix: ""
+            torch_index: ""
+          - variant: cpu
+            suffix: "-cpu"
+            torch_index: https://download.pytorch.org/whl/cpu
+    steps:
+      - uses: actions/checkout@v4
+      - name: Make room for the PyTorch layers
+        run: sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
+      - id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository }}
+          flavor: |
+            latest=false
+            suffix=${{ matrix.suffix }}
+          tags: |
+            type=pep440,pattern={{version}}
+            type=raw,value=latest,enable=${{ !contains(github.ref_name, 'rc') }}
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          build-args: TORCH_INDEX=${{ matrix.torch_index }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}

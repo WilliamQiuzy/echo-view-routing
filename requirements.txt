@@ -1,0 +1,17 @@
+# The versions this project was checked with: Python 3.12 on Linux with an NVIDIA GPU, the environment of the
+# published runs. `pip install -e .` accepts any version inside the ranges of pyproject.toml; this file pins the
+# tested ones, and the Docker image is built from it.
+#
+#   pip install -r requirements.txt && pip install --no-deps -e .
+#
+# A CPU-only machine can take PyTorch from its CPU index first:
+#   pip install torch==2.14.0 torchvision==0.29.0 --index-url https://download.pytorch.org/whl/cpu
+torch==2.14.0
+torchvision==0.29.0
+numpy==2.5.2
+pillow==12.3.0
+pydicom==3.0.2
+opencv-python-headless==5.0.0.93
+safetensors==0.8.0
+huggingface_hub==1.31.0
+scipy==1.18.1            # only `echoview evaluate` needs it
