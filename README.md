@@ -22,7 +22,8 @@ recording ──► 10 frames per second, grey, 224 × 224
 | EV9V development evaluation (`echoview evaluate`) | ready, reproduces the research numbers exactly |
 | Training, stages 1 to 3 (`echoview-train`) | ready; stage 3 matches the research trainer over 100 updates, stages 1 and 2 follow the published training logs over 750 updates; a full rerun of stage 3 is still to finish |
 | EV9V test benchmark and MIMIC-IV-Echo evaluation | not ported yet; the numbers below come from the research code |
-| Weights | private on the Hugging Face Hub, see [Licence](#licence-and-acknowledgements) |
+| Weights | on the Hugging Face Hub: [WilliamQiu123/echo-view-routing](https://huggingface.co/WilliamQiu123/echo-view-routing), see [Licence](#licence-and-acknowledgements) |
+| Docker image | `ghcr.io/williamqiuzy/echo-view-routing`, see [docs/DOCKER.md](docs/DOCKER.md) |
 
 ## Quick start
 
@@ -32,11 +33,20 @@ cd echo-view-routing
 python -m venv .venv && source .venv/bin/activate
 pip install -e .
 
-hf auth login            # the weights repository is private for now
 echoview selfcheck       # downloads the weights and five sample clips, then compares with stored results
 ```
 
 The self-check takes seconds on a GPU and about three minutes on a laptop CPU. It ends with `SELF-CHECK PASSED`.
+
+`pip install -e .` accepts any recent PyTorch. To get the exact versions the project was checked with (Python 3.12), install the pinned requirements first: `pip install -r requirements.txt && pip install --no-deps -e .`
+
+**With Docker**, nothing is installed on the host:
+
+```bash
+docker run --rm -v echoview-cache:/cache ghcr.io/williamqiuzy/echo-view-routing:latest echoview selfcheck
+```
+
+Add `--gpus all` on a machine with an NVIDIA GPU. [docs/DOCKER.md](docs/DOCKER.md) shows how to mount recordings and where results go.
 
 ```bash
 # one view per recording; a folder is searched for DICOM and video files
@@ -123,6 +133,8 @@ Stage 3 needs a GPU with 32 GB of memory. On a machine that can be switched off,
 | `docs/` | data, evaluation and training in detail |
 | `tests/` | unit tests and parity tests against the research code |
 | `tools/` | maintainers' scripts: building the Hub folder, exporting definitions from the research code |
+| `requirements.txt`, `requirements-dev.txt` | the pinned versions the project was checked with |
+| `Dockerfile` | the image: the package on top of the pinned requirements |
 
 ## Data
 
@@ -140,14 +152,10 @@ Stage 3 needs a GPU with 32 GB of memory. On a machine that can be switched off,
 ## Licence and acknowledgements
 
 - **Code.** MIT, see [LICENSE](LICENSE).
-- **Weights.** The encoder was initialised from EchoPrime (Vukadinovic, He, Ouyang and colleagues, Cedars-Sinai Medical Center). EchoPrime's Academic Software License prohibits transferring derivatives of it, and these weights are such a derivative. They are private until that question is settled. The licence asks publications to include: "The Software used in this research was created by Milos Vukadinovic, Bryan He, and David Ouyang of Cedars-Sinai Medical Center. © 2024 Cedars-Sinai Medical Center."
+- **Weights.** Not MIT. The encoder was initialised from EchoPrime (Vukadinovic, He, Ouyang and colleagues, Cedars-Sinai Medical Center), which is released under an [Academic Software License](https://github.com/echonet/EchoPrime/blob/main/LICENSE) for academic and nonprofit research. The weights are a derivative of EchoPrime and are offered under the terms of that licence: research use only, no commercial use, and please do not redistribute them. The licence asks publications to include: "The Software used in this research was created by Milos Vukadinovic, Bryan He, and David Ouyang of Cedars-Sinai Medical Center. © 2024 Cedars-Sinai Medical Center."
 - **Data.** EV9V is distributed under CC BY 4.0 by its authors.
 - **Architecture.** torchvision's `mvit_v2_s` (BSD 3-Clause).
 
 ## Citation
 
 A paper is in preparation. Until it is out, please cite this repository. GitHub's "Cite this repository" button reads [CITATION.cff](CITATION.cff).
-
-## History
-
-This repository was a research log before it became this package. The earlier code, with the reports of every experiment, is kept on the branch `research-archive`.

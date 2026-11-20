@@ -72,9 +72,8 @@ def _snapshot(patterns: list[str], repo: str, revision: str) -> Path:
         return Path(snapshot_download(repo_id=repo, revision=revision, allow_patterns=patterns))
     except (HfHubHTTPError, OSError, ValueError) as error:  # no access, no network, or offline without a cached copy
         raise WeightsError(
-            f"{', '.join(patterns)} could not be downloaded from {repo}: {type(error).__name__}. The repository may be private "
-            f"(log in with `hf auth login`), or this machine cannot reach the Hub. Or point {ENVIRONMENT_VARIABLE} at a folder "
-            "that holds the weights."
+            f"{', '.join(patterns)} could not be downloaded from {repo}: {type(error).__name__}. This machine may not reach the "
+            f"Hugging Face Hub. To run without it, point {ENVIRONMENT_VARIABLE} at a folder that holds the weights."
         ) from error
 
 

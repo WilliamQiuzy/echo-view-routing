@@ -42,6 +42,7 @@ echoview-train --config configs/stage3.json --seed 0 --cache /data/ev9v_cache --
 - `--resume` continues from that file when it is there. Without a checkpoint the run starts at its first update. A folder that holds the finished run is left alone. Give the same command every time the machine comes back.
 - **What a checkpoint holds.** The weights, the optimiser's state, the moving average, and the position of every random stream: the windows drawn, the input changes and dropout. The file is about 0.6 GB. It is deleted when the run finishes.
 - **How close a continued run comes.** A run that was cut and continued ends where an uncut run ends, up to the difference between two uncut runs. A test cuts a small run on the CPU and measures this: the weights differ by 2e-8 of their length, as two uncut runs do. The same test fails when any part of the checkpoint is left out.
+- **Checked on a GPU.** On 2026-11-20 a run of 100 updates of the published recipe (seed 0, without compilation) was killed on an L40S after update 60 and continued from its checkpoint of update 50. Its final weights ended 1.9e-5 of their length away from the uncut run's, which is also the distance between two uncut runs. The logged losses differed by at most 0.0003, against 0.0006 between two uncut runs.
 - **Other options are refused.** A checkpoint belongs to one recipe, seed, start file and set of plans. `--resume` with other values stops with a message that names them.
 
 ### The recipe
@@ -116,5 +117,3 @@ This was checked on 2026-11-18 on an L40S with the PyTorch, CUDA and cuDNN versi
 In the first 375 updates the gap to the published log is as large as the gap between two runs of this package.
 
 **Still open.** For updates 376 to 750 two runs of this package have not been compared with each other yet. That comparison was also made before the learning rates of stages 1 and 2 were corrected in their last binary digit (see the changelog), and it will be repeated with the corrected code. Whole reruns of stages 1 and 2 were not made: 750 of 3,750 updates were compared. The pixel hashes of the three stage-2 plans are still being checked.
-
-The code of the original runs is in the research archive of this repository (branch `research-archive`, `scripts/train_raw_video_context.py` and `scripts/train_video_within_view.py`).

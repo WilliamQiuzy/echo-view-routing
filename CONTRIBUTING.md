@@ -9,7 +9,7 @@ git clone https://github.com/WilliamQiuzy/echo-view-routing
 cd echo-view-routing
 python -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"
-pytest          # about two minutes on a laptop; needs no GPU, no weights and no dataset
+pytest          # about five minutes on a laptop; needs no GPU, no weights and no dataset
 ruff check src tests tools
 ```
 
@@ -17,7 +17,7 @@ Three groups of tests are left out by default because they need something that i
 
 | Marker | Needs | Run with |
 |---|---|---|
-| `weights` | the published weights (`hf auth login` or `ECHOVIEW_WEIGHTS`) | `pytest -m weights` |
+| `weights` | the published weights (a download from the Hub, or `ECHOVIEW_WEIGHTS`) | `pytest -m weights` |
 | `gpu` | a CUDA GPU | `pytest -m gpu` |
 | `ev9v` | the EV9V dataset (`ECHOVIEW_EV9V`) | `pytest -m ev9v` |
 

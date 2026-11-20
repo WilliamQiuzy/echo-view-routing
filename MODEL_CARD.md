@@ -20,13 +20,12 @@ This model reads an echocardiography recording and names its view: PLAX, PSAX, A
 
 The code is at <https://github.com/WilliamQiuzy/echo-view-routing>. This repository holds the weights.
 
-> **Access.** This repository is private. The weights were fine-tuned from the EchoPrime video encoder, whose licence does not allow passing derivatives on. They stay private until that question is settled. See [Licence](#licence).
+> **Licence.** The weights were fine-tuned from the EchoPrime video encoder and fall under EchoPrime's Academic Software License: academic and nonprofit research only. See [Licence](#licence).
 
 ## Use it
 
 ```bash
 pip install "git+https://github.com/WilliamQiuzy/echo-view-routing"
-hf auth login            # needed while this repository is private
 echoview selfcheck       # downloads the weights and five sample clips, then compares with stored results
 echoview classify /path/to/recordings --out views.csv
 echoview segment clip1.dcm clip2.dcm clip3.dcm --out segments.csv
@@ -95,7 +94,6 @@ How to read these numbers:
 | `C2_s*/final.pt` | the frozen training output, a plain PyTorch state dict; `model.safetensors` holds the same tensors bit for bit |
 | `C2_s*/config.json`, `train_log.jsonl` | the stage-3 training configuration and its log |
 | `C2_s*/decoder.json` | the decoder setting of that seed when it is run alone |
-| `C2_s*/FROZEN_MANIFEST.json` | checksums and provenance written when the seed was frozen |
 | `decoder.json` | the decoder setting of the ensemble |
 | `config.json` | the system in one file: classes, members, input, architecture |
 | `examples/` | five public EV9V clips, their labelled views and the stored results of the self-check |
@@ -104,7 +102,7 @@ How to read these numbers:
 
 ## Licence
 
-- **Weights.** The encoder was initialised from EchoPrime (Vukadinovic, He, Ouyang and colleagues, Cedars-Sinai Medical Center). EchoPrime is released under an Academic Software License for academic and nonprofit research. That licence prohibits transferring the software and derivatives of it to others. These weights are such a derivative, so please do not redistribute them. The licence asks publications to include: "The Software used in this research was created by Milos Vukadinovic, Bryan He, and David Ouyang of Cedars-Sinai Medical Center. © 2024 Cedars-Sinai Medical Center."
+- **Weights.** The encoder was initialised from EchoPrime (Vukadinovic, He, Ouyang and colleagues, Cedars-Sinai Medical Center). EchoPrime is released under an [Academic Software License](https://github.com/echonet/EchoPrime/blob/main/LICENSE) for academic and nonprofit research. These weights are a derivative of EchoPrime and are offered under the terms of that licence: research use only, no commercial use, and please do not redistribute them. The licence asks publications to include: "The Software used in this research was created by Milos Vukadinovic, Bryan He, and David Ouyang of Cedars-Sinai Medical Center. © 2024 Cedars-Sinai Medical Center."
 - **Code.** The code in the GitHub repository is under the MIT licence.
 - **Sample clips.** The clips in `examples/` are from EV9V (`bgx666/EV9V` on the Hugging Face Hub), distributed under CC BY 4.0. Their file names are the dataset's own. EV9V's code PLHLA is the parasternal long axis (PLAX) and PMASA a parasternal short axis (PSAX).
 - **Architecture.** The network is torchvision's `mvit_v2_s` (BSD 3-Clause).

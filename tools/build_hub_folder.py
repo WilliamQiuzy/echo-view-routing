@@ -6,8 +6,9 @@
 
 For every seed the frozen `final.pt` is checked against its published checksum, loaded strictly into the network,
 written as `model.safetensors` and read back: every tensor must be bit for bit the one of `final.pt`. The frozen
-files are copied beside it unchanged, and the sample clips of the self-check go to `examples/`. Nothing is trained or
-changed here. The script prints the checksums of the safetensors files; they belong in `src/echoview/reference.py`.
+weights, configuration, decoder setting and training log are copied beside it unchanged, and the sample clips of the
+self-check go to `examples/`. Nothing is trained or changed here. The script prints the checksums of the safetensors
+files; they belong in `src/echoview/reference.py`.
 """
 from __future__ import annotations
 
@@ -88,7 +89,6 @@ def build(frozen: Path, examples: Path, out: Path, card: Path | None) -> dict:
         target.mkdir()
         for name in COPIED:
             shutil.copyfile(source / name, target / name)
-        shutil.copyfile(source / "MANIFEST.json", target / "FROZEN_MANIFEST.json")
         convert(target / "final.pt", target / "model.safetensors", seed)
     (out / "decoder.json").write_text(json.dumps(ENSEMBLE_DECODER, indent=1) + "\n")
     (out / "config.json").write_text(json.dumps(SYSTEM, indent=1) + "\n")
