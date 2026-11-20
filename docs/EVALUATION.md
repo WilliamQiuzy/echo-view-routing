@@ -125,6 +125,7 @@ python -m echoview.evaluation.uncertain_study report --logits dev_logits.npz --c
 ```
 
 - **What the commands do.** The first keeps the window logits of every development sequence. `choose` reads the calibration half only and writes the band, the counts of all 300 settings and the candidate. `report` reads the selection half only and writes the two-part report of UNCERTAIN.md, section 5, with the decision. Both run on the CPU. When the study ran, each took about half a minute.
+- **A later read of the test benchmark** with the released rule is planned and reported in UNCERTAIN.md, section 9. Its command is `python -m echoview.evaluation.uncertain_study confirm --logits test_logits.npz --out test_report.json`. The file holds the window logits of exactly the benchmark's sequences, in the format of `echoview evaluate --benchmark test --save-logits`, and the command stops unless they give the benchmark's published numbers.
 - **The files of the study** are in `docs/uncertain/`: `choice.json` and `report.json`, as the commands wrote them. They hold pooled counts only.
 - **The measures** are in `echoview.evaluation.selective`. They score the labelled part and the uncertain part separately, and they put every number that can only improve when more is declined beside what it cost.
 

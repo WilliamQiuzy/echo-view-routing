@@ -4,6 +4,10 @@ Notable changes to this project. The format follows [Keep a Changelog](https://k
 
 ## [Unreleased]
 
+### Added
+
+- `python -m echoview.evaluation.uncertain_study confirm` scores the released uncertain rule on the test benchmark and chooses nothing. It reads stored window logits, stops unless they give the benchmark's four published numbers, and never replaces its output. `docs/UNCERTAIN.md`, section 9, is the plan of that read, committed before it.
+
 ## [1.2.0] - 2026-11-20
 
 ### Added

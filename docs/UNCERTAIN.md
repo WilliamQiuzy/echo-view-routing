@@ -1,6 +1,6 @@
 # The "uncertain" output
 
-**Status: the study is done, and its rule is released.** `echoview segment --uncertain` applies it: a band of 0.3 s on each side of every cut, `f_low = 2`, `f_high = 1.25`, `m = 0.1`, seeds off. Sections 1 to 6 are the plan. They were written, reviewed and committed before any result of the study existed. Sections 7 and 8 hold the results, in the order they are produced.
+**Status: the study is done, and its rule is released.** `echoview segment --uncertain` applies it: a band of 0.3 s on each side of every cut, `f_low = 2`, `f_high = 1.25`, `m = 0.1`, seeds off. Sections 1 to 6 are the plan. They were written, reviewed and committed before any result of the study existed. Sections 7 and 8 hold the results, in the order they were produced. Section 9 is a later read of the test benchmark with the released rule: its plan was committed before the read, and the read has not been made yet.
 
 Words used here: a **piece** is a run of samples of the reference that come from one recording. A **segment** is a run of samples to which the system gives one view. A **cut** is a sample whose view, as the system gives it, differs from the view of the sample before it.
 
@@ -244,3 +244,20 @@ Of the labelled runs the system returns, 97.8% are right at their middle (1,096 
 - **What is left.** 14 wrong pieces from 8 recordings keep their wrong view, and half of the A4C against A5C errors stay labelled.
 - **Where it holds.** The rule passed on EV9V streams joined from recordings, where a view changes from one sample to the next. A continuous examination has no such splices, and nothing here measures it. The test benchmark and MIMIC-IV-Echo were not read with the rule.
 - **Uncertain is still not "other".** Nothing in this study is about views outside the five.
+
+## 9. One read of the test benchmark
+
+**Status: planned, not run.** Everything in this section down to "The result" was written and committed before the read.
+
+The owner of the project authorised one read of its frozen EV9V test benchmark with the released rule, on 2026-11-20. The development study above did not read it.
+
+- **What is read.** The window logits of the published ensemble for the 1,160 sequences of the test benchmark: 800 single recordings, 240 pair streams and 120 multi streams, 72,185 samples. They were stored by the evaluation of 2026-11-20 that reproduced the benchmark's published numbers (EVALUATION.md, "The test benchmark"), as one file with SHA-256 `c5df435ef3022dd55f711c4efa72c74f19aad7f40193f179902c57dca97e288d`. No model runs again. Before it scores anything, the command checks that the file holds exactly the benchmark's 1,160 arrays and that they give its four published numbers: the segment F1 of the multi streams and of the pair streams, and the accuracy and the macro-F1 of the single recordings. It stops if one of them differs. It writes the file's hash into its output.
+- **What is computed.** One command, `python -m echoview.evaluation.uncertain_study confirm`, scores the published output, the band alone and the released rule with the two-part report of section 5, and the band at every width from 0 to 8. The benchmark has no examination-order streams. The command does not replace an output file that exists.
+- **Nothing is chosen.** The rule is the released one, read from the package. Whatever the read shows, the released rule stays as it is, and the result is reported beside the development numbers in the README and the model card.
+- **How the result is worded.** The test is the one of step 3: `S` over the pieces beyond the band, with its distribution from a bootstrap over recordings (2,000 draws). If `S` and its 5th percentile are above 0, the three tests for whole pieces are "confirmed on the test benchmark". If not, they are "not confirmed on the test benchmark". The band has no test of its own. For the released width, its coverage and its error among the labelled samples are reported with their intervals, and so is the comparison with the low-confidence reference. The other widths are given without intervals, as in section 8.
+- **What is expected.** From the selection half: about 92% of the samples keep a view over all sequences and about 82% in the multi streams, and the share of wrong samples among them is about a third of the published output's. The check on the selection half passed by a small margin, so a failure of the `S` test here would be no surprise.
+- **Limits known beforehand.** The test benchmark is not untouched: earlier rounds of the project were evaluated on it, though never with a rule for uncertain samples. The intervals are those of the development study, over sequences for the numbers about samples and over recordings for the numbers about pieces. The benchmark's own published intervals draw examinations for the single recordings, which this report does not do. The read is entered in the project's record of test reads.
+
+### The result
+
+Not read yet.

@@ -1,7 +1,9 @@
 """The study that chooses the uncertain rule: the band, the score of the tests for whole pieces, and the decision."""
 from __future__ import annotations
 
+import hashlib
 import json
+from dataclasses import asdict
 
 import numpy as np
 import pytest
@@ -31,6 +33,7 @@ def decoded(name: str, middle: np.ndarray, shift: int = 0) -> uncertain_study.De
 CLEAR = flat(2, 0.9)  # read right, with a wide margin
 WRONG = flat(3, 0.5, (2, 0.35))  # read as view 3 by a margin of 0.15: a wrong piece
 NARROW = flat(2, 0.5, (3, 0.35))  # read right by the same narrow margin
+WEAK = flat(3, 0.5, (2, 0.45))  # a wrong piece with a margin of 0.05, which the released rule declines
 
 
 def test_the_mask_from_the_parts_is_the_mask_of_the_rule():
@@ -136,8 +139,11 @@ def test_a_rule_outside_the_study_is_refused_by_name():
 def halves(monkeypatch):
     """The command line on two small synthetic halves instead of the development benchmark."""
     data = {"calibration": [decoded(f"w{k}", WRONG) for k in range(5)] + [decoded(f"c{k}", CLEAR) for k in range(40)],
-            "selection": [decoded(f"x{k}", WRONG) for k in range(6)] + [decoded(f"y{k}", CLEAR) for k in range(40)]}
-    monkeypatch.setattr(uncertain_study, "load", lambda path, half: data[half])
+            "selection": [decoded(f"x{k}", WRONG) for k in range(6)] + [decoded(f"y{k}", CLEAR) for k in range(40)],
+            "test": [decoded(f"t{k}", WEAK) for k in range(7)] + [decoded(f"u{k}", CLEAR) for k in range(40)]}
+    asked = []
+    monkeypatch.setattr(uncertain_study, "load", lambda path, half: asked.append(half) or data[half])
+    return asked
 
 
 def test_the_two_commands_write_their_files_whole_and_once(tmp_path, halves, capsys):
@@ -159,6 +165,79 @@ def test_the_two_commands_write_their_files_whole_and_once(tmp_path, halves, cap
     assert uncertain_study.main(["choose", "--logits", str(logits), "--out", str(choice), "--draws", "50", "--force"]) == 0
     with pytest.raises(SystemExit):  # argparse refuses it
         uncertain_study.main(["choose", "--logits", str(logits), "--out", str(tmp_path / "other.json"), "--draws", "0"])
+
+
+def test_confirm_scores_the_released_rule_on_the_test_benchmark_and_chooses_nothing(tmp_path, halves, capsys):
+    logits, out = tmp_path / "test_logits.npz", tmp_path / "test_report.json"
+    logits.write_bytes(b"logits")
+    assert uncertain_study.main(["confirm", "--logits", str(logits), "--out", str(out), "--draws", "50"]) == 0
+    assert halves == ["test"]  # the test benchmark and no development half
+    written = json.loads(out.read_text())
+    assert set(written) == {"published", "band_alone", "bands", "released", "confirmation"}
+    released = asdict(uncertain.released())
+    assert written["released"]["rule"] == released and written["confirmation"]["rule"] == released
+    assert written["band_alone"]["rule"] == asdict(uncertain.Rule(band=released["band"])) and written["published"]["rule"] == asdict(uncertain.OFF)
+    assert written["released"]["samples"]["all"]["sequences"] == 47
+    # the seven weak wrong pieces are declined by the rule and by nothing else: the verdict is the rule's own score
+    assert [written[name]["pieces"]["all"]["score"] for name in ("published", "band_alone", "released")] == [0.0, 0.0, 7.0]
+    verdict = written["confirmation"]
+    assert verdict["score"] == 7.0 and verdict["score_p5"] == written["released"]["pieces"]["all"]["score_p5_p95"][0] > 0 and verdict["confirmed"] is True
+    assert verdict["draws"] == 50 and verdict["logits_sha256"] == hashlib.sha256(b"logits").hexdigest()
+    assert json.loads(capsys.readouterr().out) == verdict
+    before = out.read_bytes()
+    with pytest.raises(SystemExit, match="not replaced"):  # one read, one file
+        uncertain_study.main(["confirm", "--logits", str(logits), "--out", str(out)])
+    with pytest.raises(SystemExit):  # and no option to replace it
+        uncertain_study.main(["confirm", "--logits", str(logits), "--out", str(out), "--force"])
+    assert out.read_bytes() == before
+
+
+def test_confirm_does_not_confirm_tests_that_decline_no_wrong_piece():
+    verdict = uncertain_study.confirm([decoded(f"c{k}", CLEAR) for k in range(12)], 50)["confirmation"]
+    assert verdict["score"] == 0.0 and verdict["confirmed"] is False
+
+
+def right_logits(sequence: benchmark.Sequence) -> np.ndarray:
+    """Window logits (windows, 3 seeds, 5 views) that favour the reference view at every window's centre."""
+    from echoview.windows import window_plan
+
+    centres = np.asarray(window_plan(len(sequence))[0], int)
+    logits = np.zeros((len(centres), 3, 5), np.float32)
+    logits[np.arange(len(centres)), :, sequence.labels[np.clip(centres, 0, len(sequence) - 1)]] = 8.0
+    return logits
+
+
+def test_the_test_benchmark_is_loaded_only_from_logits_that_give_its_published_numbers(tmp_path, monkeypatch):
+    piece = lambda name, view, length=40: benchmark.Fragment(name, view, 1.0, tuple(range(length)))
+    sequences = (benchmark.Sequence("n0", "native", (piece("a", 0),)), benchmark.Sequence("n1", "native", (piece("b", 2),)),
+                 benchmark.Sequence("p0", "pairs", (piece("a", 0), piece("b", 2))),
+                 benchmark.Sequence("m0", "multi", (piece("a", 0), piece("b", 2), piece("c", 4), piece("d", 1))))
+    asked = []
+    monkeypatch.setattr(uncertain_study.benchmark, "load_test", lambda: asked.append("test") or sequences)
+    monkeypatch.setattr(uncertain_study.benchmark, "load", lambda: asked.append("dev") or {"calibration": (), "selection": ()})
+    good = tmp_path / "test_logits.npz"
+    np.savez(good, **{s.id: right_logits(s) for s in sequences})
+    with pytest.raises(SystemExit, match="do not give the published numbers"):  # the real benchmark's numbers are not those of this toy
+        uncertain_study.load(good, "test")
+    assert asked == ["test"]
+    numbers = uncertain_study.published_numbers(uncertain_study.decode(sequences, good))
+    assert set(numbers) == set(uncertain_study.PUBLISHED_TEST) and numbers["segment_f1_50_multi"] == 1.0 and numbers["native_accuracy"] == 1.0
+    monkeypatch.setattr(uncertain_study, "PUBLISHED_TEST", numbers)
+    assert [d.sequence.id for d in uncertain_study.load(good, "test")] == ["n0", "n1", "p0", "m0"]
+    for name in numbers:  # every one of the four numbers is checked
+        monkeypatch.setattr(uncertain_study, "PUBLISHED_TEST", numbers | {name: numbers[name] - 0.01})
+        with pytest.raises(SystemExit, match=name):
+            uncertain_study.load(good, "test")
+    monkeypatch.setattr(uncertain_study, "PUBLISHED_TEST", numbers)
+    more = tmp_path / "more.npz"
+    np.savez(more, extra=right_logits(sequences[0]), **{s.id: right_logits(s) for s in sequences})
+    with pytest.raises(SystemExit, match="5 arrays"):  # exactly the benchmark's sequences
+        uncertain_study.load(more, "test")
+    swapped = tmp_path / "swapped.npz"
+    np.savez(swapped, n0=right_logits(sequences[1]), n1=right_logits(sequences[0]), p0=right_logits(sequences[2]), m0=right_logits(sequences[3]))
+    with pytest.raises(SystemExit, match="native_accuracy"):  # arrays of equal size under the wrong names do not pass
+        uncertain_study.load(swapped, "test")
+    assert uncertain_study.PUBLISHED_F1 == {"selection": 0.9594, "calibration": 0.9837}
 
 
 def test_report_refuses_a_choice_file_that_is_not_one(tmp_path, halves):

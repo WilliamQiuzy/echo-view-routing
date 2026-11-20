@@ -8,10 +8,18 @@ the EV9V development benchmark and then scored on the selection half, by two sep
 reads the calibration half only, `report` the selection half only. Both run on the CPU and write pooled numbers: no
 sequence and no recording appears in their output by itself. Neither replaces a file that exists, unless `--force`
 is given: the choice of the first command is what the second one has to follow.
+
+  python -m echoview.evaluation.uncertain_study confirm --logits test_logits.npz --out test_report.json
+
+`confirm` reads the test benchmark. `test_logits.npz` holds the window logits of exactly its sequences, in the format
+of `echoview evaluate --benchmark test --save-logits`, and must give the benchmark's published numbers. The command
+scores the published output, the band alone and the released rule there, chooses nothing and never replaces its
+output file (docs/UNCERTAIN.md, section 9).
 """
 from __future__ import annotations
 
 import argparse
+import hashlib
 import itertools
 import json
 import zipfile
@@ -32,6 +40,11 @@ SEEDS = (False, True)
 WITHIN = 0.90  # step 1: the share of matched changes the band must hold
 MIN_WRONG, MIN_RECORDINGS = 4, 3  # step 2: the bar for the candidate
 PUBLISHED_F1 = {"selection": 0.9594, "calibration": 0.9837}  # of the published system: the logits must give it
+# The published numbers of the test benchmark (docs/EVALUATION.md). Each is a ratio of counts, so logits of the
+# published system give them exactly, and logits that differ in one decision miss one of them by far more than this.
+PUBLISHED_TEST = {"segment_f1_50_multi": 0.908908908908909, "segment_f1_50_pairs": 0.9847009735744089,
+                  "native_accuracy": 0.98125, "native_macro_f1": 0.9561411223630938}
+CLOSE = 1e-6
 TESTS = {"weak cut, lower threshold": {"f_low": 1.0}, "weak cut, higher threshold": {"f_high": 1.0}, "margin": {"margin": 0.0},
          "seeds": {"seeds": False}}
 
@@ -193,18 +206,53 @@ def final(half: list[Decoded], choice: dict, draws: int) -> dict:
     return out
 
 
-def load(path: Path, half: str) -> list[Decoded]:
-    sequences = benchmark.load()[half]
+def confirm(sequences: list[Decoded], draws: int) -> dict:
+    """The released rule on the test benchmark: the published output, the band alone, the band at every width and the
+    rule, with the test of step 3 as the verdict about the tests for whole pieces. Nothing is chosen here."""
+    rule = uncertain.released()
+    on_grid(rule)
+    out = {"published": evaluate(sequences, uncertain.OFF, draws), "band_alone": evaluate(sequences, uncertain.Rule(band=rule.band), draws),
+           "bands": band_curve(sequences), "released": evaluate(sequences, rule, draws)}
+    pieces = out["released"]["pieces"]["all"]
+    low = pieces["score_p5_p95"][0]
+    out["confirmation"] = {"rule": asdict(rule), "score": pieces["score"], "score_p5": low,
+                           "confirmed": bool(pieces["score"] > 0 and low is not None and low > 0), "draws": draws}
+    return out
+
+
+def decode(sequences: tuple[benchmark.Sequence, ...], path: Path, where: str = "the benchmark", exact: bool = False) -> list[Decoded]:
+    """The sequences decoded from a file of window logits. With `exact` the file may hold no other array."""
     try:
         with np.load(path) as stored:
             missing = [s.id for s in sequences if s.id not in stored.files]
             if missing:
-                raise SystemExit(f"{path} lacks the logits of {len(missing)} of the {len(sequences)} sequences of the {half} half")
-            decoded = [Decoded.from_logits(s, stored[s.id]) for s in sequences]
+                raise SystemExit(f"{path} lacks the logits of {len(missing)} of the {len(sequences)} sequences of {where}")
+            if exact and len(stored.files) != len(sequences):
+                raise SystemExit(f"{path} holds {len(stored.files)} arrays; {where} has {len(sequences)} sequences")
+            return [Decoded.from_logits(s, stored[s.id]) for s in sequences]
     except (OSError, ValueError, zipfile.BadZipFile) as error:
         raise SystemExit(f"cannot read the logits file {path}: {error}") from error
+
+
+def published_numbers(decoded: list[Decoded]) -> dict:
+    """The numbers of the published output that tell whether logits are the published system's."""
     scored = tuple(d.sequence for d in decoded if d.sequence.kind != "exam")
-    f1 = metrics.evaluate({d.sequence.id: d.decided for d in decoded}, scored)["segment_f1_50_multi"]
+    numbers = metrics.evaluate({d.sequence.id: d.decided for d in decoded}, scored)
+    return {name: numbers[name] for name in PUBLISHED_TEST}
+
+
+def load(path: Path, half: str) -> list[Decoded]:
+    """The decoded sequences of a development half, or of the test benchmark for `half` "test". Logits that do not
+    give the published numbers stop the command before anything is scored."""
+    if half == "test":
+        decoded = decode(benchmark.load_test(), path, "the test benchmark", exact=True)
+        numbers = published_numbers(decoded)
+        off = {name: numbers[name] for name, value in PUBLISHED_TEST.items() if not abs(numbers[name] - value) < CLOSE}
+        if off:
+            raise SystemExit(f"the test benchmark: these logits do not give the published numbers. They give {off}; published: {PUBLISHED_TEST}")
+        return decoded
+    decoded = decode(benchmark.load()[half], path, f"the {half} half")
+    f1 = published_numbers(decoded)["segment_f1_50_multi"]
     if round(f1, 4) != PUBLISHED_F1[half]:
         raise SystemExit(f"{half}: these logits give a segment F1@50 of {f1:.4f}; the published system has {PUBLISHED_F1[half]}")
     return decoded
@@ -247,19 +295,20 @@ def write(out: Path, content: dict) -> None:
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     commands = parser.add_subparsers(dest="command", required=True)
-    for name in ("choose", "report"):
+    for name in ("choose", "report", "confirm"):
         p = commands.add_parser(name)
         p.add_argument("--logits", required=True, type=Path)
         p.add_argument("--out", required=True, type=Path)
         p.add_argument("--draws", type=positive, default=2000)
-        p.add_argument("--force", action="store_true", help="replace the output file if it exists")
+        if name != "confirm":  # the one read of the test benchmark is not made twice
+            p.add_argument("--force", action="store_true", help="replace the output file if it exists")
     commands.choices["report"].add_argument("--choice", required=True, type=Path)
     args = parser.parse_args(argv)
     inputs = [args.logits] + ([args.choice] if args.command == "report" else [])
     if any(args.out.resolve() == path.resolve() for path in inputs):
         raise SystemExit("--out names one of the input files")
-    if args.out.exists() and not args.force:
-        raise SystemExit(f"{args.out} exists; it is not replaced without --force")
+    if args.out.exists() and not getattr(args, "force", False):
+        raise SystemExit(f"{args.out} exists; it is not replaced" + (" without --force" if hasattr(args, "force") else ""))
     if args.command == "choose":
         half = load(args.logits, "calibration")
         out = choose(half)
@@ -269,10 +318,14 @@ def main(argv: list[str] | None = None) -> int:
             if out["goes_on"]:
                 out["calibration_report_chosen_here"]["candidate"] = evaluate(half, uncertain.Rule(**out["candidate"]["rule"]), args.draws)
         headline = {key: out.get(key) for key in ("band", "candidate", "goes_on", "why_not", "stopped")}
-    else:
+    elif args.command == "report":
         choice = read_choice(args.choice)
         out = final(load(args.logits, "selection"), choice, args.draws)
         headline = out["decision"]
+    else:
+        out = confirm(load(args.logits, "test"), args.draws)
+        out["confirmation"]["logits_sha256"] = hashlib.sha256(args.logits.read_bytes()).hexdigest()
+        headline = out["confirmation"]
     write(args.out, out)
     print(json.dumps(headline))
     return 0
