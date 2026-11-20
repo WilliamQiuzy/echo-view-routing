@@ -14,11 +14,11 @@ datasets:
   - bgx666/EV9V
 ---
 
-# echo-view-routing: the C2 ensemble (`C2_ens_v1`)
+# EchoRouter
 
-This model reads an echocardiography recording and names its view: PLAX, PSAX, A4C, A5C or SC4C. For a longer stream, such as several recordings of one examination joined together, it also says where one view ends and the next begins.
+EchoRouter reads an echocardiography recording and names its view: PLAX, PSAX, A4C, A5C or SC4C. For a longer stream, such as several recordings of one examination joined together, it also says where one view ends and the next begins.
 
-The code is at <https://github.com/WilliamQiuzy/echo-view-routing>. This repository holds the weights.
+The code is at <https://github.com/WilliamQiuzy/echo-view-routing>. This repository holds the weights: three training seeds that run as one ensemble. In the project's records the system is called `C2_ens_v1`.
 
 > **Licence.** The weights were fine-tuned from the EchoPrime video encoder and fall under EchoPrime's Academic Software License: academic and nonprofit research only. See [Licence](#licence).
 

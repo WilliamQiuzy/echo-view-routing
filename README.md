@@ -1,4 +1,4 @@
-# echo-view-routing
+# EchoRouter
 
 [![CI](https://github.com/WilliamQiuzy/echo-view-routing/actions/workflows/ci.yml/badge.svg)](https://github.com/WilliamQiuzy/echo-view-routing/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/WilliamQiuzy/echo-view-routing)](https://github.com/WilliamQiuzy/echo-view-routing/releases)
@@ -6,9 +6,11 @@
 [![Weights on the Hugging Face Hub](https://img.shields.io/badge/weights-Hugging%20Face-yellow.svg)](https://huggingface.co/WilliamQiu123/echo-view-routing)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](pyproject.toml)
 
-Echocardiography view recognition and view segmentation for video.
+EchoRouter reads echocardiography video and names the view: **PLAX, PSAX, A4C, A5C or SC4C**. For a longer stream, such as several recordings of one examination joined together, it also says where one view ends and the next begins. This repository holds the code to run it, to evaluate it and to train it. The weights are on the [Hugging Face Hub](https://huggingface.co/WilliamQiu123/echo-view-routing).
 
-The model reads a recording and names its view: **PLAX, PSAX, A4C, A5C or SC4C**. For a longer stream, such as several recordings of one examination joined together, it also says where one view ends and the next begins. This repository holds the code to run the model, to evaluate it and to train it. The weights are on the Hugging Face Hub.
+![Five recordings joined into one stream: the frames the model reads, the view it gives every 0.1 s, and the reference below](docs/assets/five_views.webp)
+
+Five public EV9V recordings joined into one stream. The wide lane is EchoRouter's answer for every 0.1 s, the narrow lane the reference. `python tools/render_demo.py` makes such a picture of your own recordings.
 
 ```text
 recording ──► 10 frames per second, grey, 224 × 224
@@ -16,17 +18,21 @@ recording ──► 10 frames per second, grey, 224 × 224
           ──► one view per recording, or a change-point decoder that cuts a stream into views
 ```
 
-## Status
+## How it compares
 
-| Part | State |
-|---|---|
-| Inference (`echoview classify`, `segment`, Python API) | ready, checked against the research code |
-| EV9V development evaluation (`echoview evaluate`) | ready, reproduces the research numbers exactly |
-| Training, stages 1 to 3 (`echoview-train`) | ready; stage 3 matches the research trainer over 100 updates, and a full rerun of its three seeds lands within 0.004 of the published seeds; stages 1 and 2 follow the published training logs over 750 updates as closely as two runs of the same code follow each other |
-| EV9V test benchmark (`echoview evaluate --benchmark test`) | ready, reproduces the research row exactly |
-| MIMIC-IV-Echo evaluation | not part of the package; the numbers below come from the research code |
-| Weights | on the Hugging Face Hub: [WilliamQiu123/echo-view-routing](https://huggingface.co/WilliamQiu123/echo-view-routing), see [Licence](#licence-and-acknowledgements) |
-| Docker image | `ghcr.io/williamqiuzy/echo-view-routing`, see [docs/DOCKER.md](docs/DOCKER.md) |
+On the project's frozen EV9V test benchmark we ran four published approaches beside EchoRouter, on the same recordings and the same streams.
+
+| System | Streams: segment F1 at 50% overlap | Single recordings: accuracy | Single recordings: macro-F1 |
+|---|---|---|---|
+| **EchoRouter** | **0.909** | 98.1% | 0.956 |
+| EchoViewCLIP, stage 1, sliding window | 0.867 | **98.9%** | **0.972** |
+| STFM | 0.859 | 98.3% | 0.960 |
+| ASFormer on frame features | 0.856 | 98.3% | 0.956 |
+| EchoPrime's view classifier with our decoder | 0.851 | 97.9% | 0.944 |
+
+- **Where EchoRouter is ahead: cutting a stream into views.** Its segment F1 is 0.04 to 0.06 above the others. A paired bootstrap was made for its stage-2 model, which scores 0.917 on the same streams: that model is 0.05 to 0.07 ahead of each of the four, and every interval lies above zero. The ensemble itself was not compared pairwise.
+- **Where it is not ahead: naming a single recording.** There the five are close, and EchoViewCLIP is the best of them.
+- **How to read the table.** We ran all five. STFM, ASFormer and EchoViewCLIP were trained by us on EV9V's training recordings, and EchoPrime's classifier is the released one with our decoder on its outputs. The benchmark is ours, it is not the task these methods were published for, and it is not an untouched test set. The four other rows date from 2026-10-23, EchoRouter's from 2026-11-13.
 
 ## Quick start
 
@@ -88,7 +94,7 @@ Options for every command:
 
 ## Results
 
-All numbers are for the published ensemble, `C2_ens_v1`.
+All numbers are for the published weights (identifier `C2_ens_v1`).
 
 | Data | What was measured | Result |
 |---|---|---|
@@ -102,7 +108,7 @@ The MIMIC rows are agreement between two models, not accuracy: MIMIC-IV-Echo has
 
 ## Reproduce the evaluation
 
-The development evaluation needs the public EV9V dataset (`bgx666/EV9V` on the Hugging Face Hub, CC BY 4.0) and a GPU.
+Both evaluations need the public EV9V dataset (`bgx666/EV9V` on the Hugging Face Hub, CC BY 4.0) and a GPU. Run beside the research code on the same weights, they give its numbers exactly.
 
 ```bash
 pip install -e ".[evaluation]"
@@ -118,6 +124,8 @@ See [docs/EVALUATION.md](docs/EVALUATION.md) for the benchmarks, the metrics and
 ## Train
 
 The model was trained in three stages, each with its recipe in `configs/`. Stage 3 is the stage that produced the published seeds. It continues a stage-2 model for 1,500 updates with input augmentation.
+
+The training code was checked against the research trainer and the published training logs. A full rerun of the three seeds with this package lands within 0.004 of the published seeds on both development halves.
 
 ```bash
 echoview-cache --images /data/EV9V/Images --out /data/ev9v_cache           # 18 GB, once
