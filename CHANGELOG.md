@@ -4,6 +4,16 @@ Notable changes to this project. The format follows [Keep a Changelog](https://k
 
 ## [Unreleased]
 
+### Added
+
+- The system has a name: **EchoRouter**. `C2_ens_v1` stays the identifier of the published weights, and the weights do not change. `echoview.MODEL_NAME` holds the name.
+- `tools/render_demo.py` renders a stream with the view the system gives every 0.1 s under it, as an animated WebP, a GIF or an MP4. The README opens with one made from five public EV9V recordings.
+- The README compares the system with four published approaches on the EV9V test benchmark.
+
+### In work, not released
+
+- An "uncertain" output, with which the system can decline samples where its evidence is weak. `Ensemble.segment(frames, rule)` accepts a rule and `echoview.evaluation.selective` evaluates the labelled part and the uncertain part separately. No rule is released yet and the command line has no option for it. `docs/UNCERTAIN.md` is the plan of the study that chooses the rule. It was committed before the study ran.
+
 ### Removed
 
 - The Docker images of versions 1.0.0 and 1.1.0 were withdrawn from the registry: they held Pillow 12.3.0. The releases themselves and their wheels stay.

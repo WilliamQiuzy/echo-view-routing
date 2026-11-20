@@ -1,6 +1,6 @@
 # The "uncertain" output
 
-**Status: the plan of the study. Sections 1 to 6 were written, reviewed and committed before any result of the study existed. Sections 7 and 8 hold the results, in the order they were produced.**
+**Status: the study has not run yet, and no rule is released.** Sections 1 to 6 are the plan. They were written, reviewed and committed before any result of the study existed. Sections 7 and 8 will hold the results, in the order they are produced.
 
 Words used here: a **piece** is a run of samples of the reference that come from one recording. A **segment** is a run of samples to which the system gives one view. A **cut** is a sample whose view, as the system gives it, differs from the view of the sample before it.
 
@@ -106,8 +106,8 @@ The report has two parts, one for each kind of output, by kind of sequence: sing
 
 ## 7. Step 1 and step 2: the choice on the calibration half
 
-To be written when the first command has run.
+Not run yet. This section is written when the first command has run.
 
 ## 8. Step 3: the selection half
 
-To be written when the second command has run.
+Not run yet. This section is written when the second command has run, after the choice of section 7 is committed.

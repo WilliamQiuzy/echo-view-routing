@@ -30,7 +30,7 @@ On the project's frozen EV9V test benchmark we ran four published approaches bes
 | ASFormer on frame features | 0.856 | 98.3% | 0.956 |
 | EchoPrime's view classifier with our decoder | 0.851 | 97.9% | 0.944 |
 
-- **Where EchoRouter is ahead: cutting a stream into views.** Its segment F1 is 0.04 to 0.06 above the others. A paired bootstrap was made for its stage-2 model, which scores 0.917 on the same streams: that model is 0.05 to 0.07 ahead of each of the four, and every interval lies above zero. The ensemble itself was not compared pairwise.
+- **Where EchoRouter is ahead: cutting a stream into views.** Its segment F1 is 0.04 to 0.06 above the others. A paired bootstrap was made for two single stage-2 models, each of which scores 0.919 on the same streams: both are 0.05 to 0.07 ahead of each of the four, and every interval lies above zero. The ensemble itself was not compared pairwise.
 - **Where it is not ahead: naming a single recording.** There the five are close, and EchoViewCLIP is the best of them.
 - **How to read the table.** We ran all five. STFM, ASFormer and EchoViewCLIP were trained by us on EV9V's training recordings, and EchoPrime's classifier is the released one with our decoder on its outputs. The benchmark is ours, it is not the task these methods were published for, and it is not an untouched test set. The four other rows date from 2026-10-23, EchoRouter's from 2026-11-13.
 
@@ -147,7 +147,7 @@ Stage 3 needs a GPU with 32 GB of memory. On a machine that can be switched off,
 | `configs/` | training recipes |
 | `docs/` | data, evaluation and training in detail |
 | `tests/` | unit tests and parity tests against the research code |
-| `tools/` | maintainers' scripts: building the Hub folder, exporting definitions from the research code |
+| `tools/` | `render_demo.py` for the animation above, and maintainers' scripts: building the Hub folder, exporting definitions from the research code |
 | `requirements.txt`, `requirements-dev.txt` | the pinned versions the project was checked with |
 | `Dockerfile` | the image: the package on top of the pinned requirements |
 
