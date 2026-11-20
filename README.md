@@ -10,7 +10,7 @@ EchoRouter reads echocardiography video and names the view: **PLAX, PSAX, A4C, A
 
 ![Five recordings joined into one stream: the frames the model reads, the view it gives every 0.1 s, and the reference below](docs/assets/five_views.webp)
 
-Five public EV9V recordings joined into one stream. The wide lane is EchoRouter's answer for every 0.1 s, the narrow lane the reference. `python tools/render_demo.py` makes such a picture of your own recordings.
+Five public EV9V recordings, each in full, joined into one stream of 37 s. The wide lane is EchoRouter's answer for every 0.1 s, the narrow lane the reference. The four cuts lie 0.1 to 0.2 s from the true changes. `python tools/render_demo.py` makes such a picture of your own recordings.
 
 ```text
 recording ──► 10 frames per second, grey, 224 × 224
