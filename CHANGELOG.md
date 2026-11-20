@@ -6,7 +6,11 @@ Notable changes to this project. The format follows [Keep a Changelog](https://k
 
 ### Added
 
-- `python -m echoview.evaluation.uncertain_study confirm` scores the released uncertain rule on the test benchmark and chooses nothing. It reads stored window logits, stops unless they give the benchmark's four published numbers, and never replaces its output. `docs/UNCERTAIN.md`, section 9, is the plan of that read, committed before it.
+- `python -m echoview.evaluation.uncertain_study confirm` scores the released uncertain rule on the test benchmark and chooses nothing. It reads stored window logits, stops unless they give the benchmark's four published numbers, and never replaces its output. `docs/UNCERTAIN.md`, section 9, is the plan of that read, committed before it, and its result.
+
+### Read once (2026-11-20)
+
+- The frozen EV9V test benchmark with the released uncertain rule, on the stored model outputs of the published ensemble: 94.5% of the samples keep a view and 2.0% of them are wrong, against 3.6% when every sample is named. The rule's tests for whole pieces are confirmed there. The gain is smaller than on the development half, and in the multi streams a plain confidence threshold leaves fewer wrong samples. The README and the model card give these numbers beside the development ones.
 
 ## [1.2.0] - 2026-11-20
 

@@ -1,6 +1,6 @@
 # The "uncertain" output
 
-**Status: the study is done, and its rule is released.** `echoview segment --uncertain` applies it: a band of 0.3 s on each side of every cut, `f_low = 2`, `f_high = 1.25`, `m = 0.1`, seeds off. Sections 1 to 6 are the plan. They were written, reviewed and committed before any result of the study existed. Sections 7 and 8 hold the results, in the order they were produced. Section 9 is a later read of the test benchmark with the released rule: its plan was committed before the read, and the read has not been made yet.
+**Status: the study is done, and its rule is released.** `echoview segment --uncertain` applies it: a band of 0.3 s on each side of every cut, `f_low = 2`, `f_high = 1.25`, `m = 0.1`, seeds off. Sections 1 to 6 are the plan. They were written, reviewed and committed before any result of the study existed. Sections 7 and 8 hold the results, in the order they were produced. Section 9 is a later read of the test benchmark with the released rule. Its plan was committed before the read. The read confirmed the tests for whole pieces. It also showed a smaller gain than on the development half, and a confidence threshold that does better in the multi streams.
 
 Words used here: a **piece** is a run of samples of the reference that come from one recording. A **segment** is a run of samples to which the system gives one view. A **cut** is a sample whose view, as the system gives it, differs from the view of the sample before it.
 
@@ -247,7 +247,7 @@ Of the labelled runs the system returns, 97.8% are right at their middle (1,096 
 
 ## 9. One read of the test benchmark
 
-**Status: planned, not run.** Everything in this section down to "The result" was written and committed before the read.
+**Status: read once, on 2026-11-20.** Everything in this section down to "The result" was written and committed before the read, as commit `d7cfbe0`.
 
 The owner of the project authorised one read of its frozen EV9V test benchmark with the released rule, on 2026-11-20. The development study above did not read it.
 
@@ -260,4 +260,81 @@ The owner of the project authorised one read of its frozen EV9V test benchmark w
 
 ### The result
 
-Not read yet.
+Read once on 2026-11-20 at 22:33 UTC with the code of commit `d7cfbe0`. The output of the command is [`uncertain/test_report.json`](uncertain/test_report.json), SHA-256 `e35f745754ac55a25de3624efc3a0a3bf7efdb89c7ad453629548d2fe633d4dd`, unchanged. The logits gave the benchmark's four published numbers. The benchmark has 1,981 pieces from 800 recordings. Intervals and brackets are as in section 8.
+
+**The three tests for whole pieces are confirmed on the test benchmark.**
+
+| | Wrong pieces declined beyond the band | Right pieces declined beyond the band | `S` | 5th to 95th percentile of `S` |
+|---|---|---|---|---|
+| Released rule | 13 (11) | 13 (12) | 10.4 | 4.2 to 17.2 |
+
+Beyond the band the published system reads 56 pieces wrong here (31). By kind, `S` is 1.6 [−1.0, 4.8] for the single recordings, −0.2 [−0.6, 0.0] for the pair streams and 9.0 [3.8, 15.0] for the multi streams.
+
+**The labelled part.**
+
+| All 1,160 sequences | Samples that keep a view | Wrong among them | Low confidence at the same coverage | Rule minus low confidence |
+|---|---|---|---|---|
+| Published output | 100% | 3.63% [2.85, 4.48] | | |
+| Band alone | 95.5% [94.9, 96.1] | 2.46% [1.73, 3.29] | 2.07% | +0.39 points [+0.10, +0.67] |
+| Released rule | 94.5% [93.8, 95.2] | 2.00% [1.35, 2.77] | 1.76% | +0.24 points [−0.02, +0.50] |
+
+| Released rule, by kind | Sequences | Samples that keep a view | Wrong in the published output | Wrong among the labelled | Low confidence at the same coverage | Rule minus low confidence |
+|---|---|---|---|---|---|---|
+| Single recordings | 800 | 98.8% (45,968 of 46,507) | 1.92% | 1.53% [0.73, 2.55] | 1.66% | −0.13 points [−0.31, +0.04] |
+| Pair streams | 240 | 92.9% (9,649 of 10,391) | 2.77% | 0.98% [0.35, 1.78] | 0.58% | +0.40 points [−0.15, +1.13] |
+| Multi streams | 120 | 82.5% (12,605 of 15,287) | 9.41% | 4.47% [3.05, 6.07] | 3.17% | +1.30 points [+0.34, +2.19] |
+
+| | PLAX | PSAX | A4C | A5C | SC4C |
+|---|---|---|---|---|---|
+| Purity, published output | 99.3% | 99.1% | 94.7% | 77.0% | 95.6% |
+| Purity, released rule | 99.9% | 100.0% | 97.0% | 81.6% | 97.8% |
+| Recovery, published output | 99.4% | 98.9% | 93.1% | 84.2% | 90.7% |
+| Recovery, released rule | 97.4% | 96.1% | 87.8% | 73.6% | 84.3% |
+
+| Pieces, read at the middle | Right, kept | Right, declined | Wrong, kept | Wrong, declined | Right among the kept | Pieces with no labelled sample |
+|---|---|---|---|---|---|---|
+| Published output | 1,917 (789) | 0 | 64 (32) | 0 | 96.8% [95.3, 98.0] | 0 |
+| Band alone | 1,881 (789) | 36 (32) | 56 (31) | 8 (5) | 97.1% [95.9, 98.3] | 24 (22) |
+| Released rule | 1,868 (787) | 49 (42) | 43 (25) | 21 (14) | 97.7% [96.6, 98.8] | 36 (30) |
+
+| Released rule, by kind | Pieces | Right, kept | Right, declined | Wrong, kept | Wrong, declined | Pieces with no labelled sample | `S`, with its 5th to 95th percentile |
+|---|---|---|---|---|---|---|---|
+| Single recordings | 800 (800) | 778 (778) | 8 (8) | 10 (10) | 4 (4) | 3 (3) | 1.6 [−1.0, 4.8] |
+| Pair streams | 480 (480) | 471 (471) | 3 (3) | 6 (6) | 0 | 0 | −0.2 [−0.6, 0.0] |
+| Multi streams | 701 (405) | 619 (386) | 38 (34) | 27 (15) | 17 (12) | 33 (29) | 9.0 [3.8, 15.0] |
+
+Of the labelled runs the system returns, 96.6% are right at their middle (1,583 of 1,638) [95.7, 97.6]. In the published output it is 96.0% (1,611 of 1,678) [95.0, 96.9].
+
+**The uncertain part of the released rule.**
+
+| Number | Value |
+|---|---|
+| Size | 5.5% of the samples are uncertain [4.8, 6.2]: 3,963 of 72,185, in 504 intervals. The median interval is 0.6 s long, 90% are at most 1.5 s, the longest is 6.0 s. |
+| The table of samples | Declined: 1,257 wrong and 2,706 right. Kept: 1,363 wrong and 66,859 right. A forced answer would be wrong on 31.7% of the declined samples [28.3, 35.1], against 2.00% of the kept ones. |
+| Where it falls | 73.4% of the uncertain samples lie within 0.5 s of a true view change [67.1, 78.7]. 53 of the 504 intervals have no view change within 0.5 s. |
+| Single recordings | Of the 785 recordings the published system reads right, 20 get an uncertain sample (2.5%) [1.5, 3.7]. Of the 15 misread recordings, 7 get one. |
+| Same-view joins | 16 of 322 have an uncertain sample within 0.5 s (5.0%) [2.6, 7.5]. |
+| Errors declined | 48.0% of the published system's wrong samples are now uncertain [39.6, 56.9]. Chance would catch 5.5%. By kind: edge 622 of 657, spurious 150 of 391, absorbed 99 of 233, misread 386 of 1,339. A4C against A5C: 599 of 1,532. |
+| Changes located | 459 of the 499 true view changes have an uncertain sample on at least one side (92.0%) [89.5, 94.3]. |
+| Beyond the band | The three tests add 731 samples to the band. 331 of them are wrong (45.3%) [29.2, 60.4], against 2.46% left after the band alone. |
+| Each test | Without the lower threshold the rule loses 429 samples, 170 of them wrong. Without the higher threshold it loses 134, 46 of them wrong. Without the margin it loses 121, 88 of them wrong. |
+
+| Released rule, by kind | Uncertain samples | Uncertain intervals | Wrong samples now uncertain | Right samples now uncertain | True view changes with an uncertain sample beside them |
+|---|---|---|---|---|---|
+| Single recordings | 539 of 46,507 (1.2%) | 36 | 189 of 893 | 350 of 45,614 | no changes |
+| Pair streams | 742 of 10,391 (7.1%) | 121 | 193 of 288 | 549 of 10,103 | 112 of 120 |
+| Multi streams | 2,682 of 15,287 (17.5%) | 347 | 875 of 1,439 | 1,807 of 13,848 | 347 of 379 |
+
+| Band of width `k` | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
+|---|---|---|---|---|---|---|---|---|---|
+| Samples that keep a view | 100% | 98.5% | 97.1% | 95.5% | 94.2% | 92.8% | 91.1% | 89.9% | 88.5% |
+| Wrong among them | 3.63% | 3.03% | 2.66% | 2.46% | 2.36% | 2.26% | 2.16% | 2.11% | 2.03% |
+
+**How to read it.**
+
+- **Confirmed, and by a wider margin than on the selection half.** The rule declines 13 wrong pieces from 11 recordings against 13 right ones, and the 5th percentile of `S` is 4.2. Nearly all of it comes from the multi streams.
+- **The gain is smaller than expected.** The plan expected the share of wrong samples among the labelled to fall to about a third of the published output's. It falls to 55% of it, from 3.63% to 2.00%. Half of this benchmark's wrong samples belong to misread pieces (1,339 of 2,620, against 493 of 1,637 on the selection half), and the rule leaves 71% of those labelled. The coverage is 94.5% where about 92% was expected: 64% of the benchmark's samples are single recordings, which have no cut. In the multi streams it is 82.5%, as expected.
+- **A confidence threshold does better here in the multi streams.** At the same coverage the low-confidence reference leaves 1.76% wrong against the rule's 2.00% over all sequences, and 3.17% against 4.47% in the multi streams, where the interval of the difference excludes 0 (+1.30 points [+0.34, +2.19]). Against the band alone it is ahead over all sequences (+0.39 points [+0.10, +0.67]). The reference was again given the number of samples to decline, and a threshold of its own was not chosen or tested. On this benchmark the evidence on this count is still against the rule: whoever wants the fewest wrong samples for a given share of unnamed ones should expect a confidence threshold to do at least as well.
+- **What it costs.** The recovery of A5C falls from 84.2% to 73.6%. 36 of the 1,981 pieces (30) keep no labelled sample. 20 of the 785 rightly read single recordings get an uncertain part.
+- **What is left.** 43 wrong pieces from 25 recordings keep their wrong view, and 61% of the A4C against A5C errors stay labelled.
+- **The limits named in the plan apply.** The benchmark is not untouched, and the intervals take the recordings as given.

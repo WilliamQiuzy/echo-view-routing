@@ -117,6 +117,7 @@ All numbers are for the published weights (identifier `C2_ens_v1`).
 | EV9V frozen test benchmark, 120 streams of 4 to 8 fragments | segment F1 at 50% overlap | 0.909 (95% CI 0.883 to 0.934) |
 | EV9V frozen test benchmark, 800 single recordings | accuracy and macro-F1 | 98.1% and 0.956 |
 | EV9V development, selection half, 577 sequences, with `--uncertain` | samples that keep a view, and wrong samples among them | 92.1%, and 1.0% (0.6 to 1.5) against 3.0% without the option |
+| EV9V frozen test benchmark, 1,160 sequences, with `--uncertain` | samples that keep a view, and wrong samples among them | 94.5%, and 2.0% (1.4 to 2.8) against 3.6% without the option |
 | MIMIC-IV-Echo, 9,341 recordings of 1,001 patients (GE machines) | same view as another classifier's table | 95.8% (95.2 to 96.3) |
 | MIMIC-IV-Echo, 1,139 streams of 988 of those patients | segment F1 at 50% overlap against that table | 0.882 (0.870 to 0.894) |
 
@@ -124,19 +125,21 @@ The MIMIC rows are agreement between two models, not accuracy: MIMIC-IV-Echo has
 
 ## The uncertain output
 
-By default EchoRouter names a view for every 0.1 s of a stream, also where two views meet and where a part looks like two views at once. With `--uncertain` it declines there. The rule was chosen on one half of the EV9V development benchmark and checked on the other half. The numbers below are from the half it was not chosen on.
+By default EchoRouter names a view for every 0.1 s of a stream, also where two views meet and where a part looks like two views at once. With `--uncertain` it declines there. The rule was chosen on one half of the EV9V development benchmark and checked on the other half. The project's frozen test benchmark was then read once with the finished rule.
 
-| 577 sequences, 53,922 samples | Samples that keep a view | Wrong among them |
+| | Samples that keep a view | Wrong among them |
 |---|---|---|
-| Every sample named, the default | 100% | 3.0% |
-| With `--uncertain` | 92.1% | 1.0% |
+| Development half the rule was not chosen on (577 sequences), every sample named | 100% | 3.0% |
+| The same, with `--uncertain` | 92.1% | 1.0% |
+| Test benchmark (1,160 sequences), every sample named | 100% | 3.6% |
+| The same, with `--uncertain` | 94.5% | 2.0% |
 
-- **What becomes uncertain.** 68% of the samples the default output has wrong, and 6% of those it has right. 93% of the true changes of view have an uncertain sample beside them.
-- **What it costs.** A part of about a second between two cuts is left unnamed as a whole. A5C loses most: 74% of its samples keep the name A5C, against 89% without the option.
-- **What it is not.** Uncertain does not mean "none of the five views". The model cannot tell that. And the study does not show that this rule beats a plain threshold on the model's confidence: a threshold that declines as many samples leaves 1.1% wrong.
-- **Where it holds.** On EV9V streams joined from recordings, for the ensemble of three seeds. A continuous examination was not measured. The 577 sequences are built from the same 284 recordings, so the interval in the results table is too narrow as a statement about new recordings.
+- **What becomes uncertain.** Of the samples the default output has wrong, 68% on the development half and 48% on the test benchmark. Of those it has right, 6% and 4%. In both, 92% to 93% of the true changes of view have an uncertain sample beside them.
+- **What it costs.** A part of about a second between two cuts is left unnamed as a whole. A5C loses most: 74% of its samples keep the name A5C, against 89% and 84% without the option.
+- **What it is not.** Uncertain does not mean "none of the five views". The model cannot tell that. And the rule is not shown to beat a plain threshold on the model's confidence. A threshold that declines as many samples leaves 1.1% wrong on the development half and 1.8% on the test benchmark, and in the test benchmark's multi streams it is clearly ahead, with 3.2% against 4.5%.
+- **Where it holds.** On EV9V streams joined from recordings, for the ensemble of three seeds. A continuous examination was not measured. The sequences of each benchmark share their recordings, so the intervals in the results table are too narrow as statements about new recordings.
 
-[docs/UNCERTAIN.md](docs/UNCERTAIN.md) has the plan, which was committed before the results, the choice and the full two-part report.
+[docs/UNCERTAIN.md](docs/UNCERTAIN.md) has the plan, which was committed before the results, the choice, the full two-part report and the read of the test benchmark.
 
 ## Reproduce the evaluation
 
