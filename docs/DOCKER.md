@@ -9,7 +9,7 @@ docker pull ghcr.io/williamqiuzy/echo-view-routing:latest        # NVIDIA GPU on
 docker pull ghcr.io/williamqiuzy/echo-view-routing:latest-cpu    # CPU only, much smaller
 ```
 
-Each release also has its own tags, for example `1.0.0` and `1.0.0-cpu`. Or build the image from a clone:
+Each release also has its own tags, for example `1.1.1` and `1.1.1-cpu`. Or build the image from a clone:
 
 ```bash
 docker build -t echo-view-routing .

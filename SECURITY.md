@@ -11,7 +11,7 @@ Please do not open a public issue for a security problem. Use GitHub's private r
 
 ## Pillow
 
-The package reads image files with Pillow. Pillow before 13.0 has published vulnerabilities in several decoders, some of them rated critical. On Python 3.11 and newer the package requires Pillow 13.0 or newer, and the pinned requirements and the Docker images from 1.1.1 on use 13.0.0. The images tagged 1.0.0 and 1.1.0 hold Pillow 12.3.0: use a newer tag. Pillow 13 does not exist for Python 3.10. On Python 3.10, read only files you trust, or move to a newer Python.
+The package reads image files with Pillow. Pillow before 13.0 has published vulnerabilities in several decoders, some of them rated critical. On Python 3.11 and newer the package requires Pillow 13.0 or newer, and the pinned requirements and the Docker images from 1.1.1 on use 13.0.0. The images of versions 1.0.0 and 1.1.0 held Pillow 12.3.0 and were withdrawn from the registry on 2026-11-20. Pillow 13 does not exist for Python 3.10. On Python 3.10, read only files you trust, or move to a newer Python.
 
 ## Patient data
 
