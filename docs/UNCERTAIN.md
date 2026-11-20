@@ -1,6 +1,6 @@
 # The "uncertain" output
 
-**Status: steps 1 and 2 of the study have run (section 7). Step 3 has not run yet, and no rule is released.** Sections 1 to 6 are the plan. They were written, reviewed and committed before any result of the study existed. Sections 7 and 8 hold the results, in the order they are produced.
+**Status: the study is done, and its rule is released.** `echoview segment --uncertain` applies it: a band of 0.3 s on each side of every cut, `f_low = 2`, `f_high = 1.25`, `m = 0.1`, seeds off. Sections 1 to 6 are the plan. They were written, reviewed and committed before any result of the study existed. Sections 7 and 8 hold the results, in the order they are produced.
 
 Words used here: a **piece** is a run of samples of the reference that come from one recording. A **segment** is a run of samples to which the system gives one view. A **cut** is a sample whose view, as the system gives it, differs from the view of the sample before it.
 
@@ -134,7 +134,7 @@ The band is therefore the 0.3 s before every cut and the 0.3 s from the cut on. 
 - **What it had to work with.** Beyond the band, the published system reads 19 pieces wrong at the middle and 1,355 right. The candidate declines 10 of the 19 and 7 of the 1,355.
 - **Ties.** `f_low = 3` gives the same counts as `f_low = 2`, and the earlier setting was taken. Six more settings reach 8.6, with 11 wrong and 12 right pieces. They mark more samples.
 - **Which test does the work.** The lower threshold alone (`f_low = 2`) declines 8 wrong pieces and 1 right one, which gives 7.8. The margin alone reaches 5.8 at most (`m = 0.5`, 10 wrong and 21 right). The seeds test alone declines 1 wrong piece and 4 right ones. A higher threshold alone scores below 0 from `f_high = 1.5` on, and at `f_high = 2` it declines 3 wrong pieces and 78 right ones. In the candidate, the higher threshold and the margin add 2 wrong pieces and 6 right ones to what the lower threshold declines.
-- **The other settings.** 177 of the 300 have `S` above 0.
+- **All settings.** 177 of the 300 have `S` above 0.
 
 **The candidate on the calibration half.** These numbers come from the half on which the setting was chosen. They describe the choice and say little about how the rule does on other data.
 
@@ -150,4 +150,97 @@ The band is therefore the 0.3 s before every cut and the 0.3 s from the cut on. 
 
 ## 8. Step 3: the selection half
 
-Not run yet. This section is written when the second command has run, after the choice of section 7 is committed.
+Run on 2026-11-20 with the code of commit `75e9419`, after the choice of section 7 had been committed and pushed. The output of the command is [`uncertain/report.json`](uncertain/report.json), SHA-256 `a363092dc54ca206dd2117e9634e1c8e7fd51ce6ae970ca198b9a0dbfb1e9dc3`, unchanged. The selection half has 577 sequences with 53,922 samples, and 1,574 pieces from 284 recordings. All numbers are for the reference ensemble of three seeds.
+
+**How to read the intervals.** They are 95% intervals, given in square brackets. The numbers about samples have theirs from a bootstrap over sequences. All 577 sequences are built from the same 284 recordings, so these intervals take the recordings as given and are too narrow as a statement about new recordings. The numbers about pieces have theirs from a bootstrap over recordings. A count of pieces is followed by its number of recordings in round brackets.
+
+### The decision
+
+**The three tests are adopted, by a small margin.**
+
+| | Wrong pieces declined beyond the band | Right pieces declined beyond the band | `S` | 5th to 95th percentile of `S` |
+|---|---|---|---|---|
+| Candidate | 6, from 5 recordings | 12, from 7 recordings | 3.6 | 0.4 to 7.2 |
+
+`S` is above 0, and so is its 5th percentile. By the rule of section 4 the released rule is the candidate: `k = 3`, `f_low = 2`, `f_high = 1.25`, `m = 0.1`, seeds off. Beyond the band, the published system reads 20 pieces wrong (11) and 1,493 right (284). The decision rests on those 20 pieces.
+
+### Part A, the labelled part
+
+| All 577 sequences | Samples that keep a view | Wrong among them | Low confidence at the same coverage | Rule minus low confidence |
+|---|---|---|---|---|
+| Published output | 100% | 3.04% [2.49, 3.63] | | |
+| Band alone | 93.1% [92.2, 93.9] | 1.30% [0.83, 1.81] | 1.23% | +0.06 points [−0.22, +0.36] |
+| Released rule | 92.1% [91.1, 93.0] | 1.04% [0.59, 1.54] | 1.09% | −0.06 points [−0.27, +0.20] |
+
+At the same coverage, chance leaves 3.04% wrong and the ideal leaves none.
+
+| Released rule, by kind | Sequences | Samples that keep a view | Wrong in the published output | Wrong among the labelled | Low confidence at the same coverage | Rule minus low confidence |
+|---|---|---|---|---|---|---|
+| Single recordings | 284 | 98.8% (16,438 of 16,635) | 1.38% | 0.85% [0.08, 1.80] | 1.01% | −0.16 points [−0.45, +0.04] |
+| Pair streams | 137 | 91.5% (5,208 of 5,691) | 3.16% | 0.94% [0.21, 1.89] | 1.17% | −0.23 points [−1.06, +0.64] |
+| Multi streams | 120 | 81.7% (12,220 of 14,961) | 6.06% | 1.70% [0.94, 2.63] | 1.29% | +0.41 points [−0.35, +1.24] |
+| Examination-order streams | 36 | 95.1% (15,818 of 16,635) | 1.92% | 0.75% [0.01, 1.66] | 0.97% | −0.21 points [−0.42, −0.02] |
+
+Purity is the share of the samples given a view that have this view in the reference. Recovery is the share of a view's reference samples that are given this view, so an uncertain sample counts against it.
+
+| | PLAX | PSAX | A4C | A5C | SC4C |
+|---|---|---|---|---|---|
+| Purity, published output | 98.7% | 97.3% | 96.5% | 88.5% | 97.8% |
+| Purity, released rule | 99.9% | 99.1% | 98.6% | 93.8% | 99.9% |
+| Recovery, published output | 98.5% | 98.4% | 96.2% | 89.3% | 96.6% |
+| Recovery, released rule | 95.1% | 93.6% | 90.3% | 74.3% | 86.6% |
+
+Pieces are read at their middle sample.
+
+| | Right, kept | Right, declined | Wrong, kept | Wrong, declined | Right among the kept | Pieces with no labelled sample |
+|---|---|---|---|---|---|---|
+| Published output | 1,545 (284) | 0 | 29 (13) | 0 | 98.2% [96.7, 99.3] | 0 |
+| Band alone | 1,493 (284) | 52 (36) | 20 (11) | 9 (5) | 98.7% [97.4, 99.6] | 33 (24) |
+| Released rule | 1,481 (283) | 64 (40) | 14 (8) | 15 (9) | 99.1% [98.1, 99.7] | 40 (28) |
+
+| Released rule, by kind | Pieces | Right, kept | Right, declined | Wrong, kept | Wrong, declined | Pieces with no labelled sample | `S`, with its 5th to 95th percentile |
+|---|---|---|---|---|---|---|---|
+| Single recordings | 284 (284) | 278 (278) | 0 | 1 (1) | 5 (5) | 0 | 2.0 [0.0, 4.0] |
+| Pair streams | 274 (274) | 268 (268) | 3 (3) | 2 (2) | 1 (1) | 0 | −0.2 [−0.6, 0.0] |
+| Multi streams | 732 (231) | 661 (226) | 55 (35) | 9 (4) | 7 (7) | 35 (25) | 1.0 [−1.0, 3.4] |
+| Examination-order streams | 284 (284) | 274 (274) | 6 (6) | 2 (2) | 2 (2) | 5 (5) | 0.8 [−0.4, 2.8] |
+
+Of the labelled runs the system returns, 97.8% are right at their middle (1,096 of 1,121) [96.7, 98.7]. In the published output it is 96.8% (1,132 of 1,170) [95.7, 97.8].
+
+### Part B, the uncertain part of the released rule
+
+| Number | Value |
+|---|---|
+| Size | 7.9% of the samples are uncertain [7.0, 8.9]: 4,238 of 53,922, in 558 intervals. The median interval is 0.6 s long, 90% are at most 1.5 s, the longest is 4.0 s. |
+| The table of samples | Declined: 1,121 wrong and 3,117 right. Kept: 516 wrong and 49,168 right. A forced answer would be wrong on 26.5% of the declined samples [24.1, 28.8], against 1.04% of the kept ones. |
+| Where it falls | 78.9% of the uncertain samples lie within 0.5 s of a true view change [73.9, 83.6]. 45 of the 558 intervals have no view change within 0.5 s. |
+| Single recordings | Of the 281 recordings the published system reads right, 7 get an uncertain sample (2.5%) [0.8, 4.5]. All 3 misread recordings get one. |
+| Same-view joins | 14 of 437 have an uncertain sample within 0.5 s (3.2%) [1.7, 4.9]. |
+| Errors declined | 68.5% of the published system's wrong samples are now uncertain [58.8, 78.8]. Chance would catch 7.9%. By kind: edge 770 of 808, spurious 111 of 261, absorbed 33 of 75, misread 207 of 493. A4C against A5C: 369 of 756. |
+| Changes located | 522 of the 560 true view changes have an uncertain sample on at least one side (93.2%) [91.2, 95.2]. |
+| Beyond the band | The three tests add 509 samples to the band. 134 of them are wrong (26.3%) [13.6, 40.7], against 1.30% left after the band alone. |
+| Each test | Without the lower threshold the rule loses 350 samples, 49 of them wrong. Without the higher threshold it loses 120, 54 of them wrong. Without the margin it loses 9, 1 of them wrong. |
+
+| Released rule, by kind | Uncertain samples | Uncertain intervals | Wrong samples now uncertain | Right samples now uncertain | True view changes with an uncertain sample beside them |
+|---|---|---|---|---|---|
+| Single recordings | 197 of 16,635 (1.2%) | 15 | 90 of 230 | 107 of 16,405 | no changes |
+| Pair streams | 483 of 5,691 (8.5%) | 73 | 131 of 180 | 352 of 5,511 | 66 of 70 |
+| Multi streams | 2,741 of 14,961 (18.3%) | 359 | 699 of 907 | 2,042 of 14,054 | 353 of 382 |
+| Examination-order streams | 817 of 16,635 (4.9%) | 111 | 201 of 320 | 616 of 16,315 | 103 of 108 |
+
+### The band at every width
+
+| `k` | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
+|---|---|---|---|---|---|---|---|---|---|
+| Samples that keep a view | 100% | 97.8% | 95.6% | 93.1% | 91.0% | 88.9% | 86.4% | 84.6% | 82.4% |
+| Wrong among them | 3.04% | 2.13% | 1.58% | 1.30% | 1.16% | 1.06% | 0.94% | 0.89% | 0.80% |
+
+### How to read it
+
+- **What the rule buys.** With the rule on, 7.9% of the samples of these streams get no view, and the share of wrong samples among the rest falls from 3.04% to 1.04%. Most of this is the band. It takes the error to 1.30% and costs 6.9% of the samples. The three tests take it to 1.04% for another 0.9 points. A wider band does less for more: `k = 4` reaches 1.16% and keeps 91.0%.
+- **The pass is narrow.** The three tests were adopted on 6 wrong pieces from 5 recordings against 12 right ones, and the 5th percentile of `S` is 0.4. By kind of sequence `S` is 2.0 for single recordings, −0.2 for pair streams, 1.0 for multi streams and 0.8 for examination-order streams. No kind has a 5th percentile above 0 by itself.
+- **This study does not show that the rule beats a confidence threshold.** Declining the same number of samples by lowest confidence leaves 1.09% wrong against the rule's 1.04%, and the interval of the difference includes 0. By kind, the rule is ahead in three and behind in the multi streams. Only the interval of the examination-order streams excludes 0, in the rule's favour (−0.21 points [−0.42, −0.02]). The reference was given the number of samples to decline on this half. As a rule of its own it would need a threshold, which was not chosen or tested here. What the rule adds is the form of its answer: whole intervals at the cuts and whole weak pieces.
+- **What it costs.** The recovery of every view falls, and most for A5C, from 89.3% to 74.3%. A short piece between two cuts can be lost as a whole: 40 of the 1,574 pieces (28) keep no labelled sample. 7 of the 281 rightly read single recordings get an uncertain part.
+- **What is left.** 14 wrong pieces from 8 recordings keep their wrong view, and half of the A4C against A5C errors stay labelled.
+- **Where it holds.** The rule passed on EV9V streams joined from recordings, where a view changes from one sample to the next. A continuous examination has no such splices, and nothing here measures it. The test benchmark and MIMIC-IV-Echo were not read with the rule.
+- **Uncertain is still not "other".** Nothing in this study is about views outside the five.
