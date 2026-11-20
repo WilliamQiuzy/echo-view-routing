@@ -13,7 +13,7 @@ from pathlib import Path
 import numpy as np
 import torch
 
-from . import decoder, weights
+from . import decoder, uncertain, weights
 from .model import CLASSES, WindowModel, load_model, marker_planes, normalise
 from .reference import B3, SEEDS, VERSION
 from .windows import nearest_centre, window_plan
@@ -33,9 +33,10 @@ class Classification:
 
 @dataclass(frozen=True)
 class Segmentation:
-    labels: np.ndarray  # (samples,) view index of every 0.1 s sample
+    labels: np.ndarray  # (samples,) view index of every 0.1 s sample; -1 where the system declines (uncertain)
     probabilities: np.ndarray  # (samples, 5) ensemble
-    segments: tuple  # (start_s, end_s, view, mean probability of that view)
+    segments: tuple  # (start_s, end_s, view or "uncertain", mean probability of that view; uncertain: of the likeliest view)
+    uncertain: np.ndarray  # (samples,) True where the system declines; all False without a rule
 
 
 def pick_device(name: str = "auto") -> torch.device:
@@ -149,10 +150,18 @@ class Ensemble:
         """One stream -> the ensemble's probabilities for every 0.1 s sample, (samples, 5) float64."""
         return probabilities_from_logits(self.window_logits(frames), len(frames))
 
-    def segment(self, frames: np.ndarray) -> Segmentation:
-        """One stream (a long recording, or several recordings joined) -> a view for every 0.1 s and the pieces."""
-        prob = self.sample_probabilities(frames)
-        labels = decoder.decode(prob, int(self.b3["half_window"]), float(self.b3["threshold"]), int(self.b3["nms_radius"]))
-        pieces = tuple((start / HZ, end / HZ, CLASSES[view], float(prob[start:end, view].mean()))
-                       for start, end, view in decoder.segments(labels))
-        return Segmentation(labels=labels, probabilities=prob, segments=pieces)
+    def segment(self, frames: np.ndarray, rule: uncertain.Rule | None = None) -> Segmentation:
+        """One stream (a long recording, or several recordings joined) -> a view for every 0.1 s and the pieces.
+
+        With a `rule` (echoview.uncertain.Rule) the system may decline: such samples get -1 and form pieces called
+        "uncertain". Every other sample keeps the view it has without the rule.
+        """
+        logits = self.window_logits(frames)
+        prob = probabilities_from_logits(logits, len(frames))
+        rule = uncertain.OFF if rule is None else rule
+        by_seed = np.stack([probabilities_from_logits(logits[:, [k]], len(frames)) for k in range(logits.shape[1])]) if rule.seeds else None
+        marked = uncertain.mark(prob, self.b3, rule, by_seed)
+        pieces = tuple((start / HZ, end / HZ, CLASSES[view] if view >= 0 else "uncertain",
+                        float(prob[start:end, view].mean() if view >= 0 else prob[start:end].max(1).mean()))
+                       for start, end, view in decoder.segments(marked.labels))
+        return Segmentation(labels=marked.labels, probabilities=prob, segments=pieces, uncertain=marked.mask)

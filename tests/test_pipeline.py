@@ -77,3 +77,17 @@ def test_changed_weight_files_are_not_loaded_as_the_reference(tmp_path):
         (tmp_path / f"C2_s{seed}" / "final.pt").write_bytes(b"not the published file")
     with pytest.raises(weights.WeightsError, match="not a published file"):
         Ensemble(tmp_path)
+
+
+def test_a_rule_lets_the_segmentation_decline_samples_and_changes_nothing_else():
+    from echoview import uncertain
+
+    frames = flat_frames([0] * 40 + [100] * 40)
+    plain = system(0.0, 5.0, -5.0).segment(frames)
+    assert plain.uncertain.sum() == 0 and (plain.labels >= 0).all()
+    marked = system(0.0, 5.0, -5.0).segment(frames, uncertain.Rule(band=3))
+    assert np.flatnonzero(marked.uncertain).tolist() == [37, 38, 39, 40, 41, 42] and (marked.labels[marked.uncertain] == -1).all()
+    assert np.array_equal(marked.labels[~marked.uncertain], plain.labels[~marked.uncertain])  # the other samples keep their view
+    assert [(start, end, view) for start, end, view, _ in marked.segments] == [(0.0, 3.7, "PLAX"), (3.7, 4.3, "uncertain"), (4.3, 8.0, "A4C")]
+    assert all(0.0 <= probability <= 1.0 for *_, probability in marked.segments)
+    assert np.array_equal(system(0.0, 5.0, -5.0).segment(frames, uncertain.Rule(seeds=True)).labels, plain.labels)  # the seeds agree here

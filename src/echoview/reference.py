@@ -5,7 +5,8 @@ learned at run time. The decoder setting was chosen once on the EV9V calibration
 """
 from __future__ import annotations
 
-VERSION = "C2_ens_v1"
+NAME = "EchoRouter"  # the system's name
+VERSION = "C2_ens_v1"  # the identifier of its weights and decoder setting, as the project's records use it
 SEEDS = (0, 1, 2)
 
 # The change-point decoder ("B3") of the ensemble: half window in 10 Hz samples, threshold on the Jensen-Shannon

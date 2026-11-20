@@ -1,4 +1,4 @@
-"""Echocardiography view recognition and view segmentation: the C2 reference ensemble.
+"""EchoRouter: echocardiography view recognition and view segmentation for video.
 
     import echoview
     system = echoview.load()                          # the three published seeds as one ensemble
@@ -13,11 +13,12 @@ from pathlib import Path
 from .frames import ReadError, Recording, find_recordings, read_recording
 from .model import CLASSES, WindowModel
 from .pipeline import Classification, Ensemble, Segmentation
+from .reference import NAME as MODEL_NAME
 from .reference import VERSION as MODEL_VERSION
 from .weights import WeightsError
 
 __version__ = "1.1.1"
-__all__ = ["CLASSES", "MODEL_VERSION", "Classification", "Ensemble", "ReadError", "Recording", "Segmentation", "WeightsError",
+__all__ = ["CLASSES", "MODEL_NAME", "MODEL_VERSION", "Classification", "Ensemble", "ReadError", "Recording", "Segmentation", "WeightsError",
            "WindowModel", "find_recordings", "load", "read_recording"]
 
 

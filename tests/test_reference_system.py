@@ -1,6 +1,7 @@
 """The published weights on the sample clips. Needs the weights: pytest -m weights."""
 import pytest
 
+import echoview
 from echoview import cli, load, read_recording, weights
 
 pytestmark = pytest.mark.weights
@@ -18,7 +19,7 @@ def test_the_self_check_passes(capsys):
 
 def test_the_reference_ensemble_names_a_sample_clip():
     system = load(device="cpu")
-    assert system.is_reference and system.version == "C2_ens_v1"
+    assert system.is_reference and system.version == "C2_ens_v1" and echoview.MODEL_NAME == "EchoRouter"
     clip = sorted(weights.examples_folder(system.weights_dir).glob("SC4C*.mp4"))[0]
     result = system.classify(read_recording(clip).frames[:20])
     assert result.view == "SC4C" and result.seeds_agree

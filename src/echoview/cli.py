@@ -28,7 +28,7 @@ from . import frames as fr
 from . import weights as wt
 from .model import CLASSES
 from .pipeline import Ensemble
-from .reference import SEEDS
+from .reference import NAME, SEEDS
 
 CLASSIFY_HEADER = ("file", "predicted_view", "view_probability", *(f"p_{c}" for c in CLASSES), "seeds_agree", "source_frames",
                    "fps", "samples_10hz", "windows", "reader", "view_classifier_version")
@@ -56,7 +56,7 @@ def build(args: argparse.Namespace, verify: bool = True) -> Ensemble:
         raise SystemExit(str(error)) from None
     except RuntimeError as error:  # PyTorch does not know the device, or cannot use it
         raise SystemExit(f"--device {args.device}: {str(error).splitlines()[0]}") from None
-    print(f"model {system.version} on {system.device}", file=sys.stderr)
+    print(f"{NAME if system.is_reference else 'model'} {system.version} on {system.device}", file=sys.stderr)
     return system
 
 
