@@ -22,7 +22,7 @@ recording ──► 10 frames per second, grey, 224 × 224
 |---|---|
 | Inference (`echoview classify`, `segment`, Python API) | ready, checked against the research code |
 | EV9V development evaluation (`echoview evaluate`) | ready, reproduces the research numbers exactly |
-| Training, stages 1 to 3 (`echoview-train`) | ready; stage 3 matches the research trainer over 100 updates, and a full rerun of its three seeds lands within 0.004 of the published seeds; stages 1 and 2 follow the published training logs over 750 updates |
+| Training, stages 1 to 3 (`echoview-train`) | ready; stage 3 matches the research trainer over 100 updates, and a full rerun of its three seeds lands within 0.004 of the published seeds; stages 1 and 2 follow the published training logs over 750 updates as closely as two runs of the same code follow each other |
 | EV9V test benchmark (`echoview evaluate --benchmark test`) | ready, reproduces the research row exactly |
 | MIMIC-IV-Echo evaluation | not part of the package; the numbers below come from the research code |
 | Weights | on the Hugging Face Hub: [WilliamQiu123/echo-view-routing](https://huggingface.co/WilliamQiu123/echo-view-routing), see [Licence](#licence-and-acknowledgements) |

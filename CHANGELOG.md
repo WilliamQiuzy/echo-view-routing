@@ -8,6 +8,7 @@ Notable changes to this project. The format follows [Keep a Changelog](https://k
 
 - A full rerun of stage 3: the three seeds trained again with this package come out within 0.004 of the published seeds on both development halves, and their ensemble, decoded with the published setting, within 0.003. The rule's own choice of the decoder setting did not repeat for the retrained ensemble; `docs/TRAINING.md` gives the numbers and what follows from them.
 - The test that asserts the published development numbers on the real dataset and the published weights passes.
+- Stages 1 and 2, two runs each of 750 updates with the final code: the training accuracy equals the published log's in both periods, and the mean loss differs from it by at most 2.7e-5, which is of the size of the gap between the two runs.
 
 ## [1.1.1] - 2026-11-20
 

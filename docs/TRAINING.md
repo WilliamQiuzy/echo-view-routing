@@ -108,23 +108,23 @@ echoview-train --config configs/stage2.json --seed 0 --images /data/EV9V/Images 
 
 A rerun feeds the model the same pixels as the published run and follows the same schedule. It does not give the same numbers bit for bit, and two reruns on one machine differ as well: PyTorch has no deterministic GPU kernel for the backward pass of the encoder's 3-D max pooling, and says so in a warning.
 
-This was checked on 2026-11-18 on an L40S with the PyTorch, CUDA and cuDNN versions of the published runs, for seed 0.
+This was checked on 2026-11-18 and 2026-11-20 on an L40S with the PyTorch, CUDA and cuDNN versions of the published runs, for seed 0. The numbers below are from two runs of each stage with the final code.
 
 - **Inputs.** The sampling plans and the initial weights of all three seeds equal the research files. The research trainer stored a hash of every window's pixels. The frames this package decodes give the same hash for all 180,000 windows of the six plans: three for stage 1 and three for stage 2.
 - **The first 375 updates**, during which only the marker stem and the head train.
 
   | Stage | Mean loss, published | Mean loss, two runs of this package | Training accuracy | Largest gradient norm |
   |---|---|---|---|---|
-  | 1 | 1.6008545 | 1.6008544 and 1.6008540 | identical | identical to the last digit |
-  | 2 | 0.67501289 | 0.67501294 and 0.67501284 | identical | identical to the last digit |
+  | 1 | 1.6008545 | 1.6008546 and 1.6008544 | identical | identical to the last digit |
+  | 2 | 0.67501289 | 0.67501293 and 0.67501290 | identical | equal in seven digits |
 
 - **Updates 376 to 750**, the first in which the encoder trains.
 
-  | Stage | Mean loss, published | Mean loss, this package | Training accuracy |
+  | Stage | Mean loss, published | Mean loss, two runs of this package | Training accuracy |
   |---|---|---|---|
-  | 1 | 0.725491 | 0.725463 | 2,201 and 2,200 of 3,000 windows right |
-  | 2 | 0.49662158 | 0.49662125 | identical |
+  | 1 | 0.725491 | 0.725464 and 0.725473 | identical: 2,201 of 3,000 windows right |
+  | 2 | 0.496622 | 0.496623 and 0.496639 | identical: 2,822 of 3,000 windows right |
 
-In the first 375 updates the gap to the published log is as large as the gap between two runs of this package.
+The gap to the published log is of the size of the gap between two runs of this package. In updates 376 to 750 the two runs differ from each other in the mean loss by 0.9e-5 (stage 1) and 1.6e-5 (stage 2). They differ from the published log by 2.7e-5 and 1.8e-5 (stage 1) and by 0.1e-5 and 1.7e-5 (stage 2). After 750 updates the weights of the two runs are 2e-5 (stage 1) and 1e-5 (stage 2) of their length apart.
 
-**Still open.** For updates 376 to 750 two runs of this package have not been compared with each other yet. That comparison was also made before the learning rates of stages 1 and 2 were corrected in their last binary digit (see the changelog), and it will be repeated with the corrected code. Whole reruns of stages 1 and 2 were not made: 750 of 3,750 updates were compared.
+**Not done.** Whole reruns of stages 1 and 2 were not made: 750 of 3,750 updates were compared.
