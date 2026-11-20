@@ -4,18 +4,19 @@
 
 EV9V is a public dataset of echocardiography recordings with view labels (`bgx666/EV9V` on the Hugging Face Hub, CC BY 4.0). Everything in this repository was trained and developed on it.
 
-- **What this project uses.** 3,364 training recordings and 521 development recordings of five views: PLAX, PSAX, A4C, A5C and SC4C.
+- **What this project uses.** 3,364 training recordings, 521 development recordings and 800 test recordings of five views: PLAX, PSAX, A4C, A5C and SC4C.
 - **Labels.** EV9V has nine view codes. PLHLA counts as PLAX. The four parasternal short-axis codes (PASA, PMVLSA, PPMLSA and PMASA) count as PSAX. A4C, A5C and SC4C keep their names. Recordings with the ninth code, PMPALA, are not used.
 - **Layout.** The dataset ships each recording as a folder of JPEG frames, `Images/<recording>/<frame number>.jpg`, at 30 frames per second and 320 × 240 pixels. This project reads every third frame, which gives 10 frames per second.
 - **Download.** Get `Images` from the dataset's page on the Hugging Face Hub and unpack it. Every command of this package takes the path of that folder.
 
 ## The definition files in this package
 
-Three kinds of file say which frames are read. All are in `src/echoview/data/`.
+Four kinds of file say which frames are read. All are in `src/echoview/data/`.
 
 | File | What it defines |
 |---|---|
 | `ev9v_dev.json.gz` | the development benchmark: the sequences of both halves, fragment by fragment |
+| `ev9v_test.json.gz` | the frozen test benchmark: its sequences, fragment by fragment |
 | `ev9v_recordings.json.gz` | the recordings of the training frame cache: split, label and length |
 | `plans/groups_s*.npz`, `plans/windows_s*.npz` | the sampling plans: which windows the training updates draw from |
 
@@ -25,7 +26,7 @@ Three kinds of file say which frames are read. All are in `src/echoview/data/`.
 
 - **Training.** 3,364 recordings. Only these are read by the training code.
 - **Development, two halves.** 284 recordings in the `selection` half and 237 in the `calibration` half. The halves were split by recording session, so they share no session and no recording. The decoder setting is chosen on `calibration`. The development numbers are read from `selection`.
-- **Test.** EV9V's test recordings are not named in any file of this package and are never read by it.
+- **Test.** 800 recordings from 125 examinations. Only `echoview evaluate --benchmark test` reads them. They share no recording with the training and development data, and nothing in training or in the choice of the decoder setting reads them.
 
 ## The development benchmark
 
@@ -39,6 +40,10 @@ EV9V holds single-view recordings, so streams with view changes are built by joi
 | `exam` | every recording of one examination, in the order of acquisition | 36 | 36 |
 
 A join of two fragments of the same view is a splice without a view change. The metric `same_class_cut_rate` counts how often a system cuts there.
+
+## The test benchmark
+
+The project's frozen test benchmark is built in the same way from EV9V's test recordings: 800 whole recordings, 240 pair streams and 120 multi streams. It has no examination streams. Each recording carries the number of its examination, because the intervals of the recording-level numbers are computed by drawing whole examinations. See [EVALUATION.md](EVALUATION.md) for how it is run and how to read its numbers.
 
 ## MIMIC-IV-Echo
 

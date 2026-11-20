@@ -1,8 +1,11 @@
-"""The development evaluation of the reference system: each seed alone and the three as one ensemble.
+"""The evaluations of the reference system on EV9V.
 
-For every system the decoder setting is chosen on the calibration half by the project's rule and applied unchanged to
-the selection half. The ensemble is also decoded with its published setting, which must give the same numbers. The
-whole evaluation is one pass of the three seeds over the windows of both halves.
+Development: each seed alone and the three as one ensemble. For every system the decoder setting is chosen on the
+calibration half by the project's rule and applied unchanged to the selection half. The ensemble is also decoded with
+its published setting, which must give the same numbers. The whole evaluation is one pass of the three seeds over the
+windows of both halves.
+
+Test: the loaded system on the frozen test benchmark, decoded once with its fixed setting. Nothing is chosen there.
 """
 from __future__ import annotations
 
@@ -14,7 +17,7 @@ import numpy as np
 from ..model import CLASSES
 from ..pipeline import Ensemble, probabilities_from_logits, softmax
 from ..reference import B3
-from . import calibrate, metrics, scorecard
+from . import bootstrap, calibrate, metrics, scorecard
 from .benchmark import HALVES, Sequence, of_kind
 from .ev9v import FrameTable
 
@@ -127,6 +130,48 @@ def headline(report: dict) -> list[str]:
                      f"recording errors {entry['selection']['native']['errors']}/{entry['calibration']['native']['errors']}  "
                      f"decoder h{setting['half_window']} thr {setting['threshold']:.4f} ({entry['b3']['status']})")
     return lines
+
+
+def save_logits(logits: Logits, path: str | Path) -> None:
+    """The window logits of every sequence as one .npz file, one array per sequence, written whole or not at all."""
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    partial = path.with_name(path.name + ".partial.npz")
+    np.savez_compressed(partial, **{name: np.asarray(array, np.float32) for name, array in logits.items()})
+    partial.replace(path)
+
+
+def evaluate_test_benchmark(system: Ensemble, sequences: tuple[Sequence, ...], table: FrameTable, logits: Logits | None = None,
+                            keep: str | Path | None = None) -> dict:
+    """The loaded system on the frozen test benchmark, decoded once with its own fixed setting, with 95% intervals.
+
+    `keep` names a file for the window logits. They are written before anything is scored, so that the numbers can be
+    looked into later without running the models again.
+    """
+    bootstrap.examinations(of_kind(sequences, "native"))  # a file without them stops here, before the models run
+    if logits is None:
+        logits = all_logits(system, sequences, table)
+    if keep is not None:
+        save_logits(logits, keep)
+    setting = {key: system.b3[key] for key in ("half_window", "threshold", "nms_radius")}
+    decoded = calibrate.decode_all(setting, member_probabilities(logits, sequences, tuple(range(len(system.models)))))
+    return {"benchmark": "EV9V test benchmark (ev9v_test.json.gz)", "model": system.version, "b3": {"status": "fixed", "params": setting},
+            "sequences": {kind: len(of_kind(sequences, kind)) for kind in ("native", "pairs", "multi")}, "frames": len(table.refs),
+            "system": metrics.evaluate(decoded, sequences),
+            "intervals": bootstrap.intervals(sequences, decoded)}
+
+
+def headline_of_test(report: dict) -> list[str]:
+    """Three lines: multi streams, pair streams and single recordings, each number with its interval."""
+    scores, intervals = report["system"], report["intervals"]
+
+    def number(key: str) -> str:
+        low, high = intervals[key]
+        return f"{scores[key]:.4f} (95% interval {low:.3f} to {high:.3f})"
+
+    return [f"multi streams   segment F1@50 {number('segment_f1_50_multi')}",
+            f"pair streams    segment F1@50 {number('segment_f1_50_pairs')}",
+            f"recordings      accuracy {number('native_accuracy')}  macro-F1 {number('native_macro_f1')}"]
 
 
 def write(report: dict, path: str | Path) -> None:

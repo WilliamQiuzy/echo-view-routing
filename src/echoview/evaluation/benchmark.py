@@ -1,6 +1,6 @@
-"""The EV9V development benchmark as data: which samples make up every sequence.
+"""The EV9V benchmarks as data: which samples make up every sequence.
 
-EV9V holds single-view recordings. The benchmark builds its sequences from them:
+EV9V holds single-view recordings. A benchmark builds its sequences from them:
 
   native  one whole recording (284 and 237 recordings in the two halves);
   pairs   two fragments joined, the same view or two different views;
@@ -8,12 +8,18 @@ EV9V holds single-view recordings. The benchmark builds its sequences from them:
   exam    every recording of one examination joined in the order of acquisition ("real order").
 
 A fragment is a run of 10 Hz samples from one recording, given by the JPEG frame number of every sample. `gamma` is
-the grey-level change of the fragment's input variant (1.0 for none). The two halves are disjoint in examinations:
-`calibration` sets the decoder, `selection` is the half the development numbers are read from.
+the grey-level change of the fragment's input variant (1.0 for none).
 
-The file was written once from the research protocol (tools/research/export_ev9v_dev_benchmark.py) and is part of
-the package. It holds no recording name: a recording is named by a key, the first 16 hex digits of the SHA-256 of its
-EV9V folder name. The frame reader (ev9v.py) finds the folders of a local EV9V copy by hashing their names.
+There are two files, both written once from the research protocol (tools/research/) and part of the package:
+
+  development  from EV9V's validation split, in two halves that are disjoint in examinations: `calibration` sets
+               the decoder, `selection` is the half the development numbers are read from;
+  test         the project's frozen test benchmark, from EV9V's test split: native recordings, pair streams and
+               multi streams. Nothing is chosen on it.
+
+Neither holds a recording name: a recording is named by a key, the first 16 hex digits of the SHA-256 of its EV9V
+folder name. The frame reader (ev9v.py) finds the folders of a local EV9V copy by hashing their names. In the test
+file a native recording also carries `group`, the number of its examination: the bootstrap resamples examinations.
 """
 from __future__ import annotations
 
@@ -29,6 +35,8 @@ import numpy as np
 HALVES = ("calibration", "selection")
 KINDS = ("native", "pairs", "multi", "exam")
 EV9V_DEV = "ev9v_dev.json.gz"
+EV9V_TEST = "ev9v_test.json.gz"
+TEST = "test"
 FORMAT = "echo-view-routing benchmark v2"
 
 Ref = tuple[str, int, float]  # recording key, JPEG frame number, gamma
@@ -48,6 +56,7 @@ class Sequence:
     kind: str
     fragments: tuple[Fragment, ...]
     cell: str = ""
+    group: int = -1  # test benchmark, native recordings: the examination, numbered in the order the bootstrap uses
 
     def __len__(self) -> int:
         return sum(len(fragment.frames) for fragment in self.fragments)
@@ -85,19 +94,25 @@ def _sequence(item: dict) -> Sequence:
                       for f in item["fragments"])
     if item["kind"] not in KINDS or not fragments or any(not f.frames for f in fragments):
         raise ValueError(f"sequence {item.get('id')!r} is not a sequence of this benchmark format")
-    return Sequence(str(item["id"]), item["kind"], fragments, str(item.get("cell", "")))
+    return Sequence(str(item["id"]), item["kind"], fragments, str(item.get("cell", "")), int(item.get("group", -1)))
+
+
+def _parts(path: str | Path | None, packaged: str, parts: tuple[str, ...]) -> dict[str, tuple[Sequence, ...]]:
+    raw = resources.files("echoview").joinpath("data", packaged).read_bytes() if path is None else Path(path).read_bytes()
+    document = json.loads(gzip.decompress(raw) if raw[:2] == b"\x1f\x8b" else raw)
+    if document.get("format") != FORMAT or any(part not in document.get("halves", {}) for part in parts):
+        raise ValueError(f"not a benchmark file of this package with the parts {', '.join(parts)}")
+    return {part: tuple(_sequence(item) for item in document["halves"][part]["sequences"]) for part in parts}
 
 
 def load(path: str | Path | None = None) -> dict[str, tuple[Sequence, ...]]:
     """The sequences of both halves, in the benchmark's order. Without a path: the EV9V development benchmark."""
-    if path is None:
-        raw = resources.files("echoview").joinpath("data", EV9V_DEV).read_bytes()
-    else:
-        raw = Path(path).read_bytes()
-    document = json.loads(gzip.decompress(raw) if raw[:2] == b"\x1f\x8b" else raw)
-    if document.get("format") != FORMAT:
-        raise ValueError("not a benchmark file of this package")
-    return {half: tuple(_sequence(item) for item in document["halves"][half]["sequences"]) for half in HALVES}
+    return _parts(path, EV9V_DEV, HALVES)
+
+
+def load_test(path: str | Path | None = None) -> tuple[Sequence, ...]:
+    """The sequences of the frozen test benchmark, in its order. Without a path: the EV9V test benchmark."""
+    return _parts(path, EV9V_TEST, (TEST,))[TEST]
 
 
 def of_kind(sequences: tuple[Sequence, ...], kind: str) -> tuple[Sequence, ...]:

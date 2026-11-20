@@ -4,13 +4,14 @@
   echoview classify  INPUT [INPUT ...] [--out views.csv]
   echoview segment   INPUT [INPUT ...] [--out segments.csv] [--samples samples.csv]
   echoview weights
-  echoview evaluate  --images EV9V/Images [--out report.json]
+  echoview evaluate  --images EV9V/Images [--benchmark test] [--out report.json]
   echoview mimic-table --labels V4.csv --root MIMIC_ROOT --out ours.csv [--limit N]
 
 INPUT is a DICOM cine, a video file, a folder of frame images, or a folder that holds any of these.
 classify gives one view per recording. segment joins the inputs in the given order into one stream and cuts it into
 views. weights downloads the published weights if needed and checks them. evaluate runs the EV9V development
-evaluation. mimic-table writes a table with the columns of the MIMIC-IV-Echo view table, filled by this model.
+evaluation, or with --benchmark test the frozen test benchmark. mimic-table writes a table with the columns of the
+MIMIC-IV-Echo view table, filled by this model.
 The model knows five views (PLAX, PSAX, A4C, A5C, SC4C) and always answers one of them.
 """
 from __future__ import annotations
@@ -164,7 +165,8 @@ def show_weights(args: argparse.Namespace) -> int:
 
 # ------------------------------------------------------------------------------------------------ evaluate
 def evaluate(args: argparse.Namespace) -> int:
-    """The EV9V development evaluation: each seed, the ensemble by the rule and the ensemble as published."""
+    """The EV9V development evaluation (each seed, the ensemble by the rule and the ensemble as published), or the
+    frozen test benchmark at the system's fixed decoder setting."""
     import importlib.util
 
     import torch
@@ -176,14 +178,23 @@ def evaluate(args: argparse.Namespace) -> int:
     # Plain float32 arithmetic on the GPU, as in the published numbers: TF32 changes logits in the fourth decimal.
     torch.backends.cuda.matmul.allow_tf32 = False
     torch.backends.cudnn.allow_tf32 = False
-    halves = benchmark.load()
+    on_test = args.benchmark == "test"
+    halves = {benchmark.TEST: benchmark.load_test()} if on_test else benchmark.load()
     system = build(args)  # before the frames are decoded: a problem with the weights shows at once
     try:
-        tables = {half: ev9v.FrameTable.build(halves[half], args.images, args.workers, args.cache or None) for half in benchmark.HALVES}
+        tables = {half: ev9v.FrameTable.build(sequences, args.images, args.workers, args.cache or None) for half, sequences in halves.items()}
     except ev9v.DataError as error:
         raise SystemExit(str(error)) from None
-    report = run.evaluate_reference(system, halves, tables)
-    for line in run.headline(report):
+    if on_test:
+        report = run.evaluate_test_benchmark(system, halves[benchmark.TEST], tables[benchmark.TEST], keep=args.save_logits or None)
+        lines = run.headline_of_test(report)
+    else:
+        logits = {half: run.all_logits(system, halves[half], tables[half]) for half in benchmark.HALVES}
+        if args.save_logits:
+            run.save_logits({name: array for half in benchmark.HALVES for name, array in logits[half].items()}, args.save_logits)
+        report = run.evaluate_reference(system, halves, tables, logits)
+        lines = run.headline(report)
+    for line in lines:
         print(line)
     if args.out:
         run.write(report, args.out)
@@ -221,10 +232,13 @@ def parser() -> argparse.ArgumentParser:
     p.set_defaults(run=segment)
     p = commands.add_parser("weights", parents=[common], help="download the published weights if needed and check them")
     p.set_defaults(run=show_weights)
-    p = commands.add_parser("evaluate", parents=[common], help="the EV9V development evaluation (needs the EV9V Images folder)")
+    p = commands.add_parser("evaluate", parents=[common], help="the EV9V evaluations (needs the EV9V Images folder)")
     p.add_argument("--images", required=True, help="the Images folder of EV9V: Images/<recording>/<frame>.jpg")
+    p.add_argument("--benchmark", choices=("dev", "test"), default="dev",
+                   help="dev: the development halves, where the decoder setting is chosen; test: the frozen test benchmark at the fixed setting")
     p.add_argument("--out", default="", help="JSON file for the full report")
     p.add_argument("--cache", default="", help="folder that keeps the decoded frames between runs (about 2 GB)")
+    p.add_argument("--save-logits", default="", help=".npz file for the window logits of every sequence (one array each: windows x seeds x views)")
     p.add_argument("--workers", type=int, default=8, help="threads that decode frames")
     p.set_defaults(run=evaluate)
     p = commands.add_parser("mimic-table", parents=[common], help="the MIMIC-IV-Echo view table filled by this model")

@@ -76,7 +76,7 @@ How to read these numbers:
 - **The MIMIC patients of these two rows played no part in forming this system.** The system and its decoder were fixed before these patients were read, once. A larger ensemble of six models was read on the same patients as a second system and scored 0.009 higher on streams. The project kept the three-seed ensemble.
 - **The EV9V test benchmark is not untouched.** Earlier rounds of the project were evaluated on it.
 - **The augmentation of stage 3 is what the MIMIC agreement rests on.** On 8,033 recordings of 866 other MIMIC patients, the stage-2 model agreed with the other classifier on 84.7% and single stage-3 seeds on 94.6%. On the EV9V test benchmark the two show no consistent difference.
-- **What this code reproduces.** `echoview evaluate` reproduces the development row exactly. On 2026-11-17 it was run beside the research code on the same weights: the logits differed by less than 6e-6 and every metric was identical. The test-benchmark and MIMIC rows were produced by the research code and are not yet part of this package.
+- **What this code reproduces.** `echoview evaluate` reproduces the development row exactly. On 2026-11-17 it was run beside the research code on the same weights: the logits differed by less than 6e-6 and every metric was identical. `echoview evaluate --benchmark test` runs the test benchmark: on 2026-11-20 its evaluation was run on the published weights and gave the numbers of the two test-benchmark rows, with their intervals, to the last digit. The MIMIC rows were produced by the research code and are not part of this package.
 
 ## Limits
 

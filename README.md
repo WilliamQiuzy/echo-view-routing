@@ -23,7 +23,8 @@ recording ──► 10 frames per second, grey, 224 × 224
 | Inference (`echoview classify`, `segment`, Python API) | ready, checked against the research code |
 | EV9V development evaluation (`echoview evaluate`) | ready, reproduces the research numbers exactly |
 | Training, stages 1 to 3 (`echoview-train`) | ready; stage 3 matches the research trainer over 100 updates, stages 1 and 2 follow the published training logs over 750 updates; a full rerun of stage 3 is still to finish |
-| EV9V test benchmark and MIMIC-IV-Echo evaluation | not ported yet; the numbers below come from the research code |
+| EV9V test benchmark (`echoview evaluate --benchmark test`) | ready, reproduces the research row exactly |
+| MIMIC-IV-Echo evaluation | not part of the package; the numbers below come from the research code |
 | Weights | on the Hugging Face Hub: [WilliamQiu123/echo-view-routing](https://huggingface.co/WilliamQiu123/echo-view-routing), see [Licence](#licence-and-acknowledgements) |
 | Docker image | `ghcr.io/williamqiuzy/echo-view-routing`, see [docs/DOCKER.md](docs/DOCKER.md) |
 
@@ -108,7 +109,11 @@ pip install -e ".[evaluation]"
 echoview evaluate --images /data/EV9V/Images --out report.json
 ```
 
-It prints one line per system. The line of the ensemble must read `selection F1@50 0.9594  calibration F1@50 0.9837`. See [docs/EVALUATION.md](docs/EVALUATION.md) for the benchmark, the metrics and the decoder rule.
+It prints one line per system. The line of the ensemble must read `selection F1@50 0.9594  calibration F1@50 0.9837`.
+
+The frozen test benchmark is run with `echoview evaluate --benchmark test --images /data/EV9V/Images`. Its first line must read `multi streams   segment F1@50 0.9089 (95% interval 0.883 to 0.934)`.
+
+See [docs/EVALUATION.md](docs/EVALUATION.md) for the benchmarks, the metrics and the decoder rule.
 
 ## Train
 
@@ -128,9 +133,9 @@ Stage 3 needs a GPU with 32 GB of memory. On a machine that can be switched off,
 | Path | Content |
 |---|---|
 | `src/echoview/` | the package: model, readers, windows, decoder, ensemble, command line |
-| `src/echoview/evaluation/` | the EV9V development benchmark, the metrics and the decoder rule |
+| `src/echoview/evaluation/` | the EV9V development and test benchmarks, the metrics, the intervals and the decoder rule |
 | `src/echoview/training/` | frame cache, sampling plans, augmentation and the training loop |
-| `src/echoview/data/` | the benchmark definition, the list of recordings and the sampling plans |
+| `src/echoview/data/` | the benchmark definitions, the list of recordings and the sampling plans |
 | `configs/` | training recipes |
 | `docs/` | data, evaluation and training in detail |
 | `tests/` | unit tests and parity tests against the research code |

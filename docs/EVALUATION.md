@@ -1,5 +1,7 @@
 # Evaluation
 
+Two evaluations run on EV9V: the development evaluation, on which the decoder setting is chosen, and the frozen test benchmark, on which nothing is chosen.
+
 ## Run it
 
 ```bash
@@ -63,6 +65,27 @@ The setting is chosen on the calibration half:
 3. Among the feasible settings the highest segment F1@50 on multi streams wins. An equal score goes to the earlier grid position.
 4. When nothing is feasible, the report says so and shows the numbers at a fixed diagnostic setting.
 
+## The test benchmark
+
+```bash
+echoview evaluate --benchmark test --images /data/EV9V/Images --out test_report.json
+```
+
+The project's frozen test benchmark is built from EV9V's test split. It holds 800 single recordings from 125 examinations, 240 streams of two fragments and 120 streams of four to eight fragments. None of its recordings is in the training or the development data. The definition file is `src/echoview/data/ev9v_test.json.gz`.
+
+Nothing is chosen on it. The loaded system is decoded once with the setting that ships with it, and the command prints three lines:
+
+```text
+multi streams   segment F1@50 0.9089 (95% interval 0.883 to 0.934)
+pair streams    segment F1@50 0.9847 (95% interval 0.972 to 0.996)
+recordings      accuracy 0.9812 (95% interval 0.972 to 0.990)  macro-F1 0.9561 (95% interval 0.932 to 0.976)
+```
+
+- **Metrics.** The same as in the development evaluation: segment F1 at 50% overlap pooled over the streams, and the recording-level decision by the majority of the decoded sample labels.
+- **Intervals.** A percentile bootstrap with 2,000 draws and a fixed seed (`echoview/evaluation/bootstrap.py`). Whole units are drawn again: examinations for the recording-level numbers, streams for segment F1.
+- **This is not an untouched test set.** Earlier rounds of the project were evaluated on this benchmark, and the numbers of single seeds on it were known when the ensemble was chosen. The ensemble itself was chosen by a rule that reads development data only. Read the numbers as a description of the system.
+- **The run needs** the EV9V `Images` folder and a GPU. It decodes about 55,000 frames and runs the three seeds over about 15,000 windows.
+
 ## Checked against the research code
 
 On 2026-11-17 this evaluation was run beside the research code on the same frozen weights, on one L40S.
@@ -78,6 +101,19 @@ One difference is known. The published threshold of the ensemble, 0.17379, was c
 
 The tests of this repository repeat the comparison without a GPU: `tests/test_evaluation_parity.py` feeds stored predictions for the whole benchmark to the metrics, the scorecard and the decoder rule, and requires the research code's stored outputs.
 
+**The test benchmark.** On 2026-11-20 the test evaluation was run on one L40S with the published weights. The research code had stored this system's row on 2026-11-13. Every number of the new run equals it to the last digit, with both ends of its interval:
+
+| Number | This package and the research code |
+|---|---|
+| Segment F1@50, multi streams | 0.908908908908909 (0.8833483675956257 to 0.9335977211135994) |
+| Segment F1@50, pair streams | 0.9847009735744089 (0.9724487962630256 to 0.9957449817930121) |
+| Accuracy, recordings | 0.98125 (0.9717355423890712 to 0.9899333074769822) |
+| Macro-F1, recordings | 0.9561411223630938 (0.9324449865632222 to 0.9757512258723523) |
+
+- **How it was run.** The machine was a preemptible one that was reclaimed every few minutes that night. The evaluation was therefore run with the functions the command calls (`Ensemble.window_logits` for every sequence, then `run.evaluate_test_benchmark`), in 24 pieces that are written to disk as they finish. Nothing was scored before all pieces existed. Two earlier starts were cut off before any model output existed.
+- **One evaluation.** The project keeps a record of every read of its test lists, frames and labels. This run is in it. Nothing was tuned on its output and it was not repeated.
+- **The intervals** are also tested without a GPU: `tests/test_evaluation_test_benchmark.py` feeds made-up counts to the bootstrap and requires the intervals the research code's bootstrap gave them.
+
 ## Not here yet
 
-The EV9V test benchmark and the MIMIC-IV-Echo evaluations of the model card were produced by the research code. They are not part of this package yet.
+The MIMIC-IV-Echo evaluations of the model card were produced by the research code. They are not part of this package: MIMIC-IV-Echo is restricted-access data, and its reference there is another classifier's table.
