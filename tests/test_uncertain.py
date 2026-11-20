@@ -123,3 +123,23 @@ def test_the_seeds_test_needs_the_probabilities_of_every_seed_for_every_sample()
         uncertain.seed_mask(one_seed, labels)  # (samples, views): the seeds are missing
     with pytest.raises(ValueError, match="seeds, 40 samples, views"):
         uncertain.seed_mask(np.stack([one_seed[:30]] * 3), labels)  # too short
+
+
+def test_the_released_rule_is_the_one_the_study_decided_on():
+    import json
+    from pathlib import Path
+
+    import echoview
+    from echoview.evaluation import uncertain_study
+
+    rule = uncertain.released()
+    uncertain_study.on_grid(rule)
+    decided = json.loads((Path(__file__).parents[1] / "docs" / "uncertain" / "report.json").read_text())["decision"]
+    assert decided["passed"] and rule == uncertain.Rule(**decided["released_rule"])
+    assert rule == uncertain.Rule(band=3, f_low=2.0, f_high=1.25, margin=0.1, seeds=False)
+    assert "uncertain" in echoview.__all__ and echoview.uncertain.released() == rule  # as the README uses it
+
+
+def test_the_released_rule_declines_three_samples_on_each_side_of_a_clear_cut():
+    marked = uncertain.mark(stream((40, {0: 0.97}), (40, {2: 0.97})), B3, uncertain.released())
+    assert np.flatnonzero(marked.mask).tolist() == [37, 38, 39, 40, 41, 42]

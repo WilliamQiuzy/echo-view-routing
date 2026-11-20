@@ -14,6 +14,11 @@ SEEDS = (0, 1, 2)
 # inside which a weaker peak is dropped.
 B3 = {"half_window": 7, "threshold": 0.1737918038235492, "nms_radius": 5}
 
+# The rule of the uncertain output (`echoview segment --uncertain`): the fields of echoview.uncertain.Rule. The band is
+# in 10 Hz samples. The rule was chosen on the EV9V calibration half and checked on the selection half on 2026-11-20
+# (docs/UNCERTAIN.md, sections 7 and 8).
+UNCERTAIN = {"band": 3, "f_low": 2.0, "f_high": 1.25, "margin": 0.1, "seeds": False}
+
 # Where the weights are published. MODEL_CARD.md says under which licence.
 HUB_REPO = "WilliamQiu123/echo-view-routing"
 HUB_REVISION = "main"

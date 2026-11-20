@@ -6,16 +6,24 @@
 [![Weights on the Hugging Face Hub](https://img.shields.io/badge/weights-Hugging%20Face-yellow.svg)](https://huggingface.co/WilliamQiu123/echo-view-routing)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](pyproject.toml)
 
-EchoRouter reads echocardiography video and names the view: **PLAX, PSAX, A4C, A5C or SC4C**. For a longer stream, such as several recordings of one examination joined together, it also says where one view ends and the next begins. This repository holds the code to run it, to evaluate it and to train it. The weights are on the [Hugging Face Hub](https://huggingface.co/WilliamQiu123/echo-view-routing).
+EchoRouter reads echocardiography video and names the view: **PLAX, PSAX, A4C, A5C or SC4C**. For a longer stream, such as several recordings of one examination joined together, it also says where one view ends and the next begins. Where its evidence is weak, most often right at a change of view, it can answer **uncertain** instead of naming a view. This repository holds the code to run it, to evaluate it and to train it. The weights are on the [Hugging Face Hub](https://huggingface.co/WilliamQiu123/echo-view-routing).
 
-![Five recordings joined into one stream: the frames the model reads, the view it gives every 0.1 s, and the reference below](docs/assets/five_views.webp)
+<p>
+  <img src="docs/assets/exam_stream.webp" width="49%" alt="The recordings of one examination joined in their order: the frames the model reads, the view it gives every 0.1 s with the uncertain parts hatched, and the reference below">
+  <img src="docs/assets/constructed_stream.webp" width="49%" alt="A stream built from fragments of several recordings: the frames the model reads, the view it gives every 0.1 s with the uncertain parts hatched, and the reference below">
+</p>
 
-Five public EV9V recordings, each in full, joined into one stream of 37 s. The wide lane is EchoRouter's answer for every 0.1 s, the narrow lane the reference. The four cuts lie 0.1 to 0.2 s from the true changes. `python tools/render_demo.py` makes such a picture of your own recordings.
+Two streams of public EV9V recordings, run with `--uncertain`. The left one joins the recordings of one examination in their order (29 s). The right one is built from fragments of several recordings (20 s). The wide lane is EchoRouter's answer for every 0.1 s, hatched where it declines. The narrow lane is the reference.
+
+- **What to look for.** Every named sample of both streams is right. The hatched parts sit at the changes of view, 0.3 s to each side. In the left stream the 1.2 s of A5C between two A4C parts is left unnamed as a whole. The system's own two cuts there are 1.0 s apart, and what their bands leave between them is shorter than the 0.5 s a named part must have.
+- **How they were picked.** By hand. Both come from the half of the development benchmark that the rule was not chosen on. Of its 156 multi and examination-order streams, 118 have no wrong named sample, and the two were picked among those.
+- **Your own recordings.** `python tools/render_demo.py clip1.mp4 clip2.mp4 --uncertain --out demo.webp` makes such a picture.
 
 ```text
 recording ──► 10 frames per second, grey, 224 × 224
           ──► window model: one prediction every 0.5 s from 16 frames (three seeds, averaged)
           ──► one view per recording, or a change-point decoder that cuts a stream into views
+          ──► on request: the weak parts of a stream are marked uncertain instead of named
 ```
 
 ## How it compares
@@ -63,6 +71,9 @@ echoview classify /path/to/recordings --out views.csv
 
 # join recordings in the given order into one stream and cut it into views
 echoview segment clip1.dcm clip2.dcm clip3.dcm --out segments.csv --samples samples.csv
+
+# the same, and leave the weak parts unnamed: they come back as pieces called "uncertain"
+echoview segment clip1.dcm clip2.dcm clip3.dcm --uncertain --out segments.csv
 ```
 
 ```python
@@ -75,6 +86,9 @@ print(result.view, result.probability, result.seeds_agree)
 
 for start, end, view, probability in system.segment(recording.frames).segments:
     print(f"{start:6.1f} - {end:6.1f} s  {view}  {probability:.2f}")
+
+declining = system.segment(recording.frames, echoview.uncertain.released())   # with the uncertain output
+print(declining.uncertain.mean())                                             # the share of samples left unnamed
 ```
 
 Options for every command:
@@ -91,6 +105,7 @@ Options for every command:
 - **Ensemble.** Three training seeds of the same network. Their probabilities are averaged.
 - **Recording view.** The mean of the window probabilities. The largest of the five wins.
 - **Stream segmentation.** Every 0.1 s sample takes the probability of the nearest window. A change-point decoder cuts where the probabilities before and after a sample differ and the two sides name different views.
+- **Uncertain output, on request.** The decoder runs as above. Then the 0.3 s before and after every cut are marked uncertain, and so is a part whose view hangs on a weak cut or on a narrow margin between two views. Every other sample keeps the view it has without the option.
 
 ## Results
 
@@ -101,10 +116,27 @@ All numbers are for the published weights (identifier `C2_ens_v1`).
 | EV9V development halves, streams built from labelled recordings | segment F1 at 50% overlap, selection half and calibration half | 0.959 and 0.984 |
 | EV9V frozen test benchmark, 120 streams of 4 to 8 fragments | segment F1 at 50% overlap | 0.909 (95% CI 0.883 to 0.934) |
 | EV9V frozen test benchmark, 800 single recordings | accuracy and macro-F1 | 98.1% and 0.956 |
+| EV9V development, selection half, 577 sequences, with `--uncertain` | samples that keep a view, and wrong samples among them | 92.1%, and 1.0% (0.6 to 1.5) against 3.0% without the option |
 | MIMIC-IV-Echo, 9,341 recordings of 1,001 patients (GE machines) | same view as another classifier's table | 95.8% (95.2 to 96.3) |
 | MIMIC-IV-Echo, 1,139 streams of 988 of those patients | segment F1 at 50% overlap against that table | 0.882 (0.870 to 0.894) |
 
 The MIMIC rows are agreement between two models, not accuracy: MIMIC-IV-Echo has no reader's view labels. The [model card](MODEL_CARD.md) says how to read each row and what the model cannot do.
+
+## The uncertain output
+
+By default EchoRouter names a view for every 0.1 s of a stream, also where two views meet and where a part looks like two views at once. With `--uncertain` it declines there. The rule was chosen on one half of the EV9V development benchmark and checked on the other half. The numbers below are from the half it was not chosen on.
+
+| 577 sequences, 53,922 samples | Samples that keep a view | Wrong among them |
+|---|---|---|
+| Every sample named, the default | 100% | 3.0% |
+| With `--uncertain` | 92.1% | 1.0% |
+
+- **What becomes uncertain.** 68% of the samples the default output has wrong, and 6% of those it has right. 93% of the true changes of view have an uncertain sample beside them.
+- **What it costs.** A part of about a second between two cuts is left unnamed as a whole. A5C loses most: 74% of its samples keep the name A5C, against 89% without the option.
+- **What it is not.** Uncertain does not mean "none of the five views". The model cannot tell that. And the study does not show that this rule beats a plain threshold on the model's confidence: a threshold that declines as many samples leaves 1.1% wrong.
+- **Where it holds.** On EV9V streams joined from recordings, for the ensemble of three seeds. A continuous examination was not measured. The 577 sequences are built from the same 284 recordings, so the interval in the results table is too narrow as a statement about new recordings.
+
+[docs/UNCERTAIN.md](docs/UNCERTAIN.md) has the plan, which was committed before the results, the choice and the full two-part report.
 
 ## Reproduce the evaluation
 
@@ -119,7 +151,7 @@ It prints one line per system. The line of the ensemble must read `selection F1@
 
 The frozen test benchmark is run with `echoview evaluate --benchmark test --images /data/EV9V/Images`. Its first line must read `multi streams   segment F1@50 0.9089 (95% interval 0.883 to 0.934)`.
 
-See [docs/EVALUATION.md](docs/EVALUATION.md) for the benchmarks, the metrics and the decoder rule.
+See [docs/EVALUATION.md](docs/EVALUATION.md) for the benchmarks, the metrics, the decoder rule and the study of the uncertain output.
 
 ## Train
 
@@ -147,7 +179,7 @@ Stage 3 needs a GPU with 32 GB of memory. On a machine that can be switched off,
 | `configs/` | training recipes |
 | `docs/` | data, evaluation and training in detail |
 | `tests/` | unit tests and parity tests against the research code |
-| `tools/` | `render_demo.py` for the animation above, and maintainers' scripts: building the Hub folder, exporting definitions from the research code |
+| `tools/` | `render_demo.py` for the animations above, and maintainers' scripts: building the Hub folder, exporting definitions from the research code |
 | `requirements.txt`, `requirements-dev.txt` | the pinned versions the project was checked with |
 | `Dockerfile` | the image: the package on top of the pinned requirements |
 
@@ -159,7 +191,7 @@ Stage 3 needs a GPU with 32 GB of memory. On a machine that can be switched off,
 
 ## Limits
 
-- **Five views only.** The model has no "other" class. A recording of any other view still gets one of the five names, often with a high probability.
+- **Five views only.** The model has no "other" class. A recording of any other view still gets one of the five names, often with a high probability. The uncertain output does not change this: it marks weak evidence between the five views.
 - **A4C against A5C is its weakest distinction.**
 - **One training site and vendor.** Robustness to another vendor's recordings comes from input augmentation and was measured as agreement with another classifier.
 - **Research use only.** This is not a medical device and it is not validated for clinical use.

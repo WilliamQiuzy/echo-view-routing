@@ -16,7 +16,7 @@ datasets:
 
 # EchoRouter
 
-EchoRouter reads an echocardiography recording and names its view: PLAX, PSAX, A4C, A5C or SC4C. For a longer stream, such as several recordings of one examination joined together, it also says where one view ends and the next begins.
+EchoRouter reads an echocardiography recording and names its view: PLAX, PSAX, A4C, A5C or SC4C. For a longer stream, such as several recordings of one examination joined together, it also says where one view ends and the next begins. On request it leaves the weak parts of a stream unnamed and calls them uncertain.
 
 The code is at <https://github.com/WilliamQiuzy/echo-view-routing>. This repository holds the weights: three training seeds that run as one ensemble. In the project's records the system is called `C2_ens_v1`.
 
@@ -29,6 +29,7 @@ pip install "git+https://github.com/WilliamQiuzy/echo-view-routing"
 echoview selfcheck       # downloads the weights and five sample clips, then compares with stored results
 echoview classify /path/to/recordings --out views.csv
 echoview segment clip1.dcm clip2.dcm clip3.dcm --out segments.csv
+echoview segment clip1.dcm clip2.dcm clip3.dcm --uncertain --out segments.csv   # weak parts come back as "uncertain"
 ```
 
 ```python
@@ -65,6 +66,7 @@ All numbers are for this ensemble as it is in this repository.
 | EV9V development halves, streams built from labelled recordings | segment F1 at 50% overlap, selection half and calibration half | 0.959 and 0.984 |
 | EV9V frozen test benchmark, 120 streams of 4 to 8 fragments | segment F1 at 50% overlap | 0.909 (95% CI 0.883 to 0.934) |
 | EV9V frozen test benchmark, 800 single recordings | accuracy and macro-F1 | 98.1% and 0.956 |
+| EV9V development, selection half, 577 sequences, with `--uncertain` | samples that keep a view, and wrong samples among them | 92.1%, and 1.0% (0.6 to 1.5) against 3.0% without the option |
 | MIMIC-IV-Echo, 9,341 recordings of 1,001 patients (GE machines) | same view as another classifier's table, mean over its classes PLAX_LV, PSAX_non_zAV and A4C_general | 95.8% (95.2 to 96.3) |
 | MIMIC-IV-Echo, 1,139 streams of 988 of those patients | segment F1 at 50% overlap against that table | 0.882 (0.870 to 0.894) |
 
@@ -75,12 +77,13 @@ How to read these numbers:
 - **The MIMIC rows are agreement between two models, not accuracy.** MIMIC-IV-Echo has no reader's view labels. The reference there is the output of another view classifier, which has no A5C and no SC4C class. When an A5C answer is counted as A4C, the stream F1 is 0.935 (0.925 to 0.943).
 - **The MIMIC patients of these two rows played no part in forming this system.** The system and its decoder were fixed before these patients were read, once. A larger ensemble of six models was read on the same patients as a second system and scored 0.009 higher on streams. The project kept the three-seed ensemble.
 - **The EV9V test benchmark is not untouched.** Earlier rounds of the project were evaluated on it.
+- **The uncertain output was studied on the development benchmark only.** Its rule was chosen on the calibration half and passed its check on the selection half by a small margin. It makes the named part cleaner at a price: 7.9% of the samples get no name, parts of about a second between two cuts go missing, and every view is named on fewer of its samples (A5C on 74% instead of 89%). The interval in the table is over sequences that share their recordings, so it is too narrow as a statement about new recordings. The study does not show that the rule beats a plain threshold on the model's confidence. The code repository's `docs/UNCERTAIN.md` has the plan and the full report.
 - **The augmentation of stage 3 is what the MIMIC agreement rests on.** On 8,033 recordings of 866 other MIMIC patients, the stage-2 model agreed with the other classifier on 84.7% and single stage-3 seeds on 94.6%. On the EV9V test benchmark the two show no consistent difference.
 - **What this code reproduces.** `echoview evaluate` reproduces the development row exactly. On 2026-11-17 it was run beside the research code on the same weights: the logits differed by less than 6e-6 and every metric was identical. `echoview evaluate --benchmark test` runs the test benchmark: on 2026-11-20 its evaluation was run on the published weights and gave the numbers of the two test-benchmark rows, with their intervals, to the last digit. The MIMIC rows were produced by the research code and are not part of this package.
 
 ## Limits
 
-- **Five views only.** The model has no "other" class. A recording of any other view (A2C, A3C, subcostal IVC, Doppler and so on) still gets one of the five names, often with a high probability. Its probability does not tell an in-scope recording from an out-of-scope one. Filter by another method first if the input is a whole study.
+- **Five views only.** The model has no "other" class. A recording of any other view (A2C, A3C, subcostal IVC, Doppler and so on) still gets one of the five names, often with a high probability. Its probability does not tell an in-scope recording from an out-of-scope one. Filter by another method first if the input is a whole study. The uncertain output does not help here: it marks weak evidence between the five views and says nothing about other views.
 - **A4C against A5C is its weakest distinction** on EV9V, where both views have reference labels.
 - **One training site and vendor.** Robustness to GE recordings comes from input augmentation. It was measured only as agreement with another classifier, not against a reader.
 - **Research use only.** This is not a medical device and it is not validated for clinical use.

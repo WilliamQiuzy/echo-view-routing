@@ -21,7 +21,7 @@ from dataclasses import dataclass
 
 import numpy as np
 
-from . import decoder
+from . import decoder, reference
 
 UNCERTAIN = -1
 SHORTEST_RUN = 5  # samples: a labelled run shorter than this beside an uncertain sample is not kept (0.5 s)
@@ -48,6 +48,11 @@ class Rule:
 
 
 OFF = Rule()
+
+
+def released() -> Rule:
+    """The rule of the reference system: what `echoview segment --uncertain` applies."""
+    return Rule(**reference.UNCERTAIN)
 
 
 @dataclass(frozen=True)

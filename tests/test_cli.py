@@ -2,13 +2,14 @@
 from __future__ import annotations
 
 import csv
+import re
 from pathlib import Path
 
 import numpy as np
 import pytest
 from PIL import Image
 
-from echoview import Ensemble, cli, mimic_table, weights
+from echoview import Ensemble, cli, mimic_table, reference, weights
 from echoview.reference import B3
 
 from .conftest import BrightnessModel
@@ -69,6 +70,34 @@ def test_segment_joins_the_inputs_in_the_given_order(tmp_path):
     sample_rows = rows_of(samples)
     assert len(sample_rows) == 80
     assert sample_rows[39]["file"] == str(a) and sample_rows[40]["file"] == str(b) and sample_rows[40]["time_s"] == "4.0"
+
+
+def test_segment_declines_around_the_cut_when_asked(tmp_path, monkeypatch, capsys):
+    monkeypatch.setattr(reference, "UNCERTAIN", {"band": 2, "f_low": 1.0, "f_high": 1.0, "margin": 0.0, "seeds": False})
+    a, b = frame_folder(tmp_path / "a", 200, 40), frame_folder(tmp_path / "b", 50, 40)
+    pieces, samples = tmp_path / "pieces.csv", tmp_path / "samples.csv"
+    assert cli.main(["segment", str(a), str(b), "--fps", "10", "--uncertain", "--out", str(pieces), "--samples", str(samples)]) == 0
+    assert [(r["start_s"], r["end_s"], r["view"]) for r in rows_of(pieces)] == [
+        ("0.0", "3.8", "SC4C"), ("3.8", "4.2", "uncertain"), ("4.2", "8.0", "PSAX")]
+    assert [r["view"] for r in rows_of(samples)[37:43]] == ["SC4C", "uncertain", "uncertain", "uncertain", "uncertain", "PSAX"]
+    printed = capsys.readouterr()
+    assert "uncertain: 0.4 s of 8.0 s (5.0%)" in printed.out
+    assert re.search(r"^     0\.0 -    3\.8 s  SC4C      \d\.\d{4}$", printed.out, re.M)
+    assert re.search(r"^     3\.8 -    4\.2 s  uncertain \d\.\d{4}$", printed.out, re.M)
+    assert "chosen and checked for the reference ensemble" in printed.err  # the stand-in model is not the reference
+
+
+def test_segment_names_every_sample_without_the_option(tmp_path, monkeypatch, capsys):
+    monkeypatch.setattr(reference, "UNCERTAIN", {"band": 2, "f_low": 1.0, "f_high": 1.0, "margin": 0.0, "seeds": False})
+    a, b = frame_folder(tmp_path / "a", 200, 40), frame_folder(tmp_path / "b", 50, 40)
+    samples = tmp_path / "samples.csv"
+    assert cli.main(["segment", str(a), str(b), "--fps", "10", "--samples", str(samples)]) == 0
+    assert {r["view"] for r in rows_of(samples)} == {"SC4C", "PSAX"}
+    printed = capsys.readouterr()
+    assert "uncertain" not in printed.out and "chosen and checked" not in printed.err
+    # the lines of the default output are as they were before the option existed: the view in a column of five
+    assert re.search(r"^     0\.0 -    4\.0 s  SC4C  \d\.\d{4}$", printed.out, re.M)
+    assert re.search(r"^     4\.0 -    8\.0 s  PSAX  \d\.\d{4}$", printed.out, re.M)
 
 
 def test_segment_builds_no_stream_when_one_input_cannot_be_read(tmp_path):

@@ -2,7 +2,7 @@
 
   echoview selfcheck
   echoview classify  INPUT [INPUT ...] [--out views.csv]
-  echoview segment   INPUT [INPUT ...] [--out segments.csv] [--samples samples.csv]
+  echoview segment   INPUT [INPUT ...] [--uncertain] [--out segments.csv] [--samples samples.csv]
   echoview weights
   echoview evaluate  --images EV9V/Images [--benchmark test] [--out report.json]
   echoview mimic-table --labels V4.csv --root MIMIC_ROOT --out ours.csv [--limit N]
@@ -12,7 +12,8 @@ classify gives one view per recording. segment joins the inputs in the given ord
 views. weights downloads the published weights if needed and checks them. evaluate runs the EV9V development
 evaluation, or with --benchmark test the frozen test benchmark. mimic-table writes a table with the columns of the
 MIMIC-IV-Echo view table, filled by this model.
-The model knows five views (PLAX, PSAX, A4C, A5C, SC4C) and always answers one of them.
+The model knows five views (PLAX, PSAX, A4C, A5C, SC4C) and always answers one of them. With --uncertain, segment
+leaves the samples unnamed where its answer is weak, most of them next to a change of view.
 """
 from __future__ import annotations
 
@@ -25,6 +26,7 @@ from pathlib import Path
 import numpy as np
 
 from . import frames as fr
+from . import uncertain
 from . import weights as wt
 from .model import CLASSES
 from .pipeline import Ensemble
@@ -133,16 +135,22 @@ def segment(args: argparse.Namespace) -> int:
     system = build(args)
     stream = np.concatenate([r.frames for r in recordings])
     source = np.concatenate([np.full(len(r.frames), k) for k, r in enumerate(recordings)])
-    result = system.segment(stream)
+    if args.uncertain and not system.is_reference:
+        print("note: the uncertain rule was chosen and checked for the reference ensemble of three seeds, not for this model", file=sys.stderr)
+    result = system.segment(stream, uncertain.released() if args.uncertain else None)
     rows = [[k, f"{start:.1f}", f"{end:.1f}", view, f"{probability:.4f}", system.version]
             for k, (start, end, view, probability) in enumerate(result.segments)]
     print(f"stream of {len(recordings)} recording(s), {len(stream) / fr.HZ:.1f} s")
+    width = len("uncertain") if args.uncertain else 5
     for _k, start, end, view, probability, _version in rows:
-        print(f"  {start:>6s} - {end:>6s} s  {view:5s} {probability}")
+        print(f"  {start:>6s} - {end:>6s} s  {view:{width}s} {probability}")
+    if args.uncertain:
+        declined = int(result.uncertain.sum())
+        print(f"uncertain: {declined / fr.HZ:.1f} s of {len(stream) / fr.HZ:.1f} s ({declined / len(stream):.1%})")
     if args.out:
         write_csv(Path(args.out), SEGMENT_HEADER, rows)
     if args.samples:
-        sample_rows = [[i, f"{i / fr.HZ:.1f}", str(paths[int(source[i])]), CLASSES[int(result.labels[i])],
+        sample_rows = [[i, f"{i / fr.HZ:.1f}", str(paths[int(source[i])]), "uncertain" if result.uncertain[i] else CLASSES[int(result.labels[i])],
                         *[f"{p:.5f}" for p in result.probabilities[i]]] for i in range(len(stream))]
         write_csv(Path(args.samples), ["sample", "time_s", "file", "view", *[f"p_{c}" for c in CLASSES]], sample_rows)
     return 0
@@ -228,7 +236,11 @@ def parser() -> argparse.ArgumentParser:
     p = commands.add_parser("segment", parents=[common], help="join the inputs into one stream and cut it into views")
     p.add_argument("inputs", nargs="+")
     p.add_argument("--out", default="", help="CSV of the pieces")
-    p.add_argument("--samples", default="", help="CSV with the view and probabilities of every 0.1 s sample")
+    p.add_argument("--samples", default="", help="CSV with the view and probabilities of every 0.1 s sample; with --uncertain the view of a "
+                                                 "declined sample is \"uncertain\"")
+    p.add_argument("--uncertain", action="store_true",
+                   help="decline where the answer is weak: such samples form pieces called \"uncertain\" (their mean probability "
+                        "is that of the likeliest view); every other sample keeps its view. See docs/UNCERTAIN.md")
     p.set_defaults(run=segment)
     p = commands.add_parser("weights", parents=[common], help="download the published weights if needed and check them")
     p.set_defaults(run=show_weights)

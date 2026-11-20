@@ -10,6 +10,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from . import uncertain
 from .frames import ReadError, Recording, find_recordings, read_recording
 from .model import CLASSES, WindowModel
 from .pipeline import Classification, Ensemble, Segmentation
@@ -17,9 +18,9 @@ from .reference import NAME as MODEL_NAME
 from .reference import VERSION as MODEL_VERSION
 from .weights import WeightsError
 
-__version__ = "1.1.1"
+__version__ = "1.2.0"
 __all__ = ["CLASSES", "MODEL_NAME", "MODEL_VERSION", "Classification", "Ensemble", "ReadError", "Recording", "Segmentation", "WeightsError",
-           "WindowModel", "find_recordings", "load", "read_recording"]
+           "WindowModel", "find_recordings", "load", "read_recording", "uncertain"]
 
 
 def load(weights: str | Path | None = None, device: str = "auto", seeds: tuple = (0, 1, 2), batch: int = 0) -> Ensemble:

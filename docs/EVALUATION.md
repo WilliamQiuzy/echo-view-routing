@@ -114,6 +114,20 @@ The tests of this repository repeat the comparison without a GPU: `tests/test_ev
 - **One evaluation.** The project keeps a record of every read of its test lists, frames and labels. This run is in it. Nothing was tuned on its output and it was not repeated.
 - **The intervals** are also tested without a GPU: `tests/test_evaluation_test_benchmark.py` feeds made-up counts to the bootstrap and requires the intervals the research code's bootstrap gave them.
 
+## The uncertain output
+
+`echoview segment --uncertain` lets the system leave weak samples unnamed. Its rule came out of a study on the development benchmark whose plan was committed before any result: [UNCERTAIN.md](UNCERTAIN.md). The rule was chosen on the calibration half and checked on the selection half. The test benchmark was not read for it.
+
+```bash
+echoview evaluate --images /data/EV9V/Images --save-logits dev_logits.npz --batch 32
+python -m echoview.evaluation.uncertain_study choose --logits dev_logits.npz --out choice.json
+python -m echoview.evaluation.uncertain_study report --logits dev_logits.npz --choice choice.json --out report.json
+```
+
+- **What the commands do.** The first keeps the window logits of every development sequence. `choose` reads the calibration half only and writes the band, the counts of all 300 settings and the candidate. `report` reads the selection half only and writes the two-part report of UNCERTAIN.md, section 5, with the decision. Both run on the CPU. When the study ran, each took about half a minute.
+- **The files of the study** are in `docs/uncertain/`: `choice.json` and `report.json`, as the commands wrote them. They hold pooled counts only.
+- **The measures** are in `echoview.evaluation.selective`. They score the labelled part and the uncertain part separately, and they put every number that can only improve when more is declined beside what it cost.
+
 ## Not here yet
 
 The MIMIC-IV-Echo evaluations of the model card were produced by the research code. They are not part of this package: MIMIC-IV-Echo is restricted-access data, and its reference there is another classifier's table.

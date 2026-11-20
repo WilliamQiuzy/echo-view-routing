@@ -116,7 +116,7 @@ def render(frames: np.ndarray, labels: np.ndarray, out: str | Path, reference: n
 
 def main(argv: list[str] | None = None) -> int:
     import echoview
-    from echoview import reference, uncertain
+    from echoview import uncertain
 
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("inputs", nargs="+")
@@ -139,11 +139,7 @@ def main(argv: list[str] | None = None) -> int:
     names = args.reference.split(",") if args.reference else []
     if names and (len(names) != len(args.inputs) or any(name not in VIEWS for name in names)):
         raise SystemExit(f"--reference needs one of {', '.join(VIEWS)} for each of the {len(args.inputs)} inputs")
-    rule = None
-    if args.uncertain:
-        if getattr(reference, "UNCERTAIN", None) is None:
-            raise SystemExit("this version has no released rule for the uncertain output")
-        rule = uncertain.Rule(**reference.UNCERTAIN)
+    rule = uncertain.released() if args.uncertain else None
     keep = max(1, round(args.seconds * 10)) if args.seconds > 0 else None
     try:
         pieces = [echoview.read_recording(path).frames[:keep] for path in args.inputs]

@@ -166,6 +166,6 @@ class Ensemble:
         by_seed = np.stack([probabilities_from_logits(logits[:, [k]], len(frames)) for k in range(logits.shape[1])]) if rule.seeds else None
         marked = uncertain.mark(prob, self.b3, rule, by_seed)
         pieces = tuple((start / HZ, end / HZ, CLASSES[view] if view >= 0 else "uncertain",
-                        float(prob[start:end, view].mean() if view >= 0 else prob[start:end].max(1).mean()))
+                        float(prob[start:end, view].mean() if view >= 0 else prob[start:end].mean(0).max()))
                        for start, end, view in decoder.segments(marked.labels))
         return Segmentation(labels=marked.labels, probabilities=prob, segments=pieces, uncertain=marked.mask)

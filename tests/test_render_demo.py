@@ -61,12 +61,30 @@ def test_the_command_refuses_bad_arguments_before_it_reads_or_runs_anything(tmp_
     cases = ((["--out", str(clip)], "one of the inputs"), (["--out", str(tmp_path / "demo.png")], "must end in one of"),
              (["--out", str(tmp_path / "d.gif"), "--reference", "A4C,PLAX"], "for each of the 1 inputs"),
              (["--out", str(tmp_path / "d.gif"), "--reference", "A3C"], "--reference needs one of"),
-             (["--out", str(tmp_path / "d.gif"), "--scale", "0"], "--scale must be"), (["--out", str(tmp_path / "d.gif"), "--seconds", "inf"], "--seconds"),
-             (["--out", str(tmp_path / "d.gif"), "--uncertain"], "no released rule"))
+             (["--out", str(tmp_path / "d.gif"), "--scale", "0"], "--scale must be"), (["--out", str(tmp_path / "d.gif"), "--seconds", "inf"], "--seconds"))
     for arguments, message in cases:
         with pytest.raises(SystemExit, match=message):
             render_demo.main([str(clip), *arguments])
     assert clip.read_bytes() == b"the recording"
+
+
+def test_the_uncertain_option_segments_with_the_released_rule(tmp_path, monkeypatch):
+    import echoview
+    from echoview import uncertain
+
+    asked = []
+
+    class System:
+        def segment(self, frames, rule=None):
+            asked.append(rule)
+            labels = np.array([0] * 10 + [-1] * 6 + [2] * 14) if rule is not None else np.array([0] * 13 + [2] * 17)
+            return echoview.Segmentation(labels=labels, probabilities=np.full((30, 5), 0.2), segments=())
+
+    monkeypatch.setattr(echoview, "read_recording", lambda path: echoview.Recording("clip", np.zeros((30, 224, 224, 3), np.uint8), 10.0, 30, "test"))
+    monkeypatch.setattr(echoview, "load", lambda weights, device="auto": System())
+    for arguments in ([], ["--uncertain"]):
+        assert render_demo.main(["clip.mp4", "--out", str(tmp_path / "d.gif"), *arguments]) == 0
+    assert asked == [None, uncertain.released()]
 
 
 def test_a_recording_that_cannot_be_read_ends_with_its_message(tmp_path):

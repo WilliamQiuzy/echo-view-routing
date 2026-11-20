@@ -4,15 +4,16 @@ Notable changes to this project. The format follows [Keep a Changelog](https://k
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-11-20
+
 ### Added
 
+- **The uncertain output.** `echoview segment --uncertain` leaves the weak parts of a stream unnamed: the 0.3 s before and after every cut, and a part whose view hangs on a weak cut or on a narrow margin between two views. Such parts come back as pieces called "uncertain". Every other sample keeps the view it has without the option, and the default output is unchanged. In Python: `system.segment(frames, echoview.uncertain.released())`. The rule was chosen and checked for the ensemble of three seeds, and the command says so when it is used with another model.
+- **How the rule was found.** `docs/UNCERTAIN.md` is the plan of the study, committed before any result, followed by the choice on the EV9V calibration half and the report on the selection half. There, 92.1% of the samples keep a view and 1.0% of them are wrong, against 3.0% when every sample is named. The check passed by a small margin, and the study does not show that the rule beats a plain threshold on the model's confidence. The rule is in `echoview.reference.UNCERTAIN`.
+- `echoview.evaluation.selective` scores the labelled part and the uncertain part of an output separately. `python -m echoview.evaluation.uncertain_study` runs the two steps of the study. Its output files are in `docs/uncertain/`.
 - The system has a name: **EchoRouter**. `C2_ens_v1` stays the identifier of the published weights, and the weights do not change. `echoview.MODEL_NAME` holds the name.
-- `tools/render_demo.py` renders a stream with the view the system gives every 0.1 s under it, as an animated WebP, a GIF or an MP4. The README opens with one made from five public EV9V recordings.
+- `tools/render_demo.py` renders a stream with the view the system gives every 0.1 s under it, as an animated WebP, a GIF or an MP4. The README opens with two streams of public EV9V recordings, run with the uncertain output.
 - The README compares the system with four published approaches on the EV9V test benchmark.
-
-### In work, not released
-
-- An "uncertain" output, with which the system can decline samples where its evidence is weak. `Ensemble.segment(frames, rule)` accepts a rule and `echoview.evaluation.selective` evaluates the labelled part and the uncertain part separately. No rule is released yet and the command line has no option for it. `docs/UNCERTAIN.md` is the plan of the study that chooses the rule. It was committed before the study ran.
 
 ### Removed
 
@@ -20,6 +21,7 @@ Notable changes to this project. The format follows [Keep a Changelog](https://k
 
 ### Checked on a GPU (L40S, 2026-11-20)
 
+- The study of the uncertain output: the window logits of the published ensemble for all 1,085 development sequences, then the two commands of the study.
 - A full rerun of stage 3: the three seeds trained again with this package come out within 0.004 of the published seeds on both development halves, and their ensemble, decoded with the published setting, within 0.003. The rule's own choice of the decoder setting did not repeat for the retrained ensemble; `docs/TRAINING.md` gives the numbers and what follows from them.
 - The test that asserts the published development numbers on the real dataset and the published weights passes.
 - Stages 1 and 2, two runs each of 750 updates with the final code: the training accuracy equals the published log's in both periods, and the mean loss differs from it by at most 2.7e-5, which is of the size of the gap between the two runs.

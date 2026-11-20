@@ -90,6 +90,9 @@ def test_a_rule_lets_the_segmentation_decline_samples_and_changes_nothing_else()
     assert np.array_equal(marked.labels[~marked.uncertain], plain.labels[~marked.uncertain])  # the other samples keep their view
     assert [(start, end, view) for start, end, view, _ in marked.segments] == [(0.0, 3.7, "PLAX"), (3.7, 4.3, "uncertain"), (4.3, 8.0, "A4C")]
     assert all(0.0 <= probability <= 1.0 for *_, probability in marked.segments)
+    # an uncertain piece reports the mean probability of its likeliest view, which is low where two views meet
+    across = marked.probabilities[37:43]
+    assert marked.segments[1][3] == pytest.approx(across.mean(0).max()) and marked.segments[1][3] < across.max(1).mean() - 0.2
     assert np.array_equal(system(0.0, 5.0, -5.0).segment(frames, uncertain.Rule(seeds=True)).labels, plain.labels)  # the seeds agree here
 
 
