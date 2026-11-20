@@ -99,7 +99,7 @@ A rerun feeds the model the same pixels as the published run and follows the sam
 
 This was checked on 2026-11-18 on an L40S with the PyTorch, CUDA and cuDNN versions of the published runs, for seed 0.
 
-- **Inputs.** The sampling plans and the initial weights of all three seeds equal the research files. The research trainer stored a hash of every window's pixels. The frames this package decodes give the same hash for all 90,000 windows of the three stage-1 plans.
+- **Inputs.** The sampling plans and the initial weights of all three seeds equal the research files. The research trainer stored a hash of every window's pixels. The frames this package decodes give the same hash for all 180,000 windows of the six plans: three for stage 1 and three for stage 2.
 - **The first 375 updates**, during which only the marker stem and the head train.
 
   | Stage | Mean loss, published | Mean loss, two runs of this package | Training accuracy | Largest gradient norm |
@@ -116,4 +116,4 @@ This was checked on 2026-11-18 on an L40S with the PyTorch, CUDA and cuDNN versi
 
 In the first 375 updates the gap to the published log is as large as the gap between two runs of this package.
 
-**Still open.** For updates 376 to 750 two runs of this package have not been compared with each other yet. That comparison was also made before the learning rates of stages 1 and 2 were corrected in their last binary digit (see the changelog), and it will be repeated with the corrected code. Whole reruns of stages 1 and 2 were not made: 750 of 3,750 updates were compared. The pixel hashes of the three stage-2 plans are still being checked.
+**Still open.** For updates 376 to 750 two runs of this package have not been compared with each other yet. That comparison was also made before the learning rates of stages 1 and 2 were corrected in their last binary digit (see the changelog), and it will be repeated with the corrected code. Whole reruns of stages 1 and 2 were not made: 750 of 3,750 updates were compared.
