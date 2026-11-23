@@ -9,6 +9,7 @@ import numpy as np
 import pytest
 from PIL import Image
 
+import echoview
 from echoview import Ensemble, cli, mimic_table, reference, weights
 from echoview.reference import B3
 
@@ -173,6 +174,13 @@ def test_seed_lists_are_checked():
     for text in ("a,b", "0,7", ""):
         with pytest.raises(SystemExit, match="--seeds"):
             cli.parse_seeds(text)
+
+
+def test_version_names_the_package_and_the_model(capsys):
+    with pytest.raises(SystemExit) as stopped:
+        cli.main(["--version"])
+    assert stopped.value.code == 0
+    assert capsys.readouterr().out.strip() == f"echoview {echoview.__version__} ({reference.NAME} {reference.VERSION})"
 
 
 def test_the_weights_command_reports_every_file(tmp_path, monkeypatch, capsys):

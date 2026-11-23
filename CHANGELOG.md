@@ -2,11 +2,17 @@
 
 Notable changes to this project. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the versions follow [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [1.2.1] - 2026-11-23
 
 ### Added
 
+- `echoview --version` prints the version of the package and the name of the published system.
 - `python -m echoview.evaluation.uncertain_study confirm` scores the released uncertain rule on the test benchmark and chooses nothing. It reads stored window logits, stops unless they give the benchmark's four published numbers, and never replaces its output. `docs/UNCERTAIN.md`, section 9, is the plan of that read, committed before it, and its result.
+
+### Changed
+
+- `CITATION.cff` carries the name EchoRouter in its title and lists Helena Li by that name.
+- The quick start of the README says which Python the package needs.
 
 ### Read once (2026-11-20)
 

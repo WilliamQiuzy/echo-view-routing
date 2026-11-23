@@ -53,7 +53,7 @@ pip install -e .
 echoview selfcheck       # downloads the weights and five sample clips, then compares with stored results
 ```
 
-The self-check takes seconds on a GPU and about three minutes on a laptop CPU. It ends with `SELF-CHECK PASSED`.
+The package needs Python 3.10 or newer. The self-check takes seconds on a GPU and about three minutes on a laptop CPU. It ends with `SELF-CHECK PASSED`.
 
 `pip install -e .` accepts any recent PyTorch. To get the exact versions the project was checked with (Python 3.12), install the pinned requirements first: `pip install -r requirements.txt && pip install --no-deps -e .`
 

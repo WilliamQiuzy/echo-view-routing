@@ -30,7 +30,7 @@ from . import uncertain
 from . import weights as wt
 from .model import CLASSES
 from .pipeline import Ensemble
-from .reference import NAME, SEEDS
+from .reference import NAME, SEEDS, VERSION
 
 CLASSIFY_HEADER = ("file", "predicted_view", "view_probability", *(f"p_{c}" for c in CLASSES), "seeds_agree", "source_frames",
                    "fps", "samples_10hz", "windows", "reader", "view_classifier_version")
@@ -212,9 +212,11 @@ def evaluate(args: argparse.Namespace) -> int:
 
 # -------------------------------------------------------------------------------------------------- parser
 def parser() -> argparse.ArgumentParser:
-    from . import mimic_table, selfcheck
+    from . import __version__, mimic_table, selfcheck
 
     top = argparse.ArgumentParser(prog="echoview", description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    top.add_argument("--version", action="version", version=f"echoview {__version__} ({NAME} {VERSION})",
+                     help="the version of the package and the name of the published system")
     common = argparse.ArgumentParser(add_help=False)
     common.add_argument("--weights", default="", help="folder with C2_s0, C2_s1, C2_s2 (default: $ECHOVIEW_WEIGHTS, else a download from the Hugging Face Hub)")
     common.add_argument("--unverified", action="store_true",
