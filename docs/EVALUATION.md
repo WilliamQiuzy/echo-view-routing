@@ -131,7 +131,9 @@ python -m echoview.evaluation.uncertain_study report --logits dev_logits.npz --c
 
 ## The comparison with other approaches
 
-[COMPARISON.md](COMPARISON.md) holds a fuller comparison on the test benchmark: the numbers of this page and some more for every system, and rows that give the other systems the project's decoder. Its plan was committed before the read, and its result follows the plan. `python -m echoview.evaluation.comparison` is the command, and its outputs are in `docs/comparison/`.
+[COMPARISON.md](COMPARISON.md) holds a fuller comparison on the test benchmark: the numbers of this page and some more for every system, and rows that give the other systems the project's decoder. Its plan was committed before the read, and its result follows the plan. `python -m echoview.evaluation.comparison` is the command, and its outputs are in `docs/comparison/`. Its section 11 is an addendum that answered the comparisons with STFM and ASFormer by a second read for two rows.
+
+[FOLLOWUP.md](FOLLOWUP.md) asks on development data only whether three changes that need no training are worth confirming: a denser read-out, an offset between A4C and A5C, and EchoViewCLIP's probabilities mixed in. `python -m echoview.evaluation.followup` is the command, and its output is in `docs/followup/`.
 
 ## Not here yet
 

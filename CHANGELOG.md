@@ -18,6 +18,10 @@ Notable changes to this project. The format follows [Keep a Changelog](https://k
 
 - The frozen EV9V test benchmark, for the comparison with the four other approaches as planned in `docs/COMPARISON.md`: stored outputs only, every system as published and, where a setting could be chosen on development data, with the project's decoder. EchoRouter has the highest segment F1 on multi streams as published (0.909). With the same decoder, EchoViewCLIP scores 0.884 and is not shown to differ from EchoRouter; EchoRouter is ahead of EchoPrime's classifier; for STFM and ASFormer the question could not be answered. EchoViewCLIP stays the best row on single recordings. The README's comparison section now shows this table.
 
+### Read a second time (2026-11-24)
+
+- The frozen EV9V test benchmark, for the two comparisons the first read left open (`docs/COMPARISON.md`, section 11): the same stored outputs, draws and seed, with a decoder setting for STFM and for ASFormer chosen on development data. Every number of the first read came out again. With the project's decoder, EchoRouter is ahead of STFM (0.865) and is not shown to differ from ASFormer (0.883). The README's table has the two rows.
+
 ### Fixed
 
 - The comparison table of the README gave EchoPrime's macro-F1 on single recordings as 0.944. It is 0.943 (0.9435).

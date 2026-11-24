@@ -1,8 +1,8 @@
 # The comparison with other approaches, row by row
 
-**Status: done. The test benchmark was read once, on 2026-11-24 (section 10).** With the project's decoder, EchoViewCLIP is not shown to differ from EchoRouter on streams; EchoRouter is ahead of EchoPrime's classifier; for STFM and ASFormer the question could not be answered. Sections 1 to 8 are the plan. They were written, reviewed and committed before either stage, as commit `26571f5`. Stage A touches no test data: it lists the stored outputs, chooses decoder settings on development data and tries the code on the development benchmark. Its results go into section 9 and are committed. Stage B is one read of the test benchmark. Its results are in section 10.
+**Status: done. The test benchmark was read on 2026-11-24 (section 10), and a second time on the same day for two more rows (section 11).** With the project's decoder, EchoRouter is ahead of STFM and of EchoPrime's classifier on streams, and it is not shown to differ from EchoViewCLIP or from ASFormer. The first read left STFM and ASFormer unanswered; the addendum of section 11 answered them. Sections 1 to 8 are the plan. They were written, reviewed and committed before either stage, as commit `26571f5`. Stage A touches no test data: it lists the stored outputs, chooses decoder settings on development data and tries the code on the development benchmark. Its results go into section 9 and are committed. Stage B is one read of the test benchmark. Its results are in section 10.
 
-**Addendum, 2026-11-24: its stage on development data is done; the test benchmark has not been read for it yet.** Section 11 is a plan to answer the two comparisons that section 10 left open, for STFM and for ASFormer. It was committed before any of its numbers existed, as commit `c1e6252`.
+**Addendum, 2026-11-24: done.** Section 11 is the plan to answer the two comparisons that section 10 left open, for STFM and for ASFormer, and its result. The plan was committed before any of its numbers existed, as commit `c1e6252`, and its stage on development data before the second read, as commit `cc9c38b`.
 
 Words used here: a **piece** is a run of samples of the reference that come from one recording. A **segment** is a run of samples to which a system gives one view. A **cut** is a sample whose view, as a system gives it, differs from the view of the sample before it. A **stream** is several recordings joined into one sequence.
 
@@ -388,7 +388,7 @@ Bold marks the best value among the rows as published, with the project's decode
 
 ## 11. Addendum: the two comparisons that were not answered
 
-**Status: the plan below was written on 2026-11-24 after section 10 and committed as `c1e6252`. Its stage on development data is done ("The addendum on development data", below). The second read has not been made yet.**
+**Status: done. The plan below was written on 2026-11-24 after section 10 and committed as `c1e6252`. Its stage on development data and its result follow it.**
 
 ### Why
 
@@ -469,3 +469,109 @@ Rule 9 of section 7 said that stage B runs once. This is a second read. It is ma
 - **The two named comparisons on development data.** EchoRouter minus STFM with the decoder is 0.072 [0.040, 0.106]; the 98.75% interval is [0.031, 0.116]. EchoRouter minus ASFormer with the decoder is 0.041 [0.012, 0.072]; the 98.75% interval is [0.004, 0.079]. Seeds 1 and 2 alone are not shown to differ from ASFormer with the decoder (0.029 and 0.030).
 - **What the decoder adds.** −0.003 [−0.022, 0.016] to STFM and 0.029 [0.003, 0.059] to ASFormer, on multi streams.
 - **How much this says.** Little about the test benchmark. Section 10 showed that EchoRouter's development numbers are optimistic: it lost 0.05 from the selection half to the test benchmark, and EchoViewCLIP with the decoder lost nothing.
+
+### The addendum's result
+
+Read on 2026-11-24 at 07:42 UTC with the code of commit `a98fccc`. The output of the command is [`comparison/addendum/test.json`](comparison/addendum/test.json), SHA-256 `3a47e3332152f616c26efdb748221ec0eb28261a7b6bd2d3232380240fe3e009`. Before anything was written, the command found every number of the first read again: its 16 rows, their differences from EchoRouter, the comparisons, the seeds, the digests of the logits and of the four stores, and the settings. Two rows are new: "STFM + decoder" and "ASFormer + decoder". Intervals are 95% unless said otherwise, from the same 10,000 draws as in section 10.
+
+**The four named comparisons, now all answered.** Segment F1 at 50% with the project's matching, multi streams. EchoRouter scores 0.909 [0.872, 0.944].
+
+| System | Its row with the decoder | EchoRouter minus that row | 98.75% interval by stream | 98.75% interval by examination | Word |
+|---|---|---|---|---|---|
+| EchoViewCLIP | 0.884 | 0.025 | [-0.005, 0.061] | [-0.010, 0.063] | not shown to differ from |
+| STFM | 0.865 | 0.044 | [0.011, 0.078] | [0.006, 0.083] | ahead of |
+| ASFormer | 0.883 | 0.026 | [0.001, 0.055] | [-0.008, 0.066] | not shown to differ from |
+| EchoPrime | 0.851 | 0.058 | [0.026, 0.093] | [0.010, 0.109] | ahead of |
+
+- **STFM.** With the project's decoder it scores 0.865. EchoRouter is ahead of it: the difference is 0.044, and both 98.75% intervals lie above zero. The interval of the gap to its published row lies above zero too, as rule 1 of section 7 asks.
+- **ASFormer.** With the project's decoder it scores 0.883. EchoRouter is not shown to differ from it: the difference is 0.026. By stream the 98.75% interval lies just above zero; by examination it holds zero. The word needs both (section 9, change 1).
+- **EchoViewCLIP and EchoPrime's classifier.** As in section 10.
+- **The four do not get the same word.** By rule 3 of section 7 they are listed one by one: EchoRouter is ahead of STFM and of EchoPrime's classifier, and it is not shown to differ from EchoViewCLIP or from ASFormer. It is behind none.
+- **The seeds.** Each seed alone gets the same four words. The result does not depend on the seed.
+
+**The gap in two parts.**
+
+- **STFM.** Of the published gap of 0.050 [0.017, 0.084], 0.044 [0.014, 0.074] remains when it has the project's decoder. The decoder adds 0.006 [-0.010, 0.022] to it.
+- **ASFormer.** Of the published gap of 0.053 [0.012, 0.094], 0.026 [-0.001, 0.056] remains when it has the project's decoder. The decoder adds 0.026 [0.004, 0.052] to it.
+
+**The two new rows, beside EchoRouter and the two systems as published.**
+
+| Row | What it is | Segment F1 at 50%, multi | Segment F1 at 50%, pairs | Edit | Piece midpoint | Wrong samples | Cut precision | Cut recall | Cut distance (s) | Recordings: accuracy | Macro-F1 | A5C recall |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| EchoRouter | as published | 0.909 | 0.985 | 91.4 | 93.7% | 9.4% | 0.934 | 0.937 | 0.153 | 98.1% | 0.956 | 95.0% |
+| STFM | as published | 0.859 | 0.971 | 88.1 | 92.9% | 12.0% | 0.812 | 0.879 | 0.252 | 98.2% | 0.960 | 87.5% |
+| STFM + decoder | with the project's decoder | 0.865 | 0.972 | 88.4 | 91.7% | 12.8% | 0.808 | 0.844 | 0.283 | 98.1% | 0.957 | 87.5% |
+| ASFormer | as published | 0.856 | 0.981 | 87.2 | 91.0% | 9.0% | 0.869 | 0.942 | 0.013 | 98.2% | 0.956 | 77.5% |
+| ASFormer + decoder | with the project's decoder | 0.883 | 0.988 | 88.3 | 89.9% | 9.9% | 0.961 | 0.918 | 0.008 | 98.2% | 0.956 | 77.5% |
+
+| Row | Segment F1 at 50%, multi | 95% interval by stream | 95% interval by examination |
+|---|---|---|---|
+| EchoRouter | 0.909 | [0.883, 0.933] | [0.872, 0.944] |
+| STFM | 0.859 | [0.827, 0.889] | [0.802, 0.913] |
+| STFM + decoder | 0.865 | [0.833, 0.895] | [0.812, 0.914] |
+| ASFormer | 0.856 | [0.820, 0.891] | [0.793, 0.918] |
+| ASFormer + decoder | 0.883 | [0.853, 0.911] | [0.828, 0.932] |
+
+| Row | MS-TCN F1 at 10% | at 25% | at 50% | Returned segments that match nothing (at most 1.6 s) | Reference segments missed (at most 1.6 s) | Segments per reference segment | Cuts at joins of the same view |
+|---|---|---|---|---|---|---|---|
+| EchoRouter | 0.939 | 0.939 | 0.909 | 46 (22) | 45 (15) | 1.00 | 4.0% |
+| STFM | 0.915 | 0.910 | 0.859 | 88 (60) | 57 (21) | 1.06 | 8.9% |
+| STFM + decoder | 0.918 | 0.916 | 0.865 | 77 (48) | 60 (23) | 1.03 | 8.9% |
+| ASFormer | 0.895 | 0.891 | 0.856 | 90 (48) | 58 (16) | 1.06 | 9.9% |
+| ASFormer + decoder | 0.915 | 0.915 | 0.883 | 49 (9) | 66 (17) | 0.97 | 6.4% |
+
+| Row | Wrong samples | edge | spurious | absorbed | misread | Piece midpoint, pieces of at most 1.6 s | longer pieces | Segment midpoint |
+|---|---|---|---|---|---|---|---|---|
+| EchoRouter | 9.4% | 3.2% | 0.5% | 1.4% | 4.3% | 94.4% | 93.4% | 92.8% |
+| STFM | 12.0% | 5.0% | 0.9% | 1.6% | 4.5% | 91.8% | 93.4% | 89.2% |
+| STFM + decoder | 12.8% | 5.3% | 0.7% | 2.2% | 4.6% | 89.6% | 92.8% | 89.9% |
+| ASFormer | 9.0% | 0.2% | 0.3% | 1.2% | 7.3% | 91.8% | 90.6% | 86.8% |
+| ASFormer + decoder | 9.9% | 0.1% | 0.0% | 2.3% | 7.5% | 90.5% | 89.6% | 91.1% |
+
+| Row | Precision within 0.5 s | Recall within 0.1 s | 0.2 s | 0.3 s | 0.5 s | 1.0 s | Mean distance (s) | Late |
+|---|---|---|---|---|---|---|---|---|
+| EchoRouter | 0.934 | 52.5% | 79.2% | 90.0% | 93.7% | 95.0% | 0.153 | 46.4% |
+| STFM | 0.812 | 34.3% | 55.7% | 68.3% | 87.9% | 96.0% | 0.252 | 56.3% |
+| STFM + decoder | 0.808 | 27.4% | 48.8% | 62.3% | 84.4% | 94.5% | 0.283 | 59.5% |
+| ASFormer | 0.869 | 91.6% | 93.1% | 93.7% | 94.2% | 94.7% | 0.013 | 2.5% |
+| ASFormer + decoder | 0.961 | 90.0% | 91.0% | 91.3% | 91.8% | 92.1% | 0.008 | 1.7% |
+
+| Row | Piece midpoint, PLAX | Piece midpoint, PSAX | Piece midpoint, A4C | Piece midpoint, A5C | Piece midpoint, SC4C | Segment F1, PLAX | Segment F1, PSAX | Segment F1, A4C | Segment F1, A5C | Segment F1, SC4C |
+|---|---|---|---|---|---|---|---|---|---|---|
+| EchoRouter | 99.3% | 100.0% | 92.9% | 82.8% | 94.4% | 0.986 | 1.000 | 0.816 | 0.811 | 0.957 |
+| STFM | 100.0% | 99.3% | 91.6% | 79.5% | 95.3% | 0.981 | 0.925 | 0.754 | 0.709 | 0.976 |
+| STFM + decoder | 98.7% | 99.3% | 90.9% | 76.2% | 95.3% | 0.971 | 0.935 | 0.767 | 0.717 | 0.976 |
+| ASFormer | 100.0% | 100.0% | 94.8% | 66.9% | 95.3% | 1.000 | 0.985 | 0.731 | 0.680 | 0.929 |
+| ASFormer + decoder | 100.0% | 100.0% | 92.2% | 66.2% | 92.5% | 1.000 | 1.000 | 0.759 | 0.729 | 0.945 |
+
+Pair streams:
+
+| Row | Segment F1 at 50% | Edit | Piece midpoint | Wrong samples | Cut precision | Cut recall | Segments that match nothing | Segments missed |
+|---|---|---|---|---|---|---|---|---|
+| EchoRouter | 0.985 | 98.6 | 98.8% | 2.8% | 0.992 | 0.983 | 5 | 6 |
+| STFM | 0.971 | 97.9 | 98.3% | 3.7% | 0.886 | 0.908 | 12 | 9 |
+| STFM + decoder | 0.972 | 98.1 | 97.9% | 4.2% | 0.881 | 0.867 | 9 | 11 |
+| ASFormer | 0.981 | 99.1 | 99.2% | 0.7% | 0.952 | 1.000 | 10 | 4 |
+| ASFormer + decoder | 0.988 | 99.2 | 99.2% | 0.8% | 0.992 | 1.000 | 5 | 4 |
+
+Single recordings:
+
+| Row | Accuracy | Macro-F1 | Recall PLAX | PSAX | A4C | A5C | SC4C | A4C read as A5C | A5C read as A4C | Label changes per recording | Read right only by EchoRouter and only by this row |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| EchoRouter | 98.1% [97.1, 99.0] | 0.956 [0.929, 0.975] | 100.0% | 100.0% | 94.8% | 95.0% | 97.1% | 10 | 2 | 0.02 | – |
+| STFM | 98.2% [97.3, 99.1] | 0.960 [0.933, 0.978] | 100.0% | 100.0% | 96.5% | 87.5% | 97.1% | 7 | 4 | 0.13 | 6 and 7 |
+| STFM + decoder | 98.1% [97.1, 99.0] | 0.957 [0.929, 0.977] | 100.0% | 100.0% | 96.1% | 87.5% | 97.1% | 8 | 4 | 0.07 | 7 and 7 |
+| ASFormer | 98.2% [97.1, 99.2] | 0.956 [0.929, 0.978] | 100.0% | 99.5% | 98.7% | 77.5% | 97.1% | 2 | 9 | 0.14 | 8 and 9 |
+| ASFormer + decoder | 98.2% [97.1, 99.2] | 0.956 [0.929, 0.978] | 100.0% | 99.5% | 98.7% | 77.5% | 97.1% | 2 | 9 | 0.03 | 8 and 9 |
+
+**The best row, taken again (rule 6).** One mark of the table "Every row" of section 10 moves. The highest precision of the cuts is now ASFormer with the decoder (0.961); it was EchoPrime's classifier with the decoder (0.945). Every other best value stays where it was.
+
+**How to read it.**
+
+- **The decoder helps ASFormer and does not help STFM.** It adds 0.026 to ASFormer and 0.006 [-0.010, 0.022] to STFM. For STFM no setting of the grid met the floors on development data.
+- **With the same decoder EchoRouter leads two of the four and is not shown to differ from the other two.** The two differences that are not shown are 0.025 (EchoViewCLIP) and 0.026 (ASFormer). The two leads are 0.044 (STFM) and 0.058 (EchoPrime's classifier).
+- **ASFormer with the decoder** has the most exact cuts after EchoPrime's classifier (0.008 s off on average), the highest precision of the cuts, and 49 returned segments that match nothing, close to EchoRouter's 46. It misses more reference segments (66 against 45), and it reads A5C poorly: the middle sample of an A5C piece is right for 66.2% of the pieces, against EchoRouter's 82.8%.
+- **What section 10 says about A5C stands with the two rows added.** EchoRouter's 82.8% is against 57.0% to 79.5% for the other systems, as published or with the decoder, and its segment F1 for A5C of 0.811 is against 0.741 at most.
+- **One sentence of section 10 needs a note.** It says that the others return 64 to 92 segments that match nothing. That holds for the rows of the first read. ASFormer with the decoder returns 49.
+- **What was expected.** ASFormer with a setting of its own was expected near its row with the released numbers (0.883), and EchoRouter was expected not to be shown to differ from it. Both came out so. STFM was open.
+- **The limits of section 8 stand**, and this was a second look at the test benchmark, decided with the first result known. It added two rows and changed no other number.
