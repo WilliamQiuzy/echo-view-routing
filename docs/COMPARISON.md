@@ -1,6 +1,6 @@
 # The comparison with other approaches, row by row
 
-**Status: stage A is done (section 9). Stage B, the read of the test benchmark, has not run.** Sections 1 to 8 are the plan. They were written, reviewed and committed before either stage, as commit `26571f5`. Stage A touches no test data: it lists the stored outputs, chooses decoder settings on development data and tries the code on the development benchmark. Its results go into section 9 and are committed. Stage B is one read of the test benchmark. Its results are added after section 9.
+**Status: done. The test benchmark was read once, on 2026-11-24 (section 10).** With the project's decoder, EchoViewCLIP is not shown to differ from EchoRouter on streams; EchoRouter is ahead of EchoPrime's classifier; for STFM and ASFormer the question could not be answered. Sections 1 to 8 are the plan. They were written, reviewed and committed before either stage, as commit `26571f5`. Stage A touches no test data: it lists the stored outputs, chooses decoder settings on development data and tries the code on the development benchmark. Its results go into section 9 and are committed. Stage B is one read of the test benchmark. Its results are in section 10.
 
 Words used here: a **piece** is a run of samples of the reference that come from one recording. A **segment** is a run of samples to which a system gives one view. A **cut** is a sample whose view, as a system gives it, differs from the view of the sample before it. A **stream** is several recordings joined into one sequence.
 
@@ -217,3 +217,169 @@ These are development numbers. The benchmark names no examinations there, so the
 - **The named comparison on development data.** EchoRouter minus EchoViewCLIP with the decoder is 0.094 [0.063, 0.127]; the 98.75% interval is [0.055, 0.135]. Of the gap of 0.117 [0.081, 0.155] to EchoViewCLIP as published, 0.094 remains when it has the project's decoder. Each seed alone is also ahead of EchoViewCLIP with the decoder.
 - **What the decoder adds.** 0.023 [0.007, 0.041] to EchoViewCLIP and 0.054 [0.029, 0.080] to EchoRouter, on multi streams. EchoRouter without the decoder (0.906) is above EchoViewCLIP with it (0.866).
 - **The 0.5 s grid.** A perfect system that is read every 0.5 s has 3.1% wrong samples and cuts that are 0.12 s off on average.
+
+## 10. Stage B: the result
+
+Read once on 2026-11-24 at 02:55 UTC with the code of commit `377fb01`. The output of the command is [`comparison/test.json`](comparison/test.json), SHA-256 `4f00000524df0581ee7f093980135a206c9180f51d15457524acb6547afe45c0`, unchanged. Before anything was scored, the stored outputs gave the published numbers of all six rows of section 3 to the sixth decimal. Intervals are 95% unless said otherwise, from 10,000 draws. Where a number has an interval by stream and one by examination, the wider one is shown.
+
+### The four named comparisons
+
+Segment F1 at 50% with the project's matching, multi streams. EchoRouter scores 0.909 [0.872, 0.944].
+
+| System | Its row with the decoder | EchoRouter minus that row | 98.75% interval by stream | 98.75% interval by examination | Word |
+|---|---|---|---|---|---|
+| EchoViewCLIP | 0.884 | 0.025 | [-0.005, 0.061] | [-0.010, 0.063] | not shown to differ from |
+| STFM | none | – | – | – | not answered |
+| ASFormer | none | – | – | – | not answered |
+| EchoPrime | 0.851 | 0.058 | [0.026, 0.093] | [0.010, 0.109] | ahead of |
+
+- **EchoViewCLIP.** With the project's decoder it scores 0.884. EchoRouter is not shown to differ from it: the difference is 0.025, and both 98.75% intervals hold zero.
+- **EchoPrime's classifier.** EchoRouter is ahead of it: 0.058, and both intervals lie above zero.
+- **STFM and ASFormer.** Not answered. They have no stored outputs for the streams of the calibration half, so no decoder setting could be chosen for them by the rule (section 9).
+- **The seeds.** Each seed alone scores 0.913, 0.916 and 0.908 and gets the same four words as the ensemble. The result does not depend on the seed.
+
+### The gap in two parts
+
+- **EchoViewCLIP.** Of the published gap of 0.042 [0.009, 0.076], 0.025 [-0.003, 0.054] remains when it has the project's decoder. The decoder adds 0.017 [0.003, 0.040] to it.
+- **STFM.** The published gap is 0.050 [0.017, 0.084]. There is no row with the decoder.
+- **ASFormer.** The published gap is 0.053 [0.012, 0.094]. There is no row with the decoder.
+- **EchoPrime's classifier.** Its published row has the decoder, so the published gap is what remains: 0.058 [0.018, 0.098]. Against its row per frame the decoder adds 0.355 [0.289, 0.406].
+- **EchoRouter itself.** The decoder adds 0.035 [0.010, 0.063] on multi streams and 0.009 [-0.000, 0.020] on pair streams.
+
+### Every row
+
+Bold marks the best value among the rows as published, with the project's decoder, and EchoRouter without its decoder. It is by the value alone and claims no difference.
+
+| Row | What it is | Segment F1 at 50%, multi | Segment F1 at 50%, pairs | Edit | Piece midpoint | Wrong samples | Cut precision | Cut recall | Cut distance (s) | Recordings: accuracy | Macro-F1 | A5C recall |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| EchoRouter | as published | **0.909** | 0.985 | **91.4** | 93.7% | 9.4% | 0.934 | 0.937 | 0.153 | 98.1% | 0.956 | **95.0%** |
+| EchoViewCLIP | as published | 0.867 | 0.989 | 89.0 | 92.9% | 11.2% | 0.851 | 0.953 | 0.183 | **98.9%** | **0.972** | 92.5% |
+| STFM | as published | 0.859 | 0.971 | 88.1 | 92.9% | 12.0% | 0.812 | 0.879 | 0.252 | 98.2% | 0.960 | 87.5% |
+| ASFormer | as published | 0.856 | 0.981 | 87.2 | 91.0% | **9.0%** | 0.869 | 0.942 | 0.013 | 98.2% | 0.956 | 77.5% |
+| EchoPrime per frame | as published | 0.496 | 0.743 | 54.9 | 89.6% | 12.1% | 0.357 | **0.974** | 0.017 | 97.9% | 0.943 | 67.5% |
+| EchoViewCLIP + decoder | with the project's decoder | 0.884 | **0.993** | 90.1 | 92.9% | 11.1% | 0.877 | 0.955 | 0.184 | 98.8% | 0.969 | 90.0% |
+| EchoPrime + decoder | with the project's decoder | 0.851 | 0.988 | 85.0 | 88.3% | 11.9% | **0.945** | 0.900 | **0.005** | 97.9% | 0.943 | 67.5% |
+| EchoRouter, no decoder | without the decoder | 0.874 | 0.975 | 89.5 | **94.0%** | 9.1% | 0.848 | 0.955 | 0.163 | 98.4% | 0.960 | 92.5% |
+| EchoViewCLIP + released numbers | released numbers carried over | 0.867 | 0.957 | 86.0 | 89.6% | 13.4% | 0.922 | 0.868 | 0.184 | 98.6% | 0.966 | 87.5% |
+| STFM + released numbers | released numbers carried over | 0.100 | 0.753 | 27.4 | 44.8% | 50.3% | 1.000 | 0.003 | 0.500 | 98.4% | 0.963 | 90.0% |
+| ASFormer + released numbers | released numbers carried over | 0.883 | 0.985 | 89.4 | 91.0% | 9.0% | 0.932 | 0.934 | 0.013 | 98.2% | 0.956 | 77.5% |
+| EchoPrime + released numbers | released numbers carried over | 0.829 | 0.966 | 84.9 | 89.6% | 11.0% | 0.816 | 0.958 | 0.016 | 97.6% | 0.937 | 65.0% |
+| EchoRouter seed 0 | one seed | 0.913 | 0.985 | 91.8 | 93.9% | 9.5% | 0.941 | 0.934 | 0.162 | 98.1% | 0.955 | 92.5% |
+| EchoRouter seed 1 | one seed | 0.916 | 0.981 | 91.7 | 93.9% | 9.2% | 0.942 | 0.937 | 0.148 | 98.0% | 0.953 | 92.5% |
+| EchoRouter seed 2 | one seed | 0.908 | 0.976 | 91.6 | 93.9% | 9.5% | 0.934 | 0.934 | 0.156 | 98.2% | 0.959 | 95.0% |
+| Perfect on the 0.5 s grid | reference | 1.000 | 1.000 | 100.0 | 100.0% | 3.0% | 1.000 | 1.000 | 0.121 | 100.0% | 1.000 | 100.0% |
+
+- **The rows with the released numbers carried over** carry no sentence, as planned. For STFM the row shows why: the threshold was a quantile of EchoRouter's own scores, and on STFM's outputs it lets almost no cut through.
+- **The segment F1 of every row, with both intervals:**
+
+| Row | Segment F1 at 50%, multi | 95% interval by stream | 95% interval by examination |
+|---|---|---|---|
+| EchoRouter | 0.909 | [0.883, 0.933] | [0.872, 0.944] |
+| EchoViewCLIP | 0.867 | [0.830, 0.900] | [0.805, 0.925] |
+| STFM | 0.859 | [0.827, 0.889] | [0.802, 0.913] |
+| ASFormer | 0.856 | [0.820, 0.891] | [0.793, 0.918] |
+| EchoPrime per frame | 0.496 | [0.449, 0.545] | [0.405, 0.604] |
+| EchoViewCLIP + decoder | 0.884 | [0.851, 0.914] | [0.827, 0.936] |
+| EchoPrime + decoder | 0.851 | [0.818, 0.882] | [0.796, 0.904] |
+| EchoRouter, no decoder | 0.874 | [0.840, 0.906] | [0.818, 0.926] |
+| EchoViewCLIP + released numbers | 0.867 | [0.837, 0.895] | [0.818, 0.913] |
+| STFM + released numbers | 0.100 | [0.068, 0.134] | [0.069, 0.129] |
+| ASFormer + released numbers | 0.883 | [0.853, 0.911] | [0.824, 0.937] |
+| EchoPrime + released numbers | 0.829 | [0.794, 0.863] | [0.765, 0.891] |
+| EchoRouter seed 0 | 0.913 | [0.888, 0.936] | [0.876, 0.947] |
+| EchoRouter seed 1 | 0.916 | [0.891, 0.939] | [0.880, 0.948] |
+| EchoRouter seed 2 | 0.908 | [0.881, 0.933] | [0.869, 0.944] |
+| Perfect on the 0.5 s grid | 1.000 | [1.000, 1.000] | [0.993, 1.007] |
+
+  With examinations as the unit, a match and its returned segment can fall into different examinations, so a resample can score a little above 1. The row of the perfect system shows the size of this: 0.007.
+
+### Where segments are lost (multi streams)
+
+| Row | MS-TCN F1 at 10% | at 25% | at 50% | Returned segments that match nothing (at most 1.6 s) | Reference segments missed (at most 1.6 s) | Segments per reference segment | Cuts at joins of the same view |
+|---|---|---|---|---|---|---|---|
+| EchoRouter | 0.939 | 0.939 | 0.909 | 46 (22) | 45 (15) | 1.00 | 4.0% |
+| EchoViewCLIP | 0.920 | 0.911 | 0.867 | 92 (62) | 47 (11) | 1.09 | 8.4% |
+| STFM | 0.915 | 0.910 | 0.859 | 88 (60) | 57 (21) | 1.06 | 8.9% |
+| ASFormer | 0.895 | 0.891 | 0.856 | 90 (48) | 58 (16) | 1.06 | 9.9% |
+| EchoPrime per frame | 0.584 | 0.561 | 0.496 | 745 (696) | 89 (15) | 2.31 | 28.7% |
+| EchoViewCLIP + decoder | 0.928 | 0.924 | 0.884 | 77 (45) | 43 (9) | 1.07 | 8.4% |
+| EchoPrime + decoder | 0.894 | 0.888 | 0.851 | 64 (17) | 82 (23) | 0.96 | 5.9% |
+| EchoRouter, no decoder | 0.929 | 0.920 | 0.874 | 90 (67) | 42 (10) | 1.10 | 8.4% |
+
+### Wrong samples and pieces (multi streams)
+
+| Row | Wrong samples | edge | spurious | absorbed | misread | Piece midpoint, pieces of at most 1.6 s | longer pieces | Segment midpoint |
+|---|---|---|---|---|---|---|---|---|
+| EchoRouter | 9.4% | 3.2% | 0.5% | 1.4% | 4.3% | 94.4% | 93.4% | 92.8% |
+| EchoViewCLIP | 11.2% | 3.9% | 1.1% | 1.2% | 5.0% | 94.4% | 92.1% | 89.5% |
+| STFM | 12.0% | 5.0% | 0.9% | 1.6% | 4.5% | 91.8% | 93.4% | 89.2% |
+| ASFormer | 9.0% | 0.2% | 0.3% | 1.2% | 7.3% | 91.8% | 90.6% | 86.8% |
+| EchoPrime per frame | 12.1% | 0.2% | 4.4% | 0.2% | 7.4% | 93.1% | 87.9% | 63.6% |
+| EchoViewCLIP + decoder | 11.1% | 3.8% | 1.0% | 1.1% | 5.2% | 94.4% | 92.1% | 90.4% |
+| EchoPrime + decoder | 11.9% | 0.1% | 0.3% | 2.4% | 9.1% | 91.3% | 86.8% | 88.6% |
+| EchoRouter, no decoder | 9.1% | 3.4% | 1.0% | 1.0% | 3.7% | 95.2% | 93.4% | 90.9% |
+| Perfect on the 0.5 s grid | 3.0% | 3.0% | 0.0% | 0.0% | 0.0% | 100.0% | 100.0% | 100.0% |
+
+### Cuts (multi streams)
+
+| Row | Precision within 0.5 s | Recall within 0.1 s | 0.2 s | 0.3 s | 0.5 s | 1.0 s | Mean distance (s) | Late |
+|---|---|---|---|---|---|---|---|---|
+| EchoRouter | 0.934 | 52.5% | 79.2% | 90.0% | 93.7% | 95.0% | 0.153 | 46.4% |
+| EchoViewCLIP | 0.851 | 47.0% | 68.3% | 85.2% | 95.3% | 96.6% | 0.183 | 51.4% |
+| STFM | 0.812 | 34.3% | 55.7% | 68.3% | 87.9% | 96.0% | 0.252 | 56.3% |
+| ASFormer | 0.869 | 91.6% | 93.1% | 93.7% | 94.2% | 94.7% | 0.013 | 2.5% |
+| EchoPrime per frame | 0.357 | 94.5% | 95.8% | 96.8% | 97.4% | 98.4% | 0.017 | 2.4% |
+| EchoViewCLIP + decoder | 0.877 | 47.2% | 70.4% | 85.2% | 95.5% | 97.1% | 0.184 | 51.1% |
+| EchoPrime + decoder | 0.945 | 88.7% | 89.4% | 89.7% | 90.0% | 90.0% | 0.005 | 1.5% |
+| EchoRouter, no decoder | 0.848 | 52.8% | 79.7% | 91.0% | 95.5% | 97.9% | 0.163 | 46.9% |
+| Perfect on the 0.5 s grid | 1.000 | 60.4% | 100.0% | 100.0% | 100.0% | 100.0% | 0.121 | 37.7% |
+
+### By view (multi streams)
+
+| Row | Piece midpoint, PLAX | Piece midpoint, PSAX | Piece midpoint, A4C | Piece midpoint, A5C | Piece midpoint, SC4C | Segment F1, PLAX | Segment F1, PSAX | Segment F1, A4C | Segment F1, A5C | Segment F1, SC4C |
+|---|---|---|---|---|---|---|---|---|---|---|
+| EchoRouter | 99.3% | 100.0% | 92.9% | 82.8% | 94.4% | 0.986 | 1.000 | 0.816 | 0.811 | 0.957 |
+| EchoViewCLIP | 100.0% | 100.0% | 94.2% | 76.8% | 94.4% | 1.000 | 1.000 | 0.745 | 0.701 | 0.957 |
+| STFM | 100.0% | 99.3% | 91.6% | 79.5% | 95.3% | 0.981 | 0.925 | 0.754 | 0.709 | 0.976 |
+| ASFormer | 100.0% | 100.0% | 94.8% | 66.9% | 95.3% | 1.000 | 0.985 | 0.731 | 0.680 | 0.929 |
+| EchoPrime per frame | 98.0% | 99.3% | 96.1% | 66.2% | 88.8% | 0.751 | 0.660 | 0.372 | 0.236 | 0.809 |
+| EchoViewCLIP + decoder | 100.0% | 100.0% | 94.2% | 76.8% | 94.4% | 1.000 | 1.000 | 0.774 | 0.741 | 0.957 |
+| EchoPrime + decoder | 100.0% | 97.9% | 98.1% | 57.0% | 89.7% | 0.986 | 0.984 | 0.710 | 0.667 | 0.938 |
+| EchoRouter, no decoder | 99.3% | 100.0% | 92.9% | 83.4% | 95.3% | 0.986 | 0.990 | 0.787 | 0.709 | 0.963 |
+
+### Pair streams
+
+| Row | Segment F1 at 50% | Edit | Piece midpoint | Wrong samples | Cut precision | Cut recall | Segments that match nothing | Segments missed |
+|---|---|---|---|---|---|---|---|---|
+| EchoRouter | 0.985 | 98.6 | 98.8% | 2.8% | 0.992 | 0.983 | 5 | 6 |
+| EchoViewCLIP | 0.989 | 99.2 | 99.4% | 2.6% | 0.959 | 0.975 | 5 | 3 |
+| STFM | 0.971 | 97.9 | 98.3% | 3.7% | 0.886 | 0.908 | 12 | 9 |
+| ASFormer | 0.981 | 99.1 | 99.2% | 0.7% | 0.952 | 1.000 | 10 | 4 |
+| EchoPrime per frame | 0.743 | 81.6 | 97.1% | 2.2% | 0.365 | 1.000 | 224 | 15 |
+| EchoViewCLIP + decoder | 0.993 | 99.2 | 99.4% | 2.6% | 0.967 | 0.975 | 3 | 2 |
+| EchoPrime + decoder | 0.988 | 98.9 | 99.6% | 0.5% | 0.952 | 0.992 | 7 | 2 |
+| EchoRouter, no decoder | 0.975 | 98.6 | 99.0% | 2.7% | 0.944 | 0.992 | 12 | 6 |
+
+### Single recordings
+
+| Row | Accuracy | Macro-F1 | Recall PLAX | PSAX | A4C | A5C | SC4C | A4C read as A5C | A5C read as A4C | Label changes per recording | Read right only by EchoRouter and only by this row |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| EchoRouter | 98.1% [97.1, 99.0] | 0.956 [0.929, 0.975] | 100.0% | 100.0% | 94.8% | 95.0% | 97.1% | 10 | 2 | 0.02 | – |
+| EchoViewCLIP | 98.9% [98.0, 99.6] | 0.972 [0.952, 0.988] | 100.0% | 100.0% | 97.8% | 92.5% | 97.1% | 5 | 3 | 0.10 | 4 and 10 |
+| STFM | 98.2% [97.3, 99.1] | 0.960 [0.933, 0.978] | 100.0% | 100.0% | 96.5% | 87.5% | 97.1% | 7 | 4 | 0.13 | 6 and 7 |
+| ASFormer | 98.2% [97.1, 99.2] | 0.956 [0.929, 0.978] | 100.0% | 99.5% | 98.7% | 77.5% | 97.1% | 2 | 9 | 0.14 | 8 and 9 |
+| EchoPrime per frame | 97.9% [96.2, 99.1] | 0.943 [0.907, 0.975] | 100.0% | 99.5% | 99.6% | 67.5% | 94.3% | 1 | 13 | 1.62 | 14 and 12 |
+| EchoViewCLIP + decoder | 98.8% [97.9, 99.5] | 0.969 [0.948, 0.986] | 100.0% | 100.0% | 97.8% | 90.0% | 97.1% | 5 | 4 | 0.09 | 4 and 9 |
+| EchoPrime + decoder | 97.9% [96.5, 99.0] | 0.943 [0.914, 0.971] | 100.0% | 99.5% | 99.6% | 67.5% | 94.3% | 1 | 13 | 0.04 | 13 and 11 |
+| EchoRouter, no decoder | 98.4% [97.4, 99.2] | 0.960 [0.935, 0.979] | 100.0% | 100.0% | 96.1% | 92.5% | 97.1% | 7 | 3 | 0.10 | 1 and 3 |
+
+### How to read it
+
+- **With the same decoder, the lead over EchoViewCLIP is not shown.** As published, EchoRouter is 0.042 above EchoViewCLIP on multi streams. Given the project's decoder, EchoViewCLIP gains 0.017, and the 0.025 that remains lies within what resampling these streams and examinations can produce. Against EchoPrime's classifier with the decoder the lead holds. For STFM and ASFormer the question is open.
+- **What section 8 expected was wrong on this point.** It expected EchoViewCLIP with the decoder to stay clearly below EchoRouter, as on the development selection half (0.866 against 0.959). On the test benchmark EchoViewCLIP with the decoder scores 0.884 and EchoRouter 0.909. EchoRouter loses 0.05 from the selection half to the test benchmark, EchoViewCLIP with the decoder loses nothing. EchoRouter's model, its decoder's grid and its floors were developed on the development streams, and its development numbers are optimistic to that extent.
+- **What EchoRouter does differently is A5C.** The middle sample of an A5C piece is right for 82.8% of the pieces, against 57.0% to 79.5% for the other systems, as published or with the decoder, and its segment F1 for A5C is 0.811 against 0.741 at most. It also returns the fewest segments that match nothing (46, the others 64 to 92 and 745 per frame) and cuts least often at a join of two pieces of the same view (4.0%). The price is A4C: it reads A4C as A5C in 10 single recordings, the others in 1 to 7.
+- **Its cuts are as exact as a 0.5 s grid allows, and no more.** 52.5% of the view changes have a cut within 0.1 s; a perfect system on that grid would have 60.4%. ASFormer and EchoPrime's classifier, which give an output for every sample, have about 90%, and their cuts are 0.01 s off on average where EchoRouter's are 0.15 s off.
+- **Of EchoRouter's 9.4% wrong samples**, 3.2 points are edges, which is what the grid alone costs (3.0%), and 4.3 points lie in pieces that are read as another view as a whole. ASFormer has the fewest wrong samples (9.0%), almost all of them in pieces read wrong as a whole (7.3 points).
+- **Single recordings.** EchoViewCLIP is the best row: 98.9% against EchoRouter's 98.1%, a difference of −0.8 points [−1.7, +0.1], and a macro-F1 of 0.972 against 0.956, −0.016 [−0.038, +0.003]. Four recordings are read right only by EchoRouter and ten only by EchoViewCLIP. EchoRouter has the highest A5C recall, 38 of 40.
+- **Pair streams.** No row stands out. EchoViewCLIP with the decoder has the highest value (0.993); EchoRouter has 0.985.
+- **The limits of section 8 stand.** The benchmark is the project's own and is not untouched, its streams are built and are not examinations, three of the four other systems were trained by us, and A5C rests on 39 recordings.

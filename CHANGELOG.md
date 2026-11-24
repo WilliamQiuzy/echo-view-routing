@@ -10,6 +10,10 @@ Notable changes to this project. The format follows [Keep a Changelog](https://k
 - `python -m echoview.evaluation.comparison` carries out the plan of `docs/COMPARISON.md`: `inventory` lists stored outputs, `settings` chooses decoder settings on the calibration half, and `score` builds every row and scores it with intervals by stream and by examination. Before the test benchmark is scored, the stored outputs must give every published number.
 - `docs/COMPARISON.md`: the plan of a fuller comparison with the four other approaches on the test benchmark, written before anything in it is computed. It fixes the numbers for every system, the rows that give the other systems the project's decoder, the intervals and the wording of the result. Stage A of the plan (what is stored, the decoder settings chosen on the calibration half, and the selection half as a trial) is in its section 9 and in `docs/comparison/`.
 
+### Read once (2026-11-24)
+
+- The frozen EV9V test benchmark, for the comparison with the four other approaches as planned in `docs/COMPARISON.md`: stored outputs only, every system as published and, where a setting could be chosen on development data, with the project's decoder. EchoRouter has the highest segment F1 on multi streams as published (0.909). With the same decoder, EchoViewCLIP scores 0.884 and is not shown to differ from EchoRouter; EchoRouter is ahead of EchoPrime's classifier; for STFM and ASFormer the question could not be answered. EchoViewCLIP stays the best row on single recordings. The README's comparison section now shows this table.
+
 ### Fixed
 
 - The comparison table of the README gave EchoPrime's macro-F1 on single recordings as 0.944. It is 0.943 (0.9435).

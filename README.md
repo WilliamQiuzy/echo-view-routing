@@ -29,19 +29,33 @@ recording ──► 10 frames per second, grey, 224 × 224
 
 ## How it compares
 
-On the project's frozen EV9V test benchmark we ran four published approaches beside EchoRouter, on the same recordings and the same streams.
+On the project's frozen EV9V test benchmark we scored four published approaches beside EchoRouter, on the same recordings and the same streams: each as published and, where we could, with EchoRouter's decoder on its outputs. The rows, the numbers and the wording were fixed before the benchmark was read ([docs/COMPARISON.md](docs/COMPARISON.md)). Bold is the best value of a column, by the value alone.
 
-| System | Streams: segment F1 at 50% overlap | Single recordings: accuracy | Single recordings: macro-F1 |
-|---|---|---|---|
-| **EchoRouter** | **0.909** | 98.1% | 0.956 |
-| EchoViewCLIP, stage 1, sliding window | 0.867 | **98.9%** | **0.972** |
-| STFM | 0.859 | 98.3% | 0.960 |
-| ASFormer on frame features | 0.856 | 98.3% | 0.956 |
-| EchoPrime's view classifier with our decoder | 0.851 | 97.9% | 0.943 |
+| Row | Segment F1 at 50%, multi | Segment F1 at 50%, pairs | Edit | Piece midpoint | Wrong samples | Cut precision | Cut recall | Cut distance (s) | Recordings: accuracy | Macro-F1 | A5C recall |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| EchoRouter | **0.909** | 0.985 | **91.4** | 93.7% | 9.4% | 0.934 | 0.937 | 0.153 | 98.1% | 0.956 | **95.0%** |
+| EchoViewCLIP | 0.867 | 0.989 | 89.0 | 92.9% | 11.2% | 0.851 | 0.953 | 0.183 | **98.9%** | **0.972** | 92.5% |
+| STFM | 0.859 | 0.971 | 88.1 | 92.9% | 12.0% | 0.812 | 0.879 | 0.252 | 98.2% | 0.960 | 87.5% |
+| ASFormer | 0.856 | 0.981 | 87.2 | 91.0% | **9.0%** | 0.869 | 0.942 | 0.013 | 98.2% | 0.956 | 77.5% |
+| EchoPrime per frame | 0.496 | 0.743 | 54.9 | 89.6% | 12.1% | 0.357 | **0.974** | 0.017 | 97.9% | 0.943 | 67.5% |
+| EchoViewCLIP + decoder | 0.884 | **0.993** | 90.1 | 92.9% | 11.1% | 0.877 | 0.955 | 0.184 | 98.8% | 0.969 | 90.0% |
+| EchoPrime + decoder | 0.851 | 0.988 | 85.0 | 88.3% | 11.9% | **0.945** | 0.900 | **0.005** | 97.9% | 0.943 | 67.5% |
+| EchoRouter, no decoder | 0.874 | 0.975 | 89.5 | **94.0%** | 9.1% | 0.848 | 0.955 | 0.163 | 98.4% | 0.960 | 92.5% |
 
-- **Where EchoRouter is ahead: cutting a stream into views.** Its segment F1 is 0.04 to 0.06 above the others. A paired bootstrap was made for two single stage-2 models, each of which scores 0.919 on the same streams: both are 0.05 to 0.07 ahead of each of the four, and every interval lies above zero. The ensemble itself was not compared pairwise.
-- **Where it is not ahead: naming a single recording.** There the five are close, and EchoViewCLIP is the best of them.
-- **How to read the table.** We ran all five. STFM, ASFormer and EchoViewCLIP were trained by us on EV9V's training recordings, and EchoPrime's classifier is the released one with our decoder on its outputs. The benchmark is ours, it is not the task these methods were published for, and it is not an untouched test set. The four other rows date from 2026-10-23, EchoRouter's from 2026-11-13.
+"Multi" streams join four to eight pieces of recordings, "pairs" two. Piece midpoint is the share of pieces whose middle sample gets the right view. Cut distance is how far a cut lies from the view change it belongs to.
+
+- **Streams, as published.** EchoRouter has the highest segment F1 on multi streams, 0.909 (95% interval 0.872 to 0.944). The four others score 0.851 to 0.867.
+- **Streams, with the same decoder.** This is the comparison that was named in advance, with 98.75% intervals.
+  - EchoViewCLIP with EchoRouter's decoder scores 0.884. EchoRouter is not shown to differ from it: the difference is 0.025 (−0.010 to 0.063). Of the published gap of 0.042, 0.025 remains.
+  - EchoRouter is ahead of EchoPrime's classifier with the decoder by 0.058 (0.010 to 0.109).
+  - For STFM and ASFormer the question is not answered. Their outputs on development streams were not stored, so no decoder setting could be chosen for them.
+- **Where EchoRouter has the best value:** segment F1 on multi streams, the Edit score and A5C. It gets the middle of 82.8% of the A5C pieces right, the others 57.0% to 79.5%.
+- **Where it does not:**
+  - Single recordings: EchoViewCLIP is the best row, 98.9% against 98.1%.
+  - Pair streams: all rows but one are close, and EchoViewCLIP with the decoder is highest.
+  - Exact cuts: ASFormer and EchoPrime's classifier give an output for every sample, and their cuts are at most 0.02 s off on average. EchoRouter is read every 0.5 s and is 0.15 s off on average; a perfect system on that grid would be 0.12 s off.
+  - Wrong samples: ASFormer has the fewest, 9.0% against 9.4%.
+- **How to read the table.** We ran all five. STFM, ASFormer and EchoViewCLIP were trained by us on EV9V's training recordings, and EchoPrime's classifier is the released one. The benchmark is ours. Its streams are built from pieces of recordings, it is not the task these methods were published for, and it is not an untouched test set. On development data EchoRouter's lead over EchoViewCLIP with the decoder was larger (0.094); the test benchmark did not bear that out.
 
 ## Quick start
 

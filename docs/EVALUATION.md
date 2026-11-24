@@ -131,7 +131,7 @@ python -m echoview.evaluation.uncertain_study report --logits dev_logits.npz --c
 
 ## The comparison with other approaches
 
-[COMPARISON.md](COMPARISON.md) is the plan of a fuller comparison on the test benchmark: the numbers of this page and some more for every system, and rows that give the other systems the project's decoder. It was committed before the read it describes.
+[COMPARISON.md](COMPARISON.md) holds a fuller comparison on the test benchmark: the numbers of this page and some more for every system, and rows that give the other systems the project's decoder. Its plan was committed before the read, and its result follows the plan. `python -m echoview.evaluation.comparison` is the command, and its outputs are in `docs/comparison/`.
 
 ## Not here yet
 
