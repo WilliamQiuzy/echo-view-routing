@@ -2,7 +2,7 @@
 import numpy as np
 import pytest
 
-from echoview import Ensemble, weights, windows
+from echoview import Ensemble, reference, uncertain, weights, windows
 from echoview.pipeline import probabilities_from_logits, softmax
 from echoview.reference import B3
 
@@ -116,3 +116,47 @@ def test_a_denser_read_out_gives_every_sample_its_own_output():
     assert ensemble.sample_probabilities(frames).argmax(1).tolist() != prob.argmax(1).tolist()
     with pytest.raises(ValueError, match="has 5 windows, not 25"):
         probabilities_from_logits(dense, 25)
+
+
+def published(monkeypatch, *shifts: float) -> Ensemble:
+    """A stand-in that passes for the published system, so that its denser read-outs can be tried."""
+    monkeypatch.setattr(Ensemble, "is_reference", property(lambda self: True))
+    return system(*shifts)
+
+
+def test_a_denser_read_out_cuts_nearer_and_says_what_it_is(monkeypatch):
+    ensemble = published(monkeypatch, 0.0, 5.0, -5.0)
+    frames = flat_frames([0] * 44 + [100] * 36)  # the view changes at sample 44, between two outputs of the 0.5 s grid
+    coarse, fifth, tenth = ensemble.segment(frames), ensemble.segment(frames, stride=2), ensemble.segment(frames, stride=1)
+    assert coarse.labels.tolist() == [0] * 45 + [2] * 35  # the published read-out cuts at 4.5 s
+    assert tenth.labels.tolist() == [0] * 44 + [2] * 36  # an output for every sample: the cut is at 4.4 s
+    assert [(start, end, view) for start, end, view, _ in tenth.segments] == [(0.0, 4.4, "PLAX"), (4.4, 8.0, "A4C")]
+    assert fifth.labels.tolist() == [0] * 45 + [2] * 35  # sample 44 lies midway between two outputs and takes the earlier one
+    assert tenth.probabilities.shape == (80, 5) and not tenth.uncertain.any()
+    np.testing.assert_array_equal(ensemble.sample_probabilities(frames, stride=1), tenth.probabilities)
+    assert ensemble.decoder_setting() == B3 and ensemble.decoder_setting(5) == B3
+    assert ensemble.decoder_setting(2) == reference.DENSER_READ_OUT[2] and ensemble.decoder_setting(1) == reference.DENSER_READ_OUT[1]
+    assert ensemble.version_at(5) == ensemble.version
+    assert ensemble.version_at(1) == f"{ensemble.version}, read every 0.1 s" and ensemble.version_at(2) == f"{ensemble.version}, read every 0.2 s"
+
+
+def test_the_decoder_setting_of_a_denser_read_out_is_the_one_it_decodes_with(monkeypatch):
+    ensemble = published(monkeypatch, 0.0)
+    frames = flat_frames([0] * 30 + [100] * 30)
+    monkeypatch.setitem(reference.DENSER_READ_OUT, 1, {"half_window": 5, "threshold": 10.0, "nms_radius": 5})  # no score reaches this
+    assert ensemble.segment(frames, stride=1).labels.tolist() == [0] * 60  # so nothing is cut, and the piece takes the larger mean
+    assert len(ensemble.segment(frames, stride=2).segments) == 2 and len(ensemble.segment(frames).segments) == 2
+
+
+def test_a_denser_read_out_is_for_the_published_system_without_the_uncertain_rule(monkeypatch):
+    frames = flat_frames([0] * 40 + [100] * 40)
+    with pytest.raises(ValueError, match="published system"):
+        system(0.0).segment(frames, stride=1)
+    assert len(system(0.0).segment(frames, stride=5).segments) == 2  # the published step needs no such check
+    ensemble = published(monkeypatch, 0.0)
+    with pytest.raises(ValueError, match="was not studied"):
+        ensemble.segment(frames, stride=3)
+    with pytest.raises(ValueError, match="uncertain rule was studied with the published read-out"):
+        ensemble.segment(frames, uncertain.released(), stride=1)
+    assert ensemble.segment(frames, uncertain.OFF, stride=1).labels.tolist() == [0] * 40 + [2] * 40
+    assert ensemble.segment(frames, uncertain.released()).labels.shape == (80,)

@@ -2,7 +2,7 @@
 
   echoview selfcheck
   echoview classify  INPUT [INPUT ...] [--out views.csv]
-  echoview segment   INPUT [INPUT ...] [--uncertain] [--out segments.csv] [--samples samples.csv]
+  echoview segment   INPUT [INPUT ...] [--uncertain] [--read-every 0.5|0.2|0.1] [--out segments.csv] [--samples samples.csv]
   echoview weights
   echoview evaluate  --images EV9V/Images [--benchmark test] [--out report.json]
   echoview mimic-table --labels V4.csv --root MIMIC_ROOT --out ours.csv [--limit N]
@@ -14,6 +14,7 @@ evaluation, or with --benchmark test the frozen test benchmark. mimic-table writ
 MIMIC-IV-Echo view table, filled by this model.
 The model knows five views (PLAX, PSAX, A4C, A5C, SC4C) and always answers one of them. With --uncertain, segment
 leaves the samples unnamed where its answer is weak, most of them next to a change of view.
+With --read-every 0.2 or 0.1, segment reads the models more often than the published system does (not confirmed on the test benchmark).
 """
 from __future__ import annotations
 
@@ -31,10 +32,12 @@ from . import weights as wt
 from .model import CLASSES
 from .pipeline import Ensemble
 from .reference import NAME, SEEDS, VERSION
+from .windows import STRIDE
 
 CLASSIFY_HEADER = ("file", "predicted_view", "view_probability", *(f"p_{c}" for c in CLASSES), "seeds_agree", "source_frames",
                    "fps", "samples_10hz", "windows", "reader", "view_classifier_version")
 SEGMENT_HEADER = ("segment", "start_s", "end_s", "view", "mean_probability", "view_classifier_version")
+READ_EVERY = {"0.5": STRIDE, "0.2": 2, "0.1": 1}  # seconds between two outputs of the models -> 10 Hz samples
 
 
 def parse_seeds(text: str) -> tuple[int, ...]:
@@ -132,13 +135,22 @@ def segment(args: argparse.Namespace) -> int:
         raise SystemExit(f"an input could not be read, so no stream was built: {error}") from None
     for path, recording in zip(paths, recordings):
         note_reader(path, recording)
+    stride = READ_EVERY[args.read_every]
+    if stride != STRIDE and args.uncertain:
+        raise SystemExit("--uncertain was studied with the published read-out only; leave --read-every at 0.5 with it")
     system = build(args)
+    if stride != STRIDE:
+        if not system.is_reference:
+            raise SystemExit("--read-every has a decoder setting for the published system of three seeds only")
+        print(f"note: a read-out every {args.read_every} s is not the published system. On development data its cuts lay nearer to the view "
+              f"changes; this is not confirmed on the test benchmark (docs/FOLLOWUP.md). It reads about {STRIDE / stride:g} times as many windows.",
+              file=sys.stderr)
     stream = np.concatenate([r.frames for r in recordings])
     source = np.concatenate([np.full(len(r.frames), k) for k, r in enumerate(recordings)])
     if args.uncertain and not system.is_reference:
         print("note: the uncertain rule was chosen and checked for the reference ensemble of three seeds, not for this model", file=sys.stderr)
-    result = system.segment(stream, uncertain.released() if args.uncertain else None)
-    rows = [[k, f"{start:.1f}", f"{end:.1f}", view, f"{probability:.4f}", system.version]
+    result = system.segment(stream, uncertain.released() if args.uncertain else None, stride)
+    rows = [[k, f"{start:.1f}", f"{end:.1f}", view, f"{probability:.4f}", system.version_at(stride)]
             for k, (start, end, view, probability) in enumerate(result.segments)]
     print(f"stream of {len(recordings)} recording(s), {len(stream) / fr.HZ:.1f} s")
     width = len("uncertain") if args.uncertain else 5
@@ -240,6 +252,10 @@ def parser() -> argparse.ArgumentParser:
     p.add_argument("--out", default="", help="CSV of the pieces")
     p.add_argument("--samples", default="", help="CSV with the view and probabilities of every 0.1 s sample; with --uncertain the view of a "
                                                  "declined sample is \"uncertain\"")
+    p.add_argument("--read-every", choices=tuple(READ_EVERY), default="0.5",
+                   help="seconds between two outputs of the models. 0.5 is the published system. 0.2 and 0.1 read the same models more "
+                        "often (2.5 and 5 times the work): on development data the cuts lay nearer to the view changes; this is not "
+                        "confirmed on the test benchmark. See docs/FOLLOWUP.md")
     p.add_argument("--uncertain", action="store_true",
                    help="decline where the answer is weak: such samples form pieces called \"uncertain\" (their mean probability "
                         "is that of the likeliest view); every other sample keeps its view. See docs/UNCERTAIN.md")

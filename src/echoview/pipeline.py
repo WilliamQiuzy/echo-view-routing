@@ -15,7 +15,7 @@ import torch
 
 from . import decoder, uncertain, weights
 from .model import CLASSES, WindowModel, load_model, marker_planes, normalise
-from .reference import B3, SEEDS, VERSION
+from .reference import B3, DENSER_READ_OUT, SEEDS, VERSION
 from .windows import STRIDE, nearest_centre, window_plan
 
 HZ = 10.0
@@ -125,6 +125,24 @@ class Ensemble:
             return f"C2 seeds {','.join(str(s) for s in self.seeds)} (not the reference ensemble)"
         return f"custom ensemble of {len(self.models)} model(s)"
 
+    def version_at(self, stride: int = STRIDE) -> str:
+        """The name of what `segment` returns at a read-out step: the system's version, and the step when it is not the published one."""
+        return self.version if stride == STRIDE else f"{self.version}, read every {stride / HZ:.1f} s"
+
+    def decoder_setting(self, stride: int = STRIDE) -> dict:
+        """The decoder setting for a read-out every `stride` samples: the system's own at 5, the published step.
+
+        The published system also has a setting for 2 and for 1 sample (reference.DENSER_READ_OUT). Those read-outs
+        were chosen on development data and are not confirmed on the test benchmark (docs/FOLLOWUP.md).
+        """
+        if stride == STRIDE:
+            return self.b3
+        if not self.is_reference:
+            raise ValueError("a denser read-out has a decoder setting for the published system only")
+        if stride not in DENSER_READ_OUT:
+            raise ValueError(f"a read-out every {stride} samples was not studied; the steps are {STRIDE} (published), 2 and 1")
+        return dict(DENSER_READ_OUT[stride])
+
     @torch.no_grad()
     def window_logits(self, frames: np.ndarray, stride: int = STRIDE) -> np.ndarray:
         """frames (n, 224, 224, 3) uint8 on the 10 Hz grid -> logits (windows, models, 5) float32.
@@ -155,21 +173,29 @@ class Ensemble:
         return Classification(view=CLASSES[int(mean.argmax())], probability=float(mean.max()), probabilities=mean, by_seed=by_seed,
                               seeds_agree=bool(winners.min() == winners.max()), n_windows=len(prob))
 
-    def sample_probabilities(self, frames: np.ndarray) -> np.ndarray:
+    def sample_probabilities(self, frames: np.ndarray, stride: int = STRIDE) -> np.ndarray:
         """One stream -> the ensemble's probabilities for every 0.1 s sample, (samples, 5) float64."""
-        return probabilities_from_logits(self.window_logits(frames), len(frames))
+        return probabilities_from_logits(self.window_logits(frames, stride), len(frames), stride)
 
-    def segment(self, frames: np.ndarray, rule: uncertain.Rule | None = None) -> Segmentation:
+    def segment(self, frames: np.ndarray, rule: uncertain.Rule | None = None, stride: int = STRIDE) -> Segmentation:
         """One stream (a long recording, or several recordings joined) -> a view for every 0.1 s and the pieces.
 
         With a `rule` (echoview.uncertain.Rule) the system may decline: such samples get -1 and form pieces called
         "uncertain". Every other sample keeps the view it has without the rule.
+
+        `stride` is the number of samples between two outputs of the models. 5 is the published system. With 2 or 1
+        the published models are read more often and decoded with the setting of `decoder_setting(stride)`: the cuts
+        lay nearer to the view changes on development data, this is not confirmed on the test benchmark, and the
+        uncertain rule was not studied with it (docs/FOLLOWUP.md).
         """
-        logits = self.window_logits(frames)
-        prob = probabilities_from_logits(logits, len(frames))
         rule = uncertain.OFF if rule is None else rule
-        by_seed = np.stack([probabilities_from_logits(logits[:, [k]], len(frames)) for k in range(logits.shape[1])]) if rule.seeds else None
-        marked = uncertain.mark(prob, self.b3, rule, by_seed)
+        if stride != STRIDE and rule != uncertain.OFF:
+            raise ValueError("the uncertain rule was studied with the published read-out only (stride 5)")
+        setting = self.decoder_setting(stride)
+        logits = self.window_logits(frames, stride)
+        prob = probabilities_from_logits(logits, len(frames), stride)
+        by_seed = np.stack([probabilities_from_logits(logits[:, [k]], len(frames), stride) for k in range(logits.shape[1])]) if rule.seeds else None
+        marked = uncertain.mark(prob, setting, rule, by_seed)
         pieces = tuple((start / HZ, end / HZ, CLASSES[view] if view >= 0 else "uncertain",
                         float(prob[start:end, view].mean() if view >= 0 else prob[start:end].mean(0).max()))
                        for start, end, view in decoder.segments(marked.labels))

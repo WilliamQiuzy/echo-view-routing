@@ -13,10 +13,15 @@ Notable changes to this project. The format follows [Keep a Changelog](https://k
 - `docs/COMPARISON.md`, section 11: an addendum that answers the two comparisons the first read left open. STFM and ASFormer are run on the development benchmark, get a decoder setting by the same rule, and the test benchmark is read a second time for these two rows only. `score --earlier` compares a later output with an earlier one, number by number, and writes nothing when one differs; a read of the test benchmark now needs the first read's output.
 - `docs/FOLLOWUP.md` and `python -m echoview.evaluation.followup`: three checks on development data of changes that need no training (a denser read-out, an offset on the A5C logit, EchoViewCLIP's probabilities mixed in), with the rules for calling one a candidate fixed before the numbers.
 - `Ensemble.window_logits`, `probabilities_from_logits` and `window_plan` take an optional `stride`, the number of samples between two outputs. The default stays 5 and the published system is unchanged.
+- `echoview segment --read-every 0.2` or `0.1`, and `Ensemble.segment(frames, stride=2)` or `stride=1`: the published models read more often, decoded with the setting the rule chose for that step on the calibration half. The option is off by default, says on every run that it is not the published system, writes its step into the version column, and does not combine with `--uncertain`.
 
 ### Read once (2026-11-24)
 
 - The frozen EV9V test benchmark, for the comparison with the four other approaches as planned in `docs/COMPARISON.md`: stored outputs only, every system as published and, where a setting could be chosen on development data, with the project's decoder. EchoRouter has the highest segment F1 on multi streams as published (0.909). With the same decoder, EchoViewCLIP scores 0.884 and is not shown to differ from EchoRouter; EchoRouter is ahead of EchoPrime's classifier; for STFM and ASFormer the question could not be answered. EchoViewCLIP stays the best row on single recordings. The README's comparison section now shows this table.
+
+### Studied on development data (2026-11-24)
+
+- Three changes that need no training (`docs/FOLLOWUP.md`), each chosen on the calibration half and reported on the selection half. A read-out every 0.1 s puts the cuts 0.071 s from the view changes instead of 0.153 s and leaves segment F1 and the single recordings as they are; every 0.2 s gives 0.109 s. Both are candidates and are offered as the option above; neither is confirmed on the test benchmark. An offset between A4C and A5C and a mix with EchoViewCLIP's probabilities are not supported on development data.
 
 ### Read a second time (2026-11-24)
 

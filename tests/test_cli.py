@@ -101,6 +101,34 @@ def test_segment_names_every_sample_without_the_option(tmp_path, monkeypatch, ca
     assert re.search(r"^     4\.0 -    8\.0 s  PSAX  \d\.\d{4}$", printed.out, re.M)
 
 
+def test_segment_reads_more_often_when_asked_and_says_that_this_is_not_the_published_system(tmp_path, monkeypatch, capsys):
+    monkeypatch.setattr(Ensemble, "is_reference", property(lambda self: True))  # the stand-in passes for the published system
+    a, b = frame_folder(tmp_path / "a", 200, 43), frame_folder(tmp_path / "b", 50, 37)
+    pieces = tmp_path / "pieces.csv"
+    assert cli.main(["segment", str(a), str(b), "--fps", "10", "--out", str(pieces)]) == 0
+    assert [(r["start_s"], r["end_s"]) for r in rows_of(pieces)] == [("0.0", "4.5"), ("4.5", "8.0")]  # the join at 4.3 s is off the 0.5 s grid
+    assert "not the published system" not in capsys.readouterr().err
+    dense = tmp_path / "dense.csv"
+    assert cli.main(["segment", str(a), str(b), "--fps", "10", "--read-every", "0.1", "--out", str(dense)]) == 0
+    rows = rows_of(dense)
+    assert [(r["start_s"], r["end_s"], r["view"]) for r in rows] == [("0.0", "4.3", "SC4C"), ("4.3", "8.0", "PSAX")]
+    assert {r["view_classifier_version"] for r in rows} == {f"{Ensemble.from_models([BrightnessModel()], B3).version}, read every 0.1 s"}
+    assert {r["view_classifier_version"] for r in rows_of(pieces)} == {Ensemble.from_models([BrightnessModel()], B3).version}
+    said = capsys.readouterr().err
+    assert "not the published system" in said and "not confirmed on the test benchmark" in said and "docs/FOLLOWUP.md" in said
+    assert cli.main(["segment", str(a), str(b), "--fps", "10", "--read-every", "0.2"]) == 0
+    with pytest.raises(SystemExit, match="--uncertain was studied with the published read-out"):
+        cli.main(["segment", str(a), str(b), "--fps", "10", "--read-every", "0.1", "--uncertain"])
+    with pytest.raises(SystemExit):
+        cli.main(["segment", str(a), str(b), "--fps", "10", "--read-every", "0.3"])
+
+
+def test_a_denser_read_out_needs_the_published_system(tmp_path):
+    a, b = frame_folder(tmp_path / "a", 200, 40), frame_folder(tmp_path / "b", 50, 40)
+    with pytest.raises(SystemExit, match="published system"):  # the stand-in model of these tests is not it
+        cli.main(["segment", str(a), str(b), "--fps", "10", "--read-every", "0.1"])
+
+
 def test_segment_builds_no_stream_when_one_input_cannot_be_read(tmp_path):
     good = frame_folder(tmp_path / "good", 100)
     with pytest.raises(SystemExit, match="no stream was built"):
