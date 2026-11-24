@@ -37,7 +37,7 @@ On the project's frozen EV9V test benchmark we ran four published approaches bes
 | EchoViewCLIP, stage 1, sliding window | 0.867 | **98.9%** | **0.972** |
 | STFM | 0.859 | 98.3% | 0.960 |
 | ASFormer on frame features | 0.856 | 98.3% | 0.956 |
-| EchoPrime's view classifier with our decoder | 0.851 | 97.9% | 0.944 |
+| EchoPrime's view classifier with our decoder | 0.851 | 97.9% | 0.943 |
 
 - **Where EchoRouter is ahead: cutting a stream into views.** Its segment F1 is 0.04 to 0.06 above the others. A paired bootstrap was made for two single stage-2 models, each of which scores 0.919 on the same streams: both are 0.05 to 0.07 ahead of each of the four, and every interval lies above zero. The ensemble itself was not compared pairwise.
 - **Where it is not ahead: naming a single recording.** There the five are close, and EchoViewCLIP is the best of them.
