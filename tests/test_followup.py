@@ -405,3 +405,358 @@ def test_the_option_decodes_with_the_settings_the_study_chose():
     assert set(reference.DENSER_READ_OUT) == set(followup.DENSER.values()) == {1, 2}
     published = study["q1"]["arms"]["every 0.5 s"]["setting"]["params"]
     assert published["half_window"] == B3["half_window"] and abs(published["threshold"] - B3["threshold"]) < 1e-3
+
+
+# ------------------------------------------------------------------------- the confirmation on the test benchmark
+CONFIRMED, AT_A_COST, NOT_CONFIRMED = "confirmed on the test benchmark", "nearer cuts at a cost", "not confirmed on the test benchmark"
+PUBLISHED_KEYS = ("segment_f1_50_multi", "segment_f1_50_pairs", "native_accuracy", "native_macro_f1")
+FIVE_ROWS = [ROUTER, "Perfect on the 0.5 s grid", "Perfect on the 0.2 s grid", "every 0.2 s", "every 0.1 s"]
+
+
+def published_of(seqs: tuple[benchmark.Sequence, ...], stored: dict[str, np.ndarray]) -> dict:
+    """The four published numbers of this made-up benchmark, as comparison.PUBLISHED holds them."""
+    numbers = metrics.evaluate(comparison.decoded(comparison.member_probabilities(stored, seqs, (0, 1, 2)), B3), seqs)
+    return {ROUTER: {key: float(numbers[key]) for key in PUBLISHED_KEYS}}
+
+
+def first_read_of(seqs: tuple[benchmark.Sequence, ...], stored: dict[str, np.ndarray], draws: int, seed: int) -> dict:
+    """What the comparison's read of this made-up benchmark holds, as its output file gives it back."""
+    read = {"benchmark": "test", **comparison.compare(seqs, comparison.build_rows(seqs, stored, {}, {}), draws, seed)}
+    return json.loads(json.dumps(comparison._clean(read), allow_nan=False))
+
+
+def test_the_words_of_the_confirmation_follow_the_plan():
+    def said(distance, hull, f1=0.0, macro=0.0, interval=None):
+        decides = {"value": distance, "interval": hull if interval is None else interval, "hull": hull}
+        return followup.word_confirm(decides, difference(f1, None), difference(macro, None))
+
+    assert said(-0.05, [-0.08, -0.02]) == {"nearer_cuts": True, "segment_f1_kept": True, "recordings_kept": True, "word": CONFIRMED}
+    assert said(-0.05, [-0.08, -0.02], f1=-0.005)["word"] == CONFIRMED  # not lower by more than 0.005
+    assert said(-0.05, [-0.08, -0.02], f1=-0.0051) == {"nearer_cuts": True, "segment_f1_kept": False, "recordings_kept": True, "word": AT_A_COST}
+    assert said(-0.05, [-0.08, -0.02], macro=-0.001) == {"nearer_cuts": True, "segment_f1_kept": True, "recordings_kept": False, "word": AT_A_COST}
+    assert said(-0.05, [-0.08, -0.02], f1=-0.01, macro=-0.01)["word"] == AT_A_COST
+    assert said(-0.05, [-0.08, 0.0])["word"] == NOT_CONFIRMED  # the interval must lie wholly below zero
+    assert said(-0.05, [-0.08, 0.01], interval=[-0.07, -0.01])["word"] == NOT_CONFIRMED  # every unit must agree: the hull decides
+    assert said(-0.05, None)["word"] == NOT_CONFIRMED
+    assert said(0.0, [-0.08, -0.02])["word"] == NOT_CONFIRMED  # and the distance itself must be lower
+    assert said(None, [-0.08, -0.02])["word"] == NOT_CONFIRMED
+    assert said(-0.05, [-0.08, -0.02], f1=None) == {"nearer_cuts": True, "segment_f1_kept": False, "recordings_kept": True, "word": AT_A_COST}
+    assert said(-0.05, [-0.08, -0.02], macro=None) == {"nearer_cuts": True, "segment_f1_kept": True, "recordings_kept": False, "word": AT_A_COST}
+    # without nearer cuts nothing else is weighed, but what was kept is still said
+    assert said(0.02, [-0.01, 0.05], f1=-0.01) == {"nearer_cuts": False, "segment_f1_kept": False, "recordings_kept": True, "word": NOT_CONFIRMED}
+
+
+def test_a_perfect_system_on_the_half_second_grid_is_the_row_of_the_comparison():
+    """The row "Perfect on the 0.5 s grid" must come out again, so both commands must build it the same way: on every
+    sequence of both packaged benchmarks. Only the reference labels are used here."""
+    packaged = [s for half in benchmark.load().values() for s in half] + list(benchmark.load_test())
+    assert len(packaged) > 2000
+    for s in packaged:
+        assert np.array_equal(followup.grid_labels(s.labels, 5), scorecard.grid_floor_labels(s.labels))
+
+
+def told_apart(seqs: tuple[benchmark.Sequence, ...], rng: np.random.Generator) -> tuple[dict[str, np.ndarray], dict[str, np.ndarray]]:
+    """Stored and dense logits on which the published system and the arms err differently, so that a rule that reads
+    the wrong part, the wrong number or one model alone gives another result:
+    the published system reads the last piece of one multi stream as another view (the arms read it right);
+    the arms read one single recording as another view (the published system reads it right);
+    and in another multi stream the first seed alone reads the last piece wrong, outvoted by the other two."""
+    dense = dense_from(seqs, rng)
+    stored = at_published_centres(seqs, dense)
+    multi = [s for s in seqs if s.kind == "multi"]
+    native = next(s for s in seqs if s.kind == "native")
+
+    def last_piece(s: benchmark.Sequence) -> np.ndarray:
+        return windows.window_centres(len(s)) >= s.joins[-1]
+
+    def reads(view: int) -> np.ndarray:
+        return (8.0 * np.eye(5)[view]).astype(np.float32)
+
+    wrong = (int(multi[0].labels[-1]) + 2) % 5
+    stored[multi[0].id][last_piece(multi[0])] = reads(wrong)
+    stored[multi[1].id][last_piece(multi[1]), 0] = reads((int(multi[1].labels[-1]) + 2) % 5)
+    dense[native.id][:] = reads((int(native.labels[0]) + 1) % 5)
+    return stored, dense
+
+
+def test_the_confirmation_scores_the_two_released_steps_against_the_published_system(monkeypatch):
+    seqs, rng = sequences(), np.random.default_rng(8)
+    stored, dense = told_apart(seqs, rng)
+    monkeypatch.setattr(comparison, "PUBLISHED", published_of(seqs, stored))
+    first = first_read_of(seqs, stored, 60, 5)
+    used, calls = [], []
+    decode, score_rows = comparison.decoded, comparison.score_rows
+    monkeypatch.setattr(followup.comparison, "decoded", lambda rows, setting: used.append(dict(setting)) or decode(rows, setting))
+
+    def recorded(rows, sequences, draws, seed):
+        calls.append(([r.name for r in rows], sequences, draws, seed))
+        return score_rows(rows, sequences, draws, seed)
+
+    monkeypatch.setattr(followup.comparison, "score_rows", recorded)
+    pairs_asked = []
+
+    def only_one(natives, one, other):
+        pairs_asked.append((tuple(s.id for s in natives), one.name, other.name))
+        return {"only_first_right": 3, "only_second_right": 1}
+
+    monkeypatch.setattr(followup.comparison, "discordant", only_one)
+    result = followup.confirm(stored, dense, seqs, first, draws=60, seed=5)
+    single = tuple(s.id for s in seqs if s.kind == "native")
+    assert pairs_asked == [(single, "every 0.2 s", ROUTER), (single, "every 0.1 s", ROUTER)]
+    assert all(result["differences_from_published"][name]["recordings_only_one_reads_right"] == {"only_the_arm": 3, "only_the_published_system": 1}
+               for name in followup.DENSER)
+    # the released settings and no other: the published system once, each step once
+    assert used == [dict(B3), dict(reference.DENSER_READ_OUT[2]), dict(reference.DENSER_READ_OUT[1])]
+    # the published rows are scored and checked before any arm is; every scoring uses the benchmark, the draws and the seed given
+    assert [names for names, *_ in calls] == [FIVE_ROWS[:2], FIVE_ROWS]
+    assert all(scored_on is seqs and (draws, seed) == (60, 5) for _, scored_on, draws, seed in calls)
+    assert result["draws"] == 60 and result["seed"] == 5 and result["first_read_rows_reproduced"] == FIVE_ROWS[:2]
+    assert result["published_numbers_reproduced"] == comparison.PUBLISHED[ROUTER]
+    rows, arms = result["rows"], followup.denser_arms(dense, seqs)
+    assert list(rows) == FIVE_ROWS and list(arms) == ["every 0.2 s", "every 0.1 s"]
+    clean = json.loads(json.dumps(comparison._clean(result), allow_nan=False))
+    assert clean["rows"][ROUTER] == first["rows"][ROUTER] and clean["rows"][FIVE_ROWS[1]] == first["rows"][FIVE_ROWS[1]]
+    assert (rows[ROUTER]["role"], rows[FIVE_ROWS[2]]["role"], rows["every 0.1 s"]["role"], rows["every 0.1 s"]["system"]) == ("A", "P", "D", ROUTER)
+    for name, stride in followup.DENSER.items():
+        expected = metrics.evaluate(decode(arms[name], reference.DENSER_READ_OUT[stride]), seqs)
+        assert rows[name]["multi"]["segment_f1_50"]["value"] == pytest.approx(expected["segment_f1_50_multi"])
+        assert rows[name]["pairs"]["segment_f1_50"]["value"] == pytest.approx(expected["segment_f1_50_pairs"])
+        assert rows[name]["recordings"]["accuracy"]["value"] == pytest.approx(expected["native_accuracy"])
+        assert {"streams", "examinations"} <= set(rows[name]["multi"]["cut_distance_mean_s"])  # this benchmark names its examinations
+        entry, described = result["confirmation"][name], result["differences_from_published"][name]
+        assert set(described) == {"multi", "pairs", "recordings", "recordings_only_one_reads_right"} and described["multi"]["segment_f1_50"]["level"] == 95.0
+        distance = rows[name]["multi"]["cut_distance_mean_s"]["value"] - rows[ROUTER]["multi"]["cut_distance_mean_s"]["value"]
+        assert entry["cut_distance"]["value"] == pytest.approx(distance) and entry["cut_distance"]["level"] == 97.5  # two arms share 5%
+        assert set(entry["cut_distance"]) >= {"streams", "examinations", "hull"}
+        assert entry["segment_f1_50"] == described["multi"]["segment_f1_50"] and entry["macro_f1"] == described["recordings"]["macro_f1"]
+        # on these outputs another part or another number would give another result
+        assert described["multi"]["segment_f1_50"]["value"] > 0 == described["pairs"]["segment_f1_50"]["value"]
+        assert described["recordings"]["macro_f1"]["value"] < 0 and described["recordings"]["macro_f1"]["value"] != described["recordings"]["accuracy"]["value"]
+        assert entry["recordings_kept"] is False and entry["segment_f1_kept"] is True
+        assert entry["forward_passes"] == pytest.approx(followup.forward_passes(seqs)[name])
+        said = followup.word_confirm(entry["cut_distance"], entry["segment_f1_50"], entry["macro_f1"])
+        assert {key: entry[key] for key in said} == said
+    # the step of 0.1 s reads every stream of this made-up benchmark right: its cuts are nearer than those of the 0.5 s grid,
+    # and it pays with the single recording it reads wrong
+    assert result["confirmation"]["every 0.1 s"]["cut_distance"]["value"] < 0
+    assert result["confirmation"]["every 0.1 s"]["word"] in (AT_A_COST, NOT_CONFIRMED)
+    assert (result["confirmation"]["every 0.1 s"]["word"] == AT_A_COST) == result["confirmation"]["every 0.1 s"]["nearer_cuts"]
+    # the published row is the ensemble's: the first seed alone reads one piece of these outputs differently
+    alone, together = (decode(comparison.member_probabilities(stored, seqs, members), B3) for members in ((0,), (0, 1, 2)))
+    assert any(not np.array_equal(alone[s.id], together[s.id]) for s in seqs)
+    assert not re.search(r"rec\d|native_\d|multi_\d|pairs_\d", json.dumps(clean))  # pooled numbers only
+
+
+def test_the_published_rows_must_be_those_of_the_first_read(monkeypatch):
+    seqs, rng = sequences(), np.random.default_rng(9)
+    dense = dense_from(seqs, rng)
+    stored = at_published_centres(seqs, dense)
+    numbers = published_of(seqs, stored)
+    monkeypatch.setattr(comparison, "PUBLISHED", numbers)
+    first = first_read_of(seqs, stored, 50, 3)
+    assert followup.confirm(stored, dense, seqs, first, draws=50, seed=3)["first_read_rows_reproduced"] == list(followup.HELD_ROWS)
+    scored, decoded = [], []
+    score_rows, decode = comparison.score_rows, comparison.decoded
+    monkeypatch.setattr(followup.comparison, "score_rows", lambda rows, *rest: scored.append([r.name for r in rows]) or score_rows(rows, *rest))
+    monkeypatch.setattr(followup.comparison, "decoded", lambda rows, setting: decoded.append(dict(setting)) or decode(rows, setting))
+
+    def changed(edit) -> dict:
+        copy = json.loads(json.dumps(first))
+        edit(copy)
+        return copy
+
+    def an_interval(read):
+        read["rows"][ROUTER]["multi"]["segment_f1_50"]["streams"][0] += 1e-9
+
+    def a_value(read):
+        read["rows"]["Perfect on the 0.5 s grid"]["pairs"]["cut_distance_mean_s"]["value"] += 1e-9
+
+    def a_recordings_number(read):  # the part behind rule (c)
+        read["rows"][ROUTER]["recordings"]["macro_f1"]["value"] += 1e-9
+
+    def an_interval_over_examinations(read):  # the unit behind the hull
+        read["rows"][ROUTER]["multi"]["cut_distance_mean_s"]["examinations"][1] += 1e-9
+
+    def the_wider_interval(read):
+        read["rows"]["Perfect on the 0.5 s grid"]["multi"]["cut_distance_mean_s"]["interval"][0] -= 1e-9
+
+    def a_support(read):
+        read["rows"][ROUTER]["pairs"]["segment_f1_50"]["support"] += 1
+
+    for edit, message in ((an_interval, "does not come out again: row: EchoRouter"), (a_value, "does not come out again: row: Perfect on the 0.5 s grid"),
+                          (a_recordings_number, "does not come out again: row: EchoRouter"),
+                          (an_interval_over_examinations, "does not come out again: row: EchoRouter"),
+                          (the_wider_interval, "does not come out again: row: Perfect on the 0.5 s grid"),
+                          (a_support, "does not come out again: row: EchoRouter"),
+                          (lambda read: read["rows"][ROUTER].update(role="D"), "does not come out again: row: EchoRouter"),
+                          (lambda read: read.update(benchmark="selection"), "does not come out again: benchmark"),
+                          (lambda read: read.update(draws=51), "does not come out again: draws"),
+                          (lambda read: read.update(seed=4), "does not come out again: seed"),
+                          (lambda read: read.pop("seed"), "not an output of the comparison"),
+                          (lambda read: read["rows"].pop("Perfect on the 0.5 s grid"), "not an output of the comparison")):
+        with pytest.raises(SystemExit, match=message):
+            followup.confirm(stored, dense, seqs, changed(edit), draws=50, seed=3)
+    with pytest.raises(SystemExit, match="not an output of the comparison"):
+        followup.confirm(stored, dense, seqs, [first], draws=50, seed=3)
+    # every stopped read stopped before an arm was decoded or scored
+    assert scored and all(names == list(followup.HELD_ROWS) for names in scored) and all(setting == dict(B3) for setting in decoded)
+    scored.clear()
+    monkeypatch.setattr(comparison, "PUBLISHED", {ROUTER: {**numbers[ROUTER], "native_accuracy": numbers[ROUTER]["native_accuracy"] - 0.01}})
+    with pytest.raises(SystemExit, match="do not give the published numbers"):
+        followup.confirm(stored, dense, seqs, first, draws=50, seed=3)
+    assert scored == []  # nothing at all was scored
+
+
+def confirm_inputs(tmp_path, monkeypatch, rng):
+    seqs = sequences()
+    dense = dense_from(seqs, rng)
+    stored = at_published_centres(seqs, dense)
+    np.savez(tmp_path / "logits.npz", **stored)
+    np.savez(tmp_path / "dense.npz", **dense)
+    monkeypatch.setattr(followup, "DRAWS", 60)
+    (tmp_path / "first.json").write_text(json.dumps(first_read_of(seqs, stored, 60, followup.SEED)))
+    monkeypatch.setattr(followup.benchmark, "load_test", lambda: seqs)
+    monkeypatch.setattr(comparison, "PUBLISHED", published_of(seqs, stored))
+    monkeypatch.setattr(comparison, "TEST_LOGITS_SHA256", comparison.file_sha256(tmp_path / "logits.npz"))
+    monkeypatch.setattr(comparison, "FIRST_READ_SHA256", comparison.file_sha256(tmp_path / "first.json"))
+    monkeypatch.setattr(followup, "TEST_DENSE_SHA256", comparison.file_sha256(tmp_path / "dense.npz"))
+    monkeypatch.setattr(followup, "CONFIRMATION_SHA256", None)  # this made-up benchmark has not been read for the question
+
+    def command(out="confirmation.json", **other) -> list[str]:
+        files = {"logits": "logits.npz", "dense": "dense.npz", "earlier": "first.json", **other}
+        given = [arg for key, name in files.items() if name is not None for arg in (f"--{key}", str(tmp_path / name))]
+        return ["confirm", *given, "--draws", "60", "--out", str(tmp_path / out)]
+
+    return seqs, stored, dense, command
+
+
+def test_the_confirm_command_reads_once(tmp_path, monkeypatch, capsys):
+    seqs, stored, dense, command = confirm_inputs(tmp_path, monkeypatch, np.random.default_rng(10))
+    out = tmp_path / "confirmation.json"
+    with pytest.raises(SystemExit, match="the test benchmark is not read: the plan fixes 60 draws"):
+        followup.main([*command()[:-3], "50", "--out", str(out)])
+    monkeypatch.setattr(comparison, "TEST_LOGITS_SHA256", "0" * 64)
+    with pytest.raises(SystemExit, match="the test benchmark is not read: the logits file is not the one the plan names"):
+        followup.main(command())
+    monkeypatch.setattr(comparison, "TEST_LOGITS_SHA256", comparison.file_sha256(tmp_path / "logits.npz"))
+    (tmp_path / "other.json").write_text(json.dumps({**json.loads((tmp_path / "first.json").read_text()), "seed": 1}))
+    with pytest.raises(SystemExit, match="the test benchmark is not read: --earlier must be the output of the comparison's first read"):
+        followup.main(command(earlier="other.json"))
+    off = dict(dense)
+    off[seqs[0].id] = dense[seqs[0].id] + np.float32(0.01)
+    np.savez(tmp_path / "off.npz", **off)
+    beside = dict(dense)  # equal at every published position, another number beside one: the check of the logits cannot see it
+    beside[seqs[0].id] = dense[seqs[0].id].copy()
+    beside[seqs[0].id][3] += np.float32(0.5)
+    assert 3 not in windows.window_centres(len(seqs[0])).tolist()
+    np.savez(tmp_path / "beside.npz", **beside)
+    np.savez(tmp_path / "few.npz", **{s.id: dense[s.id] for s in seqs[1:]})
+    for name in ("off.npz", "beside.npz", "few.npz"):
+        with pytest.raises(SystemExit, match="the test benchmark is not read: the dense file is not the one whose digest was committed before the read"):
+            followup.main(command(dense=name))
+    named = followup.TEST_DENSE_SHA256
+    monkeypatch.setattr(followup, "TEST_DENSE_SHA256", None)
+    with pytest.raises(SystemExit, match="the test benchmark is not read: the code does not name the dense file yet"):
+        followup.main(command())
+    monkeypatch.setattr(followup, "TEST_DENSE_SHA256", comparison.file_sha256(tmp_path / "off.npz"))
+    with pytest.raises(SystemExit, match="do not agree with the stored ones"):
+        followup.main(command(dense="off.npz"))
+    monkeypatch.setattr(followup, "TEST_DENSE_SHA256", comparison.file_sha256(tmp_path / "few.npz"))
+    with pytest.raises(SystemExit, match="lacks the logits of 1 of the"):
+        followup.main(command(dense="few.npz"))
+    monkeypatch.setattr(followup, "TEST_DENSE_SHA256", named)
+    assert not out.exists() and not list(tmp_path.glob("*.partial"))  # a stopped read leaves no output
+    assert followup.main(command()) == 0 and "wrote" in capsys.readouterr().out
+    result = json.loads(out.read_text())
+    assert result["benchmark"] == "test" and result["sequences"] == len(seqs) and result["draws"] == 60 and result["seed"] == followup.SEED
+    assert result["sha256"] == {key: comparison.file_sha256(tmp_path / name) for key, name in
+                                (("logits", "logits.npz"), ("dense", "dense.npz"), ("first_read", "first.json"))}
+    assert result["settings"] == {"every 0.2 s": reference.DENSER_READ_OUT[2], "every 0.1 s": reference.DENSER_READ_OUT[1]}
+    assert result["dense_check"] == {"sequences": len(seqs), "largest_difference": 0.0}
+    assert result["first_read_rows_reproduced"] == FIVE_ROWS[:2] and list(result["rows"]) == FIVE_ROWS
+    assert set(result["confirmation"]) == set(result["differences_from_published"]) == {"every 0.2 s", "every 0.1 s"}
+    direct = followup.confirm(stored, dense, seqs, json.loads((tmp_path / "first.json").read_text()), draws=60, seed=followup.SEED)
+    assert result["confirmation"] == json.loads(json.dumps(comparison._clean(direct["confirmation"])))
+    assert not re.search(r"rec\d|native_\d|multi_\d|pairs_\d", out.read_text()) and "NaN" not in out.read_text()
+    before = out.read_bytes()
+    with pytest.raises(SystemExit, match="does not replace"):
+        followup.main(command())
+    assert out.read_bytes() == before
+
+
+def test_after_the_read_the_confirm_command_only_reproduces_it(tmp_path, monkeypatch):
+    command = confirm_inputs(tmp_path, monkeypatch, np.random.default_rng(11))[-1]
+    out = tmp_path / "confirmation.json"
+    with pytest.raises(SystemExit, match="there is no read of it to reproduce"):  # before the read nothing can be reproduced
+        followup.main(command(out="never.json", reproduce="first.json"))
+    assert followup.main(command()) == 0
+    monkeypatch.setattr(followup, "CONFIRMATION_SHA256", comparison.file_sha256(out))  # from now on the read has been made
+    with pytest.raises(SystemExit, match="the test benchmark is not read: it has been read for this question"):
+        followup.main(command(out="never.json"))
+    changed = json.loads(out.read_text())
+    changed["rows"]["every 0.1 s"]["multi"]["segment_f1_50"]["value"] += 1e-9
+    (tmp_path / "changed.json").write_text(json.dumps(changed))
+    with pytest.raises(SystemExit, match="the test benchmark is not read: it has been read for this question"):  # another file than the read's output
+        followup.main(command(out="never.json", reproduce="changed.json"))
+    assert followup.main(command(out="again.json", reproduce="confirmation.json")) == 0
+    assert json.loads((tmp_path / "again.json").read_text()) == json.loads(out.read_text())
+    monkeypatch.setattr(followup, "CONFIRMATION_SHA256", comparison.file_sha256(tmp_path / "changed.json"))
+    with pytest.raises(SystemExit, match="the read does not come out again"):
+        followup.main(command(out="never.json", reproduce="changed.json"))
+    assert not (tmp_path / "never.json").exists()
+
+
+def test_the_logits_command_reads_the_test_benchmark_on_request(tiny, tmp_path, monkeypatch):  # noqa: F811
+    stand_in = Ensemble.from_models([BrightnessModel(0.0), BrightnessModel(4.0)], B3, device="cpu")
+    monkeypatch.setattr(followup, "reference_system", lambda weights, device, batch: stand_in)
+    halves = benchmark.load(tiny[0])
+    monkeypatch.setattr(followup.benchmark, "load_test", lambda: halves["selection"])  # stands in for the packaged test benchmark
+    monkeypatch.setattr(followup.benchmark, "load", lambda path=None: pytest.fail("the development benchmark is not read with --test"))
+    out = tmp_path / "dense_test.npz"
+    assert followup.main(["logits", "--test", "--images", str(tiny[1]), "--out", str(out)]) == 0
+    scored = [s for s in halves["selection"] if s.kind != "exam"]
+    with np.load(out) as stored:
+        assert set(stored.files) == {s.id for s in scored} and all(stored[s.id].shape == (len(s), 2, 5) for s in scored)
+    with pytest.raises(SystemExit, match="--test reads the packaged test benchmark"):
+        followup.main(["logits", "--test", "--benchmark", str(tiny[0]), "--images", str(tiny[1]), "--out", str(tmp_path / "no.npz")])
+
+
+def test_the_code_names_the_dense_file_and_the_read_once_they_exist():
+    """The digest of the forward passes' output is committed before the read (docs/followup/dense_test_check.json), and
+    once docs/followup/confirmation.json exists the command must be held to it."""
+    folder = Path(__file__).parents[1] / "docs" / "followup"
+    check, read = folder / "dense_test_check.json", folder / "confirmation.json"
+    if check.is_file():
+        stage = json.loads(check.read_text())
+        assert stage["sha256"] == {"logits": comparison.TEST_LOGITS_SHA256, "dense": followup.TEST_DENSE_SHA256}
+        assert stage["labels_read"] is False and stage["largest_difference"] <= followup.CLOSE
+    else:
+        assert followup.TEST_DENSE_SHA256 is None and not read.is_file()
+    if read.is_file():
+        assert followup.CONFIRMATION_SHA256 == comparison.file_sha256(read)
+        assert json.loads(read.read_text())["sha256"]["dense"] == followup.TEST_DENSE_SHA256
+    else:
+        assert followup.CONFIRMATION_SHA256 is None
+
+
+def test_an_output_appears_whole_or_not_at_all(tmp_path, monkeypatch):
+    out = tmp_path / "deep" / "result.json"
+    comparison._write({"a": np.float64(1.5), "b": [np.int64(2), float("nan")]}, out)
+    assert json.loads(out.read_text()) == {"a": 1.5, "b": [2, None]} and [p.name for p in out.parent.iterdir()] == ["result.json"]
+    with pytest.raises(FileExistsError):  # never replaces a file
+        comparison._write({"a": 2}, out)
+    assert json.loads(out.read_text())["a"] == 1.5 and [p.name for p in out.parent.iterdir()] == ["result.json"]
+    # a stop while the text is being written leaves no output behind, so the step is not taken for done
+    real_fsync = comparison.os.fsync
+    monkeypatch.setattr(comparison.os, "fsync", lambda handle: (_ for _ in ()).throw(OSError("the disk is gone")))
+    with pytest.raises(OSError, match="the disk is gone"):
+        comparison._write({"a": 3}, tmp_path / "stopped.json")
+    assert not (tmp_path / "stopped.json").exists()
+    monkeypatch.setattr(comparison.os, "fsync", real_fsync)
+    # a file system without hard links: the same promise by another way
+    monkeypatch.setattr(comparison.os, "link", lambda source, target: (_ for _ in ()).throw(OSError("no hard links here")))
+    comparison._write({"a": 4}, tmp_path / "plain.json")
+    assert json.loads((tmp_path / "plain.json").read_text()) == {"a": 4} and not list(tmp_path.glob("*.partial"))
+    with pytest.raises(FileExistsError):
+        comparison._write({"a": 5}, tmp_path / "plain.json")
+    assert json.loads((tmp_path / "plain.json").read_text()) == {"a": 4} and not list(tmp_path.glob("*.partial"))

@@ -4,6 +4,14 @@ Notable changes to this project. The format follows [Keep a Changelog](https://k
 
 ## [Unreleased]
 
+### Added
+
+- `docs/FOLLOWUP.md`, section 9: the plan of one read of the test benchmark that would confirm the denser read-out, written before any of its numbers. `python -m echoview.evaluation.followup logits --test` writes the published models' outputs for every sample of the test benchmark, and `confirm` makes the read: it holds the published system's rows to the comparison's first read, scores the two released steps, and can afterwards only reproduce its own output.
+
+### Changed
+
+- The outputs of `echoview.evaluation.comparison` and `echoview.evaluation.followup` are written whole or not at all, so a run that is stopped while it writes leaves no file behind.
+
 ## [1.3.0] - 2026-11-24
 
 ### Added

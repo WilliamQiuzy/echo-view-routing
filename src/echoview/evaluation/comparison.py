@@ -19,6 +19,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import sys
 from collections.abc import Callable, Mapping
 from pathlib import Path
@@ -651,10 +652,25 @@ def _clean(value: object) -> object:
 
 
 def _write(result: dict, out: Path) -> None:
-    text = json.dumps(_clean(result), indent=1, allow_nan=False)  # built whole before the file exists
+    """The result as a JSON file that appears whole or not at all, and never in the place of an existing file."""
+    text = json.dumps(_clean(result), indent=1, allow_nan=False)  # built whole before any file exists
     out.parent.mkdir(parents=True, exist_ok=True)
-    with out.open("x") as handle:  # never replaces a file
-        handle.write(text + "\n")
+    partial = out.with_name(out.name + ".partial")
+    try:
+        with partial.open("w") as handle:
+            handle.write(text + "\n")
+            handle.flush()
+            os.fsync(handle.fileno())
+        try:
+            os.link(partial, out)  # fails where the output exists: a file is never replaced
+        except FileExistsError:
+            raise
+        except OSError:  # a file system without hard links
+            if out.exists():
+                raise FileExistsError(str(out)) from None
+            partial.replace(out)
+    finally:
+        partial.unlink(missing_ok=True)
 
 
 def inventory(args: argparse.Namespace) -> dict:
