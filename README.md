@@ -2,6 +2,7 @@
 
 [![CI](https://github.com/WilliamQiuzy/echo-view-routing/actions/workflows/ci.yml/badge.svg)](https://github.com/WilliamQiuzy/echo-view-routing/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/WilliamQiuzy/echo-view-routing)](https://github.com/WilliamQiuzy/echo-view-routing/releases)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24485965.svg)](https://doi.org/10.5281/zenodo.24485965)
 [![License: MIT](https://img.shields.io/badge/code-MIT-blue.svg)](LICENSE)
 [![Weights on the Hugging Face Hub](https://img.shields.io/badge/weights-Hugging%20Face-yellow.svg)](https://huggingface.co/WilliamQiu123/echo-view-routing)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue.svg)](pyproject.toml)
@@ -209,3 +210,5 @@ Stage 3 needs a GPU with 32 GB of memory. On a machine that can be switched off,
 ## Citation
 
 A paper is in preparation. Until it is out, please cite this repository. GitHub's "Cite this repository" button reads [CITATION.cff](CITATION.cff).
+
+Every release from 1.2.1 on is archived on Zenodo. The DOI [10.5281/zenodo.24485965](https://doi.org/10.5281/zenodo.24485965) stands for all versions and leads to the newest one. Each release also has a DOI of its own on that page; cite it when the exact version matters.

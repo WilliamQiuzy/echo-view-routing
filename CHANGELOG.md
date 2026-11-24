@@ -2,6 +2,12 @@
 
 Notable changes to this project. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the versions follow [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- Every release from 1.2.1 on is archived on Zenodo. The README and `CITATION.cff` carry the DOI that stands for all versions, 10.5281/zenodo.24485965.
+
 ## [1.2.1] - 2026-11-23
 
 ### Added
