@@ -2,7 +2,7 @@
 
 **Status: done. The test benchmark was read once, on 2026-11-24 (section 10).** With the project's decoder, EchoViewCLIP is not shown to differ from EchoRouter on streams; EchoRouter is ahead of EchoPrime's classifier; for STFM and ASFormer the question could not be answered. Sections 1 to 8 are the plan. They were written, reviewed and committed before either stage, as commit `26571f5`. Stage A touches no test data: it lists the stored outputs, chooses decoder settings on development data and tries the code on the development benchmark. Its results go into section 9 and are committed. Stage B is one read of the test benchmark. Its results are in section 10.
 
-**Addendum, 2026-11-24: plan.** Section 11 is a plan to answer the two comparisons that section 10 left open, for STFM and for ASFormer. It was committed before any of its numbers existed.
+**Addendum, 2026-11-24: its stage on development data is done; the test benchmark has not been read for it yet.** Section 11 is a plan to answer the two comparisons that section 10 left open, for STFM and for ASFormer. It was committed before any of its numbers existed, as commit `c1e6252`.
 
 Words used here: a **piece** is a run of samples of the reference that come from one recording. A **segment** is a run of samples to which a system gives one view. A **cut** is a sample whose view, as a system gives it, differs from the view of the sample before it. A **stream** is several recordings joined into one sequence.
 
@@ -388,7 +388,7 @@ Bold marks the best value among the rows as published, with the project's decode
 
 ## 11. Addendum: the two comparisons that were not answered
 
-**Status: plan, written on 2026-11-24 after section 10.** Nothing below has been scored yet.
+**Status: the plan below was written on 2026-11-24 after section 10 and committed as `c1e6252`. Its stage on development data is done ("The addendum on development data", below). The second read has not been made yet.**
 
 ### Why
 
@@ -427,3 +427,45 @@ Rule 9 of section 7 said that stage B runs once. This is a second read. It is ma
 - **STFM.** Open. Its outputs are read every 0.5 s like EchoViewCLIP's, and the decoder added 0.017 to EchoViewCLIP.
 - **The limits of section 8 stand.** In particular, STFM was stopped early on the validation recordings that form the calibration half, so a setting chosen there is chosen on data it has partly seen.
 - **A second look.** The decision to run this addendum was made with the first result known. It adds two rows and cannot change the others.
+
+### The addendum on development data
+
+**Done on 2026-11-24 with the code of commit `a98fccc`. No test output was scored.** The outputs are in [`comparison/addendum/`](comparison/addendum/): `inventory_dev.json`, `settings.json`, `selection.json` and the two reports of the check of the chain.
+
+**The forward passes and the check of the chain.**
+
+- STFM ran from 06:49 to 06:58 UTC and ASFormer until 07:00, each on the 1,013 development sequences. The weight files have the SHA-256 named above.
+- **STFM.** The new outputs for the 521 single recordings equal the stored ones of October: the largest difference in any probability is 0.
+- **ASFormer.** The same for the 521 single recordings, and for the 360 streams of the older validation banks (240 pair streams, 120 multi streams): the largest difference is 0.
+
+| Stored outputs, development folders | Files | Calibration half | Selection half | Rows sum to | Digests (first 16) |
+|---|---|---|---|---|---|
+| STFM | 1,013 | 472 of 472 | 541 of 541 | 0.25 to 0.98 | calibration `063fa73a3fbf431f`, selection `72f4aafc8b726c36` |
+| ASFormer | 1,013 | 472 of 472 | 541 of 541 | 1.00 to 1.00 | calibration `1633898fc97caf98`, selection `0095a570e71321aa` |
+
+**The decoder settings, chosen on the calibration half.**
+
+| System | Feasible settings of 40 | Half window | Quantile | Threshold | Calibration half: segment F1 at 50% | Macro-F1 of recordings | Recall of the view changes |
+|---|---|---|---|---|---|---|---|
+| STFM | 0 (floors dropped) | 9 | 0.95 | 0.0071 | 0.948 | 0.978 | 0.907 |
+| ASFormer | 3 | 7 | 0.999 | 0.4410 | 0.956 | 0.983 | 0.967 |
+
+- **STFM.** No setting of the grid meets the two floors: its macro-F1 on single recordings stays below 0.980 and its recall of the view changes below 0.95. By section 4 the floors are dropped for it, and the setting with the highest segment F1 at 50% on the calibration half's multi streams is taken: half window 9 at the quantile 0.95. This is also the grid position that the rule shows when nothing is feasible; the two coincide here, and it was checked that this setting is the one with the highest segment F1.
+- **ASFormer.** Three settings meet the floors, and the rule takes half window 7 at the quantile 0.999.
+- **The settings of section 9 came out again.** The settings of the ensemble, of the three seeds and of EchoViewCLIP are the same, number for number.
+
+**The selection half, as a trial.** Development numbers, with intervals over streams. The nine rows of the first trial (section 9) came out again exactly; the command compared them with `comparison/selection.json`.
+
+| Row | Segment F1 at 50%, multi | Segment F1 at 50%, pairs | Edit | Piece midpoint | Wrong samples | Cut precision | Cut recall | Cut distance (s) | Recordings: accuracy | Macro-F1 | A5C recall |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| EchoRouter | 0.959 | 0.971 | 96.5 | 97.8% | 6.1% | 0.959 | 0.976 | 0.15 | 98.9% | 0.979 | 100.0% |
+| STFM | 0.890 | 0.976 | 91.2 | 93.7% | 10.8% | 0.841 | 0.911 | 0.24 | 98.2% | 0.953 | 72.7% |
+| ASFormer | 0.890 | 0.933 | 90.9 | 94.7% | 6.0% | 0.860 | 0.963 | 0.01 | 97.5% | 0.942 | 72.7% |
+| STFM + decoder | 0.887 | 0.978 | 91.9 | 93.2% | 11.7% | 0.844 | 0.877 | 0.27 | 98.2% | 0.953 | 72.7% |
+| ASFormer + decoder | 0.919 | 0.983 | 92.5 | 94.1% | 6.5% | 0.960 | 0.942 | 0.01 | 97.5% | 0.943 | 72.7% |
+| STFM + released numbers | 0.103 | 0.756 | 27.5 | 45.5% | 50.7% | – | 0.000 | – | 98.6% | 0.966 | 81.8% |
+| ASFormer + released numbers | 0.915 | 0.960 | 93.0 | 94.9% | 5.7% | 0.918 | 0.963 | 0.02 | 97.2% | 0.933 | 72.7% |
+
+- **The two named comparisons on development data.** EchoRouter minus STFM with the decoder is 0.072 [0.040, 0.106]; the 98.75% interval is [0.031, 0.116]. EchoRouter minus ASFormer with the decoder is 0.041 [0.012, 0.072]; the 98.75% interval is [0.004, 0.079]. Seeds 1 and 2 alone are not shown to differ from ASFormer with the decoder (0.029 and 0.030).
+- **What the decoder adds.** −0.003 [−0.022, 0.016] to STFM and 0.029 [0.003, 0.059] to ASFormer, on multi streams.
+- **How much this says.** Little about the test benchmark. Section 10 showed that EchoRouter's development numbers are optimistic: it lost 0.05 from the selection half to the test benchmark, and EchoViewCLIP with the decoder lost nothing.
