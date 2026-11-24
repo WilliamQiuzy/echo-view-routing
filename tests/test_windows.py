@@ -32,3 +32,20 @@ def test_an_empty_sequence_has_no_plan():
     with pytest.raises(ValueError, match="empty"):
         windows.window_plan(0)
     assert windows.window_centres(0).size == 0
+
+
+def test_another_step_asks_more_often_for_the_same_windows():
+    for n in (1, 7, 16, 40, 103):
+        dense, frames, slots = windows.window_plan(n, 1)
+        assert dense.tolist() == list(range(n))  # an output for every sample
+        for stride in (2, 5):
+            centres, sparse_frames, sparse_slots = windows.window_plan(n, stride)
+            assert np.array_equal(centres, windows.window_centres(n, stride))
+            assert np.array_equal(sparse_frames, frames[centres]) and np.array_equal(sparse_slots, slots[centres])
+    for n in (1, 16, 103):
+        assert all(np.array_equal(a, b) for a, b in zip(windows.window_plan(n), windows.window_plan(n, windows.STRIDE)))
+
+
+def test_a_step_below_one_sample_is_refused():
+    with pytest.raises(ValueError, match="at least 1"):
+        windows.window_plan(10, 0)

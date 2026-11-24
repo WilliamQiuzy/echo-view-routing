@@ -2,8 +2,8 @@
 import numpy as np
 import pytest
 
-from echoview import Ensemble, weights
-from echoview.pipeline import softmax
+from echoview import Ensemble, weights, windows
+from echoview.pipeline import probabilities_from_logits, softmax
 from echoview.reference import B3
 
 from .conftest import BrightnessModel, flat_frames
@@ -103,3 +103,16 @@ def test_a_segmentation_built_without_the_uncertain_mask_derives_it():
     plain = Segmentation(labels=np.array([0, 0, 2, 2]), probabilities=np.zeros((4, 5)), segments=())
     assert plain.uncertain.dtype == bool and not plain.uncertain.any()
     assert Segmentation(np.array([0, -1, -1, 2]), np.zeros((4, 5)), ()).uncertain.tolist() == [False, True, True, False]
+
+
+def test_a_denser_read_out_gives_every_sample_its_own_output():
+    ensemble = system(0.0, 5.0)
+    frames = flat_frames([0] * 13 + [200] * 12)
+    dense = ensemble.window_logits(frames, stride=1)
+    assert dense.shape == (25, 2, 5)
+    np.testing.assert_allclose(dense[windows.window_centres(25)], ensemble.window_logits(frames), atol=1e-5)  # the published outputs are among them
+    prob = probabilities_from_logits(dense, 25, stride=1)
+    assert prob.argmax(1).tolist() == [0] * 13 + [4] * 12  # exact to the sample, where the 0.5 s grid is not
+    assert ensemble.sample_probabilities(frames).argmax(1).tolist() != prob.argmax(1).tolist()
+    with pytest.raises(ValueError, match="has 5 windows, not 25"):
+        probabilities_from_logits(dense, 25)

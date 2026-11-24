@@ -568,6 +568,32 @@ def compare(sequences: tuple[Sequence, ...], rows: list[Row], draws: int = DRAWS
     return result
 
 
+def reproduced(earlier: Mapping, result: Mapping) -> dict:
+    """Every number of an earlier output of `score` must come out again in `result`, which may hold more rows.
+
+    A later read that adds a row (the plan's addendum) is held to this: the rows, the differences from EchoRouter,
+    the named comparisons, the seeds and the decoder on EchoRouter of the earlier output are compared as written,
+    number by number. A comparison that had no row with the decoder then is held to its published gap. Which rows
+    are best is taken again and is not compared. Stops when anything differs."""
+    new = json.loads(json.dumps(_clean(result), allow_nan=False))
+    problems = [key for key in ("benchmark", "sequences", "draws", "seed", "published_numbers_reproduced", "decoder_on_echorouter")
+                if earlier.get(key) != new.get(key)]
+    for part in ("rows", "differences_from_echorouter"):
+        problems += [f"{part}: {name}" for name, numbers in earlier[part].items() if new[part].get(name) != numbers]
+    listed = [("named_comparisons", earlier["named_comparisons"], new["named_comparisons"])]
+    listed += [(f"seeds: {name}", entries, new["seeds"].get(name, [])) for name, entries in earlier["seeds"].items()]
+    for label, before, after in listed:
+        now = {entry["system"]: entry for entry in after}
+        for entry in before:
+            found = now.get(entry["system"])
+            same = found is not None and (found == entry if entry["row_with_decoder"] else found["published_gap"] == entry["published_gap"])
+            if not same:
+                problems.append(f"{label}: {entry['system']}")
+    if problems:
+        raise SystemExit("the earlier output does not come out again: " + "; ".join(problems[:10]))
+    return {"rows": len(earlier["rows"]), "new_rows": sorted(set(new["rows"]) - set(earlier["rows"]))}
+
+
 # ----------------------------------------------------------------------------------------------------- commands
 def _stores(given: list[str]) -> dict[str, Path]:
     stores = {}
@@ -698,8 +724,11 @@ def score(args: argparse.Namespace) -> dict:
         if round(f1, 4) != PUBLISHED_SELECTION_F1 or args.benchmark != "selection":
             raise SystemExit(f"{args.benchmark}: only the selection half is scored here, and its logits must give {PUBLISHED_SELECTION_F1}; got {f1:.4f}")
         checked = {ROUTER: {"segment_f1_50_multi": float(f1)}}
-    result = compare(sequences, rows, args.draws, SEED)
-    return {"benchmark": args.benchmark, "sequences": len(sequences), "sha256": digests, "settings": chosen, "published_numbers_reproduced": checked, **result}
+    result = {"benchmark": args.benchmark, "sequences": len(sequences), "sha256": digests, "settings": chosen, "published_numbers_reproduced": checked,
+              **compare(sequences, rows, args.draws, SEED)}
+    if args.earlier:
+        result["earlier_output"] = {"sha256": file_sha256(args.earlier), **reproduced(json.loads(args.earlier.read_text()), result)}
+    return result
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -716,6 +745,8 @@ def main(argv: list[str] | None = None) -> int:
             p.add_argument("--benchmark", choices=("test", "selection"), required=True)
             p.add_argument("--settings", type=Path, required=True, help="the output of the settings command")
             p.add_argument("--draws", type=int, default=DRAWS)
+            p.add_argument("--earlier", type=Path, help="an earlier output of this command for the same benchmark: every number of it must "
+                                                        "come out again, or nothing is written")
         p.set_defaults(run=run)
     args = top.parse_args(argv)
     if args.out.exists():

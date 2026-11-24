@@ -430,6 +430,21 @@ def test_the_commands_choose_score_and_write_once(tmp_path, monkeypatch, capsys)
     assert out.read_bytes() == before
     with pytest.raises(SystemExit, match="NAME=FOLDER"):
         comparison.main(["inventory", "--images", str(tmp_path), "--store", "Other=x", "--out", str(tmp_path / "x.json")])
+    # a later read that adds a row: the settings now hold ASFormer too, and every number of the first read must come out again
+    three = [*development, "--store", f"ASFormer={tmp_path / 'ASFormer'}"]
+    assert comparison.main(["settings", *common, *three, "--out", str(tmp_path / "settings3.json")]) == 0
+    later = [*score(chosen_file="settings3.json")[:-1], str(tmp_path / "later.json"), "--earlier"]
+    assert comparison.main([*later, str(out)]) == 0
+    second = json.loads((tmp_path / "later.json").read_text())
+    assert second["earlier_output"] == {"sha256": comparison.file_sha256(out), "rows": len(result["rows"]), "new_rows": ["ASFormer + decoder"]}
+    assert {e["system"]: e["word"] for e in second["named_comparisons"]}["ASFormer"] != "not answered"
+    assert second["rows"][ROUTER] == result["rows"][ROUTER]
+    changed = json.loads(out.read_text())
+    changed["rows"]["STFM"]["multi"]["segment_f1_50"]["value"] += 1e-9
+    (tmp_path / "changed.json").write_text(json.dumps(changed))
+    with pytest.raises(SystemExit, match="does not come out again: rows: STFM"):
+        comparison.main([*later[:-2], str(tmp_path / "never.json"), "--earlier", str(tmp_path / "changed.json")])
+    assert not (tmp_path / "never.json").exists()
     # the selection half, as stage A tries the code: no examinations there, and the logits must give the published number
     trial = ["score", "--benchmark", "selection", *common, *development, "--settings", str(tmp_path / "settings.json"), "--draws", "100"]
     with pytest.raises(SystemExit, match=re.escape("must give 0.9594")):
@@ -443,3 +458,29 @@ def test_the_commands_choose_score_and_write_once(tmp_path, monkeypatch, capsys)
     monkeypatch.setattr(comparison, "B3", {"half_window": 15, "threshold": 0.5, "nms_radius": 5})
     with pytest.raises(SystemExit, match="do not give the released decoder setting"):
         comparison.main(["settings", *common, "--out", str(tmp_path / "other.json")])
+
+
+def test_an_earlier_output_is_compared_number_by_number():
+    seqs, rng = sequences(), np.random.default_rng(8)
+    logits, stores = logits_from(seqs, rng), stores_for(seqs, rng)
+    chosen = {"seeds": {}, "systems": {}}
+    first = {"benchmark": "test", "sequences": len(seqs), "published_numbers_reproduced": {},
+             **comparison.compare(seqs, comparison.build_rows(seqs, logits, stores, chosen), draws=50, seed=3)}
+    earlier = json.loads(json.dumps(comparison._clean(first)))
+    with_setting = {"seeds": {}, "systems": {"EchoViewCLIP": {"params": {"half_window": 5, "threshold": 0.05, "nms_radius": 5}}}}
+    more = {"benchmark": "test", "sequences": len(seqs), "published_numbers_reproduced": {},
+            **comparison.compare(seqs, comparison.build_rows(seqs, logits, stores, with_setting), draws=50, seed=3)}
+    assert comparison.reproduced(earlier, more) == {"rows": len(earlier["rows"]), "new_rows": ["EchoViewCLIP + decoder"]}
+    assert comparison.reproduced(earlier, first)["new_rows"] == []
+    other_draws = {**more, **comparison.compare(seqs, comparison.build_rows(seqs, logits, stores, with_setting), draws=50, seed=4)}
+    with pytest.raises(SystemExit, match="does not come out again: seed"):
+        comparison.reproduced(earlier, other_draws)
+    gap = json.loads(json.dumps(earlier))
+    entry = next(e for e in gap["named_comparisons"] if e["system"] == "EchoViewCLIP")
+    assert entry["row_with_decoder"] is None  # the earlier output had no row with the decoder: only its published gap is held to
+    entry["published_gap"]["value"] += 0.5
+    with pytest.raises(SystemExit, match="named_comparisons: EchoViewCLIP"):
+        comparison.reproduced(gap, more)
+    fewer = {**more, "rows": {k: v for k, v in more["rows"].items() if k != "EchoPrime per frame"}}
+    with pytest.raises(SystemExit, match="rows: EchoPrime per frame"):
+        comparison.reproduced(earlier, fewer)

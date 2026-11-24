@@ -16,7 +16,7 @@ import torch
 from . import decoder, uncertain, weights
 from .model import CLASSES, WindowModel, load_model, marker_planes, normalise
 from .reference import B3, SEEDS, VERSION
-from .windows import nearest_centre, window_plan
+from .windows import STRIDE, nearest_centre, window_plan
 
 HZ = 10.0
 
@@ -57,12 +57,13 @@ def softmax(logits: np.ndarray) -> np.ndarray:
     return prob / prob.sum(-1, keepdims=True)
 
 
-def probabilities_from_logits(logits: np.ndarray, n_samples: int) -> np.ndarray:
+def probabilities_from_logits(logits: np.ndarray, n_samples: int, stride: int = STRIDE) -> np.ndarray:
     """Window logits (windows, models, 5) of a stream of `n_samples` -> per-sample probabilities (samples, 5) float64.
 
     Every sample takes the softmax of the window whose centre is nearest; the models are averaged per sample.
+    `stride` is the step at which the logits were read (window_logits), 5 samples in the published system.
     """
-    centres, _, _ = window_plan(n_samples)
+    centres, _, _ = window_plan(n_samples, stride)
     if len(logits) != len(centres):
         raise ValueError(f"a stream of {n_samples} samples has {len(centres)} windows, not {len(logits)}")
     window_prob = torch.softmax(torch.from_numpy(np.asarray(logits, np.float32)), -1).numpy()
@@ -125,12 +126,16 @@ class Ensemble:
         return f"custom ensemble of {len(self.models)} model(s)"
 
     @torch.no_grad()
-    def window_logits(self, frames: np.ndarray) -> np.ndarray:
-        """frames (n, 224, 224, 3) uint8 on the 10 Hz grid -> logits (windows, models, 5) float32."""
+    def window_logits(self, frames: np.ndarray, stride: int = STRIDE) -> np.ndarray:
+        """frames (n, 224, 224, 3) uint8 on the 10 Hz grid -> logits (windows, models, 5) float32.
+
+        One window every `stride` samples. The published system, and every other method of this class, reads every
+        5 samples; another step is for studies of the read-out (docs/FOLLOWUP.md).
+        """
         frames = np.asarray(frames)
         if frames.ndim != 4 or frames.shape[1:] != (224, 224, 3) or frames.dtype != np.uint8:
             raise ValueError(f"expected uint8 frames (n, 224, 224, 3), got {frames.shape} {frames.dtype}")
-        _, windows, slots = window_plan(len(frames))
+        _, windows, slots = window_plan(len(frames), stride)
         pixels = torch.from_numpy(frames).to(self.device)
         index = torch.from_numpy(windows).to(self.device)
         marks = torch.from_numpy(slots).to(self.device)

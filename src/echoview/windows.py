@@ -1,4 +1,8 @@
-"""Windows over a 10 Hz sample sequence: one prediction every 5 samples (0.5 s), each read from 16 samples."""
+"""Windows over a 10 Hz sample sequence: one prediction every 5 samples (0.5 s), each read from 16 samples.
+
+The published system reads every 5 samples. The functions take another step (`stride`) for studies of a denser
+read-out; the window shown for a centre does not depend on it.
+"""
 from __future__ import annotations
 
 import numpy as np
@@ -24,11 +28,13 @@ def window_frames(centre: int, n_samples: int, size: int = SIZE) -> np.ndarray:
     return samples[np.linspace(0, len(samples) - 1, size).round().astype(int)]
 
 
-def window_plan(n_samples: int) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+def window_plan(n_samples: int, stride: int = STRIDE) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     """centres (W,), sample indices (W, 16) and the marker position (W,) of every window of a sequence."""
     if n_samples < 1:
         raise ValueError("an empty sequence has no prediction windows")
-    centres = window_centres(n_samples)
+    if stride < 1:
+        raise ValueError("the step between two predictions is at least 1 sample")
+    centres = window_centres(n_samples, stride)
     windows = np.stack([window_frames(int(c), n_samples) for c in centres])
     slots = []
     for centre, window in zip(centres, windows):
