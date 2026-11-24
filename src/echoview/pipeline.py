@@ -173,9 +173,9 @@ class Ensemble:
         return Classification(view=CLASSES[int(mean.argmax())], probability=float(mean.max()), probabilities=mean, by_seed=by_seed,
                               seeds_agree=bool(winners.min() == winners.max()), n_windows=len(prob))
 
-    def sample_probabilities(self, frames: np.ndarray, stride: int = STRIDE) -> np.ndarray:
+    def sample_probabilities(self, frames: np.ndarray) -> np.ndarray:
         """One stream -> the ensemble's probabilities for every 0.1 s sample, (samples, 5) float64."""
-        return probabilities_from_logits(self.window_logits(frames, stride), len(frames), stride)
+        return probabilities_from_logits(self.window_logits(frames), len(frames))
 
     def segment(self, frames: np.ndarray, rule: uncertain.Rule | None = None, stride: int = STRIDE) -> Segmentation:
         """One stream (a long recording, or several recordings joined) -> a view for every 0.1 s and the pieces.

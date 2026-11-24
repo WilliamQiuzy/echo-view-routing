@@ -116,17 +116,36 @@ def test_segment_reads_more_often_when_asked_and_says_that_this_is_not_the_publi
     assert {r["view_classifier_version"] for r in rows_of(pieces)} == {Ensemble.from_models([BrightnessModel()], B3).version}
     said = capsys.readouterr().err
     assert "not the published system" in said and "not confirmed on the test benchmark" in said and "docs/FOLLOWUP.md" in said
-    assert cli.main(["segment", str(a), str(b), "--fps", "10", "--read-every", "0.2"]) == 0
-    with pytest.raises(SystemExit, match="--uncertain was studied with the published read-out"):
-        cli.main(["segment", str(a), str(b), "--fps", "10", "--read-every", "0.1", "--uncertain"])
+    fifth = tmp_path / "fifth.csv"
+    assert cli.main(["segment", str(a), str(b), "--fps", "10", "--read-every", "0.2", "--out", str(fifth)]) == 0
+    rows = rows_of(fifth)
+    assert [(r["start_s"], r["end_s"]) for r in rows] == [("0.0", "4.3"), ("4.3", "8.0")]  # sample 43 has an output of its own every 0.2 s
+    assert {r["view_classifier_version"] for r in rows} == {f"{Ensemble.from_models([BrightnessModel()], B3).version}, read every 0.2 s"}
+    said = capsys.readouterr().err
+    assert "a read-out every 0.2 s is not the published system" in said and "2.5 times as many windows" in said
     with pytest.raises(SystemExit):
         cli.main(["segment", str(a), str(b), "--fps", "10", "--read-every", "0.3"])
 
 
-def test_a_denser_read_out_needs_the_published_system(tmp_path):
+@pytest.mark.parametrize("every", ["0.2", "0.1"])
+def test_a_denser_read_out_that_cannot_be_given_stops_before_any_work(tmp_path, monkeypatch, every):
     a, b = frame_folder(tmp_path / "a", 200, 40), frame_folder(tmp_path / "b", 50, 40)
+    command = ["segment", str(a), str(b), "--fps", "10", "--read-every", every]
     with pytest.raises(SystemExit, match="published system"):  # the stand-in model of these tests is not it
-        cli.main(["segment", str(a), str(b), "--fps", "10", "--read-every", "0.1"])
+        cli.main(command)
+
+    def never(*args, **kwargs):
+        raise AssertionError("an input was read or a model was loaded for a command that cannot run")
+
+    monkeypatch.setattr(cli, "build", never)
+    monkeypatch.setattr(cli.fr, "read_recording", never)
+    with pytest.raises(SystemExit, match="--uncertain was studied with the published read-out"):
+        cli.main([*command, "--uncertain"])
+    for seeds in ("0", "0,1", "2,1,0"):
+        with pytest.raises(SystemExit, match="published system: leave --seeds at 0,1,2"):
+            cli.main([*command, "--seeds", seeds])
+    with pytest.raises(AssertionError):  # with the published read-out the same command goes on to its work
+        cli.main(["segment", str(a), str(b), "--fps", "10", "--seeds", "0"])
 
 
 def test_segment_builds_no_stream_when_one_input_cannot_be_read(tmp_path):

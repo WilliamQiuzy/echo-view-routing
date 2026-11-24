@@ -3,11 +3,12 @@ from __future__ import annotations
 
 import json
 import re
+from pathlib import Path
 
 import numpy as np
 import pytest
 
-from echoview import Ensemble, windows
+from echoview import Ensemble, reference, windows
 from echoview.evaluation import benchmark, comparison, followup, metrics, scorecard
 from echoview.evaluation.comparison import ROUTER
 from echoview.model import CLASSES
@@ -392,3 +393,15 @@ def test_only_the_published_system_is_studied(monkeypatch):
     monkeypatch.setattr(followup, "Ensemble", lambda *args, **kwargs: Other())
     with pytest.raises(SystemExit, match="not the published system"):
         followup.reference_system(None, "cpu", 4)
+
+
+def test_the_option_decodes_with_the_settings_the_study_chose():
+    """`echoview segment --read-every` (reference.DENSER_READ_OUT) against the published output of the study."""
+    study = json.loads((Path(__file__).parents[1] / "docs" / "followup" / "followup.json").read_text())
+    for arm, stride in followup.DENSER.items():
+        chosen = study["q1"]["arms"][arm]
+        assert chosen["word"] == "candidate" and chosen["setting"]["status"] == "feasible"
+        assert reference.DENSER_READ_OUT[stride] == {key: chosen["setting"]["params"][key] for key in ("half_window", "threshold", "nms_radius")}
+    assert set(reference.DENSER_READ_OUT) == set(followup.DENSER.values()) == {1, 2}
+    published = study["q1"]["arms"]["every 0.5 s"]["setting"]["params"]
+    assert published["half_window"] == B3["half_window"] and abs(published["threshold"] - B3["threshold"]) < 1e-3

@@ -132,8 +132,11 @@ def test_a_denser_read_out_cuts_nearer_and_says_what_it_is(monkeypatch):
     assert tenth.labels.tolist() == [0] * 44 + [2] * 36  # an output for every sample: the cut is at 4.4 s
     assert [(start, end, view) for start, end, view, _ in tenth.segments] == [(0.0, 4.4, "PLAX"), (4.4, 8.0, "A4C")]
     assert fifth.labels.tolist() == [0] * 45 + [2] * 35  # sample 44 lies midway between two outputs and takes the earlier one
+    odd = flat_frames([0] * 43 + [100] * 37)  # a change at an odd sample has an output of its own every 0.2 s, and none every 0.5 s
+    assert ensemble.segment(odd, stride=2).labels.tolist() == [0] * 43 + [2] * 37 and ensemble.segment(odd).labels.tolist() == [0] * 45 + [2] * 35
     assert tenth.probabilities.shape == (80, 5) and not tenth.uncertain.any()
-    np.testing.assert_array_equal(ensemble.sample_probabilities(frames, stride=1), tenth.probabilities)
+    np.testing.assert_array_equal(probabilities_from_logits(ensemble.window_logits(frames, 1), 80, 1), tenth.probabilities)
+    np.testing.assert_array_equal(ensemble.sample_probabilities(frames), coarse.probabilities)  # this method is the published read-out
     assert ensemble.decoder_setting() == B3 and ensemble.decoder_setting(5) == B3
     assert ensemble.decoder_setting(2) == reference.DENSER_READ_OUT[2] and ensemble.decoder_setting(1) == reference.DENSER_READ_OUT[1]
     assert ensemble.version_at(5) == ensemble.version
@@ -146,17 +149,24 @@ def test_the_decoder_setting_of_a_denser_read_out_is_the_one_it_decodes_with(mon
     monkeypatch.setitem(reference.DENSER_READ_OUT, 1, {"half_window": 5, "threshold": 10.0, "nms_radius": 5})  # no score reaches this
     assert ensemble.segment(frames, stride=1).labels.tolist() == [0] * 60  # so nothing is cut, and the piece takes the larger mean
     assert len(ensemble.segment(frames, stride=2).segments) == 2 and len(ensemble.segment(frames).segments) == 2
+    monkeypatch.setitem(reference.DENSER_READ_OUT, 2, {"half_window": 5, "threshold": 10.0, "nms_radius": 5})
+    assert len(ensemble.segment(frames, stride=2).segments) == 1 and len(ensemble.segment(frames).segments) == 2  # each step has its own
 
 
 def test_a_denser_read_out_is_for_the_published_system_without_the_uncertain_rule(monkeypatch):
     frames = flat_frames([0] * 40 + [100] * 40)
-    with pytest.raises(ValueError, match="published system"):
-        system(0.0).segment(frames, stride=1)
+    for stride in (1, 2):
+        with pytest.raises(ValueError, match="published system"):
+            system(0.0).segment(frames, stride=stride)
     assert len(system(0.0).segment(frames, stride=5).segments) == 2  # the published step needs no such check
     ensemble = published(monkeypatch, 0.0)
     with pytest.raises(ValueError, match="was not studied"):
         ensemble.segment(frames, stride=3)
-    with pytest.raises(ValueError, match="uncertain rule was studied with the published read-out"):
-        ensemble.segment(frames, uncertain.released(), stride=1)
+    for stride in (1, 2):
+        for rule in (uncertain.released(), uncertain.Rule(seeds=True), uncertain.Rule(margin=0.1)):
+            with pytest.raises(ValueError, match="uncertain rule was studied with the published read-out"):
+                ensemble.segment(frames, rule, stride=stride)
+    with pytest.raises(TypeError):
+        ensemble.sample_probabilities(frames, stride=1)  # a denser read-out comes from segment, which checks and names it
     assert ensemble.segment(frames, uncertain.OFF, stride=1).labels.tolist() == [0] * 40 + [2] * 40
     assert ensemble.segment(frames, uncertain.released()).labels.shape == (80,)

@@ -128,6 +128,12 @@ def classify(args: argparse.Namespace) -> int:
 
 # ------------------------------------------------------------------------------------------------- segment
 def segment(args: argparse.Namespace) -> int:
+    stride = READ_EVERY[args.read_every]
+    if stride != STRIDE:  # what cannot be given is refused before an input is read or a model is loaded
+        if args.uncertain:
+            raise SystemExit("--uncertain was studied with the published read-out only; leave --read-every at 0.5 with it")
+        if parse_seeds(args.seeds) != SEEDS:
+            raise SystemExit(f"--read-every has a decoder setting for the published system: leave --seeds at {','.join(str(s) for s in SEEDS)}")
     paths = recordings_of(args.inputs)
     try:
         recordings = [fr.read_recording(path, args.fps) for path in paths]
@@ -135,13 +141,10 @@ def segment(args: argparse.Namespace) -> int:
         raise SystemExit(f"an input could not be read, so no stream was built: {error}") from None
     for path, recording in zip(paths, recordings):
         note_reader(path, recording)
-    stride = READ_EVERY[args.read_every]
-    if stride != STRIDE and args.uncertain:
-        raise SystemExit("--uncertain was studied with the published read-out only; leave --read-every at 0.5 with it")
     system = build(args)
     if stride != STRIDE:
-        if not system.is_reference:
-            raise SystemExit("--read-every has a decoder setting for the published system of three seeds only")
+        if not system.is_reference:  # weight files that are not the published ones
+            raise SystemExit("--read-every has a decoder setting for the published system only, and these are not its weights")
         print(f"note: a read-out every {args.read_every} s is not the published system. On development data its cuts lay nearer to the view "
               f"changes; this is not confirmed on the test benchmark (docs/FOLLOWUP.md). It reads about {STRIDE / stride:g} times as many windows.",
               file=sys.stderr)
