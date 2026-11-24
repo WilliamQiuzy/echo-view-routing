@@ -1,6 +1,6 @@
 # After the comparison: three checks on development data
 
-**Status: done on 2026-11-24.** A denser read-out is a candidate: on development data its cuts lie nearer to the view changes and nothing else is lost. It is offered as an option that is off by default, and it is not confirmed on the test benchmark. The offset between A4C and A5C and the mix with EchoViewCLIP are not supported on development data. Sections 1 to 7 are the plan. They were committed before any of their numbers existed, as commits `c1e6252` and `a98fccc`. The results are in section 8. The test benchmark was not read for this document.
+**Status: done on 2026-11-24.** A denser read-out is a candidate: on development data its cuts lie nearer to the view changes and nothing else is lost. It is offered as an option that is off by default, and it is not confirmed on the test benchmark. The offset between A4C and A5C and the mix with EchoViewCLIP are not supported on development data. Sections 1 to 7 are the plan. They were committed before any of their numbers existed, as commits `c1e6252` and `a98fccc`. The results are in section 8. The test benchmark was not read for sections 1 to 8. Section 9 plans one read of it that would confirm the denser read-out; that read has not been made.
 
 Words used here are those of [COMPARISON.md](COMPARISON.md): a **piece** is a run of samples of the reference that come from one recording, a **segment** is a run of samples to which a system gives one view, a **cut** is a sample whose view differs from the view of the sample before it, and a **stream** is several recordings joined into one sequence. A **sample** is 0.1 s.
 
@@ -198,3 +198,57 @@ The calibration half chooses `w` = 0.2 (segment F1 0.987 against 0.984). On the 
 - **One change is worth confirming:** the denser read-out. It answers the first of the three findings of section 1, and only that one.
 - **The other two findings cannot be worked on with this development benchmark.** EchoRouter makes too few errors on it, and the errors it makes there are not the ones of the test benchmark. Work on A4C against A5C, or on single recordings, needs labelled recordings that show those errors: a development set that the system was not chosen on, or readings by an expert.
 - **Nothing here is a result about the published system.** Every number of this section is a development number.
+
+## 9. Confirming the denser read-out on the test benchmark
+
+**Status: planned on 2026-11-24. The test benchmark has not been read for it.** Everything in this section down to "The result" was written and committed before any of its numbers existed.
+
+Rule 4 of section 6 says what confirms a candidate: one read of the test benchmark for that question alone, with the owner's authorisation. The owner authorised that read on 2026-11-24, for the two candidates of Q1.
+
+### What is confirmed
+
+The option as version 1.3.0 ships it, and nothing else. The three published models are read every 0.2 s and every 0.1 s, and each step is decoded with the setting that `echoview/reference.py` holds for it: half window 5 and radius 5 for both, with thresholds 0.1414 and 0.1528. These are the settings of the first table of section 8. Nothing is chosen on the test benchmark. The interpolated arm and the rows with the released numbers carried over are not scored: they are not offered, and this read answers one question.
+
+### What is known now
+
+- **The published system on the test benchmark** ([COMPARISON.md](COMPARISON.md), section 10). On the 120 multi streams its segment F1 at 50% is 0.909, its cuts are 0.153 s from the view changes on average, 52.5% of the 379 view changes have a cut within 0.1 s, and 9.4% of the samples are wrong. It reads 98.1% of the 800 single recordings right. A perfect system on the 0.5 s grid is 0.121 s off.
+- **The development numbers** of section 8.
+- **The question came from this benchmark.** Finding 1 of section 1 was seen on it. The settings did not come from it: they were chosen on the calibration half, and the published models have never been read at a denser step on a recording of the test benchmark.
+- **The test benchmark has been read before:** for its published numbers, for the uncertain output, for the comparison and for the comparison's addendum. None of these reads used a denser read-out.
+
+### What is run, in this order
+
+1. **This plan is public** before any code for it runs.
+2. **The code** is in `echoview/evaluation/followup.py`: `logits --test` writes the outputs for every sample of the test benchmark, and `confirm` makes the read. Both are tested and reviewed before they run on the test benchmark.
+3. **Forward passes.** The three published models give an output for every sample of the 1,160 sequences of the test benchmark: 800 single recordings, 240 pair streams and 120 multi streams, 72,185 samples. The published system reads 14,871 windows for them, the step of 0.2 s reads 35,791 and the step of 0.1 s reads 72,185. The outputs at 0.2 s are taken from those at 0.1 s, as in section 4. This step reads the images of the test benchmark and no label.
+4. **The check, without labels.** Every logit must be a finite number. At the published positions the new logits must agree to 0.001 with the stored test logits, the file with SHA-256 `c5df435ef3022dd55f711c4efa72c74f19aad7f40193f179902c57dca97e288d` that gave the published numbers. The digest of the new file and the result of this check are committed before the read.
+5. **The read** is one run of `confirm`.
+   - It is entered in the access record of the test benchmark before it starts.
+   - From the stored logits it first computes the published system's rows. The four published numbers must come out. The rows "EchoRouter" and "Perfect on the 0.5 s grid" must equal those of the comparison's first read (`comparison/test.json`, SHA-256 `4f00000524df0581ee7f093980135a206c9180f51d15457524acb6547afe45c0`) number by number, intervals included. When one differs, nothing is written.
+   - Then it scores the two arms and writes one file.
+6. **No second read.** Once the output exists, its digest goes into the code. From then on `confirm` stops unless it is given that file and its own result equals it.
+
+### The numbers and the intervals
+
+- **The rows:** the published system, every 0.2 s, every 0.1 s, and for reference a perfect system that is read every 0.5 s and one that is read every 0.2 s.
+- **Every row gets every number of [COMPARISON.md](COMPARISON.md), section 5,** from the same code, on the multi streams, the pair streams and the single recordings.
+- **Differences** are an arm minus the published system with the same draws: 10,000 draws with seed 20261123, as in the comparison. The test benchmark names its examinations, so every interval is taken twice, over streams and over the 125 examinations. A description gives the wider of the two at 95%.
+
+### How the result will be worded
+
+These rules are fixed now. They are the three conditions of rule 1 of section 6, taken on the test benchmark.
+
+1. **(a) Nearer cuts.** On the multi streams the mean distance of the matched cuts is lower than the published system's, and the interval of the difference lies wholly below zero. Two arms are tested, so this interval is taken at 97.5%. It is the hull of the interval over streams and the interval over examinations, as for the named comparisons of the comparison: both must lie below zero.
+2. **(b) Segment F1 kept.** The arm's segment F1 at 50% on the multi streams is not lower than the published system's by more than 0.005.
+3. **(c) Single recordings kept.** The arm's macro-F1 on the single recordings is not lower than the published system's.
+4. **The words.** An arm is **confirmed on the test benchmark** when (a), (b) and (c) hold. It has **nearer cuts at a cost** when (a) holds and (b) or (c) does not; the cost is then stated with its interval. It is **not confirmed on the test benchmark** when (a) does not hold.
+5. **What follows, whatever the word.** The published system and every published number stay as they are. The default read-out stays 0.5 s: the uncertain output and every published number rest on it, and a denser read-out reads 2.4 or 4.9 times as many windows. The option's note and the README then say for each step what the read found, in the words of rule 4, where they now say "not confirmed". Making a denser read-out the default would be a new decision of the owner. The test benchmark is not read again for this question.
+6. **Everything is published** in `docs/followup/`, whatever the word.
+
+### What is expected, and the limits
+
+- **Expected.** The published system's cuts are as far off on the test benchmark as on the selection half (0.153 s on both). The denser arms should come about as much nearer as there: to about 0.07 s at 0.1 s and 0.11 s at 0.2 s. Segment F1 should move by less than 0.01 either way. Among 800 single recordings one or two may be read differently, in either direction.
+- **(b) and (c) are rules on single values.** A move of two or three segments, or of one recording, can decide them. That is why the word "nearer cuts at a cost" exists, and why the cost is given with its interval.
+- **The question came from this benchmark,** as said above. An arm that is confirmed here is confirmed for settings this benchmark did not choose, on a weakness this benchmark showed.
+- **(a) is about matched cuts.** The distance is averaged over the view changes that have a cut within 1 s. An arm that finds more view changes averages over more of them. The share of view changes with a match and the shares with a cut within 0.1 s to 1 s are reported beside it.
+- **The view changes are joins.** The streams are built by joining pieces of labelled recordings, so a view change is a hard cut between two recordings and is known to the sample. In an examination the probe moves from one view to the next, and no reference is exact to 0.1 s there. Nearer cuts on this benchmark say that the system places a cut more exactly when the change is sharp.
