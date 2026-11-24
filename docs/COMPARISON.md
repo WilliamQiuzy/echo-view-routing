@@ -2,6 +2,8 @@
 
 **Status: done. The test benchmark was read once, on 2026-11-24 (section 10).** With the project's decoder, EchoViewCLIP is not shown to differ from EchoRouter on streams; EchoRouter is ahead of EchoPrime's classifier; for STFM and ASFormer the question could not be answered. Sections 1 to 8 are the plan. They were written, reviewed and committed before either stage, as commit `26571f5`. Stage A touches no test data: it lists the stored outputs, chooses decoder settings on development data and tries the code on the development benchmark. Its results go into section 9 and are committed. Stage B is one read of the test benchmark. Its results are in section 10.
 
+**Addendum, 2026-11-24: plan.** Section 11 is a plan to answer the two comparisons that section 10 left open, for STFM and for ASFormer. It was committed before any of its numbers existed.
+
 Words used here: a **piece** is a run of samples of the reference that come from one recording. A **segment** is a run of samples to which a system gives one view. A **cut** is a sample whose view, as a system gives it, differs from the view of the sample before it. A **stream** is several recordings joined into one sequence.
 
 ## 1. Why
@@ -383,3 +385,44 @@ Bold marks the best value among the rows as published, with the project's decode
 - **Single recordings.** EchoViewCLIP is the best row: 98.9% against EchoRouter's 98.1%, a difference of −0.8 points [−1.7, +0.1], and a macro-F1 of 0.972 against 0.956, −0.016 [−0.038, +0.003]. Four recordings are read right only by EchoRouter and ten only by EchoViewCLIP. EchoRouter has the highest A5C recall, 38 of 40.
 - **Pair streams.** No row stands out. EchoViewCLIP with the decoder has the highest value (0.993); EchoRouter has 0.985.
 - **The limits of section 8 stand.** The benchmark is the project's own and is not untouched, its streams are built and are not examinations, three of the four other systems were trained by us, and A5C rests on 39 recordings.
+
+## 11. Addendum: the two comparisons that were not answered
+
+**Status: plan, written on 2026-11-24 after section 10.** Nothing below has been scored yet.
+
+### Why
+
+Two of the four named comparisons are "not answered". STFM and ASFormer had no stored outputs for the streams of the calibration half, so the rule could not choose a decoder setting for them. Section 4 allows asking the owner for forward passes of such a system on development data. On 2026-11-24 the owner asked for the two comparisons to be answered.
+
+### What is known now
+
+This addendum is not blind. Everything in section 10 is known: every published row, EchoViewCLIP with the decoder (0.884), and the rows with the released numbers carried over, where ASFormer scores 0.883 and STFM 0.100. For that reason the addendum changes nothing that sections 4 to 7 fix. The rows, the numbers, the intervals and the wording rules stay as they are.
+
+### What is run, in this order
+
+1. **Forward passes on development data only.** The frozen STFM model (SHA-256 `c09b9f7a451a45d6b77e00b7e5b2f8fde5cece206d84e9fc0b2b859f30e08aa2`) and the frozen ASFormer model (`991ced49d5962941d80e81b92a6e4c1b603bbcf8049491ef63e26e19f0dab062`, on the features of the frame model `79f4a41af6e36e353c86367b1a5c6b923ffe71ee596e6206d616180d183857db`) are the models of the published rows. They are run on the 1,013 sequences of the development benchmark: 521 single recordings, 252 pair streams and 240 multi streams. The research code that wrote their stored test outputs is used unchanged. No test recording is read for this step.
+2. **The chain must be the same.** The single recordings of the development halves already have stored outputs from October (section 9). The new outputs for these 521 recordings must equal the stored ones to 0.00001 in every probability. For ASFormer the streams of the older validation banks are reproduced as well, where they are stored. When one differs, nothing goes on.
+3. **Decoder settings.** The rule of section 4 on each system's outputs for the calibration half, with the floors dropped when no setting meets them, as for any system. The settings of section 9 for the ensemble, the three seeds and EchoViewCLIP must come out again.
+4. **The selection half as a trial.** Development numbers for the two new rows, and a check: every number of the first trial (`comparison/selection.json`) must come out again exactly.
+5. **These results are committed** before the test benchmark is read.
+
+The forward passes of step 1 were started at 06:49 UTC on 2026-11-24, before this section was committed. They write stored outputs and score nothing. Steps 3 to 5 run after the commit.
+
+### The second read of the test benchmark
+
+Rule 9 of section 7 said that stage B runs once. This is a second read. It is made for two rows only, and the owner authorised it on 2026-11-24.
+
+- **The same command, code path, draws and seed, and the same stored outputs.** The one new input is the settings file, which now holds a setting for STFM and for ASFormer.
+- **Every number of the first read must come out again exactly.** The command compares its result with `comparison/test.json` (SHA-256 `4f00000524df0581ee7f093980135a206c9180f51d15457524acb6547afe45c0`), number by number, for every row, difference and comparison of the first read. When one differs, nothing is written. So no number of section 10 can change.
+- **What is new:** the rows "STFM + decoder" and "ASFormer + decoder" with every number of section 5, their two named comparisons, and their published gaps in two parts.
+- **The level stays.** The two comparisons were always among the four that section 6 names, so their 98.75% intervals decide, and the word follows rule 1 of section 7.
+- **The best row (rule 6) is taken again** over the rows as published, with the decoder, and EchoRouter without its decoder. With two more rows, a bold mark may move.
+- **Nothing is tuned (rule 8).** No setting of EchoRouter changes.
+- The read is entered in the access record of the test benchmark.
+
+### What is expected, and the limits
+
+- **ASFormer.** With a setting of its own it should score near its row with the released numbers (0.883). If so, EchoRouter will probably not be shown to differ from it.
+- **STFM.** Open. Its outputs are read every 0.5 s like EchoViewCLIP's, and the decoder added 0.017 to EchoViewCLIP.
+- **The limits of section 8 stand.** In particular, STFM was stopped early on the validation recordings that form the calibration half, so a setting chosen there is chosen on data it has partly seen.
+- **A second look.** The decision to run this addendum was made with the first result known. It adds two rows and cannot change the others.
