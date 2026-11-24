@@ -24,7 +24,7 @@ The examples call the image `IMAGE`:
 IMAGE=ghcr.io/williamqiuzy/echo-view-routing:latest
 ```
 
-**Self-check.** It downloads the weights and five sample clips into the volume `echoview-cache`, runs the model and compares with stored results. It ends with `SELF-CHECK PASSED`.
+**Self-check.** It downloads the weights and five sample clips into the volume `echoview-cache`, runs the model and compares with stored results. It ends with `SELF-CHECK PASSED`. On a GPU this takes seconds. On the CPU of an Apple-silicon laptop it took about twenty minutes in the container, several times longer than with the package installed on the laptop itself.
 
 ```bash
 docker run --rm -v echoview-cache:/cache $IMAGE echoview selfcheck

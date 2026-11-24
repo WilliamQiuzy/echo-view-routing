@@ -8,6 +8,10 @@ Notable changes to this project. The format follows [Keep a Changelog](https://k
 
 - Every release from 1.2.1 on is archived on Zenodo. The README and `CITATION.cff` carry the DOI that stands for all versions, 10.5281/zenodo.24485965.
 
+### Changed
+
+- The README and `docs/DOCKER.md` say how long the self-check takes in a container without a GPU on an Apple-silicon laptop: about twenty minutes when it was measured with the 1.2.1 image.
+
 ## [1.2.1] - 2026-11-23
 
 ### Added

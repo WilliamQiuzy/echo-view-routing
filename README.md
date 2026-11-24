@@ -64,7 +64,7 @@ The package needs Python 3.10 or newer. The self-check takes seconds on a GPU an
 docker run --rm -v echoview-cache:/cache ghcr.io/williamqiuzy/echo-view-routing:latest echoview selfcheck
 ```
 
-Add `--gpus all` on a machine with an NVIDIA GPU. [docs/DOCKER.md](docs/DOCKER.md) shows how to mount recordings and where results go.
+Add `--gpus all` on a machine with an NVIDIA GPU. Without one, a container is slower than an installed package: on an Apple-silicon laptop the self-check took about twenty minutes in the container. [docs/DOCKER.md](docs/DOCKER.md) shows how to mount recordings and where results go.
 
 ```bash
 # one view per recording; a folder is searched for DICOM and video files
