@@ -8,7 +8,7 @@ Notable changes to this project. The format follows [Keep a Changelog](https://k
 
 - Every release from 1.2.1 on is archived on Zenodo. The README and `CITATION.cff` carry the DOI that stands for all versions, 10.5281/zenodo.24485965.
 - `python -m echoview.evaluation.comparison` carries out the plan of `docs/COMPARISON.md`: `inventory` lists stored outputs, `settings` chooses decoder settings on the calibration half, and `score` builds every row and scores it with intervals by stream and by examination. Before the test benchmark is scored, the stored outputs must give every published number.
-- `docs/COMPARISON.md`: the plan of a fuller comparison with the four other approaches on the test benchmark, written before anything in it is computed. It fixes the numbers for every system, the rows that give the other systems the project's decoder, the intervals and the wording of the result.
+- `docs/COMPARISON.md`: the plan of a fuller comparison with the four other approaches on the test benchmark, written before anything in it is computed. It fixes the numbers for every system, the rows that give the other systems the project's decoder, the intervals and the wording of the result. Stage A of the plan (what is stored, the decoder settings chosen on the calibration half, and the selection half as a trial) is in its section 9 and in `docs/comparison/`.
 
 ### Fixed
 

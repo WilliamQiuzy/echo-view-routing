@@ -1,6 +1,6 @@
 # The comparison with other approaches, row by row
 
-**Status: a plan in two stages. Nothing in it has been computed.** Sections 1 to 8 were written, reviewed and committed before either stage. Stage A touches no test data: it lists the stored outputs, chooses decoder settings on development data and tries the code on the development benchmark. Its results go into section 9 and are committed. Stage B is one read of the test benchmark. Its results are added after section 9.
+**Status: stage A is done (section 9). Stage B, the read of the test benchmark, has not run.** Sections 1 to 8 are the plan. They were written, reviewed and committed before either stage, as commit `26571f5`. Stage A touches no test data: it lists the stored outputs, chooses decoder settings on development data and tries the code on the development benchmark. Its results go into section 9 and are committed. Stage B is one read of the test benchmark. Its results are added after section 9.
 
 Words used here: a **piece** is a run of samples of the reference that come from one recording. A **segment** is a run of samples to which a system gives one view. A **cut** is a sample whose view, as a system gives it, differs from the view of the sample before it. A **stream** is several recordings joined into one sequence.
 
@@ -158,9 +158,62 @@ These rules are fixed now.
 
 ## 9. Stage A
 
-Not done yet. It will hold, before stage B:
+**Done on 2026-11-24 with the code of commit `377fb01`. No test output was scored.** The outputs of the three commands are in [`comparison/`](comparison/): `inventory_test.json`, `inventory_dev.json`, `settings.json` and `selection.json`. The owner authorised both stages on 2026-11-23.
 
-1. The stored outputs: for every system and for the test and the development benchmark, whether they exist, the number of files and a digest.
-2. The decoder settings chosen on the calibration half for rows D and S: the number of feasible settings, the half window, the quantile, the threshold, and the numbers on that half.
-3. The command's output for the selection half of the development benchmark, for every row that can be made there. These are development numbers and are published as such.
-4. The owner's authorisation of stage B, with its date.
+### Changes to the plan, made before stage B
+
+The code was reviewed before it ran. The review led to five changes. None of them loosens a rule.
+
+1. **The word of a named comparison needs both units.** Section 6 says that the wider of the two intervals decides. Where the two intervals do not lie inside one another, the wider one can lie above zero while the other holds zero. The word now rests on the hull of the two: from the lower of the two lower bounds to the higher of the two upper bounds. Both intervals are still reported. This can only make "ahead of" and "behind" rarer.
+2. **A difference has no interval when either of its two numbers rests on a count of 5 or fewer**, as a single number has none.
+3. **The Edit score has the interval over streams only.** It is a score per stream and cannot be counted per examination.
+4. **What the decoder adds to EchoPrime's classifier** is measured against its row per frame, because its published row already has the decoder.
+5. **Before the test benchmark is read, the command checks what the plan fixes:** 10,000 draws, the four stores, the logits file by its SHA-256, a setting for each of the three seeds, and for every other system either a setting or the note that it has no development outputs. When one is missing, nothing is read.
+
+### The stored outputs
+
+| Stored outputs | Files | Test benchmark | Calibration half | Selection half | Rows sum to | Digest of the test files (first 16) |
+|---|---|---|---|---|---|---|
+| EchoViewCLIP, test folder | 2,068 | 1,160 of 1,160 | 237 of 472 | 284 of 541 | 0.07 to 1.00 | `a53bcc7d6a6426f7` |
+| STFM, test folder | 2,068 | 1,160 of 1,160 | 237 of 472 | 284 of 541 | 0.22 to 0.98 | `00e549a82b3459d7` |
+| ASFormer, test folder | 2,041 | 1,160 of 1,160 | 237 of 472 | 284 of 541 | 1.00 to 1.00 | `c3af7fdf80b775a2` |
+| EchoPrime, test folder | 2,068 | 1,160 of 1,160 | 237 of 472 | 284 of 541 | 0.01 to 1.00 | `fc8c652c3e4207c6` |
+| EchoViewCLIP, development folder | 1,013 | 0 of 1,160 | 472 of 472 | 541 of 541 | 0.07 to 1.00 | calibration `486f8c3d4e932c4f`, selection `d95b4aedb7719e21` |
+
+- Every file holds the array `prob` with one row of five views per sample. No file has another shape. The digests are in full in the two inventory files.
+- The test folders also hold the single recordings of the development halves, but none of their streams.
+- **STFM and ASFormer have no stored outputs for the streams of the calibration half.** By section 4 they get no row D, and their named comparison is "not answered". No forward pass was asked for. Their row C is shown, as planned, and carries no sentence.
+- EchoViewCLIP has outputs for both development halves and gets a row D. For EchoPrime's classifier the published row with the decoder is its row D.
+
+### The decoder settings, chosen on the calibration half
+
+| System | Feasible settings of 40 | Half window | Quantile | Threshold | Calibration half: segment F1 at 50% | Macro-F1 of recordings | Recall of the view changes |
+|---|---|---|---|---|---|---|---|
+| EchoRouter, the ensemble | 40 | 7 | 0.999 | 0.1738 | 0.984 | 0.986 | 0.990 |
+| EchoRouter seed 0 | 40 | 7 | 0.999 | 0.1860 | 0.986 | 0.986 | 0.990 |
+| EchoRouter seed 1 | 37 | 5 | 0.999 | 0.1297 | 0.983 | 0.986 | 0.987 |
+| EchoRouter seed 2 | 36 | 5 | 0.999 | 0.1371 | 0.978 | 0.986 | 0.982 |
+| EchoViewCLIP | 28 | 9 | 0.8 | 0.0007 | 0.973 | 0.986 | 0.980 |
+
+- **The ensemble.** The rule gives the released grid position: half window 7 at the quantile 0.999. On these logits the threshold is 0.17383, and the released one is 0.17379. The stored logits were computed on another machine than the one the released number came from. The check accepts a threshold within 0.001 at the same grid position.
+- **EchoViewCLIP.** 28 of the 40 settings meet the floors, and the rule takes half window 9 at the quantile 0.80. This is the choice, and these are the numbers, of the project's record of 2026-10-05 (section 2). Reading the stores, decoding them and applying the rule here give what the research code gave then.
+
+### The selection half, as a trial
+
+These are development numbers. The benchmark names no examinations there, so the intervals are over streams only.
+
+| Row | Segment F1 at 50%, multi | Segment F1 at 50%, pairs | Edit | Piece midpoint | Wrong samples | Cut precision | Cut recall | Cut distance (s) | Recordings: accuracy | Macro-F1 | A5C recall |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| EchoRouter | 0.959 | 0.971 | 96.5 | 97.8% | 6.1% | 0.959 | 0.976 | 0.15 | 98.9% | 0.979 | 100.0% |
+| EchoViewCLIP | 0.842 | 0.941 | 86.9 | 92.8% | 12.0% | 0.827 | 0.961 | 0.19 | 98.2% | 0.957 | 81.8% |
+| EchoViewCLIP + decoder | 0.866 | 0.967 | 88.6 | 92.8% | 11.7% | 0.853 | 0.958 | 0.19 | 98.2% | 0.957 | 81.8% |
+| EchoRouter, no decoder | 0.906 | 0.957 | 91.6 | 97.1% | 7.0% | 0.858 | 0.984 | 0.16 | 99.3% | 0.988 | 100.0% |
+| EchoViewCLIP + released numbers | 0.866 | 0.946 | 87.6 | 90.7% | 12.7% | 0.942 | 0.885 | 0.18 | 98.2% | 0.957 | 81.8% |
+| EchoRouter seed 0 | 0.958 | 0.971 | 96.3 | 97.7% | 6.3% | 0.956 | 0.971 | 0.16 | 98.9% | 0.979 | 100.0% |
+| EchoRouter seed 1 | 0.948 | 0.978 | 95.0 | 97.1% | 6.7% | 0.946 | 0.963 | 0.15 | 98.9% | 0.979 | 100.0% |
+| EchoRouter seed 2 | 0.948 | 0.974 | 95.5 | 96.7% | 6.6% | 0.953 | 0.958 | 0.15 | 99.3% | 0.988 | 100.0% |
+| Perfect on the 0.5 s grid | 1.000 | 1.000 | 100.0 | 100.0% | 3.1% | 1.000 | 1.000 | 0.12 | 100.0% | 1.000 | 100.0% |
+
+- **The named comparison on development data.** EchoRouter minus EchoViewCLIP with the decoder is 0.094 [0.063, 0.127]; the 98.75% interval is [0.055, 0.135]. Of the gap of 0.117 [0.081, 0.155] to EchoViewCLIP as published, 0.094 remains when it has the project's decoder. Each seed alone is also ahead of EchoViewCLIP with the decoder.
+- **What the decoder adds.** 0.023 [0.007, 0.041] to EchoViewCLIP and 0.054 [0.029, 0.080] to EchoRouter, on multi streams. EchoRouter without the decoder (0.906) is above EchoViewCLIP with it (0.866).
+- **The 0.5 s grid.** A perfect system that is read every 0.5 s has 3.1% wrong samples and cuts that are 0.12 s off on average.
