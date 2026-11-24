@@ -33,6 +33,8 @@ EchoRouter's model reads 16 samples (1.6 s) and gives the view of one marked sam
 | every 0.2 s | one output every second sample | 2.5× |
 | every 0.1 s | one output for every sample | 5× |
 
+Two reference rows stand beside the arms: a perfect system that is read every 0.5 s, and one that is read every 0.2 s. At 0.2 s every second sample lies midway between two outputs. It takes the earlier one, as everywhere in the package, so a perfect system on that grid is still 0.05 s off on average. At 0.1 s every sample has an output of its own.
+
 Each arm is decoded twice. **With a setting of its own:** the rule of [EVALUATION.md](EVALUATION.md) on the arm's probabilities for the calibration half, the same rule, grid and floors that gave the published setting. This is the like-for-like row, and the sentence rests on it. **With the released numbers carried over** (half window 7, threshold 0.1738, radius 5): shown as a description.
 
 ### Q2. Can one number trade A4C against A5C?
@@ -48,7 +50,7 @@ This is not a change that could ship as it is: it needs a second model. It asks 
 ## 4. The data and the forward passes
 
 - **The development benchmark only:** 472 sequences in the calibration half and 541 in the selection half (521 single recordings, 252 pair streams, 240 multi streams). Everything is chosen on the calibration half and reported on the selection half.
-- **Q1 needs forward passes.** The three published seeds give an output for every sample of the 1,013 sequences (71,503 samples). The outputs of the three sparser arms are taken from these. **The check:** at the published positions the new logits must agree with the stored development logits to 0.001, and the published arm is always computed from the stored logits.
+- **Q1 needs forward passes.** The three published seeds give an output for every sample of the 1,013 sequences (71,503 samples). The outputs of the three sparser arms are taken from these. **The check:** every logit must be a finite number, at the published positions the new logits must agree with the stored development logits to 0.001, and the two arms at 0.5 s are always computed from the stored logits.
 - **Q2 needs none.** It uses the stored development logits.
 - **Q3 needs none.** It uses the stored development logits and EchoViewCLIP's stored outputs for the development benchmark ([COMPARISON.md](COMPARISON.md), section 9).
 - **The code** is `echoview/evaluation/followup.py`. It is committed and tested before it runs. For Q1 the package gets an optional read-out step; its default stays 5 samples.
@@ -81,6 +83,8 @@ These rules are fixed now. Each question ends with one of two words: the change 
 - Q1 has three arms against the published one. With three chances, a candidate by chance is more likely than with one. That is one reason why a candidate needs confirmation.
 - EchoViewCLIP was stopped early on the validation recordings that form the calibration half. A `w` chosen there is chosen on data that favour EchoViewCLIP.
 - The streams are built by joining pieces of labelled recordings. They are not examinations.
+
+**Changes to this plan, made before anything was scored.** The code was reviewed on 2026-11-24, before it ran on any data. The review found no wrong number. It led to three additions above: the two reference rows of Q1 and the note on samples that lie midway between two outputs, the demand that every logit is finite, and the sentence that both arms at 0.5 s come from the stored logits. No rule of section 6 changed.
 
 ## 8. Results
 

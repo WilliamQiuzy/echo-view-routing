@@ -8,7 +8,7 @@ import numpy as np
 import pytest
 
 from echoview import Ensemble, windows
-from echoview.evaluation import benchmark, comparison, followup, metrics
+from echoview.evaluation import benchmark, comparison, followup, metrics, scorecard
 from echoview.evaluation.comparison import ROUTER
 from echoview.model import CLASSES
 from echoview.pipeline import probabilities_from_logits, softmax
@@ -39,24 +39,30 @@ def test_interpolation_runs_between_two_outputs_and_is_flat_outside_them():
     prob = followup.interpolated(logits, 12)
     by_window = softmax(logits)
     assert prob.shape == (12, 5)
-    np.testing.assert_allclose(prob.sum(1), 1.0)
-    np.testing.assert_allclose(prob[:3], np.repeat(by_window[0].mean(0)[None], 3, 0))  # before the first output: flat
-    np.testing.assert_allclose(prob[4], (0.6 * by_window[0] + 0.4 * by_window[1]).mean(0))  # sample 4 lies 2 of 5 steps on
-    np.testing.assert_allclose(prob[7], by_window[1].mean(0))
-    np.testing.assert_allclose(prob[11], by_window[2].mean(0))
-    np.testing.assert_allclose(followup.interpolated(logits[:1], 1), by_window[0].mean(0)[None])  # one output: nothing to interpolate
+    np.testing.assert_allclose(prob.sum(1), 1.0, rtol=1e-6)
+    np.testing.assert_allclose(prob[:3], np.repeat(by_window[0].mean(0)[None], 3, 0), rtol=1e-5)  # before the first output: flat
+    np.testing.assert_allclose(prob[4], (0.6 * by_window[0] + 0.4 * by_window[1]).mean(0), rtol=1e-5)  # sample 4 lies 2 of 5 steps on
+    np.testing.assert_allclose(prob[7], by_window[1].mean(0), rtol=1e-5)
+    np.testing.assert_allclose(prob[11], by_window[2].mean(0), rtol=1e-5)
+    np.testing.assert_allclose(followup.interpolated(logits[:1], 1), by_window[0].mean(0)[None], rtol=1e-5)  # one output: nothing to interpolate
+    # at an output the interpolated arm is the published arm to the last bit: same softmax, same average
+    np.testing.assert_array_equal(prob[centres], probabilities_from_logits(logits, 12)[centres])
 
 
 def test_the_density_arms_come_from_the_dense_outputs():
     seqs, rng = sequences(), np.random.default_rng(1)
     dense = dense_from(seqs, rng)
-    stored = at_published_centres(seqs, dense)
-    assert followup.dense_check(stored, dense, seqs) == {"sequences": len(seqs), "largest_difference": 0.0}
+    assert followup.dense_check(at_published_centres(seqs, dense), dense, seqs) == {"sequences": len(seqs), "largest_difference": 0.0}
+    stored = {key: value + np.float32(5e-4) * rng.normal(size=value.shape).astype(np.float32) for key, value in at_published_centres(seqs, dense).items()}
     arms = followup.density_arms(stored, dense, seqs)
     assert list(arms) == ["every 0.5 s", "every 0.5 s, interpolated", "every 0.2 s", "every 0.1 s"]
     published = comparison.member_probabilities(stored, seqs, (0, 1, 2))
+    from_dense = comparison.member_probabilities(at_published_centres(seqs, dense), seqs, (0, 1, 2))
     for s in seqs:
-        np.testing.assert_array_equal(arms["every 0.5 s"][s.id], published[s.id])
+        centres = windows.window_centres(len(s))
+        np.testing.assert_array_equal(arms["every 0.5 s"][s.id], published[s.id])  # the two arms at 0.5 s come from the stored logits,
+        np.testing.assert_array_equal(arms["every 0.5 s, interpolated"][s.id][centres], published[s.id][centres])
+        assert not np.array_equal(published[s.id], from_dense[s.id])  # not from the dense ones at the same centres
         assert arms["every 0.1 s"][s.id].argmax(1).tolist() == s.labels.tolist()  # an output for every sample
         every_second = windows.window_centres(len(s), 2)
         np.testing.assert_allclose(arms["every 0.2 s"][s.id], probabilities_from_logits(dense[s.id][every_second], len(s), 2))
@@ -79,6 +85,27 @@ def test_dense_outputs_that_do_not_hold_the_published_ones_are_refused():
     short[seqs[0].id] = dense[seqs[0].id][:-1]
     with pytest.raises(SystemExit, match="one output for every sample"):
         followup.dense_check(stored, short, seqs)
+    for where in (0, 1):  # a number that is not finite, at a published centre (sample 2) or beside it
+        holed = dict(dense)
+        holed[seqs[0].id] = dense[seqs[0].id].copy()
+        holed[seqs[0].id][2 + where, 0, 0] = np.nan
+        with pytest.raises(SystemExit, match="not finite"):
+            followup.dense_check(stored, holed, seqs)
+    holed = dict(stored)
+    holed[seqs[0].id] = stored[seqs[0].id].copy()
+    holed[seqs[0].id][0, 0, 0] = np.inf
+    with pytest.raises(SystemExit, match="not finite"):
+        followup.dense_check(holed, dense, seqs)
+
+
+def test_a_perfect_system_on_each_grid_is_the_reference():
+    s = sequences()[-1]
+    half_second, fifth = followup.grid_labels(s.labels, 5), followup.grid_labels(s.labels, 2)
+    np.testing.assert_array_equal(half_second, scorecard.grid_floor_labels(s.labels))
+    np.testing.assert_array_equal(followup.grid_labels(s.labels, 1), s.labels)
+    centres = windows.window_centres(len(s), 2)
+    assert np.array_equal(fifth[centres], s.labels[centres]) and (fifth != s.labels).sum() <= len(s.view_changes)  # off by one sample at most
+    assert (half_second != s.labels).sum() > (fifth != s.labels).sum()
 
 
 def test_the_offset_moves_the_a5c_logit_only():
@@ -138,6 +165,8 @@ def test_the_weight_is_the_best_feasible_one_and_the_smaller_of_equals(monkeypat
     chosen = followup.choose_weight(first, second, ())
     assert chosen["chosen"] == 0.1 and [c["weight"] for c in chosen["curve"]] == list(followup.WEIGHTS)
     assert seen == [False] * len(followup.WEIGHTS)  # the floors are never dropped for a mix
+    table.update({w: ("infeasible", f1) for w, (_, f1) in table.items()})
+    assert followup.choose_weight(first, second, ())["chosen"] == 0.0  # no weight has a setting: nothing is mixed in
 
 
 def difference(value: float, interval: list[float] | None) -> dict:
@@ -165,7 +194,10 @@ def test_the_words_follow_the_plan():
     assert q2(1.0, difference(0.02, [0.001, 0.04])) == yes
     assert q2(0.0, difference(0.02, [0.001, 0.04])) == no  # no offset was chosen
     assert q2(1.0, difference(0.02, [0.0, 0.04])) == no
-    assert q2(1.0, difference(0.02, [0.001, 0.04]), f1=-0.01) == no
+    assert q2(1.0, difference(0.02, [0.001, 0.04]), f1=-0.005) == yes
+    assert q2(1.0, difference(0.02, [0.001, 0.04]), f1=-0.0051) == no
+    assert q2(-0.5, difference(0.02, [0.001, 0.04])) == yes  # an offset of either sign
+    assert q2(1.0, difference(0.02, None)) == no  # no interval: too few recordings to say
     assert followup.word_q2(1.0, None) == no
 
     def q3(chosen, f1, macro=0.0):
@@ -175,50 +207,84 @@ def test_the_words_follow_the_plan():
     assert q3(0.0, difference(0.01, [0.002, 0.02])) == no
     assert q3(0.2, difference(0.01, [-0.002, 0.02])) == no
     assert q3(0.2, difference(0.01, [0.002, 0.02]), macro=-0.01) == no
+    assert q3(0.2, difference(0.01, None)) == no
     assert followup.word_q3(0.2, None) == no
 
 
+def two_halves() -> dict[str, tuple[benchmark.Sequence, ...]]:
+    """Two halves with sequences of their own, as the development benchmark has; neither names an examination."""
+    return {"calibration": tuple(benchmark.Sequence(f"c_{s.id}", s.kind, s.fragments) for s in sequences()),
+            "selection": tuple(benchmark.Sequence(s.id, s.kind, s.fragments) for s in sequences())}
+
+
 def study_inputs(tmp_path, monkeypatch, rng):
-    seqs = sequences()
+    halves = two_halves()
+    both = (*halves["calibration"], *halves["selection"])
     names = {f"rec{k}": f"rec{k}" for k in range(RECORDINGS)}
-    ungrouped = tuple(benchmark.Sequence(s.id, s.kind, s.fragments) for s in seqs)  # the development benchmark names no examination
-    monkeypatch.setattr(followup.benchmark, "load", lambda: {"calibration": ungrouped, "selection": ungrouped})
+    monkeypatch.setattr(followup.benchmark, "load", lambda: halves)
     monkeypatch.setattr(followup.comparison, "_names", lambda images, sequences: names)
-    dense = dense_from(ungrouped, rng)
-    stored = at_published_centres(ungrouped, dense)
-    other = {s.id: (0.5 * softmax(8.0 * np.eye(5)[s.labels] + rng.normal(size=(len(s), 5)))).astype(np.float32) for s in ungrouped}
+    dense = dense_from(both, rng)
+    stored = at_published_centres(both, dense)
+    by_recording = {s.fragments[0].video: (0.5 * softmax(8.0 * np.eye(5)[s.labels] + rng.normal(size=(len(s), 5)))).astype(np.float32)
+                    for s in halves["selection"] if s.kind == "native"}  # a single recording has one stored file, whichever half asks
+    other = {s.id: by_recording[s.fragments[0].video] if s.kind == "native"
+             else (0.5 * softmax(8.0 * np.eye(5)[s.labels] + rng.normal(size=(len(s), 5)))).astype(np.float32) for s in both}
     np.savez(tmp_path / "logits.npz", **stored)
     np.savez(tmp_path / "dense.npz", **dense)
-    write_store(tmp_path / "EchoViewCLIP", ungrouped, other, names)
-    f1 = metrics.evaluate(comparison.decoded(comparison.member_probabilities(stored, ungrouped, (0, 1, 2)), B3), ungrouped)["segment_f1_50_multi"]
+    write_store(tmp_path / "EchoViewCLIP", both, other, names)
+    selection = halves["selection"]
+    f1 = metrics.evaluate(comparison.decoded(comparison.member_probabilities(stored, selection, (0, 1, 2)), B3), selection)["segment_f1_50_multi"]
     monkeypatch.setattr(followup.comparison, "PUBLISHED_SELECTION_F1", round(f1, 4))
-    return ungrouped, ["study", "--images", str(tmp_path), "--logits", str(tmp_path / "logits.npz"), "--dense", str(tmp_path / "dense.npz"),
-                       "--store", f"EchoViewCLIP={tmp_path / 'EchoViewCLIP'}", "--draws", "60"]
+    return halves, stored, dense, ["study", "--images", str(tmp_path), "--logits", str(tmp_path / "logits.npz"), "--dense", str(tmp_path / "dense.npz"),
+                                   "--store", f"EchoViewCLIP={tmp_path / 'EchoViewCLIP'}", "--draws", "60"]
 
 
 def test_the_study_scores_every_arm_against_the_published_system(tmp_path, monkeypatch, capsys):
-    seqs, command = study_inputs(tmp_path, monkeypatch, np.random.default_rng(4))
+    halves, stored, dense, command = study_inputs(tmp_path, monkeypatch, np.random.default_rng(4))
+    calibration, selection = halves["calibration"], halves["selection"]
+    settings_used = []
+    decode = comparison.decoded
+
+    def recorded(rows, setting):
+        settings_used.append({k: setting[k] for k in ("half_window", "threshold", "nms_radius")})
+        return decode(rows, setting)
+
+    monkeypatch.setattr(followup.comparison, "decoded", recorded)
     out = tmp_path / "out" / "followup.json"
     assert followup.main([*command, "--out", str(out)]) == 0 and "wrote" in capsys.readouterr().out
-    result = json.loads(out.read_text())
+    result, used = json.loads(out.read_text()), list(settings_used)
     assert result["benchmark"] == "development" and result["draws"] == 60 and set(result["sha256"]) == {"logits", "dense", "EchoViewCLIP"}
-    assert result["dense_check"]["largest_difference"] == 0.0
-    q1 = result["q1"]
+    assert result["dense_check"] == {"sequences": len(calibration) + len(selection), "largest_difference": 0.0}
+    q1, rows = result["q1"], result["rows"]
     assert set(q1["arms"]) == {"every 0.5 s", "every 0.5 s, interpolated", "every 0.2 s", "every 0.1 s"}
+    on_calibration, on_selection = followup.density_arms(stored, dense, calibration), followup.density_arms(stored, dense, selection)
     for name, arm in q1["arms"].items():
-        assert arm["setting"]["status"] == "feasible" and arm["word"] in ("candidate", "not supported on development data", "the published system")
+        chosen = comparison.choose(on_calibration[name], calibration, drop_floors=False)  # the setting comes from the calibration half
+        assert arm["setting"]["status"] == "feasible" and arm["setting"]["params"] == chosen["params"] != B3
         assert (arm["word"] == "the published system") == (name == "every 0.5 s")
-    rows = result["rows"]
-    assert "every 0.1 s, own setting" in rows and "every 0.1 s, released numbers" in rows and "every 0.5 s, own setting" not in rows
-    published = metrics.evaluate(comparison.decoded(comparison.member_probabilities(dict(np.load(tmp_path / "logits.npz")), seqs, (0, 1, 2)), B3), seqs)
+        if name != "every 0.5 s":  # and the numbers from the selection half, decoded with that setting and with the released one
+            own = metrics.evaluate(decode(on_selection[name], chosen["params"]), selection)
+            released = metrics.evaluate(decode(on_selection[name], B3), selection)
+            assert rows[f"{name}, own setting"]["multi"]["segment_f1_50"]["value"] == pytest.approx(own["segment_f1_50_multi"])
+            assert rows[f"{name}, released numbers"]["multi"]["segment_f1_50"]["value"] == pytest.approx(released["segment_f1_50_multi"])
+            # the arm's own setting decodes twice: the calibration half when it is chosen, the selection half for its row
+            assert used.count({k: chosen["params"][k] for k in ("half_window", "threshold", "nms_radius")}) == 2
+    assert "every 0.5 s, own setting" not in rows and {"Perfect on the 0.5 s grid", "Perfect on the 0.2 s grid"} <= set(rows)
+    published = metrics.evaluate(decode(comparison.member_probabilities(stored, selection, (0, 1, 2)), B3), selection)
     assert rows[ROUTER]["multi"]["segment_f1_50"]["value"] == pytest.approx(published["segment_f1_50_multi"])
+    assert rows[ROUTER]["multi"]["segment_f1_50"]["support"] == sum(len(s.view_changes) + 1 for s in selection if s.kind == "multi")
     # the dense arm reads every sample of this made-up benchmark right, so its cuts are nearer than those of the 0.5 s grid
     dense_row = result["differences_from_published"]["every 0.1 s, own setting"]["multi"]["cut_distance_mean_s"]
     assert dense_row["value"] < 0 and rows["every 0.1 s, own setting"]["multi"]["cut_distance_mean_s"]["value"] == pytest.approx(0.0, abs=0.02)
     assert q1["arms"]["every 0.1 s"]["word"] == "candidate"
+    floors = [rows[f"Perfect on the {step} s grid"]["multi"]["cut_distance_mean_s"]["value"] for step in ("0.2", "0.5")]
+    assert floors[0] < floors[1]
     q2, q3 = result["q2"], result["q3"]
     assert q2["chosen"] == 0.0 and q2["word"] == "not supported on development data" and len(q2["curve"]["calibration"]) == len(followup.OFFSETS)
     assert {"offset", "accuracy", "macro_f1", "a4c_as_a5c", "a5c_as_a4c", "segment_f1_50"} <= set(q2["curve"]["selection"][0])
+    # the released setting decodes the check of the published number, the published row, the three other arms, and every offset
+    # three times: on the calibration half to choose it, and on both halves for its curve
+    assert used.count(dict(B3)) == 1 + 1 + 3 + 3 * len(followup.OFFSETS)
     assert q3["chosen"] in followup.WEIGHTS and q3["word"] in ("candidate", "not supported on development data")
     assert len(q3["curve"]) == len(followup.WEIGHTS) and "selection" in q3["curve"][0]
     assert not re.search(r"rec\d|native_\d|multi_\d|pairs_\d", json.dumps(result))  # pooled numbers only
@@ -227,15 +293,81 @@ def test_the_study_scores_every_arm_against_the_published_system(tmp_path, monke
 
 
 def test_the_study_needs_the_published_number_and_runs_without_the_other_system(tmp_path, monkeypatch):
-    _, command = study_inputs(tmp_path, monkeypatch, np.random.default_rng(5))
+    _, _, _, command = study_inputs(tmp_path, monkeypatch, np.random.default_rng(5))
     without = [arg for arg in command if "EchoViewCLIP" not in arg and arg != "--store"]
     assert followup.main([*without, "--out", str(tmp_path / "two.json")]) == 0
     result = json.loads((tmp_path / "two.json").read_text())
     assert result["q3"] == {"word": "not run: no stored outputs of EchoViewCLIP were given"}
+    with pytest.raises(SystemExit, match="no other system"):
+        followup.main([*without, "--store", f"STFM={tmp_path / 'EchoViewCLIP'}", "--out", str(tmp_path / "no.json")])
     monkeypatch.setattr(followup.comparison, "PUBLISHED_SELECTION_F1", 0.5)
     with pytest.raises(SystemExit, match=re.escape("must give 0.5")):
         followup.main([*command, "--out", str(tmp_path / "no.json")])
     assert not (tmp_path / "no.json").exists()
+
+
+def test_every_choice_is_made_on_the_calibration_half_and_reported_on_the_selection_half(monkeypatch):
+    halves, rng = two_halves(), np.random.default_rng(6)
+    calibration, selection = halves["calibration"], halves["selection"]
+    both = (*calibration, *selection)
+    dense = dense_from(both, rng, noise=0.0)
+    for s in calibration:  # on the calibration half only, EchoRouter reads every A5C sample as A4C by a margin of 0.8
+        a5c = s.labels == A5C
+        dense[s.id][a5c] = 0.0
+        dense[s.id][a5c, :, A4C], dense[s.id][a5c, :, A5C] = 2.0, 1.2
+    stored = at_published_centres(both, dense)
+    other = {s.id: (0.5 * np.eye(5)[s.labels] + 0.01).astype(np.float32) for s in both}  # the other system reads every sample right
+    calls, words = [], {}
+    score_rows = comparison.score_rows
+
+    def recorded(rows, sequences, draws, seed):
+        calls.append(([row.name for row in rows], sequences, draws, seed))
+        return score_rows(rows, sequences, draws, seed)
+
+    def spy(name, function):
+        def inner(*args):
+            words[name] = args
+            return function(*args)
+        return inner
+
+    monkeypatch.setattr(followup.comparison, "score_rows", recorded)
+    for name in ("word_q2", "word_q3"):
+        monkeypatch.setattr(followup, name, spy(name, getattr(followup, name)))
+    result = followup.study(stored, dense, other, halves, draws=40, seed=11)
+    assert result["draws"] == 40 and result["seed"] == 11
+    names, scored_on, draws, seed = calls[-1]  # the one scoring with intervals: the selection half, with the draws and the seed given
+    assert scored_on is selection and (draws, seed) == (40, 11) and names[0] == ROUTER
+    # Q1: with A5C read wrong on the calibration half no setting meets the floors there, so no arm has a row of its own
+    assert all(arm["setting"]["status"] == "infeasible" for arm in result["q1"]["arms"].values())
+    assert not any("own setting" in name for name in names) and "every 0.1 s, released numbers" in names
+    assert {arm["word"] for name, arm in result["q1"]["arms"].items() if name != "every 0.5 s"} == {"not supported on development data"}
+    # Q2: the offset that the calibration half needs is chosen, though the selection half needs none
+    assert result["q2"]["chosen"] == 1.0 and "A5C offset +1.0" in names
+    assert words["word_q2"] == (1.0, result["differences_from_published"]["A5C offset +1.0"])
+    assert [c["macro_f1"] for c in result["q2"]["curve"]["selection"]] == [1.0] * len(followup.OFFSETS)
+    assert result["q2"]["curve"]["calibration"][6]["offset"] == 0.0 and result["q2"]["curve"]["calibration"][6]["macro_f1"] < 1.0
+    assert result["q2"]["word"] == "not supported on development data"  # on the selection half the offset changes nothing
+    # Q3: the calibration half is read right only with the other system mixed in
+    chosen = result["q3"]["chosen"]
+    assert chosen > 0 and f"mixed with EchoViewCLIP, weight {chosen:.1f}" in names
+    assert words["word_q3"] == (chosen, result["differences_from_published"][f"mixed with EchoViewCLIP, weight {chosen:.1f}"])
+    assert result["q3"]["curve"][0]["weight"] == 0.0 and result["q3"]["curve"][0]["setting"]["status"] == "infeasible"
+    # and every reported number is of the selection half, which EchoRouter reads right
+    assert result["rows"][ROUTER]["recordings"]["accuracy"]["value"] == 1.0
+    assert result["rows"][ROUTER]["recordings"]["accuracy"]["support"] == sum(s.kind == "native" for s in selection)
+
+
+def test_the_word_of_an_arm_rests_on_its_row_with_a_setting_of_its_own(monkeypatch):
+    halves, rng = two_halves(), np.random.default_rng(7)
+    both = (*halves["calibration"], *halves["selection"])
+    dense = dense_from(both, rng)
+    given = []
+    word_q1 = followup.word_q1
+    monkeypatch.setattr(followup, "word_q1", lambda difference: given.append(difference) or word_q1(difference))
+    result = followup.study(at_published_centres(both, dense), dense, None, halves, draws=30)
+    differences = result["differences_from_published"]
+    assert [id(d) for d in given] == [id(differences[f"{arm}, own setting"]) for arm in result["q1"]["arms"] if arm != "every 0.5 s"]
+    assert result["q3"] == {"word": "not run: no stored outputs of EchoViewCLIP were given"}
 
 
 def test_the_logits_command_asks_for_every_sample(tiny, tmp_path, monkeypatch):  # noqa: F811

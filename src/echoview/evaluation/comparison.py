@@ -49,6 +49,8 @@ PUBLISHED = {
 PUBLISHED_SELECTION_F1 = 0.9594  # EchoRouter on the multi streams of the selection half
 TEST_LOGITS_SHA256 = "c5df435ef3022dd55f711c4efa72c74f19aad7f40193f179902c57dca97e288d"  # the file the plan names
 RELEASED_QUANTILE, THRESHOLD_CLOSE = 0.999, 1e-3  # the grid position of the released setting; logits of another machine move the threshold a little
+# The first read of the test benchmark (2026-11-24): docs/comparison/test.json. A later read must reproduce it.
+FIRST_READ_SHA256: str | None = "4f00000524df0581ee7f093980135a206c9180f51d15457524acb6547afe45c0"
 CLOSE = 5e-7
 DRAWS, SEED = 10_000, 20261123
 SHORT = 16  # samples: a segment of at most 1.6 s
@@ -568,23 +570,35 @@ def compare(sequences: tuple[Sequence, ...], rows: list[Row], draws: int = DRAWS
     return result
 
 
-def reproduced(earlier: Mapping, result: Mapping) -> dict:
+EARLIER_KEYS = ("benchmark", "sequences", "draws", "seed", "sha256", "settings", "published_numbers_reproduced", "rows",
+                "differences_from_echorouter", "named_comparisons", "seeds", "decoder_on_echorouter")
+
+
+def reproduced(earlier: object, result: Mapping) -> dict:
     """Every number of an earlier output of `score` must come out again in `result`, which may hold more rows.
 
-    A later read that adds a row (the plan's addendum) is held to this: the rows, the differences from EchoRouter,
-    the named comparisons, the seeds and the decoder on EchoRouter of the earlier output are compared as written,
-    number by number. A comparison that had no row with the decoder then is held to its published gap. Which rows
-    are best is taken again and is not compared. Stops when anything differs."""
+    A later read that adds a row (the plan's addendum) is held to this. Compared as written, number by number: the
+    rows, the differences from EchoRouter, the named comparisons, the seeds, the decoder on EchoRouter, the check of
+    the published numbers; the digests of the logits and of every store the earlier read used; and the settings of
+    the ensemble, of the seeds and of every system that had a setting then. A comparison that had no row with the
+    decoder then is held to its published gap. Which rows are best is taken again and is not compared; the settings
+    file of a later read is another file. Stops when anything differs."""
+    if not isinstance(earlier, Mapping) or any(key not in earlier for key in EARLIER_KEYS):
+        raise SystemExit("the earlier file is not an output of this command")
     new = json.loads(json.dumps(_clean(result), allow_nan=False))
     problems = [key for key in ("benchmark", "sequences", "draws", "seed", "published_numbers_reproduced", "decoder_on_echorouter")
-                if earlier.get(key) != new.get(key)]
+                if earlier[key] != new.get(key)]
+    problems += [f"sha256: {name}" for name, digest in earlier["sha256"].items() if name != "settings" and new["sha256"].get(name) != digest]
+    before, after = earlier["settings"], new["settings"]
+    problems += [f"settings: {key}" for key in ("ensemble", "seeds") if before.get(key) != after.get(key)]
+    problems += [f"settings: {name}" for name, chosen in before.get("systems", {}).items() if after.get("systems", {}).get(name) != chosen]
     for part in ("rows", "differences_from_echorouter"):
         problems += [f"{part}: {name}" for name, numbers in earlier[part].items() if new[part].get(name) != numbers]
     listed = [("named_comparisons", earlier["named_comparisons"], new["named_comparisons"])]
     listed += [(f"seeds: {name}", entries, new["seeds"].get(name, [])) for name, entries in earlier["seeds"].items()]
-    for label, before, after in listed:
-        now = {entry["system"]: entry for entry in after}
-        for entry in before:
+    for label, old_entries, new_entries in listed:
+        now = {entry["system"]: entry for entry in new_entries}
+        for entry in old_entries:
             found = now.get(entry["system"])
             same = found is not None and (found == entry if entry["row_with_decoder"] else found["published_gap"] == entry["published_gap"])
             if not same:
@@ -702,6 +716,8 @@ def check_test_setup(args: argparse.Namespace, chosen: Mapping, stores: Mapping[
     decided = set(chosen.get("systems", {})) | set(chosen.get("without_development_outputs", [])) | {"EchoPrime"}
     if decided != set(OTHERS) or set(chosen.get("systems", {})) & set(chosen.get("without_development_outputs", [])):
         problems.append("the settings file must say for every other system either its setting or that it has no development outputs")
+    if FIRST_READ_SHA256 is not None and (args.earlier is None or not args.earlier.is_file() or file_sha256(args.earlier) != FIRST_READ_SHA256):
+        problems.append("the test benchmark was read on 2026-11-24, and a later read must be given that read's output, unchanged (--earlier)")
     if problems:
         raise SystemExit("the test benchmark is not read: " + "; ".join(problems))
 

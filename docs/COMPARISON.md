@@ -413,7 +413,8 @@ The forward passes of step 1 were started at 06:49 UTC on 2026-11-24, before thi
 Rule 9 of section 7 said that stage B runs once. This is a second read. It is made for two rows only, and the owner authorised it on 2026-11-24.
 
 - **The same command, code path, draws and seed, and the same stored outputs.** The one new input is the settings file, which now holds a setting for STFM and for ASFormer.
-- **Every number of the first read must come out again exactly.** The command compares its result with `comparison/test.json` (SHA-256 `4f00000524df0581ee7f093980135a206c9180f51d15457524acb6547afe45c0`), number by number, for every row, difference and comparison of the first read. When one differs, nothing is written. So no number of section 10 can change.
+- **Every number of the first read must come out again exactly.** The command compares its result with `comparison/test.json` (SHA-256 `4f00000524df0581ee7f093980135a206c9180f51d15457524acb6547afe45c0`), number by number, for every row, difference and comparison of the first read. It also compares the digests of the logits and of the four stores, and the settings of the ensemble, the three seeds and EchoViewCLIP. When one differs, nothing is written. So no number of section 10 can change.
+- **The command now refuses any other read.** From this commit on, `score --benchmark test` stops unless it is given the output of the first read, unchanged, to compare with.
 - **What is new:** the rows "STFM + decoder" and "ASFormer + decoder" with every number of section 5, their two named comparisons, and their published gaps in two parts.
 - **The level stays.** The two comparisons were always among the four that section 6 names, so their 98.75% intervals decide, and the word follows rule 1 of section 7.
 - **The best row (rule 6) is taken again** over the rows as published, with the decoder, and EchoRouter without its decoder. With two more rows, a bold mark may move.

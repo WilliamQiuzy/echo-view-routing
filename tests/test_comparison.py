@@ -365,6 +365,7 @@ def test_the_commands_choose_score_and_write_once(tmp_path, monkeypatch, capsys)
     monkeypatch.setattr(comparison.benchmark, "load_test", lambda: seqs)
     monkeypatch.setattr(comparison, "_names", lambda images, sequences: names)
     monkeypatch.setattr(comparison, "PUBLISHED", {})
+    monkeypatch.setattr(comparison, "FIRST_READ_SHA256", None)  # this made-up benchmark has not been read yet
     logits, two = logits_from(seqs, rng), stores_for(seqs, rng)
     stores = {"EchoViewCLIP": two["EchoViewCLIP"], "STFM": two["EchoPrime"], "ASFormer": two["EchoViewCLIP"], "EchoPrime": two["EchoPrime"]}
     np.savez(tmp_path / "logits.npz", **logits)
@@ -434,6 +435,9 @@ def test_the_commands_choose_score_and_write_once(tmp_path, monkeypatch, capsys)
     three = [*development, "--store", f"ASFormer={tmp_path / 'ASFormer'}"]
     assert comparison.main(["settings", *common, *three, "--out", str(tmp_path / "settings3.json")]) == 0
     later = [*score(chosen_file="settings3.json")[:-1], str(tmp_path / "later.json"), "--earlier"]
+    monkeypatch.setattr(comparison, "FIRST_READ_SHA256", comparison.file_sha256(out))  # from now on the benchmark has been read once
+    with pytest.raises(SystemExit, match="a later read must be given that read's output"):
+        comparison.main([*later[:-1]])
     assert comparison.main([*later, str(out)]) == 0
     second = json.loads((tmp_path / "later.json").read_text())
     assert second["earlier_output"] == {"sha256": comparison.file_sha256(out), "rows": len(result["rows"]), "new_rows": ["ASFormer + decoder"]}
@@ -442,6 +446,9 @@ def test_the_commands_choose_score_and_write_once(tmp_path, monkeypatch, capsys)
     changed = json.loads(out.read_text())
     changed["rows"]["STFM"]["multi"]["segment_f1_50"]["value"] += 1e-9
     (tmp_path / "changed.json").write_text(json.dumps(changed))
+    with pytest.raises(SystemExit, match="a later read must be given that read's output"):  # another file than the first read's output
+        comparison.main([*later[:-2], str(tmp_path / "never.json"), "--earlier", str(tmp_path / "changed.json")])
+    monkeypatch.setattr(comparison, "FIRST_READ_SHA256", comparison.file_sha256(tmp_path / "changed.json"))
     with pytest.raises(SystemExit, match="does not come out again: rows: STFM"):
         comparison.main([*later[:-2], str(tmp_path / "never.json"), "--earlier", str(tmp_path / "changed.json")])
     assert not (tmp_path / "never.json").exists()
@@ -463,24 +470,50 @@ def test_the_commands_choose_score_and_write_once(tmp_path, monkeypatch, capsys)
 def test_an_earlier_output_is_compared_number_by_number():
     seqs, rng = sequences(), np.random.default_rng(8)
     logits, stores = logits_from(seqs, rng), stores_for(seqs, rng)
-    chosen = {"seeds": {}, "systems": {}}
-    first = {"benchmark": "test", "sequences": len(seqs), "published_numbers_reproduced": {},
-             **comparison.compare(seqs, comparison.build_rows(seqs, logits, stores, chosen), draws=50, seed=3)}
+
+    def output(settings: dict, seed: int = 3) -> dict:
+        return {"benchmark": "test", "sequences": len(seqs), "sha256": {"logits": "a", "settings": str(len(settings["systems"])), "EchoViewCLIP": "b"},
+                "settings": settings, "published_numbers_reproduced": {ROUTER: {"segment_f1_50_multi": 0.9}},
+                **comparison.compare(seqs, comparison.build_rows(seqs, logits, stores, settings), draws=50, seed=seed)}
+
+    seed_setting = {"params": {"half_window": 5, "threshold": 0.1, "nms_radius": 5}}
+    without = {"ensemble": {"params": dict(comparison.B3)}, "seeds": {"0": seed_setting}, "systems": {}}
+    with_setting = {**without, "systems": {"EchoViewCLIP": {"params": {"half_window": 5, "threshold": 0.05, "nms_radius": 5}}}}
+    first, more = output(without), output(with_setting)
     earlier = json.loads(json.dumps(comparison._clean(first)))
-    with_setting = {"seeds": {}, "systems": {"EchoViewCLIP": {"params": {"half_window": 5, "threshold": 0.05, "nms_radius": 5}}}}
-    more = {"benchmark": "test", "sequences": len(seqs), "published_numbers_reproduced": {},
-            **comparison.compare(seqs, comparison.build_rows(seqs, logits, stores, with_setting), draws=50, seed=3)}
     assert comparison.reproduced(earlier, more) == {"rows": len(earlier["rows"]), "new_rows": ["EchoViewCLIP + decoder"]}
     assert comparison.reproduced(earlier, first)["new_rows"] == []
-    other_draws = {**more, **comparison.compare(seqs, comparison.build_rows(seqs, logits, stores, with_setting), draws=50, seed=4)}
-    with pytest.raises(SystemExit, match="does not come out again: seed"):
-        comparison.reproduced(earlier, other_draws)
-    gap = json.loads(json.dumps(earlier))
-    entry = next(e for e in gap["named_comparisons"] if e["system"] == "EchoViewCLIP")
-    assert entry["row_with_decoder"] is None  # the earlier output had no row with the decoder: only its published gap is held to
-    entry["published_gap"]["value"] += 0.5
-    with pytest.raises(SystemExit, match="named_comparisons: EchoViewCLIP"):
-        comparison.reproduced(gap, more)
-    fewer = {**more, "rows": {k: v for k, v in more["rows"].items() if k != "EchoPrime per frame"}}
-    with pytest.raises(SystemExit, match="rows: EchoPrime per frame"):
-        comparison.reproduced(earlier, fewer)
+    assert earlier["seeds"] and earlier["differences_from_echorouter"]
+
+    def stops(changed: dict, later: dict, message: str) -> None:
+        with pytest.raises(SystemExit, match=re.escape(f"does not come out again: {message}")):
+            comparison.reproduced(changed, later)
+
+    def changed(edit) -> dict:
+        copy = json.loads(json.dumps(earlier))
+        edit(copy)
+        return copy
+
+    stops(earlier, output(with_setting, seed=4), "seed")
+    stops(changed(lambda e: e.update(sequences=e["sequences"] + 1)), more, "sequences")
+    stops(changed(lambda e: e["published_numbers_reproduced"][ROUTER].update(segment_f1_50_multi=0.8)), more, "published_numbers_reproduced")
+    stops(changed(lambda e: e["decoder_on_echorouter"]["multi"].update(value=9.0)), more, "decoder_on_echorouter")
+    stops(changed(lambda e: e["sha256"].update(logits="other")), more, "sha256: logits")
+    stops(changed(lambda e: e["sha256"].update(EchoViewCLIP="other")), more, "sha256: EchoViewCLIP")
+    assert comparison.reproduced(changed(lambda e: e["sha256"].update(settings="other")), more)  # the settings file of a later read is another file
+    stops(changed(lambda e: e["settings"]["ensemble"]["params"].update(half_window=9)), more, "settings: ensemble")
+    stops(changed(lambda e: e["settings"]["seeds"]["0"]["params"].update(half_window=9)), more, "settings: seeds")
+    stops(changed(lambda e: e["settings"]["systems"].update(EchoViewCLIP={"params": {}})), more, "settings: EchoViewCLIP")
+    stops(changed(lambda e: e["rows"]["EchoViewCLIP"]["pairs"]["edit"].update(value=1.0)), more, "rows: EchoViewCLIP")
+    stops(changed(lambda e: e["differences_from_echorouter"]["EchoViewCLIP"]["recordings"]["accuracy"].update(value=1.0)), more,
+          "differences_from_echorouter: EchoViewCLIP")
+    seed_row = next(iter(earlier["seeds"]))
+    stops(changed(lambda e: e["seeds"][seed_row][0]["published_gap"].update(value=1.0)), more, f"seeds: {seed_row}: EchoViewCLIP")
+    # a comparison that had no row with the decoder then is held to its published gap, and to nothing else
+    assert next(e for e in earlier["named_comparisons"] if e["system"] == "EchoViewCLIP")["row_with_decoder"] is None
+    stops(changed(lambda e: e["named_comparisons"][0]["published_gap"].update(value=1.0)), more, "named_comparisons: EchoViewCLIP")
+    stops(changed(lambda e: e["named_comparisons"][1]["named"].update(value=1.0)), more, "named_comparisons: EchoPrime")
+    stops(earlier, {**more, "rows": {k: v for k, v in more["rows"].items() if k != "EchoPrime per frame"}}, "rows: EchoPrime per frame")
+    for broken in ({"rows": {}}, [], {key: value for key, value in earlier.items() if key != "sha256"}):
+        with pytest.raises(SystemExit, match="not an output of this command"):
+            comparison.reproduced(broken, more)

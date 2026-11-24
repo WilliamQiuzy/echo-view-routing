@@ -17,11 +17,12 @@ from collections.abc import Mapping
 from pathlib import Path
 
 import numpy as np
+import torch
 
 from ..model import CLASSES
-from ..pipeline import Ensemble, probabilities_from_logits, softmax
+from ..pipeline import Ensemble, probabilities_from_logits
 from ..reference import B3
-from ..windows import window_centres
+from ..windows import nearest_centre, window_centres
 from . import benchmark, comparison, ev9v, metrics, run
 from .benchmark import Sequence
 from .comparison import DESCRIBED, DRAWS, NATIVE_STATS, ROUTER, SEED, STREAM_STATS, Row, Scored
@@ -43,11 +44,13 @@ Probabilities = dict[str, np.ndarray]
 
 # ------------------------------------------------------------------------------------------------- Q1: the read-out
 def dense_check(stored: Mapping[str, np.ndarray], dense: Mapping[str, np.ndarray], sequences: tuple[Sequence, ...]) -> dict:
-    """The dense logits must hold one output for every sample and, at the published centres, the stored logits."""
+    """The dense logits must hold one finite output for every sample and, at the published centres, the stored logits."""
     worst = 0.0
     for s in sequences:
         if dense[s.id].shape[0] != len(s):
             raise SystemExit("the dense logits do not hold one output for every sample of every sequence")
+        if not (np.isfinite(dense[s.id]).all() and np.isfinite(stored[s.id]).all()):
+            raise SystemExit("a logit of the dense or of the stored outputs is not finite")
         worst = max(worst, float(np.abs(dense[s.id][window_centres(len(s))] - stored[s.id]).max()))
     if worst > CLOSE:
         raise SystemExit(f"the dense logits do not agree with the stored ones at the published centres: {worst:.5f} apart")
@@ -58,7 +61,7 @@ def interpolated(logits: np.ndarray, n_samples: int) -> np.ndarray:
     """The published outputs (windows, models, 5) -> per-sample probabilities (samples, 5), each model's probabilities
     interpolated linearly between two window centres. Before the first and after the last centre they stay flat."""
     centres, samples = window_centres(n_samples), np.arange(n_samples)
-    by_window = softmax(logits)
+    by_window = torch.softmax(torch.from_numpy(np.asarray(logits, np.float32)), -1).numpy().astype(np.float64)  # as the published arm
     by_model = [np.stack([np.interp(samples, centres, by_window[:, m, v]) for v in range(by_window.shape[2])], 1) for m in range(by_window.shape[1])]
     return np.mean(by_model, 0)
 
@@ -71,6 +74,13 @@ def density_arms(stored: Mapping[str, np.ndarray], dense: Mapping[str, np.ndarra
     for name, stride in DENSER.items():
         arms[name] = {s.id: probabilities_from_logits(dense[s.id][window_centres(len(s), stride)], len(s), stride) for s in sequences}
     return arms
+
+
+def grid_labels(truth: np.ndarray, stride: int) -> np.ndarray:
+    """A perfect system that is read every `stride` samples: the reference view at each centre, given to the samples
+    nearest to it (the earlier centre on a tie, as everywhere in the package)."""
+    centres = window_centres(len(truth), stride)
+    return np.asarray(truth)[centres][nearest_centre(len(truth), centres)]
 
 
 def forward_passes(sequences: tuple[Sequence, ...]) -> dict[str, float]:
@@ -184,7 +194,9 @@ def study(stored: Mapping[str, np.ndarray], dense: Mapping[str, np.ndarray], oth
     calibration, selection = halves["calibration"], halves["selection"]
     members = tuple(range(next(iter(stored.values())).shape[1]))
     published = {half: member_probabilities(dict(stored), sequences, members) for half, sequences in halves.items()}
-    rows = [Row(ROUTER, ROUTER, "A", comparison.decoded(published["selection"], B3))]
+    rows = [Row(ROUTER, ROUTER, "A", comparison.decoded(published["selection"], B3)),
+            *(Row(f"Perfect on the {stride / metrics.HZ:.1f} s grid", "", "P", {s.id: grid_labels(s.labels, stride) for s in selection})
+              for stride in (5, 2))]
     result: dict = {"benchmark": "development", "draws": draws, "seed": seed,
                     "dense_check": dense_check(stored, dense, (*calibration, *selection))}
 
@@ -257,7 +269,10 @@ def logits_command(args: argparse.Namespace) -> None:
     sequences = tuple(s for half in benchmark.HALVES for s in halves[half])
     system = reference_system(args.weights, args.device, args.batch)
     table = ev9v.FrameTable.build(sequences, args.images, workers=args.workers)
-    run.save_logits({s.id: system.window_logits(table.frames(s), stride=1) for s in sequences}, args.out)
+    logits = {s.id: system.window_logits(table.frames(s), stride=1) for s in sequences}
+    if args.out.exists():  # made while this ran
+        raise SystemExit(f"{args.out} exists; this command does not replace an output")
+    run.save_logits(logits, args.out)
 
 
 def study_command(args: argparse.Namespace) -> None:
