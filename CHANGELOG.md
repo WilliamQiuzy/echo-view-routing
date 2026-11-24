@@ -7,6 +7,7 @@ Notable changes to this project. The format follows [Keep a Changelog](https://k
 ### Added
 
 - Every release from 1.2.1 on is archived on Zenodo. The README and `CITATION.cff` carry the DOI that stands for all versions, 10.5281/zenodo.24485965.
+- `docs/COMPARISON.md`: the plan of a fuller comparison with the four other approaches on the test benchmark, written before anything in it is computed. It fixes the numbers for every system, the rows that give the other systems the project's decoder, the intervals and the wording of the result.
 
 ### Fixed
 

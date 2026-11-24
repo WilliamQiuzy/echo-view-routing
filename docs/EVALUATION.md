@@ -129,6 +129,10 @@ python -m echoview.evaluation.uncertain_study report --logits dev_logits.npz --c
 - **The files of the study** are in `docs/uncertain/`: `choice.json` and `report.json`, as the commands wrote them. They hold pooled counts only.
 - **The measures** are in `echoview.evaluation.selective`. They score the labelled part and the uncertain part separately, and they put every number that can only improve when more is declined beside what it cost.
 
+## The comparison with other approaches
+
+[COMPARISON.md](COMPARISON.md) is the plan of a fuller comparison on the test benchmark: the numbers of this page and some more for every system, and rows that give the other systems the project's decoder. It was committed before the read it describes.
+
 ## Not here yet
 
 The MIMIC-IV-Echo evaluations of the model card were produced by the research code. They are not part of this package: MIMIC-IV-Echo is restricted-access data, and its reference there is another classifier's table.
