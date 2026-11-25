@@ -2,7 +2,7 @@
 
 Notable changes to this project. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the versions follow [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [1.3.1] - 2026-11-25
 
 The model, its weights, its decoder and every published number are unchanged. This version reports one read of the test benchmark and a review of the public documents against what a journal would ask of them.
 
