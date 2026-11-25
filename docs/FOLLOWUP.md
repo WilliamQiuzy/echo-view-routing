@@ -201,9 +201,9 @@ The calibration half chooses `w` = 0.2 (segment F1 0.987 against 0.984). On the 
 
 ## 9. Confirming the denser read-out on the test benchmark
 
-**Status: planned on 2026-11-24; the forward passes are done; the read waits for the owner's authorisation. The test benchmark has not been read for it.** Everything in this section down to "The result" was written and committed before any of its numbers existed.
+**Status: planned on 2026-11-24; the forward passes are done; the owner authorised the read on 2026-11-25. The read has not been made yet.** Everything in this section down to "The result" was written and committed before any of its numbers existed.
 
-Rule 4 of section 6 says what confirms a candidate: one read of the test benchmark for that question alone, with the owner's authorisation. This section prepares that read for the two candidates of Q1. The owner asked for the preparation on 2026-11-24. The read itself is made only once the owner has authorised it by name, and that is recorded here when it is given. An earlier version of this paragraph said that the authorisation had been given; that was written too early.
+Rule 4 of section 6 says what confirms a candidate: one read of the test benchmark for that question alone, with the owner's authorisation. This section prepares that read for the two candidates of Q1. The owner asked for the preparation on 2026-11-24. The read itself is made only once the owner has authorised it by name, and that is recorded here when it is given. An earlier version of this paragraph said that the authorisation had been given; that was written too early. On 2026-11-25 the owner was asked whether this one read may be made, and said yes. That was after the plan, the reviewed code and the result of the forward passes were public. This sentence was committed before the read.
 
 ### What is confirmed
 
