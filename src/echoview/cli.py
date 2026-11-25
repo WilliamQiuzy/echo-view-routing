@@ -14,7 +14,7 @@ evaluation, or with --benchmark test the frozen test benchmark. mimic-table writ
 MIMIC-IV-Echo view table, filled by this model.
 The model knows five views (PLAX, PSAX, A4C, A5C, SC4C) and always answers one of them. With --uncertain, segment
 leaves the samples unnamed where its answer is weak, most of them next to a change of view.
-With --read-every 0.2 or 0.1, segment reads the models more often than the published system does (not confirmed on the test benchmark).
+With --read-every 0.2 or 0.1, segment reads the models more often than the published system does (nearer cuts at a cost on the test benchmark).
 """
 from __future__ import annotations
 
@@ -38,6 +38,9 @@ CLASSIFY_HEADER = ("file", "predicted_view", "view_probability", *(f"p_{c}" for 
                    "fps", "samples_10hz", "windows", "reader", "view_classifier_version")
 SEGMENT_HEADER = ("segment", "start_s", "end_s", "view", "mean_probability", "view_classifier_version")
 READ_EVERY = {"0.5": STRIDE, "0.2": 2, "0.1": 1}  # seconds between two outputs of the models -> 10 Hz samples
+# What the one read of the test benchmark found for both denser steps (docs/FOLLOWUP.md, section 9; docs/followup/confirmation.json).
+DENSER_FOUND = ("On the test benchmark it has nearer cuts at a cost: the cuts lie nearer to the view changes, and it reads 784 of 800 single "
+                "recordings right where the published system reads 785 (docs/FOLLOWUP.md, section 9).")
 
 
 def parse_seeds(text: str) -> tuple[int, ...]:
@@ -145,9 +148,8 @@ def segment(args: argparse.Namespace) -> int:
     if stride != STRIDE:
         if not system.is_reference:  # weight files that are not the published ones
             raise SystemExit("--read-every has a decoder setting for the published system only, and these are not its weights")
-        print(f"note: a read-out every {args.read_every} s is not the published system. On development data its cuts lay nearer to the view "
-              f"changes; this is not confirmed on the test benchmark (docs/FOLLOWUP.md). It reads about {STRIDE / stride:g} times as many windows.",
-              file=sys.stderr)
+        print(f"note: a read-out every {args.read_every} s is not the published system. {DENSER_FOUND} "
+              f"It reads about {STRIDE / stride:g} times as many windows.", file=sys.stderr)
     stream = np.concatenate([r.frames for r in recordings])
     source = np.concatenate([np.full(len(r.frames), k) for k, r in enumerate(recordings)])
     if args.uncertain and not system.is_reference:
@@ -257,8 +259,8 @@ def parser() -> argparse.ArgumentParser:
                                                  "declined sample is \"uncertain\"")
     p.add_argument("--read-every", choices=tuple(READ_EVERY), default="0.5",
                    help="seconds between two outputs of the models. 0.5 is the published system. 0.2 and 0.1 read the same models more "
-                        "often (2.5 and 5 times the work): on development data the cuts lay nearer to the view changes; this is not "
-                        "confirmed on the test benchmark. See docs/FOLLOWUP.md")
+                        "often (about 2.5 and 5 times the work). On the test benchmark both have nearer cuts at a cost: one single "
+                        "recording more of 800 is misread. See docs/FOLLOWUP.md, section 9")
     p.add_argument("--uncertain", action="store_true",
                    help="decline where the answer is weak: such samples form pieces called \"uncertain\" (their mean probability "
                         "is that of the likeliest view); every other sample keeps its view. See docs/UNCERTAIN.md")

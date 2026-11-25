@@ -8,7 +8,7 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-from echoview import Ensemble, reference, windows
+from echoview import Ensemble, cli, reference, windows
 from echoview.evaluation import benchmark, comparison, followup, metrics, scorecard
 from echoview.evaluation.comparison import ROUTER
 from echoview.model import CLASSES
@@ -737,6 +737,34 @@ def test_the_code_names_the_dense_file_and_the_read_once_they_exist():
         assert json.loads(read.read_text())["sha256"]["dense"] == followup.TEST_DENSE_SHA256
     else:
         assert followup.CONFIRMATION_SHA256 is None
+
+
+def test_what_the_option_says_about_the_test_benchmark_is_what_the_read_found():
+    """The option's note and the README repeat the word of the read, its count of single recordings and its distances."""
+    root = Path(__file__).parents[1]
+    read = json.loads((root / "docs" / "followup" / "confirmation.json").read_text())
+    arms = ("every 0.2 s", "every 0.1 s")
+    accuracy = {name: read["rows"][name]["recordings"]["accuracy"] for name in (ROUTER, *arms)}
+    assert {name: round(a["value"] * a["support"]) for name, a in accuracy.items()} == {ROUTER: 785, arms[0]: 784, arms[1]: 784}
+    assert {a["support"] for a in accuracy.values()} == {800}
+    assert set(read["confirmation"]) == set(arms)
+    distance = {name: read["rows"][name]["multi"]["cut_distance_mean_s"]["value"] for name in (ROUTER, *arms)}
+    for name in arms:  # the word of each step, taken again from the numbers of the file
+        entry, differences = read["confirmation"][name], read["differences_from_published"][name]
+        assert entry["cut_distance"]["value"] == differences["multi"]["cut_distance_mean_s"]["value"] == pytest.approx(distance[name] - distance[ROUTER])
+        assert entry["segment_f1_50"]["value"] == differences["multi"]["segment_f1_50"]["value"]
+        assert entry["macro_f1"]["value"] == differences["recordings"]["macro_f1"]["value"]
+        again = followup.word_confirm(entry["cut_distance"], entry["segment_f1_50"], entry["macro_f1"])
+        assert again == {key: entry[key] for key in again}
+        assert again == {"nearer_cuts": True, "segment_f1_kept": True, "recordings_kept": False, "word": AT_A_COST}
+    assert AT_A_COST in cli.DENSER_FOUND and "784 of 800 single recordings right where the published system reads 785" in cli.DENSER_FOUND
+    readme = (root / "README.md").read_text()
+    said = {name: f"{value:.3f} s" for name, value in distance.items()}
+    assert f"the cuts lie {said[arms[0]]} and {said[arms[1]]} from the view changes where the published system's lie {said[ROUTER]} away" in readme
+    assert f"brings its cuts to {said[arms[1]]} on this benchmark, against {said[ROUTER]}" in readme
+    assert f"its cuts are {said[arms[1]]} off instead of {said[ROUTER]}" in readme
+    assert "784 of the 800 single recordings are read right where the published system reads 785" in readme
+    assert AT_A_COST in readme and "not confirmed" not in readme and CONFIRMED not in readme
 
 
 def test_an_output_appears_whole_or_not_at_all(tmp_path, monkeypatch):

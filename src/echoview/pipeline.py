@@ -133,7 +133,7 @@ class Ensemble:
         """The decoder setting for a read-out every `stride` samples: the system's own at 5, the published step.
 
         The published system also has a setting for 2 and for 1 sample (reference.DENSER_READ_OUT). Those read-outs
-        were chosen on development data and are not confirmed on the test benchmark (docs/FOLLOWUP.md).
+        were chosen on development data; on the test benchmark they have nearer cuts at a cost (docs/FOLLOWUP.md, section 9).
         """
         if stride == STRIDE:
             return self.b3
@@ -185,8 +185,8 @@ class Ensemble:
 
         `stride` is the number of samples between two outputs of the models. 5 is the published system. With 2 or 1
         the published models are read more often and decoded with the setting of `decoder_setting(stride)`: the cuts
-        lay nearer to the view changes on development data, this is not confirmed on the test benchmark, and the
-        uncertain rule was not studied with it (docs/FOLLOWUP.md).
+        lie nearer to the view changes on development data and on the test benchmark, where one single recording
+        more of 800 is misread, and the uncertain rule was not studied with it (docs/FOLLOWUP.md).
         """
         rule = uncertain.OFF if rule is None else rule
         if stride != STRIDE and rule != uncertain.OFF:

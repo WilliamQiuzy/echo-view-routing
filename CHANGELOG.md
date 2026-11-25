@@ -8,8 +8,13 @@ Notable changes to this project. The format follows [Keep a Changelog](https://k
 
 - `docs/FOLLOWUP.md`, section 9: the plan of one read of the test benchmark that would confirm the denser read-out, written before any of its numbers. `python -m echoview.evaluation.followup logits --test` writes the published models' outputs for every sample of the test benchmark, and `confirm` makes the read: it holds the published system's rows to the comparison's first read, scores the two released steps, and can afterwards only reproduce its own output.
 
+### Read once (2026-11-25)
+
+- The frozen EV9V test benchmark with the two steps of `--read-every`, by the plan of `docs/FOLLOWUP.md`, section 9 (`docs/followup/confirmation.json`): both steps have nearer cuts at a cost. On the multi streams the cuts lie 0.122 s (every 0.2 s) and 0.085 s (every 0.1 s) from the view changes, where the published system's lie 0.153 s away, and segment F1 at 50% is not lower (0.914 and 0.921 against 0.909). The cost is in the single recordings: at both steps 784 of 800 are read right where the published system reads 785. The published system, its numbers and the default read-out of 0.5 s are unchanged.
+
 ### Changed
 
+- The note and the help text of `echoview segment --read-every`, and the README, say what the read of the test benchmark found, where they said that the option was not confirmed there.
 - The outputs of `echoview.evaluation.comparison` and `echoview.evaluation.followup` are written whole or not at all, so a run that is stopped while it writes leaves no file behind.
 
 ## [1.3.0] - 2026-11-24

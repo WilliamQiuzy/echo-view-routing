@@ -57,7 +57,7 @@ On the project's frozen EV9V test benchmark we scored four published approaches 
 - **Where it does not:**
   - Single recordings: EchoViewCLIP is the best row, 98.9% against 98.1%.
   - Pair streams: all rows but one are close, and EchoViewCLIP with the decoder is highest.
-  - Exact cuts: ASFormer and EchoPrime's classifier give an output for every sample, and their cuts are at most 0.02 s off on average. EchoRouter is read every 0.5 s and is 0.15 s off on average; a perfect system on that grid would be 0.12 s off. Reading it every 0.1 s halves the distance on development data (0.07 s against 0.15 s); that option is off by default and is not confirmed on this benchmark ([docs/FOLLOWUP.md](docs/FOLLOWUP.md)).
+  - Exact cuts: ASFormer and EchoPrime's classifier give an output for every sample, and their cuts are at most 0.02 s off on average. EchoRouter is read every 0.5 s and is 0.15 s off on average; a perfect system on that grid would be 0.12 s off. Reading it every 0.1 s brings its cuts to 0.085 s on this benchmark, against 0.153 s, at a cost: it reads 784 of the 800 single recordings right where the published system reads 785. That option is off by default ([docs/FOLLOWUP.md](docs/FOLLOWUP.md), section 9).
   - Precision of the cuts: ASFormer with the decoder has the highest, 0.961 against 0.934.
   - Wrong samples: ASFormer has the fewest, 9.0% against 9.4%.
 - **How to read the table.** We ran all five. STFM, ASFormer and EchoViewCLIP were trained by us on EV9V's training recordings, and EchoPrime's classifier is the released one. The benchmark is ours. Its streams are built from pieces of recordings, it is not the task these methods were published for, and it is not an untouched test set. On development data EchoRouter's lead over EchoViewCLIP with the decoder was larger (0.094); the test benchmark did not bear that out.
@@ -95,8 +95,9 @@ echoview segment clip1.dcm clip2.dcm clip3.dcm --out segments.csv --samples samp
 # the same, and leave the weak parts unnamed: they come back as pieces called "uncertain"
 echoview segment clip1.dcm clip2.dcm clip3.dcm --uncertain --out segments.csv
 
-# read the models every 0.1 s instead of every 0.5 s: five times the work. On development data the cuts
-# lie nearer to the view changes; this is not confirmed on the test benchmark (docs/FOLLOWUP.md)
+# read the models every 0.1 s instead of every 0.5 s: about five times the work. On the test benchmark the cuts
+# lie nearer to the view changes (0.085 s against 0.153 s), and one single recording more of 800 is misread
+# (docs/FOLLOWUP.md, section 9)
 echoview segment clip1.dcm clip2.dcm clip3.dcm --read-every 0.1 --out segments.csv
 ```
 
@@ -129,7 +130,7 @@ Options for every command:
 - **Ensemble.** Three training seeds of the same network. Their probabilities are averaged.
 - **Recording view.** The mean of the window probabilities. The largest of the five wins.
 - **Stream segmentation.** Every 0.1 s sample takes the probability of the nearest window. A change-point decoder cuts where the probabilities before and after a sample differ and the two sides name different views.
-- **A denser read-out, on request.** `--read-every 0.2` or `0.1` asks the window model for a prediction every 0.2 s or 0.1 s and decodes with a setting chosen for that step. This is not the published system: it was chosen on development data, where its cuts lie about half as far from the view changes, and it is not confirmed on the test benchmark ([docs/FOLLOWUP.md](docs/FOLLOWUP.md)). It does not combine with `--uncertain`.
+- **A denser read-out, on request.** `--read-every 0.2` or `0.1` asks the window model for a prediction every 0.2 s or 0.1 s and decodes with a setting chosen for that step. This is not the published system. It was chosen on development data. One read of the test benchmark found nearer cuts at a cost for both steps: the cuts lie 0.122 s and 0.085 s from the view changes where the published system's lie 0.153 s away, segment F1 is not lower, and 784 of the 800 single recordings are read right where the published system reads 785 ([docs/FOLLOWUP.md](docs/FOLLOWUP.md), section 9). It does not combine with `--uncertain`.
 - **Uncertain output, on request.** The decoder runs as above. Then the 0.3 s before and after every cut are marked uncertain, and so is a part whose view hangs on a weak cut or on a narrow margin between two views. Every other sample keeps the view it has without the option.
 
 ## Results
@@ -221,7 +222,7 @@ Stage 3 needs a GPU with 32 GB of memory. On a machine that can be switched off,
 
 - **Five views only.** The model has no "other" class. A recording of any other view still gets one of the five names, often with a high probability. The uncertain output does not change this: it marks weak evidence between the five views.
 - **A4C against A5C is its weakest distinction.**
-- **Cuts on a 0.5 s grid.** The published system gives one prediction every 0.5 s, so a cut can be a few tenths of a second off. `--read-every 0.1` reads more often; it is not confirmed on the test benchmark.
+- **Cuts on a 0.5 s grid.** The published system gives one prediction every 0.5 s, so a cut can be a few tenths of a second off. `--read-every 0.1` reads more often: on the test benchmark its cuts are 0.085 s off instead of 0.153 s, at about five times the work, and one single recording more of 800 is misread.
 - **One training site and vendor.** Robustness to another vendor's recordings comes from input augmentation and was measured as agreement with another classifier.
 - **Research use only.** This is not a medical device and it is not validated for clinical use.
 

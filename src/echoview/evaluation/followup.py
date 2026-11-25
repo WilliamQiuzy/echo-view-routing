@@ -11,7 +11,8 @@ test benchmark (docs/FOLLOWUP.md).
 Q1 asks the window model more often than every 0.5 s. Q2 adds one number to the A5C logit. Q3 mixes EchoViewCLIP's
 probabilities in. Each is chosen on the calibration half and reported on the selection half against the published
 system, with the numbers and the paired resamples of the comparison (comparison.py). The plan fixes when a change is
-called a candidate. `logits` and `study` never read the test benchmark.
+called a candidate. `study` never reads the test benchmark. `logits` reads it only with `--test`: its images, and no
+label.
 
 `confirm` is the one read of the test benchmark that section 9 of the plan allows: the two denser read-outs of Q1, with
 their released settings, against the published system. It first holds the published system's rows to the comparison's
@@ -51,7 +52,7 @@ HELD_ROWS = (ROUTER, "Perfect on the 0.5 s grid")  # rows of the comparison's fi
 # The outputs of the published models for every sample of the test benchmark (`logits --test`): the digest of that file
 # is committed before the read (docs/followup/dense_test_check.json), and the read takes no other file.
 TEST_DENSE_SHA256: str | None = "d1a23a82577b9af9fbade07c4f40aca64e081647c0e40d9af057e63f8bc3e500"
-CONFIRMATION_SHA256: str | None = None  # docs/followup/confirmation.json, once the read is made
+CONFIRMATION_SHA256: str | None = "87bd05802365859c63c9279cb6aa6d02b2a4ee1d32a71434d6e3c49538a0f5a2"  # docs/followup/confirmation.json, read on 2026-11-25
 A5C = CLASSES.index("A5C")
 CURVE_NUMBERS = {"recordings": ("accuracy", "macro_f1", "a4c_as_a5c", "a5c_as_a4c", "recall_A4C", "recall_A5C"),
                  "multi": ("segment_f1_50", "piece_midpoint_A4C", "piece_midpoint_A5C", "wrong_samples", "cut_distance_mean_s")}

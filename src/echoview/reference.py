@@ -17,7 +17,7 @@ B3 = {"half_window": 7, "threshold": 0.1737918038235492, "nms_radius": 5}
 # Denser read-outs of the same window models (`echoview segment --read-every 0.2` or `0.1`): the step in 10 Hz samples
 # and the decoder setting that the rule of the published setting chose for it on the EV9V calibration half. They are
 # not the published system. On development data their cuts lie nearer to the view changes (docs/FOLLOWUP.md,
-# 2026-11-24); they are not confirmed on the test benchmark.
+# 2026-11-24). One read of the test benchmark found nearer cuts at a cost for both (section 9, 2026-11-25).
 DENSER_READ_OUT = {
     2: {"half_window": 5, "threshold": 0.14143450216969344, "nms_radius": 5},
     1: {"half_window": 5, "threshold": 0.15282496262461148, "nms_radius": 5},

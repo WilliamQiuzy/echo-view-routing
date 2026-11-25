@@ -1,6 +1,6 @@
 # After the comparison: three checks on development data
 
-**Status: done on 2026-11-24.** A denser read-out is a candidate: on development data its cuts lie nearer to the view changes and nothing else is lost. It is offered as an option that is off by default, and it is not confirmed on the test benchmark. The offset between A4C and A5C and the mix with EchoViewCLIP are not supported on development data. Sections 1 to 7 are the plan. They were committed before any of their numbers existed, as commits `c1e6252` and `a98fccc`. The results are in section 8. The test benchmark was not read for sections 1 to 8. Section 9 plans one read of it that would confirm the denser read-out; that read has not been made.
+**Status: done on 2026-11-24; the read of section 9 was made on 2026-11-25.** A denser read-out is a candidate: on development data its cuts lie nearer to the view changes and nothing else is lost. It is offered as an option that is off by default. One read of the test benchmark found nearer cuts at a cost for both of its steps: the cuts are nearer, segment F1 is not lower, and one single recording more of 800 is misread (section 9). The offset between A4C and A5C and the mix with EchoViewCLIP are not supported on development data. Sections 1 to 7 are the plan. They were committed before any of their numbers existed, as commits `c1e6252` and `a98fccc`. The results are in section 8. The test benchmark was not read for sections 1 to 8. Section 9 is the plan of one read of it for the denser read-out, and the result of that read.
 
 Words used here are those of [COMPARISON.md](COMPARISON.md): a **piece** is a run of samples of the reference that come from one recording, a **segment** is a run of samples to which a system gives one view, a **cut** is a sample whose view differs from the view of the sample before it, and a **stream** is several recordings joined into one sequence. A **sample** is 0.1 s.
 
@@ -131,7 +131,7 @@ An arm minus the published system, with 95% intervals:
 | every 0.2 s | 0.948 | 0.971 | 72.0% | 88.2% | 0.954 | 0.971 | 0.111 | 5.6% | 2.6% | 97.1% | 30 | 23 | 99.3% | 0.988 |
 | every 0.1 s | 0.959 | 0.967 | 81.4% | 92.4% | 0.964 | 0.976 | 0.071 | 4.1% | 1.7% | 97.5% | 23 | 18 | 98.9% | 0.979 |
 
-**What follows from Q1.** By rule 4 of section 6 the two candidates are offered as an option that is off by default: `echoview segment --read-every 0.2` or `0.1`, and `Ensemble.segment(frames, stride=2)` or `stride=1` in Python. The option decodes with the settings of the table above, says on every run that it is not the published system, writes its step into the version column of its output, and does not combine with `--uncertain`, which was studied with the published read-out only. The published system and every published number stay as they are. The option was checked against the study on 55 sequences of the selection half (12 multi streams, 14 pair streams, 29 single recordings): at each of the three steps `Ensemble.segment` returns the views that the study decoded, for all 55. Confirming the option would take one read of the test benchmark for this question alone: forward passes of the published models for every sample of the benchmark, with the owner's authorisation. That read has not been asked for.
+**What follows from Q1.** By rule 4 of section 6 the two candidates are offered as an option that is off by default: `echoview segment --read-every 0.2` or `0.1`, and `Ensemble.segment(frames, stride=2)` or `stride=1` in Python. The option decodes with the settings of the table above, says on every run that it is not the published system, writes its step into the version column of its output, and does not combine with `--uncertain`, which was studied with the published read-out only. The published system and every published number stay as they are. The option was checked against the study on 55 sequences of the selection half (12 multi streams, 14 pair streams, 29 single recordings): at each of the three steps `Ensemble.segment` returns the views that the study decoded, for all 55. Confirming the option would take one read of the test benchmark for this question alone: forward passes of the published models for every sample of the benchmark, with the owner's authorisation. That read has not been asked for. (It was asked for later: section 9 plans and reports it.)
 
 ### Q2. An offset between A4C and A5C: not supported
 
@@ -201,7 +201,7 @@ The calibration half chooses `w` = 0.2 (segment F1 0.987 against 0.984). On the 
 
 ## 9. Confirming the denser read-out on the test benchmark
 
-**Status: planned on 2026-11-24; the forward passes are done; the owner authorised the read on 2026-11-25. The read has not been made yet.** Everything in this section down to "The result" was written and committed before any of its numbers existed.
+**Status: planned on 2026-11-24 and read on 2026-11-25. Both steps have nearer cuts at a cost.** Everything in this section down to "The result" was written and committed before any of its numbers existed.
 
 Rule 4 of section 6 says what confirms a candidate: one read of the test benchmark for that question alone, with the owner's authorisation. This section prepares that read for the two candidates of Q1. The owner asked for the preparation on 2026-11-24. The read itself is made only once the owner has authorised it by name, and that is recorded here when it is given. An earlier version of this paragraph said that the authorisation had been given; that was written too early. On 2026-11-25 the owner was asked whether this one read may be made, and said yes. That was after the plan, the reviewed code and the result of the forward passes were public. This sentence was committed before the read.
 
@@ -262,3 +262,50 @@ These rules are fixed now. They are the three conditions of rule 1 of section 6,
 - **The file.** One output of each of the three published models for every sample of the 1,160 sequences: 72,185 samples. Its SHA-256 is `d1a23a82577b9af9fbade07c4f40aca64e081647c0e40d9af057e63f8bc3e500`, and the code now names it: `confirm` takes this file and no other.
 - **The check.** Every logit is a finite number. At the 14,871 published positions the new logits differ from the stored test logits by 0.000005 at most, where the plan allows 0.001.
 - **What the steps read.** 35,791 windows at 0.2 s and 72,185 at 0.1 s, against 14,871 for the published system.
+
+### The result
+
+**Read on 2026-11-25 at 06:18 UTC with the code of commit `b15ff57`. Both steps have nearer cuts at a cost.** The owner authorised the read on that day. The sentence that records it is that commit, made at 06:18:03 UTC. The read ran from 06:18:42 to 06:18:58 UTC, and its line in the access record of the test benchmark carries the time 06:18:42. Its output is [`followup/confirmation.json`](followup/confirmation.json), SHA-256 `87bd05802365859c63c9279cb6aa6d02b2a4ee1d32a71434d6e3c49538a0f5a2`. The code now names that file, so `confirm` can only reproduce it from here on.
+
+**The checks before the scoring held.** The stored logits give the four published numbers: 0.909 and 0.985 for the segment F1 at 50% of the multi and the pair streams, 98.1% and 0.956 for the accuracy and the macro-F1 of the single recordings. The rows "EchoRouter" and "Perfect on the 0.5 s grid" equal those of the comparison's first read number by number, intervals included.
+
+The three conditions and the word for each step. The intervals of (a) are at 97.5%, over streams and over examinations; those of (b) and (c) are at 95%.
+
+| Step | Windows read | Cut distance minus the published system (s) | 97.5% over streams | 97.5% over examinations | (a) nearer cuts | Segment F1 at 50% minus the published system | (b) kept | Macro-F1 of single recordings minus the published system | (c) kept | Word |
+|---|---|---|---|---|---|---|---|---|---|---|
+| every 0.2 s | 2.4× | -0.031 | [-0.044, -0.017] | [-0.045, -0.017] | yes | +0.005 [-0.009, +0.018] | yes | -0.004 [-0.015, +0.005] | no | **nearer cuts at a cost** |
+| every 0.1 s | 4.9× | -0.068 | [-0.080, -0.056] | [-0.083, -0.054] | yes | +0.012 [+0.000, +0.023] | yes | -0.003 [-0.011, +0.000] | no | **nearer cuts at a cost** |
+
+Every row. Stream numbers are for the multi streams unless a column says pairs.
+
+| Row | Segment F1 at 50%, multi | pairs | Cut recall within 0.1 s | 0.2 s | Cut precision (0.5 s) | Cut recall (0.5 s) | Cut distance (s) | View changes with a matched cut | Wrong samples | of them edge | Piece midpoint | Segments that match nothing | Segments missed | Recordings: accuracy | Macro-F1 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| every 0.5 s (published) | 0.909 | 0.985 | 52.5% | 79.2% | 0.934 | 0.937 | 0.153 | 95.0% | 9.4% | 3.2% | 93.7% | 46 | 45 | 98.1% | 0.956 |
+| every 0.2 s | 0.914 | 0.986 | 68.1% | 82.6% | 0.952 | 0.947 | 0.122 | 95.5% | 8.3% | 2.6% | 94.2% | 42 | 44 | 98.0% | 0.952 |
+| every 0.1 s | 0.921 | 0.986 | 74.9% | 88.7% | 0.957 | 0.950 | 0.085 | 95.8% | 7.3% | 1.8% | 94.4% | 38 | 41 | 98.0% | 0.953 |
+| a perfect system read every 0.5 s | 1.000 | 1.000 | 60.4% | 100.0% | 1.000 | 1.000 | 0.121 | 100.0% | 3.0% | 3.0% | 100.0% | 0 | 0 | 100.0% | 1.000 |
+| a perfect system read every 0.2 s | 1.000 | 1.000 | 100.0% | 100.0% | 1.000 | 1.000 | 0.053 | 100.0% | 1.3% | 1.3% | 100.0% | 0 | 0 | 100.0% | 1.000 |
+
+An arm minus the published system, with 95% intervals. Shares are in percentage points.
+
+| Arm minus the published system | Cut distance (s) | Segment F1 at 50%, multi | pairs | Cut recall within 0.1 s | within 0.2 s | Wrong samples | of them edge | Piece midpoint | Accuracy of recordings | Macro-F1 of recordings |
+|---|---|---|---|---|---|---|---|---|---|---|
+| every 0.2 s | -0.031 [-0.043, -0.019] | +0.005 [-0.009, +0.018] | +0.001 [+0.000, +0.004] | +15.6 [+9.8, +21.4] | +3.4 [-0.7, +7.6] | -1.1 [-1.8, -0.3] | -0.7 [-1.0, -0.3] | +0.4 [-0.4, +1.4] | -0.1 [-0.6, +0.3] | -0.004 [-0.015, +0.005] |
+| every 0.1 s | -0.068 [-0.081, -0.055] | +0.012 [+0.000, +0.023] | +0.001 [+0.000, +0.004] | +22.4 [+16.9, +28.1] | +9.5 [+5.6, +13.7] | -2.1 [-2.9, -1.5] | -1.5 [-1.8, -1.2] | +0.7 [-0.1, +1.7] | -0.1 [-0.4, +0.0] | -0.003 [-0.011, +0.000] |
+
+- **Every 0.1 s has nearer cuts at a cost.**
+  - (a) holds. Its cuts are 0.085 s from the view changes on average, where the published system's are 0.153 s away. The difference is -0.068 s, and at 97.5% its interval runs from -0.083 to -0.054 over streams and examinations together. 74.9% of the 379 view changes have a cut within 0.1 s, against 52.5%.
+  - (b) holds. Segment F1 at 50% is 0.921 against 0.909. Wrong samples fall from 9.4% to 7.3%, and most of the fall is at the edges of the pieces (3.2% to 1.8%). The segments that match nothing fall from 46 to 38.
+  - (c) does not hold. The macro-F1 of the single recordings is 0.953 against 0.956: -0.003, with the interval [-0.011, +0.000]. This is one recording of 800. The published system reads it right and this step does not, and no recording goes the other way.
+- **Every 0.2 s has nearer cuts at a cost.**
+  - (a) holds. Its cuts are 0.122 s away: -0.031 s, with the interval from -0.045 to -0.017 at 97.5%. 68.1% of the view changes have a cut within 0.1 s.
+  - (b) holds. Segment F1 at 50% is 0.914 against 0.909.
+  - (c) does not hold. The macro-F1 of the single recordings is 0.952 against 0.956: -0.004, with the interval [-0.015, +0.005]. Two recordings are read right only by the published system and one only by this step.
+- **The cost is A5C read as A4C, in single recordings.** The benchmark has 40 single recordings of A5C. The published system reads 38 of them right, the step of 0.2 s reads 36 and the step of 0.1 s reads 37; the others are read as A4C. The step of 0.2 s reads one more of the 231 recordings of A4C right (220 against 219). A4C against A5C is the weakness that the comparison already names, and in single recordings a denser read-out does not help it. On the multi streams it is the other way at 0.1 s: more samples of both views are read right (A5C 81.5% against 78.9%, A4C 92.9% against 90.0%, both intervals above zero), while the middles of their pieces are not shown to change.
+- **The cost is one recording, and the rule is on the value.** Both intervals of (c) reach zero and go down to -0.015 and -0.011. So the read shows neither that a denser read-out reads single recordings worse nor that it reads them as well. Rule 3 asks that the value is not lower, and it is lower: at both steps one single recording more of 800 is misread. The plan said that one recording can decide this rule. The word is the one that the rules give.
+- **The gain is smaller than on development data.** The plan expected about 0.07 s at 0.1 s and about 0.11 s at 0.2 s. The read gives 0.085 s and 0.122 s. The cuts come nearer by 0.068 s and 0.031 s, where the selection half gave 0.082 s and 0.044 s. Segment F1 at 0.1 s is higher by 0.012, a little more than the 0.01 that the plan expected. That is a description: the plan tested no gain in segment F1.
+- **The grid is not all.** A perfect system that is read every 0.5 s is 0.121 s off on average, and one that is read every 0.2 s is 0.053 s off. Read for every sample, EchoRouter is still 0.085 s off, and that part is not the grid's.
+- **What is not shown to change.** The pieces that are read as another view as a whole are 4.3% of the samples for the published system, 4.2% at 0.2 s and 4.0% at 0.1 s, and the intervals of both differences include zero. A denser read-out moves cuts. The read does not show that it changes what the model takes a piece for.
+- **The distances are averaged over nearly the same number of view changes.** 360 of the 379 view changes have a matched cut for the published system, 362 at 0.2 s and 363 at 0.1 s.
+
+**What follows.** By rule 5 the published system and every published number stay as they are, and the default read-out stays 0.5 s. The option's note, its help text and the README now say what this read found, where they said "not confirmed". The test benchmark is not read again for this question. Making a denser read-out the default would be a new decision of the owner. The limits of the plan hold for this result: the question came from this benchmark, and its view changes are joins of recordings.

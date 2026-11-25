@@ -115,7 +115,8 @@ def test_segment_reads_more_often_when_asked_and_says_that_this_is_not_the_publi
     assert {r["view_classifier_version"] for r in rows} == {f"{Ensemble.from_models([BrightnessModel()], B3).version}, read every 0.1 s"}
     assert {r["view_classifier_version"] for r in rows_of(pieces)} == {Ensemble.from_models([BrightnessModel()], B3).version}
     said = capsys.readouterr().err
-    assert "not the published system" in said and "not confirmed on the test benchmark" in said and "docs/FOLLOWUP.md" in said
+    assert "not the published system" in said and "nearer cuts at a cost" in said and "docs/FOLLOWUP.md" in said
+    assert "784 of 800 single recordings right where the published system reads 785" in said and "not confirmed" not in said
     fifth = tmp_path / "fifth.csv"
     assert cli.main(["segment", str(a), str(b), "--fps", "10", "--read-every", "0.2", "--out", str(fifth)]) == 0
     rows = rows_of(fifth)
@@ -123,8 +124,14 @@ def test_segment_reads_more_often_when_asked_and_says_that_this_is_not_the_publi
     assert {r["view_classifier_version"] for r in rows} == {f"{Ensemble.from_models([BrightnessModel()], B3).version}, read every 0.2 s"}
     said = capsys.readouterr().err
     assert "a read-out every 0.2 s is not the published system" in said and "2.5 times as many windows" in said
+    assert "nearer cuts at a cost" in said
     with pytest.raises(SystemExit):
         cli.main(["segment", str(a), str(b), "--fps", "10", "--read-every", "0.3"])
+    capsys.readouterr()
+    with pytest.raises(SystemExit):
+        cli.main(["segment", "--help"])
+    said = " ".join(capsys.readouterr().out.split())  # the help says what the read of the test benchmark found
+    assert "both have nearer cuts at a cost: one single recording more of 800 is misread" in said and "not confirmed" not in said
 
 
 @pytest.mark.parametrize("every", ["0.2", "0.1"])

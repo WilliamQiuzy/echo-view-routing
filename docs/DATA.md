@@ -26,7 +26,7 @@ Four kinds of file say which frames are read. All are in `src/echoview/data/`.
 
 - **Training.** 3,364 recordings. Only these are read by the training code.
 - **Development, two halves.** 284 recordings in the `selection` half and 237 in the `calibration` half. The halves were split by recording session, so they share no session and no recording. The decoder setting is chosen on `calibration`. The development numbers are read from `selection`.
-- **Test.** 800 recordings from 125 examinations. Only `echoview evaluate --benchmark test` reads them. They share no recording with the training and development data, and nothing in training or in the choice of the decoder setting reads them.
+- **Test.** 800 recordings from 125 examinations. `echoview evaluate --benchmark test` reads them, and so do the planned reads that [UNCERTAIN.md](UNCERTAIN.md), [COMPARISON.md](COMPARISON.md) and [FOLLOWUP.md](FOLLOWUP.md) report. They share no recording with the training and development data, and nothing in training or in the choice of the decoder setting reads them.
 
 ## The development benchmark
 
