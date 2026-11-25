@@ -201,7 +201,7 @@ The calibration half chooses `w` = 0.2 (segment F1 0.987 against 0.984). On the 
 
 ## 9. Confirming the denser read-out on the test benchmark
 
-**Status: planned on 2026-11-24. The test benchmark has not been read for it.** Everything in this section down to "The result" was written and committed before any of its numbers existed.
+**Status: planned on 2026-11-24; the forward passes are done. The test benchmark has not been read for it.** Everything in this section down to "The result" was written and committed before any of its numbers existed.
 
 Rule 4 of section 6 says what confirms a candidate: one read of the test benchmark for that question alone, with the owner's authorisation. The owner authorised that read on 2026-11-24, for the two candidates of Q1.
 
@@ -254,3 +254,11 @@ These rules are fixed now. They are the three conditions of rule 1 of section 6,
 - **The view changes are joins.** The streams are built by joining pieces of labelled recordings, so a view change is a hard cut between two recordings and is known to the sample. In an examination the probe moves from one view to the next, and no reference is exact to 0.1 s there. Nearer cuts on this benchmark say that the system places a cut more exactly when the change is sharp.
 
 **Changes to this plan, made before any forward pass on the test benchmark.** The code was reviewed on 2026-11-24, before it ran on any data of the test benchmark. The review found nothing that could make a number or a word wrong. It led to four additions. The code now names the digest of the file with the new outputs, and `confirm` takes no other file; until that digest is committed, the command does not run. The output also holds, for each arm, how many single recordings only the arm or only the published system reads right: a number of section 5 of the comparison that the first draft of the code left out. An output file now appears whole or not at all. And the run on the server refuses code that is not a commit, writes its line into the access record before the read or stops, and does not start a read a second time without a decision. No rule of this section changed.
+
+### The forward passes
+
+**Done with the code of commit `282be13`, from 23:21 UTC on 2026-11-24 to 00:13 UTC on 2026-11-25. No label was read and nothing was scored.** The step is entered in the access record of the test benchmark. Its check is [`followup/dense_test_check.json`](followup/dense_test_check.json).
+
+- **The file.** One output of each of the three published models for every sample of the 1,160 sequences: 72,185 samples. Its SHA-256 is `d1a23a82577b9af9fbade07c4f40aca64e081647c0e40d9af057e63f8bc3e500`, and the code now names it: `confirm` takes this file and no other.
+- **The check.** Every logit is a finite number. At the 14,871 published positions the new logits differ from the stored test logits by 0.000005 at most, where the plan allows 0.001.
+- **What the steps read.** 35,791 windows at 0.2 s and 72,185 at 0.1 s, against 14,871 for the published system.

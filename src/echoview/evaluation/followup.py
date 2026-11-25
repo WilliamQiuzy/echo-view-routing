@@ -50,7 +50,7 @@ ARM_LEVEL = 97.5  # two arms are tested, so each interval that decides is taken 
 HELD_ROWS = (ROUTER, "Perfect on the 0.5 s grid")  # rows of the comparison's first read that must come out again
 # The outputs of the published models for every sample of the test benchmark (`logits --test`): the digest of that file
 # is committed before the read (docs/followup/dense_test_check.json), and the read takes no other file.
-TEST_DENSE_SHA256: str | None = None
+TEST_DENSE_SHA256: str | None = "d1a23a82577b9af9fbade07c4f40aca64e081647c0e40d9af057e63f8bc3e500"
 CONFIRMATION_SHA256: str | None = None  # docs/followup/confirmation.json, once the read is made
 A5C = CLASSES.index("A5C")
 CURVE_NUMBERS = {"recordings": ("accuracy", "macro_f1", "a4c_as_a5c", "a5c_as_a4c", "recall_A4C", "recall_A5C"),
