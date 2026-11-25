@@ -147,8 +147,9 @@ class Ensemble:
     def window_logits(self, frames: np.ndarray, stride: int = STRIDE) -> np.ndarray:
         """frames (n, 224, 224, 3) uint8 on the 10 Hz grid -> logits (windows, models, 5) float32.
 
-        One window every `stride` samples. The published system, and every other method of this class, reads every
-        5 samples; another step is for studies of the read-out (docs/FOLLOWUP.md).
+        One window every `stride` samples. The published system reads every 5 samples, and so do `classify` and
+        `sample_probabilities`. Another step is for `segment` with a denser read-out and for its studies
+        (docs/FOLLOWUP.md).
         """
         frames = np.asarray(frames)
         if frames.ndim != 4 or frames.shape[1:] != (224, 224, 3) or frames.dtype != np.uint8:

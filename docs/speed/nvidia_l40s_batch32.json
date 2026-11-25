@@ -1,0 +1,79 @@
+{
+ "stream_seconds": 60.0,
+ "system": "C2_ens_v1",
+ "reference_system": true,
+ "timed": "Ensemble.segment on decoded frames: the window model of every seed on every window, and the decoder. Reading and decoding the files is not timed. Every step is run once before its timed runs.",
+ "environment": {
+  "device": "cuda",
+  "device_name": "NVIDIA L40S",
+  "batch": 32,
+  "torch": "2.14.0+cu130",
+  "python": "3.12.3",
+  "platform": "Linux-6.11.0-1016-nvidia-x86_64-with-glibc2.39",
+  "cpu_count": 8,
+  "echoview": "1.3.0"
+ },
+ "steps": [
+  {
+   "read_every_s": 0.5,
+   "samples_between_outputs": 5,
+   "windows": 120,
+   "runs": 5,
+   "seconds": [
+    4.997769773000016,
+    5.000809909999987,
+    5.006315762999975,
+    5.012499429000002,
+    5.014547467999989
+   ],
+   "seconds_median": 5.006315762999975,
+   "seconds_min": 4.997769773000016,
+   "seconds_max": 5.014547467999989,
+   "seconds_per_minute_of_stream": 5.006315762999975,
+   "times_real_time": 11.984861291299316,
+   "times_the_published_step": 1.0,
+   "windows_times_the_published_step": 1.0
+  },
+  {
+   "read_every_s": 0.2,
+   "samples_between_outputs": 2,
+   "windows": 300,
+   "runs": 5,
+   "seconds": [
+    12.544386618999965,
+    12.543108453000002,
+    12.55690217099999,
+    12.570320912,
+    12.576061613999968
+   ],
+   "seconds_median": 12.55690217099999,
+   "seconds_min": 12.543108453000002,
+   "seconds_max": 12.576061613999968,
+   "seconds_per_minute_of_stream": 12.55690217099999,
+   "times_real_time": 4.77824858256595,
+   "times_the_published_step": 2.5082121794641687,
+   "windows_times_the_published_step": 2.5
+  },
+  {
+   "read_every_s": 0.1,
+   "samples_between_outputs": 1,
+   "windows": 600,
+   "runs": 5,
+   "seconds": [
+    25.107807941999965,
+    25.07037816000002,
+    24.986791663999952,
+    24.90547837799994,
+    24.862292009000043
+   ],
+   "seconds_median": 24.986791663999952,
+   "seconds_min": 24.862292009000043,
+   "seconds_max": 25.107807941999965,
+   "seconds_per_minute_of_stream": 24.986791663999952,
+   "times_real_time": 2.401268670537074,
+   "times_the_published_step": 4.9910538701272245,
+   "windows_times_the_published_step": 5.0
+  }
+ ],
+ "gpu_memory_peak_gib": 8.895090103149414
+}

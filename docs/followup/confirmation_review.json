@@ -1,0 +1,58 @@
+{
+ "note": "not planned: added after a review of the result, from the read's output alone (docs/FOLLOWUP.md, section 9)",
+ "source_sha256": "87bd05802365859c63c9279cb6aa6d02b2a4ee1d32a71434d6e3c49538a0f5a2",
+ "cut_distance_with_unmatched_changes_at_1s": {
+  "EchoRouter": 0.19551451187335092,
+  "every 0.2 s": 0.1614775725593668,
+  "every 0.1 s": 0.1232189973614776
+ },
+ "recordings_exact_test": {
+  "every 0.2 s": {
+   "only_the_arm": 1,
+   "only_the_published_system": 2,
+   "p_two_sided": 1.0
+  },
+  "every 0.1 s": {
+   "only_the_arm": 0,
+   "only_the_published_system": 1,
+   "p_two_sided": 1.0
+  }
+ },
+ "cut_distance_both_units": {
+  "every 0.2 s": {
+   "value": -0.03095610804174334,
+   "level": 97.5,
+   "interval": [
+    -0.05027675201202357,
+    -0.011635464071463108
+   ]
+  },
+  "every 0.1 s": {
+   "value": -0.06848255280073456,
+   "level": 97.5,
+   "interval": [
+    -0.08726072293863923,
+    -0.049704382662829893
+   ]
+  }
+ },
+ "cut_distance_above_the_floor_of_its_grid": {
+  "EchoRouter": {
+   "matched_cuts": 0.03247508062151862,
+   "every_view_change": 0.07493403693931401
+  },
+  "every 0.2 s": {
+   "matched_cuts": 0.06880129447951139,
+   "every_view_change": 0.10817941952506599
+  },
+  "every 0.1 s": {
+   "matched_cuts": 0.08457300275482096,
+   "every_view_change": 0.1232189973614776
+  }
+ },
+ "descriptions": {
+  "differences_with_an_interval": 198,
+  "of_them_exclude_zero": 50,
+  "level": 95.0
+ }
+}

@@ -29,7 +29,7 @@ recording ──► 10 frames per second, grey, 224 × 224
 
 ## How it compares
 
-On the project's frozen EV9V test benchmark we scored four published approaches beside EchoRouter, on the same recordings and the same streams: each as published and with EchoRouter's decoder on its outputs. The rows, the numbers and the wording were fixed before the benchmark was read ([docs/COMPARISON.md](docs/COMPARISON.md)). Bold is the best value of a column, by the value alone.
+On the project's frozen EV9V test benchmark we scored four approaches from the literature beside EchoRouter, on the same recordings and the same streams: each with its own way of decoding ("as published") and with EchoRouter's decoder on its outputs. We ran all of them ourselves, three of them from our own training of the authors' code. The rows, the numbers and the wording were fixed before this read of the benchmark ([docs/COMPARISON.md](docs/COMPARISON.md)). It was not the first read: earlier numbers of six of the rows were known, and the plan says so. Bold is the best value of a column, by the value alone.
 
 | Row | Segment F1 at 50%, multi | Segment F1 at 50%, pairs | Edit | Piece midpoint | Wrong samples | Cut precision | Cut recall | Cut distance (s) | Recordings: accuracy | Macro-F1 | A5C recall |
 |---|---|---|---|---|---|---|---|---|---|---|---|
@@ -46,21 +46,21 @@ On the project's frozen EV9V test benchmark we scored four published approaches 
 
 "Multi" streams join four to eight pieces of recordings, "pairs" two. Piece midpoint is the share of pieces whose middle sample gets the right view. Cut distance is how far a cut lies from the view change it belongs to.
 
-- **Streams, as published.** EchoRouter has the highest segment F1 on multi streams, 0.909 (95% interval 0.872 to 0.944). The four others score 0.851 to 0.867.
+- **Streams, as published.** EchoRouter has the highest segment F1 on multi streams, 0.909 (95% interval 0.872 to 0.944, with whole examinations drawn). The four others score 0.851 to 0.867. For EchoPrime's classifier that is with a decoder setting of its own from October; per frame it scores 0.496.
 - **Streams, with the same decoder.** This is the comparison that was named in advance, with 98.75% intervals.
   - EchoViewCLIP with EchoRouter's decoder scores 0.884. EchoRouter is not shown to differ from it: the difference is 0.025 (−0.010 to 0.063). Of the published gap of 0.042, 0.025 remains.
   - ASFormer with the decoder scores 0.883. EchoRouter is not shown to differ from it either: the difference is 0.026 (−0.008 to 0.066).
   - EchoRouter is ahead of STFM with the decoder (0.865) by 0.044 (0.006 to 0.083).
   - EchoRouter is ahead of EchoPrime's classifier with the decoder by 0.058 (0.010 to 0.109).
-  - STFM and ASFormer were answered by a second read of the benchmark on the same day, for these two rows only. It was planned in the same document and could change no other number.
-- **Where EchoRouter has the best value:** segment F1 on multi streams, the Edit score and A5C. It gets the middle of 82.8% of the A5C pieces right, the others 57.0% to 79.5%.
+  - STFM and ASFormer were answered by a second read of the benchmark on the same day, for these two rows only. It was decided after the first result was known, planned in the same document, and could change no other number.
+- **Where EchoRouter has the best value:** segment F1 on multi streams, the Edit score and A5C. It gets the middle of 82.8% of the A5C pieces right, the others 57.0% to 79.5%. Against EchoViewCLIP and against STFM that difference is not shown: its intervals include zero. The price is A4C. EchoRouter reads A4C as A5C in 10 of the 231 single recordings of A4C, the others in 1 to 8.
 - **Where it does not:**
   - Single recordings: EchoViewCLIP is the best row, 98.9% against 98.1%.
   - Pair streams: all rows but one are close, and EchoViewCLIP with the decoder is highest.
-  - Exact cuts: ASFormer and EchoPrime's classifier give an output for every sample, and their cuts are at most 0.02 s off on average. EchoRouter is read every 0.5 s and is 0.15 s off on average; a perfect system on that grid would be 0.12 s off. Reading it every 0.1 s brings its cuts to 0.085 s on this benchmark, against 0.153 s, at a cost: it reads 784 of the 800 single recordings right where the published system reads 785. That option is off by default ([docs/FOLLOWUP.md](docs/FOLLOWUP.md), section 9).
+  - Exact cuts: ASFormer and EchoPrime's classifier give an output for every sample, and their cuts are at most 0.02 s off on average. EchoRouter is read every 0.5 s and is 0.15 s off on average; a perfect system on that grid would be 0.12 s off. Reading it every 0.1 s brings its cuts to 0.085 s on this benchmark, against 0.153 s, at a cost: it reads 784 of the 800 single recordings right where the published system reads 785. One recording is a difference that this read cannot tell from none. That option is off by default ([docs/FOLLOWUP.md](docs/FOLLOWUP.md), section 9).
   - Precision of the cuts: ASFormer with the decoder has the highest, 0.961 against 0.934.
   - Wrong samples: ASFormer has the fewest, 9.0% against 9.4%.
-- **How to read the table.** We ran all five. STFM, ASFormer and EchoViewCLIP were trained by us on EV9V's training recordings, and EchoPrime's classifier is the released one. The benchmark is ours. Its streams are built from pieces of recordings, it is not the task these methods were published for, and it is not an untouched test set. On development data EchoRouter's lead over EchoViewCLIP with the decoder was larger (0.094); the test benchmark did not bear that out.
+- **How to read the table.** We ran all five. STFM, ASFormer and EchoViewCLIP were trained by us on EV9V's training recordings, and EchoPrime's classifier is the released one. Each of the four is one training run. Only STFM's training could be checked against its authors' numbers: the released command comes within the spread of the paper's row for that configuration and stays below the paper's main result ([docs/COMPARISON.md](docs/COMPARISON.md), section 12). The benchmark is ours. Its streams are built from pieces of recordings, it is not the task these methods were published for, and it is not an untouched test set: the project scored models on these recordings and streams many times before it sealed them ([docs/EVALUATION.md](docs/EVALUATION.md), "The history of the test benchmark"). On development data EchoRouter's lead over EchoViewCLIP with the decoder was larger (0.094); the test benchmark did not bear that out.
 
 ## Quick start
 
@@ -130,8 +130,9 @@ Options for every command:
 - **Ensemble.** Three training seeds of the same network. Their probabilities are averaged.
 - **Recording view.** The mean of the window probabilities. The largest of the five wins.
 - **Stream segmentation.** Every 0.1 s sample takes the probability of the nearest window. A change-point decoder cuts where the probabilities before and after a sample differ and the two sides name different views.
-- **A denser read-out, on request.** `--read-every 0.2` or `0.1` asks the window model for a prediction every 0.2 s or 0.1 s and decodes with a setting chosen for that step. This is not the published system. It was chosen on development data. One read of the test benchmark found nearer cuts at a cost for both steps: the cuts lie 0.122 s and 0.085 s from the view changes where the published system's lie 0.153 s away, segment F1 is not lower, and 784 of the 800 single recordings are read right where the published system reads 785 ([docs/FOLLOWUP.md](docs/FOLLOWUP.md), section 9). It does not combine with `--uncertain`.
+- **A denser read-out, on request.** `--read-every 0.2` or `0.1` asks the window model for a prediction every 0.2 s or 0.1 s and decodes with a setting chosen for that step. This is not the published system. It was chosen on development data. One read of the test benchmark found nearer cuts at a cost for both steps: the cuts lie 0.122 s and 0.085 s from the view changes where the published system's lie 0.153 s away, segment F1 is not lower in value, and 784 of the 800 single recordings are read right where the published system reads 785. The macro-F1 of the single recordings is lower by 0.004 (95% interval -0.015 to +0.005) and by 0.003 (-0.011 to 0.000), so the read does not show whether that cost is real ([docs/FOLLOWUP.md](docs/FOLLOWUP.md), section 9). It does not combine with `--uncertain`.
 - **Uncertain output, on request.** The decoder runs as above. Then the 0.3 s before and after every cut are marked uncertain, and so is a part whose view hangs on a weak cut or on a narrow margin between two views. Every other sample keeps the view it has without the option.
+- **Speed.** On one NVIDIA L40S the published system works through a stream of 60 s in 4.8 s, which is 12.6 times as fast as the stream plays, and PyTorch holds 2.6 GiB of GPU memory for it. A read-out every 0.2 s takes 11.9 s and one every 0.1 s takes 24.2 s. Reading and decoding the files comes on top ([docs/EVALUATION.md](docs/EVALUATION.md), "Speed").
 
 ## Results
 
@@ -140,14 +141,19 @@ All numbers are for the published weights (identifier `C2_ens_v1`).
 | Data | What was measured | Result |
 |---|---|---|
 | EV9V development halves, streams built from labelled recordings | segment F1 at 50% overlap, selection half and calibration half | 0.959 and 0.984 |
-| EV9V frozen test benchmark, 120 streams of 4 to 8 fragments | segment F1 at 50% overlap | 0.909 (95% CI 0.883 to 0.934) |
-| EV9V frozen test benchmark, 800 single recordings | accuracy and macro-F1 | 98.1% and 0.956 |
+| EV9V frozen test benchmark, 120 streams of 4 to 8 fragments | segment F1 at 50% overlap | 0.909 (95% interval 0.883 to 0.934 with streams drawn, 0.872 to 0.944 with examinations drawn) |
+| EV9V frozen test benchmark, 800 single recordings | accuracy and macro-F1 of the view that most decoded samples carry | 98.1% and 0.956 |
 | EV9V development, selection half, 577 sequences, with `--uncertain` | samples that keep a view, and wrong samples among them | 92.1%, and 1.0% (0.6 to 1.5) against 3.0% without the option |
 | EV9V frozen test benchmark, 1,160 sequences, with `--uncertain` | samples that keep a view, and wrong samples among them | 94.5%, and 2.0% (1.4 to 2.8) against 3.6% without the option |
 | MIMIC-IV-Echo, 9,341 recordings of 1,001 patients (GE machines) | same view as another classifier's table | 95.8% (95.2 to 96.3) |
 | MIMIC-IV-Echo, 1,139 streams of 988 of those patients | segment F1 at 50% overlap against that table | 0.882 (0.870 to 0.894) |
 
-The MIMIC rows are agreement between two models, not accuracy: MIMIC-IV-Echo has no reader's view labels. The [model card](MODEL_CARD.md) says how to read each row and what the model cannot do.
+- **The MIMIC rows are agreement between two models, not accuracy.** MIMIC-IV-Echo has no reader's view labels.
+- **Two intervals for one number.** The streams of the benchmark reuse recordings, so the interval with examinations drawn is the safer one to read ([docs/EVALUATION.md](docs/EVALUATION.md), "Two sets of intervals").
+- **Single recordings.** The benchmark gives a recording the view that most of its decoded samples carry, as `echoview segment` does. `echoview classify` takes the largest mean probability. On the development halves the first rule misreads 5 of 521 recordings and the second 3. On the test benchmark `classify`'s rule was not scored.
+- **Not an untouched test set.** The test recordings were used often in the project's early development.
+
+The [model card](MODEL_CARD.md) says how to read each row and what the model cannot do. [docs/EVALUATION.md](docs/EVALUATION.md) has the confusion table of the 800 recordings, the model's calibration on development data, how the system was chosen and the history of the test benchmark.
 
 ## The uncertain output
 
@@ -186,7 +192,7 @@ See [docs/EVALUATION.md](docs/EVALUATION.md) for the benchmarks, the metrics, th
 
 The model was trained in three stages, each with its recipe in `configs/`. Stage 3 is the stage that produced the published seeds. It continues a stage-2 model for 1,500 updates with input augmentation.
 
-The training code was checked against the research trainer and the published training logs. A full rerun of the three seeds with this package lands within 0.004 of the published seeds on both development halves.
+The training code was checked against the research trainer and the published training logs. In a full rerun of the three seeds with this package, each seed lands within 0.004 of its published seed on both development halves, and the ensemble within 0.003 when it is decoded with the published setting. With a decoder setting chosen again by the rule, the rerun ensemble scores 0.943 on the selection half against the published 0.959, so a retrained ensemble should keep the published setting ([docs/TRAINING.md](docs/TRAINING.md)).
 
 ```bash
 echoview-cache --images /data/EV9V/Images --out /data/ev9v_cache           # 18 GB, once
@@ -223,7 +229,11 @@ Stage 3 needs a GPU with 32 GB of memory. On a machine that can be switched off,
 - **Five views only.** The model has no "other" class. A recording of any other view still gets one of the five names, often with a high probability. The uncertain output does not change this: it marks weak evidence between the five views.
 - **A4C against A5C is its weakest distinction.**
 - **Cuts on a 0.5 s grid.** The published system gives one prediction every 0.5 s, so a cut can be a few tenths of a second off. `--read-every 0.1` reads more often: on the test benchmark its cuts are 0.085 s off instead of 0.153 s, at about five times the work, and one single recording more of 800 is misread.
-- **One training site and vendor.** Robustness to another vendor's recordings comes from input augmentation and was measured as agreement with another classifier.
+- **One training site and vendor.** All training recordings come from one hospital and from Philips machines. On another vendor's recordings the system was measured only as agreement with another classifier, never against a reader. That agreement rose with training stage 3, which adds input augmentation and 1,500 updates; the two were not told apart.
+- **Streams are joins.** Every stream of the benchmarks is built by joining pieces of recordings. The pieces are 1 to 4 s long, and about half of those in the multi streams are shown with changed grey levels. A view change there is a hard cut. Streams that join the recordings of one examination in their order were scored on development data only (segment F1 0.946 and 0.959), and no continuous examination was measured.
+- **The labels are the dataset's.** EV9V's views were named by its authors' readers, licensed attending physicians. How often they agreed is not published, and the dataset describes its patients by an age range only, so nothing here is reported by sex, body size, disease or image quality.
+- **Small classes.** The test benchmark has 40 single recordings of A5C and 35 of SC4C. One recording moves their recall by 2.5 and 2.9 points.
+- **Confidence.** The model's probabilities were checked for calibration on development data only, where three recordings are wrong in all ([docs/EVALUATION.md](docs/EVALUATION.md)).
 - **Research use only.** This is not a medical device and it is not validated for clinical use.
 
 ## Licence and acknowledgements

@@ -4,18 +4,31 @@ Notable changes to this project. The format follows [Keep a Changelog](https://k
 
 ## [Unreleased]
 
+The model, its weights, its decoder and every published number are unchanged. This version reports one read of the test benchmark and a review of the public documents against what a journal would ask of them.
+
 ### Added
 
 - `docs/FOLLOWUP.md`, section 9: the plan of one read of the test benchmark that would confirm the denser read-out, written before any of its numbers. `python -m echoview.evaluation.followup logits --test` writes the published models' outputs for every sample of the test benchmark, and `confirm` makes the read: it holds the published system's rows to the comparison's first read, scores the two released steps, and can afterwards only reproduce its own output.
+- `python -m echoview.evaluation.followup_review` and `docs/followup/confirmation_review.json`: numbers that follow from the output of that read alone. They were added after a review of the result and are marked as not planned: the cut distance when every view change counts, an exact test of the single recordings that only one of the two systems reads right, an interval for streams and examinations at once, the distance of each read-out above the floor of its grid, and a count of the intervals that only describe.
+- `tools/measure_speed.py` and `docs/speed/`: how long the published read-out and the two denser ones take. On one NVIDIA L40S a stream of 60 s takes 4.8 s, 11.9 s and 24.2 s, with at most 2.6 GiB of GPU memory.
+- `docs/evaluation/development_report.json` and `docs/evaluation/test_report.json`: the reports of the development evaluation and of the test benchmark's evaluation of 2026-11-20 for the published weights, as those evaluations returned them. They hold pooled numbers only.
+- `docs/DATA.md`: what EV9V's authors say about the dataset (the hospital, the machines, the patients, how the views were named), the counts that show that no session is in two splits, and how the streams of the benchmarks are built, with the change of grey levels on part of their fragments.
+- `docs/EVALUATION.md`: the confusion table of the 800 single recordings, the two rules that give a recording its view, the calibration error on development data, the streams in examination order, how the system was chosen, the history of the test benchmark, why one number can carry two intervals, the measured speed, and what others can and cannot repeat.
+- `docs/COMPARISON.md`, section 12: where the four other approaches come from and how close our copies come to their authors' numbers, which section 8 had promised.
+- `tests/test_docs_evidence.py`: tests that hold these documents to the definition files of the package and to the stored outputs.
 
 ### Read once (2026-11-25)
 
-- The frozen EV9V test benchmark with the two steps of `--read-every`, by the plan of `docs/FOLLOWUP.md`, section 9 (`docs/followup/confirmation.json`): both steps have nearer cuts at a cost. On the multi streams the cuts lie 0.122 s (every 0.2 s) and 0.085 s (every 0.1 s) from the view changes, where the published system's lie 0.153 s away, and segment F1 at 50% is not lower (0.914 and 0.921 against 0.909). The cost is in the single recordings: at both steps 784 of 800 are read right where the published system reads 785. The published system, its numbers and the default read-out of 0.5 s are unchanged.
+- The frozen EV9V test benchmark with the two steps of `--read-every`, by the plan of `docs/FOLLOWUP.md`, section 9 (`docs/followup/confirmation.json`): both steps have nearer cuts at a cost. On the multi streams the cuts lie 0.122 s (every 0.2 s) and 0.085 s (every 0.1 s) from the view changes, where the published system's lie 0.153 s away, and segment F1 at 50% is not lower in value (0.914 and 0.921 against 0.909). The cost is in the single recordings: at both steps 784 of 800 are read right where the published system reads 785, a difference of one recording that the read cannot tell from none. The published system, its numbers and the default read-out of 0.5 s are unchanged.
 
 ### Changed
 
 - The note and the help text of `echoview segment --read-every`, and the README, say what the read of the test benchmark found, where they said that the option was not confirmed there.
 - The outputs of `echoview.evaluation.comparison` and `echoview.evaluation.followup` are written whole or not at all, so a run that is stopped while it writes leaves no file behind.
+- Sentences that said more than their evidence were reworded after the review. `docs/FOLLOWUP.md` ("Corrections") and `docs/COMPARISON.md` (section 12) list theirs. No number and no rule of a plan changed.
+- README and model card: the 0.909 of the test benchmark carries both of its intervals, with streams drawn and with examinations drawn. The comparison says that it was not the first read of the benchmark, that three of the four other approaches are our own training runs, and what the intervals show for the lead on A5C. The cost of the denser read-out is given with its interval. The single-recording numbers say which rule they use. The limits name the dataset and its labels, the way streams are built, the small classes and the calibration.
+- Model card: the MIMIC-IV-Echo recordings that entered the choice between training recipes are 3,105 recordings of 369 patients (it said "those of 372 patients"), and the recordings of 866 further patients were read before the choice of the ensemble and were not in its rule (it said that they were used for it). What stage 3 does for another vendor's recordings is no longer stated as a cause.
+- `docs/UNCERTAIN.md`: the study's commands do replace a file when they are given `--force`, and the test benchmark was read with the rule once after the study (section 9).
 
 ## [1.3.0] - 2026-11-24
 

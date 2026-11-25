@@ -109,7 +109,7 @@ The report has two parts, one for each kind of output, by kind of sequence: sing
   - Every number about samples has its interval. A number whose numerator or denominator is 5 or fewer has none.
   - The low-confidence reference has an interval from the same draws, and so does the rule's error minus the reference's error.
   - The share of pieces read right at the middle has its interval from the bootstrap over recordings.
-  - Neither command replaces a file that exists: the choice of the first command cannot be overwritten by running it again.
+  - Neither command replaces a file that exists unless it is given `--force`: running the first command again does not overwrite its choice.
 
 ## 7. Step 1 and step 2: the choice on the calibration half
 
@@ -242,7 +242,7 @@ Of the labelled runs the system returns, 97.8% are right at their middle (1,096 
 - **This study does not show that the rule beats a confidence threshold.** Declining the same number of samples by lowest confidence leaves 1.09% wrong against the rule's 1.04%, and the interval of the difference includes 0. By kind, the rule is ahead in three and behind in the multi streams. Only the interval of the examination-order streams excludes 0, in the rule's favour (−0.21 points [−0.42, −0.02]). The reference was given the number of samples to decline on this half. As a rule of its own it would need a threshold, which was not chosen or tested here. What the rule adds is the form of its answer: whole intervals at the cuts and whole weak pieces.
 - **What it costs.** The recovery of every view falls, and most for A5C, from 89.3% to 74.3%. A short piece between two cuts can be lost as a whole: 40 of the 1,574 pieces (28) keep no labelled sample. 7 of the 281 rightly read single recordings get an uncertain part.
 - **What is left.** 14 wrong pieces from 8 recordings keep their wrong view, and half of the A4C against A5C errors stay labelled.
-- **Where it holds.** The rule passed on EV9V streams joined from recordings, where a view changes from one sample to the next. A continuous examination has no such splices, and nothing here measures it. The test benchmark and MIMIC-IV-Echo were not read with the rule.
+- **Where it holds.** The rule passed on EV9V streams joined from recordings, where a view changes from one sample to the next. A continuous examination has no such splices, and nothing here measures it. The test benchmark and MIMIC-IV-Echo were not read with the rule for this study. The test benchmark was read with it once afterwards (section 9).
 - **Uncertain is still not "other".** Nothing in this study is about views outside the five.
 
 ## 9. One read of the test benchmark
