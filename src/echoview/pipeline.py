@@ -70,6 +70,21 @@ def probabilities_from_logits(logits: np.ndarray, n_samples: int, stride: int = 
     return window_prob[nearest_centre(n_samples, centres)].astype(np.float64).mean(1)
 
 
+def classification(logits: np.ndarray) -> Classification:
+    """Window logits (windows, models, 5) of one recording -> its view, as `classify` returns it.
+
+    Each model's probability is the mean of its windows' softmax outputs, and the models are averaged. The view is
+    the largest of the five mean probabilities."""
+    prob = softmax(logits)
+    if prob.ndim != 3 or prob.shape[0] < 1 or prob.shape[1] < 1 or prob.shape[2] != len(CLASSES):
+        raise ValueError(f"expected logits (windows, models, {len(CLASSES)}) with at least one window and one model, got {prob.shape}")
+    by_seed = prob.mean(0)
+    mean = by_seed.mean(0)
+    winners = by_seed.argmax(-1)
+    return Classification(view=CLASSES[int(mean.argmax())], probability=float(mean.max()), probabilities=mean, by_seed=by_seed,
+                          seeds_agree=bool(winners.min() == winners.max()), n_windows=len(prob))
+
+
 class Ensemble:
     """Window models on one device whose probabilities are averaged.
 
@@ -167,12 +182,7 @@ class Ensemble:
 
     def classify(self, frames: np.ndarray) -> Classification:
         """One recording -> its view."""
-        prob = softmax(self.window_logits(frames))
-        by_seed = prob.mean(0)
-        mean = by_seed.mean(0)
-        winners = by_seed.argmax(-1)
-        return Classification(view=CLASSES[int(mean.argmax())], probability=float(mean.max()), probabilities=mean, by_seed=by_seed,
-                              seeds_agree=bool(winners.min() == winners.max()), n_windows=len(prob))
+        return classification(self.window_logits(frames))
 
     def sample_probabilities(self, frames: np.ndarray) -> np.ndarray:
         """One stream -> the ensemble's probabilities for every 0.1 s sample, (samples, 5) float64."""

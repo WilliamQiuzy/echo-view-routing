@@ -2,6 +2,13 @@
 
 Notable changes to this project. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the versions follow [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- `docs/EVALUATION.md`, "One read of the test benchmark for `classify`": the plan of one read that scores what `echoview classify` returns on the single recordings of the test benchmark, written before any of its numbers. `python -m echoview.evaluation.classify_read trial` holds the code to the development report without reading the test benchmark, and `read` makes the read. The code and the plan were reviewed before the plan was committed.
+- `echoview.pipeline.classification`: the rule of `classify` as a function of a recording's window logits. `Ensemble.classify` calls it and returns what it returned before.
+
 ## [1.3.1] - 2026-11-25
 
 The model, its weights, its decoder and every published number are unchanged. This version reports one read of the test benchmark and a review of the public documents against what a journal would ask of them.

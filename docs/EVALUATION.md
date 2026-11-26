@@ -149,6 +149,87 @@ Twelve of the fifteen errors are between A4C and A5C. A5C has 40 recordings and 
 
 **Streams in examination order.** The development benchmark also joins all recordings of one examination in their order (36 streams in each half, see [DATA.md](DATA.md)). The published system's segment F1 at 50% is 0.946 on the calibration half and 0.959 on the selection half, and 3.5% and 1.9% of the samples get a wrong view. These streams are joins of whole recordings: how the probe moves from one view to the next was not recorded. The test benchmark has no such streams.
 
+## One read of the test benchmark for `classify`
+
+**Status: planned on 2026-11-26 (UTC). Not read yet.** Everything in this section down to "The result" was written and committed before any of its numbers existed.
+
+The section above says that `echoview classify` does not use the rule of the benchmark's published numbers, and that its own rule has no number on the test benchmark. This section prepares the one read that gives it one. On 2026-11-25 the owner of the project was asked whether the test benchmark may be read once more for `classify`'s rule, and said yes. This sentence was committed before the read.
+
+### What is scored
+
+What `classify` returns for a recording, and nothing else: the view with the largest mean window probability, the five probabilities, and whether the three seeds name the same view.
+
+- **The function** is `echoview.pipeline.classification`. `Ensemble.classify` calls it on the window logits of the recording.
+- **The logits** are the stored window logits of the published system for the 800 single recordings of the test benchmark: the file with SHA-256 `c5df435ef3022dd55f711c4efa72c74f19aad7f40193f179902c57dca97e288d`, which gave the published numbers. No model runs and no image is read.
+- **No number about streams is reported.** `classify` is a command for one recording. The read decodes the streams only to hold the published numbers, as step 3 says.
+
+### What is known now
+
+- **The majority rule on these recordings.** 785 of the 800 are right, the macro-F1 is 0.956, and the confusion table is the one above. Without the decoder, with the majority of the likeliest views of the samples, 787 are right, with A4C read as A5C in 7 recordings and A5C read as A4C in 3 ([COMPARISON.md](COMPARISON.md), section 10).
+- **`classify`'s rule on development data.** It has 2 and 1 wrong recordings on the two halves where the majority rule has 2 and 3. The calibration error is 0.030 and 0.034, and the median probability is 0.98.
+- **No number by `classify`'s rule on the test benchmark** is in the project's records for the published system. Two records of single-recording numbers on these recordings were looked at for this plan, those of 2026-10-30 and of 2026-11-13. Both use the majority of the decoded samples.
+- **The test benchmark has been read before,** see "The history of the test benchmark". Of the reads since the system was published, the one for the uncertain output scored a threshold on the probability of single samples of these recordings ([UNCERTAIN.md](UNCERTAIN.md), section 9). None scored the mean probability of a recording.
+
+### What is run, in this order
+
+1. **This plan and the code are public** before the read. The code is `echoview/evaluation/classify_read.py`. It is tested and reviewed before it runs on the test benchmark.
+2. **A trial on development data.** `classify_read trial` runs the same functions on the stored logits of both development halves. The development report holds this rule's numbers for the published system: the wrong recordings, the confusion table, the calibration error and the median probability. They must come out: the counts exactly, and the two numbers made of probabilities within 0.00005, because logits of another run of the same models differ in the sixth decimal. The trial reads no file of the test benchmark. The read takes the trial's output and does not start without it.
+3. **The read** is one run of `classify_read read`.
+   - It is entered in the access record of the test benchmark before it starts.
+   - From the stored logits it first computes the published system's rows. The four published numbers must come out. The rows "EchoRouter" and "Perfect on the 0.5 s grid" must equal those of the comparison's first read (`comparison/test.json`, SHA-256 `4f00000524df0581ee7f093980135a206c9180f51d15457524acb6547afe45c0`) number by number, intervals included. When one differs, nothing is written, and `classify`'s rule has been applied to no recording.
+   - Then it scores what `classify` returns and writes one file.
+4. **No second read.** Once the output exists, its digest goes into the code. From then on the command stops unless it is given that file and its own result equals it.
+5. **When a run goes wrong.** A run that stops before it writes its file shows no number and is not the read. Starting it again is a decision, and the access record says so. An output that is later found to be wrong stays published with a correction beside it, and the benchmark is not read again.
+
+### The numbers and the intervals
+
+- **The view.** Accuracy, macro-F1, the recall of every view, the recordings of A4C read as A5C and of A5C read as A4C, and the confusion table. They are given for `classify`'s rule and, from the same run, for the majority rule. The code is the comparison's, so the majority rule's numbers are those already published.
+- **The two rules against each other.** `classify`'s rule minus the majority rule for the accuracy, the macro-F1, the recall of A4C and of A5C, and the recordings of A4C read as A5C and of A5C read as A4C, with the same draws for both. The number of recordings that only one of the two rules reads right, with an exact two-sided sign test of that split.
+- **The probability.** The probability of a recording is that of the view it is given.
+  - The expected calibration error in ten bins of equal width, as in the development report, with every bin's number of recordings, mean probability and share that is right.
+  - The same gaps over ten parts of equal count: the recordings in the order of their probability, 80 in each part. Recordings of one probability stay in the benchmark's order.
+  - The mean probability minus the share that is right. Above zero the system is surer than it is right, below zero less sure.
+  - The Brier score: the squared distance of the five probabilities from the reference view, summed over the views and averaged over the recordings. It runs from 0 to 2. And the log loss: the mean negative logarithm of the probability of the reference view, where a probability below 10⁻¹² counts as 10⁻¹².
+  - The median probability of all recordings, of the right ones and of the wrong ones.
+  - The separation: the chance that a recording that is read right has a higher probability than one that is read wrong, where a tie counts half. That is the area under the ROC curve of the probability taken as a sign of a right answer.
+- **The seeds.** In how many recordings the three seeds do not name the same view, how many of those are wrong, and how many wrong recordings the seeds agree on.
+- **Intervals.** Percentile intervals at 95% from 10,000 draws of whole examinations with seed 20261123.
+  - The numbers about the view and the differences between the rules have the comparison's draws. A count of 5 or fewer has no interval.
+  - The mean probability minus the share that is right, the Brier score, the log loss and the separation share draws of their own, from a generator started with the same seed.
+  - A draw of examinations without a wrong recording, or without a right one, gives no separation, and the output says how many such draws there were.
+  - The calibration errors, the bins, the medians and the seeds' counts have no interval. A calibration error cannot be negative, and a resample overstates it; the mean probability minus the share that is right has an interval in its place.
+- **What the numbers rest on.** The output also holds the number of recordings and of wrong ones, how many examinations are drawn and how many of them hold a wrong recording, the mean probability, the share that is right, the edges of the bins and the right recordings in each, and for the majority rule the label changes inside a recording, a number of the comparison. It names the digests of its three input files and the checks that held.
+
+### How the result will be worded
+
+These rules are fixed now.
+
+1. **One word, for the view.** On the test benchmark `classify`'s rule is called "more accurate than the majority rule" or "less accurate than the majority rule" when two things hold. The 95% interval of the paired difference in accuracy lies wholly on one side of zero, where an end at exactly zero is not on one side. And the exact sign test of the recordings that only one rule reads right gives p below 0.05. Otherwise it is "not shown to differ from the majority rule", and both values are given.
+2. **Everything else is a description.** The calibration errors, the bins, the Brier score, the log loss, the separation and the seeds get no word such as "calibrated" or "reliable". The numbers are given with what they rest on.
+3. **Nothing changes, whatever the numbers.** `classify` keeps its rule and `segment` keeps its own. No weight and no setting changes. The published numbers of the benchmark stay those of the majority rule, because every row of the comparison uses it. No threshold on the probability is chosen or proposed from this read.
+4. **Where it goes.** The table of the section above gets its missing cell. The README and the model card say for `classify` what this read found, where they now give the majority rule's number only. The output goes to `docs/evaluation/classify_test.json` and the trial's to `docs/evaluation/classify_trial.json`, whatever they hold.
+5. **One read.** The test benchmark is not read again for this question.
+
+### What is expected, and the limits
+
+- **Expected.** Between 11 and 16 wrong recordings of the 800, most likely 12 to 14: the rule is close to the majority of the likeliest views without the decoder, which has 13. The two rules should differ in five recordings at most, and the word should be "not shown to differ". The calibration error should be near the 0.03 of the development halves, with the system a little less sure than it is right. The separation should be well above 0.5, because most wrong recordings are A4C against A5C, where the probabilities are lower. With about 13 wrong recordings its interval will be wide.
+- **Few wrong recordings.** Every number about wrong answers rests on about a dozen recordings, most of them A4C or A5C, and those recordings lie in fewer examinations than there are recordings. An interval that draws examinations is then uneven and may be too narrow.
+- **The bins of equal width are mostly empty.** With a median probability near 0.98 nearly all recordings fall into the last bin. That calibration error then says little more than the gap between the mean probability and the share that is right. The parts of equal count and the two scores are there for that reason.
+- **The same benchmark.** The limits of "The history of the test benchmark" hold for this read as for every other. The recordings are not untouched, and they come from one hospital and two machines of one maker. A probability may mean something else elsewhere.
+- **The rule, on the benchmark's frames.** The read applies the function that `classify` calls to logits of the benchmark's frames. It does not run the command on the 800 folders, so the command's own reading of a file is not part of it.
+- **Recordings of one examination are not independent.** The intervals draw whole examinations. The exact test counts every recording on its own.
+
+**Reviewed before it was committed.** The code and this plan were reviewed on 2026-11-26, before the plan was public and before anything ran. The review found no error in a number. Four things changed with it, and they are in the text above.
+
+- The word needs the exact test beside the interval. With the interval alone, four recordings against none would have got a word at p = 0.125.
+- The probability gets the parts of equal count, the mean probability minus the share that is right, the Brier score and the log loss. They are fixed here, and not after the read.
+- The read takes the trial's output.
+- A run that stops before it writes is not the read.
+
+### The result
+
+Not read yet.
+
 ## How the system was chosen
 
 These are the last three choices that led to the published system. The family of the window model and its first two training stages were chosen in earlier rounds: on the development halves and, before 2026-10-02, with numbers of the test split in view (next section). None of the three choices below read the test benchmark.
