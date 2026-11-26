@@ -23,6 +23,7 @@ Notable changes to this project. The format follows [Keep a Changelog](https://k
 ### Changed
 
 - `docs/ABLATIONS.md`, section 9, part 1: the text was corrected after an independent check of it against `docs/ablations/stored.json`. No number was wrong. A headline about the lower thresholds, the sentence on the floors, the exchanged choice, the words on the ensemble, two rates of the Viterbi path and the reading of the row without the view test said more than the numbers carry, and they were rewritten. The numbers that the plan had promised and that stood only in the file were added: the other numbers of every decoder, every difference of the decoders and of the subsets of the seeds with its interval, and the three numbers of the rule for all 40 settings on both halves. The document also said of part 2 "Not run yet" when it had been started 12 minutes before. The section lists what changed.
+- Model card, "The MIMIC agreement came with stage 3": the two numbers for the stage-2 and stage-3 seeds on 8,033 held-out MIMIC recordings are now said to be what they are, the mean over three seeds of the agreement averaged over three classes of the other classifier's table, with their intervals. The sentence read as a share of the 8,033 recordings and named one stage-2 model. The numbers are unchanged.
 - README, model card and `docs/EVALUATION.md` give the number of `classify`'s rule on the test benchmark and what the read found about its probability, where they said that neither was measured there.
 
 ## [1.3.1] - 2026-11-25
