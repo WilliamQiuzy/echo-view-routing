@@ -951,3 +951,147 @@ def test_part_one_of_the_ablations_one_temperature_and_what_the_changelog_says()
          "7 of its 40 settings, the published one among them, lie within 0.02 of the published one",
          f"One temperature of {temperature['chosen']:.2f} lowers the log loss of the single recordings and is a candidate, not a change.",
          "No number was wrong.")
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Parts 2 and 3 of docs/ABLATIONS.md. Their results are written by tools/write_ablation_results.py from the two output
+# files, and the tool asserts what the prose says without a number. The document must hold what the tool prints, to
+# the letter. The second test reaches a few headline numbers without the tool, and the sentences of the other documents.
+
+def writer_of_the_results():
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location("write_ablation_results", ROOT / "tools" / "write_ablation_results.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def test_parts_two_and_three_of_the_ablations_are_what_the_tool_writes_from_their_files():
+    import copy
+
+    writer = writer_of_the_results()
+    forward, left_open, part_one = stored("ablations/forward.json"), stored("ablations/open.json"), stored("ablations/stored.json")
+    said(ABLATIONS, writer.part_two(forward), writer.part_three(left_open, part_one))
+    # a file that says something else cannot be written up: the tool's own checks stop it
+    other = copy.deepcopy(forward)
+    other["systems"]["published"]["conditions"]["mirrored"]["minus_unchanged"]["multi"]["segment_f1_50"]["value"] = -0.01  # no longer the largest loss
+    with pytest.raises(AssertionError):
+        writer.part_two(other)
+    other = copy.deepcopy(forward)
+    other["published_minus_stage2"]["mirrored"]["multi"]["segment_f1_50"]["interval"] = [-0.044, -0.001]  # stage 2 would be ahead under one condition
+    with pytest.raises(AssertionError):
+        writer.part_two(other)
+    other = copy.deepcopy(left_open)
+    other["higher_thresholds"]["word"] = "candidate"
+    with pytest.raises(AssertionError):
+        writer.part_three(other, part_one)
+    other = copy.deepcopy(left_open)
+    other["view_test"]["selection"]["multi"]["samples_that_change"] = 3
+    with pytest.raises(AssertionError):
+        writer.part_three(other, part_one)
+    other = copy.deepcopy(left_open)
+    other["temperature"]["calibration_curve"][5]["log_loss"] += 1e-9  # the value of part 1 at 0.30 must come out again
+    with pytest.raises(AssertionError):
+        writer.part_three(other, part_one)
+
+
+def test_the_headline_numbers_of_parts_two_and_three_stand_in_the_documents():
+    import re
+
+    forward, left_open, part_one = stored("ablations/forward.json"), stored("ablations/open.json"), stored("ablations/stored.json")
+    run = (forward["benchmark"], forward["half"], forward["sequences"], forward["draws"], forward["seed"])
+    assert run == ("development", "selection", 541, 10_000, 20261123)
+    assert (left_open["benchmark"], left_open["draws"], left_open["seed"]) == ("development", 10_000, 20261123)
+    assert forward["sha256"]["logits"] == left_open["sha256"]["logits"] == part_one["sha256"]["logits"]  # one file of stored logits under all three
+    assert forward["unchanged_against_stored"] < 1e-6 and left_open["published_selection_f1"] == part_one["published_selection_f1"]
+    for name in ("forward.json", "open.json"):  # pooled numbers only: no key of a recording, nothing that is not a number
+        raw = (DOCS / "ablations" / name).read_text()
+        assert not re.search(r"(?<![0-9a-f.])(?=\d*[a-f])[0-9a-f]{16}(?![0-9a-f])", raw) and not re.search(r"NaN|Infinity", raw)
+
+    # part 2, without the tool
+    published, stage2 = (forward["systems"][name]["conditions"] for name in ("published", "stage 2"))
+
+    def f1(conditions: dict, name: str) -> float:
+        return conditions[name]["selection"]["multi"]["segment_f1_50"]["value"]
+
+    def lost(conditions: dict, name: str) -> dict:
+        return conditions[name]["minus_unchanged"]["multi"]["segment_f1_50"]
+
+    assert f"{f1(published, 'unchanged'):.4f}" == "0.9594" and len(published) == 27
+    said(ABLATIONS, f"| mirrored | {f3(f1(published, 'mirrored'))} | {spread(lost(published, 'mirrored'))} |",
+         f"| still frame | {f3(f1(published, 'still frame'))} | {spread(lost(published, 'still frame'))} |",
+         f"| unchanged | {f3(f1(stage2, 'unchanged'))} |  |  |",
+         f"| noise 25 | {spread(forward['published_minus_stage2']['noise 25']['multi']['segment_f1_50'])} |",
+         f"| unchanged | {spread(forward['published_minus_stage2']['unchanged']['multi']['segment_f1_50'])} |")
+    losses = {name: -lost(published, name)["value"] for name in published if name != "unchanged"}
+    ranked = sorted(losses, key=losses.get, reverse=True)
+    assert ranked[:3] == ["mirrored", "still frame", "half the frame rate"]
+    ninth = forward["systems"]["published"]["ninth_view"]
+    named = [(ninth[name]["recordings"], ninth[name]["given"]["PSAX"]) for name in ("validation", "training")]
+    assert named == [(46, 46), (319, 318)]
+    chance = ninth["training"]["known_above_ninth"]["probability"]
+    said(ABLATIONS, f"for the larger training list {f3(chance['value'])} [{f3(chance['interval'][0])}, {f3(chance['interval'][1])}]")
+    assert chance["interval"][0] < 0.5 < chance["interval"][1]
+
+    # the two limits in the model card and in the README
+    errors = {name: published[name]["classify"]["errors"] for name in published}
+    limit = ("- **Mirrored images, and windows that show one frame.** On development data, every frame mirrored left to right lowers segment F1 on the "
+             f"multi streams from {f3(f1(published, 'unchanged'))} to {f3(f1(published, 'mirrored'))}, and `classify` then reads {errors['mirrored']} of 284 "
+             f"single recordings wrong where it reads {errors['unchanged']} wrong. No training stage mirrored a frame; whether that is the cause was not "
+             f"tested. When every window shows one frame sixteen times, segment F1 falls to {f3(f1(published, 'still frame'))} and `classify` reads "
+             f"{errors['still frame']} wrong. None of the 24 other changes of grey levels, image quality, geometry and timing that were tried lowers segment "
+             f"F1 by more than {f3(losses[ranked[2]])}. For single recordings the hardest of them are added noise with a spread of 25 grey levels and added "
+             f"speckle of 0.25, with {errors['noise 25']} and {errors['speckle 0.25']} read wrong")
+    said("MODEL_CARD.md", limit)
+    said("README.md", limit)
+    assert len(ranked) - 2 == 24
+    hardest = sorted((name for name in ranked[2:]), key=lambda name: -errors[name])[:2]
+    assert hardest == ["noise 25", "speckle 0.25"] and errors["speckle 0.25"] > max(errors[name] for name in ranked[2:] if name not in hardest)
+    from echoview.training import augment
+
+    assert not any(word in Path(augment.__file__).read_text().lower() for word in ("flip", "mirror"))  # "No training stage mirrored a frame"
+
+    # part 3, without the tool
+    higher = left_open["higher_thresholds"]
+    chosen = higher["settings"][higher["rule"]["chosen"]]
+    assert (chosen["half_window"], chosen["threshold_quantile"], higher["word"]) == (7, 0.999, "the published setting stays")
+    assert all(s["selection"]["segment_f1_50_multi"] < chosen["selection"]["segment_f1_50_multi"] for s in higher["settings"] if s["added"])
+    said(ABLATIONS, "**The published setting stays.** Over the 55 settings the rule takes half window 7 at the 0.999 quantile again.")
+    count = left_open["view_test"]["selection"]["multi"]
+    said(ABLATIONS, f"| selection | multi streams | {count['streams']} | {count['peaks']} | {count['dropped']} | {count['streams_with_a_dropped_peak']} | "
+                    f"{count['streams_that_change']} | {count['samples_that_change']} |")
+    temperature = left_open["temperature"]
+    assert temperature["chosen"] == 0.05 and temperature["is_the_lowest_tried"] is True
+    kept = temperature["streams"]["the temperature, the published setting"]["minus_published"]["multi"]["segment_f1_50"]
+    said(ABLATIONS, f"| the temperature, the published setting | half window 7, threshold 0.174 | "
+                    f"{f3(temperature['streams']['the temperature, the published setting']['selection']['multi']['segment_f1_50']['value'])} | "
+                    f"{spread(kept)} |")
+
+    # the changelog
+    peaks = sum(kind["peaks"] for kind in left_open["view_test"]["selection"].values())
+    dropped = sum(kind["dropped"] for kind in left_open["view_test"]["selection"].values())
+    difference = forward["published_minus_stage2"]
+    said("CHANGELOG.md",
+         f"A mirrored image is the largest loss on the multi streams: segment F1 falls from {f3(f1(published, 'unchanged'))} to "
+         f"{f3(f1(published, 'mirrored'))}, and the stage-2 ensemble loses {f3(-lost(stage2, 'mirrored')['value'])} under it.",
+         f"When every window shows one frame sixteen times the loss is {f3(losses['still frame'])}, and none of the 24 other conditions costs more than "
+         f"{f3(losses[ranked[2]])}; shuffled frames cost {f3(losses['shuffled frames'])}.",
+         f"the stage-2 ensemble has {f3(f1(stage2, 'unchanged'))} where the published system has {f3(f1(published, 'unchanged'))}, "
+         "a difference that is not shown",
+         f"by {f3(difference['noise 25']['multi']['segment_f1_50']['value'])} under noise with a spread of 25 grey levels, by "
+         f"{f3(difference['blur 2 pixels']['multi']['segment_f1_50']['value'])} under a blur of 2 pixels and by "
+         f"{f3(difference['64 pixels']['multi']['segment_f1_50']['value'])} at 64 pixels",
+         f"The decoder's view test drops {dropped} of {peaks} peaks on the selection half and changes no sample there.",
+         "Two of the Viterbi path's 8 costs, the chosen one and the next, lie within 0.02 of the chosen one.",
+         f"The fit of the temperature takes {temperature['chosen']:.2f}, the lowest value tried again, and at that temperature the multi streams lose "
+         f"{f3(-kept['value'])}.")
+    viterbi = left_open["other_decoders"]["Viterbi path"]
+    near = [row["value"] for row in viterbi["values"]
+            if abs(row["selection"]["segment_f1_50_multi"] - viterbi["selection_segment_f1_50_multi"]["of_the_chosen"]) <= 0.02]
+    assert near == [8.0, 16.0] and viterbi["chosen"] == 8.0 and viterbi["selection_segment_f1_50_multi"]["within_0.02_of_the_chosen"] == 2
+    assert sum(kind["samples_that_change"] for kind in left_open["view_test"]["selection"].values()) == 0  # "changes no sample there"
+    interval = difference["unchanged"]["multi"]["segment_f1_50"]["interval"]
+    assert interval[0] < 0 < interval[1]  # "a difference that is not shown"
+    largest = sorted((difference[name]["multi"]["segment_f1_50"]["value"], name) for name in difference)[-5:]
+    assert {name for _, name in largest} == {"noise 25", "blur 2 pixels", "64 pixels", "speckle 0.25", "contrast 0.5"}  # the "five conditions"
