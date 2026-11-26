@@ -159,17 +159,27 @@ class Ensemble:
         return dict(DENSER_READ_OUT[stride])
 
     @torch.no_grad()
-    def window_logits(self, frames: np.ndarray, stride: int = STRIDE) -> np.ndarray:
+    def window_logits(self, frames: np.ndarray, stride: int = STRIDE, shown: tuple[np.ndarray, np.ndarray] | None = None) -> np.ndarray:
         """frames (n, 224, 224, 3) uint8 on the 10 Hz grid -> logits (windows, models, 5) float32.
 
         One window every `stride` samples. The published system reads every 5 samples, and so do `classify` and
         `sample_probabilities`. Another step is for `segment` with a denser read-out and for its studies
         (docs/FOLLOWUP.md).
+
+        `shown` is for studies of what the models use (docs/ABLATIONS.md) and nothing else: the sample indices
+        (windows, 16) and the marker positions (windows,) to show in place of the plan's own, one row for every
+        window of the plan.
         """
         frames = np.asarray(frames)
         if frames.ndim != 4 or frames.shape[1:] != (224, 224, 3) or frames.dtype != np.uint8:
             raise ValueError(f"expected uint8 frames (n, 224, 224, 3), got {frames.shape} {frames.dtype}")
         _, windows, slots = window_plan(len(frames), stride)
+        if shown is not None:
+            given, marks = np.asarray(shown[0], np.int64), np.asarray(shown[1], np.int64)
+            if given.shape != windows.shape or marks.shape != slots.shape or given.min() < 0 or given.max() >= len(frames) \
+                    or marks.min() < 0 or marks.max() >= windows.shape[1]:
+                raise ValueError("the windows to show must name samples of the stream and a marker position for every window of the plan")
+            windows, slots = given, marks
         pixels = torch.from_numpy(frames).to(self.device)
         index = torch.from_numpy(windows).to(self.device)
         marks = torch.from_numpy(slots).to(self.device)
