@@ -1,6 +1,6 @@
 # What the parts add, and what the system stands: studies on development data
 
-**Status: planned on 2026-11-26 (UTC). No result yet.** Everything in this document down to "Results" was written and committed before any of its numbers existed.
+**Status: planned on 2026-11-26 (UTC). Part 1 was run on the same day (section 9); part 2 is not finished.** Everything in this document down to "Results" was written and committed before any of its numbers existed.
 
 Nothing here reads the test benchmark, trains a model or changes the published system.
 
@@ -142,4 +142,72 @@ For every condition, every number is given minus its value on the unchanged fram
 
 ## 9. Results
 
-No result yet.
+### Part 1: from stored outputs
+
+**Run on 2026-11-26 at 03:33 UTC with the code of commit `fb674f6`, which is this plan.** The output of the command is [`ablations/stored.json`](ablations/stored.json). The stored logits gave the published number of the selection half, 0.9594, before anything else was computed. Every number below is for the selection half, and intervals are at 95% with streams drawn, unless a line says otherwise.
+
+**The size of the ensemble.**
+
+| System | Decoder setting by the rule | Segment F1 at 50%, multi streams | Minus the three seeds together | Pair streams | Recordings right of 284 | Wrong by `classify`'s rule |
+|---|---|---|---|---|---|---|
+| seed 0 | half window 7, threshold 0.186 | 0.958 [0.935, 0.978] | -0.001 [-0.005, +0.002] | 0.971 | 281 | 1 |
+| seed 1 | half window 5, threshold 0.130 | 0.948 [0.923, 0.969] | -0.012 [-0.023, -0.003] | 0.978 | 281 | 1 |
+| seed 2 | half window 5, threshold 0.137 | 0.948 [0.924, 0.970] | -0.011 [-0.023, -0.001] | 0.974 | 282 | 1 |
+| seeds 0+1 | half window 7, threshold 0.179 | 0.958 [0.935, 0.977] | -0.002 [-0.005, +0.000] | 0.971 | 281 | 1 |
+| seeds 0+2 | half window 5, threshold 0.139 | 0.955 [0.932, 0.976] | -0.004 [-0.013, +0.003] | 0.966 | 282 | 1 |
+| seeds 1+2 | half window 5, threshold 0.133 | 0.948 [0.924, 0.970] | -0.011 [-0.022, -0.002] | 0.959 | 282 | 1 |
+| seeds 0+1+2 | half window 7, threshold 0.174 | 0.959 [0.937, 0.979] |  | 0.971 | 281 | 1 |
+
+- **The three seeds together have the highest value, and they are not shown to be better than the best seed.** The mean over the single seeds is 0.951, over the pairs 0.954, and the three together reach 0.959. Against seed 1, seed 2 and their pair the interval of the difference lies below zero. Against seed 0 and the two pairs that hold it, it does not.
+- **The rule gives the three seeds the published setting,** and every smaller system a setting of its own.
+- **For single recordings the size makes no visible difference.** By `classify`'s rule every system has one wrong recording of 284, and the calibration errors lie between 0.032 and 0.037.
+- **Two numbers of the plan are corrected.** Section 2 quoted 0.957 and 0.942 for two of the pairs from the research records. From the published logits and by the rule they are 0.955 and 0.948.
+
+**Other decoders.** The released decoder minus each other one, for segment F1 at 50% on the multi streams. The interval that decides is at 99%.
+
+| Decoder | Its number | Segment F1 at 50%, multi streams | Released minus this | 99% interval | The released decoder is | Edit | Cut precision | Cut recall | Cuts at joins of the same view | Segments that match nothing | Segments missed | Label changes per recording |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| released change-point decoder | half window 7, threshold 0.174 | 0.959 | | | | 96.5 | 0.959 | 0.976 | 1.3% | 24 | 17 | 0.049 |
+| no decoder | none | 0.906 | +0.054 | [+0.022, +0.089] | ahead of | 91.6 | 0.858 | 0.984 | 3.9% | 78 | 22 | 0.102 |
+| mode filter | 17 | 0.923 | +0.037 | [+0.008, +0.069] | ahead of | 93.3 | 0.896 | 0.971 | 2.6% | 56 | 24 | 0.077 |
+| mean filter | 3 | 0.908 | +0.052 | [+0.022, +0.087] | ahead of | 91.6 | 0.861 | 0.987 | 3.5% | 77 | 21 | 0.102 |
+| minimum duration | 8 | 0.921 | +0.039 | [+0.010, +0.072] | ahead of | 93.0 | 0.885 | 0.950 | 2.6% | 55 | 27 | 0.077 |
+| Viterbi path | 8 | 0.953 | +0.007 | [-0.009, +0.026] | not shown to differ from | 96.1 | 0.944 | 0.969 | 0.9% | 29 | 19 | 0.039 |
+| change points without the view test | half window 7, threshold 0.174 | 0.959 | +0.000 |  |  | 96.5 | 0.959 | 0.976 | 1.3% | 24 | 17 | 0.049 |
+
+- **The released decoder is ahead of no decoder, of both filters and of the minimum duration.** It is 0.037 to 0.054 above them, and every 99% interval lies above zero.
+- **It is not shown to differ from a Viterbi path.** A path with one number, a cost of 8 for every change of view, reaches 0.953 where the released decoder reaches 0.959. The difference is 0.007, and its 99% interval runs from -0.009 to +0.026. The Viterbi path cuts less often at joins of the same view (0.9% against 1.3%) and changes the view less often inside a single recording. The released decoder has the higher precision and recall of the cuts.
+- **The view test does nothing at the published setting.** Without the test the rule chooses the same setting, and every number of the table comes out the same, in every draw. At that threshold the test drops no cut that these numbers can see. Section 7 expected more cuts at joins of the same view. There are none more.
+- **How the numbers were chosen.** For every other decoder some value kept the two floors on the calibration half: 6 of 8 for the mode filter, the mean filter and the Viterbi path, and 4 of 7 for the minimum duration. No floor was dropped.
+- **Against what was expected.** The Viterbi path came within 0.03 of the released decoder, as expected. The two filters did not: they are 0.037 and 0.052 below.
+
+**The decoder's settings.** Segment F1 at 50% on the multi streams of the selection half, at every setting. A row is a half window in samples. A column is the quantile of the scores inside single recordings of the calibration half that gives the threshold.
+
+| Half window | 0.80 | 0.85 | 0.90 | 0.95 | 0.97 | 0.99 | 0.995 | 0.999 |
+|---|---|---|---|---|---|---|---|---|
+| 5 | 0.904 | 0.904 | 0.904 | 0.904 | 0.904 | 0.903 | 0.912 | 0.947 |
+| 7 | 0.913 | 0.913 | 0.913 | 0.913 | 0.913 | 0.914 | 0.920 | 0.959 |
+| 9 | 0.916 | 0.916 | 0.916 | 0.916 | 0.916 | 0.921 | 0.926 | 0.958 |
+| 11 | 0.918 | 0.918 | 0.918 | 0.918 | 0.918 | 0.921 | 0.941 | 0.953 |
+| 15 | 0.916 | 0.916 | 0.916 | 0.916 | 0.916 | 0.934 | 0.942 | 0.941 |
+
+- **The decoder depends on its threshold.** The published setting, half window 7 at the 0.999 quantile, has the highest value of the 40. Three of the 40 settings lie within 0.01 of that value, the published one among them, and seven within 0.02. None lies above it. The lowest is 0.903 and the median 0.916. Section 7 expected most settings within 0.02. That was wrong.
+- **Below the highest quantile the decoder is no better than a filter.** At the five lower quantiles every half window stays between 0.904 and 0.918, a little below what the mode filter and the minimum duration reach.
+- **The published threshold is the highest on the grid.** The grid does not show what a still higher threshold would do.
+- **All 40 settings keep the two floors on the calibration half.** The floors do not narrow the choice for this system. The rule decides by segment F1 alone.
+- **The halves exchanged.** Chosen on the selection half, the rule takes half window 5 at the 0.995 quantile. On the calibration half that setting gives 0.981, where the published setting gives 0.984.
+
+**One temperature.** The fit on the calibration half chose 0.30, the lowest value that was tried. The log loss there falls from 0.041 at a temperature of 1 to 0.016 at 0.5, and stays near 0.015 below that.
+
+| The 284 single recordings of the selection half | Wrong | Mean probability | Right | Mean probability minus the share that is right | Calibration error, equal width | Calibration error, equal count | Brier score | Log loss |
+|---|---|---|---|---|---|---|---|---|
+| as published | 1 | 0.963 | 283 | -0.034 [-0.042, -0.025] | 0.034 | 0.034 | 0.011 | 0.043 |
+| with the temperature | 1 | 0.989 | 283 | -0.007 [-0.014, +0.000] | 0.012 | 0.007 | 0.008 | 0.015 |
+
+- **The temperature is a candidate.** The log loss is lower by 0.028, with the interval from -0.032 to -0.024, the Brier score by 0.004, and no more recordings are wrong.
+- **It closes most of the gap.** The system is less sure than it is right by 0.034 as published, and by 0.007 with the temperature.
+- **Two reasons for care.** The chosen value is the end of the values tried, so the fit did not find a best one. And one recording of 284 is wrong here, so making every answer surer costs almost nothing. On the test benchmark 14 of 800 recordings are wrong by `classify`'s rule, two of them with a probability above 0.9 ([EVALUATION.md](EVALUATION.md)). Whether the same temperature helps there is not known, and by section 6 that would take one more planned read.
+
+### Part 2: forward passes
+
+Not run yet.

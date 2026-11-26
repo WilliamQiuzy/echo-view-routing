@@ -482,3 +482,136 @@ def test_the_read_for_classify_is_what_the_documents_say():
                          "the rule of the published numbers, reads 785.",
          "the mean probability is 0.958, and the calibration error is 0.025",
          f"have a median probability of {of_wrong} and the right ones {of_right}, and the three seeds agree on every wrong one")
+
+
+def test_part_one_of_the_ablations_is_what_the_document_says():
+    """docs/ablations/stored.json is the output of part 1 of docs/ABLATIONS.md. The tables of the document are built
+    here from that file, row by row, and the sentences that state a number are looked up word for word."""
+    from echoview.evaluation import ablations, comparison
+
+    doc, d = "docs/ABLATIONS.md", stored("ablations/stored.json")
+    assert (d["benchmark"], d["draws"], d["seed"]) == ("development", 10_000, 20261123) and d["sequences"] == {"calibration": 472, "selection": 541}
+    assert f"{d['published_selection_f1']:.4f}" == "0.9594" == f"{comparison.PUBLISHED_SELECTION_F1:.4f}"
+    said(doc, "gave the published number of the selection half, 0.9594", "with the code of commit `fb674f6`")
+
+    def f3(x: float) -> str:
+        return f"{x:.3f}"
+
+    # the size of the ensemble
+    systems = d["ensemble_size"]["systems"]
+    assert list(systems) == ["seed 0", "seed 1", "seed 2", "seeds 0+1", "seeds 0+2", "seeds 1+2", "seeds 0+1+2"]
+    rows = []
+    for name, e in systems.items():
+        s, m = e["selection"], e["minus_the_whole_ensemble"]["multi"]["segment_f1_50"]
+        f1 = s["multi"]["segment_f1_50"]
+        apart = "" if name == "seeds 0+1+2" else f"{m['value']:+.3f} [{m['interval'][0]:+.3f}, {m['interval'][1]:+.3f}]"
+        rows.append(f"| {name} | half window {e['setting']['half_window']}, threshold {e['setting']['threshold']:.3f} | {f3(f1['value'])} "
+                    f"[{f3(f1['interval'][0])}, {f3(f1['interval'][1])}] | {apart} | {f3(s['pairs']['segment_f1_50']['value'])} "
+                    f"| {round(284 * s['recordings']['accuracy']['value'])} | {e['classify']['errors']} |")
+    said(doc, "\n".join(rows))
+    by_size = d["ensemble_size"]["mean_segment_f1_50_multi_by_size"]
+    said(doc, f"The mean over the single seeds is {f3(by_size['1'])}, over the pairs {f3(by_size['2'])}, "
+              f"and the three together reach {f3(by_size['3'])}.")
+    below = [name for name, e in systems.items() if name != "seeds 0+1+2" and e["minus_the_whole_ensemble"]["multi"]["segment_f1_50"]["interval"][1] < 0]
+    assert below == ["seed 1", "seed 2", "seeds 1+2"]  # "Against seed 1, seed 2 and their pair the interval ... lies below zero"
+    said(doc, "Against seed 1, seed 2 and their pair the interval of the difference lies below zero. "
+              "Against seed 0 and the two pairs that hold it, it does not.")
+    assert [name for name, e in systems.items() if e["is_the_published_setting"]] == ["seeds 0+1+2"]
+    eces = sorted(e["classify"]["ece"] for e in systems.values())
+    assert {e["classify"]["errors"] for e in systems.values()} == {1}
+    said(doc, f"every system has one wrong recording of 284, and the calibration errors lie between {f3(eces[0])} and {f3(eces[-1])}")
+    said(doc, f"they are {f3(systems['seeds 0+2']['selection']['multi']['segment_f1_50']['value'])} and "
+              f"{f3(systems['seeds 1+2']['selection']['multi']['segment_f1_50']['value'])}")
+
+    # other decoders
+    released, others = d["decoders"]["released"]["selection"], d["decoders"]["others"]
+    assert list(others) == [*ablations.COMPARED, ablations.NO_VIEW_TEST]
+
+    def cells(s: dict) -> str:
+        m, r = s["multi"], s["recordings"]
+        return (f"{m['edit']['value']:.1f} | {f3(m['cut_precision']['value'])} | {f3(m['cut_recall']['value'])} "
+                f"| {100 * m['same_view_cut_rate']['value']:.1f}% | "
+                f"{m['extra_segments']['value']:.0f} | {m['missed_segments']['value']:.0f} | {f3(r['cuts_per_recording']['value'])}")
+
+    rows = [f"| released change-point decoder | half window 7, threshold 0.174 | {f3(released['multi']['segment_f1_50']['value'])} | | | | {cells(released)} |"]
+    for name, e in others.items():
+        chosen = e.get("chosen")
+        if chosen is None:
+            number = "none"
+        elif isinstance(chosen["value"], dict):
+            number = f"half window {chosen['value']['half_window']}, threshold {chosen['value']['threshold']:.3f}"
+        else:
+            number = f"{chosen['value']:g}"
+        apart = e["released_minus_this"]["multi"]["segment_f1_50"]["value"]
+        decides = f"[{e['decides']['interval'][0]:+.3f}, {e['decides']['interval'][1]:+.3f}]" if "decides" in e else ""
+        rows.append(f"| {name} | {number} | {f3(e['selection']['multi']['segment_f1_50']['value'])} | {apart:+.3f} | {decides} | {e.get('word', '')} "
+                    f"| {cells(e['selection'])} |")
+    said(doc, "\n".join(rows))
+    words = {name: others[name]["word"] for name in ablations.COMPARED}
+    assert words == {"no decoder": "ahead of", "mode filter": "ahead of", "mean filter": "ahead of", "minimum duration": "ahead of",
+                     "Viterbi path": "not shown to differ from"}
+    for name in ablations.COMPARED:
+        assert others[name]["decides"]["level"] == 99.0 and words[name] == ablations.word(others[name]["decides"])
+    ahead = sorted(others[name]["released_minus_this"]["multi"]["segment_f1_50"]["value"] for name in ablations.COMPARED if words[name] == "ahead of")
+    said(doc, f"It is {f3(ahead[0])} to {f3(ahead[-1])} above them, and every 99% interval lies above zero.")
+    viterbi = others["Viterbi path"]
+    low, high = viterbi["decides"]["interval"]
+    said(doc, f"a cost of {viterbi['chosen']['value']:g} for every change of view, reaches {f3(viterbi['selection']['multi']['segment_f1_50']['value'])} "
+              f"where the released decoder reaches {f3(released['multi']['segment_f1_50']['value'])}. The difference is "
+              f"{f3(viterbi['decides']['value'])}, and its 99% interval runs from {low:+.3f} to {high:+.3f}.",
+         f"({100 * viterbi['selection']['multi']['same_view_cut_rate']['value']:.1f}% against {100 * released['multi']['same_view_cut_rate']['value']:.1f}%)")
+    assert viterbi["selection"]["recordings"]["cuts_per_recording"]["value"] < released["recordings"]["cuts_per_recording"]["value"]
+    assert all(released["multi"][key]["value"] > viterbi["selection"]["multi"][key]["value"] for key in ("cut_precision", "cut_recall"))
+    plain = others[ablations.NO_VIEW_TEST]
+    assert plain["selection"] == released and "word" not in plain  # every number the same
+    assert all(entry["value"] == 0.0 and entry["interval"] in ([0.0, 0.0], None)
+               for part in plain["released_minus_this"].values() for entry in part.values())
+    feasible = {name: (others[name]["chosen"]["n_feasible"], others[name]["chosen"]["grid"], others[name]["chosen"]["floors_dropped"])
+                for name in list(others)[1:]}
+    assert feasible == {"mode filter": (6, 8, False), "mean filter": (6, 8, False), "minimum duration": (4, 7, False), "Viterbi path": (6, 8, False),
+                        ablations.NO_VIEW_TEST: (40, 40, False)}
+    said(doc, "6 of 8 for the mode filter, the mean filter and the Viterbi path, and 4 of 7 for the minimum duration. No floor was dropped.",
+         f"they are {f3(others['mode filter']['released_minus_this']['multi']['segment_f1_50']['value'])} and "
+         f"{f3(others['mean filter']['released_minus_this']['multi']['segment_f1_50']['value'])} below")
+
+    # the decoder's settings
+    settings = d["decoder_settings"]
+    grid: dict[int, list[str]] = {}
+    for entry in settings["settings"]:
+        grid.setdefault(entry["half_window"], []).append(f3(entry["selection"]["segment_f1_50_multi"]))
+    said(doc, "\n".join(f"| {half_window} | " + " | ".join(values) + " |" for half_window, values in grid.items()))
+    summary = settings["selection_segment_f1_50_multi"]
+    counted = (summary["within_0.01_of_the_published"], summary["within_0.02_of_the_published"], summary["above_the_published"], summary["settings"])
+    assert counted == (3, 7, 0, 40)
+    best = max(settings["settings"], key=lambda entry: entry["selection"]["segment_f1_50_multi"])
+    assert (best["half_window"], best["threshold_quantile"]) == (7, 0.999) and settings["feasible_on_calibration"]["settings"] == 40
+    said(doc, "Three of the 40 settings lie within 0.01 of that value, the published one among them, and seven within 0.02. None lies above it.",
+         f"The lowest is {f3(summary['lowest'])} and the median {f3(summary['median'])}.", "All 40 settings keep the two floors on the calibration half.")
+    lower = [float(v) for values in grid.values() for v in values[:5]]
+    said(doc, f"At the five lower quantiles every half window stays between {min(lower):.3f} and {max(lower):.3f}")
+    assert max(lower) < min(others[name]["selection"]["multi"]["segment_f1_50"]["value"] for name in ("mode filter", "minimum duration"))
+    exchanged = settings["halves_exchanged"]
+    said(doc, f"the rule takes half window {exchanged['setting']['half_window']} at the {exchanged['setting']['threshold_quantile']:g} quantile. "
+              f"On the calibration half that setting gives {f3(exchanged['calibration']['chosen_on_selection']['segment_f1_50_multi'])}, "
+              f"where the published setting gives {f3(exchanged['calibration']['published']['segment_f1_50_multi'])}.")
+
+    # one temperature
+    temperature = d["temperature"]
+    curve = {entry["temperature"]: entry["log_loss"] for entry in temperature["calibration_curve"]}
+    assert temperature["chosen"] == min(curve) == 0.3 and temperature["word"] == "candidate"
+    said(doc, f"The fit on the calibration half chose {temperature['chosen']:.2f}, the lowest value that was tried.",
+         f"falls from {f3(curve[1.0])} at a temperature of 1 to {f3(curve[0.5])} at 0.5, and stays near {f3(curve[0.3])} below that")
+    assert f3(curve[0.4]) == f3(curve[0.3]) == "0.015"
+    rows = []
+    for name, e in temperature["selection"].items():
+        gap = e["probability_minus_right"]
+        rows.append(f"| {name} | {e['errors']} | {f3(e['mean_probability'])} | {round(284 * e['share_right'])} | {gap['value']:+.3f} "
+                    f"[{gap['interval'][0]:+.3f}, {gap['interval'][1]:+.3f}] | {f3(e['ece'])} | {f3(e['ece_equal_count'])} | {f3(e['brier']['value'])} "
+                    f"| {f3(e['log_loss']['value'])} |")
+    said(doc, "\n".join(rows))
+    loss, brier = temperature["with_minus_published"]["log_loss"], temperature["with_minus_published"]["brier"]
+    said(doc, f"The log loss is lower by {f3(-loss['value'])}, with the interval from {loss['interval'][0]:+.3f} to {loss['interval'][1]:+.3f}, "
+              f"the Brier score by {f3(-brier['value'])}, and no more recordings are wrong.")
+    before, after = (temperature["selection"][name]["probability_minus_right"]["value"] for name in ("as published", "with the temperature"))
+    said(doc, f"less sure than it is right by {f3(-before)} as published, and by {f3(-after)} with the temperature")
+    said("CHANGELOG.md", "a Viterbi path with one number is not shown to differ from the released decoder (0.953 against 0.959)")
