@@ -1,6 +1,6 @@
 # What the parts add, and what the system stands: studies on development data
 
-**Status: planned on 2026-11-26 (UTC). Part 1 was run on the same day (section 9); part 2 is not finished.** Everything in this document down to "Results" was written and committed before any of its numbers existed.
+**Status: planned on 2026-11-26 (UTC). Part 1 was run on the same day and its text corrected once (section 9); part 2 was started and interrupted, and is not finished.** Everything in this document down to "Results" was written and committed before any of its numbers existed.
 
 Nothing here reads the test benchmark, trains a model or changes the published system.
 
@@ -144,24 +144,49 @@ For every condition, every number is given minus its value on the unchanged fram
 
 ### Part 1: from stored outputs
 
-**Run on 2026-11-26 at 03:33 UTC with the code of commit `fb674f6`, which is this plan.** The output of the command is [`ablations/stored.json`](ablations/stored.json). The stored logits gave the published number of the selection half, 0.9594, before anything else was computed. Every number below is for the selection half, and intervals are at 95% with streams drawn, unless a line says otherwise.
+**Run on 2026-11-26 at 03:33 UTC with the code of commit `fb674f6`, which is this plan.** The output of the command is [`ablations/stored.json`](ablations/stored.json). The stored logits gave the published number of the selection half, 0.9594, before anything else was computed. Every number below is for the selection half unless a line names the calibration half. Intervals are at 95% unless a line says 99%. Streams are drawn for the numbers about streams and recordings for the numbers about recordings.
+
+**The text of part 1 was corrected on 2026-11-26, after an independent check of it against the file.** No number was wrong. Some sentences said more than the numbers carry, and numbers that the plan had promised stood only in the file. The end of part 1 lists what changed.
 
 **The size of the ensemble.**
 
-| System | Decoder setting by the rule | Segment F1 at 50%, multi streams | Minus the three seeds together | Pair streams | Recordings right of 284 | Wrong by `classify`'s rule |
-|---|---|---|---|---|---|---|
-| seed 0 | half window 7, threshold 0.186 | 0.958 [0.935, 0.978] | -0.001 [-0.005, +0.002] | 0.971 | 281 | 1 |
-| seed 1 | half window 5, threshold 0.130 | 0.948 [0.923, 0.969] | -0.012 [-0.023, -0.003] | 0.978 | 281 | 1 |
-| seed 2 | half window 5, threshold 0.137 | 0.948 [0.924, 0.970] | -0.011 [-0.023, -0.001] | 0.974 | 282 | 1 |
-| seeds 0+1 | half window 7, threshold 0.179 | 0.958 [0.935, 0.977] | -0.002 [-0.005, +0.000] | 0.971 | 281 | 1 |
-| seeds 0+2 | half window 5, threshold 0.139 | 0.955 [0.932, 0.976] | -0.004 [-0.013, +0.003] | 0.966 | 282 | 1 |
-| seeds 1+2 | half window 5, threshold 0.133 | 0.948 [0.924, 0.970] | -0.011 [-0.022, -0.002] | 0.959 | 282 | 1 |
-| seeds 0+1+2 | half window 7, threshold 0.174 | 0.959 [0.937, 0.979] |  | 0.971 | 281 | 1 |
+| System | Decoder setting by the rule | Segment F1 at 50%, multi streams | Minus the three seeds together | Pair streams | Recordings right of 284, majority rule | Wrong by `classify`'s rule | Calibration error, `classify`'s rule |
+|---|---|---|---|---|---|---|---|
+| seed 0 | half window 7, threshold 0.186 | 0.958 [0.935, 0.978] | -0.001 [-0.005, +0.002] | 0.971 | 281 | 1 | 0.034 |
+| seed 1 | half window 5, threshold 0.130 | 0.948 [0.923, 0.969] | -0.012 [-0.023, -0.003] | 0.978 | 281 | 1 | 0.032 |
+| seed 2 | half window 5, threshold 0.137 | 0.948 [0.924, 0.970] | -0.011 [-0.023, -0.001] | 0.974 | 282 | 1 | 0.037 |
+| seeds 0+1 | half window 7, threshold 0.179 | 0.958 [0.935, 0.977] | -0.002 [-0.005, +0.000] | 0.971 | 281 | 1 | 0.033 |
+| seeds 0+2 | half window 5, threshold 0.139 | 0.955 [0.932, 0.976] | -0.004 [-0.013, +0.003] | 0.966 | 282 | 1 | 0.034 |
+| seeds 1+2 | half window 5, threshold 0.133 | 0.948 [0.924, 0.970] | -0.011 [-0.022, -0.002] | 0.959 | 282 | 1 | 0.034 |
+| seeds 0+1+2 | half window 7, threshold 0.174 | 0.959 [0.937, 0.979] |  | 0.971 | 281 | 1 | 0.034 |
 
-- **The three seeds together have the highest value, and they are not shown to be better than the best seed.** The mean over the single seeds is 0.951, over the pairs 0.954, and the three together reach 0.959. Against seed 1, seed 2 and their pair the interval of the difference lies below zero. Against seed 0 and the two pairs that hold it, it does not.
-- **The rule gives the three seeds the published setting,** and every smaller system a setting of its own.
-- **For single recordings the size makes no visible difference.** By `classify`'s rule every system has one wrong recording of 284, and the calibration errors lie between 0.032 and 0.037.
-- **Two numbers of the plan are corrected.** Section 2 quoted 0.957 and 0.942 for two of the pairs from the research records. From the published logits and by the rule they are 0.955 and 0.948.
+Each smaller system minus the three seeds together, for every number of section 5, with 95% intervals. A count of confused recordings has no interval.
+
+| Minus the three seeds together | seed 0 | seed 1 | seed 2 | seeds 0+1 | seeds 0+2 | seeds 1+2 |
+|---|---|---|---|---|---|---|
+| Segment F1 at 50%, multi streams | -0.001 [-0.005, +0.002] | -0.012 [-0.023, -0.003] | -0.011 [-0.023, -0.001] | -0.002 [-0.005, +0.000] | -0.004 [-0.013, +0.003] | -0.011 [-0.022, -0.002] |
+| Edit | -0.2 [-0.9, +0.3] | -1.5 [-2.9, -0.3] | -1.0 [-2.4, +0.2] | -0.4 [-1.0, +0.0] | -0.5 [-1.8, +0.6] | -1.0 [-2.2, +0.1] |
+| Wrong samples, percentage points | +0.2 [-0.0, +0.4] | +0.6 [-0.1, +1.4] | +0.6 [+0.0, +1.3] | +0.1 [-0.1, +0.5] | +0.3 [-0.1, +0.9] | +0.6 [+0.1, +1.3] |
+| Cut precision | -0.003 [-0.012, +0.005] | -0.013 [-0.032, +0.002] | -0.006 [-0.022, +0.009] | -0.005 [-0.013, +0.000] | +0.002 [-0.012, +0.014] | -0.006 [-0.021, +0.007] |
+| Cut recall | -0.005 [-0.013, +0.000] | -0.013 [-0.028, -0.003] | -0.018 [-0.035, -0.005] | +0.000 [+0.000, +0.000] | -0.008 [-0.018, +0.000] | -0.013 [-0.027, -0.003] |
+| Mean distance of matched cuts, seconds | +0.007 [+0.002, +0.014] | -0.003 [-0.009, +0.003] | -0.004 [-0.008, +0.000] | -0.001 [-0.004, +0.002] | -0.000 [-0.003, +0.003] | -0.003 [-0.006, -0.000] |
+| Cuts at joins of the same view, percentage points | +0.0 [+0.0, +0.0] | +0.9 [+0.0, +2.7] | +0.9 [+0.0, +2.7] | +0.0 [+0.0, +0.0] | +0.9 [+0.0, +2.7] | +0.9 [+0.0, +2.7] |
+| Segments that match nothing | +0 [-3, +3] | +6 [+0, +13] | +3 [-3, +10] | +2 [+0, +5] | +0 [-5, +6] | +4 [-2, +11] |
+| Segments missed | +1 [+0, +3] | +6 [+1, +14] | +8 [+2, +16] | +0 [+0, +0] | +4 [+0, +9] | +7 [+1, +15] |
+| Segment F1 at 50%, pair streams | +0.000 [+0.000, +0.000] | +0.007 [-0.007, +0.029] | +0.002 [+0.000, +0.007] | +0.000 [+0.000, +0.000] | -0.005 [-0.022, +0.007] | -0.012 [-0.031, +0.000] |
+| Accuracy, single recordings | +0.000 [+0.000, +0.000] | +0.000 [+0.000, +0.000] | +0.004 [+0.000, +0.011] | +0.000 [+0.000, +0.000] | +0.004 [+0.000, +0.011] | +0.004 [+0.000, +0.011] |
+| Macro-F1, single recordings | +0.000 [+0.000, +0.000] | +0.000 [+0.000, +0.000] | +0.009 [+0.000, +0.032] | +0.000 [+0.000, +0.000] | +0.009 [+0.000, +0.032] | +0.009 [+0.000, +0.032] |
+| A4C read as A5C, recordings | +0 | +0 | -1 | +0 | -1 | -1 |
+| A5C read as A4C, recordings | +0 | +0 | +0 | +0 | +0 | +0 |
+| Label changes per recording | -0.014 [-0.035, +0.000] | +0.014 [+0.000, +0.032] | +0.004 [-0.018, +0.025] | +0.000 [+0.000, +0.000] | -0.004 [-0.028, +0.021] | +0.007 [+0.000, +0.018] |
+
+- **On the multi streams the three seeds together have the highest segment F1.** The mean over the single seeds is 0.951, over the pairs 0.954, and the three together reach 0.959. Against seed 1, seed 2 and their pair the interval of the difference lies below zero. Against seed 0 and the two pairs that hold it, it does not: seed 0 alone is 0.001 below the three together, with an interval from -0.005 to +0.002. These are six intervals at 95%, and none is corrected for their number.
+- **On pair streams, and on single recordings by the majority rule, they are not the highest.** On pair streams seed 1 (0.978) and seed 2 (0.974) are above the three together (0.971). By the majority rule the three together read 281 of the 284 single recordings right, and seed 2 and the two pairs that hold it read 282. No interval of these differences excludes zero.
+- **Of the other numbers on the multi streams** the three together are alone the best on the Edit score and on wrong samples. They are level with the best on cut recall, segments missed, segments that match nothing and cuts at joins of the same view. They are not the best on cut precision and on the distance of the matched cuts. The table above has every difference. Its 78 intervals are at 95%, and none is corrected for their number.
+- **The rule gives the three seeds the published setting:** half window 7, a threshold that agrees with the published one to 0.0001, and the same value for every number. Every smaller system gets another threshold, and four of the six another half window.
+- **By `classify`'s rule the size makes no visible difference.** Every system has one wrong recording of 284, and the calibration errors lie between 0.032 and 0.037.
+- **Against what was expected.** Section 7 expected the three together at or above every smaller system, by 0.01 or less. On the multi streams they are above each, by 0.012 at most. On pair streams and by the majority rule they are not above each.
+- **Two numbers of the plan come out differently.** Section 2 quoted 0.957 and 0.942 for two of the pairs from the research records. From the published logits and by the rule they are 0.955 and 0.948. The numbers of the records have no file in this repository, and why they differ was not looked into.
 
 **Other decoders.** The released decoder minus each other one, for segment F1 at 50% on the multi streams. The interval that decides is at 99%.
 
@@ -175,11 +200,48 @@ For every condition, every number is given minus its value on the unchanged fram
 | Viterbi path | 8 | 0.953 | +0.007 | [-0.009, +0.026] | not shown to differ from | 96.1 | 0.944 | 0.969 | 0.9% | 29 | 19 | 0.039 |
 | change points without the view test | half window 7, threshold 0.174 | 0.959 | +0.000 |  |  | 96.5 | 0.959 | 0.976 | 1.3% | 24 | 17 | 0.049 |
 
+The other numbers of section 5 for the same decoders:
+
+| Decoder | Segment F1 at 50%, pair streams | Wrong samples | Mean distance of matched cuts | Recordings right of 284, majority rule | Macro-F1 | A4C read as A5C | A5C read as A4C |
+|---|---|---|---|---|---|---|---|
+| released change-point decoder | 0.971 | 6.1% | 0.153 s | 281 | 0.979 | 2 | 0 |
+| no decoder | 0.957 | 7.0% | 0.157 s | 282 | 0.988 | 1 | 0 |
+| mode filter | 0.971 | 7.0% | 0.165 s | 282 | 0.988 | 1 | 0 |
+| mean filter | 0.953 | 6.5% | 0.139 s | 282 | 0.988 | 1 | 0 |
+| minimum duration | 0.971 | 7.2% | 0.166 s | 282 | 0.988 | 1 | 0 |
+| Viterbi path | 0.969 | 6.2% | 0.160 s | 281 | 0.979 | 2 | 0 |
+| change points without the view test | 0.971 | 6.1% | 0.153 s | 281 | 0.979 | 2 | 0 |
+
+The released decoder minus each other one, for every number, with 95% intervals. These are descriptions, and only the first table decides a word. A count of confused recordings has no interval. The 65 intervals are not corrected for their number. The 95% interval of every value of the two tables above is in the file.
+
+| Released minus | no decoder | mode filter | mean filter | minimum duration | Viterbi path |
+|---|---|---|---|---|---|
+| Segment F1 at 50%, multi streams | +0.054 [+0.029, +0.080] | +0.037 [+0.014, +0.061] | +0.052 [+0.027, +0.078] | +0.039 [+0.016, +0.064] | +0.007 [-0.006, +0.021] |
+| Edit | +4.9 [+2.5, +7.5] | +3.2 [+1.1, +5.6] | +4.9 [+2.5, +7.5] | +3.5 [+1.3, +5.9] | +0.4 [-0.8, +1.7] |
+| Wrong samples, percentage points | -0.9 [-1.8, -0.2] | -0.9 [-1.7, -0.2] | -0.4 [-1.2, +0.3] | -1.1 [-1.9, -0.3] | -0.2 [-0.7, +0.3] |
+| Cut precision | +0.100 [+0.065, +0.138] | +0.063 [+0.030, +0.098] | +0.098 [+0.062, +0.137] | +0.074 [+0.041, +0.109] | +0.015 [+0.003, +0.029] |
+| Cut recall | -0.008 [-0.021, +0.000] | +0.005 [-0.008, +0.018] | -0.010 [-0.024, +0.000] | +0.026 [+0.008, +0.046] | +0.008 [-0.003, +0.022] |
+| Mean distance of matched cuts, seconds | -0.004 [-0.009, +0.001] | -0.012 [-0.019, -0.005] | +0.014 [+0.007, +0.020] | -0.013 [-0.021, -0.005] | -0.007 [-0.013, -0.001] |
+| Cuts at joins of the same view, percentage points | -2.6 [-5.1, -0.5] | -1.3 [-3.5, +0.0] | -2.2 [-4.6, -0.4] | -1.3 [-3.5, +0.0] | +0.4 [+0.0, +1.4] |
+| Segments that match nothing | -54 [-77, -33] | -32 [-52, -14] | -53 [-76, -32] | -31 [-51, -13] | -5 [-12, +2] |
+| Segments missed | -5 [-13, +4] | -7 [-15, +1] | -4 [-12, +5] | -10 [-20, -1] | -2 [-11, +6] |
+| Segment F1 at 50%, pair streams | +0.014 [+0.000, +0.038] | +0.000 [+0.000, +0.000] | +0.019 [+0.000, +0.043] | +0.000 [+0.000, +0.000] | +0.002 [+0.000, +0.008] |
+| Accuracy, single recordings | -0.004 [-0.011, +0.000] | -0.004 [-0.011, +0.000] | -0.004 [-0.011, +0.000] | -0.004 [-0.011, +0.000] | +0.000 [+0.000, +0.000] |
+| Macro-F1, single recordings | -0.009 [-0.032, +0.000] | -0.009 [-0.032, +0.000] | -0.009 [-0.032, +0.000] | -0.009 [-0.032, +0.000] | +0.000 [+0.000, +0.000] |
+| A4C read as A5C, recordings | +1 | +1 | +1 | +1 | +0 |
+| A5C read as A4C, recordings | +0 | +0 | +0 | +0 | +0 |
+| Label changes per recording | -0.053 [-0.109, -0.014] | -0.028 [-0.053, -0.007] | -0.053 [-0.109, -0.014] | -0.028 [-0.053, -0.007] | +0.011 [-0.018, +0.039] |
+
 - **The released decoder is ahead of no decoder, of both filters and of the minimum duration.** It is 0.037 to 0.054 above them, and every 99% interval lies above zero.
-- **It is not shown to differ from a Viterbi path.** A path with one number, a cost of 8 for every change of view, reaches 0.953 where the released decoder reaches 0.959. The difference is 0.007, and its 99% interval runs from -0.009 to +0.026. The Viterbi path cuts less often at joins of the same view (0.9% against 1.3%) and changes the view less often inside a single recording. The released decoder has the higher precision and recall of the cuts.
-- **The view test does nothing at the published setting.** Without the test the rule chooses the same setting, and every number of the table comes out the same, in every draw. At that threshold the test drops no cut that these numbers can see. Section 7 expected more cuts at joins of the same view. There are none more.
-- **How the numbers were chosen.** For every other decoder some value kept the two floors on the calibration half: 6 of 8 for the mode filter, the mean filter and the Viterbi path, and 4 of 7 for the minimum duration. No floor was dropped.
-- **Against what was expected.** The Viterbi path came within 0.03 of the released decoder, as expected. The two filters did not: they are 0.037 and 0.052 below.
+- **It is not shown to differ from a Viterbi path.** A path with one number, a cost of 8 for every change of view, reaches 0.953 where the released decoder reaches 0.959. The difference is 0.007, and its 99% interval runs from -0.009 to +0.026. This does not show that the two are equal: the interval allows the released decoder to be 0.026 better or 0.009 worse.
+- **Two of the other numbers separate the two, both for the released decoder.** The precision of its cuts is higher by 0.015, with an interval from +0.003 to +0.029. Its matched cuts lie nearer to the reference cuts by 0.007 s, and the interval of that difference in distance runs from -0.013 to -0.001. The Viterbi path has fewer cuts at joins of the same view (2 against 3 of 230 joins) and fewer label changes inside single recordings (11 against 14 over the 284), and neither interval excludes zero.
+- **On single recordings the released decoder is not the best.** By the majority rule the released decoder and the Viterbi path read 281 of the 284 recordings right, with A4C read as A5C twice. No decoder, the two filters and the minimum duration read 282, with A4C read as A5C once. The difference is one recording, -0.004 [-0.011, +0.000] in accuracy.
+- **Its matched cuts are not the nearest.** They lie 0.153 s from the reference cuts on average. Those of the mean filter lie at 0.139 s, nearer by 0.014 s (+0.014 [+0.007, +0.020]). Those of the mode filter, the minimum duration and the Viterbi path lie farther, at 0.165 s, 0.166 s and 0.160 s, and each of these intervals excludes zero. Without a decoder they lie at 0.157 s, and that interval includes zero. Every decoder matches cuts of its own, so these distances are not over the same cuts.
+- **The released decoder has the fewest wrong samples,** 6.1%, against 6.2% for the Viterbi path and 6.5% to 7.2% for the others. The interval of the difference excludes zero against no decoder, the mode filter and the minimum duration.
+- **On pair streams the mode filter and the minimum duration equal the released decoder,** at 0.971. The Viterbi path reaches 0.969, no decoder 0.957 and the mean filter 0.953. No interval lies wholly above zero.
+- **Without the view test no number changes.** Without the test the rule chooses the same setting, every number of the tables comes out the same, and every interval of a difference is [0, 0]. This says little about the test. It drops a peak when the windows on its two sides name the same view, and every number here is computed from the views of the samples. A dropped peak can show in them only when the two pieces that it would have separated take different views. So the numbers stay the same when the test drops no peak, and they stay the same when the pieces on the two sides of every dropped peak take the same view. They do not say which of the two it is. The file does not hold how many peaks the test drops. Section 7 expected more cuts at joins of the same view without the test. With numbers of this kind that could hardly have shown.
+- **How the numbers were chosen.** For every other decoder some value kept the two floors on the calibration half: 6 of 8 for the mode filter, the mean filter and the Viterbi path, and 4 of 7 for the minimum duration. No floor was dropped. The window of the mean filter, 3, is the smallest that was tried. On the calibration half, where the numbers were chosen, the decoders lie closer together than on the selection half: the released decoder 0.984, the mode filter 0.983, the minimum duration 0.983, the Viterbi path 0.981 and the mean filter 0.979.
+- **Against what was expected.** The released decoder has the highest segment F1 on the multi streams, and doing without a decoder is clearly behind, both as expected. The Viterbi path came within 0.03 of the released decoder, as expected. The two filters did not: they are 0.037 and 0.052 below.
 
 **The decoder's settings.** Segment F1 at 50% on the multi streams of the selection half, at every setting. A row is a half window in samples. A column is the quantile of the scores inside single recordings of the calibration half that gives the threshold.
 
@@ -192,22 +254,83 @@ For every condition, every number is given minus its value on the unchanged fram
 | 15 | 0.916 | 0.916 | 0.916 | 0.916 | 0.916 | 0.934 | 0.942 | 0.941 |
 
 - **The decoder depends on its threshold.** The published setting, half window 7 at the 0.999 quantile, has the highest value of the 40. Three of the 40 settings lie within 0.01 of that value, the published one among them, and seven within 0.02. None lies above it. The lowest is 0.903 and the median 0.916. Section 7 expected most settings within 0.02. That was wrong.
-- **Below the highest quantile the decoder is no better than a filter.** At the five lower quantiles every half window stays between 0.904 and 0.918, a little below what the mode filter and the minimum duration reach.
+- **At the five lower quantiles the decoder is below the mode filter and the minimum duration.** There every half window stays between 0.904 and 0.918, where the minimum duration reaches 0.921 and the mode filter 0.923. At the 0.99 and 0.995 quantiles four of the ten settings are above both, with 0.926 to 0.942.
 - **The published threshold is the highest on the grid.** The grid does not show what a still higher threshold would do.
-- **All 40 settings keep the two floors on the calibration half.** The floors do not narrow the choice for this system. The rule decides by segment F1 alone.
-- **The halves exchanged.** Chosen on the selection half, the rule takes half window 5 at the 0.995 quantile. On the calibration half that setting gives 0.981, where the published setting gives 0.984.
+- **All 40 settings keep the two floors on the calibration half,** so there the rule decides by segment F1 alone. On the selection half 7 of the 40 fall below the floor of 0.980 for the macro-F1 of single recordings. The published setting is one of them, with 0.979, and so are five of the six other settings within 0.02 of it. None falls below the floor of 0.95 for the boundary recall. The table at the end of part 1 has the three numbers of the rule for every setting on both halves.
+- **The halves exchanged.** Chosen on the selection half, the rule takes half window 5 with a threshold of 0.098, the 0.995 quantile of the scores of the selection half. This is not a cell of the table above, whose thresholds come from the calibration half: its cell for half window 5 and 0.995 has a threshold of 0.054. On the calibration half the exchanged choice gives 0.981, where the published setting gives 0.984. The file does not hold what the exchanged choice reaches on the selection half, nor how many settings kept the floors there.
 
-**One temperature.** The fit on the calibration half chose 0.30, the lowest value that was tried. The log loss there falls from 0.041 at a temperature of 1 to 0.016 at 0.5, and stays near 0.015 below that.
+**One temperature.** The fit on the calibration half chose 0.30, the lowest value that was tried. The log loss there falls from 0.041 at a temperature of 1 to 0.016 at 0.5, and stays near 0.015 below that. The intervals of this part draw recordings.
 
 | The 284 single recordings of the selection half | Wrong | Mean probability | Right | Mean probability minus the share that is right | Calibration error, equal width | Calibration error, equal count | Brier score | Log loss |
 |---|---|---|---|---|---|---|---|---|
 | as published | 1 | 0.963 | 283 | -0.034 [-0.042, -0.025] | 0.034 | 0.034 | 0.011 | 0.043 |
 | with the temperature | 1 | 0.989 | 283 | -0.007 [-0.014, +0.000] | 0.012 | 0.007 | 0.008 | 0.015 |
 
-- **The temperature is a candidate.** The log loss is lower by 0.028, with the interval from -0.032 to -0.024, the Brier score by 0.004, and no more recordings are wrong.
+- **The temperature is a candidate.** The log loss with the temperature minus the log loss as published is -0.028 [-0.032, -0.024], the same difference for the Brier score is -0.004 [-0.006, -0.001], and no more recordings are wrong.
 - **It closes most of the gap.** The system is less sure than it is right by 0.034 as published, and by 0.007 with the temperature.
 - **Two reasons for care.** The chosen value is the end of the values tried, so the fit did not find a best one. And one recording of 284 is wrong here, so making every answer surer costs almost nothing. On the test benchmark 14 of 800 recordings are wrong by `classify`'s rule, two of them with a probability above 0.9 ([EVALUATION.md](EVALUATION.md)). Whether the same temperature helps there is not known, and by section 6 that would take one more planned read.
 
+**All 40 settings of the decoder.** The three numbers of the rule on both halves: segment F1 at 50% on the multi streams, the macro-F1 of single recordings, and the boundary recall on the multi streams. The thresholds come from the calibration half.
+
+| Half window | Quantile | Threshold | Calibration half: segment F1 | Macro-F1 | Boundary recall | Selection half: segment F1 | Macro-F1 | Boundary recall |
+|---|---|---|---|---|---|---|---|---|
+| 5 | 0.8 | 0.00005 | 0.975 | 0.993 | 0.982 | 0.904 | 0.988 | 0.963 |
+| 5 | 0.85 | 0.00007 | 0.975 | 0.993 | 0.982 | 0.904 | 0.988 | 0.963 |
+| 5 | 0.9 | 0.00015 | 0.975 | 0.993 | 0.982 | 0.904 | 0.988 | 0.963 |
+| 5 | 0.95 | 0.00081 | 0.975 | 0.993 | 0.982 | 0.904 | 0.988 | 0.963 |
+| 5 | 0.97 | 0.00289 | 0.975 | 0.993 | 0.982 | 0.904 | 0.988 | 0.963 |
+| 5 | 0.99 | 0.02520 | 0.978 | 0.993 | 0.982 | 0.903 | 0.988 | 0.961 |
+| 5 | 0.995 | 0.05421 | 0.979 | 0.993 | 0.982 | 0.912 | 0.988 | 0.961 |
+| 5 | 0.999 | 0.14120 | 0.981 | 0.993 | 0.980 | 0.947 | 0.979 | 0.955 |
+| 7 | 0.8 | 0.00006 | 0.977 | 0.993 | 0.990 | 0.913 | 0.988 | 0.984 |
+| 7 | 0.85 | 0.00010 | 0.977 | 0.993 | 0.990 | 0.913 | 0.988 | 0.984 |
+| 7 | 0.9 | 0.00021 | 0.977 | 0.993 | 0.990 | 0.913 | 0.988 | 0.984 |
+| 7 | 0.95 | 0.00120 | 0.977 | 0.993 | 0.990 | 0.913 | 0.988 | 0.984 |
+| 7 | 0.97 | 0.00468 | 0.977 | 0.993 | 0.990 | 0.913 | 0.988 | 0.984 |
+| 7 | 0.99 | 0.04173 | 0.977 | 0.993 | 0.990 | 0.914 | 0.988 | 0.982 |
+| 7 | 0.995 | 0.08171 | 0.978 | 0.993 | 0.990 | 0.920 | 0.988 | 0.982 |
+| 7 | 0.999 | 0.17383 | 0.984 | 0.986 | 0.990 | 0.959 | 0.979 | 0.976 |
+| 9 | 0.8 | 0.00007 | 0.975 | 0.993 | 0.990 | 0.916 | 0.988 | 0.984 |
+| 9 | 0.85 | 0.00012 | 0.975 | 0.993 | 0.990 | 0.916 | 0.988 | 0.984 |
+| 9 | 0.9 | 0.00028 | 0.975 | 0.993 | 0.990 | 0.916 | 0.988 | 0.984 |
+| 9 | 0.95 | 0.00157 | 0.975 | 0.993 | 0.990 | 0.916 | 0.988 | 0.984 |
+| 9 | 0.97 | 0.00656 | 0.975 | 0.993 | 0.990 | 0.916 | 0.988 | 0.984 |
+| 9 | 0.99 | 0.05326 | 0.976 | 0.993 | 0.990 | 0.921 | 0.988 | 0.982 |
+| 9 | 0.995 | 0.10344 | 0.976 | 0.993 | 0.990 | 0.926 | 0.988 | 0.982 |
+| 9 | 0.999 | 0.22197 | 0.981 | 0.986 | 0.985 | 0.958 | 0.979 | 0.976 |
+| 11 | 0.8 | 0.00008 | 0.973 | 0.993 | 0.990 | 0.918 | 0.988 | 0.984 |
+| 11 | 0.85 | 0.00014 | 0.973 | 0.993 | 0.990 | 0.918 | 0.988 | 0.984 |
+| 11 | 0.9 | 0.00034 | 0.973 | 0.993 | 0.990 | 0.918 | 0.988 | 0.984 |
+| 11 | 0.95 | 0.00198 | 0.973 | 0.993 | 0.990 | 0.918 | 0.988 | 0.984 |
+| 11 | 0.97 | 0.00876 | 0.973 | 0.993 | 0.990 | 0.918 | 0.988 | 0.984 |
+| 11 | 0.99 | 0.06257 | 0.973 | 0.993 | 0.990 | 0.921 | 0.988 | 0.982 |
+| 11 | 0.995 | 0.12294 | 0.975 | 0.993 | 0.990 | 0.941 | 0.977 | 0.979 |
+| 11 | 0.999 | 0.23574 | 0.975 | 0.986 | 0.985 | 0.953 | 0.979 | 0.974 |
+| 15 | 0.8 | 0.00010 | 0.975 | 0.993 | 0.990 | 0.916 | 0.988 | 0.982 |
+| 15 | 0.85 | 0.00017 | 0.975 | 0.993 | 0.990 | 0.916 | 0.988 | 0.982 |
+| 15 | 0.9 | 0.00046 | 0.975 | 0.993 | 0.990 | 0.916 | 0.988 | 0.982 |
+| 15 | 0.95 | 0.00259 | 0.975 | 0.993 | 0.990 | 0.916 | 0.988 | 0.982 |
+| 15 | 0.97 | 0.01125 | 0.975 | 0.993 | 0.990 | 0.916 | 0.988 | 0.982 |
+| 15 | 0.99 | 0.07830 | 0.975 | 0.993 | 0.990 | 0.934 | 0.977 | 0.982 |
+| 15 | 0.995 | 0.13027 | 0.973 | 0.993 | 0.987 | 0.942 | 0.979 | 0.979 |
+| 15 | 0.999 | 0.28204 | 0.968 | 0.986 | 0.967 | 0.941 | 0.998 | 0.958 |
+
+**What the correction of 2026-11-26 changed.**
+
+- **The lower thresholds.** A headline said that below the highest quantile the decoder is no better than a filter. Four settings at the 0.99 and 0.995 quantiles are above the mode filter and the minimum duration. At the five lower quantiles the decoder is below those two, and 20 of its 25 settings there are above the mean filter.
+- **The floors.** The sentence that the floors do not narrow the choice was true for the calibration half only. The selection half is now given.
+- **The exchanged choice** was given by its quantile alone, which reads as a cell of the table. Its threshold is now given.
+- **The ensemble.** The text used the words of a comparison, which the plan had not given this part, and named only the number on which the three seeds together are highest. It now says on which numbers they are not, and that the expected 0.01 was passed.
+- **The view test.** The row without it was read as showing that the test does nothing, and as holding in every draw. The file holds the ends of the intervals, and the row shows that no number changes, which a dropped peak could change only when the pieces on its two sides take different views.
+- **The Viterbi path.** Two of its rates were compared without their counts and intervals. The released decoder was said to have the higher precision and recall of the cuts. That is now said of the precision, because the interval for the recall includes zero.
+- **Two readings against the released decoder are new.** By the majority rule it reads one single recording fewer right than four simpler decoders, and the matched cuts of the mean filter lie nearer. The first text had neither.
+- **The numbers of the plan.** Two numbers of section 2 were called corrected. They come out differently, and the numbers of the records were not checked.
+- **How the other decoders were chosen.** The window of the mean filter is the smallest that was tried, and the calibration half hardly separates the decoders. Both are now said.
+- **The published setting of the three seeds.** The threshold of the rule agrees with the published one to 0.0001. The first text called them the same.
+- **The intervals.** The first text said that every interval draws streams. Those about recordings draw recordings, the temperature's among them. The difference of the Brier score now has its interval, and both differences of the temperature are written with their sign.
+- **Added tables.** The numbers of section 5 that the first tables left out, every difference of the decoders and of the subsets of the seeds with its interval, the three numbers of the rule for all 40 settings on both halves, and the calibration error of every subset of the seeds.
+- **Part 2.** When the results of part 1 were committed, at 03:48 UTC, this document said of part 2 "Not run yet". Part 2 had been started at 03:36 UTC.
+
 ### Part 2: forward passes
 
-Not run yet.
+Started on 2026-11-26 at 03:36 UTC and interrupted at 07:43 UTC, when the server stopped answering. It is not finished, and no number of it has been looked at.
