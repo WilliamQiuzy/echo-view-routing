@@ -277,13 +277,16 @@ def log_losses(probabilities: np.ndarray, truth: np.ndarray) -> np.ndarray:
     return -np.log(np.maximum(probabilities[np.arange(len(truth)), truth], EPS))
 
 
-def one_temperature(stored: Mapping[str, np.ndarray], halves: Mapping[str, tuple[Sequence, ...]], draws: int, seed: int) -> dict:
+def one_temperature(stored: Mapping[str, np.ndarray], halves: Mapping[str, tuple[Sequence, ...]], draws: int, seed: int,
+                    temperatures: tuple[float, ...] | None = None) -> dict:
     """One temperature for all logits, fitted on the single recordings of the calibration half (the lowest log loss
-    of `classify`'s probabilities; of equals the one nearest to 1) and reported on those of the selection half."""
+    of `classify`'s probabilities; of equals the one nearest to 1) and reported on those of the selection half.
+    `temperatures` are the values tried; part 1 tries TEMPERATURES, and part 3 gives a longer list."""
+    tried = TEMPERATURES if temperatures is None else temperatures
     natives = {half: of_kind(sequences, "native") for half, sequences in halves.items()}
     truth = {half: np.array([int(s.labels[0]) for s in natives[half]]) for half in natives}
     curve = [{"temperature": t, "log_loss": float(log_losses(recording_probabilities(stored, natives["calibration"], t), truth["calibration"]).mean())}
-             for t in TEMPERATURES]
+             for t in tried]
     chosen = min(curve, key=lambda entry: (entry["log_loss"], abs(entry["temperature"] - 1.0)))["temperature"]
     unit = classify_read.units(natives["selection"])
     counts = classify_read.drawn(unit, draws, seed)

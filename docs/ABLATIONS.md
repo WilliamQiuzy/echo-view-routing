@@ -1,6 +1,6 @@
 # What the parts add, and what the system stands: studies on development data
 
-**Status: planned on 2026-11-26 (UTC). Part 1 was run on the same day and its text corrected once (section 9); part 2 was started and interrupted, and is not finished.** Everything in this document down to "Results" was written and committed before any of its numbers existed.
+**Status: planned on 2026-11-26 (UTC). Part 1 was run on the same day and its text corrected once (section 9); part 2 has run and its results are not written yet; part 3 was planned after part 1 was read (section 10) and is not run yet.** Everything in this document down to "Results" was written and committed before any of its numbers existed, and section 10 before any number of part 3.
 
 Nothing here reads the test benchmark, trains a model or changes the published system.
 
@@ -333,4 +333,67 @@ The released decoder minus each other one, for every number, with 95% intervals.
 
 ### Part 2: forward passes
 
-Started on 2026-11-26 at 03:36 UTC and interrupted at 07:43 UTC, when the server stopped answering. It is not finished, and no number of it has been looked at.
+Started on 2026-11-26 at 03:36 UTC and interrupted at 07:43 UTC, when the server stopped answering. It went on at 20:47 UTC and ended at 22:19 UTC. Its results are not written yet: when this line was committed, no number of its output had been looked at.
+
+## 10. Part 3: what part 1 left open
+
+**Status: planned on 2026-11-26 (UTC), after part 1 was read and its text corrected, and before any number of part 3 existed. Not run yet.**
+
+Part 1 ended with five things that its file does not show. Part 3 takes them. The input is the same file of stored logits, no model runs, the test benchmark is not read, and nothing changes in the published system. `python -m echoview.evaluation.open_points` is the command. As in part 1, what is chosen is chosen on the calibration half and reported on the selection half. The one exception is the exchange of the halves, which is there to show the other direction.
+
+**This plan was written with the results of part 1 known, and that weakens what part 3 can show.**
+
+- The selection half has been looked at for all 40 settings of the decoder's grid, for five other decoders, for seven subsets of the seeds and for the temperature 0.30.
+- That higher thresholds are worth a look was itself read off the selection half, where the value still rose with the threshold.
+- 40 of the 55 settings below and 35 of the 40 temperatures are those of part 1, and their numbers are known.
+- One open point of part 1 is not taken: why two numbers of the research records differ from the published logits.
+
+**When no setting keeps the floors.** Wherever the rule chooses in part 3 and no setting keeps its two floors, the floors are dropped. The setting with the highest segment F1 takes their place, the earlier of equals, and the output says so.
+
+### Thresholds above the grid
+
+The published threshold is the highest of its grid: the 0.999 quantile of the scores inside single recordings of the calibration half. Three higher quantiles are added for every half window: 0.9995, 0.9999 and 1, which is the largest score inside a single recording. That gives 15 more settings, 55 in all.
+
+- **These thresholds rest on few scores.** The single recordings of the calibration half give 14,086 scores for a half window. The 0.9995 quantile is about the eighth largest of them, the 0.9999 quantile lies between the second and the third largest, and quantile 1 is the largest. Neighbouring samples share an event, so these few scores may come from one to three recordings.
+- **Given for every setting:** the three numbers of the rule on both halves.
+- **The rule over the 55.** The project's rule chooses on the calibration half, with its two floors and with the earlier setting on a tie. The added settings of a half window come after its own eight.
+- **The word.** When the rule still takes the published setting, the word is "the published setting stays". Otherwise its choice is compared with the published setting on the selection half, with the same draws. The choice is a "candidate" when the 95% interval of the difference in segment F1 at 50% on the multi streams lies wholly above zero and the accuracy on single recordings, by the majority rule, is not lower as a number. Otherwise it is "not supported on development data".
+- **When the choice is the last threshold.** If the rule takes a setting at quantile 1, the word is given as above, the result says that the choice lies at the end of the thresholds tried, and no higher threshold is tried.
+
+### The halves exchanged, in full
+
+Part 1 gave the exchanged choice and one number for it. Here the thresholds of the grid are taken from the selection half, as the rule takes them when it chooses there. All 40 settings are given on both halves, with how many keep the floors on the selection half, and which setting is the highest there whatever the floors. This describes and gets no word.
+
+### What the view test drops
+
+At the published setting, for both halves, and for single recordings, pair streams and multi streams apart: the peaks of the score, how many of them the view test drops and in how many streams, and in how many streams and samples the decoder without the test gives another view. This describes and gets no word.
+
+### The other decoders at every value of their number
+
+Part 1 gave each other decoder at the one value that the rule chose for it. Here the mode filter, the mean filter, the minimum duration and the Viterbi path are given at every value of section 3, with the three numbers of the rule on both halves. The summary is that of the decoder's own settings: on the selection half, how many values come within 0.01 and within 0.02 of the segment F1 of the chosen value, how many lie above it, and the lowest and the highest. A grid here has 7 or 8 values where the released decoder's has 40, so the counts are not shares of the same thing. The highest value of another decoder on the selection half was not chosen on the calibration half, and it is not set against the released decoder. This describes and gets no word.
+
+### Lower temperatures
+
+Part 1 chose 0.30, the lowest value that was tried. Five lower values are added: 0.05, 0.10, 0.15, 0.20 and 0.25. The fit, what is reported and the word are those of section 3, by the same function.
+
+- **The word is about `classify`'s probabilities only.** Part 1 gave "candidate" for 0.30 on these recordings, so the word is likely here as well and says little that is new. Whether a temperature could serve the streams is what the paragraph below describes.
+- **When the fit takes 0.05.** Then it has again taken the lowest value tried. The word is given as above, the result says that the fit found no best value, and no lower value is tried: near zero every probability becomes 0 or 1.
+- **The log loss of one recording is capped.** A probability counts as at least 1e-12, so one recording adds at most 27.6. At a low temperature a recording that is read wrong can reach that cap.
+
+**The streams under the temperature.** The decoder reads the same probabilities. With every logit divided by the fitted temperature, the multi streams, the pair streams and the single recordings of the selection half are scored twice: with the published decoder setting, and with the setting that the rule gives the changed probabilities on the calibration half, from its grid of 40. Both are given minus the published system, with the same draws. Sharp probabilities can make the thresholds of that grid fall together, and the output says how many of the 40 are distinct and how many are zero. This describes and gets no word.
+
+### What is expected of part 3
+
+- **Higher thresholds.** At least one of the 15 added settings has a higher segment F1 on the multi streams of the selection half than the published setting. The rule takes the published setting or a setting at the 0.9995 quantile. The word is not "candidate".
+- **The halves exchanged.** Fewer than 40 settings keep the floors on the selection half, and the setting with the highest segment F1 there is not one of them.
+- **The view test.** On the selection half no sample changes. On each half the test drops fewer than 10 peaks over all streams.
+- **The other decoders.** For the Viterbi path at least 4 of its 8 costs, the chosen one among them, lie within 0.02 of the chosen one's segment F1 on the selection half.
+- **Lower temperatures.** The fit takes 0.25 or a lower value. Between the fitted value and 0.30 the log loss on the calibration half differs by less than 0.002. With the published decoder setting, segment F1 on the multi streams is lower under the temperature than as published. With the rule's own setting it is at most 0.01 lower.
+
+### What follows from part 3
+
+Section 6 holds for part 3 as well. Nothing changes in the published system, a candidate needs its own plan and other data, and everything is published whatever it shows.
+
+## 11. Results of part 3
+
+Not run yet.
