@@ -8,6 +8,15 @@ Notable changes to this project. The format follows [Keep a Changelog](https://k
 
 - `docs/EVALUATION.md`, "One read of the test benchmark for `classify`": the plan of one read that scores what `echoview classify` returns on the single recordings of the test benchmark, written before any of its numbers. `python -m echoview.evaluation.classify_read trial` holds the code to the development report without reading the test benchmark, and `read` makes the read. The code and the plan were reviewed before the plan was committed.
 - `echoview.pipeline.classification`: the rule of `classify` as a function of a recording's window logits. `Ensemble.classify` calls it and returns what it returned before.
+- `docs/evaluation/classify_test.json` and `docs/evaluation/classify_trial.json`: the outputs of that read and of its trial on development data. They hold pooled numbers and the edges of bins, and they name no recording.
+
+### Read once (2026-11-26)
+
+- The frozen EV9V test benchmark for what `echoview classify` returns on its 800 single recordings, by the plan of `docs/EVALUATION.md`: `classify`'s rule is not shown to differ from the majority rule. The largest mean probability reads 786 recordings right, where the majority of the decoded samples, the rule of the published numbers, reads 785. Two recordings are read right only by the first rule and one only by the second. The system is less sure than it is right: the mean probability is 0.958, and the calibration error is 0.025. The 14 wrong recordings have a median probability of 0.65 and the right ones 0.98, and the three seeds agree on every wrong one. `classify`, `segment` and every published number are unchanged.
+
+### Changed
+
+- README, model card and `docs/EVALUATION.md` give the number of `classify`'s rule on the test benchmark and what the read found about its probability, where they said that neither was measured there.
 
 ## [1.3.1] - 2026-11-25
 

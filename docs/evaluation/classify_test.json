@@ -1,0 +1,629 @@
+{
+ "benchmark": "test",
+ "sequences": 1160,
+ "sha256": {
+  "logits": "c5df435ef3022dd55f711c4efa72c74f19aad7f40193f179902c57dca97e288d",
+  "first_read": "4f00000524df0581ee7f093980135a206c9180f51d15457524acb6547afe45c0",
+  "trial": "42312086c39a134113a9d0dbe9a8bc4b713ffc6b491a41cd05ea1fb2b4ee6f4a"
+ },
+ "draws": 10000,
+ "seed": 20261123,
+ "published_numbers_reproduced": {
+  "segment_f1_50_multi": 0.908908908908909,
+  "segment_f1_50_pairs": 0.9847009735744089,
+  "native_accuracy": 0.98125,
+  "native_macro_f1": 0.9561411223630938
+ },
+ "first_read_rows_reproduced": [
+  "EchoRouter",
+  "Perfect on the 0.5 s grid"
+ ],
+ "rules": {
+  "majority of the decoded samples": {
+   "accuracy": {
+    "value": 0.98125,
+    "support": 800.0,
+    "examinations": [
+     0.9709089516914938,
+     0.9897828863346104
+    ],
+    "interval": [
+     0.9709089516914938,
+     0.9897828863346104
+    ]
+   },
+   "macro_f1": {
+    "value": 0.9561411223630938,
+    "support": 800.0,
+    "examinations": [
+     0.9292459817691567,
+     0.9753710826386783
+    ],
+    "interval": [
+     0.9292459817691567,
+     0.9753710826386783
+    ]
+   },
+   "a4c_as_a5c": {
+    "value": 10.0,
+    "support": 10.0,
+    "examinations": [
+     5.0,
+     16.0
+    ],
+    "interval": [
+     5.0,
+     16.0
+    ]
+   },
+   "a5c_as_a4c": {
+    "value": 2.0,
+    "support": 2.0,
+    "examinations": null,
+    "interval": null
+   },
+   "cuts_per_recording": {
+    "value": 0.02375,
+    "support": 800.0,
+    "examinations": [
+     0.009408286425633254,
+     0.04155860032388149
+    ],
+    "interval": [
+     0.009408286425633254,
+     0.04155860032388149
+    ]
+   },
+   "recall_PLAX": {
+    "value": 1.0,
+    "support": 275.0,
+    "examinations": [
+     1.0,
+     1.0
+    ],
+    "interval": [
+     1.0,
+     1.0
+    ]
+   },
+   "recall_PSAX": {
+    "value": 1.0,
+    "support": 219.0,
+    "examinations": [
+     1.0,
+     1.0
+    ],
+    "interval": [
+     1.0,
+     1.0
+    ]
+   },
+   "recall_A4C": {
+    "value": 0.948051948051948,
+    "support": 231.0,
+    "examinations": [
+     0.9150919811320755,
+     0.9743613138686131
+    ],
+    "interval": [
+     0.9150919811320755,
+     0.9743613138686131
+    ]
+   },
+   "recall_A5C": {
+    "value": 0.95,
+    "support": 40.0,
+    "examinations": [
+     0.8863636363636364,
+     1.0
+    ],
+    "interval": [
+     0.8863636363636364,
+     1.0
+    ]
+   },
+   "recall_SC4C": {
+    "value": 0.9714285714285714,
+    "support": 35.0,
+    "examinations": [
+     0.9,
+     1.0
+    ],
+    "interval": [
+     0.9,
+     1.0
+    ]
+   }
+  },
+  "largest mean probability (classify)": {
+   "accuracy": {
+    "value": 0.9825,
+    "support": 800.0,
+    "examinations": [
+     0.9723962985445119,
+     0.9906432748538012
+    ],
+    "interval": [
+     0.9723962985445119,
+     0.9906432748538012
+    ]
+   },
+   "macro_f1": {
+    "value": 0.9585370541531347,
+    "support": 800.0,
+    "examinations": [
+     0.9324245434208556,
+     0.9773434420118587
+    ],
+    "interval": [
+     0.9324245434208556,
+     0.9773434420118587
+    ]
+   },
+   "a4c_as_a5c": {
+    "value": 9.0,
+    "support": 9.0,
+    "examinations": [
+     4.0,
+     15.0
+    ],
+    "interval": [
+     4.0,
+     15.0
+    ]
+   },
+   "a5c_as_a4c": {
+    "value": 2.0,
+    "support": 2.0,
+    "examinations": null,
+    "interval": null
+   },
+   "recall_PLAX": {
+    "value": 1.0,
+    "support": 275.0,
+    "examinations": [
+     1.0,
+     1.0
+    ],
+    "interval": [
+     1.0,
+     1.0
+    ]
+   },
+   "recall_PSAX": {
+    "value": 1.0,
+    "support": 219.0,
+    "examinations": [
+     1.0,
+     1.0
+    ],
+    "interval": [
+     1.0,
+     1.0
+    ]
+   },
+   "recall_A4C": {
+    "value": 0.9523809523809523,
+    "support": 231.0,
+    "examinations": [
+     0.9207030976854765,
+     0.9774444557339294
+    ],
+    "interval": [
+     0.9207030976854765,
+     0.9774444557339294
+    ]
+   },
+   "recall_A5C": {
+    "value": 0.95,
+    "support": 40.0,
+    "examinations": [
+     0.8846153846153846,
+     1.0
+    ],
+    "interval": [
+     0.8846153846153846,
+     1.0
+    ]
+   },
+   "recall_SC4C": {
+    "value": 0.9714285714285714,
+    "support": 35.0,
+    "examinations": [
+     0.9,
+     1.0
+    ],
+    "interval": [
+     0.9,
+     1.0
+    ]
+   }
+  }
+ },
+ "confusion_majority": [
+  [
+   275,
+   0,
+   0,
+   0,
+   0
+  ],
+  [
+   0,
+   219,
+   0,
+   0,
+   0
+  ],
+  [
+   0,
+   0,
+   219,
+   10,
+   2
+  ],
+  [
+   0,
+   0,
+   2,
+   38,
+   0
+  ],
+  [
+   0,
+   0,
+   0,
+   1,
+   34
+  ]
+ ],
+ "classify": {
+  "recordings": 800,
+  "errors": 14,
+  "units_drawn": 125,
+  "units_with_a_wrong_recording": 14,
+  "confusion": [
+   [
+    275,
+    0,
+    0,
+    0,
+    0
+   ],
+   [
+    0,
+    219,
+    0,
+    0,
+    0
+   ],
+   [
+    0,
+    0,
+    220,
+    9,
+    2
+   ],
+   [
+    0,
+    0,
+    2,
+    38,
+    0
+   ],
+   [
+    0,
+    0,
+    0,
+    1,
+    34
+   ]
+  ],
+  "probability": {
+   "ece": 0.02462425139970916,
+   "bins": [
+    {
+     "above": 0.0,
+     "up_to": 0.1,
+     "recordings": 0,
+     "right": 0,
+     "mean_probability": null,
+     "share_right": null
+    },
+    {
+     "above": 0.1,
+     "up_to": 0.2,
+     "recordings": 0,
+     "right": 0,
+     "mean_probability": null,
+     "share_right": null
+    },
+    {
+     "above": 0.2,
+     "up_to": 0.30000000000000004,
+     "recordings": 0,
+     "right": 0,
+     "mean_probability": null,
+     "share_right": null
+    },
+    {
+     "above": 0.30000000000000004,
+     "up_to": 0.4,
+     "recordings": 0,
+     "right": 0,
+     "mean_probability": null,
+     "share_right": null
+    },
+    {
+     "above": 0.4,
+     "up_to": 0.5,
+     "recordings": 2,
+     "right": 1,
+     "mean_probability": 0.4964818929062047,
+     "share_right": 0.5
+    },
+    {
+     "above": 0.5,
+     "up_to": 0.6000000000000001,
+     "recordings": 13,
+     "right": 8,
+     "mean_probability": 0.5505211480152714,
+     "share_right": 0.6153846153846154
+    },
+    {
+     "above": 0.6000000000000001,
+     "up_to": 0.7000000000000001,
+     "recordings": 8,
+     "right": 6,
+     "mean_probability": 0.6467498636724511,
+     "share_right": 0.75
+    },
+    {
+     "above": 0.7000000000000001,
+     "up_to": 0.8,
+     "recordings": 17,
+     "right": 13,
+     "mean_probability": 0.7545256629179915,
+     "share_right": 0.7647058823529411
+    },
+    {
+     "above": 0.8,
+     "up_to": 0.9,
+     "recordings": 12,
+     "right": 12,
+     "mean_probability": 0.8654520249028809,
+     "share_right": 1.0
+    },
+    {
+     "above": 0.9,
+     "up_to": 1.0,
+     "recordings": 748,
+     "right": 746,
+     "mean_probability": 0.9756209902304835,
+     "share_right": 0.9973262032085561
+    }
+   ],
+   "ece_equal_count": 0.02462425139970914,
+   "bins_equal_count": [
+    {
+     "from": 0.496154130661705,
+     "to": 0.9446783519795586,
+     "recordings": 80,
+     "right": 67,
+     "mean_probability": 0.7811033990450179,
+     "share_right": 0.8375
+    },
+    {
+     "from": 0.9450941699273204,
+     "to": 0.9673699135549382,
+     "recordings": 80,
+     "right": 79,
+     "mean_probability": 0.9593474802435604,
+     "share_right": 0.9875
+    },
+    {
+     "from": 0.9674254486137098,
+     "to": 0.9738641406299825,
+     "recordings": 80,
+     "right": 80,
+     "mean_probability": 0.9709228935645411,
+     "share_right": 1.0
+    },
+    {
+     "from": 0.973943751760514,
+     "to": 0.9773804524250642,
+     "recordings": 80,
+     "right": 80,
+     "mean_probability": 0.9759570422390063,
+     "share_right": 1.0
+    },
+    {
+     "from": 0.9774665162493772,
+     "to": 0.9799222844523029,
+     "recordings": 80,
+     "right": 80,
+     "mean_probability": 0.9788230124035474,
+     "share_right": 1.0
+    },
+    {
+     "from": 0.9799250623435731,
+     "to": 0.9811878983640803,
+     "recordings": 80,
+     "right": 80,
+     "mean_probability": 0.9806085241839071,
+     "share_right": 1.0
+    },
+    {
+     "from": 0.9811881559623243,
+     "to": 0.9820267312723496,
+     "recordings": 80,
+     "right": 80,
+     "mean_probability": 0.9816111581179946,
+     "share_right": 1.0
+    },
+    {
+     "from": 0.9820528854310909,
+     "to": 0.9828359609798453,
+     "recordings": 80,
+     "right": 80,
+     "mean_probability": 0.9824029743819438,
+     "share_right": 1.0
+    },
+    {
+     "from": 0.9828450642874736,
+     "to": 0.9837801140448269,
+     "recordings": 80,
+     "right": 80,
+     "mean_probability": 0.9833375934932359,
+     "share_right": 1.0
+    },
+    {
+     "from": 0.9837818285159418,
+     "to": 0.9863635137678622,
+     "recordings": 80,
+     "right": 80,
+     "mean_probability": 0.9846434083301542,
+     "share_right": 1.0
+    }
+   ],
+   "mean_probability": 0.957875748600291,
+   "share_right": 0.9825,
+   "probability_minus_right": {
+    "value": -0.0246242513997091,
+    "level": 95.0,
+    "interval": [
+     -0.03145237890371185,
+     -0.017061098103631246
+    ]
+   },
+   "brier": {
+    "value": 0.026928049396040626,
+    "level": 95.0,
+    "interval": [
+     0.01639410063194735,
+     0.0394344741186449
+    ]
+   },
+   "log_loss": {
+    "value": 0.06824892980402249,
+    "level": 95.0,
+    "interval": [
+     0.04955387405206581,
+     0.09219723675065294
+    ]
+   },
+   "median_probability": 0.979923673397938,
+   "median_probability_right": 0.9800875567183434,
+   "median_probability_wrong": 0.6524078976114258,
+   "separation": {
+    "value": 0.9723736822973464,
+    "level": 95.0,
+    "interval": [
+     0.9470035946984622,
+     0.9910686517429939
+    ],
+    "draws_without_a_number": 0
+   }
+  },
+  "seeds": {
+   "recordings_where_the_seeds_differ": 1,
+   "of_them_wrong": 0,
+   "wrong_where_the_seeds_agree": 14
+  }
+ },
+ "classify_minus_majority": {
+  "accuracy": {
+   "value": 0.0012500000000000844,
+   "level": 95.0,
+   "examinations": [
+    -0.0026561307959650725,
+    0.005763771858972429
+   ],
+   "interval": [
+    -0.0026561307959650725,
+    0.005763771858972429
+   ],
+   "hull": [
+    -0.0026561307959650725,
+    0.005763771858972429
+   ]
+  },
+  "macro_f1": {
+   "value": 0.0023959317900409394,
+   "level": 95.0,
+   "examinations": [
+    -0.00718979993511025,
+    0.01305067285813679
+   ],
+   "interval": [
+    -0.00718979993511025,
+    0.01305067285813679
+   ],
+   "hull": [
+    -0.00718979993511025,
+    0.01305067285813679
+   ]
+  },
+  "recall_A4C": {
+   "value": 0.0043290043290042934,
+   "level": 95.0,
+   "examinations": [
+    0.0,
+    0.015000000000000013
+   ],
+   "interval": [
+    0.0,
+    0.015000000000000013
+   ],
+   "hull": [
+    0.0,
+    0.015000000000000013
+   ]
+  },
+  "recall_A5C": {
+   "value": 0.0,
+   "level": 95.0,
+   "examinations": [
+    -0.07499999999999996,
+    0.07499999999999996
+   ],
+   "interval": [
+    -0.07499999999999996,
+    0.07499999999999996
+   ],
+   "hull": [
+    -0.07499999999999996,
+    0.07499999999999996
+   ]
+  },
+  "a4c_as_a5c": {
+   "value": -1.0,
+   "level": 95.0,
+   "examinations": [
+    -3.0,
+    0.0
+   ],
+   "interval": [
+    -3.0,
+    0.0
+   ],
+   "hull": [
+    -3.0,
+    0.0
+   ]
+  },
+  "a5c_as_a4c": {
+   "value": 0.0,
+   "level": 95.0,
+   "examinations": null,
+   "interval": null,
+   "hull": null
+  }
+ },
+ "recordings_only_one_rule_reads_right": {
+  "only_classify": 2,
+  "only_the_majority": 1,
+  "p_two_sided": 1.0
+ },
+ "word": "not shown to differ from the majority rule"
+}

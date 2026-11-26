@@ -150,10 +150,10 @@ All numbers are for the published weights (identifier `C2_ens_v1`).
 
 - **The MIMIC rows are agreement between two models, not accuracy.** MIMIC-IV-Echo has no reader's view labels.
 - **Two intervals for one number.** The streams of the benchmark reuse recordings, so the interval with examinations drawn is the safer one to read ([docs/EVALUATION.md](docs/EVALUATION.md), "Two sets of intervals").
-- **Single recordings.** The benchmark gives a recording the view that most of its decoded samples carry, as `echoview segment` does. `echoview classify` takes the largest mean probability. On the development halves the first rule misreads 5 of 521 recordings and the second 3. On the test benchmark `classify`'s rule was not scored.
+- **Single recordings.** The benchmark gives a recording the view that most of its decoded samples carry, as `echoview segment` does. `echoview classify` takes the largest mean probability. On the development halves the first rule misreads 5 of 521 recordings and the second 3. On the test benchmark the first misreads 15 of 800 and the second 14. One read that was planned beforehand does not show the two rules to differ there ([docs/EVALUATION.md](docs/EVALUATION.md), "One read of the test benchmark for `classify`").
 - **Not an untouched test set.** The test recordings were used often in the project's early development.
 
-The [model card](MODEL_CARD.md) says how to read each row and what the model cannot do. [docs/EVALUATION.md](docs/EVALUATION.md) has the confusion table of the 800 recordings, the model's calibration on development data, how the system was chosen and the history of the test benchmark.
+The [model card](MODEL_CARD.md) says how to read each row and what the model cannot do. [docs/EVALUATION.md](docs/EVALUATION.md) has the confusion table of the 800 recordings, the model's calibration on development data and on the test benchmark, how the system was chosen and the history of the test benchmark.
 
 ## The uncertain output
 
@@ -233,7 +233,7 @@ Stage 3 needs a GPU with 32 GB of memory. On a machine that can be switched off,
 - **Streams are joins.** Every stream of the benchmarks is built by joining pieces of recordings. The pieces are 1 to 4 s long, and about half of those in the multi streams are shown with changed grey levels. A view change there is a hard cut. Streams that join the recordings of one examination in their order were scored on development data only (segment F1 0.946 and 0.959), and no continuous examination was measured.
 - **The labels are the dataset's.** EV9V's views were named by its authors' readers, licensed attending physicians. How often they agreed is not published, and the dataset describes its patients by an age range only, so nothing here is reported by sex, body size, disease or image quality.
 - **Small classes.** The test benchmark has 40 single recordings of A5C and 35 of SC4C. One recording moves their recall by 2.5 and 2.9 points.
-- **Confidence.** The model's probabilities were checked for calibration on development data only, where three recordings are wrong in all ([docs/EVALUATION.md](docs/EVALUATION.md)).
+- **Confidence.** `classify`'s probability was checked on development data and, in one read that was planned beforehand, on the test benchmark. There the system is less sure than it is right: the mean probability is 0.958, and 786 of the 800 recordings are right (98.25%). The 14 wrong recordings have a median probability of 0.65, the right ones 0.98. That rests on 14 wrong recordings of one hospital, and the probability was not measured on another vendor's recordings ([docs/EVALUATION.md](docs/EVALUATION.md)).
 - **Research use only.** This is not a medical device and it is not validated for clinical use.
 
 ## Licence and acknowledgements

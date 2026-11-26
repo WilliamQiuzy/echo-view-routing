@@ -14,7 +14,10 @@ this rule are published, and stops unless they come out. `read` takes the trial'
 
 Before `read` scores anything, the stored logits must give the published numbers of the benchmark, and the published
 system's rows must be those of the comparison's first read. Once the output of the read exists, `read` can only
-reproduce it. Nothing here changes the published system, and the output holds pooled numbers only.
+reproduce it. Nothing here changes the published system. The output holds pooled numbers and the edges of bins, and
+it names no recording.
+
+The read was made on 2026-11-26: `classify`'s rule is not shown to differ from the majority rule.
 """
 from __future__ import annotations
 
@@ -42,9 +45,9 @@ MORE, LESS, NOT_SHOWN = "more accurate than the majority rule", "less accurate t
 P_BELOW = 0.05  # the word also needs the exact test of the recordings that only one rule reads right
 TRIAL_SYSTEM = "ensemble_published_setting"  # the row of the development report that the trial is held to
 CLOSE = 5e-5  # the trial: logits of another run of the same models differ in the sixth decimal, and so do numbers made of probabilities
-# The output of the read (docs/evaluation/classify_test.json). None until the read is made; from then on `read` takes
-# that file and can only reproduce it.
-READ_SHA256: str | None = None
+# The output of the read (docs/evaluation/classify_test.json), made on 2026-11-26. `read` takes that file and can only
+# reproduce it. It was None until the read was made.
+READ_SHA256: str | None = "5f861720918a3f72c6e7a4ca3c768218a4c75b00efe7e72088df9ce4fde00d07"
 N = len(CLASSES)
 
 

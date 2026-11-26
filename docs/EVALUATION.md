@@ -123,9 +123,9 @@ The tests of this repository repeat the comparison without a GPU: `tests/test_ev
 |---|---|---|---|
 | Development, calibration half | 237 | 2 | 2 |
 | Development, selection half | 284 | 3 | 1 |
-| Test benchmark | 800 | 15 | not measured |
+| Test benchmark | 800 | 15 | 14 |
 
-On the selection half `classify`'s rule has two wrong recordings fewer. For that rule the test benchmark was not scored; that would be one more read of it.
+On the selection half `classify`'s rule has two wrong recordings fewer, and on the test benchmark one fewer. The number for the test benchmark comes from one read for `classify`, planned and made on 2026-11-26 (next section). It does not show the two rules to differ.
 
 **The 800 single recordings of the test benchmark,** by the majority rule ([`evaluation/test_report.json`](evaluation/test_report.json)). A row is the reference view, a column the view that was given.
 
@@ -144,14 +144,15 @@ Twelve of the fifteen errors are between A4C and A5C. A5C has 40 recordings and 
 - It is 0.030 on the calibration half and 0.034 on the selection half.
 - The median probability is 0.98 on both halves, and 99.2% and 99.6% of the recordings are right. The model is a little less sure than it is right.
 - Three recordings are wrong in all. That is too few to say whether a low probability marks a wrong answer.
-- Calibration was not measured on the test benchmark, and not on recordings of another hospital or machine, where a probability may mean something else.
+- On the test benchmark the read of the next section gives a calibration error of 0.025, with the system less sure than it is right there too. The 14 wrong recordings there have a median probability of 0.65, the right ones 0.98.
+- The probability was not measured on recordings of another hospital or machine, where it may mean something else.
 - A recording of a view that the model does not know still gets one of the five names, often with a high probability.
 
 **Streams in examination order.** The development benchmark also joins all recordings of one examination in their order (36 streams in each half, see [DATA.md](DATA.md)). The published system's segment F1 at 50% is 0.946 on the calibration half and 0.959 on the selection half, and 3.5% and 1.9% of the samples get a wrong view. These streams are joins of whole recordings: how the probe moves from one view to the next was not recorded. The test benchmark has no such streams.
 
 ## One read of the test benchmark for `classify`
 
-**Status: planned on 2026-11-26 (UTC). Not read yet.** Everything in this section down to "The result" was written and committed before any of its numbers existed.
+**Status: planned and read on 2026-11-26 (UTC). `classify`'s rule is not shown to differ from the majority rule.** Everything in this section down to "The result" was written and committed before any of its numbers existed.
 
 The section above says that `echoview classify` does not use the rule of the benchmark's published numbers, and that its own rule has no number on the test benchmark. This section prepares the one read that gives it one. On 2026-11-25 the owner of the project was asked whether the test benchmark may be read once more for `classify`'s rule, and said yes. This sentence was committed before the read.
 
@@ -228,7 +229,60 @@ These rules are fixed now.
 
 ### The result
 
-Not read yet.
+**Read once on 2026-11-26 at 01:15 UTC with the code of commit `c7b1c3d`. `classify`'s rule is not shown to differ from the majority rule.** The plan above is that commit. It was made and pushed to the public repository at 01:06 UTC. The read ran from 01:15:18 to 01:15:24 UTC, and its line in the access record of the test benchmark carries the time 01:15:18. Its output is [`evaluation/classify_test.json`](evaluation/classify_test.json), SHA-256 `5f861720918a3f72c6e7a4ca3c768218a4c75b00efe7e72088df9ce4fde00d07`. The code now names that file, so `read` can only reproduce it from here on.
+
+**The trial held.** It ran at 01:08 UTC with the same code on the stored logits of the development halves, and its output is [`evaluation/classify_trial.json`](evaluation/classify_trial.json). Both halves gave the development report's numbers: 2 and 1 wrong recordings of 237 and 284, the two confusion tables, calibration errors of 0.0304 and 0.0336 and median probabilities of 0.9791 and 0.9799.
+
+**The checks before the scoring held.** The stored logits give the four published numbers, and the rows "EchoRouter" and "Perfect on the 0.5 s grid" equal those of the comparison's first read.
+
+**The view.** Intervals are at 95%, with examinations drawn.
+
+| Rule | Right of 800 | Accuracy | Macro-F1 | Recall A4C | Recall A5C | Recall SC4C | A4C read as A5C | A5C read as A4C |
+|---|---|---|---|---|---|---|---|---|
+| Majority of the decoded samples (published) | 785 | 98.1% [97.1, 99.0] | 0.956 [0.929, 0.975] | 94.8% [91.5, 97.4] | 95.0% [88.6, 100.0] | 97.1% [90.0, 100.0] | 10 [5, 16] | 2 |
+| Largest mean probability (`classify`) | 786 | 98.2% [97.2, 99.1] | 0.959 [0.932, 0.977] | 95.2% [92.1, 97.7] | 95.0% [88.5, 100.0] | 97.1% [90.0, 100.0] | 9 [4, 15] | 2 |
+
+Both rules read every recording of PLAX and of PSAX right. The 800 recordings by `classify`'s rule; a row is the reference view, a column the view that was given:
+
+| | PLAX | PSAX | A4C | A5C | SC4C |
+|---|---|---|---|---|---|
+| PLAX | 275 | 0 | 0 | 0 | 0 |
+| PSAX | 0 | 219 | 0 | 0 | 0 |
+| A4C | 0 | 0 | 220 | 9 | 2 |
+| A5C | 0 | 0 | 2 | 38 | 0 |
+| SC4C | 0 | 0 | 0 | 1 | 34 |
+
+- **`classify`'s rule is not shown to differ from the majority rule.** It reads 786 of the 800 recordings right, and the majority rule reads 785. The difference in accuracy is 0.1 points, with the interval [-0.3, +0.6]. Two recordings are read right only by `classify`'s rule and one only by the majority rule, and the exact test of that split gives p = 1.0. Neither of the two things that the word needs holds.
+- **The same kind of error.** 11 of the 14 recordings that `classify`'s rule has wrong are between A4C and A5C, as 12 of the majority rule's 15 are. `classify`'s rule reads one recording of A4C more right, 220 against 219. The difference in the recall of A4C is +0.4 points, with the interval [+0.0, +1.5], and A4C is read as A5C in one recording fewer, with the interval [-3, 0]. Both intervals end at exactly zero, which says nothing about a direction: no recording of A4C is read right by the majority rule alone, so no draw can go the other way. The rows of A5C hold the same counts, but the interval of the difference in the recall of A5C is not zero ([-7.5, +7.5] points), so the two rules do not misread the same recordings of A5C.
+- **The macro-F1** is 0.959 against 0.956: +0.002, with the interval [-0.007, +0.013].
+- **The 14 wrong recordings lie in 14 of the 125 examinations.**
+
+**The probability.**
+
+| Probability | Recordings | Right | Mean probability | Share that is right |
+|---|---|---|---|---|
+| above 0.4, up to 0.5 | 2 | 1 | 0.496 | 50.0% |
+| above 0.5, up to 0.6 | 13 | 8 | 0.551 | 61.5% |
+| above 0.6, up to 0.7 | 8 | 6 | 0.647 | 75.0% |
+| above 0.7, up to 0.8 | 17 | 13 | 0.755 | 76.5% |
+| above 0.8, up to 0.9 | 12 | 12 | 0.865 | 100.0% |
+| above 0.9, up to 1.0 | 748 | 746 | 0.976 | 99.7% |
+
+No recording has a probability of 0.4 or less.
+
+- **The system is less sure than it is right.** The mean probability is 0.958, and 786 of the 800 recordings are right (98.25%). The mean probability minus the share that is right is -0.025, with the interval [-0.031, -0.017].
+- **The two calibration errors are that gap.** Both are 0.025. In every bin and in every part of equal count the share that is right is at least the mean probability, so the gaps all point the same way and add up to the one number.
+- **The parts of equal count.** In the tenth with the lowest probabilities, from 0.496 to 0.945, 67 of the 80 recordings are right, at a mean probability of 0.781. In the next tenth, up to 0.967, 79 of 80 are right. In the other eight tenths, with probabilities from 0.967 to 0.986, all 640 are right.
+- **The two scores.** The Brier score is 0.027, with the interval [0.016, 0.039]. The log loss is 0.068, with the interval [0.050, 0.092].
+- **The wrong answers mostly have lower probabilities.** The median probability is 0.980 for all recordings and for the right ones, and 0.652 for the 14 wrong ones. The separation is 0.972, with the interval [0.947, 0.991]: a recording that is read right has the higher probability in 97% of the pairs with one that is read wrong. Every draw of examinations held a wrong recording.
+- **Where the wrong ones are.** 12 of the 14 wrong recordings have a probability of 0.8 at most, and two have one above 0.9. Of the 52 recordings with a probability of 0.9 at most, 40 are right. This describes the bins. By rule 3 no threshold is chosen or proposed from it.
+- **The seeds do not mark the errors.** The three seeds name different views in one recording of the 800, and that one is read right. In all 14 wrong recordings the three seeds name the same view.
+
+**Against what was expected.** The 14 wrong recordings are inside the expected 11 to 16. Three recordings are read right by only one of the two rules, where at most five were expected, and the word is the expected one. The calibration error of 0.025 is near the 0.03 of the development halves, with the system less sure than it is right, as there. The separation is well above 0.5. The plan expected a wide interval; it is [0.947, 0.991]. The plan also expected the wrong recordings to lie in fewer examinations than there are recordings. They lie in 14 different ones.
+
+**What follows.** By rule 3 nothing changes: `classify` keeps its rule, `segment` keeps its own, and the published numbers of the benchmark stay those of the majority rule. The table of the section above has its missing cell, and the README and the model card say for `classify` what this read found. The test benchmark is not read again for this question.
+
+**The other limits of the plan hold for this result.** Every number about wrong answers rests on 14 recordings, 11 of them between A4C and A5C. The benchmark is not untouched, and its recordings come from one hospital and two machines of one maker: on other recordings the probabilities may be higher or lower for the same share of right answers. The read applied `classify`'s rule to the stored logits of the benchmark's frames and did not run the command on files.
 
 ## How the system was chosen
 
@@ -267,6 +321,7 @@ The test recordings are EV9V's test split. This table holds the uses of them tha
 | 2026-11-20 | The benchmark's definition is exported for this package: its lists and reference views, no model output. The published weights are run with this package, in three starts of which two were cut off before any output. Then one read with the uncertain rule | the published numbers; UNCERTAIN.md, section 9 | None |
 | 2026-11-24 | Two reads of stored outputs | COMPARISON.md, sections 10 and 11 | None. The second read was decided with the first result known |
 | 2026-11-24 and 2026-11-25 | Forward passes without labels, then one read | FOLLOWUP.md, section 9 | None. The option stayed off by default |
+| 2026-11-26 | One read of stored outputs. `classify`'s rule is scored on the 800 single recordings; the streams are decoded only to hold the published numbers | what `classify` returns: "One read of the test benchmark for `classify`" above | None. `classify` kept its rule |
 
 - **The access records.** The read of 2026-10-23 and every read since 2026-11-20 are in an access record on the project's server. The runs of 2026-11-13 were made on a rented machine and have records of their own. The records are kept with the data and are not public, because they name files of those machines.
 - **What this means for the numbers.** They describe the published system on recordings that its development had seen in aggregate many times before the split was sealed. They are likely to be optimistic for new recordings, by an amount that these data cannot give. The project has no result against readers' labels on recordings that no step of its development has touched.
@@ -306,6 +361,7 @@ With a copy of EV9V and a GPU:
 
 - `echoview evaluate` gives the development numbers, and `echoview evaluate --benchmark test` the four numbers of the test benchmark with their intervals. Both were checked against the research code, as said above.
 - `python -m echoview.evaluation.uncertain_study choose` and `report` repeat the study of the uncertain output on development data, and `confirm` repeats its read of the test benchmark from logits of one's own, as long as they give the published numbers.
+- `python -m echoview.evaluation.classify_read trial` repeats the trial of the read for `classify` from development logits of one's own. Its two numbers made of probabilities then agree with the development report within the trial's 0.00005 and not to the last digit.
 - `python -m echoview.evaluation.followup logits` and `study` repeat the development study of FOLLOWUP.md. Its third question also needs EchoViewCLIP's outputs, which this package cannot produce.
 - Training is in [TRAINING.md](TRAINING.md).
 
@@ -313,7 +369,7 @@ Without any data, the tables of UNCERTAIN.md, COMPARISON.md and FOLLOWUP.md can 
 
 What others cannot repeat as it stands:
 
-- **The reads of the test benchmark for the comparison and for the denser read-out** (`comparison score --benchmark test` and `followup confirm`). These commands take only files of model outputs whose SHA-256 the code names. The files hold outputs for single recordings and are not published, and outputs that are computed again on another machine differ in the sixth decimal. The lock keeps the project from reading the benchmark again through these commands. It is on the commands, not on the functions behind them: `echoview.evaluation.followup.confirm` scores outputs of one's own.
+- **The reads of the test benchmark for the comparison, for the denser read-out and for `classify`** (`comparison score --benchmark test`, `followup confirm` and `classify_read read`). These commands take only files of model outputs whose SHA-256 the code names. The files hold outputs for single recordings and are not published, and outputs that are computed again on another machine differ in the sixth decimal. The lock keeps the project from reading the benchmark again through these commands. It is on the commands, not on the functions behind them: `echoview.evaluation.followup.confirm` and `echoview.evaluation.classify_read.read` score outputs of one's own, as long as those give the published numbers and the rows of the comparison's first read.
 - **The four other approaches.** Their outputs come from the project's research code. This package holds neither their code nor their weights. [COMPARISON.md](COMPARISON.md), section 12, says where each came from.
 - **The MIMIC-IV-Echo numbers,** see "Not here yet".
 

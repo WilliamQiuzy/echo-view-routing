@@ -149,7 +149,7 @@ def test_the_test_report_holds_the_published_numbers_and_the_confusion_table_of_
         share = f"{right:.0f}%" if right == 100 else f"{right:.1f}%"
         said("docs/EVALUATION.md", f"| {view} | " + " | ".join(str(n) for n in row) + f" | {share} |")
     assert (confusion[2][3] + confusion[3][2], 800 - 785) == (12, 15)
-    said("docs/EVALUATION.md", "Twelve of the fifteen errors are between A4C and A5C", "| Test benchmark | 800 | 15 | not measured |")
+    said("docs/EVALUATION.md", "Twelve of the fifteen errors are between A4C and A5C", "| Test benchmark | 800 | 15 | 14 |")
     said("MODEL_CARD.md", "Twelve of the fifteen single recordings that the test benchmark has wrong are between these two views")
     said("README.md", f"EchoRouter reads A4C as A5C in {confusion[2][3]} of the {sum(confusion[2])} single recordings of A4C")
     # the interval with streams drawn and the one with examinations drawn, wherever the 0.909 carries both
@@ -336,3 +336,149 @@ def test_the_speed_table_says_what_the_measurements_hold():
          f"takes {seconds[2]:.1f} s")
     said("CHANGELOG.md",
          f"a stream of 60 s takes {seconds[0]:.1f} s, {seconds[1]:.1f} s and {seconds[2]:.1f} s, with at most {l40s['gpu_memory_peak_gib']:.1f} GiB")
+
+
+def test_the_read_for_classify_is_what_the_documents_say():
+    """docs/evaluation/classify_test.json is the output of the read of 2026-11-26 and classify_trial.json that of its
+    trial. The sentences of the result that state a number are built here from those two files and looked up word for
+    word. Times, and what the result says about the plan's expectations, have no file to be held to."""
+    from echoview.evaluation import classify_read, comparison
+
+    doc = "docs/EVALUATION.md"
+    result, trial = stored("evaluation/classify_test.json"), stored("evaluation/classify_trial.json")
+    digest = comparison.file_sha256(DOCS / "evaluation" / "classify_test.json")
+    assert classify_read.READ_SHA256 == digest
+    assert result["sha256"]["trial"] == comparison.file_sha256(DOCS / "evaluation" / "classify_trial.json")
+    assert (result["benchmark"], result["sequences"], result["draws"], result["seed"]) == ("test", 1160, 10_000, 20261123)
+    assert result["first_read_rows_reproduced"] == ["EchoRouter", "Perfect on the 0.5 s grid"]
+    assert result["word"] == classify_read.NOT_SHOWN == "not shown to differ from the majority rule"
+    said(doc, f"SHA-256 `{digest}`", "with the code of commit `c7b1c3d`. `classify`'s rule is not shown to differ from the majority rule.**",
+         "**Status: planned and read on 2026-11-26 (UTC). `classify`'s rule is not shown to differ from the majority rule.**")
+    majority, mean = result["rules"][classify_read.MAJORITY], result["rules"][classify_read.CLASSIFY]
+    assert majority == stored("comparison/test.json")["rows"]["EchoRouter"]["recordings"]  # the published rule, as the comparison holds it
+    found, probability = result["classify"], result["classify"]["probability"]
+    assert (found["recordings"], found["errors"], found["units_drawn"], found["units_with_a_wrong_recording"]) == (800, 14, 125, 14)
+    said(doc, "**The 14 wrong recordings lie in 14 of the 125 examinations.**")
+
+    def share(number: dict) -> str:
+        return f"{100 * number['value']:.1f}% [{100 * number['interval'][0]:.1f}, {100 * number['interval'][1]:.1f}]"
+
+    def plain(number: dict) -> str:
+        return f"{number['value']:.3f} [{number['interval'][0]:.3f}, {number['interval'][1]:.3f}]"
+
+    def with_interval(number: dict, signed: bool = False) -> str:
+        form = "+.3f" if signed else ".3f"
+        return f"{number['value']:{form}}, with the interval [{number['interval'][0]:{form}}, {number['interval'][1]:{form}}]"
+
+    # the view
+    rows = []
+    for name, rule, right in (("Majority of the decoded samples (published)", majority, 785), ("Largest mean probability (`classify`)", mean, 786)):
+        assert round(800 * rule["accuracy"]["value"]) == right and rule["recall_PLAX"]["value"] == rule["recall_PSAX"]["value"] == 1.0
+        as_a5c, as_a4c = rule["a4c_as_a5c"], rule["a5c_as_a4c"]
+        assert as_a4c["interval"] is None  # a count of 5 or fewer has no interval
+        cells = [name, str(right), share(rule["accuracy"]), plain(rule["macro_f1"]), share(rule["recall_A4C"]), share(rule["recall_A5C"]),
+                 share(rule["recall_SC4C"]), f"{as_a5c['value']:.0f} [{as_a5c['interval'][0]:.0f}, {as_a5c['interval'][1]:.0f}]", f"{as_a4c['value']:.0f}"]
+        rows.append("| " + " | ".join(cells) + " |")
+    said(doc, "\n".join(rows), "Both rules read every recording of PLAX and of PSAX right.")
+    table, published = found["confusion"], result["confusion_majority"]
+    assert sum(map(sum, table)) == 800 and sum(table[k][k] for k in range(5)) == 786
+    assert published == stored("evaluation/test_report.json")["system"]["native_confusion"]
+    said(doc, "| | PLAX | PSAX | A4C | A5C | SC4C |\n|---|---|---|---|---|---|\n"
+         + "\n".join(f"| {view} | " + " | ".join(str(n) for n in row) + " |" for view, row in zip(VIEWS, table)))
+    assert (table[2][3] + table[3][2], published[2][3] + published[3][2]) == (11, 12) and (table[2][2], published[2][2]) == (220, 219)
+    said(doc, "11 of the 14 recordings that `classify`'s rule has wrong are between A4C and A5C, as 12 of the majority rule's 15 are",
+         "`classify`'s rule reads one recording of A4C more right, 220 against 219")
+
+    # the two rules against each other
+    difference, only = result["classify_minus_majority"], result["recordings_only_one_rule_reads_right"]
+    accuracy, recall = difference["accuracy"], difference["recall_A5C"]
+    assert only == {"only_classify": 2, "only_the_majority": 1, "p_two_sided": 1.0} and accuracy["interval"][0] < 0 < accuracy["interval"][1]
+    low, high = (100 * end for end in accuracy["interval"])
+    said(doc, "It reads 786 of the 800 recordings right, and the majority rule reads 785.",
+         f"The difference in accuracy is {100 * accuracy['value']:.1f} points, with the interval [{low:+.1f}, {high:+.1f}].",
+         "Two recordings are read right only by `classify`'s rule and one only by the majority rule, and the exact test of that split gives p = 1.0.",
+         "Neither of the two things that the word needs holds.",
+         f"is 0.959 against 0.956: {with_interval(difference['macro_f1'], signed=True)}.")
+    assert recall["value"] == 0.0 and table[3] == published[3]
+    low, high = (100 * end for end in recall["interval"])
+    said(doc, f"the interval of the difference in the recall of A5C is not zero ([{low:+.1f}, {high:+.1f}] points)")
+    of_a4c, fewer = difference["recall_A4C"], difference["a4c_as_a5c"]
+    assert of_a4c["interval"][0] == 0.0 and fewer["interval"][1] == 0.0 and fewer["value"] == -1.0  # both end at exactly zero
+    low, high = (100 * end for end in of_a4c["interval"])
+    said(doc, f"The difference in the recall of A4C is {100 * of_a4c['value']:+.1f} points, with the interval [{low:+.1f}, {high:+.1f}], "
+              f"and A4C is read as A5C in one recording fewer, with the interval [{fewer['interval'][0]:.0f}, {fewer['interval'][1]:.0f}]. "
+              "Both intervals end at exactly zero")
+    assert difference["a5c_as_a4c"]["value"] == 0.0 and difference["a5c_as_a4c"]["interval"] is None
+
+    # the probability
+    bins, parts = [b for b in probability["bins"] if b["recordings"]], probability["bins_equal_count"]
+    lines = [f"| above {b['above']:.1f}, up to {b['up_to']:.1f} | {b['recordings']} | {b['right']} | {b['mean_probability']:.3f} "
+             f"| {100 * b['share_right']:.1f}% |" for b in bins]
+    said(doc, "| Probability | Recordings | Right | Mean probability | Share that is right |\n|---|---|---|---|---|\n" + "\n".join(lines)
+         + "\n\nNo recording has a probability of 0.4 or less.")
+    assert [b["recordings"] for b in probability["bins"][:4]] == [0, 0, 0, 0] and bins[0]["above"] == 0.4
+    assert all(b["share_right"] >= b["mean_probability"] for b in bins + parts)  # every gap points the same way
+    gap = probability["probability_minus_right"]
+    assert f"{probability['ece']:.3f}" == f"{probability['ece_equal_count']:.3f}" == f"{-gap['value']:.3f}" == "0.025"
+    assert (f"{probability['mean_probability']:.3f}", round(800 * probability["share_right"])) == ("0.958", 786)
+    assert f"{100 * 786 / 800:.2f}" == "98.25"
+    said(doc, "The mean probability is 0.958, and 786 of the 800 recordings are right (98.25%).",
+         f"The mean probability minus the share that is right is {with_interval(gap)}.",
+         "**The two calibration errors are that gap.** Both are 0.025. "
+         "In every bin and in every part of equal count the share that is right is at least the mean probability")
+    assert [b["recordings"] for b in parts] == [80] * 10 and [b["right"] for b in parts] == [67, 79] + [80] * 8
+    said(doc, f"In the tenth with the lowest probabilities, from {parts[0]['from']:.3f} to {parts[0]['to']:.3f}, 67 of the 80 recordings are right, "
+              f"at a mean probability of {parts[0]['mean_probability']:.3f}. In the next tenth, up to {parts[1]['to']:.3f}, 79 of 80 are right. "
+              f"In the other eight tenths, with probabilities from {parts[2]['from']:.3f} to {parts[9]['to']:.3f}, all 640 are right.")
+    said(doc, f"The Brier score is {with_interval(probability['brier'])}.", f"The log loss is {with_interval(probability['log_loss'])}.")
+    separation = probability["separation"]
+    assert separation["draws_without_a_number"] == 0
+    assert f"{probability['median_probability_right']:.3f}" == f"{probability['median_probability']:.3f}" == "0.980"
+    said(doc, f"The median probability is {probability['median_probability']:.3f} for all recordings and for the right ones, "
+              f"and {probability['median_probability_wrong']:.3f} for the 14 wrong ones.",
+         f"The separation is {with_interval(separation)}: a recording that is read right has the higher probability in "
+         f"{100 * separation['value']:.0f}% of the pairs with one that is read wrong. Every draw of examinations held a wrong recording.")
+    wrong = {b["up_to"]: b["recordings"] - b["right"] for b in bins}
+    below = [b for b in bins if b["up_to"] < 0.95]
+    assert sum(n for top, n in wrong.items() if top < 0.85) == 12 and wrong[1.0] == 2
+    assert (sum(b["recordings"] for b in below), sum(b["right"] for b in below)) == (52, 40)
+    said(doc, "12 of the 14 wrong recordings have a probability of 0.8 at most, and two have one above 0.9. "
+              "Of the 52 recordings with a probability of 0.9 at most, 40 are right.", "By rule 3 no threshold is chosen or proposed from it.")
+    assert found["seeds"] == {"recordings_where_the_seeds_differ": 1, "of_them_wrong": 0, "wrong_where_the_seeds_agree": 14}
+    said(doc, "The three seeds name different views in one recording of the 800, and that one is read right. "
+              "In all 14 wrong recordings the three seeds name the same view.")
+
+    # the trial: the development report's numbers, as the documents quote them
+    report = stored("evaluation/development_report.json")["systems"][classify_read.TRIAL_SYSTEM]
+    assert classify_read.trial_held(trial)
+    assert trial["sha256"]["report"] == comparison.file_sha256(DOCS / "evaluation" / "development_report.json")
+    cal, sel = (trial["numbers_reproduced"][half] for half in ("calibration", "selection"))
+    for got, half in ((cal, "calibration"), (sel, "selection")):
+        known = report[half]["native"]
+        assert (got["recordings"], got["errors"], got["confusion"]) == (known["recordings"], known["errors"], known["confusion"])
+        assert abs(got["ece"] - known["ece"]) < 1e-12 and abs(got["median_probability"] - known["median_confidence"]) < 1e-12
+    said(doc, f"{cal['errors']} and {sel['errors']} wrong recordings of {cal['recordings']} and {sel['recordings']}, the two confusion tables, "
+              f"calibration errors of {cal['ece']:.4f} and {sel['ece']:.4f} and median probabilities of "
+              f"{cal['median_probability']:.4f} and {sel['median_probability']:.4f}")
+
+    # the other documents
+    of_wrong, of_right = f"{probability['median_probability_wrong']:.2f}", f"{probability['median_probability_right']:.2f}"
+    for document, there in (("README.md", ""), ("MODEL_CARD.md", " there")):
+        said(document, "On the test benchmark the first misreads 15 of 800 and the second 14. "
+                       "One read that was planned beforehand does not show the two rules to differ there",
+             "786 of the 800 recordings are right (98.25%)", f"mean probability is {probability['mean_probability']:.3f}",
+             f"The 14 wrong recordings{there} have a median probability of {of_wrong}")
+    said("MODEL_CARD.md", f"the calibration error is {probability['ece']:.3f}", f"has the higher probability in {100 * separation['value']:.0f}% of the pairs")
+    said(doc, "On the selection half `classify`'s rule has two wrong recordings fewer, and on the test benchmark one fewer.",
+         f"gives a calibration error of {probability['ece']:.3f}", f"have a median probability of {of_wrong}, the right ones {of_right}",
+         "| 2026-11-26 | One read of stored outputs. `classify`'s rule is scored on the 800 single recordings; the streams are decoded only to hold",
+         "Three recordings are read right by only one of the two rules, where at most five were expected",
+         "They lie in 14 different ones.", "Every number about wrong answers rests on 14 recordings, 11 of them between A4C and A5C.",
+         f"The plan expected a wide interval; it is [{separation['interval'][0]:.3f}, {separation['interval'][1]:.3f}].")
+    reproduced, reported = result["published_numbers_reproduced"], stored("evaluation/test_report.json")["system"]
+    assert reproduced == {key: reported[key] for key in reproduced} and len(reproduced) == 4
+    said("MODEL_CARD.md", "once for the denser read-out (2026-11-25) and once for what `classify` returns (2026-11-26)")
+    said("CHANGELOG.md", "The largest mean probability reads 786 recordings right, where the majority of the decoded samples, "
+                         "the rule of the published numbers, reads 785.",
+         "the mean probability is 0.958, and the calibration error is 0.025",
+         f"have a median probability of {of_wrong} and the right ones {of_right}, and the three seeds agree on every wrong one")
