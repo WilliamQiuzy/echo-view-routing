@@ -88,6 +88,59 @@ def test_group_multipliers_switch_groups_off():
     assert torch.allclose(plain, untouched, atol=1e-5)
 
 
+def test_strength_zero_leaves_no_random_change_whatever_the_generator_draws():
+    frames, fragment = torch.from_numpy(blocky(5, 8)), torch.zeros((8, 16), dtype=torch.long)
+    fragment[:, 8:] = 1  # two fragments in every window
+    off = augment.Strength(0.0, shared=1.0)
+    first = augment.augment(frames, fragment, off, torch.Generator().manual_seed(1), group=4)
+    second = augment.augment(frames, fragment, off, torch.Generator().manual_seed(2), group=4)
+    assert torch.equal(first, second)  # two generators, one input: the switch is off for every change
+    on = augment.augment(frames, fragment, augment.Strength(1.0, shared=1.0), torch.Generator().manual_seed(1), group=4)
+    assert not torch.allclose(first, on, atol=1e-3)
+
+
+def test_a_mirrored_window_is_the_plain_window_seen_from_the_other_side():
+    frames, fragment = torch.from_numpy(blocky(6, 4)), torch.zeros((4, 16), dtype=torch.long)
+    for strength in (augment.Strength(0.0), augment.Strength(1.0, levels=0.0, degrade=0.0)):  # the plain input, and random geometry
+        params = augment.draw(4, strength, torch.Generator().manual_seed(3), "cpu")
+        plain = augment.warp(frames, fragment, params)
+        every = augment.warp(frames, fragment, params, torch.ones(4, dtype=torch.bool))
+        assert torch.allclose(every, torch.flip(plain, dims=[-1]), atol=1e-5) and not torch.allclose(every, plain, atol=1e-2)
+        some = augment.warp(frames, fragment, params, torch.tensor([True, False, False, True]))
+        assert torch.allclose(some[0], torch.flip(plain[0], dims=[-1]), atol=1e-5) and torch.allclose(some[3], torch.flip(plain[3], dims=[-1]), atol=1e-5)
+        assert torch.equal(some[1], plain[1]) and torch.equal(some[2], plain[2])  # a window that is not mirrored is the window it was, bit for bit
+        assert torch.equal(augment.warp(frames, fragment, params, torch.zeros(4, dtype=torch.bool)), plain)
+    # through the whole augmentation: the mirror changes nothing else, and without it the output is the published one
+    full = augment.Strength(1.0, shared=1.0)
+    published = augment.augment(frames, fragment, full, torch.Generator().manual_seed(8), group=4)
+    assert torch.equal(augment.augment(frames, fragment, full, torch.Generator().manual_seed(8), group=4, mirror=None), published)
+    assert torch.equal(augment.augment(frames, fragment, full, torch.Generator().manual_seed(8), group=4, mirror=torch.zeros(4, dtype=torch.bool)), published)
+    # a mirrored group takes no number more from the generator of the other input changes: the next draw is the one it would have been
+    states = []
+    for mirror in (None, torch.tensor([True, False, False, True]), torch.ones(4, dtype=torch.bool)):
+        generator = torch.Generator().manual_seed(8)
+        out = augment.augment(frames, fragment, full, generator, group=4, mirror=mirror)
+        states.append((generator.get_state().clone(), out))
+    assert torch.equal(states[0][0], states[1][0]) and torch.equal(states[0][0], states[2][0])
+    assert torch.equal(states[1][1][1], states[0][1][1]) and not torch.equal(states[1][1][0], states[0][1][0])  # only the mirrored windows differ
+
+
+def test_the_mirror_is_drawn_from_a_stream_of_its_own():
+    torch.manual_seed(5)  # the generator of the whole program, from which the network draws its dropout
+    before = torch.get_rng_state().clone()
+    drawn = augment.mirrored(seed=1, update=7, groups=8, probability=0.5)
+    assert torch.equal(torch.get_rng_state(), before) and drawn.shape == (8,) and drawn.dtype == torch.bool
+    # the seed and the update each count: seed 1 at update 7 is not seed 2 at update 6, though their numbers add up alike
+    pairs = [(seed, update) for seed in range(3) for update in range(40)]
+    assert len({tuple(augment.mirrored(seed, update, 64, 0.5).tolist()) for seed, update in pairs}) == len(pairs)
+    assert torch.equal(drawn, augment.mirrored(1, 7, 8, 0.5))  # the same seed and update give the same groups: a run that goes on draws them again
+    updates = torch.stack([augment.mirrored(1, update, 8, 0.5) for update in range(200)])
+    assert 0.45 < updates.float().mean() < 0.55 and len({tuple(row.tolist()) for row in updates}) > 100
+    assert not torch.equal(updates, torch.stack([augment.mirrored(2, update, 8, 0.5) for update in range(200)]))  # another seed, other groups
+    assert not augment.mirrored(1, 7, 8, 0.0).any() and augment.mirrored(1, 7, 8, 1.0).all()
+    assert augment.MIRROR_STREAM not in (train.SAMPLING_STREAM, train.SAMPLING_STREAM + 1, train.SAMPLING_STREAM + 2)
+
+
 def test_group_draw_repeats_parameters():
     params = augment.draw_groups(16, 4, augment.Strength(1.0, shared=1.0), torch.Generator().manual_seed(4), "cpu")
     assert params["gain"].shape == (16, augment.MAX_FRAGMENTS)

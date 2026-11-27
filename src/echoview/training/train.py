@@ -43,7 +43,7 @@ GROUPED = ("within_view",)  # the objectives that train on groups of four neighb
 SAMPLING_STREAM = 20261112  # first word of the seeds of the window sampler and of the augmentation
 DEFAULTS = {
     "updates": 3000, "batch": 64, "lr_enc": 3e-5, "lr_new": 3e-4, "warmup": 300, "freeze": 1, "weight_decay": 1e-4,
-    "strength": 1.0, "geometry": 1.0, "levels": 1.0, "degrade": 1.0, "shared": 0.5, "native_share": 0.5,
+    "strength": 1.0, "geometry": 1.0, "levels": 1.0, "degrade": 1.0, "shared": 0.5, "native_share": 0.5, "mirror": 0.0,
     "label_smoothing": 0.0, "ema": 0.998, "amp": 1, "objective": "ce", "penalty": 0.15, "frames": "gpu", "compile": 0,
     "log_every": 50, "checkpoint_every": 0,
 }
@@ -105,6 +105,8 @@ def check_start(args: argparse.Namespace, continuing: bool = False) -> None:
     checkpoint does not read its start weights again, so they need not be there."""
     if args.objective in GROUPED and args.batch % plans.GROUP:
         raise SystemExit(f"--batch {args.batch}: the within_view objective needs whole groups of {plans.GROUP} windows")
+    if not 0.0 <= args.mirror <= 1.0:
+        raise SystemExit(f"--mirror {args.mirror}: a probability, from 0 to 1")
     if continuing:
         pass
     elif str(args.init) == "encoder":
@@ -189,6 +191,8 @@ def file_name(path: object) -> str:
 def run_identity(args: argparse.Namespace) -> dict:
     """The options that make two parts one run: the recipe, the seed, the start weights and the plans."""
     identity = {key: getattr(args, key) for key in sorted(DEFAULTS) if key not in NOT_THE_RECIPE}
+    if not identity["mirror"]:  # a run without a mirror is the run it was before the option existed
+        del identity["mirror"]
     return {**identity, "seed": int(args.seed), "init": file_name(args.init),
             "plans": [file_name(path) for path in args.plans] if args.plans else None}
 
@@ -232,12 +236,14 @@ def keep_log_until(log: Path, done: int) -> None:
 
 
 def save_checkpoint(out: Path, done: int, identity: dict, model: WindowModel, optimiser: torch.optim.Optimizer, average: Average,
-                    generator: torch.Generator, seen: int, elapsed: float, device: torch.device) -> None:
+                    generator: torch.Generator, seen: int, elapsed: float, device: torch.device, sessions: int = 1) -> None:
     """Everything the loop needs to go on after update `done`: the weights, the optimiser, the moving average and
-    the random streams (the input changes' own, and the ones dropout draws from on the CPU and on the training GPU)."""
+    the random streams (the input changes' own, and the ones dropout draws from on the CPU and on the training GPU).
+    `sessions` counts the sessions that made the updates up to here."""
     state = {"updates_done": int(done), "identity": identity, "model": model.state_dict(), "optimiser": optimiser.state_dict(),
              "average": average.state(), "generator": generator.get_state(), "torch_rng": torch.get_rng_state(),
-             "cuda_rng": torch.cuda.get_rng_state(device) if device.type == "cuda" else None, "seen": int(seen), "elapsed_s": float(elapsed)}
+             "cuda_rng": torch.cuda.get_rng_state(device) if device.type == "cuda" else None, "seen": int(seen), "elapsed_s": float(elapsed),
+             "sessions": int(sessions)}
     write_whole(out / CHECKPOINT, lambda handle: torch.save(state, handle))
 
 
@@ -304,8 +310,10 @@ def train(args: argparse.Namespace) -> Path:
     average = Average(model)
     began = last = time.time()
     done = seen = correct = 0
+    sessions = 1  # the sessions that the updates of the finished model come from: one, and one more for every checkpoint a run went on from
     if state is not None:  # go on after the last checkpoint: the weights, the averages and every random stream
         done, seen, began = int(state["updates_done"]), int(state["seen"]), began - float(state["elapsed_s"])
+        sessions = int(state.get("sessions", 1)) + 1
         model.load_state_dict(state["model"], strict=True)
         optimiser.load_state_dict(state["optimiser"])
         average.load(state["average"])
@@ -334,7 +342,9 @@ def train(args: argparse.Namespace) -> Path:
             planes = marker_planes(torch.from_numpy(marker).to(device))
             with torch.no_grad():
                 source = frames[torch.from_numpy(rows).to(device)] if source is None else source.to(device, non_blocking=True)
-                rgb = augment.augment(source, torch.from_numpy(fragment).to(device), strength, generator, plans.GROUP if grouped else 1)
+                group = plans.GROUP if grouped else 1
+                mirror = augment.mirrored(args.seed, update, args.batch // group, args.mirror).repeat_interleave(group) if args.mirror > 0 else None
+                rgb = augment.augment(source, torch.from_numpy(fragment).to(device), strength, generator, group, mirror)
             labels = torch.from_numpy(target).to(device)
             with torch.autocast(device.type, dtype=torch.bfloat16, enabled=bool(args.amp) and on_gpu):
                 logits = forward(rgb, planes)
@@ -361,11 +371,11 @@ def train(args: argparse.Namespace) -> Path:
                 last, correct, running = now, 0, 0.0
             if args.checkpoint_every and (update + 1) % args.checkpoint_every == 0 and update + 1 < args.updates:
                 os.fsync(log.fileno())  # the log's records up to here are on disk before the checkpoint that counts on them
-                save_checkpoint(out, update + 1, identity, model, optimiser, average, generator, seen, time.time() - began, device)
+                save_checkpoint(out, update + 1, identity, model, optimiser, average, generator, seen, time.time() - began, device, sessions)
     # the weights first and whole, then done.json, which says the run is finished, then the checkpoint goes
     write_whole(out / "final.pt", lambda handle: torch.save(model.state_dict(), handle))
     write_whole(out / "ema.pt", lambda handle: torch.save(average.state_dict(model), handle))
-    finished = {"updates": args.updates, "windows": seen, "seconds": time.time() - began, "identity": identity}
+    finished = {"updates": args.updates, "windows": seen, "seconds": time.time() - began, "sessions": sessions, "identity": identity}
     write_whole(out / "done.json", lambda handle: handle.write((json.dumps(finished) + "\n").encode()))
     (out / CHECKPOINT).unlink(missing_ok=True)
     return out
@@ -406,6 +416,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--levels", type=float, help="multiplier of the grey-level changes")
     parser.add_argument("--degrade", type=float, help="multiplier of blur, noise and dark borders")
     parser.add_argument("--shared", type=float, help="probability that the fragments of a window share one set of changes")
+    parser.add_argument("--mirror", type=float, help="probability that a group of windows is mirrored left to right (0: never, as in every published recipe)")
     parser.add_argument("--native-share", type=float, help="ce only: share of the windows drawn inside one recording")
     parser.add_argument("--label-smoothing", type=float)
     parser.add_argument("--ema", type=float, help="decay of the moving average of the weights")

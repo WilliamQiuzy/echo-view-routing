@@ -55,6 +55,7 @@ def test_a_cut_run_continues_as_the_uncut_run_would(tiny_training, tmp_path, mon
     monkeypatch.setattr(train.augment, "augment", watch("whole"))
     whole = train.train(train.parse_args([*argv, "--out", str(tmp_path / "whole")]))
     assert {p.name for p in whole.iterdir()} == {"config.json", "train_log.jsonl", "final.pt", "ema.pt", "done.json"}
+    assert json.loads((whole / "done.json").read_text())["sessions"] == 1  # every update in one session
     assert fed["whole"][2] != fed["whole"][0] and fed["whole"][3] != fed["whole"][1]  # a sampler that began again would show
 
     # the same run with a checkpoint every two updates, switched off during its fourth update
@@ -64,6 +65,7 @@ def test_a_cut_run_continues_as_the_uncut_run_would(tiny_training, tmp_path, mon
         train.train(train.parse_args([*argv, "--out", str(cut), "--checkpoint-every", "2"]))
     assert (cut / "checkpoint.pt").is_file() and not (cut / "final.pt").exists() and not list(cut.glob("*.tmp"))
     assert [r["update"] for r in log_of(cut)] == [1, 2, 3]  # one record ahead of the checkpoint
+    assert torch.load(cut / "checkpoint.pt", weights_only=True)["sessions"] == 1
 
     # it continues without its start weights: everything it needs is in the checkpoint
     start_file = Path(argv[argv.index("--init") + 1])
@@ -80,7 +82,8 @@ def test_a_cut_run_continues_as_the_uncut_run_would(tiny_training, tmp_path, mon
     assert [(r["update"], r["accuracy"], r["lr_enc"]) for r in log_of(out)] == [(r["update"], r["accuracy"], r["lr_enc"]) for r in log_of(whole)]
     assert max(abs(x["loss"] - y["loss"]) for x, y in zip(log_of(out), log_of(whole))) < 1e-4
     assert {p.name for p in out.iterdir()} == {"config.json", "train_log.jsonl", "final.pt", "ema.pt", "done.json"}
-    assert json.loads((out / "done.json").read_text())["windows"] == 16
+    finished = json.loads((out / "done.json").read_text())
+    assert finished["windows"] == 16 and finished["sessions"] == 2  # the first two updates in one session, the last two in another
 
     # a finished run is left alone, a checkpoint left beside it is removed, and other options are refused
     def never(*args, **kwargs):
@@ -127,9 +130,10 @@ def test_a_checkpoint_holds_every_part_of_the_loop_and_reads_back_equal(tmp_path
     average.update(0.5)
     generator = torch.Generator().manual_seed(9)
     torch.rand(3, generator=generator)
-    train.save_checkpoint(tmp_path, 100, {"seed": 0}, model, optimiser, average, generator, 3200, 12.5, torch.device("cpu"))
+    train.save_checkpoint(tmp_path, 100, {"seed": 0}, model, optimiser, average, generator, 3200, 12.5, torch.device("cpu"), 3)
     state = train.load_checkpoint(tmp_path / "checkpoint.pt")
     assert (state["updates_done"], state["seen"], state["elapsed_s"], state["identity"]) == (100, 3200, 12.5, {"seed": 0})
+    assert state["sessions"] == 3 and "sessions" not in train.PARTS  # a checkpoint written before the count existed is still read
     assert state["cuda_rng"] is None and not list(tmp_path.glob("*.tmp"))  # on a GPU: the stream of the training device alone
     assert all(torch.equal(state["model"][key], value) for key, value in model.state_dict().items())
     assert all(torch.equal(a, b) for a, b in zip(state["average"], average.mean)) and len(state["average"]) == len(average.mean)
@@ -170,6 +174,65 @@ def test_a_checkpoint_of_a_run_with_other_options_is_refused(tiny_training, tmp_
     # the same files reached by another path (a new machine, another mount) are the same run
     elsewhere = [("/mnt/new/" + Path(a).name if a.endswith((".pt", ".npz")) else a) for a in argv]
     assert train.run_identity(train.parse_args([*elsewhere, "--out", "o"])) == train.run_identity(args)
+
+
+def test_a_mirror_is_part_of_the_recipe_and_a_run_without_one_is_the_run_it_was(tiny_training, tmp_path, monkeypatch):
+    argv = arguments(tiny_training)
+    plain = train.parse_args([*argv, "--out", str(tmp_path / "plain")])
+    assert plain.mirror == 0.0 and "mirror" not in train.run_identity(plain)  # the identity of every run made before the option existed
+    assert train.run_identity(train.parse_args([*argv, "--out", "o", "--mirror", "0"])) == train.run_identity(plain)
+    half = train.parse_args([*argv, "--out", str(tmp_path / "half"), "--mirror", "0.5"])
+    assert train.run_identity(half)["mirror"] == 0.5
+    with pytest.raises(SystemExit, match=r"mirror: None -> 0.5"):
+        train.same_run(train.run_identity(plain), train.run_identity(half), tmp_path / "plain" / "checkpoint.pt")
+    with pytest.raises(SystemExit, match="a probability, from 0 to 1"):
+        train.check_start(train.parse_args([*argv, "--out", "o", "--mirror", "1.5"]))
+    # the loop hands the augmentation the groups to mirror, whole groups, and none when the option is off
+    real, seen = train.augment.augment, {"plain": [], "half": []}
+
+    def watch(name: str):
+        def run(source, fragment, strength, generator, group=1, mirror=None):
+            seen[name].append(None if mirror is None else mirror.clone())
+            return real(source, fragment, strength, generator, group, mirror)
+        return run
+
+    monkeypatch.setattr(train.augment, "augment", watch("plain"))
+    train.train(plain)
+    assert seen["plain"] and all(mirror is None for mirror in seen["plain"])
+    monkeypatch.setattr(train.augment, "augment", watch("half"))
+    out = train.train(half)
+    group = train.plans.GROUP if half.objective in train.GROUPED else 1
+    for update, mirror in enumerate(seen["half"]):
+        expected = train.augment.mirrored(half.seed, update, half.batch // group, 0.5).repeat_interleave(group)
+        assert mirror is not None and mirror.shape == (half.batch,) and torch.equal(mirror, expected)
+    assert json.loads((out / "config.json").read_text())["mirror"] == 0.5 and json.loads((out / "done.json").read_text())["identity"]["mirror"] == 0.5
+    assert "mirror" not in json.loads((tmp_path / "plain" / "done.json").read_text())["identity"]
+    # a run with a mirror that is cut and goes on draws the groups of the updates it still has to do, and ends where the uncut run ends
+    seen["cut"], seen["continued"] = [], []
+
+    def cut_after(name: str, stop_at: int | None = None):
+        def run(source, fragment, strength, generator, group=1, mirror=None):
+            if stop_at is not None and len(seen[name]) == stop_at:
+                raise KeyboardInterrupt  # the machine is switched off
+            seen[name].append(mirror.clone())
+            return real(source, fragment, strength, generator, group, mirror)
+        return run
+
+    again = [*argv, "--out", str(tmp_path / "cut"), "--mirror", "0.5", "--checkpoint-every", "2"]
+    monkeypatch.setattr(train.augment, "augment", cut_after("cut", stop_at=3))
+    with pytest.raises(KeyboardInterrupt):
+        train.train(train.parse_args(again))
+    older = torch.load(tmp_path / "cut" / "checkpoint.pt", weights_only=True)
+    del older["sessions"]  # as a checkpoint written before the count of sessions existed
+    torch.save(older, tmp_path / "cut" / "checkpoint.pt")
+    monkeypatch.setattr(train.augment, "augment", cut_after("continued"))
+    continued = train.train(train.parse_args([*again, "--resume"]))
+    assert json.loads((continued / "done.json").read_text())["sessions"] == 2 and json.loads((out / "done.json").read_text())["sessions"] == 1
+    assert len(seen["continued"]) == 2 and all(torch.equal(a, b) for a, b in zip(seen["continued"], seen["half"][2:]))  # updates 3 and 4, not 1 and 2
+    a, b = (torch.load(folder / "final.pt", weights_only=True) for folder in (out, continued))
+    assert distance(a, b) < 1e-5
+    with pytest.raises(SystemExit, match=r"mirror: 0.5 -> None"):  # a run with a mirror is not continued without one
+        train.same_run(train.run_identity(half), train.run_identity(plain), continued / "checkpoint.pt")
 
 
 def test_checkpoints_fall_on_log_records(tiny_training, tmp_path):

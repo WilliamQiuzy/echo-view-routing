@@ -1048,9 +1048,13 @@ def test_the_headline_numbers_of_parts_two_and_three_stand_in_the_documents():
     assert len(ranked) - 2 == 24
     hardest = sorted((name for name in ranked[2:]), key=lambda name: -errors[name])[:2]
     assert hardest == ["noise 25", "speckle 0.25"] and errors["speckle 0.25"] > max(errors[name] for name in ranked[2:] if name not in hardest)
-    from echoview.training import augment
+    # "No training stage mirrored a frame": no published recipe names a mirror, the option is off unless it is given, and stages 1 and 2 have none
+    from echoview.training import staged, train
 
-    assert not any(word in Path(augment.__file__).read_text().lower() for word in ("flip", "mirror"))  # "No training stage mirrored a frame"
+    recipes = [json.loads((ROOT / "configs" / f"stage{stage}.json").read_text()) for stage in (1, 2, 3)]
+    assert not any("mirror" in recipe for recipe in recipes) and train.DEFAULTS["mirror"] == 0.0 and "mirror" not in staged.DEFAULTS
+    source = Path(staged.__file__).read_text().lower()
+    assert "flip" not in source and "mirror" not in source
 
     # part 3, without the tool
     higher = left_open["higher_thresholds"]

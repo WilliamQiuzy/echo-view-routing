@@ -1,8 +1,8 @@
 # What the parts add, and what the system stands: studies on development data
 
-**Status: planned on 2026-11-26 (UTC). Parts 1 and 2 were run on the same day (section 9; the text of part 1 was corrected once). Part 3 was planned after part 1 was read (section 10) and run the same day (section 11).** Everything in this document down to "Results" was written and committed before any of its numbers existed, and section 10 before any number of part 3.
+**Status: planned on 2026-11-26 (UTC). Parts 1 and 2 were run on the same day (section 9; the text of part 1 was corrected once). Part 3 was planned after part 1 was read (section 10) and run the same day (section 11). Part 4 trains models; it was planned after the results of parts 1 to 3 were read (section 12) and is not run yet.** Everything in this document down to "Results" was written and committed before any of its numbers existed, section 10 before any number of part 3, and section 12 before any model of part 4 was trained.
 
-Nothing here reads the test benchmark, trains a model or changes the published system.
+Nothing here reads the test benchmark or changes the published system. Parts 1 to 3 train no model. Part 4 trains models, and none of them is published.
 
 ## 1. Why
 
@@ -445,7 +445,7 @@ The streams and the single recordings are those of the selection half. The recor
 - **Under five conditions the published system's segment F1 is the higher by 0.046 to 0.313.** Noise with a spread of 25 grey levels +0.313 [+0.258, +0.371], blur of 2 pixels +0.254 [+0.206, +0.305], 64 pixels +0.179 [+0.137, +0.221], speckle +0.096 [+0.064, +0.132] and a contrast of 0.5 +0.046 [+0.023, +0.070]. There the stage-2 ensemble falls to 0.609, 0.674, 0.751, 0.869 and 0.918.
 - **Two more intervals lie above zero:** noise 10 (+0.023 [+0.009, +0.039]) and darker by 40 (+0.013 [+0.002, +0.027]). For half the frame rate the interval begins at zero to three decimals (+0.015 [+0.000, +0.031]).
 - **For segment F1 on the multi streams no interval lies below zero.** Under the other 18 conditions it includes zero, the mirrored image among them. Other numbers do have intervals on the side of the stage-2 ensemble, 9 in all. Under the mirrored image and under the still frame the published system has the lower cut precision, more segments that match nothing and more label changes inside single recordings (the last table of part 2).
-- **What this does not say.** Stage 3 is 1,500 further updates and its input changes together. Part 2 cannot tell the two apart (section 4).
+- **What this does not say.** Stage 3 is 1,500 further updates and its input changes together. Part 2 cannot tell the two apart (section 4). Part 4 is planned for that (section 12).
 
 **A view the system does not know.** The recordings of EV9V's ninth view, read as `echoview classify --fps 30` reads a folder.
 
@@ -576,7 +576,7 @@ The published system minus the stage-2 ensemble:
 - **Stage 3 against stage 2.** The published system was expected to have the higher value under changes of grey levels and of image quality. Its interval lies above zero under 5 of the 9 conditions of degradation and under 2 of the 8 of grey levels. No difference on the unchanged frames was expected, and none is shown.
 - **The ninth view.** Nearly all recordings named PSAX and most with a probability above 0.9 were expected, and that is so. A separation near 0.6 was expected. It is 0.575 on the validation list and 0.510 on the training list.
 
-**What follows.** By section 6 a weakness under a condition is reported as a limit. The model card and the README now name two: mirrored images, and windows that show one frame. Training against a mirrored image would make another model, with a plan of its own.
+**What follows.** By section 6 a weakness under a condition is reported as a limit. The model card and the README now name two: mirrored images, and windows that show one frame. Training against a mirrored image would make another model, with a plan of its own. Section 12 is that plan.
 
 ## 10. Part 3: what part 1 left open
 
@@ -839,3 +839,94 @@ Every number of section 5, under the temperature minus as published, with the sa
 - **Lower temperatures: wrong in one point.** With the rule's own setting the streams were expected to lose 0.01 at most. They lose 0.053. The fitted value, the flat log loss and the loss with the published setting came out as expected.
 
 **What follows.** By section 6 nothing changes in the published system. Part 3 names no candidate for the decoder. For `classify`'s probability the word is "candidate" for a temperature of 0.30 in part 1 and for 0.05 here, by the same rule, and the fit has no best value.
+
+## 12. Part 4: stage 3 trained again, three ways
+
+**Status: planned on 2026-11-26 and committed on 2026-11-27 (UTC), before any of its models was trained. Not run yet.**
+
+Two things were tried before this plan was committed, to see that the code runs. Twenty updates of each of the three training commands were run once on the GPU into a scratch folder; no model of them was kept or scored. And the check that holds the report to part 2 was run on the outputs of part 2, where it passed.
+
+Section 8 named a training control as something this document cannot give, and section 1 said that it takes what needs no training. Part 4 goes beyond both: it trains models. None of them is published. Part 4 does not read the test benchmark and changes nothing in the published system.
+
+**This plan was written with the results of parts 1 to 3 known, and that weakens what part 4 can show.**
+
+- Both questions below come from part 2: it showed where the published system stands far from the stage-2 ensemble, and that a mirrored image is the largest loss. The decision to train at all came after part 2 was read.
+- The five conditions of the first question were picked from the selection half, by the size of the difference that part 2 found there. Which system is ahead under them is known. Only the place of the new arms is open.
+- No option of the training was tuned on the results. One arm switches the input changes off, one arm adds a mirror with a probability of one half, and every condition of part 2 is run for every arm.
+
+### Two questions
+
+1. Stage 3 differs from stage 2 by a training loop of 1,500 updates and by random changes of the input during it ([TRAINING.md](TRAINING.md)). What do the input changes add?
+2. Part 2 found a mirrored image to be the largest loss, and no stage mirrored a frame. Does a model that has seen mirrored frames stand a mirrored image, without losing elsewhere?
+
+### The three arms
+
+Each arm is three models, seeds 0, 1 and 2. Each model starts from the published stage-2 model of its seed and is trained with this package for 1,500 updates. All nine are trained on one machine, with one commit of this package.
+
+| Arm | Command | What it is |
+|---|---|---|
+| again | `echoview-train --config configs/stage3.json` | the published recipe, trained again |
+| without input changes | `echoview-train --config configs/stage3.json --strength 0` | every random input change switched off |
+| with a mirror | `echoview-train --config configs/stage3.json --mirror 0.5` | the published recipe, and every group of windows mirrored left to right with a probability of one half |
+
+Every command also takes `--seed`, `--cache`, `--init stage2`, `--out`, and `--checkpoint-every 100 --resume`, so that a run that a reclaimed machine cuts off goes on from its checkpoint. The result says for every model in how many sessions it was trained. The nine trainings and the three arms under 27 conditions come to about 10 GPU hours on one L40S.
+
+- **Why the published recipe is trained again.** The published seeds were trained with the research trainer, in another session, once each. Trained again with this package, the single seeds came out within 0.004 of the published ones, and the three together within 0.003 with the published decoder setting and 0.016 below with a setting chosen again by the rule ([TRAINING.md](TRAINING.md)). The published seeds are therefore not the partner for a comparison that changes one switch. The arm "again" is: it shares the trainer, the machine and the commit with the other two arms. The published system minus the arm "again" is given for every condition, as the scale of what differs between two trainings of one recipe.
+- **What the three arms share.** The start weights, the sampling plan, the 1,500 updates, the objective, the optimiser and its schedule, the moving average, autocast and compilation. The mirror is drawn from a stream of its own, so the arm with a mirror draws the same other input changes as the arm "again".
+- **What `--strength 0` leaves.** No random change of the input. The network's dropout and its stochastic depth stay, as in the recipe. The frame is resized as the evaluation resizes it, to about one grey level.
+- **The mirror.** A mirrored group has every frame of its four windows mirrored left to right. The mirror is part of the geometry: the crop and the grey levels are those the window would have had without it, and the noise and the dark borders are drawn after it, as for every window. A left-right mirrored image of one of the five views shows the same view.
+- **Training reads EV9V training recordings only.** Each model is trained once, and its last weights are used, as for the published seeds. Nothing is tuned and no run is chosen among several.
+
+### What is measured
+
+`python -m echoview.evaluation.arms` holds the two commands, `run` and `report`. The output is `docs/ablations/arms.json`.
+
+- **Under the conditions of part 2.** The three models of an arm run as one ensemble on the selection half: on the unchanged frames and under each of the 26 conditions, with the code of part 2.
+- **The decoder setting is the published one for every system.** [TRAINING.md](TRAINING.md) found that the rule's choice does not repeat for a retrained ensemble and advises the published setting. On the unchanged frames every system is also given with the setting that the rule gives it on the calibration half, and with no decoder. Part 2 gave the stage-2 ensemble the setting of the rule, a threshold of 0.185. Here it has the published setting like every other system, so its numbers here are not those of part 2.
+- **Seven differences for every condition,** with the same draws and for every number of section 5: "again" minus "without input changes", "without input changes" minus the stage-2 ensemble, "again" minus the stage-2 ensemble, "with a mirror" minus "again", "with a mirror" minus the published system, the published system minus "again", and the published system minus the stage-2 ensemble.
+- **The seeds.** On the unchanged frames every seed alone is given for the published system and for the three arms, decoded with the published setting. The numbers of the published seeds are therefore not those of part 1, where every seed had the setting of the rule. A seed of the published system or of another arm minus the seed of the same number of the arm "again" is given with the same draws.
+- **The training itself.** For every trained model: the loss as the loop logs it, with its penalty, and the accuracy on its training windows over the last 500 updates of the run, in how many sessions it was trained, how far its weights lie from the stage-2 model it started from, and how far from the model of the arm "again" of the same seed, each as a share of length.
+- **Checks before anything is read.** The published system's unchanged run must give the stored outputs and the published number. The published system minus the stage-2 ensemble, with the stage-2 ensemble decoded as part 2 decoded it, must come out as part 2 published it. Each arm's unchanged run must agree with its own window logits to 0.001 in every probability. Each model must be the finished run that the table above names for its arm and its seed, option for option, started from the published stage-2 model. The nine weight files must be nine different files and none a published one. The nine runs must come from one version of PyTorch, and the three arms must name one commit of this package. The other two arms must have been set against the three models of the arm "again" that the report is given. The output of part 2 that the report is held to must have been made from the stored outputs that the report reads, and the result names both files by their checksums.
+
+### How part 4 is read
+
+**The first question** is read on five conditions: noise with a spread of 25 grey levels, blur of 2 pixels, 64 pixels, speckle, and a contrast of 0.5. These are the five where part 2 found the published system farthest ahead of the stage-2 ensemble. The number is segment F1 at 50% on the multi streams.
+
+- For each condition the share is given: "again" minus "without input changes", divided by "again" minus the stage-2 ensemble, with an interval from the same draws. Five conditions decide a sentence each, so these intervals are taken at 99%. A draw in which "again" minus the stage-2 ensemble is not positive has no share; such draws are left out of the interval and counted. A share above 1 or below 0 is given as it is.
+- The sentence is "mostly the input changes" when the interval of the share lies wholly above one half, "mostly the loop without them" when it lies wholly below one half, and "not told apart" otherwise. Where the 99% interval of "again" minus the stage-2 ensemble does not lie above zero, the sentence is "no difference to split".
+- **A second training of the same recipe is asked the same.** The intervals draw streams and hold nothing of the difference between two trainings. So the same share is given with the published system in the place of the arm "again", with the published system minus "again" at 99% beside it. Where the two sentences differ, the result says so, and neither stands.
+- "without input changes" minus the stage-2 ensemble is described. It is the stage-3 loop without input changes, and it is not stage 2 trained on. The loop differs from stage 2 in more than its length: grey frames from the cache where stage 2 read colour JPEG files, eight groups in an update where stage 2 has two, drawn from the plans of all three seeds, bfloat16 autocast and compiled code, a warm-up of its own. And it does not apply the gamma of 0.9 that stage 2 puts on a quarter of its frames and stage 1 on half of its frames, and that about half of the fragments of the development multi streams carry. The published stage 3 covers that gamma with its random gamma. The arm without input changes sees none, and a loss of that arm on the unchanged streams can come from there.
+
+**The second question** has a word. The arm with a mirror is a "candidate" when all of this holds with the published decoder setting, for segment F1 at 50% on the multi streams unless a line names another number:
+
+- under the mirrored image, the 95% interval of "with a mirror" minus "again" lies wholly above zero;
+- under the mirrored image, the arm loses no more than 0.03 against its own unchanged frames;
+- on the unchanged frames, the interval of "with a mirror" minus "again" does not lie wholly below zero, and the arm is no more than 0.01 below;
+- on the unchanged frames, at most one single recording fewer is read right by the majority rule;
+- under none of the five conditions of the first question does the interval of "with a mirror" minus "again" lie wholly below zero.
+
+Otherwise the word is "not supported on development data". The other 20 conditions are described for this arm, and so is the arm against the published system.
+
+**Everything else describes.** The intervals are at 95% unless a line says 99%, they are many, and none is corrected for their number. They draw streams and recordings and hold nothing of the difference between two trainings. The published system minus the arm "again" shows that difference once.
+
+### What is expected of part 4
+
+- **Trained again.** On the unchanged frames the arm "again" lies within 0.005 of the published system in segment F1 on the multi streams. This is nearly known: trained again once before, the three seeds reached 0.9565.
+- **The first question.** The sentence is "mostly the input changes" for the noise, the blur, the 64 pixels and the speckle, and "not told apart" for the contrast.
+- **Without input changes.** On the unchanged frames this arm lies within 0.01 of the stage-2 ensemble at the published setting, and its weights lie nearer to their start than those of the arm "again".
+- **The second question.** The word is "candidate". Under the mirrored image the arm with a mirror loses less than 0.03 against its own unchanged frames, and on the unchanged frames it lies within 0.005 of the arm "again".
+
+### The limits of part 4
+
+- **Development data, and conditions that are made up.** A blur is not another machine, and the mirrored frames are made by this experiment. No recording of a machine that shows the views mirrored was measured.
+- **The agreement on MIMIC recordings is not scored.** The gain of stage 3 was seen there, and part 4 answers for made-up conditions only. The sentence of the README and of the model card, that the input changes and the further updates were not told apart for that agreement, stays whatever part 4 shows.
+- **One run per seed and arm.** The three arms share start weights, sampling plan and machine, and still two trainings of one recipe differ.
+- **All input changes at once.** Geometry, grey levels and degradation are switched off together. Which of them matters is not asked.
+
+### What follows from part 4
+
+Section 6 holds. Nothing changes in the published system, and everything is published whatever it shows. A candidate is no more than that: a model with a mirror would need other data and a decision of the owner of the project before it could replace the published one. The README and the model card say of the mirrored image that its cause was not tested. If the arm with a mirror is a candidate, they may add that a model trained with a mirror stands a mirrored image on development data. The limit of the published model stays.
+
+## 13. Results of part 4
+
+Not run yet.

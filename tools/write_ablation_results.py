@@ -366,7 +366,9 @@ def part_two(d: dict) -> str:
             "mirrored image "
             "and under the still frame the published system has the lower cut precision, more segments that match nothing and more label changes inside single "
             "recordings (the last table of part 2).",
-            "- **What this does not say.** Stage 3 is 1,500 further updates and its input changes together. Part 2 cannot tell the two apart (section 4).",
+            "- **What this does not say.** Stage 3 is 1,500 further updates and its input changes together. Part 2 cannot tell the two apart "
+            "(section 4). Part 4 is "
+            "planned for that (section 12).",
             "",
             "**A view the system does not know.** The recordings of EV9V's ninth view, read as `echoview classify --fps 30` reads a folder.",
             "",
@@ -444,7 +446,7 @@ def part_two(d: dict) -> str:
             "",
             "**What follows.** By section 6 a weakness under a condition is reported as a limit. The model card and the README now name two: "
             "mirrored images, and "
-            "windows that show one frame. Training against a mirrored image would make another model, with a plan of its own.",
+            "windows that show one frame. Training against a mirrored image would make another model, with a plan of its own. Section 12 is that plan.",
             "",
         ]
         assert len(rest) == 3 and len(grey) - len(grey_lost) == 5 and (len(degrade), len(grey)) == (9, 8) and len(grey_include) == 5

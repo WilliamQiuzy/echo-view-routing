@@ -22,6 +22,7 @@ from ..model import MEAN, STD
 OUT = 224
 MAX_FRAGMENTS = 3
 TONE_KNOTS = 8
+MIRROR_STREAM = 20261126  # first word of the seeds of the mirror, a stream of its own beside the sampler's and the augmentation's
 
 
 @dataclass(frozen=True)
@@ -112,6 +113,14 @@ def draw(batch: int, strength: Strength, generator: torch.Generator, device) -> 
     return params
 
 
+def mirrored(seed: int, update: int, groups: int, probability: float) -> torch.Tensor:
+    """(groups,) bool: which groups of windows of one update are mirrored left to right. The draw depends on the seed
+    of the run and on the number of the update alone, so it takes no number from the generator of the other input
+    changes and comes out the same when a run goes on from a checkpoint."""
+    generator = torch.Generator().manual_seed(MIRROR_STREAM + 1_000_003 * int(seed) + int(update))
+    return torch.rand(groups, generator=generator) < probability
+
+
 def _per_slot(value: torch.Tensor, fragment: torch.Tensor) -> torch.Tensor:
     """(B, MAX_FRAGMENTS) parameter -> (B, 16) by each slot's fragment number."""
     return torch.gather(value, 1, fragment.clamp(0, MAX_FRAGMENTS - 1))
@@ -129,8 +138,9 @@ def _gaussian(x: torch.Tensor, sigma: float) -> torch.Tensor:
     return flat.view(n, t, h, w)
 
 
-def warp(frames: torch.Tensor, fragment: torch.Tensor, params: dict) -> torch.Tensor:
-    """(B, 16, H, W) uint8 source frames -> (B, 16, 224, 224) float in [0, 1], geometry applied."""
+def warp(frames: torch.Tensor, fragment: torch.Tensor, params: dict, mirror: torch.Tensor | None = None) -> torch.Tensor:
+    """(B, 16, H, W) uint8 source frames -> (B, 16, 224, 224) float in [0, 1], geometry applied. `mirror` is (B,) bool:
+    the windows whose output is mirrored left to right, every frame alike."""
     b, t, h, w = frames.shape
     ax, bx, ay, by = base_map(h, w)
     zoom, aspect, angle = (_per_slot(params[k], fragment) for k in ("zoom", "aspect", "angle"))
@@ -139,6 +149,9 @@ def warp(frames: torch.Tensor, fragment: torch.Tensor, params: dict) -> torch.Te
     tx, ty = _per_slot(params["shift_x"], fragment), _per_slot(params["shift_y"], fragment)
     theta = torch.stack([torch.stack([ax * cos * sx, -ax * sin * sy, ax * tx + bx], -1),
                          torch.stack([ay * sin * sx, ay * cos * sy, ay * ty + by], -1)], -2).view(b * t, 2, 3)
+    if mirror is not None:  # the output's left is the plain output's right: the column that the output's x multiplies changes its sign
+        side = torch.where(mirror.to(theta.device), -1.0, 1.0).to(theta.dtype).repeat_interleave(t)
+        theta = torch.cat([theta[:, :, :1] * side.view(-1, 1, 1), theta[:, :, 1:]], dim=2)
     grid = F.affine_grid(theta, (b * t, 1, OUT, OUT), align_corners=False)
     out = F.grid_sample(frames.reshape(b * t, 1, h, w).float() / 255.0, grid, mode="bilinear", padding_mode="zeros", align_corners=False)
     return out.view(b, t, OUT, OUT)
@@ -190,12 +203,14 @@ def to_model_input(x: torch.Tensor, tint: torch.Tensor | None = None) -> torch.T
     return (rgb - mean) / std
 
 
-def augment(frames: torch.Tensor, fragment: torch.Tensor, strength: Strength, generator: torch.Generator, group: int = 1) -> torch.Tensor:
+def augment(frames: torch.Tensor, fragment: torch.Tensor, strength: Strength, generator: torch.Generator, group: int = 1,
+            mirror: torch.Tensor | None = None) -> torch.Tensor:
     """(B, 16, H, W) uint8 grey source frames and (B, 16) fragment numbers -> the model's (B, 3, 16, 224, 224) input.
-    With group > 1 the windows come in groups of that size and every group shares one set of changes."""
+    With group > 1 the windows come in groups of that size and every group shares one set of changes. `mirror` is
+    (B,) bool, the windows to mirror left to right; without it nothing is mirrored, as in every published recipe."""
     batch, device = frames.shape[0], frames.device
     params = draw(batch, strength, generator, device) if group == 1 else draw_groups(batch, group, strength, generator, device)
-    x = warp(frames, fragment, params)
+    x = warp(frames, fragment, params, mirror)
     if strength.scale > 0 and (strength.levels > 0 or strength.degrade > 0):
         x = grey_levels(x, fragment, params, generator)
         return to_model_input(x, params["tint"])

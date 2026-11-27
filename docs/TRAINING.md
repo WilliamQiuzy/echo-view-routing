@@ -44,6 +44,7 @@ echoview-train --config configs/stage3.json --seed 0 --cache /data/ev9v_cache --
 - **How close a continued run comes.** A run that was cut and continued ends where an uncut run ends, up to the difference between two uncut runs. A test cuts a small run on the CPU and measures this: the weights differ by 2e-8 of their length, as two uncut runs do. The same test fails when any part of the checkpoint is left out.
 - **Checked on a GPU.** On 2026-11-20 a run of 100 updates of the published recipe (seed 0, without compilation) was killed on an L40S after update 60 and continued from its checkpoint of update 50. Its final weights ended 1.9e-5 of their length away from the uncut run's, which is also the distance between two uncut runs. The logged losses differed by at most 0.0003, against 0.0006 between two uncut runs.
 - **Other options are refused.** A checkpoint belongs to one recipe, seed, start file and set of plans. `--resume` with other values stops with a message that names them.
+- **A finished run says how it was made.** `done.json` holds `sessions`: 1 for a run whose updates were all made in one session, and one more for every checkpoint the run went on from.
 
 ### The recipe
 
@@ -86,6 +87,8 @@ The package differs from the research trainer no more than the research trainer 
 ## Recipes of your own
 
 `echoview-train` also trains with plain cross-entropy on single windows (`"objective": "ce"`), from a checkpoint or from a pretrained encoder (`--init encoder --encoder <file>`). Every option of `configs/stage3.json` can be given on the command line, which wins over the file. `echoview-train --help` lists them.
+
+`--mirror P` mirrors every group of windows left to right with a probability of P, every frame of the group alike. The mirror is part of the geometry, so the noise and the dark borders are drawn after it. The draw comes from a stream of its own, so a run with a mirror draws the same other input changes as the run without. No published recipe mirrors: the option is 0 unless it is given, and it exists for part 4 of [ABLATIONS.md](ABLATIONS.md).
 
 ## Stages 1 and 2
 
