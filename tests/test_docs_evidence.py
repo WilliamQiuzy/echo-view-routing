@@ -494,16 +494,27 @@ SINGLE = 284  # the single recordings of the selection half
 WHOLE = "seeds 0+1+2"
 
 
+def shown(x: float, digits: int = 3, sign: bool = False, scale: float = 1.0) -> str:
+    """A number as the documents of the ablations show it: it is taken at twelve decimals, so that a tie which the
+    file stores a hair off itself is the tie, and a tie of the last digit goes away from zero (Python's own formatting
+    rounds a tie of the binary number to even)."""
+    from decimal import ROUND_HALF_EVEN, ROUND_HALF_UP, Decimal
+
+    exact = (Decimal(repr(float(x))) * Decimal(repr(float(scale)))).quantize(Decimal("1e-12"), rounding=ROUND_HALF_EVEN)
+    value = exact.quantize(Decimal(1).scaleb(-digits), rounding=ROUND_HALF_UP)
+    return f"{value:+.{digits}f}" if sign else f"{value:.{digits}f}"
+
+
 def f3(x: float) -> str:
-    return f"{x:.3f}"
+    return shown(x)
 
 
 def spread(entry: dict, digits: int = 3, scale: float = 1.0) -> str:
     """A difference with its interval, as the tables of differences give it."""
     if entry.get("interval") is None:
-        return f"{scale * entry['value']:+.{digits}f}"
+        return shown(entry["value"], digits, True, scale)
     low, high = entry["interval"]
-    return f"{scale * entry['value']:+.{digits}f} [{scale * low:+.{digits}f}, {scale * high:+.{digits}f}]"
+    return f"{shown(entry['value'], digits, True, scale)} [{shown(low, digits, True, scale)}, {shown(high, digits, True, scale)}]"
 
 
 def apart(entry: dict) -> bool:
@@ -1036,15 +1047,16 @@ def test_the_headline_numbers_of_parts_two_and_three_stand_in_the_documents():
 
     # the two limits in the model card and in the README
     errors = {name: published[name]["classify"]["errors"] for name in published}
+    # the sentences between the two parts are those of part 4 (tests/test_docs_arms.py)
     limit = ("- **Mirrored images, and windows that show one frame.** On development data, every frame mirrored left to right lowers segment F1 on the "
              f"multi streams from {f3(f1(published, 'unchanged'))} to {f3(f1(published, 'mirrored'))}, and `classify` then reads {errors['mirrored']} of 284 "
-             f"single recordings wrong where it reads {errors['unchanged']} wrong. No training stage mirrored a frame; whether that is the cause was not "
-             f"tested. When every window shows one frame sixteen times, segment F1 falls to {f3(f1(published, 'still frame'))} and `classify` reads "
-             f"{errors['still frame']} wrong. None of the 24 other changes of grey levels, image quality, geometry and timing that were tried lowers segment "
-             f"F1 by more than {f3(losses[ranked[2]])}. For single recordings the hardest of them are added noise with a spread of 25 grey levels and added "
-             f"speckle of 0.25, with {errors['noise 25']} and {errors['speckle 0.25']} read wrong")
-    said("MODEL_CARD.md", limit)
-    said("README.md", limit)
+             f"single recordings wrong where it reads {errors['unchanged']} wrong. No training stage mirrored a frame.")
+    others = (f"When every window shows one frame sixteen times, segment F1 falls to {f3(f1(published, 'still frame'))} and `classify` reads "
+              f"{errors['still frame']} wrong. None of the 24 other changes of grey levels, image quality, geometry and timing that were tried lowers segment "
+              f"F1 by more than {f3(losses[ranked[2]])}. For single recordings the hardest of them are added noise with a spread of 25 grey levels and added "
+              f"speckle of 0.25, with {errors['noise 25']} and {errors['speckle 0.25']} read wrong")
+    said("MODEL_CARD.md", limit, others)
+    said("README.md", limit, others)
     assert len(ranked) - 2 == 24
     hardest = sorted((name for name in ranked[2:]), key=lambda name: -errors[name])[:2]
     assert hardest == ["noise 25", "speckle 0.25"] and errors["speckle 0.25"] > max(errors[name] for name in ranked[2:] if name not in hardest)

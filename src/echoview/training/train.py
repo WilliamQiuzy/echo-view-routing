@@ -189,7 +189,11 @@ def file_name(path: object) -> str:
 
 
 def run_identity(args: argparse.Namespace) -> dict:
-    """The options that make two parts one run: the recipe, the seed, the start weights and the plans."""
+    """The options that make two parts one run: the recipe, the seed, the start weights and the plans.
+
+    Stored runs are held to this identity (a checkpoint, and docs/ablations/arms.json, which cannot be made again without
+    training). An option that is added later must therefore leave the identity of a run without it as it was: it is
+    dropped where it is unset, as the mirror is."""
     identity = {key: getattr(args, key) for key in sorted(DEFAULTS) if key not in NOT_THE_RECIPE}
     if not identity["mirror"]:  # a run without a mirror is the run it was before the option existed
         del identity["mirror"]

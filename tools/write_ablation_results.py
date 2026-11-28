@@ -7,12 +7,13 @@ Each command prints a section of the document. Every number of the text comes fr
 something without a number (a largest loss, an interval on one side of zero, a count) are asked of the file first,
 and nothing is printed when the file says otherwise. Not every sentence can be asked of a file, so the text was also
 read against the files by an independent reader. tests/test_docs_evidence.py holds the document to what this prints.
+The checks are assertions, so the tool does not run under `python -O`.
 """
 from __future__ import annotations
 
 import json
 import sys
-from decimal import ROUND_HALF_UP, Decimal
+from decimal import ROUND_HALF_EVEN, ROUND_HALF_UP, Decimal
 from pathlib import Path
 
 
@@ -45,11 +46,18 @@ def part_two(d: dict) -> str:
                        "cuts_per_recording")
 
 
-    def rounded(x, digits, sign=False):
+    ties = []  # the numbers that are a tie of the last digit shown only because they are taken at twelve decimals first
+
+
+    def rounded(x, digits, sign=False, counted=True):
         """A number at the digits shown, with a tie rounded away from zero as in ordinary rounding (Python's own formatting
-        rounds a tie of the binary number to even)."""
+        rounds a tie of the binary number to even). The number is taken at twelve decimals first, so that a tie which the
+        file stores a hair off itself is the tie."""
         step = Decimal(1).scaleb(-digits)
-        value = Decimal(repr(float(x))).quantize(step, rounding=ROUND_HALF_UP)
+        number = Decimal(repr(float(x)))
+        value = number.quantize(Decimal("1e-12"), rounding=ROUND_HALF_EVEN).quantize(step, rounding=ROUND_HALF_UP)
+        if counted and value != number.quantize(step, rounding=ROUND_HALF_UP):
+            ties.append((float(x), digits))
         return f"{value:+.{digits}f}" if sign else f"{value:.{digits}f}"
 
 
@@ -167,7 +175,7 @@ def part_two(d: dict) -> str:
     def text():
         assert (d["benchmark"], d["half"], d["sequences"], d["draws"], d["seed"]) == ("development", "selection", 541, 10_000, 20261123)
         assert len(NAMES) == 27 and NAMES[0] == CLEAN and d["unchanged_against_stored"] < 1e-6
-        assert f"{value(P, CLEAN):.4f}" == "0.9594"
+        assert f"{rounded(value(P, CLEAN), 4)}" == "0.9594"
         kinds = {name: P["conditions"][name]["kind"] for name in NAMES}
         image = [name for name in CHANGED if kinds[name] == "image"]
         time = [name for name in CHANGED if kinds[name] == "time"]
@@ -267,6 +275,18 @@ def part_two(d: dict) -> str:
 
         def interval(entry):
             return f"{f3(entry['value'])} [{f3(entry['interval'][0])}, {f3(entry['interval'][1])}]"
+
+        # the cells of the three tables of every number that a tie decides: as they stood before the correction of 2026-11-28, and as they stand
+        def before(x, digits):
+            return f"{Decimal(repr(float(x))).quantize(Decimal(1).scaleb(-digits), rounding=ROUND_HALF_UP):+.{digits}f}"
+
+        tables = [(PUBLISHED, {name: P["conditions"][name]["minus_unchanged"] for name in CHANGED}),
+                  (STAGE2, {name: S["conditions"][name]["minus_unchanged"] for name in CHANGED}), ("published minus stage 2", d["published_minus_stage2"])]
+        moved = [(title, name, key, ("the value", "the lower end", "the upper end")[place], before(scale * x, digits),
+                  rounded(scale * x, digits, True, counted=False))
+                 for title, entries in tables for name in entries for _, part, key, digits, scale in NUMBERS
+                 for place, x in enumerate((entries[name][part][key]["value"], *(entries[name][part][key]["interval"] or ())))
+                 if before(scale * x, digits) != rounded(scale * x, digits, True, counted=False)]
 
         lines = [
             "### Part 2: forward passes",
@@ -448,7 +468,18 @@ def part_two(d: dict) -> str:
             "mirrored images, and "
             "windows that show one frame. Training against a mirrored image would make another model, with a plan of its own. Section 12 is that plan.",
             "",
+            "**Corrected on 2026-11-28.** Two cells of the tables of every number were ties of the last digit shown, and they had been rounded down because "
+            "the file stores them a hair below the tie. For the stage-2 ensemble zoomed in to 1.2, the Edit score minus the unchanged frames is "
+            f"{moved[0][5]} where {moved[0][4]} stood. For the published system minus the stage-2 ensemble rotated by 10 degrees, the upper end of the "
+            f"interval of the cut recall is {moved[1][5]} where {moved[1][4]} stood. A tie is rounded away from zero in every cell, as the other cells "
+            "were. No other number of parts 2 and 3 changes.",
+            "",
         ]
+        assert moved == [("stage 2", "zoomed in 1.2", "edit", "the value", "+0.2", "+0.3"),
+                         ("published minus stage 2", "rotated 10 degrees", "cut_recall", "the upper end", "+0.012", "+0.013")]
+        # "No other number of parts 2 and 3 changes": of all the numbers that part 2 prints, the rule moves these two cells and nothing else
+        assert sorted(ties) == sorted([(S["conditions"]["zoomed in 1.2"]["minus_unchanged"]["multi"]["edit"]["value"], 1),
+                                       (d["published_minus_stage2"]["rotated 10 degrees"]["multi"]["cut_recall"]["interval"][1], 3)])
         assert len(rest) == 3 and len(grey) - len(grey_lost) == 5 and (len(degrade), len(grey)) == (9, 8) and len(grey_include) == 5
         assert -losses["noise 25"]["value"] > -losses["gamma 0.5"]["value"] > -losses["JPEG quality 10"]["value"]
         assert abs(-losses["gamma 0.5"]["value"] - (-grey_worst)) < 1e-12 and abs(-losses["shuffled frames"]["value"] - (-grey_worst)) < 0.003
@@ -464,11 +495,18 @@ def part_three(d: dict, part1: dict) -> str:
     RECORDINGS = 284
 
 
-    def rounded(x, digits, sign=False):
+    ties = []  # the numbers that are a tie of the last digit shown only because they are taken at twelve decimals first
+
+
+    def rounded(x, digits, sign=False, counted=True):
         """A number at the digits shown, with a tie rounded away from zero as in ordinary rounding (Python's own formatting
-        rounds a tie of the binary number to even)."""
+        rounds a tie of the binary number to even). The number is taken at twelve decimals first, so that a tie which the
+        file stores a hair off itself is the tie."""
         step = Decimal(1).scaleb(-digits)
-        value = Decimal(repr(float(x))).quantize(step, rounding=ROUND_HALF_UP)
+        number = Decimal(repr(float(x)))
+        value = number.quantize(Decimal("1e-12"), rounding=ROUND_HALF_EVEN).quantize(step, rounding=ROUND_HALF_UP)
+        if counted and value != number.quantize(step, rounding=ROUND_HALF_UP):
+            ties.append((float(x), digits))
         return f"{value:+.{digits}f}" if sign else f"{value:.{digits}f}"
 
 
@@ -509,7 +547,7 @@ def part_three(d: dict, part1: dict) -> str:
                 "|---|---|---|---|---|---|---|---|---|"]
         for s in table:
             if s["added"] or s["threshold_quantile"] == 0.999:
-                rows.append(f"| {s['half_window']} | {s['threshold_quantile']:g} | {s['threshold']:.3f} | {three(s['calibration'])} | "
+                rows.append(f"| {s['half_window']} | {s['threshold_quantile']:g} | {rounded(s['threshold'], 3)} | {three(s['calibration'])} | "
                     f"{three(s['selection'])} |")
         return rows
 
@@ -605,7 +643,7 @@ def part_three(d: dict, part1: dict) -> str:
         rows = ["| Half window | Quantile | Threshold | Selection half: segment F1 | Macro-F1 | Boundary recall | Keeps the floors | "
                 "Calibration half: segment F1 | Macro-F1 | Boundary recall |", "|---|---|---|---|---|---|---|---|---|---|"]
         for s in exchanged["settings"]:
-            rows.append(f"| {s['half_window']} | {s['threshold_quantile']:g} | {s['threshold']:.5f} | {three(s['selection'])} | "
+            rows.append(f"| {s['half_window']} | {s['threshold_quantile']:g} | {rounded(s['threshold'], 5)} | {three(s['selection'])} | "
                         f"{'yes' if s['feasible_on_selection'] else 'no'} | {three(s['calibration'])} |")
         return rows
 
@@ -712,8 +750,8 @@ def part_three(d: dict, part1: dict) -> str:
     def curve_rows():
         curve = {c["temperature"]: c["log_loss"] for c in temperature["calibration_curve"]}
         shown = (0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.50, 1.00)
-        return ["| Temperature | " + " | ".join(f"{t:.2f}" for t in shown) + " |", "|---|" + "---|" * len(shown),
-                "| Log loss, calibration half | " + " | ".join(f"{curve[t]:.4f}" for t in shown) + " |"]
+        return ["| Temperature | " + " | ".join(f"{rounded(t, 2)}" for t in shown) + " |", "|---|" + "---|" * len(shown),
+                "| Log loss, calibration half | " + " | ".join(f"{rounded(curve[t], 4)}" for t in shown) + " |"]
 
 
     def temperature_rows():
@@ -722,10 +760,10 @@ def part_three(d: dict, part1: dict) -> str:
                 "equal width | Calibration error, equal count | Brier score | Log loss |", "|---|---|---|---|---|---|---|---|---|"]
         for name, e in temperature["selection"].items():
             gap = e["probability_minus_right"]
-            label = name if name == "as published" else f"with a temperature of {e['temperature']:.2f}"
-            rows.append(f"| {label} | {e['errors']} | {f3(e['mean_probability'])} | {round(RECORDINGS * e['share_right'])} | {gap['value']:+.3f} "
-                f"[{gap['interval'][0]:+.3f}, "
-                        f"{gap['interval'][1]:+.3f}] | {f3(e['ece'])} | {f3(e['ece_equal_count'])} | {f3(e['brier']['value'])} | "
+            label = name if name == "as published" else f"with a temperature of {rounded(e['temperature'], 2)}"
+            rows.append(f"| {label} | {e['errors']} | {f3(e['mean_probability'])} | {round(RECORDINGS * e['share_right'])} | {rounded(gap['value'], 3, True)} "
+                f"[{rounded(gap['interval'][0], 3, True)}, "
+                        f"{rounded(gap['interval'][1], 3, True)}] | {f3(e['ece'])} | {f3(e['ece_equal_count'])} | {f3(e['brier']['value'])} | "
                         f"{f3(e['log_loss']['value'])} |")
         return rows
 
@@ -739,8 +777,9 @@ def part_three(d: dict, part1: dict) -> str:
 
         def cells(numbers):
             m = numbers["multi"]
-            return (f"{f3(numbers['pairs']['segment_f1_50']['value'])} | {100 * m['wrong_samples']['value']:.1f}% | {f3(m['cut_precision']['value'])} | "
-                    f"{f3(m['cut_recall']['value'])} | {m['extra_segments']['value']:.0f} | {whole(RECORDINGS * numbers['recordings']['accuracy']['value'])}")
+            right = whole(RECORDINGS * numbers["recordings"]["accuracy"]["value"])
+            return (f"{f3(numbers['pairs']['segment_f1_50']['value'])} | {rounded(100 * m['wrong_samples']['value'], 1)}% | "
+                    f"{f3(m['cut_precision']['value'])} | {f3(m['cut_recall']['value'])} | {rounded(m['extra_segments']['value'], 0)} | {right}")
 
         rows.append(f"| as published | half window 7, threshold 0.174 | {f3(s['published']['multi']['segment_f1_50']['value'])} | | {cells(s['published'])} |")
         rows.append(f"| {KEPT_SETTING} | half window 7, threshold 0.174 | {f3(s[KEPT_SETTING]['selection']['multi']['segment_f1_50']['value'])} | "
@@ -798,8 +837,8 @@ def part_three(d: dict, part1: dict) -> str:
         extra = (s["published"]["multi"]["extra_segments"]["value"], s[KEPT_SETTING]["selection"]["multi"]["extra_segments"]["value"])
         return [
             "- **The fit takes 0.05, the lowest value tried again.** On the calibration half the log loss falls with every step down, from "
-            f"{curve[0.30]:.4f} at 0.30 to "
-            f"{curve[0.05]:.4f} at 0.05. The fit found no best value, and by the plan no lower value is tried.",
+            f"{rounded(curve[0.30], 4)} at 0.30 to "
+            f"{rounded(curve[0.05], 4)} at 0.05. The fit found no best value, and by the plan no lower value is tried.",
             f"- **The word is \"candidate\", as in part 1, and it says little.** With a temperature of 0.05 the log loss of the selection half is "
             f"{f3(with_it['log_loss']['value'])} ({signed(apart['log_loss'])} against as published), where 0.30 gave "
             f"{f3(at_030['log_loss']['value'])}. The same "
@@ -808,13 +847,13 @@ def part_three(d: dict, part1: dict) -> str:
             "window gives its "
             "likeliest view a probability near 1 unless two views are almost level. The probability of a recording is then close to the share of its "
             "windows and "
-            f"seeds that name the view. The median probability is {with_it['median_probability']:.3f}. The mean probability is "
+            f"seeds that name the view. The median probability is {rounded(with_it['median_probability'], 3)}. The mean probability is "
             f"{f3(-with_it['probability_minus_right']['value'])} below the share of right recordings, where the published one is "
             f"{f3(-as_published['probability_minus_right']['value'])} below.",
             f"- **The streams lose under the temperature, with either decoder setting.** With the published setting segment F1 on the multi streams is "
             f"{f3(s[KEPT_SETTING]['selection']['multi']['segment_f1_50']['value'])} ({signed(kept)}), and the segments that match nothing rise from "
-            f"{extra[0]:.0f} to "
-            f"{extra[1]:.0f}. With the rule's own setting it is {f3(with_rule)} ({signed(ruled)}).",
+            f"{rounded(extra[0], 0)} to "
+            f"{rounded(extra[1], 0)}. With the rule's own setting it is {f3(with_rule)} ({signed(ruled)}).",
             f"- **Sharp probabilities make thresholds of the rule's grid fall together.** Of its 40 thresholds {grid['thresholds_at_zero']} are "
             "zero, and the 40 hold "
             f"{grid['distinct_thresholds']} distinct values. {setting['n_feasible']} of the 40 settings keep the floors, and the rule takes half window "
@@ -906,12 +945,15 @@ def part_three(d: dict, part1: dict) -> str:
         assert curve[0.30] - curve[0.05] < 0.002  # "the flat log loss"
         ruled = temperature["streams"][BY_THE_RULE]["minus_published"]["multi"]["segment_f1_50"]["value"]
         assert f3(-ruled) == "0.053"
+        assert ties == []  # of the numbers that part 3 prints, the rule of the ties moves none
         return "\n".join(lines)
 
     return section()
 
 
 def main(argv: list[str] | None = None) -> int:
+    if not __debug__:
+        raise SystemExit("the checks of this tool are assertions: run it without -O")
     args = sys.argv[1:] if argv is None else argv
     files = [json.loads(Path(name).read_text()) for name in args[1:]]
     if args[:1] == ["part2"] and len(files) == 1:

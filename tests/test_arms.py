@@ -638,4 +638,6 @@ def test_the_plan_of_part_four_names_what_the_code_holds():
     assert "Each new seed is within 0.004 of the published seed on both halves" in training
     assert "within 0.004 of the published ones, and the three together within 0.003 with the published decoder setting and 0.016 below" in section
     assert (round(0.9594 - 0.9565, 3), round(0.9594 - 0.9432, 3)) == (0.003, 0.016)
-    assert plan.rstrip().endswith("## 13. Results of part 4\n\nNot run yet.")  # nothing of part 4 stands in the document yet
+    # the plan stands as it was committed, and only its line of status says that part 4 has been run since (tests/test_docs_arms.py holds the results)
+    assert ("**Status: planned on 2026-11-26 and committed on 2026-11-27 (UTC), before any of its models was trained. Run on 2026-11-27 and 2026-11-28; "
+            "the results are in section 13.**") in section
